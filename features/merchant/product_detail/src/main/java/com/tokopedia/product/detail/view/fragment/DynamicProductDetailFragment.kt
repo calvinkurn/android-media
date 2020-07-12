@@ -133,6 +133,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -695,8 +696,28 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductRecommendationViewHolder Listener
      */
 
-    override fun sendTopAds(topAdsUrl: String) {
-        viewModel.sendTopAds(topAdsUrl)
+    override fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String) {
+        context?.run {
+            TopAdsUrlHitter(this::class.java.name).hitClickUrl(
+                    this,
+                    topAdsUrl,
+                    productId,
+                    productName,
+                    productImageUrl
+            )
+        }
+    }
+
+    override fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String) {
+        context?.run {
+            TopAdsUrlHitter(this::class.java.name).hitImpressionUrl(
+                    this,
+                    topAdsUrl,
+                    productId,
+                    productName,
+                    productImageUrl
+            )
+        }
     }
 
     override fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
