@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder.*
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.*
 
-class CampaignStockAdapterTypeFactory: BaseAdapterTypeFactory(), CampaignStockTypeFactory {
+class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) -> Unit = {}): BaseAdapterTypeFactory(), CampaignStockTypeFactory {
 
     override fun type(model: ActiveProductSwitchUiModel): Int = ActiveProductSwitchViewHolder.LAYOUT_RES
 
@@ -25,7 +25,7 @@ class CampaignStockAdapterTypeFactory: BaseAdapterTypeFactory(), CampaignStockTy
             TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent)
             SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(parent)
             StockTickerInfoViewHolder.LAYOUT_RES -> StockTickerInfoViewHolder(parent)
-            ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent)
+            ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent, onAccordionStateChange)
             else -> super.createViewHolder(parent, type)
         }
     }

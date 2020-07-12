@@ -1,12 +1,17 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
+import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
 
 class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
@@ -33,16 +38,22 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         arguments?.getParcelableArrayList<ReservedEventInfoUiModel>(EXTRA_RESERVED_EVENT_INFO_LIST)?.toList().orEmpty()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupView()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_campaign_stock_tab, container, false)
     }
 
-    override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(view)
+    }
+
+    override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory(::onVariantAccordionStateChanged)
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
 
     override fun getScreenName(): String = ""
+
+    override fun getRecyclerViewResourceId(): Int = R.id.rv_campaign_stock
 
     override fun initInjector() {
 
@@ -50,7 +61,8 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
 
     override fun loadData(page: Int) {}
 
-    private fun setupView() {
+    private fun setupView(view: View) {
+        view.setBackgroundColor(Color.TRANSPARENT)
         if(reservedEventInfoList.isNotEmpty()) {
             setupAdapterModels(isVariant)
         }
@@ -58,5 +70,12 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
 
     private fun setupAdapterModels(isVariant: Boolean) {
         renderList(reservedEventInfoList)
+    }
+
+    private fun onVariantAccordionStateChanged(position: Int) {
+        activity?.runOnUiThread {
+            adapter.notifyItemChanged(position)
+            rv_campaign_stock?.smoothScrollToPosition(position)
+        }
     }
 }

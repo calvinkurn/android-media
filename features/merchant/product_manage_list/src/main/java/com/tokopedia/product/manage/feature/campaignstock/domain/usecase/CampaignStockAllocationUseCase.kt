@@ -2,12 +2,8 @@ package com.tokopedia.product.manage.feature.campaignstock.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseDataNullException
+import com.tokopedia.product.manage.feature.campaignstock.domain.DummySource
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationData
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -75,20 +71,22 @@ class CampaignStockAllocationUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): GetStockAllocationData {
-        val gqlRequest = GraphqlRequest(QUERY, GetStockAllocationResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        return DummySource.getCampaignStockVariant()
 
-        val errors = gqlResponse.getError(GetStockAllocationResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetStockAllocationResponse>(GetStockAllocationResponse::class.java)
-            data.getStockAllocation.data.let { stockData ->
-                stockData.firstOrNull()?.run {
-                    return this
-                }
-            }
-            throw ResponseDataNullException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA)
-        } else {
-            throw MessageErrorException(errors.joinToString { it.message })
-        }
+//        val gqlRequest = GraphqlRequest(QUERY, GetStockAllocationResponse::class.java, params.parameters)
+//        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+//
+//        val errors = gqlResponse.getError(GetStockAllocationResponse::class.java)
+//        if (errors.isNullOrEmpty()) {
+//            val data = gqlResponse.getData<GetStockAllocationResponse>(GetStockAllocationResponse::class.java)
+//            data.getStockAllocation.data.let { stockData ->
+//                stockData.firstOrNull()?.run {
+//                    return this
+//                }
+//            }
+//            throw ResponseDataNullException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA)
+//        } else {
+//            throw MessageErrorException(errors.joinToString { it.message })
+//        }
     }
 }

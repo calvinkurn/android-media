@@ -2,11 +2,6 @@ package com.tokopedia.product.manage.feature.campaignstock.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseDataNullException
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.StockThumbnailResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -41,17 +36,18 @@ class StockThumbnailUrlUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): String {
-        val gqlRequest = GraphqlRequest(QUERY, StockThumbnailResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
-        val errors = gqlResponse.getError(StockThumbnailResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<StockThumbnailResponse>(StockThumbnailResponse::class.java)
-            data.getProduct.data.picture.firstOrNull()?.thumbnailUrl?.let { url ->
-                return url
-            }
-            throw ResponseDataNullException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA)
-        } else {
-            throw MessageErrorException(errors.joinToString { it.message })
-        }
+        return "https://ca.slack-edge.com/T038RGMSP-UPCPZAS3W-70d31c564def-512"
+//        val gqlRequest = GraphqlRequest(QUERY, StockThumbnailResponse::class.java, params.parameters)
+//        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+//        val errors = gqlResponse.getError(StockThumbnailResponse::class.java)
+//        if (errors.isNullOrEmpty()) {
+//            val data = gqlResponse.getData<StockThumbnailResponse>(StockThumbnailResponse::class.java)
+//            data.getProduct.data.picture.firstOrNull()?.thumbnailUrl?.let { url ->
+//                return url
+//            }
+//            throw ResponseDataNullException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA)
+//        } else {
+//            throw MessageErrorException(errors.joinToString { it.message })
+//        }
     }
 }

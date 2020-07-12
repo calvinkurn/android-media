@@ -1,11 +1,15 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
@@ -44,9 +48,13 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         observeLiveData()
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_campaign_stock_tab, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
+        setupView(view)
     }
 
     override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory()
@@ -66,11 +74,14 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     override fun loadData(page: Int) {}
 
+    override fun getRecyclerViewResourceId(): Int = R.id.rv_campaign_stock
+
     private fun observeLiveData() {
 
     }
 
-    private fun setupView() {
+    private fun setupView(view: View) {
+        view.setBackgroundColor(Color.TRANSPARENT)
         if (sellableProductList.isNotEmpty()) {
             setupAdapterModels(isVariant)
         }
