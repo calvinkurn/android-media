@@ -15,6 +15,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ActiveProductSwitchUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.TotalStockEditorUiModel
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
@@ -89,7 +90,11 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun setupAdapterModels(isVariant: Boolean) {
         if (isVariant) {
-            renderList(sellableProductList)
+            val variantList = mutableListOf<Visitable<CampaignStockTypeFactory>>(
+                    StockTickerInfoUiModel(false)).apply {
+                addAll(sellableProductList)
+            }
+            renderList(variantList)
         } else {
             renderList(listOf(
                     ActiveProductSwitchUiModel(false),

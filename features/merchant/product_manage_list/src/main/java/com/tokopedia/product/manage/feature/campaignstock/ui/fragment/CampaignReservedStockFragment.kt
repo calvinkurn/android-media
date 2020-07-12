@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
 import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
 
 class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
@@ -69,7 +70,14 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {
-        renderList(reservedEventInfoList)
+        val reservedStockList = mutableListOf<Visitable<CampaignStockTypeFactory>>(
+                StockTickerInfoUiModel(true)
+        ).apply {
+            addAll(reservedEventInfoList.map {
+                it.apply { this.isVariant = isVariant }
+            })
+        }
+        renderList(reservedStockList)
     }
 
     private fun onVariantAccordionStateChanged(position: Int) {

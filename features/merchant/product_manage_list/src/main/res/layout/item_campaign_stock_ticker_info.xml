@@ -18,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:closeButtonVisibility="gone" />
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

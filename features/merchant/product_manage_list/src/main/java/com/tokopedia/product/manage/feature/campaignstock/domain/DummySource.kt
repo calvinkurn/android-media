@@ -7,7 +7,7 @@ object DummySource {
     fun getCampaignStockVariant(): GetStockAllocationData {
         return GetStockAllocationData(
                 summary = GetStockAllocationSummary(
-                        isVariant = false,
+                        isVariant = true,
                         productName = "Test name",
                         sellableStock = "60",
                         reserveStock = "20",

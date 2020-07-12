@@ -14,7 +14,8 @@ data class ReservedEventInfoUiModel(
         val actionWording: String,
         val actionUrl: String,
         val products: ArrayList<ReservedStockProductModel>,
-        var isAccordionOpened: Boolean = false): Parcelable, Visitable<CampaignStockTypeFactory> {
+        var isAccordionOpened: Boolean = false,
+        var isVariant: Boolean = false): Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
             typeFactory.type(this)
