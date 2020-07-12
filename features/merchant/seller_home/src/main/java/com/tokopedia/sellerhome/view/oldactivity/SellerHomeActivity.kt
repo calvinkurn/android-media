@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.view.activity
+package com.tokopedia.sellerhome.view.oldactivity
 
 import android.content.Context
 import android.content.Intent

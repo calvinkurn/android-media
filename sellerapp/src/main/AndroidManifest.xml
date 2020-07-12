@@ -55,7 +55,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
+            android:name="com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"
             android:launchMode="singleTask"
