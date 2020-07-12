@@ -1,7 +1,10 @@
 package com.tokopedia.play.broadcaster.view.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -9,10 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,14 +31,14 @@ import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.channelNotFound
 import com.tokopedia.play.broadcaster.util.getDialog
-import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
+import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
+import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
+import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
-import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -61,13 +64,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var viewActionBar: ActionBarPartialView
-    private lateinit var viewRequestPermission: PlayRequestPermissionView
     private lateinit var loaderView: LoaderUnify
     private lateinit var globalErrorView: GlobalError
+    private lateinit var surfaceView: SurfaceView
+
+    private var surfaceStatus = SurfaceStatus.UNINITED
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
     private var isRecreated = false
+    private var isResultAfterAskPermission = false
+    private var channelType = ChannelType.Unknown
 
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
@@ -75,7 +82,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             window.decorView.systemUiVisibility = value
         }
 
-    private var deviceSupported = DeviceInfoUtil.isDeviceSupported()
+    private val permissions = arrayOf(Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO)
+
+    private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -86,34 +96,29 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
-        if (savedInstanceState != null) populateSavedState(savedInstanceState)
+        if (savedInstanceState != null) {
+            populateSavedState(savedInstanceState)
+            requestPermission()
+        }
 
         setupContent()
         initView()
         setupView()
         setupInsets()
 
-        if (!deviceSupported) {
+        if (!DeviceInfoUtil.isDeviceSupported()) {
             showDialogWhenUnSupportedDevices()
             return
         }
 
         getConfiguration()
-
         observeConfiguration()
-        observePermissionStateEvent()
     }
 
     override fun onStart() {
         super.onStart()
         initPushStream()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
-        viewRequestPermission.requestApplyInsetsWhenAttached()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(CHANNEL_ID, viewModel.channelId)
     }
 
     override fun onResume() {
@@ -127,14 +132,29 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(CHANNEL_ID, viewModel.channelId)
+        outState.putString(CHANNEL_TYPE, channelType.value)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (!viewModel.getPermissionUtil().onRequestPermissionsResult(requestCode, permissions, grantResults))
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        viewModel.getPermissionUtil().onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RESULT_PERMISSION_CODE) isResultAfterAskPermission = true
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        if (isResultAfterAskPermission) {
+            if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+            else showPermissionPage()
+        }
+        isResultAfterAskPermission = false
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
@@ -158,6 +178,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     override fun showActionBar(shouldShow: Boolean) {
+        if (!::viewActionBar.isInitialized) return
         if (shouldShow) viewActionBar.show() else viewActionBar.hide()
     }
 
@@ -183,10 +204,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
-    private fun checkPermission() {
-        viewModel.checkPermission()
-    }
-
     private fun initPushStream() {
         viewModel.initPushStream()
     }
@@ -196,20 +213,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun setupContent() {
-        val currentFragment = supportFragmentManager.findFragmentByTag(PARENT_FRAGMENT_TAG)
-        if (currentFragment == null) {
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.fl_broadcast, getParentFragment(), PARENT_FRAGMENT_TAG)
-                    .commit()
-        }
     }
 
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
-        viewRequestPermission = findViewById(R.id.view_request_permission)
         loaderView = findViewById(R.id.loader_initial)
         globalErrorView = findViewById(R.id.error_channel)
+        surfaceView = findViewById(R.id.surface_view)
+    }
 
+    private fun setupView() {
         viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener {
             override fun onCameraIconClicked() {
                 viewModel.switchCamera()
@@ -219,18 +232,30 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 onBackPressed()
             }
         })
-    }
 
-    private fun setupView() {
+        surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
+            override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
+                surfaceStatus = SurfaceStatus.CHANGED
+            }
+
+            override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) {
+                surfaceStatus = SurfaceStatus.DESTROYED
+            }
+
+            override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
+                if (surfaceStatus == SurfaceStatus.UNINITED) {
+                    surfaceStatus = SurfaceStatus.CREATED
+                } else if (surfaceStatus == SurfaceStatus.DESTROYED) {
+                    surfaceStatus = SurfaceStatus.RECREATED
+                }
+                startPreview()
+            }
+        })
     }
 
     private fun setupInsets() {
         viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
-        }
-
-        viewRequestPermission.doOnApplyWindowInsets { v, insets, _, _ ->
-            v.updatePadding(top = insets.systemWindowInsetTop, bottom = insets.systemWindowInsetBottom)
         }
     }
 
@@ -240,10 +265,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
+        val channelType = savedInstanceState.getString(CHANNEL_TYPE)
         viewModel.setChannelId(channelId)
+        this.channelType = ChannelType.getByValue(channelType)
     }
-
-    private fun getParentFragment() = getFragmentByClassName(PlayBroadcastFragment::class.java)
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
         return fragmentFactory.instantiate(classLoader, fragmentClass.name)
@@ -290,52 +315,57 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             }
         })
     }
-
-    private fun observePermissionStateEvent() {
-        viewModel.observablePermissionState.observe(this, Observer {
-            when(it) {
-                is PlayPermissionState.Granted -> onPermissionGranted()
-                is PlayPermissionState.Denied -> onPermissionDisabled(it.permissions)
-                is PlayPermissionState.Error -> onError(it.throwable)
-            }
-        })
-    }
     //endregion
 
-    private fun handleChannelConfiguration(config: ConfigurationUiModel) =
-            if (config.streamAllowed) {
-                if (config.channelType != ChannelType.Active) checkPermission()
-                when(config.channelType) {
-                    ChannelType.Active -> showDialogWhenActiveOnOtherDevices()
-                    ChannelType.Pause -> {
-                        showDialogContinueLiveStreaming()
-                        openBroadcastActivePage()
-                    }
-                    ChannelType.Draft, ChannelType.Unknown -> openBroadcastSetupPage()
-                }
+    private fun handleChannelConfiguration(config: ConfigurationUiModel) {
+        if (config.streamAllowed) {
+            this.channelType = config.channelType
+            if (channelType == ChannelType.Active) {
+                showDialogWhenActiveOnOtherDevices()
             } else {
-                globalErrorView.channelNotFound { this.finish() }
-                globalErrorView.show()
+                if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+                else requestPermission()
             }
-
-    private fun onPermissionGranted() {
-        containerSetup.show()
-        viewActionBar.show()
-        viewRequestPermission.hide()
+        } else {
+            globalErrorView.channelNotFound { this.finish() }
+            globalErrorView.show()
+        }
     }
 
-    private fun onPermissionDisabled(permissions: List<String>) {
-        containerSetup.hide()
-        viewActionBar.hide()
-        viewRequestPermission.show()
-        viewRequestPermission.setPermissionGranted(permissions)
+    private fun configureChannelType(channelType: ChannelType) {
+        showActionBar(true)
+        if (channelType == ChannelType.Pause) {
+            showDialogContinueLiveStreaming()
+            openBroadcastActivePage()
+        } else  {
+            openBroadcastSetupPage()
+        }
     }
 
-    private fun onError(throwable: Throwable) {
-        viewRequestPermission.hide()
-        // TODO("handle error app")
-        if (GlobalConfig.DEBUG) {
-            throw IllegalStateException(throwable)
+    private fun requestPermission() {
+        permissionHelper.requestMultiPermissionsFullFlow(
+                permissions = permissions,
+                requestCode = REQUEST_PERMISSION_CODE,
+                permissionResultListener = object: PermissionResultListener {
+                    override fun onRequestPermissionResult(): PermissionStatusHandler {
+                        return {
+                            if (isGranted(Manifest.permission.CAMERA)) startPreview()
+                            if (isAllGranted()) configureChannelType(channelType)
+                            else showPermissionPage()
+                        }
+                    }
+
+                    override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                        return false
+                    }
+                }
+        )
+    }
+
+    private fun startPreview() {
+        if (surfaceStatus != SurfaceStatus.UNINITED &&
+                surfaceStatus != SurfaceStatus.DESTROYED) {
+            viewModel.startPreview(surfaceView)
         }
     }
 
@@ -345,6 +375,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
+    }
+
+    private fun showPermissionPage() {
+        showActionBar(false)
+        navigateToFragment(PlayPermissionFragment::class.java)
     }
 
     private fun showDialogWhenUnSupportedDevices() {
@@ -391,5 +426,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     companion object {
         private const val CHANNEL_ID = "channel_id"
+        private const val CHANNEL_TYPE = "channel_type"
+        private const val REQUEST_PERMISSION_CODE = 3298
+        const val RESULT_PERMISSION_CODE = 3297
     }
 }

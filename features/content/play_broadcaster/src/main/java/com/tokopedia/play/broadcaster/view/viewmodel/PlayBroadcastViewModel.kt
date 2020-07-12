@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import android.Manifest
 import android.view.SurfaceView
 import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -22,8 +21,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
-import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
@@ -45,7 +42,6 @@ class PlayBroadcastViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val sharedPref: HydraSharedPreferences,
         private val playPusher: PlayPusher,
-        private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
@@ -81,8 +77,6 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
         get() = _observableLiveNetworkState
-    val observablePermissionState: LiveData<PlayPermissionState>
-        get() = _observablePermissionState
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -133,7 +127,6 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
-    private val _observablePermissionState = permissionUtil.getObservablePlayPermissionState()
 
     private val channelIdObserver = object : Observer<String> {
         override fun onChanged(t: String?) {}
@@ -241,21 +234,6 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun getSocketCredential() = withContext(dispatcher.io) {
         return@withContext getSocketCredentialUseCase.executeOnBackground()
-    }
-
-    /**
-     * Permission
-     */
-    fun checkPermission() {
-        permissionUtil.checkPermission(arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO))
-    }
-
-    fun allPermissionGranted() = permissionUtil.isAllPermissionGranted()
-
-    fun getPermissionUtil(): PlayPermissionUtil {
-        return permissionUtil
     }
 
     /**

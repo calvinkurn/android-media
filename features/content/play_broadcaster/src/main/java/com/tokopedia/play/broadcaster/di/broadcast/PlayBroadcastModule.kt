@@ -12,7 +12,6 @@ import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_G
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -45,11 +44,6 @@ class PlayBroadcastModule(val mContext: Context) {
     @Provides
     fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
         return PlayBroadcastSocketImpl(userSession, cacheHandler)
-    }
-
-    @Provides
-    fun providePlayPermissionUtil(): PlayPermissionUtil {
-        return PlayPermissionUtil(mContext)
     }
 
     @Provides

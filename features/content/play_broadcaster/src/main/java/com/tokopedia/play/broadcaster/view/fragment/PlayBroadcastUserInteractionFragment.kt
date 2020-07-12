@@ -79,8 +79,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         initView(view)
         setupView()
         setupInsets(view)
-//        if (parentViewModel.allPermissionGranted()) setupContent()
-//        else parentViewModel.checkPermission()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -93,7 +91,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeNetworkConnectionDuringLive()
-//        observePermissionStateEvent()
     }
 
     override fun onStart() {
@@ -233,11 +230,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showDialogWhenActionClose(): Boolean {
-        return if (parentViewModel.allPermissionGranted()) {
-            getExitDialog().show()
-            true
-        }
-        else false
+        getExitDialog().show()
+        return true
     }
 
     private fun getExitDialog(): DialogUnify {
@@ -392,12 +386,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeNetworkConnectionDuringLive() {
         parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
     }
-
-//    private fun observePermissionStateEvent() {
-//        parentViewModel.observablePermissionState.observe(this, Observer {
-//           if (it is PlayPermissionState.Granted) setupContent()
-//        })
-//    }
     //endregion
 
     companion object {
