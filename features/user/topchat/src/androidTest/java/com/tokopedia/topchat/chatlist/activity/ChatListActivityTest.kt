@@ -30,14 +30,14 @@ class ChatListActivityTest {
 
     @Test
     fun test_user_session() {
-        userSession.hasShop = false
+        userSession.hasShopStub = false
         activity.setupTestFragment()
         Thread.sleep(5000)
     }
 
     @Test
     fun chatListActivityTest() {
-        userSession.hasShop = true
+        userSession.hasShopStub = true
         activity.setupTestFragment()
         Thread.sleep(5000)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()

@@ -5,10 +5,20 @@ import com.tokopedia.user.session.UserSession
 
 class UserSessionStub(context: Context?) : UserSession(context) {
 
-    var hasShop = true
+    var hasShopStub = true
+    var shopNameStub = "Toko Rifqi"
+    var nameStub = "Rifqi M Fahmi"
 
     override fun hasShop(): Boolean {
-        return hasShop
+        return hasShopStub
+    }
+
+    override fun getShopName(): String {
+        return shopNameStub
+    }
+
+    override fun getName(): String {
+        return nameStub
     }
 
 }
