@@ -31,7 +31,6 @@ import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
-import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
@@ -299,8 +298,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     }
 
     private fun addSellerTabFragment() {
-        val sellerFragment =
-                ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
+        val sellerFragment = createSellerTabFragment()
         val sellerTabFragment = ChatListPagerAdapter.ChatListTab(
                 userSession.shopName,
                 sellerFragment,
@@ -309,14 +307,22 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         tabList.add(sellerTabFragment)
     }
 
+    open protected fun createSellerTabFragment(): ChatListFragment {
+        return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER)
+    }
+
     private fun addBuyerTabFragment() {
-        val buyerFragment = ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
+        val buyerFragment = createBuyerTabFragment()
         val buyerTabFragment = ChatListPagerAdapter.ChatListTab(
                 userSession.name,
                 buyerFragment,
                 R.drawable.ic_chat_icon_account
         )
         tabList.add(buyerTabFragment)
+    }
+
+    open protected fun createBuyerTabFragment(): ChatListFragment {
+        return ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER)
     }
 
     private fun initViewPagerAdapter() {
@@ -508,6 +514,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+
         @JvmStatic
         fun create(): ChatTabListFragment {
             return ChatTabListFragment()
