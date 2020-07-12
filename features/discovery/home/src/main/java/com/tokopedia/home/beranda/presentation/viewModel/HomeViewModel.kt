@@ -339,13 +339,13 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?, needToEvaluateRecommendation:Boolean = true): HomeDataModel? {
         homeDataModel?.let {
             var newHomeViewModel = homeDataModel
             if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
-            newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            if (needToEvaluateRecommendation) newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
             return newHomeViewModel
         }
@@ -715,12 +715,15 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
-//                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
-                    getHeaderData()
-                    getDynamicChannelData()
-                    getReviewData()
-                    getPlayBanner()
-                    getPopularKeyword()
+                    if (isOnlyHomeHeader(homeDataModel)) {
+                        updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel, needToEvaluateRecommendation = false))
+                        getDynamicChannelData()
+                    } else {
+                        getHeaderData()
+                        getReviewData()
+                        getPlayBanner()
+                        getPopularKeyword()
+                    }
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -733,6 +736,11 @@ open class HomeViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
+    }
+
+    private fun isOnlyHomeHeader(homeDataModel: HomeDataModel): Boolean {
+        val obj = homeDataModel.list.find { visitable -> visitable is DynamicChannelDataModel }
+        return obj == null
     }
 
     private fun initChannel(){
@@ -1174,7 +1182,7 @@ open class HomeViewModel @Inject constructor(
             if(data.action == ACTION_UPDATE_HOME_DATA){
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
-                    homeDataModel = evaluateAvailableComponent(homeDataModel)
+                    homeDataModel = evaluateAvailableComponent(homeDataModel, data.needToEvaluateRecommendation)
                         _homeLiveData.value = homeDataModel
                 }
             } else {
