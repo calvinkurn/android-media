@@ -36,10 +36,6 @@ class VariantProductStockAccordion @JvmOverloads constructor(
     fun setEventVariantInfo(actionWording: String,
                             variantsProductList: List<ReservedStockProductModel>,
                             isAccordionOpened: Boolean) {
-        val mVariantList = variantsProductList.map {
-            VariantProductStockNameUiModel(it.productName, it.stock)
-        }
-
         layout_campaign_stock_variant_action?.run {
             tv_campaign_stock_action?.text = actionWording
             setOnClickListener {
@@ -48,7 +44,7 @@ class VariantProductStockAccordion @JvmOverloads constructor(
         }
 
         rv_campaign_stock_variant_list?.run {
-            adapter = VariantProductStockAccordionAdapter(mVariantList)
+            adapter = VariantProductStockAccordionAdapter(variantsProductList)
             layoutManager = linearLayoutManager
         }
 
