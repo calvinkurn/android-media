@@ -13,6 +13,7 @@ object AccountConstants {
     const val RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon"
     const val TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp"
     const val SALDO_QUERY = "saldo_query"
+    const val REWARD_SHORTCUT_QUERY= "reward_shortcut_query"
     const val SHOP_LOCATION_QUERY = "query_shop_location"
     const val ACCOUNT_TAB = "ACCOUNT_TAB"
     const val ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER"

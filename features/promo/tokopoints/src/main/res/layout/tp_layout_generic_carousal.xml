@@ -12,7 +12,6 @@
         android:id="@+id/text_title"
         android:layout_width="@dimen/dp_160"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:ellipsize="end"
         android:lineSpacingExtra="6sp"

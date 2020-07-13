@@ -194,7 +194,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         });
 
         holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
-        setUpHeight(item);
+      //  setUpHeight(item);
     }
 
     @Override
