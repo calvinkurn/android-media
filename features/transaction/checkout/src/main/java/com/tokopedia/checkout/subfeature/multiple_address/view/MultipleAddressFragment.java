@@ -114,8 +114,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
         intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
         startActivityForResult(intent, CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
-        /*Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), dataList, parentPosition);
-        startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);*/
     }
 
     @Override
@@ -148,10 +146,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, childPosition);
         intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
         startActivityForResult(intent, CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
-       /* Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), recipientAddressModel,
-                dataList, childPosition, parentPosition);
-        startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);*/
-
     }
 
     @Override

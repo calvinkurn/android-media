@@ -30,12 +30,12 @@ import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.manageaddress.R;
-import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.manageaddress.data.analytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.manageaddress.data.analytics.CornerAnalytics;
+import com.tokopedia.manageaddress.data.analytics.AddressCornerAnalytics;
 import com.tokopedia.manageaddress.di.addresschoice.DaggerAddressChoiceComponent;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
@@ -70,7 +70,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject
-    CornerAnalytics mCornerAnalytics;
+    AddressCornerAnalytics mAddressCornerAnalytics;
     @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private RecyclerView mRvRecipientAddressList;
@@ -372,7 +372,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mPresenter.saveLastCorner(addressModel);
         mAdapter.updateSelected(position);
         if (mActivityListener != null && getActivity() != null) {
-            mCornerAnalytics.sendChooseCornerAddress();
+            mAddressCornerAnalytics.sendChooseCornerAddress();
             mActivityListener.finishAndSendResult(addressModel);
         } else {
             // Show error in case of unexpected behaviour

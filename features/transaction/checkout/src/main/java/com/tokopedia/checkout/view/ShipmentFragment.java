@@ -758,12 +758,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             intent.putExtra(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
-            /*intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);*/
         } else {
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
-            /*intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);*/
         }
 
         startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
@@ -1293,10 +1289,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS, shipmentPresenter.getRecipientAddressModel());
         intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST,  CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
         startActivityForResult(intent,CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
-        /*Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                shipmentPresenter.getRecipientAddressModel(),
-                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);*/
     }
 
     @Override
@@ -2203,10 +2195,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, shipmentPresenter.getKeroToken());
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
             startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS );
-          /*  Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    shipmentPresenter.getRecipientAddressModel(), shipmentPresenter.getKeroToken(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
-            startActivityForResult(intent, REQUEST_CODE_EDIT_ADDRESS);*/
         }
     }
 
