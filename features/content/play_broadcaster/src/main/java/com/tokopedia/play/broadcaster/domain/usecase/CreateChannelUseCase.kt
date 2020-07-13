@@ -35,7 +35,9 @@ class CreateChannelUseCase @Inject constructor(
         val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateChannelBroadcastResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<CreateChannelBroadcastResponse>(CreateChannelBroadcastResponse::class.java)
-        response?.getChannelId?.let { return it }
+        if (response?.getChannelId != null) {
+            return response.getChannelId
+        }
         throw DefaultErrorThrowable()
     }
 

@@ -105,8 +105,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun stopPush() {
-        mAliVcLivePusher?.stopPush()
-        mTimerDuration?.stop()
+        try {
+            mAliVcLivePusher?.stopPush()
+            mTimerDuration?.stop()
+        } catch (e: Exception) { }
         mPlayPusherStatus = PlayPusherStatus.Stop
     }
 
@@ -116,7 +118,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override suspend fun resume() {
         mAliVcLivePusher?.resumeAsync()
-        if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Paused) {
+        if (mPlayPusherStatus != PlayPusherStatus.Paused) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         } else {
             mTimerDuration?.resume()
@@ -126,7 +128,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override suspend fun pause() {
         mAliVcLivePusher?.pause()
-        if (!isPushing() || mPlayPusherStatus != PlayPusherStatus.Active) {
+        if (mPlayPusherStatus != PlayPusherStatus.Active) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         } else {
             mTimerDuration?.pause()
