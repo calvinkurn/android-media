@@ -26,13 +26,12 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
+import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -100,7 +99,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var toaster: Snackbar? = null
 
     override fun getScreenName(): String {
-        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
+        return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -270,7 +269,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     override fun onStart() {
         super.onStart()
         activity?.run {
-            TalkReplyTracking.sendScreen(screenName)
+            TalkReplyTracking.
+            sendScreen(screenName)
         }
     }
 
