@@ -54,7 +54,8 @@ class CoverSetupPartialView(
     private val clCropParent: ConstraintLayout = findViewById(R.id.cl_crop_parent)
     private val slCropParent: ScrollView = findViewById(R.id.sl_crop_parent)
 
-    private var mMaxTitleChars = DEFAULT_MAX_CHAR
+    private val mMaxTitleChars: Int
+        get() = dataSource.getMaxTitleCharacters()
 
     private val keyboardWatcher = KeyboardWatcher().apply {
         listen(rootView, object : KeyboardWatcher.Listener {
@@ -149,10 +150,6 @@ class CoverSetupPartialView(
         }
 
         updateAddChangeCover()
-    }
-
-    fun setMaxTitleChar(maxChar: Int) {
-        mMaxTitleChars = maxChar
     }
 
     fun updateViewState() {
@@ -282,13 +279,8 @@ class CoverSetupPartialView(
 
     interface DataSource {
 
+        fun getMaxTitleCharacters(): Int
         fun isValidCoverTitle(coverTitle: String): Boolean
         fun getCurrentCoverUri(): Uri?
     }
-
-    companion object {
-
-        private const val DEFAULT_MAX_CHAR = 38
-    }
-
 }
