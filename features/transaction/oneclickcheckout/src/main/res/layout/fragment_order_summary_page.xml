@@ -24,11 +24,27 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_osp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:closeButtonVisibility="visible"
+                    app:descriptionText="Atur pilihan kamu sekarang lewat ikon setting atau tambah pilihan baru"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tickerShapeType="full"
+                    app:tickerType="announcement"
+                    app:titleText="Beli Langsung pake Kartu Kredit" />
+
                 <include
                     android:id="@+id/layout_occ_onboarding"
                     layout="@layout/layout_occ_onboarding"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ticker_osp" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header"
@@ -63,8 +79,10 @@
                     android:id="@+id/tv_header_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginLeft="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:textColor="@color/Neutral_N700_96"
                     android:visibility="visible"
@@ -79,8 +97,10 @@
                     android:id="@+id/tv_header_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginLeft="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:textColor="@color/Neutral_N700_96"
                     android:visibility="visible"

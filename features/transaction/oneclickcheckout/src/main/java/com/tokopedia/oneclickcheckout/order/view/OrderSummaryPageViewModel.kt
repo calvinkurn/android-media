@@ -1461,7 +1461,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
             insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
         }
-        val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
         var productDiscount = 0
         var shippingDiscount = 0
         val cashbacks = ArrayList<Pair<String, String>>()
@@ -1482,6 +1481,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
         }
+        val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
         val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
         val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
         val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0

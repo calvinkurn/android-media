@@ -875,6 +875,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onInstallmentDetailClicked() {
+            // generate installment options in VM
             orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
         }
     }

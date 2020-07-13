@@ -189,6 +189,7 @@
                 android:layout_marginStart="@dimen/dp_6"
                 android:layout_marginLeft="@dimen/dp_6"
                 android:layout_marginTop="@dimen/dp_16"
+                android:ellipsize="end"
                 android:lines="1"
                 android:paddingBottom="@dimen/dp_2"
                 android:textColor="@color/Neutral_N700_96"
@@ -197,13 +198,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider2"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                tools:text="Virtual Account" />
+                tools:text="Kartu Kredit / Kartu Debit / Cicilan" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_detail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
+                android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/Neutral_N700_68"
                 app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
