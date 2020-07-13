@@ -39,6 +39,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
@@ -349,7 +350,10 @@ class AddEditProductDescriptionFragment:
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> tvAddVariant.isEnabled = true
-                is Fail -> showVariantErrorToast(getString(com.tokopedia.abstraction.R.string.default_request_error_timeout))
+                is Fail -> {
+                    showVariantErrorToast(getString(com.tokopedia.abstraction.R.string.default_request_error_timeout))
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
+                }
             }
         })
     }
@@ -369,6 +373,7 @@ class AddEditProductDescriptionFragment:
                     }
                 }
                 is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
                     displayErrorOnSelectedVideo(position)
                 }
             }

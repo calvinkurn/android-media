@@ -25,6 +25,7 @@ open class TopAdsKeywordNewStepperModel() : StepperModel {
     var serverCount: Int = 0
     var maxWords: Int = 0
     var localWords: MutableList<String> = mutableListOf()
+    var priceBid:Int = 0
 
     constructor(parcel: Parcel) : this() {
         this.isPositive = parcel.readByte().toInt() != 0
@@ -34,6 +35,7 @@ open class TopAdsKeywordNewStepperModel() : StepperModel {
         this.serverCount = parcel.readInt()
         this.maxWords = parcel.readInt()
         this.localWords = parcel.createStringArrayList()
+        this.priceBid = parcel.readInt()
     }
 
     override fun writeToParcel(dest: Parcel?, p1: Int) {
@@ -45,6 +47,7 @@ open class TopAdsKeywordNewStepperModel() : StepperModel {
             it.writeInt(this.serverCount)
             it.writeInt(this.maxWords)
             it.writeStringList(this.localWords)
+            it.writeInt(this.priceBid)
         }
     }
 
