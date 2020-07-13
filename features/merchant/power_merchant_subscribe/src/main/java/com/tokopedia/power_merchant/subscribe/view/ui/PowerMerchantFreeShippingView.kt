@@ -51,7 +51,6 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
         transitionLayout.setOnClickListener {
             onClickListener?.invoke()
-            openFreeShippingPage()
         }
 
         transitionLayout.show()
@@ -123,20 +122,13 @@ class PowerMerchantFreeShippingView: FrameLayout {
     private fun setCTABtnClickListener() {
         btnCTA.setOnClickListener {
             onClickListener?.invoke()
-            openFreeShippingPage()
         }
     }
 
     private fun setActiveLayoutClickListener() {
         activeLayout.setOnClickListener {
             onClickListener?.invoke()
-            openFreeShippingPage()
         }
-    }
-
-    private fun openFreeShippingPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-            URL_FREE_SHIPPING_INTERIM_PAGE)
     }
 
     private fun showHideContainer(transitionPeriod: Boolean) {

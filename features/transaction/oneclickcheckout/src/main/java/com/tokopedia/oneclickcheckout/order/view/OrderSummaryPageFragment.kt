@@ -210,10 +210,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPayment(resultCode: Int) {
         if (activity != null) {
-            val lastOrderTotal = viewModel.orderTotal.value
-            if (lastOrderTotal != null && !lastOrderTotal.isButtonChoosePayment) {
-                activity?.finish()
-            } else if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
+            if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
                 activity?.finish()
             }
         }
