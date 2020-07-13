@@ -14,4 +14,8 @@ data class NotificationSendTroubleshoot(
 
         @SerializedName("error_message")
         val errorMessage: String = ""
-)
+) {
+        fun isTroubleshootSuccess(): Boolean {
+                return isSuccess == 1
+        }
+}

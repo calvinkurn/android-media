@@ -1515,6 +1515,10 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun removeViewHolderAtPosition(position: Int) {
+        getHomeViewModel().removeViewHolderAtPosition(position)
+    }
+
     fun openWebViewURL(url: String?, context: Context?) {
         if (!TextUtils.isEmpty(url) && context != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
