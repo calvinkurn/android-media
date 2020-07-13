@@ -35,7 +35,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
     ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
     ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),
-    Tabs(R.layout.widget_recycler_view, ComponentNames.Tabs.componentName),
+    Tabs(R.layout.tabs_layout, ComponentNames.Tabs.componentName),
     TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName),
     DynamicCategory(R.layout.dynamic_category_layout, ComponentNames.DynamicCategory.componentName),
     DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName),
