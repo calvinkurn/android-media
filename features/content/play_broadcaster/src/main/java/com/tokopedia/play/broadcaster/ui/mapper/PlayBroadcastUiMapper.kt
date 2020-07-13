@@ -152,6 +152,9 @@ object PlayBroadcastUiMapper {
                         minProduct = config.minTaggedProduct,
                         errorMessage = config.maxTaggedProductDesc
                 ),
+                coverConfig = CoverConfigUiModel(
+                        maxChars = config.maxTitleLength
+                ),
                 countDown = config.countdownSec
         )
     }

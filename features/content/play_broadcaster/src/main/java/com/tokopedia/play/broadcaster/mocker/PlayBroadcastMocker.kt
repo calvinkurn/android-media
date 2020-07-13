@@ -94,6 +94,9 @@ object PlayBroadcastMocker {
                     minProduct = 1,
                     errorMessage = "Oops, kamu sudah memilih 15 produk"
             ),
+            coverConfig = CoverConfigUiModel(
+                    maxChars = 38
+            ),
             countDown = 5
     )
 

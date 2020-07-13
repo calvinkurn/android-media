@@ -172,7 +172,8 @@ class PlayBroadcastViewModel @Inject constructor(
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
-            setMaxMinProduct(configUiModel.productTagConfig)
+            setProductConfig(configUiModel.productTagConfig)
+            setCoverConfig(configUiModel.coverConfig)
             playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration) // configure maximum live streaming duration
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
@@ -371,9 +372,13 @@ class PlayBroadcastViewModel @Inject constructor(
         hydraConfigStore.setIngestUrl(ingestUrl)
     }
 
-    private fun setMaxMinProduct(configModel: ProductTagConfigUiModel) {
+    private fun setProductConfig(configModel: ProductTagConfigUiModel) {
         hydraConfigStore.setMaxProduct(configModel.maxProduct)
         hydraConfigStore.setMinProduct(configModel.minProduct)
+    }
+
+    private fun setCoverConfig(configModel: CoverConfigUiModel) {
+        hydraConfigStore.setMaxTitleChars(configModel.maxChars)
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {

@@ -28,5 +28,7 @@ data class Config(
         @SerializedName("max_pause_duration_sec")
         val maxPauseDuration: Long = 0,
         @SerializedName("countdown_sec")
-        val countdownSec: Long = 0
+        val countdownSec: Long = 0,
+        @SerializedName("max_title_length")
+        val maxTitleLength: Int = 0
 )
