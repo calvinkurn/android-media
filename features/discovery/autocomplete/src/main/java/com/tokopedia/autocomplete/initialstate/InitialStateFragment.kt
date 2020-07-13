@@ -169,12 +169,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         activity?.finish()
     }
 
-    override fun onDeleteRecentSearchItem(keyword: String) {
-        deleteRecentSearch(keyword)
+    override fun onDeleteRecentSearchItem(item: BaseItemInitialStateSearch) {
+        deleteRecentSearch(item)
     }
 
-    private fun deleteRecentSearch(keyword: String) {
-        presenter.deleteRecentSearchItem(keyword)
+    private fun deleteRecentSearch(item: BaseItemInitialStateSearch) {
+        presenter.deleteRecentSearchItem(item)
     }
 
     override fun onDeleteAllRecentSearch() {

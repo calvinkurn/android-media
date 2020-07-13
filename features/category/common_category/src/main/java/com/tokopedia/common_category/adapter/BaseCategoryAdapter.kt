@@ -50,7 +50,7 @@ abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
 
         fun wishListEnabledTracker(wishListTrackerUrl: String)
 
-        fun topAdsTrackerUrlTrigger(url:String)
+        fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String)
     }
 
 }
