@@ -45,7 +45,7 @@
         android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:lines="1"
+        android:maxLines="2"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/tv_payment_expired"
         app:layout_constraintHorizontal_bias="0"
@@ -55,7 +55,7 @@
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="8098097230948209384 Kartu Kredit (&#183;&#183;&#183;&#183; 1234)" />
+        tools:text="8098097230948209384 Kartu Kredit (&#183;&#183;&#183;&#183; 1234 5678 4321 8765)" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_expired"
@@ -64,7 +64,7 @@
         android:paddingStart="@dimen/dp_2"
         android:paddingLeft="@dimen/dp_2"
         android:textColor="@color/Red_R600"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_payment_detail"
         app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
         app:layout_constraintStart_toEndOf="@+id/tv_payment_detail"
