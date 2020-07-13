@@ -43,7 +43,7 @@ class PltShopPageOfficialStorePerformanceTest {
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
-            activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
     }
 
@@ -79,7 +79,7 @@ class PltShopPageOfficialStorePerformanceTest {
                     TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+        activityRule.activity.deleteDatabase("tokopedia_graphql")
         activityRule.activity.finishAndRemoveTask()
     }
 
