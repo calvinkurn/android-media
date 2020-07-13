@@ -141,9 +141,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_BACK,
                 ""
         )
-        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
-        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+
+        addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
@@ -159,9 +158,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_LIHAT_DETAIL,
                 eventLabel
         )
-        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
-        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+
+        addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
@@ -171,9 +169,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_CHECK_TRANSACTION_LIST,
                 ""
         )
-        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
-        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+
+        addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
@@ -183,9 +180,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS,
                 ""
         )
-        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
-        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+
+        addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
@@ -201,9 +197,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_BELANJA_LAGI,
                 eventLabel
         )
-        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
-        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+
+        addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
@@ -213,11 +208,10 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_SALIN_CLICK,
                 paymentMethod
         )
-        map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
-        map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+        addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
+
 
     fun sendOnHowtoPayClickEvent(paymentId: String) {
         val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
@@ -226,11 +220,17 @@ class ThankYouPageAnalytics @Inject constructor(
                 ""
         )
 
+
+        addCommonTrackingData(map, paymentId)
+        analyticTracker.sendGeneralEvent(map)
+    }
+
+    private fun addCommonTrackingData(map: MutableMap<String, Any>, paymentId: String) {
         map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
         map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
         map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
-        analyticTracker.sendGeneralEvent(map)
     }
+
 
     fun sendPushGtmFalseEvent(paymentId:String) {
         analyticTracker.sendGeneralEvent(
