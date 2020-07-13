@@ -50,6 +50,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public static final String PARAM_EMAIL = "email";
     public static final int REQUEST_VERIFY_CODE = 1;
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
+    private static final int OTP_CHANGE_PHONE_NUMBER = 20;
+    private static final int OTP_REGISTER_PHONE_NUMBER = 116;
 
     @Inject
     ChangePhoneNumberInputFragmentListener.Presenter presenter;
@@ -267,7 +269,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.COTP);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, cleanPhoneNumber(newPhoneNumber));
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.CHANGE_PHONE_NUMBER);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_CHANGE_PHONE_NUMBER);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.SMS);

@@ -699,7 +699,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun onGoToSecurityQuestion(email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.SECURITY_QUESTION)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_SECURITY_QUESTION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
@@ -739,7 +739,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.REGISTER_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_REGISTER_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
@@ -751,8 +751,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, EMAIL_TYPE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         startActivityForResult(intent, REQUEST_OTP_VALIDATE)
     }
 
@@ -1035,7 +1035,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.LOGIN_PHONE_NUMBER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_LOGIN_PHONE_NUMBER)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
@@ -1342,6 +1342,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val OTP_TYPE_ACTIVATE = 143
         private const val OTP_TYPE_REGISTER = 126
+        private const val OTP_SECURITY_QUESTION = 134
+        private const val OTP_LOGIN_PHONE_NUMBER = 112
+        private const val OTP_REGISTER_PHONE_NUMBER = 116
 
         private const val FACEBOOK = "facebook"
         private const val GPLUS = "gplus"

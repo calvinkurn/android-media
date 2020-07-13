@@ -824,7 +824,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.LOGIN_PHONE_NUMBER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_LOGIN_PHONE_NUMBER)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
@@ -838,7 +838,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.REGISTER_PHONE_NUMBER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_REGISTER_PHONE_NUMBER)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
@@ -998,7 +998,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.SECURITY_QUESTION)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_SECURITY_QUESTION)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
@@ -1558,6 +1558,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
+
+        private const val OTP_SECURITY_QUESTION = 134
+        private const val OTP_LOGIN_PHONE_NUMBER = 112
+        private const val OTP_REGISTER_PHONE_NUMBER = 116
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"

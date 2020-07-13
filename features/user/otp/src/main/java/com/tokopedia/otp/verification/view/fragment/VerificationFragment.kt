@@ -3,6 +3,7 @@ package com.tokopedia.otp.verification.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -284,6 +285,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
             throwable.printStackTrace()
             hideLoading()
             viewBound.pin?.isError = true
+            viewBound.pin?.value = ""
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -450,6 +452,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
                 message.indexOf(getString(R.string.resend_otp)),
@@ -468,6 +471,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
                 message.indexOf(getString(R.string.with_other_method)),
@@ -486,6 +490,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
                 message.indexOf(getString(R.string.login_with_other_method)),
