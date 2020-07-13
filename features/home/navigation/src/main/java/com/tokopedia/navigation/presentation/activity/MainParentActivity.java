@@ -334,6 +334,7 @@ public class MainParentActivity extends BaseActivity implements
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
+        populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
 
         initNewFeedClickReceiver();
@@ -1058,7 +1059,6 @@ public class MainParentActivity extends BaseActivity implements
             getPageLoadTimePerformanceInterface().stopMonitoring();
             pageLoadTimePerformanceCallback = null;
         }
-        populateBottomNavigationView();
     }
 
     @Override
