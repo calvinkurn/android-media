@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.setTextFieldColor
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -69,6 +68,9 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var viewModel: EditCoverTitleViewModel
+
+    private val mMaxTitleChars: Int
+        get() = viewModel.maxTitleChars
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -147,7 +149,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
                 0,
                 bottomSheetWrapper.paddingBottom)
 
-        etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE))
+        etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
         etCoverTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
         etCoverTitle.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
@@ -177,12 +179,11 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     private fun setupTitleCounter() {
         tvTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                title.length, PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE)
+                title.length, mMaxTitleChars)
     }
 
     private fun setupSaveButton() {
-        btnSave.isEnabled = title.isNotBlank() &&
-                title.length <= PlayBroadcastCoverTitleUtil.MAX_LENGTH_LIVE_TITLE
+        btnSave.isEnabled = viewModel.isValidCoverTitle(title)
     }
 
     private fun onUpdateSuccess() {
