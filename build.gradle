@@ -46,8 +46,8 @@ buildscript {
         classpath "com.gradle:gradle-enterprise-gradle-plugin:3.1.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.tokopedia.plugin:appstatistics:0.0.3"
-        classpath 'com.meituan.robust:gradle-plugin:0.4.95'
-        classpath 'com.meituan.robust:auto-patch-plugin:0.4.95'
+        classpath 'com.meituan.robust:gradle-plugin:0.4.99'
+        classpath 'com.meituan.robust:auto-patch-plugin:0.4.99'
         classpath 'com.bugsnag:bugsnag-android-gradle-plugin:4.7.3'
     }
 }
