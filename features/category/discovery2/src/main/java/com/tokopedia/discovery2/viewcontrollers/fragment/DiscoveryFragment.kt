@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
@@ -36,7 +38,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -62,7 +63,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var ivToTop: ImageView
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
@@ -75,6 +75,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var componentPosition: Int? = null
     private var openScreenStatus = false
 
+    @JvmField
+    @Inject
+    var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -112,7 +115,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun initView(view: View) {
-        permissionCheckerHelper = PermissionCheckerHelper()
         mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
@@ -188,6 +190,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                         discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
+                    stopDiscoveryPagePerformanceMonitoring()
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -250,9 +253,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             ivShare.show()
             ivShare.setOnClickListener {
                 getDiscoveryAnalytics().trackShareClick()
-                permissionHelper {
-                    Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
-                }
+                Utils.shareData(activity, data.share.description, data.share.url)
             }
         } else {
             ivShare.hide()
@@ -279,36 +280,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (appLinks.isNotEmpty() && shopId != 0) {
                 activity?.let { it1 -> discoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
-        }
-    }
-
-    private fun permissionHelper(grantedPermission: () -> Unit) {
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                context?.let {
-                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                }
-            }
-
-            override fun onNeverAskAgain(permissionText: String) {
-                context?.let {
-                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                }
-            }
-
-            override fun onPermissionGranted() {
-                grantedPermission()
-            }
-
-        })
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(context!!,
-                    requestCode, permissions,
-                    grantResults)
         }
     }
 
@@ -394,6 +365,17 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun isUserLoggedIn(): Boolean {
         return UserSession(activity).isLoggedIn
+    }
+
+    private fun stopDiscoveryPagePerformanceMonitoring() {
+        recyclerView.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
+                        pageLoadTimePerformanceInterface?.stopMonitoring()
+                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 
     override fun onResume() {
