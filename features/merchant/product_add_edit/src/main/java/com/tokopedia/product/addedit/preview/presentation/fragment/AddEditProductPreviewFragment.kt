@@ -478,31 +478,31 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
-                        viewModel.productAddResult.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+                        viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                     }
-                    viewModel.productAddResult.value?.didBackPress = true
+                    viewModel.productInputModel.value?.didBackPress = true
                     productStatusSwitch?.isChecked?.let { viewModel.updateProductStatus(it) }
                     when (dataBackPressed) {
                         DETAIL_DATA -> {
-                            viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
+                            viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                             disableDescriptionEdit()
                             disableShipmentEdit()
                             return
                         }
                         DESCRIPTION_DATA -> {
-                            viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
+                            viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                             enableDescriptionEdit()
                             disableShipmentEdit()
                             return
                         }
                         SHIPMENT_DATA -> {
-                            viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
+                            viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                             enableDescriptionEdit()
                             enableShipmentEdit()
                             return
                         }
                     }
-                    val productInputModel = viewModel.productAddResult.value ?: ProductInputModel()
+                    val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                         if (validateMessage.isEmpty()) {
