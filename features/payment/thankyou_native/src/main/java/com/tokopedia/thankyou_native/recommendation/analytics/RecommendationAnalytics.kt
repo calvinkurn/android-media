@@ -74,7 +74,10 @@ class RecommendationAnalytics @Inject constructor(
                                              position: Int): MutableMap<String, Any> {
         return mutableMapOf(
                 KEY_CLICK to mutableMapOf(
-                        KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE + recommendationItem.recommendationType + " - " + getRecommendationTopAdsLabel(recommendationItem.isTopAds),
+                        ACTION_FIELD to mutableMapOf(
+                                KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE + recommendationItem.recommendationType
+                                        + " - " + getRecommendationTopAdsLabel(recommendationItem.isTopAds)
+                        ),
                         KEY_PRODUCTS to mutableListOf(getProductDataMap(recommendationItem, position))
                 )
         )
@@ -143,6 +146,7 @@ class RecommendationAnalytics @Inject constructor(
 
         const val TOP_ADS = "topads"
         const val NON_TOP_ADS = "nontopads"
+        const val ACTION_FIELD = "actionField"
     }
 
 }
