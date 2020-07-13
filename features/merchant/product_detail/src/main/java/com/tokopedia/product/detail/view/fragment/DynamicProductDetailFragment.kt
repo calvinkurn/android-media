@@ -133,6 +133,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -695,8 +696,28 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductRecommendationViewHolder Listener
      */
 
-    override fun sendTopAds(topAdsUrl: String) {
-        viewModel.sendTopAds(topAdsUrl)
+    override fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String) {
+        context?.run {
+            TopAdsUrlHitter(this::class.java.name).hitClickUrl(
+                    this,
+                    topAdsUrl,
+                    productId,
+                    productName,
+                    productImageUrl
+            )
+        }
+    }
+
+    override fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String) {
+        context?.run {
+            TopAdsUrlHitter(this::class.java.name).hitImpressionUrl(
+                    this,
+                    topAdsUrl,
+                    productId,
+                    productName,
+                    productImageUrl
+            )
+        }
     }
 
     override fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
@@ -752,10 +773,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductReviewViewHolder
      */
-    override fun onSeeAllReviewClick(componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickReviewOnSeeAllImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
+    override fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.onSeeAllLastItemImageReview(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                 ?: ComponentTrackDataModel())
         goToReviewImagePreview()
+    }
+
+    override fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?) {
+        viewModel.getDynamicProductInfoP1?.run {
+            DynamicProductDetailTracking.Click.onSeeAllReviewTextView(this, viewModel.userId, componentTrackDataModel
+                    ?: ComponentTrackDataModel())
+            goToReviewDetail(basic.productID, getProductName)
+        }
     }
 
     override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
@@ -776,13 +805,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     ?: "")
             DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this, viewModel.shopInfo?.shopCore?.name
                     ?: "")
-            context?.let {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, basic.productID)
-                intent?.run {
-                    intent.putExtra("x_prd_nm", getProductName)
-                    startActivity(intent)
-                }
-            }
+            goToReviewDetail(basic.productID, getProductName)
         }
     }
 
@@ -1012,6 +1035,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             goToReplyActivity(questionId)
         })
         viewModel.updateLastAction(DynamicProductDetailTalkGoToReplyDiscussion(questionId))
+    }
+
+    private fun goToReviewDetail(productId: String, productName: String) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+            intent?.run {
+                intent.putExtra(ProductDetailConstant.REVIEW_PRD_NM, productName)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun disscussionClicked() {

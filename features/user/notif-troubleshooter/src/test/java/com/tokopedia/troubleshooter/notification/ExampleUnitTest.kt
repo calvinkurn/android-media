@@ -1,7 +1,6 @@
 package com.tokopedia.troubleshooter.notification
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**

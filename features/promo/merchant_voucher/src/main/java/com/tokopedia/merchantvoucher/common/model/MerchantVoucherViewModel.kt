@@ -39,6 +39,7 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
     var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
     var enableButtonUse = false
     var restrictedForLiquidProduct: Boolean = false
+    var isPublic = true
 
     fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
 
@@ -81,6 +82,7 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
         parcel.writeValue(status)
         parcel.writeValue(ownerId)
         parcel.writeByte(if (restrictedForLiquidProduct) 1 else 0)
+        parcel.writeByte(if (isPublic) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -101,6 +103,7 @@ class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>,
         status = parcel.readValue(Int::class.java.classLoader) as? Int
         ownerId = parcel.readValue(Int::class.java.classLoader) as? Int
         restrictedForLiquidProduct = parcel.readByte() != 0.toByte()
+        isPublic = parcel.readByte() != 0.toByte()
     }
 
     companion object CREATOR : Parcelable.Creator<MerchantVoucherViewModel> {
