@@ -69,7 +69,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
         ShopInfoLocation shopInfoLocation = graphqlResponse.getData(ShopInfoLocation.class);
         SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-        accountModel.setSaldoModel(saldoModel);
+        if(saldoModel != null && accountModel != null) {
+            accountModel.setSaldoModel(saldoModel);
+        }
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;
         if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()) {
@@ -132,8 +134,10 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
-        if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
-            items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+        if(accountModel.getSaldoModel() != null) {
+            if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
+                items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+            }
         }
 
         if (showPinjamanModalOnTop) {
