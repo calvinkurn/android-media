@@ -8,6 +8,6 @@ sealed class BroadcastState {
     object Init: BroadcastState()
     object Start: BroadcastState()
     object Pause: BroadcastState()
-    object Stop: BroadcastState()
+    data class Stop(val shouldNavigate: Boolean): BroadcastState()
     data class Error(val error: Throwable): BroadcastState()
 }

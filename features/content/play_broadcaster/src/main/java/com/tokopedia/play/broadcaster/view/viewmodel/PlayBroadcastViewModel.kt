@@ -308,7 +308,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun stopPushStream() {
+    fun stopPushStream(shouldNavigate: Boolean) {
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
@@ -316,7 +316,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 playSocket.destroy()
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
-            _observableLiveInfoState.value = Event(BroadcastState.Stop)
+            _observableLiveInfoState.value = Event(BroadcastState.Stop(shouldNavigate))
         }) {
             _observableLiveInfoState.value = Event(BroadcastState.Error(it))
         }

@@ -407,7 +407,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
-                    viewModel.stopPushStream()
+                    viewModel.stopPushStream(shouldNavigate = true)
                 }
         ).show()
     }

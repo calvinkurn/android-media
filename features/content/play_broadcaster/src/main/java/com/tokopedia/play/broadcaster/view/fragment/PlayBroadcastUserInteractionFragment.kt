@@ -185,8 +185,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.startPushStream()
     }
 
-    private fun stopLiveStreaming() {
-        parentViewModel.stopPushStream()
+    private fun stopLiveStreaming(shouldNavigate: Boolean) {
+        parentViewModel.stopPushStream(shouldNavigate)
     }
 
     /**
@@ -245,7 +245,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
                        dialog.dismiss()
-                       stopLiveStreaming()
+                       stopLiveStreaming(shouldNavigate = true)
                    }
            )
         }
@@ -334,7 +334,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
             when (it) {
                 is BroadcastState.Init -> startCountDown()
-                is BroadcastState.Stop -> navigateToSummary()
+                is BroadcastState.Stop -> if (it.shouldNavigate) navigateToSummary()
                 is BroadcastState.Error -> {
                     if (GlobalConfig.DEBUG) showToaster(
                             message = it.error.localizedMessage,
@@ -360,10 +360,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is BroadcastTimerState.Active -> showCounterDuration(it.remainingTime)
                 is BroadcastTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
                 is BroadcastTimerState.Finish -> {
-                    stopLiveStreaming()
+                    stopLiveStreaming(shouldNavigate = false)
                     showDialogWhenTimeout()
                 }
-                is BroadcastTimerState.ReachMaximumPauseDuration -> stopLiveStreaming()
+                is BroadcastTimerState.ReachMaximumPauseDuration -> stopLiveStreaming(shouldNavigate = true)
             }
         })
     }
