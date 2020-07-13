@@ -524,7 +524,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         get() = edMessage.text.toString()
 
     override val ticketID: String
-        get() = intent.getStringExtra(PARAM_TICKET_ID)
+        get() = intent.getStringExtra(PARAM_TICKET_ID)?:""
 
     override fun onClick() {
         showImagePickerDialog()

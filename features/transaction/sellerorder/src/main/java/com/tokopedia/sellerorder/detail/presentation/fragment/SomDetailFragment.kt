@@ -561,7 +561,15 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         if (detailResponse.flagOrderMeta.flagFreeShipping) {
             showFreeShippingAcceptOrderDialog(buttonResp)
         } else {
-            showAcceptOrderDialog(buttonResp)
+            acceptOrder(buttonResp)
+        }
+    }
+
+    private fun acceptOrder(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        val mapParam = buttonResp.param.convertStrObjToHashMap()
+        if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
+            somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
+                    mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
         }
     }
 
@@ -633,29 +641,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 setChild(dialogView)
-            }
-            dialogUnify.show()
-        }
-    }
-
-    private fun showAcceptOrderDialog(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        view?.context?.let {
-            val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                setTitle(buttonResp.title)
-                setDescription(buttonResp.content)
-                setPrimaryCTAText(getString(R.string.terima_pesanan))
-                setPrimaryCTAClickListener {
-                    val mapParam = buttonResp.param.convertStrObjToHashMap()
-                    if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
-                        somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                            mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
-                        dismiss()
-                    }
-                }
-                setSecondaryCTAText(getString(R.string.kembali))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
             }
             dialogUnify.show()
         }

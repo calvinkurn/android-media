@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
@@ -205,7 +206,10 @@ class ProductManageSellerFragment : ProductManageFragment() {
         observe(productDraftListCountViewModel.getAllDraftCountResult) {
             when(it) {
                 is Success -> onDraftCountLoaded(it.data)
-                is Fail -> onDraftCountLoadError()
+                is Fail -> {
+                    onDraftCountLoadError()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
