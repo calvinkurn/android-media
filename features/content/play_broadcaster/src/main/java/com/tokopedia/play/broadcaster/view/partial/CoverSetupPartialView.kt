@@ -182,7 +182,8 @@ class CoverSetupPartialView(
         tvCoverTitleCounter.setTextColor(
                 MethodChecker.getColor(
                         tvCoverTitleCounter.context,
-                        if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500
+                        else com.tokopedia.unifyprinciples.R.color.Neutral_N0
                 )
         )
     }
@@ -195,7 +196,11 @@ class CoverSetupPartialView(
 
     private fun updateTextField(text: String) {
         etCoverTitle.setTextFieldColor(
-                if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                when {
+                    !etCoverTitle.hasFocus() -> com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                    !dataSource.isValidCoverTitle(text) -> com.tokopedia.unifyprinciples.R.color.Red_R500
+                    else -> com.tokopedia.unifyprinciples.R.color.Green_G400
+                }
         )
     }
 
