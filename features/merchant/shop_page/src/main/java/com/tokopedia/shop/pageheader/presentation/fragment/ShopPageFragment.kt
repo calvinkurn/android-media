@@ -647,7 +647,7 @@ class ShopPageFragment :
                 setShopInfo(it)
             }
         }
-        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+//        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
         val homeFragment = getHomeFragment()
         val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
         return mutableListOf<Fragment>().apply {
@@ -657,7 +657,7 @@ class ShopPageFragment :
             add(shopPageProductFragment)
             if (isShowFeed)
                 add(feedFragment)
-            add(shopReviewFragment)
+//            add(shopReviewFragment)
         }
     }
 

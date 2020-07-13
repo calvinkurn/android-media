@@ -326,7 +326,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             videoSurfaceView.findViewById<AspectRatioFrameLayout>(R.id.exo_content_frame).requestLayout()
             var timerAutoPause: CountDownTimer?=null
             if(PlayConnectionCommon.isConnectCellular(context)) {
-                 timerAutoPause = object : CountDownTimer(durationPlayWithData.toLong(), 1000) {
+                timerAutoPause = object : CountDownTimer(durationPlayWithData.toLong(), 1000) {
                     override fun onFinish() {
                         videoSurfaceView.getPlayer()?.playWhenReady = false
                     }

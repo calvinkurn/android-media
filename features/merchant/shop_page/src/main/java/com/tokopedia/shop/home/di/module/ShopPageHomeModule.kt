@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
+import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
 import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
@@ -98,7 +99,7 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase{
-        val graphQlUseCase = GraphqlUseCase<PlayToggleChannelReminder>(graphqlRepository)
+        val graphQlUseCase = GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
         return PlayToggleChannelReminderUseCase(graphQlUseCase)
     }
 

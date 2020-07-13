@@ -1298,7 +1298,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, true)
+        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

@@ -74,6 +74,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
         const val SPAN_COUNT = 2
+        const val UPDATE_REMIND_ME_PLAY = "update_remind_me"
 
         fun createInstance(
                 shopId: String,
@@ -230,15 +231,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
 
         viewModel?.reminderPlayLiveData?.observe(this, Observer {
-            when(it){
+            when(it.second){
                 is Success -> {
                     showToastSuccess(
-                            if(it.data) getString(R.string.shop_page_play_card_success_add_reminder)
+                            if((it.second as Success<Boolean>).data) getString(R.string.shop_page_play_card_success_add_reminder)
                             else getString(R.string.shop_page_play_card_success_remove_reminder)
                     )
                 }
                 is Fail -> {
-                    showErrorToast(it.throwable.message ?: "")
+                    adapter.notifyItemChanged(it.first, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+                    showErrorToast((it.second as Fail).throwable.message ?: "")
                 }
             }
         })
@@ -617,7 +619,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, true)
+        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, true, position)
     }
 
     override fun onPlayBannerSeeMoreClick(appLink: String) {

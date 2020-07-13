@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter
 
 import android.os.Bundle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -51,9 +52,9 @@ class ShopHomeAdapter(
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
-        val lastIndex = visitables.size
+        visitables.clear()
         visitables.addAll(data)
-        notifyItemRangeInserted(lastIndex, data.size)
+        notifyDataSetChanged()
     }
 
     override fun hideLoading() {
