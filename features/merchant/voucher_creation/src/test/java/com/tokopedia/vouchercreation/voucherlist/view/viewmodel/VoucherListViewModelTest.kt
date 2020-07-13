@@ -66,7 +66,7 @@ class VoucherListViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = VoucherListViewModel(getVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
+        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
         with(mViewModel) {
             successVoucherLiveData.observeForever(successVoucherObserver)
             stopVoucherResponseLiveData.observeForever(stopVoucherResponseObserver)
