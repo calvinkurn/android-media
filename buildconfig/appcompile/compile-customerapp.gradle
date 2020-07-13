@@ -114,7 +114,6 @@ include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant_common"
-include "features:merchant:gold_merchant_resource"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:reputation_common"
 include "features:merchant:reputation"
