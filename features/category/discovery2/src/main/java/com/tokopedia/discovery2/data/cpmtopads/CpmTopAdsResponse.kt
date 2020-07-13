@@ -1,9 +1,10 @@
 package com.tokopedia.discovery2.data.cpmtopads
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 data class CpmTopAdsResponse(
 
         @SerializedName("displayAdsV3")
-        val displayAdsV3: DisplayAdsV3? = null
+        val cpmModelData: CpmModel? = null
 )

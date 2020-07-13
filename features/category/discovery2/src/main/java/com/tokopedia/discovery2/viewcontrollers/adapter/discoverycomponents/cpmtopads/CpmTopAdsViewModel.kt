@@ -9,8 +9,8 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CpmTopAdsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,6 +24,8 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     private val promotedText = MutableLiveData<Result<String>>()
     private val brandName = MutableLiveData<Result<String>>()
     private val imageUrl = MutableLiveData<Result<String>>()
+
+    private val cpmData = MutableLiveData<CpmModel>()
 
     @Inject
     lateinit var cpmTopAdsUseCase: CpmTopAdsUseCase
@@ -41,16 +43,20 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
         fetchCpmTopAdsData()
     }
 
-    fun fetchCpmTopAdsData() {
+    private fun fetchCpmTopAdsData() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(components.id, components.pageEndPoint) }
                 if (data != null) {
-                    cpmTopAdsList.postValue(Success(components.cpmData?.componentList as ArrayList<ComponentsItem>))
-                    promotedText.postValue(Success(components.cpmData?.promotedText as String))
-                    brandName.postValue(Success(components.cpmData?.brandName as String))
-                    imageUrl.postValue(Success(components.cpmData?.imageUrl as String))
+                    cpmData.postValue(components.cpmData)
                 }
+
+//                if (data != null) {
+//                    cpmTopAdsList.postValue(Success(components.cpmData?.componentList as ArrayList<ComponentsItem>))
+//                    promotedText.postValue(Success(components.cpmData?.promotedText as String))
+//                    brandName.postValue(Success(components.cpmData?.brandName as String))
+//                    imageUrl.postValue(Success(components.cpmData?.imageUrl as String))
+//                }
             }
 
 
@@ -71,6 +77,8 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     fun getPromotedText(): LiveData<Result<String>> = promotedText
     fun getBrandName(): LiveData<Result<String>> = brandName
     fun getImageUrl(): LiveData<Result<String>> = imageUrl
+
+    fun getCpmData(): LiveData<CpmModel> = cpmData
 
 
 }
