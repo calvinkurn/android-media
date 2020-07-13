@@ -141,7 +141,6 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_BACK,
                 ""
         )
-
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -158,7 +157,6 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_LIHAT_DETAIL,
                 eventLabel
         )
-
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -169,7 +167,6 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_CHECK_TRANSACTION_LIST,
                 ""
         )
-
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -180,7 +177,6 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS,
                 ""
         )
-
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -197,7 +193,6 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_BELANJA_LAGI,
                 eventLabel
         )
-
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -219,8 +214,6 @@ class ThankYouPageAnalytics @Inject constructor(
                 EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
                 ""
         )
-
-
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
@@ -283,7 +276,7 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
                 afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
-                afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCT_TYPE
+                afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCTTYPE
 
                 val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
                 if (productArray.length() > 0) {
@@ -401,7 +394,6 @@ object ParentTrackingKey {
     const val AF_SHIPPING_PRICE = "af_shipping_price"
     const val AF_PURCHASE_SITE = "af_purchase_site"
     const val AF_VALUE_PRODUCTTYPE = "product"
-    const val AF_VALUE_PRODUCT_TYPE = "productType"
     const val VALUE_IDR = "IDR"
     const val AF_KEY_CATEGORY_NAME = "category"
     const val AF_KEY_CRITEO = "criteo_track_transaction"
