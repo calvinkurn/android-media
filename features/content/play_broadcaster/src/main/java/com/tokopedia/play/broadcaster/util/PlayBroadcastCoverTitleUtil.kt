@@ -28,7 +28,3 @@ class PlayCoverImageUtilImpl(context: Context) : PlayCoverImageUtil {
         private const val TEMP_COVER_NAME = "temp_cover.png"
     }
 }
-
-object PlayBroadcastCoverTitleUtil {
-    const val MAX_LENGTH_LIVE_TITLE = 38
-}
