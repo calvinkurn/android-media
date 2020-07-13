@@ -40,6 +40,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
@@ -47,6 +48,7 @@ import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
+import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.compoundview.ToolbarRemoveView
@@ -61,6 +63,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.CartNotifyListener
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
@@ -101,7 +104,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -360,11 +363,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onStart() {
         super.onStart()
-        if (refreshHandler?.isRefreshing == false) {
+        // Check if currently not refreshing and not ATC external flow
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow()) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
         }
+    }
+
+    fun onBackPressed() {
+        sendAnalyticsOnClickBackArrow()
+        if (isAtcExternalFlow()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+        activity?.finish()
     }
 
     private fun updateCartAfterDetached() {
@@ -581,8 +595,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val valueY = llPromoCheckout.y + dy
         TRANSLATION_LENGTH += dy
         if (dy != 0) {
-            if (TRANSLATION_LENGTH - dy == 0f) {
-                // Initial position of View
+            if (initialPromoButtonPosition == 0f && TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View if previous initialization attempt failed
                 initialPromoButtonPosition = llPromoCheckout.y
             }
 
@@ -781,19 +795,42 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
-            if (savedInstanceState == null) {
-                refreshHandler?.startRefresh()
-            } else {
-                if (cartListData != null) {
-                    dPresenter.setCartListData(cartListData!!)
-                    renderLoadGetCartDataFinish()
-                    renderInitialGetCartListDataSuccess(cartListData)
-                    stopCartPerformanceTrace()
+
+            val productId = getAtcProductId()
+            if (isAtcExternalFlow()) {
+                if (productId == INVALID_PRODUCT_ID) {
+                    showToastMessageRed(MessageErrorException(AtcConstant.ATC_ERROR_GLOBAL))
+                    refreshCart()
                 } else {
-                    refreshHandler?.startRefresh()
+                    addToCartExternal(productId)
                 }
+            } else {
+                loadCartData(savedInstanceState)
             }
         }
+    }
+
+    private fun addToCartExternal(productId: Long) {
+        dPresenter.processAddToCartExternal(productId)
+    }
+
+    private fun loadCartData(savedInstanceState: Bundle?): Unit? {
+        return if (savedInstanceState == null) {
+            refreshCart()
+        } else {
+            if (cartListData != null) {
+                dPresenter.setCartListData(cartListData!!)
+                renderLoadGetCartDataFinish()
+                renderInitialGetCartListDataSuccess(cartListData)
+                stopCartPerformanceTrace()
+            } else {
+                refreshCart()
+            }
+        }
+    }
+
+    override fun refreshCart() {
+        refreshHandler?.startRefresh()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1157,12 +1194,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
+    override fun onRecommendationProductClicked(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val clickUrl = recommendationItem.clickUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
-        for ((_, recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
-            if (recommendationItem.productId.toString().equals(productId, ignoreCase = true)) {
-                recommendationItemClick = recommendationItem
+        for ((_, item) in recommendationList as List<CartRecommendationItemHolderData>) {
+            if (item.productId.toString().equals(productId, ignoreCase = true)) {
+                recommendationItemClick = item
                 break
             }
             index++
@@ -1175,16 +1218,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                activity?.let { ImpresionTask(it::class.qualifiedName).execute(clickUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, clickUrl, productId, productName, imageUrl) }
             }
         }
         onProductClicked(productId)
     }
 
-    override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
+    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val url = recommendationItem.trackerImageUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
         when {
             topAds -> {
-                activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
             }
         }
     }
@@ -2068,6 +2117,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
+        llPromoCheckout.show()
+        llPromoCheckout.post {
+            if (initialPromoButtonPosition == 0f) {
+                initialPromoButtonPosition = llPromoCheckout.y
+            }
+        }
     }
 
     private fun showErrorContainer() {
@@ -2144,7 +2199,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnGoToShipmentFailed(message)
         showToastMessageRed(message)
 
-        refreshHandler?.startRefresh()
+        refreshCart()
     }
 
     override fun renderErrorToShipmentForm(throwable: Throwable) {
@@ -2554,6 +2609,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else "0"
     }
 
+    private fun getAtcProductId(): Long {
+        return arguments?.getLong(CartActivity.EXTRA_PRODUCT_ID) ?: 0L
+    }
+
+    private fun isAtcExternalFlow(): Boolean {
+        return getAtcProductId() != 0L
+    }
+
     override fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops,
                                             updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>) {
         dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList)
@@ -2912,8 +2975,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = true
     }
 
-    override fun sendATCTrackingURL(clickurl: String) {
-        var url = "$clickurl&click_source=ATC_direct_click";
-        activity?.let { ImpresionTask(it::class.qualifiedName, userSession).execute(url) }
+    override fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+
+        activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 }

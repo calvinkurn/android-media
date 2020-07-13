@@ -11,9 +11,6 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesBy
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
-import com.tokopedia.shop.note.data.repository.ShopNoteRepositoryImpl
-import com.tokopedia.shop.note.data.source.ShopNoteDataSource
-import com.tokopedia.shop.note.domain.repository.ShopNoteRepository
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,12 +26,6 @@ class ShopInfoModule {
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
         return context as NetworkRouter?
-    }
-
-    @ShopInfoScope
-    @Provides
-    fun provideShopNoteRepository(shopNoteDataSource: ShopNoteDataSource?): ShopNoteRepository {
-        return ShopNoteRepositoryImpl(shopNoteDataSource)
     }
 
     @ShopInfoScope

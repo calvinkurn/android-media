@@ -83,7 +83,7 @@ internal abstract class SortFilterBottomSheetViewModelTestFixtures {
         it[SearchApiConst.Q] = "samsung"
         it[SearchApiConst.OFFICIAL] = true.toString() // Filter Official Store
         it[SearchApiConst.OB] = 23.toString() // Sorted by Best Match
-        it[SearchApiConst.FCITY] = "174,175,176,177,178,179,165" // Filter by DKI Jakarta and Bandung
+        it[SearchApiConst.FCITY] = "174,175,176,177,178,179#165" // Filter by DKI Jakarta and Bandung
     }
 
     protected fun `Given SortFilterBottomSheet view is already created`(

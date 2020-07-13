@@ -18,3 +18,16 @@ internal fun RecyclerView.addItemDecorationIfNotExists(itemDecoration: RecyclerV
     val hasNoItemDecoration = itemDecorationCount == 0
     if (hasNoItemDecoration) addItemDecoration(itemDecoration)
 }
+
+internal fun String?.decodeQueryParameter(): String {
+    this ?: return ""
+
+    val queryParametersSplitIndex = this.indexOf("?")
+    if (queryParametersSplitIndex < 0) return this
+
+    val path = this.substring(0, queryParametersSplitIndex)
+    val queryParameters = this.substring(queryParametersSplitIndex + 1, length)
+    val queryParameterEncoded = UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
+
+    return "$path?$queryParameterEncoded"
+}
