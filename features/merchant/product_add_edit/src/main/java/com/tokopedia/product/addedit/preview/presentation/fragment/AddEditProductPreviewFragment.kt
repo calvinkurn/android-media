@@ -360,13 +360,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 // when we perform open draft, previous state before we save the product to draft will be the same
                 context?.let {
                     val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
-                    viewModel.productInputModel.value?.run {
-                        saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
-                    }
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                        viewModel.productInputModel.value?.run {
+                            saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
+                        }
                         AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
                     } else {
                         productStatusSwitch?.isChecked?.let { status -> viewModel.updateProductStatus(status) }
+                        viewModel.productInputModel.value?.run {
+                            saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
+                        }
                         AddEditProductAddService.startService(it, saveInstanceCacheManager.id ?: "")
                     }
                     activity?.setResult(RESULT_OK)
