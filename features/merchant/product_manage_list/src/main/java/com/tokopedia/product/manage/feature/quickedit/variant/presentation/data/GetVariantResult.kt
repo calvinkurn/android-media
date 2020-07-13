@@ -9,4 +9,9 @@ data class GetVariantResult(
     val variants: List<ProductVariant>,
     val selections: List<Selection>,
     val sizeCharts: List<Picture>
-)
+) {
+
+    fun isAllStockEmpty(): Boolean {
+        return variants.all { it.isEmpty() }
+    }
+}

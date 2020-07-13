@@ -11,4 +11,8 @@ class SellerHomeRemoteConfig @Inject constructor(
     fun isImprovementDisabled(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.SELLER_HOME_IMPROVEMENT_DISABLED, false)
     }
+
+    fun isGlobalSearchEnabled(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_SEARCH_SELLER, false)
+    }
 }

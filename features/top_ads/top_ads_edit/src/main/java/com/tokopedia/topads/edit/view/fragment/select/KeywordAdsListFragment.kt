@@ -85,7 +85,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onKeywordSelected(pos: Int) {
         showSelectMessage()
-        if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
+        if (pos != -1 && pos < keywordListAdapter.items.size && keywordListAdapter.items[pos] is KeywordItemViewModel) {
             if ((keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch != "Tidak diketahui")
                 keywordListAdapter.setSelectedKeywords(getFavouredData())
         }

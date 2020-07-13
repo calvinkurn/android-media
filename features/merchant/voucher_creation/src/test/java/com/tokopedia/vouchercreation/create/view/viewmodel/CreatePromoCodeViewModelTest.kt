@@ -57,6 +57,8 @@ class CreatePromoCodeViewModelTest {
 
         mViewModel.validatePromoCode(anyString())
 
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             promoCodeValidationUseCase.executeOnBackground()
         }

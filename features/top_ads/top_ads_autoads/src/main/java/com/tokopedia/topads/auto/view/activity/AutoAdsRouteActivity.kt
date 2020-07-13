@@ -17,9 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
-import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
-import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -66,20 +64,6 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
             Toaster.make(findViewById(android.R.id.content), ErrorHandler.getErrorMessage(it, t),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.close))
             finish()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == DailyBudgetFragment.REQUEST_CODE_AD_OPTION) {
-            if (data != null) {
-                when (data.getIntExtra(DailyBudgetFragment.SELECTED_OPTION, -1)) {
-                    TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
-                    TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
-                    TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
-                }
-                finish()
-            }
         }
     }
 
