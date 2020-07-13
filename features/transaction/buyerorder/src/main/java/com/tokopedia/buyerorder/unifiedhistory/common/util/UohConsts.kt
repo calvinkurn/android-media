@@ -9,6 +9,7 @@ object UohConsts {
     const val ALL_TRANSACTIONS = "Semua Transaksi"
     const val ALL_CATEGORIES = "Semua Kategori"
     const val CHOOSE_DATE = "Pilih Tanggal"
+    const val OTHERS = "Lainnya"
     const val CHOOSE_FILTERS = "Pilih Status"
     const val CHOOSE_CATEGORIES = "Pilih Kategori"
     const val TYPE_FILTER_DATE = 0

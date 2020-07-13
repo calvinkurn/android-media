@@ -25,6 +25,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListParam
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
+import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohListItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
@@ -45,6 +46,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.*
+import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
 import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
@@ -60,7 +63,8 @@ import kotlin.collections.HashMap
  * Created by fwidjaja on 29/06/20.
  */
 class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
-        UohBottomSheetOptionAdapter.ActionListener {
+        UohBottomSheetOptionAdapter.ActionListener, UohListItemAdapter.ActionListener,
+        UohBottomSheetKebabMenuAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -70,7 +74,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.Data.UohOrders = UohListOrder.Data.UohOrders()
     private lateinit var uohBottomSheetOptionAdapter: UohBottomSheetOptionAdapter
+    private lateinit var uohBottomSheetKebabMenuAdapter: UohBottomSheetKebabMenuAdapter
     private var bottomSheetOption: BottomSheetUnify? = null
+    private var bottomSheetKebabMenu: BottomSheetUnify? = null
     private var currFilterKey: String = ""
     private var currFilterLabel: String = ""
     private var currFilterType: Int = -1
@@ -137,6 +143,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
         uohListItemAdapter = UohListItemAdapter()
+        uohListItemAdapter.setActionListener(this)
+
+        uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
         search_bar?.searchBarTextField?.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
@@ -460,6 +469,20 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetOption?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
+    private fun showBottomSheetKebabMenu(title: String) {
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_kebab_menu_uoh, null)
+        viewBottomSheet.rv_kebab.adapter = uohBottomSheetKebabMenuAdapter
+        viewBottomSheet.rv_kebab.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+
+        bottomSheetKebabMenu = BottomSheetUnify().apply {
+            setChild(viewBottomSheet)
+            setTitle(title)
+            setCloseClickListener { dismiss() }
+        }
+
+        fragmentManager?.let { bottomSheetKebabMenu?.show(it, getString(R.string.show_bottomsheet)) }
+    }
+
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
         currFilterKey = option
         currFilterLabel = label
@@ -589,5 +612,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         view?.let { v ->
             toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "")
         }
+    }
+
+    override fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>) {
+        showBottomSheetKebabMenu(UohConsts.OTHERS)
+        uohBottomSheetKebabMenuAdapter.addList(listDotMenu)
+    }
+
+    override fun onKebabItemClick(appUrl: String) {
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, appUrl))
     }
 }

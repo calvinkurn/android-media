@@ -10,6 +10,7 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
+import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,6 +31,7 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
 
     var uohItemList = mutableListOf<UohListOrder.Data.UohOrders.Order>()
     private var isLoading = false
+    private var actionListener: ActionListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.uoh_list_item, parent, false))
@@ -129,6 +131,13 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
                     }
                 }
 
+                if (uohItemList[position].metadata.dotMenus.isNotEmpty()) {
+                    holder.itemView.iv_kebab_menu?.setOnClickListener {
+                        println("++ keklik sih.. ")
+                        actionListener?.onKebabMenuClicked(uohItemList[position].metadata.dotMenus)
+                    }
+                }
+
                 holder.itemView.tv_uoh_total_belanja?.text = uohItemList[position].metadata.totalPrice.label
                 holder.itemView.tv_uoh_total_belanja_value?.text = uohItemList[position].metadata.totalPrice.value
                 if (uohItemList[position].metadata.buttons.isNotEmpty()) {
@@ -158,5 +167,13 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
         isLoading = false
         uohItemList.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun setActionListener(fragment: UohListFragment) {
+        this.actionListener = fragment
+    }
+
+    interface ActionListener {
+        fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>)
     }
 }

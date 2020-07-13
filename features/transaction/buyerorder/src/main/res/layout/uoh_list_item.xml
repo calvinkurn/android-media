@@ -142,7 +142,7 @@
             android:textColor="@color/gray_product_desc"/>
 
         <ImageView
-            android:id="@+id/iv_menu_card"
+            android:id="@+id/iv_kebab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -154,9 +154,9 @@
             android:id="@+id/label_uoh_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/iv_menu_card"
-            app:layout_constraintTop_toTopOf="@id/iv_menu_card"
-            app:layout_constraintBottom_toBottomOf="@id/iv_menu_card"
+            app:layout_constraintEnd_toStartOf="@id/iv_kebab_menu"
+            app:layout_constraintTop_toTopOf="@id/iv_kebab_menu"
+            app:layout_constraintBottom_toBottomOf="@id/iv_kebab_menu"
             app:labelType="general_dark_orange"
             tools:text="Butuh Revisi"
             android:textStyle="bold"
