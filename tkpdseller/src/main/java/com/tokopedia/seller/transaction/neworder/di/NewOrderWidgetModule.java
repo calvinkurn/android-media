@@ -28,6 +28,8 @@ import retrofit2.Retrofit;
 @Module
 public class NewOrderWidgetModule {
 
+    private static final String DRAWER_CACHE = "DRAWER_CACHE";
+
     @NewOrderWidgetScope
     @Provides
     GetNewOrderPresenter providePresenterNewOrder(GetNewOrderWidgetUseCase getNewOrderUseCase){
@@ -50,7 +52,7 @@ public class NewOrderWidgetModule {
     @NewOrderWidgetScope
     @Provides
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, "DRAWER_CACHE");
+        return new LocalCacheHandler(context, DRAWER_CACHE);
     }
 
     @NewOrderWidgetScope

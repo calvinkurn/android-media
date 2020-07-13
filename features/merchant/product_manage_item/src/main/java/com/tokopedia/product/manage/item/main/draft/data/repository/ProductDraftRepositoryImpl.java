@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.item.main.draft.data.repository;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.draft.data.mapper.ProductDraftListMapper;
@@ -31,7 +32,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     private String shopId = "";
 
     private String getShopId() {
-        if(shopId != null && !shopId.isEmpty()) {
+        if(!TextUtils.isEmpty(shopId)) {
             return shopId;
         } else {
             UserSessionInterface userSession = new UserSession(context);
