@@ -60,8 +60,6 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
-import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
-import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -104,7 +102,6 @@ import timber.log.Timber;
         CreatePostModule.class,
         ExploreApplinkModule.class,
         HowtopayApplinkModule.class,
-        RecentViewApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -135,7 +132,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new CreatePostModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new RecentViewApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),

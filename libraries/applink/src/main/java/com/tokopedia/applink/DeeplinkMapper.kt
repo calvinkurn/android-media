@@ -336,7 +336,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.INSTANT_LOAN, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN),
             DLP.exact(ApplinkConst.INSTANT_LOAN_TAB, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB),
             DLP.exact(ApplinkConst.PINJAMAN_ONLINE_TAB, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB),
-            DLP.exact(ApplinkConst.RECENT_VIEW, ApplinkConsInternalHome.HOME_WISHLIST),
+            DLP.exact(ApplinkConst.RECENT_VIEW, ApplinkConsInternalHome.HOME_RECENT_VIEW),
             DLP.exact(ApplinkConst.WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
             DLP.exact(ApplinkConst.NEW_WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
             DLP.exact(ApplinkConst.CREATE_SHOP, ApplinkConstInternalGlobal.LANDING_SHOP_CREATION),
