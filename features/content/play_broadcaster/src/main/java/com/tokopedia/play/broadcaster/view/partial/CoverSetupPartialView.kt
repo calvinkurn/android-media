@@ -195,7 +195,11 @@ class CoverSetupPartialView(
 
     private fun updateTextField(text: String) {
         etCoverTitle.setTextFieldColor(
-                if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                when {
+                    !etCoverTitle.hasFocus() -> com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                    text.isEmpty() -> com.tokopedia.unifyprinciples.R.color.Red_R500
+                    else -> com.tokopedia.unifyprinciples.R.color.Green_G400
+                }
         )
     }
 
