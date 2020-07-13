@@ -1,36 +1,57 @@
 package com.tokopedia.topchat.chatlist.activity
 
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class ChatListActivityTest {
 
-    @Rule
-    @JvmField
+    @get:Rule
     var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java, true, true)
+
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var userSession: UserSessionStub
     private lateinit var activity: ChatListActivityStub
 
+//    private var chatListUseCase: GraphqlUseCase<ChatListPojo> = mockk(relaxed = true)
+
+//    object Dummy {
+//        val exChatListPojo = ChatListPojo()
+//    }
+
     @Before
     fun setup() {
+//        MockKAnnotations.init(this)
         userSession = mActivityTestRule.activity.userSessionInterface
         activity = mActivityTestRule.activity
     }
 
     @Test
     fun test_user_session() {
+        // Given
         userSession.hasShopStub = false
+//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+//            onSuccess.invoke(ChatListPojo())
+//        }
+
+        // When
+        var chatListUseCase: Any = mockk(relaxed = true)
         activity.setupTestFragment()
         Thread.sleep(5000)
     }
@@ -38,6 +59,7 @@ class ChatListActivityTest {
     @Test
     fun chatListActivityTest() {
         userSession.hasShopStub = true
+//        var chatListUseCase: GraphqlUseCase<ChatListPojo> = mockk(relaxed = true)
         activity.setupTestFragment()
         Thread.sleep(5000)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()

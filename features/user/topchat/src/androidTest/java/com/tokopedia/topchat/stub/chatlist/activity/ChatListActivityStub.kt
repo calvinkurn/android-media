@@ -2,13 +2,17 @@ package com.tokopedia.topchat.stub.chatlist.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
+import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.fragment.ChatTabListFragmentStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 
 class ChatListActivityStub : ChatListActivity() {
 
     lateinit var userSessionInterface: UserSessionStub
+    lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +23,10 @@ class ChatListActivityStub : ChatListActivity() {
         // Do not inflate fragment immediately
     }
 
-    fun setupTestFragment() {
+    fun setupTestFragment(
+            chatListUseCase: GraphqlUseCase<ChatListPojo> = GraphqlUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+    ) {
+        this.chatListUseCase = chatListUseCase
         val newFragment = newFragment ?: return
         supportFragmentManager.beginTransaction()
                 .replace(parentViewResourceID, newFragment, tagFragment)
@@ -27,6 +34,9 @@ class ChatListActivityStub : ChatListActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return ChatTabListFragmentStub.create(userSessionInterface)
+        return ChatTabListFragmentStub.create(
+                userSessionInterface,
+                chatListUseCase
+        )
     }
 }
