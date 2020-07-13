@@ -46,7 +46,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
     }
 
-    val adapter = ShippingDurationItemAdapter(this)
+    private val adapter = ShippingDurationItemAdapter(this)
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var tickerInfo: Ticker? = null
@@ -92,7 +92,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             }
         }
 
-        viewModel.shippingDuration.observe(this, Observer {
+        viewModel.shippingDuration.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -110,12 +110,10 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                     renderData(it.data.services)
                 }
 
-                is OccState.Fail -> {
-                    if (!it.isConsumed) {
-                        swipeRefreshLayout?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
+                is OccState.Failed -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
                     }
                 }
                 else -> swipeRefreshLayout?.isRefreshing = true
@@ -207,7 +205,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         }
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                 view?.let {
@@ -215,7 +213,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
@@ -231,12 +229,11 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
+                    Toaster.make(it, throwable?.message
                             ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                 }
             }
         }
-        viewModel.consumeGetShippingDurationFail()
     }
 
     private fun showGlobalError(type: Int) {

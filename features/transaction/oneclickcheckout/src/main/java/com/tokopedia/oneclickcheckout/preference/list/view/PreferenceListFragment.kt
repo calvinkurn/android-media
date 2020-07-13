@@ -105,7 +105,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViewModel() {
-        viewModel.preferenceList.observe(this, Observer {
+        viewModel.preferenceList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -148,7 +148,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-        viewModel.setDefaultPreference.observe(this, Observer {
+        viewModel.setDefaultPreference.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()

@@ -246,7 +246,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.orderPreference.observe(this, Observer {
+        viewModel.orderPreference.observe(viewLifecycleOwner, Observer {
             if (it is OccState.FirstLoad) {
                 swipeRefreshLayout?.isRefreshing = false
                 globalError?.gone()
@@ -298,24 +298,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             } else if (it is OccState.Loading) {
                 swipeRefreshLayout?.isRefreshing = true
-            } else if (it is OccState.Fail) {
+            } else if (it is OccState.Failed) {
                 swipeRefreshLayout?.isRefreshing = false
-                if (it.throwable != null) {
-                    handleError(it.throwable)
+                it.getFailure()?.let { failure ->
+                    handleError(failure.throwable)
                 }
             }
         })
 
-        viewModel.orderTotal.observe(this, Observer {
+        viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
             setupPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
 
-        viewModel.orderPromo.observe(this, Observer {
+        viewModel.orderPromo.observe(viewLifecycleOwner, Observer {
             setupButtonPromo(it)
         })
 
-        viewModel.globalEvent.observe(this, Observer {
+        viewModel.globalEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
@@ -924,7 +924,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.updateProduct(product, shouldReloadRates)
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                 view?.let {
@@ -932,7 +932,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage?.toIntOrNull() ?: 0) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
@@ -947,7 +947,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
+                    Toaster.make(it, throwable?.message
                             ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }

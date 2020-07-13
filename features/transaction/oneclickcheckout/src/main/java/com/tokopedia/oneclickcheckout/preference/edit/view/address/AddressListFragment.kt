@@ -50,6 +50,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
@@ -110,7 +111,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             }
         }
 
-        viewModel.addressList.observe(this, Observer {
+        viewModel.addressList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -119,12 +120,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     renderData(it.data.listAddress)
                 }
 
-                is OccState.Fail -> {
-                    if (!it.isConsumed) {
-                        swipeRefreshLayout?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
+                is OccState.Failed -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
                     }
                 }
 
@@ -305,7 +304,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun onSearchViewTouchListener(): View.OnTouchListener {
-        return View.OnTouchListener { view, motionEvent ->
+        return View.OnTouchListener { _, _ ->
             searchAddress.searchTextView.isCursorVisible = true
             openSoftKeyboard()
             false
@@ -342,7 +341,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun setShippingParam() {
         val parent = activity
-        if(parent is PreferenceEditParent) {
+        if (parent is PreferenceEditParent) {
             val shippingParam = parent.getShippingParam()
             if (shippingParam != null) {
                 shippingParam.destinationDistrictId = viewModel.destinationDistrict
@@ -355,7 +354,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         }
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                 view?.let {
@@ -363,11 +362,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
@@ -379,12 +377,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
+                    Toaster.make(it, throwable?.message
                             ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                 }
             }
         }
-        viewModel.consumeSearchAddressFail()
     }
 
     private fun showGlobalError(type: Int) {

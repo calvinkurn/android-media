@@ -3,6 +3,10 @@ package com.tokopedia.oneclickcheckout.common.data.model
 import com.google.gson.annotations.SerializedName
 
 data class Payment(
+        @SerializedName("enable")
+        val enable: Int = 0,
+        @SerializedName("active")
+        val active: Int = 0,
         @SerializedName("gateway_code")
         val gatewayCode: String = "",
         @SerializedName("gateway_name")
