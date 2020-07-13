@@ -29,11 +29,19 @@ class ChatTabListFragmentStub : ChatTabListFragment() {
     }
 
     override fun createSellerTabFragment(): ChatListFragment {
-        return ChatListFragmentStub.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER, userSessionStub)
+        return ChatListFragmentStub.createFragment(
+                ChatListQueriesConstant.PARAM_TAB_SELLER,
+                userSessionStub,
+                chatListUseCaseStub
+        )
     }
 
     override fun createBuyerTabFragment(): ChatListFragment {
-        return ChatListFragmentStub.createFragment(ChatListQueriesConstant.PARAM_TAB_USER, userSessionStub)
+        return ChatListFragmentStub.createFragment(
+                ChatListQueriesConstant.PARAM_TAB_USER,
+                userSessionStub,
+                chatListUseCaseStub
+        )
     }
 
     companion object {

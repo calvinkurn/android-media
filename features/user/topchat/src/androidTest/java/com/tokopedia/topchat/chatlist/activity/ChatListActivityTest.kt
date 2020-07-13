@@ -10,7 +10,9 @@ import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.invoke
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -33,9 +35,9 @@ class ChatListActivityTest {
     @RelaxedMockK
     private lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
 
-//    object Dummy {
-//        val exChatListPojo = ChatListPojo()
-//    }
+    object Dummy {
+        val exChatListPojo = ChatListPojo()
+    }
 
     @Before
     fun setup() {
@@ -48,10 +50,10 @@ class ChatListActivityTest {
     fun test_user_session() {
         // Given
         userSession.hasShopStub = false
-//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-//            onSuccess.invoke(ChatListPojo())
-//        }
+        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+            onSuccess.invoke(Dummy.exChatListPojo)
+        }
 
         // When
         activity.setupTestFragment(chatListUseCase)
@@ -61,7 +63,7 @@ class ChatListActivityTest {
     @Test
     fun chatListActivityTest() {
         userSession.hasShopStub = true
-//        var chatListUseCase: GraphqlUseCase<ChatListPojo> = mockk(relaxed = true)
+
         activity.setupTestFragment(chatListUseCase)
         Thread.sleep(5000)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()

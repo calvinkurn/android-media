@@ -39,4 +39,8 @@ class ChatListActivityStub : ChatListActivity() {
                 chatListUseCase
         )
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+    }
 }
