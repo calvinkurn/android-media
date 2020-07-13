@@ -126,7 +126,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
-        mPresenter.getRewardIntroData()
         tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
         initObserver()
     }
