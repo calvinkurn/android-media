@@ -18,7 +18,7 @@
         android:id="@+id/tv_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/play_camera_cancel_label"
