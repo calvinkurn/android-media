@@ -39,6 +39,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.ImageUtil
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import kotlinx.android.synthetic.main.tp_toolbar.view.*
@@ -182,7 +183,7 @@ class TokoPointToolbar : Toolbar {
                 for (item in dynamicActionList) {
                     val viewCntainer = View.inflate(context, R.layout.tp_item_dynamic_action, null)
                     val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
-                    param.rightMargin = 18
+                    param.rightMargin = convertDpToPixel(10,viewCntainer.context)
                     ImageUtil.loadImage(viewCntainer.iv_dynamic, item?.iconImageURLScrolled)
                     if (item?.counter?.isShowCounter != null && item.counter.counterStr != null
                             && item.counter.counterStr.isNotEmpty() && item.counter.counterStr != "0") {

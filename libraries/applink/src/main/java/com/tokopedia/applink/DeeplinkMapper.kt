@@ -202,10 +202,10 @@ object DeeplinkMapper {
         //Fallback strategy for new Rewards Page
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
         firebaseRemoteConfig.let {
-            mShowTokopointNative = it.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false)
+            mShowTokopointNative = it.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, true)
         }
         if (mShowTokopointNative) {
-            if (uri.pathSegments.joinToString("/") == TOKOPOINTS) {
+            if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
                 return ApplinkConstInternalPromo.TOKOPOINTS_HOME
             }
         } else {

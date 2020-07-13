@@ -98,7 +98,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/tp_margin_small"
                     android:layout_marginLeft="@dimen/tp_margin_small"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
                     android:text="@string/tp_label_valid_for"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/tp_text_size_xxsmall"
@@ -106,7 +107,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/text_time_value"
                     app:layout_constraintStart_toEndOf="@+id/img_time"
                     app:layout_constraintTop_toBottomOf="@+id/img_banner"
-                    app:layout_constraintVertical_chainStyle="spread_inside" />
+                    app:layout_constraintVertical_chainStyle="packed" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_time"
@@ -138,7 +139,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/tp_margin_small"
                     android:layout_marginLeft="@dimen/tp_margin_small"
-                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/tp_text_size_small"
                     android:textStyle="bold"
@@ -168,19 +170,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/tp_text_size_xxsmall"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_min_txn_value"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_default="wrap"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_rp"
                     app:layout_constraintTop_toBottomOf="@+id/img_banner"
-                    tool:text="tanpa minimum transaksi" />
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tool:text="tanpa minimum t" />
 
                 <TextView
                     android:id="@+id/tv_min_txn_value"
@@ -189,9 +195,13 @@
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/tp_text_size_small"
                     android:textStyle="bold"
-                    android:visibility="gone"
+
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_default="wrap"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_min_txn_label"
                     app:layout_constraintTop_toBottomOf="@+id/tv_min_txn_label"

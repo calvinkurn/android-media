@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +31,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.convertDpToPixel;
 
 public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogListCarouselAdapter.ViewHolder> {
 
@@ -79,6 +82,12 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        MarginLayoutParams params =(MarginLayoutParams) holder.itemView.getLayoutParams();
+        if (position == 0) {
+            params.setMargins(convertDpToPixel(16, holder.itemView.getContext()), 0, 0, 0);
+        } else {
+            params.setMargins(0, 0, 0, 0);
+        }
         CatalogsValueEntity item = mItems.get(position);
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());

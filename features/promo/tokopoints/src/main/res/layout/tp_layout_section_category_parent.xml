@@ -57,7 +57,6 @@
         android:id="@+id/rv_dynamic_link"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/tp_margin_regular"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginRight="@dimen/tp_margin_regular"
         app:layout_constraintEnd_toEndOf="parent"
