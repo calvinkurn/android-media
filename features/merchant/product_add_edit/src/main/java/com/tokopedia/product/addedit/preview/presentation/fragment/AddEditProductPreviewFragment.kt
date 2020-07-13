@@ -366,6 +366,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                         AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
                     } else {
+                        productStatusSwitch?.isChecked?.let { status -> viewModel.updateProductStatus(status) }
                         AddEditProductAddService.startService(it, saveInstanceCacheManager.id ?: "")
                     }
                     activity?.setResult(RESULT_OK)
@@ -481,7 +482,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                     }
                     viewModel.productInputModel.value?.didBackPress = true
-                    productStatusSwitch?.isChecked?.let { viewModel.updateProductStatus(it) }
                     when (dataBackPressed) {
                         DETAIL_DATA -> {
                             viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
