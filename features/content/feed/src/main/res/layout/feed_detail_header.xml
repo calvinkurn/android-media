@@ -26,7 +26,7 @@
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
-    <com.tokopedia.gm.resource.GMImageView
+    <com.tokopedia.gm.common.widget.GMImageView
         android:id="@+id/goldMerchant"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"

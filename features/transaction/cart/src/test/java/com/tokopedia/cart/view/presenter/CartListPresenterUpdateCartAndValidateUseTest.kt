@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
@@ -48,6 +49,7 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
+    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
@@ -59,15 +61,14 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase,
-                    updateCartUseCase, compositeSubscription,
-                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                    validateUsePromoRevampUseCase, TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    compositeSubscription, addWishListUseCase, removeWishListUseCase,
+                    updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
+                    getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
+                    addToCartUseCase, addToCartExternalUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                    updateCartCounterUseCase, updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase,
+                    TestSchedulers
             )
         }
 
@@ -122,6 +123,23 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
             Then("should render promo button state active default") {
                 verify {
                     view.renderPromoCheckoutButtonActiveDefault(emptyList())
+                }
+            }
+        }
+
+        Scenario("failed update cart because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update and validate use data") {
+                cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
                 }
             }
         }

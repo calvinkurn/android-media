@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
@@ -55,6 +54,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
+import static com.tokopedia.gm.common.constant.GMCommonConstantKt.POWER_MERCHANT_URL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -394,7 +394,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onGMInfoClicked() {
-        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, GMConstant.getGMEduUrl(getContext())));
+        openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, POWER_MERCHANT_URL));
     }
 
     @Override

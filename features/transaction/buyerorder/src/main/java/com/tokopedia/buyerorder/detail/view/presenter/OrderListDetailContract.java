@@ -2,6 +2,9 @@ package com.tokopedia.buyerorder.detail.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -15,6 +18,7 @@ import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.OrderToken;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
@@ -65,7 +69,7 @@ public interface OrderListDetailContract {
 
         void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility);
 
-        void setItems(List<Items> items, boolean isTradeIn);
+        void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails);
 
         Context getAppContext();
 
@@ -111,6 +115,8 @@ public interface OrderListDetailContract {
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+
+        void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
 
         List<ActionButton> getActionList();
 
