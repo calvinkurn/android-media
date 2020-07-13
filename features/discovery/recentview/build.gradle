@@ -42,8 +42,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.debugToolsDependencies.chuck
 }
