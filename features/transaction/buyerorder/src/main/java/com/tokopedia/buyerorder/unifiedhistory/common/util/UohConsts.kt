@@ -6,6 +6,7 @@ package com.tokopedia.buyerorder.unifiedhistory.common.util
 object UohConsts {
     const val ALL_DATE = "Semua Tanggal"
     const val ALL_STATUS = "Semua Status"
+    const val ALL_TRANSACTIONS = "Semua Transaksi"
     const val ALL_CATEGORIES = "Semua Kategori"
     const val CHOOSE_DATE = "Pilih Tanggal"
     const val CHOOSE_FILTERS = "Pilih Status"
@@ -24,4 +25,12 @@ object UohConsts {
     const val TICKER_URL = "#url"
     const val TICKER_LABEL = "#label"
     const val DATE_LIMIT = "#date_limit"
+
+    const val BUTTON_VARIANT_FILLED = "filled"
+    const val BUTTON_VARIANT_GHOST = "ghost"
+    const val BUTTON_VARIANT_TEXT_ONLY = "text_only"
+
+    const val BUTTON_TYPE_MAIN = "main"
+    const val BUTTON_TYPE_TRANSACTION = "transaction"
+    const val BUTTON_TYPE_ALTERNATE = "alternate"
 }

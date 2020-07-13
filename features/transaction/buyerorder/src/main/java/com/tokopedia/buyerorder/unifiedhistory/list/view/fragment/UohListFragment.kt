@@ -85,6 +85,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var onLoadMore = false
     private var currPage = 1
     private var textChangedJob: Job? = null
+    private var isReset = false
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -116,6 +117,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onRefresh(view: View?) {
         onLoadMore = false
         currPage = 1
+        uohListItemAdapter.showLoader()
         loadOrderHistoryList()
     }
 
@@ -165,6 +167,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     onLoadMore = true
                     if (orderList.next.isNotEmpty()) {
                         currentPage += 1
+                        uohListItemAdapter.showLoader()
                         loadOrderHistoryList()
                     }
                 }
@@ -179,6 +182,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingOrderHistory() {
+        uohListItemAdapter.showLoader()
         uohListViewModel.orderHistoryListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
@@ -201,25 +205,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         ticker_info?.gone()
                     }
-
-                    /*else {
-                        if (isFilterApplied) {
-                            if (!paramOrder.startDate.equals(defaultStartDate, true) || !paramOrder.endDate.equals(defaultEndDate, true)) {
-                                val inputFormat = SimpleDateFormat("dd/MM/yyyy")
-                                val outputFormat = SimpleDateFormat("dd MMM yyyy")
-                                val startDate = inputFormat.parse(paramOrder.startDate)
-                                val startDateStr = outputFormat.format(startDate)
-                                val endDate = inputFormat.parse(paramOrder.endDate)
-                                val endDateStr = outputFormat.format(endDate)
-                                renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
-                            } else {
-                                renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
-                            }
-                        } else {
-                            renderEmptyOrderList()
-                            showCoachMarkProductsEmpty()
-                        }
-                    }*/
                 }
                 is Fail -> {
                     // renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
@@ -232,7 +217,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        filter1 = SortFilterItem(UohConsts.ALL_DATE, ChipsUnify.TYPE_SELECTED, ChipsUnify.SIZE_MEDIUM)
+        val type = if (isReset) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
+        }
+
+        filter1 = SortFilterItem(UohConsts.ALL_DATE, type, ChipsUnify.SIZE_MEDIUM)
         filter1?.let {
             it.listener = {
                 uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
@@ -246,6 +237,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
                 uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
                 uohBottomSheetOptionAdapter.selectedKey = currFilterKey
+                uohBottomSheetOptionAdapter.isReset = isReset
                 uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
             it.title = arrayFilterDate[2]
@@ -264,6 +256,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
                 uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
                 uohBottomSheetOptionAdapter.selectedKey = currFilterKey
+                uohBottomSheetOptionAdapter.isReset = isReset
                 uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
             chips.add(it)
@@ -281,6 +274,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 uohBottomSheetOptionAdapter.uohItemMapKeyList = mapKey
                 uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
                 uohBottomSheetOptionAdapter.selectedKey = currFilterKey
+                uohBottomSheetOptionAdapter.isReset = isReset
                 uohBottomSheetOptionAdapter.notifyDataSetChanged()
             }
             chips.add(it)
@@ -288,6 +282,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
+            isReset = true
             val inputFormat = SimpleDateFormat("yyyy-MM-dd")
             val outputFormat = SimpleDateFormat("d MMM yyyy")
             val limitDate = inputFormat.parse(orderList.dateLimit)

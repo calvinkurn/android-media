@@ -18,6 +18,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     var filterType = -1
     var selectedRadio = -1
     var selectedKey = ""
+    var isReset = false
 
     interface ActionListener {
         fun onOptionItemClick(option: String, label: String, filterType: Int)
@@ -41,10 +42,20 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
 
         holder.itemView.rb_option.setOnCheckedChangeListener(null)
 
-        if (filterType == UohConsts.TYPE_FILTER_DATE && position == 2 && selectedRadio == -1 && selectedKey.isEmpty()) {
+        if ((filterType == UohConsts.TYPE_FILTER_DATE && position == 2 && selectedRadio == -1 && selectedKey.isEmpty() && !isReset)) {
             holder.itemView.rb_option.isChecked = true
         } else if (arrayKeys[position].equals(selectedKey, true) && selectedRadio == -1) {
             holder.itemView.rb_option.isChecked = true
+        } else if (isReset) {
+            if (filterType == UohConsts.TYPE_FILTER_DATE) {
+                if (position == 0) {
+                    holder.itemView.rb_option.isChecked = true
+                }
+            } else if (filterType == UohConsts.TYPE_FILTER_STATUS) {
+                if (arrayValues[position] == UohConsts.ALL_TRANSACTIONS) {
+                    holder.itemView.rb_option.isChecked = true
+                }
+            }
         } else {
             holder.itemView.rb_option.isChecked = position == selectedRadio
         }
@@ -54,6 +65,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     }
 
     private fun selectItem(position: Int, arrayKeys: MutableList<String>, arrayValues: MutableList<String>, holder: UohBottomSheetOptionAdapter.ViewHolder) {
+        isReset = false
         selectedRadio = position
         listener.onOptionItemClick(arrayKeys[position], arrayValues[position], filterType)
 

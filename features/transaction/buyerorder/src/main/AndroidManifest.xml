@@ -72,7 +72,7 @@
 
         <activity
             android:name="com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity"
-            android:label="@string/title_som_list"
+            android:label="@string/title_uoh_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

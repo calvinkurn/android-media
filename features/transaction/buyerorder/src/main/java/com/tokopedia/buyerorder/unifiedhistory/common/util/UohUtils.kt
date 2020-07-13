@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.common.util
 
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
@@ -22,6 +23,34 @@ object UohUtils {
             }
             else -> {
                 Ticker.TYPE_ANNOUNCEMENT
+            }
+        }
+    }
+
+    fun getButtonType(typeBtn: String): Int {
+        return when (typeBtn) {
+            UohConsts.BUTTON_TYPE_ALTERNATE -> {
+                UnifyButton.Type.ALTERNATE
+            }
+            UohConsts.BUTTON_TYPE_MAIN -> {
+                UnifyButton.Type.MAIN
+            }
+            else -> {
+                UnifyButton.Type.TRANSACTION
+            }
+        }
+    }
+
+    fun getButtonVariant(variantBtn: String): Int {
+        return when (variantBtn) {
+            UohConsts.BUTTON_VARIANT_FILLED -> {
+                UnifyButton.Variant.FILLED
+            }
+            UohConsts.BUTTON_VARIANT_GHOST -> {
+                UnifyButton.Variant.GHOST
+            }
+            else -> {
+                UnifyButton.Variant.TEXT_ONLY
             }
         }
     }
