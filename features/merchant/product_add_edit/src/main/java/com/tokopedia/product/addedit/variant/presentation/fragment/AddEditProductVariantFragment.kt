@@ -20,10 +20,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -297,8 +294,6 @@ class AddEditProductVariantFragment :
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValuesLevel2)
             }
         }
-
-        viewModel.updateSizechartFieldVisibility(variantDetail, true)
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
@@ -377,6 +372,12 @@ class AddEditProductVariantFragment :
                 linkAddVariantValueLevel2.setTag(R.id.variant_detail, variantTypeDetail)
             }
         }
+
+        viewModel.updateSizechartFieldVisibility(
+                variantTypeAdapter?.getSelectedItems().orEmpty(),
+                variantValueAdapterLevel1?.itemCount.orZero(),
+                variantValueAdapterLevel2?.itemCount.orZero()
+        )
     }
 
     override fun onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues: List<UnitValue>, layoutPosition: Int, variantId: Int, variantTypeName: String) {
@@ -410,6 +411,12 @@ class AddEditProductVariantFragment :
             }
             variantPhotoAdapter?.setData(variantPhotoList)
         }
+
+        viewModel.updateSizechartFieldVisibility(
+                variantTypeAdapter?.getSelectedItems().orEmpty(),
+                variantValueAdapterLevel1?.itemCount.orZero() + 1,
+                variantValueAdapterLevel2?.itemCount.orZero() + 1
+        )
     }
 
     override fun onVariantUnitPicked(selectedVariantUnit: Unit, layoutPosition: Int) {
@@ -493,6 +500,12 @@ class AddEditProductVariantFragment :
             val variantPhoto = VariantPhoto(customVariantUnitValue.value, "")
             variantPhotoAdapter?.addData(variantPhoto)
         }
+
+        viewModel.updateSizechartFieldVisibility(
+                variantTypeAdapter?.getSelectedItems().orEmpty(),
+                variantValueAdapterLevel1?.itemCount.orZero() + 1,
+                variantValueAdapterLevel2?.itemCount.orZero() + 1
+        )
     }
 
     override fun onRemoveButtonClicked(position: Int, layoutPosition: Int, removedUnitValue: UnitValue) {
@@ -529,6 +542,12 @@ class AddEditProductVariantFragment :
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoAdapter?.removeData(position)
         }
+
+        viewModel.updateSizechartFieldVisibility(
+                variantTypeAdapter?.getSelectedItems().orEmpty(),
+                variantValueAdapterLevel1?.itemCount.orZero() - 1,
+                variantValueAdapterLevel2?.itemCount.orZero() - 1
+        )
     }
 
     override fun onItemClicked(position: Int) {
@@ -820,7 +839,7 @@ class AddEditProductVariantFragment :
         val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
                 ?: PictureVariantInputModel()
         viewModel.updateSizechart(sizechart)
-        viewModel.updateSizechartFieldVisibility()
+        //viewModel.updateSizechartFieldVisibility()
 
     }
 
