@@ -6,6 +6,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
@@ -13,7 +14,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.invoke
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,9 +35,11 @@ class ChatListActivityTest {
     @RelaxedMockK
     private lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
 
-    object Dummy {
-        val exChatListPojo = ChatListPojo()
-    }
+    private val exEmptyChatListPojo = ChatListPojo()
+    private val exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
+            "success_get_chat_list.json",
+            ChatListPojo::class.java
+    )
 
     @Before
     fun setup() {
@@ -47,12 +49,12 @@ class ChatListActivityTest {
     }
 
     @Test
-    fun test_user_session() {
+    fun empty_chat_list_buyer_only() {
         // Given
         userSession.hasShopStub = false
         every { chatListUseCase.execute(captureLambda(), any()) } answers {
             val onSuccess = lambda<(ChatListPojo) -> Unit>()
-            onSuccess.invoke(Dummy.exChatListPojo)
+            onSuccess.invoke(exEmptyChatListPojo)
         }
 
         // When
@@ -61,9 +63,15 @@ class ChatListActivityTest {
     }
 
     @Test
-    fun chatListActivityTest() {
-        userSession.hasShopStub = true
+    fun size_2_chat_list_buyer_only() {
+        // Given
+        userSession.hasShopStub = false
+        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+            onSuccess.invoke(exSize2ChatListPojo)
+        }
 
+        // When
         activity.setupTestFragment(chatListUseCase)
         Thread.sleep(5000)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()
