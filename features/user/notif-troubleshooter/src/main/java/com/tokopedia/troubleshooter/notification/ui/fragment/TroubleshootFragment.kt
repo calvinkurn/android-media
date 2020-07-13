@@ -30,7 +30,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
-import com.tokopedia.troubleshooter.notification.util.trimToken
+import com.tokopedia.troubleshooter.notification.util.prefixToken
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 
@@ -119,15 +119,33 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
-        val currentToken = fcmManager.currentToken()
+        val currentToken = fcmManager.currentToken().prefixToken().trim()
+        val newTrimToken = newToken.prefixToken().trim()
+
         val message = if (fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
-            getString(R.string.notif_token_update, currentToken.trimToken(), newToken.trimToken())
+            tokenUpdateMessage(currentToken, newTrimToken)
         } else {
-            getString(R.string.notif_token_current)
+            tokenCurrentMessage(currentToken, newTrimToken)
         }
 
         adapter.addMessage(PushNotification, message)
+    }
+
+    private fun tokenCurrentMessage(currentToken: String, newToken: String): String {
+        return if (currentToken != newToken) {
+            getString(R.string.notif_token_current_different, currentToken, newToken)
+        } else {
+            getString(R.string.notif_token_current, newToken)
+        }
+    }
+
+    private fun tokenUpdateMessage(currentToken: String, newToken: String): String {
+        return if (currentToken.isNotEmpty() && currentToken != newToken) {
+            getString(R.string.notif_token_update, currentToken, newToken)
+        } else {
+            getString(R.string.notif_token_update_no_prev, newToken)
+        }
     }
 
     private fun setNotificationSettingStatus(notificationEnable: Boolean) {

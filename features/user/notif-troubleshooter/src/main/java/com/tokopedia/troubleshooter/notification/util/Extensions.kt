@@ -11,7 +11,7 @@ fun Any?.isNotNull(): Boolean {
     return this != null
 }
 
-fun String.trimToken(): String {
+fun String.prefixToken(): String {
     return try {
         this.substring(this.length - 8)
     } catch (e: Exception) {
