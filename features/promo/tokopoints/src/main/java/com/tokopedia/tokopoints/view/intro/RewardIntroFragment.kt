@@ -41,7 +41,7 @@ class RewardIntroFragment : Fragment() {
             data.imageURL?.let {
                 iv_intro_reward.loadImage(data.imageURL)
             }
-            if (data.title != null && data.title.isNotEmpty()) {
+            if (!data.title.isNullOrEmpty()) {
                 tv_intro_title.text = data.title
             }
             if (data.subtitle != null && data.subtitle.isNotEmpty()) {
