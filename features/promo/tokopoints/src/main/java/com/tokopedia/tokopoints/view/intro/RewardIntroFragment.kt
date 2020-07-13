@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.tp_layout_reward_intro.*
 class RewardIntroFragment : Fragment() {
 
     companion object {
-        private const val INTRO_KEY = "intro"
+        const val INTRO_KEY = "intro"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment = RewardIntroFragment()
             fragment.arguments = extras
@@ -37,7 +37,6 @@ class RewardIntroFragment : Fragment() {
         val data = arguments?.get(INTRO_KEY) as? TokopediaRewardIntroPage
 
         if (data != null) {
-            container_main.displayedChild = 1
             data.imageURL?.let {
                 iv_intro_reward.loadImage(data.imageURL)
             }
@@ -54,7 +53,7 @@ class RewardIntroFragment : Fragment() {
             if (data.cTA?.size != 0) {
                 btn_learn.text = data.cTA?.get(0)?.text
                 btn_learn.setOnClickListener {
-                    RouteManager.route(context, data?.cTA?.get(0)?.appLink)
+                    RouteManager.route(context, data.cTA?.get(0)?.appLink)
                 }
                 if (data.cTA?.size == 2) {
                     btn_check.text = data.cTA[1]?.text
@@ -64,7 +63,7 @@ class RewardIntroFragment : Fragment() {
                 }
             }
         } else {
-            container_main.displayedChild = 2
+            container_main.displayedChild = 1
             server_error_view.showErrorUi(NetworkDetector.isConnectedToInternet(this.context))
         }
     }

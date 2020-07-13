@@ -48,6 +48,7 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
+import com.tokopedia.tokopoints.view.intro.RewardIntroFragment
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
@@ -288,7 +289,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private fun showOnBoardingTooltip(data: TokopediaRewardIntroPage?) {
         if (data != null && data.resultStatus?.code == "200") {
             val bundle = Bundle()
-            bundle.putParcelable("intro", data)
+            bundle.putParcelable(RewardIntroFragment.INTRO_KEY, data)
             startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
         } else
             return
