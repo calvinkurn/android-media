@@ -89,11 +89,11 @@ object ImageUtil {
 
     @JvmStatic
     fun getWidthAndHeight(localUri: Uri): Pair<Int, Int> {
-        try {
-            return getWidthAndHeight(File(localUri.path))
+        return try {
+            getWidthAndHeight(File(localUri.path))
         } catch (e: Exception) {
             // handling if uri is not found as local file.
-            return 0 to 0
+            0 to 0
         }
     }
 }
