@@ -37,6 +37,7 @@ import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
@@ -59,6 +60,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
+    private val sharedViewModel by lazy { viewModelProvider.get(SharedViewModel::class.java) }
 
     private val handler = Handler() //create handler to make sure when showing fragment is on UI thread
     private val containerFragment by lazy {
@@ -92,6 +94,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
+        observeCurrentSelectedPageLiveData()
         setupStatusBar()
     }
 
@@ -139,6 +142,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun setupDefaultPage() {
         if (intent?.data == null) {
+            val homePage = PageFragment(FragmentType.HOME)
+            sharedViewModel.setCurrentSelectedPage(homePage)
             showFragment(containerFragment)
         } else {
             handleAppLink(intent)
@@ -151,7 +156,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                 FragmentType.ORDER -> lastSomTab = page
                 FragmentType.PRODUCT -> lastProductMangePage = page
             }
-            showSelectedPage(page)
+            sharedViewModel.setCurrentSelectedPage(page)
         }
     }
 
@@ -209,6 +214,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         currentSelectedMenu = page.type
 
         setupStatusBar()
+        sharedViewModel.setCurrentSelectedPage(page)
         showFragment(containerFragment)
         resetPages(page)
 
@@ -231,7 +237,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         currentSelectedMenu = type
 
         showFragment(otherSettingsFragment)
-        showSelectedPage(PageFragment(type))
+        sharedViewModel.setCurrentSelectedPage(PageFragment(type))
 
         NavigationTracking.sendClickBottomNavigationMenuEvent(TrackingConstant.CLICK_OTHERS)
     }
@@ -258,10 +264,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun showSelectedPage(page: PageFragment) {
-        val pageType = page.type
-        setCurrentFragmentType(pageType)
-        sahBottomNav.currentItem = pageType
+    private fun observeCurrentSelectedPageLiveData() {
+        sharedViewModel.currentSelectedPage.observe(this, Observer {
+            sahBottomNav.currentItem = it.type
+            statusBarCallback?.setCurrentFragmentType(it.type)
+        })
     }
 
     private fun observeNotificationsLiveData() {

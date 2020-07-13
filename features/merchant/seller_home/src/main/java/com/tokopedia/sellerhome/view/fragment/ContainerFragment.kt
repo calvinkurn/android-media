@@ -10,7 +10,10 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -19,9 +22,11 @@ import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 2020-03-04
@@ -35,6 +40,15 @@ class ContainerFragment : Fragment() {
         }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val sharedViewModel: SharedViewModel? by lazy {
+        return@lazy if (null != activity) {
+            ViewModelProvider(activity!!, viewModelFactory).get(SharedViewModel::class.java)
+        } else
+            null
+    }
     private val sellerHomeRouter: SellerHomeRouter? by lazy {
         val applicationContext = activity?.applicationContext
         return@lazy if (applicationContext is SellerHomeRouter)
@@ -73,7 +87,7 @@ class ContainerFragment : Fragment() {
         homeFragment.bindListener(sellerHomeListener)
 
         setupView()
-        showHomePage()
+        observeCurrentSelectedPage()
     }
 
     private fun setupView() = view?.run {
@@ -94,9 +108,17 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private fun showHomePage() {
-        val homePage = PageFragment(FragmentType.HOME)
-        showFragment(homeFragment, homePage, homeFragmentTitle)
+    private fun observeCurrentSelectedPage() {
+        sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
+            currentFragmentType = page.type
+            when (page.type) {
+                FragmentType.HOME -> showFragment(homeFragment, page, homeFragmentTitle)
+                FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
+                FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
+                FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
+                else -> updateFragmentVisibilityHint(null)
+            }
+        })
     }
 
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
@@ -218,18 +240,6 @@ class ContainerFragment : Fragment() {
             }
         } else {
             transaction.show(fmt)
-        }
-    }
-
-    fun showSelectedPage(page: PageFragment) {
-        currentFragmentType = page.type
-
-        when (page.type) {
-            FragmentType.HOME -> showFragment(homeFragment, page, homeFragmentTitle)
-            FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
-            FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
-            FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
-            else -> updateFragmentVisibilityHint(null)
         }
     }
 
