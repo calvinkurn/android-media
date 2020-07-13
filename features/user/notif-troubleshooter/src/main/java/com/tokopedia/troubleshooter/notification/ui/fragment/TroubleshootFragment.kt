@@ -118,9 +118,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
+        val currentToken = fcmManager.currentToken()
         val message = if (fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
-            getString(R.string.notif_token_update)
+            getString(R.string.notif_token_update, currentToken, newToken)
         } else {
             getString(R.string.notif_token_current)
         }

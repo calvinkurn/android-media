@@ -3,7 +3,7 @@
     <string name="notif_title">Troubleshooter</string>
 
     <string name="notif_menu_push">Push Notification</string>
-    <string name="notif_menu_setting">Penganturan Notifikasi</string>
+    <string name="notif_menu_setting">Pengaturan Notifikasi</string>
     <string name="notif_menu_channel">Kategori Notifikasi</string>
     <string name="notif_menu_ringtone">Suara Notifikasi</string>
 
@@ -15,7 +15,7 @@
     <string name="notif_ringtone_error">Ringtone tidak di temukan</string>
 
     <string name="notif_token_current">Token sudah terbaru</string>
-    <string name="notif_token_update">Token baru saja diperbarui</string>
+    <string name="notif_token_update">Token baru saja diperbarui\nDari%1$s menjadi %2$s</string>
     <string name="notif_token_error">Terjadi kesalahan, silahkan clear-data aplikasi Tokopedia anda, dan login kembali</string>
 
     <string name="notif_ticker_notif_disabled">Mohon hidupkan pengaturan notifikasi anda</string>
