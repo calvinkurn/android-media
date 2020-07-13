@@ -33,10 +33,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
@@ -227,8 +224,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun checkUserRole() {
-        progressBarSom?.show()
-        layoutSom?.hide()
+        toggleSomLayout(true)
         somListViewModel.loadUserRoles(userSession.userId.toIntOrZero())
     }
 
@@ -472,8 +468,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_USER_ROLES)
-                    progressBarSom.hide()
-                    layoutSom.show()
+                    toggleSomLayout(false)
                     renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
             }
@@ -513,14 +508,18 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onUserAllowedToViewSOM() {
-        progressBarSom.hide()
-        layoutSom.show()
+        toggleSomLayout(false)
         loadTicker()
         loadFilterList()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
         isFromWidget?.let {
             if (it) SomAnalytics.eventClickWidgetNewOrder()
         }
+    }
+
+    private fun toggleSomLayout(isLoading: Boolean) {
+        progressBarSom?.showWithCondition(isLoading)
+        layoutSom?.showWithCondition(!isLoading)
     }
 
     private fun loadStatusOrderList() {
