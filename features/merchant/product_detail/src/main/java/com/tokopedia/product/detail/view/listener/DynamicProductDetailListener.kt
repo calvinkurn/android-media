@@ -50,7 +50,6 @@ interface DynamicProductDetailListener {
     fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
     fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
-    fun onUserDetailsClicked(userId: String)
 
     /**
      * ProductReviewViewHolder
