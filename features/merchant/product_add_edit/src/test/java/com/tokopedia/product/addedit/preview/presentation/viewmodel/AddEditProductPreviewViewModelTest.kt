@@ -1,7 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -10,6 +8,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -20,9 +19,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 
 @ExperimentalCoroutinesApi
@@ -148,7 +144,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         assertTrue(viewModel.productInputModel.value?.detailInputModel != null)
 
-        viewModel.updateSizeChart(PictureViewModel())
+        viewModel.updateSizeChart(ProductPicture())
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.productInputModel.value?.variantInputModel?.productSizeChart != null)
@@ -162,7 +158,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         val productVariantOptionParent = ProductVariantOptionParent().apply {
             productVariantOptionChild = listOf(ProductVariantOptionChild(pvo = 10))
         }
-        viewModel.updateVariantAndOption(arrayListOf(ProductVariantCombinationViewModel()), arrayListOf(productVariantOptionParent))
+        viewModel.updateVariantAndOption(arrayListOf(ProductVariantCombination()), arrayListOf(productVariantOptionParent))
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.productInputModel.value?.variantInputModel?.productVariant?.isNotEmpty() ?: false)
@@ -218,7 +214,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When UpdateProductStatus Expect ExpectedBehaviour`() {
-        val productVariantCombinationViewModel = ProductVariantCombinationViewModel().apply { st = 0 }
+        val productVariantCombinationViewModel = ProductVariantCombination().apply { st = 0 }
         val product = ProductInputModel().apply {
             draftId = 109
             productId = 211
@@ -256,7 +252,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     fun `When CheckOriginalVariantLevel Expect ExpectedBehaviour`() {
         val product = ProductInputModel().apply {
             variantInputModel = ProductVariantInputModel().apply {
-                productVariant = arrayListOf(ProductVariantCombinationViewModel())
+                productVariant = arrayListOf(ProductVariantCombination())
                 variantOptionParent = arrayListOf(ProductVariantOptionParent())
             }
         }
@@ -346,30 +342,5 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
-    }
-
-    private fun <T> LiveData<T>.getOrAwaitValue(
-            time: Long = 2,
-            timeUnit: TimeUnit = TimeUnit.SECONDS
-    ): T {
-        var data: T? = null
-        val latch = CountDownLatch(1)
-        val observer = object : Observer<T> {
-            override fun onChanged(o: T?) {
-                data = o
-                latch.countDown()
-                this@getOrAwaitValue.removeObserver(this)
-            }
-        }
-
-        this.observeForever(observer)
-
-        // Don't wait indefinitely if the LiveData is not set.
-        if (!latch.await(time, timeUnit)) {
-            throw TimeoutException("LiveData value was never set.")
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        return data as T
     }
 }

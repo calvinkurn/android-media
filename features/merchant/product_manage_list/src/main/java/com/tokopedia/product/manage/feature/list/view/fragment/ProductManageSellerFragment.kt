@@ -35,12 +35,14 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
         private const val FILTER_OPTIONS = "filter_options"
+        private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
-        fun newInstance(filterOptions: ArrayList<String>): ProductManageSellerFragment {
+        fun newInstance(filterOptions: ArrayList<String>, searchKeyWord: String): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
+                    putString(SEARCH_KEYWORD_OPTIONS, searchKeyWord)
                 }
             }
         }
@@ -67,6 +69,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
+        getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
     }
@@ -154,6 +157,11 @@ class ProductManageSellerFragment : ProductManageFragment() {
         tvDraftProduct.visibility = View.GONE
     }
 
+    private fun getDefaultKeywordOptionFromArguments() {
+        val searchKeyword = arguments?.getString(SEARCH_KEYWORD_OPTIONS).orEmpty()
+        super.setSearchKeywordOptions(searchKeyword)
+    }
+
     private fun getDefaultFilterOptionsFromArguments() {
         val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
         val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
@@ -203,7 +211,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     private fun observeGetAllDraftCount() {
         observe(productDraftListCountViewModel.getAllDraftCountResult) {
-            when(it) {
+            when (it) {
                 is Success -> onDraftCountLoaded(it.data)
                 is Fail -> onDraftCountLoadError()
             }

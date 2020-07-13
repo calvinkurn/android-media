@@ -36,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.addedit.BuildConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -55,7 +54,7 @@ import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
-import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductPicture
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
@@ -246,7 +245,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -557,7 +556,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         }
                         if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                             val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                    object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                                    object : TypeToken<ProductPicture>() {}.type, ProductPicture())
                             viewModel.updateSizeChart(productPictureViewModel)
                         }
                         showEmptyVariantState(productInputModel.variantInputModel.productSizeChart == null)
@@ -673,7 +672,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableDetailEdit() {
         context?.let {
             addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductDetailButton?.text = getString(R.string.label_change)
+            addEditProductDetailButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
         }
@@ -682,7 +681,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableDescriptionEdit() {
         context?.let {
             addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductDescriptionButton?.text = getString(R.string.label_change)
+            addEditProductDescriptionButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductDescriptionButton?.show()
         }
     }
@@ -694,7 +693,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableShipmentEdit() {
         context?.let {
             addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductShipmentButton?.text = getString(R.string.label_change)
+            addEditProductShipmentButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductShipmentButton?.show()
         }
     }
@@ -845,10 +844,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun showEmptyVariantState(isVariantEmpty: Boolean) {
         if (isVariantEmpty) {
-            addEditProductVariantButton?.text = getString(R.string.label_add)
+            addEditProductVariantButton?.text = getString(com.tokopedia.abstraction.R.string.label_add)
             addProductVariantTipsLayout?.show()
         } else {
-            addEditProductVariantButton?.text = getString(R.string.label_change)
+            addEditProductVariantButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addProductVariantTipsLayout?.hide()
         }
     }
@@ -899,7 +898,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         viewModel.getProductData(viewModel.getProductId())
@@ -911,7 +910,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId.orEmpty()

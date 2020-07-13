@@ -67,6 +67,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         const val ACTIVATE_INTENT_CODE = 123
         const val AUTOEXTEND_INTENT_CODE = 321
         const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
+        const val FREE_SHIPPING_INTENT_CODE = 323
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
         const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
 
@@ -139,6 +140,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             viewModel.onActivatePmSuccess()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
             onSuccessCancelMembership()
+        } else if (requestCode == FREE_SHIPPING_INTENT_CODE){
+            refreshData()
         }
     }
 
@@ -179,6 +182,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         freeShippingError.hide()
         freeShippingLayout.apply {
             onClickListener = {
+                openFreeShippingPage()
                 trackFreeShippingClick(freeShipping)
             }
             show(freeShipping)
@@ -299,8 +303,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun openFreeShippingPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW,
             URL_FREE_SHIPPING_INTERIM_PAGE)
+        startActivityForResult(intent, FREE_SHIPPING_INTENT_CODE)
     }
 
     private fun trackSuccessBottomSheetPopUp(freeShipping: PowerMerchantFreeShippingStatus) {
@@ -315,7 +320,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             userSessionInterface,
             freeShipping
         )
-
     }
 
     private fun showBottomSheetCancel() {

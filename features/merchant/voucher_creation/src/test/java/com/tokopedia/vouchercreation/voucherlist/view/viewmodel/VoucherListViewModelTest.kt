@@ -60,9 +60,13 @@ class VoucherListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @RelaxedMockK
+    lateinit var mViewModel: VoucherListViewModel
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mViewModel = VoucherListViewModel(getVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
         with(mViewModel) {
             successVoucherLiveData.observeForever(successVoucherObserver)
             stopVoucherResponseLiveData.observeForever(stopVoucherResponseObserver)
@@ -84,10 +88,6 @@ class VoucherListViewModelTest {
 
     private val testDispatcher by lazy {
         TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
     }
 
     @Test
@@ -264,9 +264,11 @@ class VoucherListViewModelTest {
     }
 
     @Test
-    fun `setting search keyword will change local voucher list`() {
+    fun `setting search keyword will change local voucher list`() = runBlocking {
         with(mViewModel) {
             setSearchKeyword(anyString())
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             assert(localVoucherListLiveData.value != null)
         }
@@ -309,6 +311,8 @@ class VoucherListViewModelTest {
             } returns dummySuccessCancelVoucher
 
             cancelVoucher(anyInt(), false)
+
+            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()

@@ -53,6 +53,7 @@ import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTarge
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
+import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
@@ -660,22 +661,17 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         if (!isAdded) return
         DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
-                    voucherList.forEach {
-                        activity?.run {
-                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                    requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
-                                    setupDowloadAction(it.downloadVoucherType.imageUrl)
-                                } else {
-                                    downloadFiles(it.downloadVoucherType.imageUrl)
-                                }
-                            } else {
+                    activity?.run {
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            requestPermissions(missingPermissions, VoucherDetailFragment.DOWNLOAD_REQUEST_CODE)
+                        } else {
+                            voucherList.forEach {
                                 downloadFiles(it.downloadVoucherType.imageUrl)
                             }
                         }
                     }
-
                     VoucherCreationTracking.sendVoucherListClickTracking(
                             action = Click.DOWNLOAD_VOUCHER,
                             isActive = isActiveVoucher,

@@ -291,11 +291,15 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 voucherUiModel?.imageSquare.toBlankOrString(),
                 userSession.userId)
                 .setOnDownloadClickListener { voucherList ->
-                    voucherList.forEach {
-                        if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
-                            downloadFiles(it.downloadVoucherType.imageUrl)
+                    activity?.run {
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
                         } else {
-                            downloadFiles(it.downloadVoucherType.imageUrl)
+                            voucherList.forEach {
+                                downloadFiles(it.downloadVoucherType.imageUrl)
+                            }
                         }
                     }
                 }
