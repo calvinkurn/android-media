@@ -119,10 +119,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun onBackPressed() {
         val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.af_leave_warning))
-        dialog.setDesc(getString(R.string.af_leave_warning_desc))
-        dialog.setBtnOk(getString(R.string.af_leave_title))
-        dialog.setBtnCancel(getString(R.string.af_continue))
+        dialog.setTitle(getString(R.string.cp_leave_warning))
+        dialog.setDesc(getString(R.string.cp_leave_warning_desc))
+        dialog.setBtnOk(getString(R.string.cp_leave_title))
+        dialog.setBtnCancel(getString(R.string.cp_continue))
         dialog.setOnOkClickListener {
             (fragment as? AffiliateCreatePostFragment)?.clearCache()
             dialog.dismiss()

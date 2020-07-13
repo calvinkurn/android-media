@@ -17,11 +17,11 @@ class CreatePostVideoPickerActivity: VideoPickerActivity() {
 
         if (isImageExist) {
             val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.af_title_update_post))
+            dialog.setTitle(getString(R.string.cp_title_update_post))
             dialog.setDesc(
-                    getString(R.string.af_message_update_choosen_video))
+                    getString(R.string.cp_message_update_choosen_video))
             dialog.setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
-            dialog.setBtnOk(getString(R.string.af_continue))
+            dialog.setBtnOk(getString(R.string.cp_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
                 super.onVideoDoneClicked()

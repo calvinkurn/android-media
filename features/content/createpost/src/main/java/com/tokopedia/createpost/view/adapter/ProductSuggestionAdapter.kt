@@ -75,10 +75,10 @@ class ProductSuggestionAdapter(
         private fun setAffiliateStyle(itemView: View) {
             with(itemView) {
                 bymeLogo.visible()
-                title.text = context.getString(R.string.af_get_commission)
+                title.text = context.getString(R.string.cp_get_commission)
                 title.setWeight(Typography.REGULAR)
                 title.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_ae31353b))
-                price.setTextColor(MethodChecker.getColor(context, R.color.af_commission_blue))
+                price.setTextColor(MethodChecker.getColor(context, com.tokopedia.affiliatecommon.R.color.af_commission_blue))
             }
         }
 

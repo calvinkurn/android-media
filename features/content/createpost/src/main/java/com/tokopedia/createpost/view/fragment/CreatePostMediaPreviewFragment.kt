@@ -41,8 +41,8 @@ class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
 
     private val deleteDialog: Dialog by lazy {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.af_update_post))
-        dialog.setDesc(getString(R.string.af_delete_warning_desc))
+        dialog.setTitle(getString(R.string.cp_update_post))
+        dialog.setDesc(getString(R.string.cp_delete_warning_desc))
         dialog.setBtnOk(getString(com.tokopedia.imagepicker.R.string.cancel))
         dialog.setBtnCancel(getString(com.tokopedia.design.R.string.title_delete))
         dialog.setOnOkClickListener{
@@ -171,11 +171,11 @@ class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
 
     private fun updateMainImageText() {
         if (tabLayout.selectedTabPosition == 0) {
-            mainImageText.setText(R.string.af_main_image)
+            mainImageText.setText(R.string.cp_main_image)
             mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_38))
             mainImageIcon.show()
         } else {
-            mainImageText.setText(R.string.af_set_main_image)
+            mainImageText.setText(R.string.cp_set_main_image)
             mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.medium_green))
             mainImageIcon.hide()
         }
