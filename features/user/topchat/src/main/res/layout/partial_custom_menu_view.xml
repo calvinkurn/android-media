@@ -2,15 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ticker_occ_layout"
-    android:layout_width="193dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:orientation="vertical"
     tools:visibility="visible">
 
     <LinearLayout
-        android:id="@+id/ticker_occ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_topchat_rounded_black"
@@ -20,7 +18,6 @@
         tools:ignore="RtlSymmetry">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/ticker_occ_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -34,6 +31,7 @@
             app:typographyType="body_3" />
 
         <ImageView
+            android:id="@+id/tooltip_close"
             android:layout_width="@dimen/dp_topchat_33"
             android:layout_height="@dimen/dp_topchat_33"
             android:padding="@dimen/dp_topchat_11"
@@ -42,7 +40,6 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/ticker_occ_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_topchat_14"

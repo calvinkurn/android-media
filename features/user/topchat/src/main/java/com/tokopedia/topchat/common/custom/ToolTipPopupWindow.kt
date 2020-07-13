@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.PopupWindow
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
@@ -11,12 +12,23 @@ import com.tokopedia.topchat.R
 class ToolTipPopupWindow(private val context: Context?) : PopupWindow(context) {
 
     private lateinit var view: View
+    private var ivClose: ImageView? = null
     private val defaultWidth = 193f.toPx().toInt()
     private val marginTop = 4f.toPx().toInt()
 
     init {
         initMenuView()
         initConfig()
+        initCloseListener()
+    }
+
+    private fun initMenuView() {
+        view = LayoutInflater
+                .from(context)
+                .inflate(R.layout.partial_custom_menu_view, null).also {
+                    ivClose = it.findViewById(R.id.tooltip_close)
+                }
+        contentView = view
     }
 
     private fun initConfig() {
@@ -24,11 +36,10 @@ class ToolTipPopupWindow(private val context: Context?) : PopupWindow(context) {
         setBackgroundDrawable(null)
     }
 
-    private fun initMenuView() {
-        view = LayoutInflater
-                .from(context)
-                .inflate(R.layout.partial_custom_menu_view, null)
-        contentView = view
+    private fun initCloseListener() {
+        ivClose?.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun setSize(width: Int, height: Int) {
