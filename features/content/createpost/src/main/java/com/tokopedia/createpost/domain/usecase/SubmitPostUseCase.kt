@@ -7,7 +7,6 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.createpost.TYPE_CONTENT_SHOP
-import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -89,7 +88,7 @@ open class SubmitPostUseCase @Inject constructor(
 
             val query = GraphqlHelper.loadRawString(
                     context.resources,
-                    R.raw.mutation_af_submit_post
+                    com.tokopedia.affiliatecommon.R.raw.mutation_af_submit_post
             )
 
             val variables = HashMap<String, Any>()

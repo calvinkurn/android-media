@@ -51,7 +51,7 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 product_name.text = MethodChecker.fromHtmlPreserveLineBreak(relatedProductItem.name)
                 product_price.text = relatedProductItem.price
                 product_price.setTextColor(ContextCompat.getColor(
-                        context, if (relatedProductItem.type == TYPE_AFFILIATE) R.color.af_commission_blue
+                        context, if (relatedProductItem.type == TYPE_AFFILIATE) com.tokopedia.affiliatecommon.R.color.af_commission_blue
                         else R.color.cp_Yellow_Y500))
                 product_rating.gone()
 
