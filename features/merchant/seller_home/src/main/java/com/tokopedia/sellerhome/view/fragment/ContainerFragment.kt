@@ -17,13 +17,11 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.common.StatusbarHelper
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
-import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 2020-03-04
@@ -36,9 +34,6 @@ class ContainerFragment : Fragment() {
             return ContainerFragment()
         }
     }
-
-    @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
 
     private val sellerHomeRouter: SellerHomeRouter? by lazy {
         val applicationContext = activity?.applicationContext
@@ -138,11 +133,7 @@ class ContainerFragment : Fragment() {
                 }
             }
 
-            if(remoteConfig.isImprovementDisabled()) {
-                transaction.commitNowAllowingStateLoss()
-            } else {
-                transaction.commit()
-            }
+            transaction.commitNowAllowingStateLoss()
 
             view?.sahToolbar?.title = title
             if (fragment == homeFragment) {
