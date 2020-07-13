@@ -3,17 +3,12 @@ package com.tokopedia.sellerorder.list.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.domain.filter.SomGetAllFilterUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -35,12 +30,16 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         get() = _orderTypeListResult
 
     fun loadSomFilterData(filterQuery: String) {
-        launch {
+        launchCatchError(block = {
             somGetAllFilterUseCase.execute(filterQuery)
             _shippingListResult.postValue(somGetAllFilterUseCase.getShippingListResult())
             _statusOrderListResult.postValue(somGetAllFilterUseCase.getStatusOrderListResult())
             _orderTypeListResult.postValue(somGetAllFilterUseCase.getOrderTypeListResult())
-        }
+        }, onError = {
+            _shippingListResult.postValue(Fail(it))
+            _statusOrderListResult.postValue(Fail(it))
+            _orderTypeListResult.postValue(Fail(it))
+        })
     }
 
     fun loadSomFilterDataOld(filterQuery: String) {
