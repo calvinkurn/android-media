@@ -19,6 +19,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 private const val IS_ADULT = 1
+private const val IS_BANNED = 1
 
 class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface?) : ViewModel(), CoroutineScope {
     private val jobs = SupervisorJob()
@@ -30,7 +31,7 @@ class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonito
 
     private var categoryDetail = MutableLiveData<Result<Data>>()
     private var redirectionUrl = MutableLiveData<Result<String>>()
-    private var adultProduct = MutableLiveData<Result<String>>()
+    private var adultProduct = MutableLiveData<Result<Data>>()
     private var hasCatalog = MutableLiveData<Boolean>()
 
     fun fetchCategoryDetail(departmentId: String) {
@@ -58,7 +59,7 @@ class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonito
             redirectionEnabled(it.appRedirectionURL) -> {
                 handleForRedirectionIfEnabled(it.appRedirectionURL)
             }
-            checkIfAdult(it.isAdult) -> {
+            checkIfAdult(it.isAdult, it.isBanned) -> {
                 handleForAdultProduct(it)
             }
             else -> {
@@ -72,15 +73,15 @@ class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonito
     }
 
     private fun handleForAdultProduct(data: Data) {
-        adultProduct.value = Success(data.name.toString())
+        adultProduct.value = Success(data)
     }
 
     private fun handleForRedirectionIfEnabled(appRedirection: String?) {
         redirectionUrl.value = Success(appRedirection.toString())
     }
 
-    private fun checkIfAdult(isAdult: Int): Boolean {
-        return isAdult == IS_ADULT
+    private fun checkIfAdult(isAdult: Int, isBanned: Int): Boolean {
+        return isAdult == IS_ADULT && isBanned != IS_BANNED
     }
 
     private fun redirectionEnabled(url: String?): Boolean {
@@ -100,7 +101,7 @@ class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonito
         return redirectionUrl
     }
 
-    fun getAdultProductLiveData(): MutableLiveData<Result<String>> {
+    fun getAdultProductLiveData(): MutableLiveData<Result<Data>> {
         return adultProduct
     }
 

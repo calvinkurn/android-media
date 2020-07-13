@@ -39,6 +39,10 @@ class DynamicLegoBannerViewHolder(itemView: View,
         setGrids(element)
     }
 
+    override fun bind(element: DynamicLegoBannerDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun setGrids(element: DynamicLegoBannerDataModel) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
         val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
