@@ -414,6 +414,9 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void handleAppLinkBottomNavigation() {
+
+        if (bottomNavigation == null) return;
+
         if (getIntent().getExtras() != null) {
             int tabPosition = getTabPositionFromIntent();
             switch (tabPosition) {
