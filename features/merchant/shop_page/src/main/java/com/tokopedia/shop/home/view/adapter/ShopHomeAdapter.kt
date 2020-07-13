@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter
 
+import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -66,7 +67,7 @@ class ShopHomeAdapter(
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
         if (initialData)
-            notifyDataSetChanged()
+            notifyChangedDataSet()
         else
             notifyInsertedItemRange(lastIndex, productList.size)
     }
@@ -82,7 +83,7 @@ class ShopHomeAdapter(
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
         visitables.addAll(data)
-        notifyDataSetChanged()
+        notifyChangedDataSet()
     }
 
     override fun hideLoading() {
@@ -216,7 +217,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, position)) {
                 notifyItemChanged(position)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -226,7 +227,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, position)) {
                 notifyItemRemoved(position)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -236,7 +237,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeRemoved(startPosition, totalItem)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -246,7 +247,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeInserted(startPosition, totalItem)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -256,8 +257,14 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, position)) {
                 notifyItemInserted(position)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
+        }
+    }
+    
+    private fun notifyChangedDataSet(){
+        Handler().post { 
+            notifyDataSetChanged()
         }
     }
 
