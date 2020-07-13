@@ -46,14 +46,11 @@
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
 
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
-/features/discovery/flashsale_management/               @tokopedia/android-minionstuart-dev
-/features/discovery/flashsale_management_common/        @tokopedia/android-minionstuart-dev
 
 /features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
 /features/merchant/brandlist/                           @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
-/features/merchant/gold_merchant_resource/              @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
 /features/merchant/official_store/                      @tokopedia/android-minionstuart-dev
 /features/merchant/power_merchant_subscribe/            @tokopedia/android-minionstuart-dev
