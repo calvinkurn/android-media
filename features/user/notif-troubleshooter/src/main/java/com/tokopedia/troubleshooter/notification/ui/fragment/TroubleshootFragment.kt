@@ -30,6 +30,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
+import com.tokopedia.troubleshooter.notification.util.trimToken
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
 
@@ -121,7 +122,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         val currentToken = fcmManager.currentToken()
         val message = if (fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
-            getString(R.string.notif_token_update, currentToken, newToken)
+            getString(R.string.notif_token_update, currentToken.trimToken(), newToken.trimToken())
         } else {
             getString(R.string.notif_token_current)
         }
