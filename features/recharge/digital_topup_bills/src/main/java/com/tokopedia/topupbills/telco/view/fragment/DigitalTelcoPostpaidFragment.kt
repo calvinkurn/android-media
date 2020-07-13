@@ -110,6 +110,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         getDataFromBundle(savedInstanceState)
     }
 
+    override fun getTelcoMenuId(): Int {
+        return menuId
+    }
+
+    override fun getTelcoCategoryId(): Int {
+        return categoryId
+    }
+
     override fun renderPromoAndRecommendation() {
         if (listMenu.size > 0) {
             val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
@@ -121,8 +129,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.show()
                 separator.show()
                 tabLayout.setupWithViewPager(viewPager)
-                (viewPager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
-                (viewPager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
+                (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             } else {
                 tabLayout.hide()
                 separator.hide()
@@ -166,6 +174,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             arguments?.run {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()) { menuId = digitalTelcoExtraParam.menuId.toInt() }
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) { categoryId = digitalTelcoExtraParam.categoryId.toInt() }
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER)
@@ -231,11 +241,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getEnquiryNumber() {
         operatorSelected?.let { selectedOperator ->
-            topupAnalytics.eventClickCheckEnquiry(categoryName, operatorName, userSession.userId)
+            topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
             var mapParam = HashMap<String, Any>()
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
 
+            postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
             enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources,
                     com.tokopedia.common.topupbills.R.raw.query_enquiry_digital), mapParam)
 
@@ -249,6 +260,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun enquirySuccess() {
+        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         tabLayout.hide()
         separator.hide()
         viewPager.hide()
@@ -261,6 +273,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun enquiryFailed() {
+        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         val errorEnquiry = enquiryViewModel.enquiryResult.value as Fail
         view?.run {
             errorEnquiry.throwable?.let {

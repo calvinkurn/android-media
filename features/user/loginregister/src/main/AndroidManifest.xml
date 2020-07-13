@@ -20,6 +20,7 @@
         <activity
             android:name=".registerinitial.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"
+            android:configChanges="orientation|keyboard|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">

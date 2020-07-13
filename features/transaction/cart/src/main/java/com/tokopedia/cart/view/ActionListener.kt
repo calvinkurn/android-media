@@ -1,7 +1,8 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
  * Created by Irfan Khoirul on 2019-05-29.
@@ -13,7 +14,7 @@ interface ActionListener {
 
     fun getDefaultCartErrorMessage(): String
 
-    fun onCartShopNameClicked(cartShopHolderData: CartShopHolderData)
+    fun onCartShopNameClicked(shopId: String?, shopName: String?)
 
     fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
 
@@ -41,11 +42,17 @@ interface ActionListener {
 
     fun onWishlistProductClicked(productId: String)
 
+    fun onWishlistImpression()
+
     fun onRecentViewProductClicked(productId: String)
 
-    fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String)
+    fun onRecentViewImpression()
 
-    fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String)
+    fun onRecommendationProductClicked(recommendationItem: RecommendationItem)
+
+    fun onRecommendationProductImpression(recommendationItem: RecommendationItem)
+
+    fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData)
 
     fun onButtonAddToCartClicked(productModel: Any)
 

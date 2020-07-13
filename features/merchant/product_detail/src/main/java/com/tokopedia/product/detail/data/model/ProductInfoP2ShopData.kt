@@ -15,5 +15,8 @@ data class ProductInfoP2ShopData(
         var tradeinResponse: TradeinResponse? = null,
         var cartRedirectionResponse: CartRedirectionResponse = CartRedirectionResponse(),
         var variantMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse(),
-        var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList()
+        var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList(),
+        var shopSpeed: Int = 0,
+        var shopChatSpeed: Int = 0,
+        var shopRating: Float = 0F
 )

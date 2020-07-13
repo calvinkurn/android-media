@@ -185,7 +185,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
         if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
-            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(com.tokopedia.purchase_platform.common.R.string.note_counter_format),
                     editable.length(), data.getMaxRemark());
             tvNoteCharCounter.setText(noteCounter);
             data.setProductNotes(editable.toString());
@@ -263,23 +263,23 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                 qty >= cartItemHolderData.getMaxQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(false);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled));
         } else if (qty <= cartItemHolderData.getMinQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout));
         } else if (qty >= cartItemHolderData.getMaxQuantity()) {
             btnQtyPlus.setEnabled(false);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout));
         }
     }
 
@@ -345,7 +345,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             etNotesForSeller.setSelection(etNotesForSeller.length());
         }
 
-        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(com.tokopedia.purchase_platform.common.R.string.note_counter_format),
                 itemData.getProductNotes().length(), itemData.getMaxRemark());
         tvNoteCharCounter.setText(noteCounter);
 

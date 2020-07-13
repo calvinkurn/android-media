@@ -213,14 +213,17 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun createEndlessRecyclerViewListener(){
         endlessRecyclerViewScrollListener = object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_PER_PAGE, page)
+                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, page)
             }
         }
     }
 
     override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads) {
-            TopAdsUrlHitter(className).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl)
+            TopAdsUrlHitter(className).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl,
+                    homeRecommendationItemDataModel.product.id,
+                    homeRecommendationItemDataModel.product.name,
+                    homeRecommendationItemDataModel.product.imageUrl)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -249,7 +252,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads){
-            TopAdsUrlHitter(className).hitClickUrl(context, homeRecommendationItemDataModel.product.clickUrl)
+            TopAdsUrlHitter(className).hitClickUrl(context,
+                    homeRecommendationItemDataModel.product.clickUrl,
+                    homeRecommendationItemDataModel.product.id,
+                    homeRecommendationItemDataModel.product.name,
+                    homeRecommendationItemDataModel.product.imageUrl)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -289,7 +296,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     override fun onRetryGetProductRecommendationData() {
-        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_PER_PAGE)
+        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
     }
 
     private fun initListeners() {
@@ -345,7 +352,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_PER_PAGE)
+            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
         }
     }
 
@@ -436,13 +443,14 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         const val ARG_TAB_INDEX = "ARG_TAB_INDEX"
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
         const val ARG_TAB_NAME = "ARG_TAB_NAME"
+        const val DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE = 12
+
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val HOME_JANKY_FRAMES_MONITORING_PAGE_NAME = "home"
         private const val HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME = "feed"
         private const val REQUEST_FROM_PDP = 349
-        private const val DEFAULT_TOTAL_ITEM_PER_PAGE = 12
         private const val DEFAULT_SPAN_COUNT = 2
 
         fun newInstance(tabIndex: Int, recomId: Int, tabName: String): HomeRecommendationFragment {

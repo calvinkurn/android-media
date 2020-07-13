@@ -11,7 +11,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_warning"
+        android:background="@drawable/checkout_module_bg_warning"
         android:padding="@dimen/dp_16">
 
         <TextView

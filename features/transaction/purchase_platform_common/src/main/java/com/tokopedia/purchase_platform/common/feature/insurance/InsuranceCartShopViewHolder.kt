@@ -19,6 +19,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateIn
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceProductApplicationDetails
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import java.util.*
 
 
@@ -249,7 +250,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
             }
 
-            tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.pricePerProduct, false)
+            tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProduct.pricePerProduct, false).removeDecimalSuffix()
 
             if (pageType.equals(PAGE_TYPE_CART, ignoreCase = true)) {
                 tvChangeInsuranceApplicationDetails.show()

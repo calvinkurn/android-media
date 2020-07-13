@@ -8,7 +8,6 @@
         android:id="@+id/shop_ticker_info"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:titleText="asdadas"
         app:tickerType="warning"
         app:closeButtonVisibility="gone"
         app:layout_constraintTop_toTopOf="parent"

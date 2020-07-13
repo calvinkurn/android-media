@@ -6,7 +6,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".order.view.OrderSummaryPageActivity"
-            android:label="@string/one_click_checkout"
+            android:label="@string/title_one_click_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -24,7 +24,7 @@
 
         <activity
             android:name=".preference.edit.view.PreferenceEditActivity"
-            android:label="@string/occ_preference"
+            android:label="@string/title_one_click_checkout_preference"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -42,7 +42,7 @@
 
         <activity
             android:name=".preference.list.view.PreferenceListActivity"
-            android:label="@string/occ_preference"
+            android:label="@string/title_one_click_checkout_preference"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

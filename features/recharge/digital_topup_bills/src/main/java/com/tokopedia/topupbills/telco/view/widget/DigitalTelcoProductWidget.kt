@@ -14,6 +14,7 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductGridDecorator
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 
+
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
@@ -39,8 +40,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                           selectedProductPos: Int) {
         adapter = DigitalProductAdapter(productList, productType)
         adapter.setListener(object : DigitalProductAdapter.ActionListener {
-            override fun onClickItemProduct(itemProduct: TelcoProduct, position: Int) {
-                listener.onClickProduct(itemProduct, position)
+            override fun onClickItemProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
+                listener.onClickProduct(itemProduct, position, labelList)
             }
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProduct) {
@@ -60,11 +61,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         adapter.notifyDataSetChanged()
-        recyclerView.layoutManager?.run {
-            if (selectedProductPos > 0) {
-                this.scrollToPosition(selectedProductPos)
-            }
-        }
+
+
+// TODO: restructure the UI & fix impression product list
+//  scroll to selected product not work because of recyclerView.isNestedScrollingEnabled = false
         getVisibleProductItemsToUsersTracking(productList)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -115,13 +115,13 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     interface ActionListener {
-        fun onClickProduct(itemProduct: TelcoProduct, position: Int)
+        fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
         fun onSeeMoreProduct(itemProduct: TelcoProduct)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
     }
 
     companion object {
-        const val CELL_MARGIN_DP: Int = 4
+        const val CELL_MARGIN_DP: Int = 5
     }
 
 }

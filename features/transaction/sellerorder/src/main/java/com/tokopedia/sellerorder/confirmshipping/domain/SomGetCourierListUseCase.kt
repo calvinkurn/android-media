@@ -10,14 +10,14 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 09/05/20.
  */
-class SomGetCourierListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment>) {
+class SomGetCourierListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomCourierList.Data>) {
 
     suspend fun execute(query: String): Result<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>> {
         useCase.setGraphqlQuery(query)
-        useCase.setTypeClass(SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment::class.java)
+        useCase.setTypeClass(SomCourierList.Data::class.java)
 
         return try {
-            val resultCourierList = useCase.executeOnBackground().listShipment.toMutableList()
+            val resultCourierList = useCase.executeOnBackground().mpLogisticGetEditShippingForm.dataShipment.listShipment.toMutableList()
             Success(resultCourierList)
         } catch (throwable: Throwable) {
             Fail(throwable)

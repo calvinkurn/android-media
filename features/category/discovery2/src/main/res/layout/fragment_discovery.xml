@@ -21,7 +21,8 @@
             layout="@layout/item_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible" />
+            android:visibility="visible"
+            tools:layout_height="@dimen/dp_56"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.globalerror.GlobalError

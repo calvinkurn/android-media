@@ -28,7 +28,6 @@ val registeredGqlFunctions = mapOf(
         "login_token" to "login",
         "register" to "register",
         "pdpGetLayout" to "pdpGetLayout",
-        "checkout_general" to "checkout",
         "atcOCS" to "atconeclickshipment",
         "getPDPInfo" to "product_info",
         "shopInfoByID" to "shop_info",

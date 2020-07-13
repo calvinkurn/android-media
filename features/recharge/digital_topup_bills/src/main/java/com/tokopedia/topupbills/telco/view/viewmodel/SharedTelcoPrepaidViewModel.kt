@@ -40,12 +40,20 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val productList: LiveData<Result<List<TelcoCatalogProductInput>>>
         get() = _productList
 
+    private val _selectedCategoryViewPager = MutableLiveData<String>()
+    val selectedCategoryViewPager: LiveData<String>
+        get() = _selectedCategoryViewPager
+
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
     }
 
     fun setShowTotalPrice(show: Boolean) {
         _showTotalPrice.postValue(show)
+    }
+
+    fun setSelectedCategoryViewPager(categoryName: String) {
+        _selectedCategoryViewPager.postValue(categoryName)
     }
 
     // cache in 10 minutes

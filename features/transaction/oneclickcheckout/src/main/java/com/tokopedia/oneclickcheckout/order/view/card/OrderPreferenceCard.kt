@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -98,27 +99,27 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipmentModel = preference.preference.shipment
 
         val shipping = preference.shipping
-        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
-        val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
-        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
-        } else {
-            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-        }
-        tvShippingDuration?.text = serviceDur
+        tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
 
         if (shipping == null) {
+            val tempServiceDuration = shipmentModel.serviceDuration
+            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
+            } else {
+                OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+            }
+            tvShippingDuration?.text = serviceDur
             tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
             tvShippingPrice?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false)
+                            ?: 0, false).removeDecimalSuffix()
                     tvShippingPrice?.setOnClickListener {
                         listener.chooseCourier()
                     }
@@ -145,17 +146,17 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
                         } else {
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
                         tvShippingDuration?.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoShipping.productData.price.price.toDouble()) {
+                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
                             tvShippingPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
                             tvShippingSlashPrice?.gone()
                         } else {
-                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false)
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price, false)
+                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
                             tvShippingSlashPrice?.paintFlags?.let {
                                 tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
                             }
@@ -164,11 +165,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                 } else {
-                    tvShippingName?.text = "Pengiriman"
+                    tvShippingName?.text = view.context.getString(R.string.lbl_shipping)
                     tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
-                        listener.chooseDuration()
+                        listener.chooseDuration(false)
                     }
                     tvShippingPrice?.gone()
                     tvShippingSlashPrice?.gone()
@@ -176,7 +177,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingChangeDuration?.gone()
                     tvShippingCourierLbl?.visible()
                     tvShippingCourier?.text = "${shipping.shipperName} - ${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false)}"
+                            ?: 0, false).removeDecimalSuffix()}"
                     tvShippingCourier?.setOnClickListener {
                         listener.chooseCourier()
                     }
@@ -194,11 +195,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
+                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
                         } else {
                             OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
@@ -207,8 +208,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping_with_price)
                             tvShippingSlashPrice?.gone()
                         } else {
-                            tvShippingCourier?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false)
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false)
+                            tvShippingCourier?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
                             tvShippingSlashPrice?.paintFlags?.let {
                                 tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
                             }
@@ -218,6 +219,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             } else {
                 if (!shipping.isServicePickerEnable) {
+                    tvShippingDuration?.text = shipping.serviceDuration
                     tvShippingCourierLbl?.gone()
                     tvShippingCourier?.gone()
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
@@ -226,7 +228,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingMessage?.text = shipping.serviceErrorMessage
                     if (shipping.shippingRecommendationData != null) {
                         tvShippingChangeDuration?.setOnClickListener {
-                            listener.chooseDuration()
+                            listener.chooseDuration(true)
                         }
                         tvShippingChangeDuration?.visible()
                     } else {
@@ -337,9 +339,20 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
         val shippingRecommendationData = preference.shipping?.shippingRecommendationData
         if (shippingRecommendationData != null) {
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, shippingRecommendationData.shippingDurationViewModels, object : ShippingDurationOccBottomSheetListener {
+            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+            if (shippingRecommendationData.logisticPromo != null) {
+                list.add(shippingRecommendationData.logisticPromo)
+                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
+            }
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                }
+
+                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+                    listener.onLogisticPromoClick(data)
                 }
             })
         }
@@ -361,7 +374,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun chooseCourier()
 
-        fun chooseDuration()
+        fun chooseDuration(isDurationError: Boolean)
 
         fun onPreferenceEditClicked(preference: OrderPreference)
     }

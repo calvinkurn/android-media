@@ -2,21 +2,18 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
+import com.tokopedia.notifications.inApp.viewEngine.BannerView;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
@@ -27,9 +24,13 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
 /**
  * @author lalit.singh
@@ -37,14 +38,14 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConverto
 public class CMInAppManager implements CmInAppListener {
 
     private static CMInAppManager inAppManager;
+    private Application application;
+    private WeakReference<Activity> currentActivity;
+    private CmInAppListener cmInAppListener;
+    private final Object lock = new Object();
 
-    Application application;
-
-    WeakReference<Activity> currentActivity;
-
-    CmInAppListener cmInAppListener;
-
-    final Object lock = new Object();
+    static {
+        inAppManager = new CMInAppManager();
+    }
 
     public long getCmInAppEndTimeInterval() {
         return ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
@@ -53,10 +54,6 @@ public class CMInAppManager implements CmInAppListener {
 
     public static CMInAppManager getInstance() {
         return inAppManager;
-    }
-
-    static {
-        inAppManager = new CMInAppManager();
     }
 
     public void init(@NonNull Application application) {
@@ -83,41 +80,81 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void showInAppNotification() {
-        DataProvider dataProvider = new DataProvider() {
-            @Override
-            public void notificationsDataResult(List<CMInApp> inAppDataList) {
-                synchronized (lock) {
-                    if (canShowInApp(inAppDataList)) {
-                        if (getCurrentActivity() == null)
-                            return;
-                        Activity activity = getCurrentActivity();
-                        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
-                        CMInApp cmInApp = inAppDataList.get(0);
-                        final View view = viewEngine.createView(cmInApp);
-                        if (view == null)
-                            return;
-                        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
-                        if (null != inAppViewPrev)//In-App view already present on Activity
-                            return;
-                        FrameLayout root = (FrameLayout) activity.getWindow()
-                                .getDecorView()
-                                .findViewById(android.R.id.content)
-                                .getRootView();
-                        root.addView(view);
-                        dataConsumed(cmInApp);
-                    }
+        DataProvider dataProvider = inAppDataList -> {
+            synchronized (lock) {
+                if (canShowInApp(inAppDataList)) {
+                    CMInApp cmInApp = inAppDataList.get(0);
+                    showDialog(cmInApp);
+                    dataConsumed(cmInApp);
                 }
             }
         };
-        RulesManager.getInstance().checkValidity(currentActivity.get().getClass().getName(), 0L, dataProvider);
+
+        RulesManager.getInstance().checkValidity(
+                currentActivity.get().getClass().getName(),
+                0L,
+                dataProvider
+        );
+    }
+
+    /**
+     * legacy dialog, such as:
+     * 1. full screen
+     * 2. full screen_img
+     * 3. border top
+     * 4. border bottom
+     * 5. alert
+     * 6. ticker top
+     * 7. ticker bottom
+     * @param cmInApp
+     */
+    private void showLegacyDialog(CMInApp cmInApp) {
+        Activity activity = getCurrentActivity();
+        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
+
+        final View view = viewEngine.createView(cmInApp);
+        if (view == null) return;
+
+        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
+        //In-App view already present on Activity
+        if (null != inAppViewPrev) return;
+
+        FrameLayout root = (FrameLayout) activity.getWindow()
+                .getDecorView()
+                .findViewById(android.R.id.content)
+                .getRootView();
+        root.addView(view);
+        dataConsumed(cmInApp);
+    }
+
+    /**
+     * dialog for interstitial and interstitialImg
+     * @param data
+     */
+    private void interstitialDialog(CMInApp data) {
+        if (getCurrentActivity() == null) return;
+        Activity activity = getCurrentActivity();
+        try {
+            BannerView.create(activity, data);
+        } catch (Exception e) {
+            onCMInAppInflateException(data);
+        }
+    }
+
+    private void showDialog(CMInApp data) {
+        switch (data.getType()) {
+            case TYPE_INTERSTITIAL_IMAGE_ONLY:
+            case TYPE_INTERSTITIAL:
+                interstitialDialog(data);
+                break;
+            default:
+                showLegacyDialog(data);
+                break;
+        }
     }
 
     private boolean canShowInApp(List<CMInApp> inAppDataList) {
-        if (inAppDataList != null && inAppDataList.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return inAppDataList != null && inAppDataList.size() > 0;
     }
 
     private Activity getCurrentActivity() {
@@ -170,24 +207,8 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     @Override
-    public boolean showCmInAppMessage() {
-        return false;
-    }
-
-    @Override
-    public void onCMInAppShown(CMInApp cmInApp) {
-    }
-
-    @Override
-    public void onCMinAppDismiss() {
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            View mainView = activity.findViewById(R.id.mainContainer);
-            if (mainView != null && mainView.getTag() != null && mainView.getTag() instanceof CMInApp) {
-                CMInApp cmInApp = (CMInApp) mainView.getTag();
-                RulesManager.getInstance().viewDismissed(cmInApp.id);
-            }
-        }
+    public void onCMinAppDismiss(CMInApp inApp) {
+        RulesManager.getInstance().viewDismissed(inApp.id);
     }
 
     @Override
@@ -197,10 +218,6 @@ public class CMInAppManager implements CmInAppListener {
 
     @Override
     public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
-        Log.d("InApp", deepLinkUri.toString());
-        Intent appLinkIntent = RouteManager.getIntent(application.getApplicationContext(), deepLinkUri.toString());
-        if (getCurrentActivity() != null)
-            getCurrentActivity().startActivity(appLinkIntent);
         switch (elementType.getViewType()) {
             case ElementType.BUTTON:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, elementType.getElementId());
@@ -209,7 +226,6 @@ public class CMInAppManager implements CmInAppListener {
             default:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, null);
         }
-
     }
 
     private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {

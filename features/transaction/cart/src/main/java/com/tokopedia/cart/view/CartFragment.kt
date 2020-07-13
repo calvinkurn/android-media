@@ -40,6 +40,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
@@ -47,6 +48,7 @@ import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
+import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
 import com.tokopedia.cart.view.compoundview.ToolbarRemoveView
@@ -61,6 +63,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.CartNotifyListener
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
@@ -101,7 +104,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -170,7 +173,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartListData: CartListData? = null
     private var wishLists: List<CartWishlistItemHolderData>? = null
     private var recentViewList: List<CartRecentViewItemHolderData>? = null
-    private var recommendationList: List<CartRecommendationItemHolderData>? = null
+    private var recommendationList: MutableList<CartRecommendationItemHolderData>? = null
     private var recommendationSectionHeader: CartSectionHeaderHolderData? = null
     private var recommendationWishlistActionListener: WishListActionListener? = null
     private var cartAvailableWishlistActionListener: WishListActionListener? = null
@@ -190,10 +193,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
+    private var recommendationPage = 1
 
     companion object {
 
-        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
@@ -343,7 +346,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 object : TypeToken<ArrayList<CartWishlistItemHolderData>>() {}.type, null)
         recentViewList = saveInstanceCacheManager?.get<List<CartRecentViewItemHolderData>>(CartRecentViewItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecentViewItemHolderData>>() {}.type, null)
-        recommendationList = saveInstanceCacheManager?.get<List<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
+        recommendationList = saveInstanceCacheManager?.get<MutableList<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecommendationItemHolderData>>() {}.type, null)
         recommendationSectionHeader = saveInstanceCacheManager?.get<CartSectionHeaderHolderData>(CartSectionHeaderHolderData::class.java.simpleName,
                 object : TypeToken<CartSectionHeaderHolderData>() {}.type, null)
@@ -361,11 +364,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onStart() {
         super.onStart()
-        if (refreshHandler?.isRefreshing == false) {
+        // Check if currently not refreshing and not ATC external flow
+        if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow()) {
             if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
         }
+    }
+
+    fun onBackPressed() {
+        sendAnalyticsOnClickBackArrow()
+        if (isAtcExternalFlow()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+        activity?.finish()
     }
 
     private fun updateCartAfterDetached() {
@@ -385,7 +399,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDestroy() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         showPromoButtonJob?.cancel()
         super.onDestroy()
@@ -554,7 +568,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     if (hasLoadRecommendation) {
-                        dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.currentPage, cartAdapter.allCartItemProductId)
+                        dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
                     }
                 }
             }
@@ -582,8 +596,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val valueY = llPromoCheckout.y + dy
         TRANSLATION_LENGTH += dy
         if (dy != 0) {
-            if (TRANSLATION_LENGTH - dy == 0f) {
-                // Initial position of View
+            if (initialPromoButtonPosition == 0f && TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View if previous initialization attempt failed
                 initialPromoButtonPosition = llPromoCheckout.y
             }
 
@@ -782,19 +796,42 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
-            if (savedInstanceState == null) {
-                refreshHandler?.startRefresh()
-            } else {
-                if (cartListData != null) {
-                    dPresenter.setCartListData(cartListData!!)
-                    renderLoadGetCartDataFinish()
-                    renderInitialGetCartListDataSuccess(cartListData)
-                    stopCartPerformanceTrace()
+
+            val productId = getAtcProductId()
+            if (isAtcExternalFlow()) {
+                if (productId == INVALID_PRODUCT_ID) {
+                    showToastMessageRed(MessageErrorException(AtcConstant.ATC_ERROR_GLOBAL))
+                    refreshCart()
                 } else {
-                    refreshHandler?.startRefresh()
+                    addToCartExternal(productId)
                 }
+            } else {
+                loadCartData(savedInstanceState)
             }
         }
+    }
+
+    private fun addToCartExternal(productId: Long) {
+        dPresenter.processAddToCartExternal(productId)
+    }
+
+    private fun loadCartData(savedInstanceState: Bundle?): Unit? {
+        return if (savedInstanceState == null) {
+            refreshCart()
+        } else {
+            if (cartListData != null) {
+                dPresenter.setCartListData(cartListData!!)
+                renderLoadGetCartDataFinish()
+                renderInitialGetCartListDataSuccess(cartListData)
+                stopCartPerformanceTrace()
+            } else {
+                refreshCart()
+            }
+        }
+    }
+
+    override fun refreshCart() {
+        refreshHandler?.startRefresh()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -891,7 +928,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onClickShopNow() {
         cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart()
-        RouteManager.route(activity, ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onShowAllItem(appLink: String) {
@@ -1123,6 +1162,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onWishlistImpression() {
+        wishLists?.let {
+            sendAnalyticsOnViewProductWishlist(
+                    dPresenter.generateWishlistDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
     override fun onRecentViewProductClicked(productId: String) {
         var position = 0
 
@@ -1142,12 +1189,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         onProductClicked(productId)
     }
 
-    override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
+    override fun onRecentViewImpression() {
+        recentViewList?.let {
+            sendAnalyticsOnViewProductRecentView(
+                    dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
+            )
+        }
+    }
+
+    override fun onRecommendationProductClicked(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val clickUrl = recommendationItem.clickUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
-        for ((recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
-            if (recommendationItem.productId.toString().equals(productId, ignoreCase = true)) {
-                recommendationItemClick = recommendationItem
+        for ((_, item) in recommendationList as List<CartRecommendationItemHolderData>) {
+            if (item.productId.toString().equals(productId, ignoreCase = true)) {
+                recommendationItemClick = item
                 break
             }
             index++
@@ -1160,18 +1221,70 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                activity?.let { ImpresionTask(it::class.qualifiedName).execute(clickUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, clickUrl, productId, productName, imageUrl) }
             }
         }
         onProductClicked(productId)
     }
 
-    override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
+    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val url = recommendationItem.trackerImageUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
         when {
             topAds -> {
-                activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
             }
         }
+    }
+
+    override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {
+        val recommendationList = cartAdapter.getRecommendationItem()
+        if (recommendationList.isNullOrEmpty()) return
+        recommendationList.let {
+            val currentIndex = it.indexOf(recommendationItem)
+            if (it.size >= 2) {
+                if (currentIndex == it.size - 1) {
+                    if (currentIndex % 2 == 0) {
+                        // edge case : recommendation list size is odd number
+                        // send last single item impression
+                        sendImpressionOneRecommendationItem(it, currentIndex)
+                    } else {
+                        // edge case : recommendation list contains exactly 2 items
+                        // send 2 items impression
+                        sendImpressionTwoRecommendationItems(it, currentIndex)
+                    }
+                } else if (currentIndex > 0 && currentIndex % 2 == 1) {
+                    // send analytics on impression recommendation item odd position
+                    // send analytics every 2 item impression
+                    sendImpressionTwoRecommendationItems(it, currentIndex)
+                }
+            } else {
+                // edge case : recommendation list contains exactly 1 item
+                // edge case : send single item impression if recommendation list only contain 1 item
+                sendImpressionOneRecommendationItem(it, currentIndex)
+            }
+        }
+    }
+
+    private fun sendImpressionOneRecommendationItem(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
+    }
+
+    private fun sendImpressionTwoRecommendationItems(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
+        val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
+        cartRecommendationList.add(it[currentIndex - 1])
+        cartRecommendationList.add(it[currentIndex])
+        sendAnalyticsOnViewProductRecommendation(
+                dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
+        )
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
@@ -1226,13 +1339,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(cartShopHolderData: CartShopHolderData) {
-        sendAnalyticsOnClickShopCartItem(cartShopHolderData.shopGroupAvailableData.shopId
-                ?: "", cartShopHolderData.shopGroupAvailableData.shopName ?: "")
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+        if (shopId != null && shopName != null) {
+            sendAnalyticsOnClickShopCartItem(shopId, shopName)
 
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, cartShopHolderData.shopGroupAvailableData.shopId)
-            it.startActivity(intent)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
+                it.startActivity(intent)
+            }
         }
     }
 
@@ -1351,6 +1465,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
+        recommendationPage = 1
         cartListData?.let {
             sendAnalyticsScreenName(screenName)
 
@@ -1380,7 +1495,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.currentPage, cartAdapter.allCartItemProductId)
+                dPresenter.processGetRecommendationData(recommendationPage, cartAdapter.allCartItemProductId)
             } else {
                 renderRecommendation(null)
             }
@@ -2007,6 +2122,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
+        llPromoCheckout.show()
+        llPromoCheckout.post {
+            if (initialPromoButtonPosition == 0f) {
+                initialPromoButtonPosition = llPromoCheckout.y
+            }
+        }
     }
 
     private fun showErrorContainer() {
@@ -2073,7 +2194,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun clearRecyclerView() {
-        cartAdapter.unsubscribeSubscription()
+        cartAdapter.clearCompositeSubscription()
         cartRecyclerView.removeAllViews()
         cartRecyclerView.recycledViewPool.clear()
     }
@@ -2083,7 +2204,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnGoToShipmentFailed(message)
         showToastMessageRed(message)
 
-        refreshHandler?.startRefresh()
+        refreshCart()
     }
 
     override fun renderErrorToShipmentForm(throwable: Throwable) {
@@ -2493,6 +2614,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else "0"
     }
 
+    private fun getAtcProductId(): Long {
+        return arguments?.getLong(CartActivity.EXTRA_PRODUCT_ID) ?: 0L
+    }
+
+    private fun isAtcExternalFlow(): Boolean {
+        return getAtcProductId() != 0L
+    }
+
     override fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops,
                                             updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>) {
         dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList)
@@ -2554,10 +2683,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.recentViewList = cartRecentViewItemHolderDataList
         shouldReloadRecentViewList = false
-
-        sendAnalyticsOnViewProductRecentView(
-                dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderWishlist(wishlists: List<Wishlist>?) {
@@ -2571,14 +2696,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
         cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
 
-        val cartRecentViewHolderData = CartWishlistHolderData()
-        cartRecentViewHolderData.wishList = cartWishlistItemHolderDataList
-        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData)
+        val cartWishlistHolderData = CartWishlistHolderData()
+        cartWishlistHolderData.wishList = cartWishlistItemHolderDataList
+        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
         this.wishLists = cartWishlistItemHolderDataList
-
-        sendAnalyticsOnViewProductWishlist(
-                dPresenter.generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList, FLAG_IS_CART_EMPTY)
-        )
     }
 
     override fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
@@ -2588,19 +2709,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             // Render from API
             val recommendationItems = recommendationWidget.recommendationItemList
             for (recommendationItem in recommendationItems) {
-                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(recommendationItem)
+                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(false, recommendationItem)
                 cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData)
             }
         } else {
             // Render from Cache
             if (recommendationList?.size != 0) {
+                recommendationList?.forEach {
+                    it.hasSentImpressionAnalytics = false
+                }
                 cartRecommendationItemHolderDataList.addAll(this.recommendationList!!)
             }
         }
 
         var cartSectionHeaderHolderData: CartSectionHeaderHolderData? = null
-        if ((endlessRecyclerViewScrollListener.currentPage == 0 && recommendationWidget == null) ||
-                (recommendationWidget != null && endlessRecyclerViewScrollListener.currentPage == 1 && recommendationSectionHeader == null)) {
+        if (recommendationPage == 1) {
             if (recommendationSectionHeader != null) {
                 cartSectionHeaderHolderData = recommendationSectionHeader
             } else {
@@ -2616,14 +2739,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartRecommendationItemHolderDataList.size > 0) {
             cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
-            recommendationList = cartRecommendationItemHolderDataList
-
-            recommendationList?.let {
-                sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationImpressionDataAnalytics(it, FLAG_IS_CART_EMPTY)
-                )
+            if (recommendationList.isNullOrEmpty()) {
+                recommendationList = cartRecommendationItemHolderDataList
             }
         }
+
+        recommendationPage++;
     }
 
     override fun showItemLoading() {
@@ -2861,8 +2982,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = true
     }
 
-    override fun sendATCTrackingURL(clickurl: String) {
-        var url = "$clickurl&click_source=ATC_direct_click";
-        activity?.let { ImpresionTask(it::class.qualifiedName, userSession).execute(url) }
+    override fun sendATCTrackingURL(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+
+        activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 }

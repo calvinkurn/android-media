@@ -6,6 +6,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.format.Time
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -13,12 +14,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
@@ -75,6 +78,84 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
     return builder
 }
 
+internal fun Int.getRelativeDateByMinute(context: Context): String {
+    if (this == 0) return ""
+
+    val minuteInput = this
+    val minuteDivider = TimeUnit.HOURS.toMinutes(1)
+    val dayInMinute = TimeUnit.DAYS.toMinutes(1)
+
+    return if (minuteInput / dayInMinute > 0) {
+        context.getString(R.string.shop_chat_speed_in_days, minuteInput / dayInMinute)
+    } else if (minuteInput / minuteDivider > 0) {
+        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / minuteDivider)
+    } else {
+        if (minuteInput > 0) {
+            context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
+        } else {
+            context.getString(R.string.shop_chat_speed_in_minute, 1)
+        }
+    }
+}
+
+internal fun Int.getRelativeDateByHours(context: Context): String {
+    if (this == 0) return ""
+
+    val hourInput = this
+    val dayInHours = TimeUnit.DAYS.toHours(1)
+
+    return if (hourInput / dayInHours > 0) {
+        context.getString(R.string.shop_chat_speed_in_days_with_icon, hourInput / dayInHours)
+    } else {
+        context.getString(R.string.shop_chat_speed_in_hours_with_icon, hourInput)
+    }
+}
+
+internal fun String.getRelativeDate(context: Context): String {
+    if (this.isEmpty()) return ""
+
+    val idLocale = getIdLocale()
+    val unixTime = this.toLongOrZero() * 1000
+
+    val diff: Long = Calendar.getInstance().timeInMillis / 1000 - this.toLongOrZero()
+    val date = Date(unixTime)
+
+    val getYear = date.toFormattedString("yyyy", idLocale)
+    val getDaysAndMonth = date.toFormattedString("dd MMM", idLocale)
+    val getMonthAndYear = date.toFormattedString("MMM yyyy", idLocale)
+
+    val minuteDivider: Long = 60
+    val hourDivider = minuteDivider * 60
+    val dayDivider = hourDivider * 24
+    val monthDivider = dayDivider * 30
+    val yearDivider = monthDivider * 12
+
+    return if (diff / yearDivider > 0) {
+        context.getString(R.string.shop_online_last_date, getYear)
+    } else if (diff / monthDivider >= 3) {
+        context.getString(R.string.shop_online_last_date, getMonthAndYear)
+    } else if (diff / dayDivider > 0) {
+        val days = diff / dayDivider
+        when {
+            days <= 1 -> {
+                context.getString(R.string.shop_online_yesterday)
+            }
+            days in 3..6 -> {
+                context.getString(R.string.shop_online_days_ago, diff / dayDivider)
+            }
+            else -> {
+                context.getString(R.string.shop_online_last_date, getDaysAndMonth)
+            }
+        }
+    } else if (diff / hourDivider > 0) {
+        context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
+    } else {
+        val minutes = diff / minuteDivider
+        if (minutes in 0..5) context.getString(R.string.shop_online) else
+            context.getString(R.string.shop_online_minute_ago, minutes)
+    }
+}
+
 infix fun String?.toDate(format: String): String {
     this?.let {
         val isLongFormat = try {
@@ -126,6 +207,8 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
         }
     }
 }
+
+fun getIdLocale() = Locale("id", "ID")
 
 fun String.goToWebView(context: Context) {
     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))

@@ -13,6 +13,7 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_SUGGESTED_REVIEW = "suggestedProductReview"
         const val KEY_CONTAINS_PLAY_DC = "playGetLiveDynamicChannels"
         const val KEY_CONTAINS_RECHARGE = "rechargeRecommendation"
+        const val KEY_CONTAINS_SALAM = "salamWidget"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -44,6 +45,12 @@ class HomeMockResponseConfig: MockModelConfig() {
                 KEY_CONTAINS_RECHARGE,
                 getRawString(context, R.raw.response_mock_data_recharge_recommendation),
                 FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_SALAM,
+                getRawString(context, R.raw.response_mock_data_salam_content),
+                FIND_BY_CONTAINS
+        )
 
         return this
     }

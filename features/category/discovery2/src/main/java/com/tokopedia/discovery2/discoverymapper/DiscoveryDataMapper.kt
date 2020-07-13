@@ -23,6 +23,7 @@ class DiscoveryDataMapper {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed { index, it ->
                 val componentsItem = ComponentsItem()
+                componentsItem.position = index
                 val id = "${CHIPS}_$index"
                 componentsItem.name = subComponentName
                 componentsItem.id = id
@@ -45,6 +46,7 @@ class DiscoveryDataMapper {
                     isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
+                componentsItem.position = index
                 componentsItem.name = subComponentName
                 componentsItem.pageEndPoint = component.pageEndPoint
                 it.positionForParentItem = position
@@ -59,13 +61,23 @@ class DiscoveryDataMapper {
             }
             return list
         }
+
+        fun mapBannerComponentData(bannerComponent: ComponentsItem): ComponentsItem {
+            return bannerComponent.apply {
+                this.data?.forEach {
+                    it.id = this.id
+                    it.name = this.name
+                }
+            }
+        }
     }
 
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
                                               categoryHeaderPosition: Int): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        itemList.forEach {
+        itemList.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = subComponentName
             val dataItem = mutableListOf<DataItem>()
             it.title = categoryHeaderName
@@ -90,6 +102,8 @@ class DiscoveryDataMapper {
         val product = ProductItem()
         product.name = item.headline?.shop?.slogan
         product.buttonText = item.headline?.buttonText
+        product.shopAdsClickUrl = item.adClickUrl
+        product.shopAdsViewUrl = item.headline?.image?.fullUrl
         product.imageProduct = ImageProduct()
         product.imageProduct?.imageUrl = item.headline?.image?.fullEcs
         product.applinks = item.applinks
@@ -101,10 +115,13 @@ class DiscoveryDataMapper {
         val list = ArrayList<ComponentsItem>()
         listOfProduct?.forEachIndexed { index, element ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = getComponentName(index)
             val litDataItem = mutableListOf<DataItem>()
             val dataItem = DataItem()
             dataItem.name = element?.name
+            dataItem.shopAdsClickURL = element?.shopAdsClickUrl
+            dataItem.shopAdsViewURL = element?.shopAdsViewUrl
             dataItem.imageUrlMobile = element?.imageProduct?.imageUrl
             dataItem.applinks = element?.applinks
             dataItem.buttonText = element?.buttonText
@@ -119,12 +136,13 @@ class DiscoveryDataMapper {
 
     fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, typeProductCard: String = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        itemList?.forEach {
+        itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
-            it.typeProductCard = typeProductCard
+            it.typeProductCard = subComponentName
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)
@@ -140,8 +158,9 @@ class DiscoveryDataMapper {
 
     fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        child?.forEach {
+        child?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
+            componentsItem.position = index
             componentsItem.name = ComponentNames.HorizontalCategoryNavigationIem.componentName
             val dataItemlist = mutableListOf<DataItem>()
             val dataItem = DataItem()
@@ -155,7 +174,6 @@ class DiscoveryDataMapper {
         }
         return list
     }
-
 
     data class CpmTopAdsData(var promotedText: String = "",
                              var imageUrl: String = "",

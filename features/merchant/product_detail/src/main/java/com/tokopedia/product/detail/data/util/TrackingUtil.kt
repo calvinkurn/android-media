@@ -143,7 +143,7 @@ object TrackingUtil {
                     mapOf(
                             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
                             KEY_CURRENT_SITE to CURRENT_SITE,
-                            KEY_DISCUSSION_USER_ID to "{{$userId}}",
+                            KEY_DISCUSSION_USER_ID to userId,
                             KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
                     )
             )

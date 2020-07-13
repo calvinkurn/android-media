@@ -44,7 +44,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/bg_warning"
+        android:background="@drawable/checkout_module_bg_warning"
         android:padding="@dimen/dp_16"
         android:text="@string/ticker_corner_list_info"
         android:textSize="@dimen/sp_12" />

@@ -80,6 +80,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.TICKER_INFO -> {
                     listOfComponent.add(ProductTickerInfoDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY -> {
+                    listOfComponent.add(ProductShopCredibilityDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -112,7 +115,7 @@ object DynamicProductDetailMapper {
                 notifyMe = upcomingData.notifyMe
         ) ?: ComponentData()
 
-        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media)
+        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia)
     }

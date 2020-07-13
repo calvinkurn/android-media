@@ -19,6 +19,22 @@ import com.tokopedia.track.TrackAppUtils
 
 class DigitalTopupAnalytics {
 
+    fun eventOpenScreen(userId: String, categoryId: Int) {
+        val categoryName = getCategoryName(categoryId)
+        val stringScreenName = StringBuilder(DigitalTopupEventTracking.Additional.DIGITAL_SCREEN_NAME)
+        stringScreenName.append(categoryName.toLowerCase())
+
+        val mapOpenScreen = HashMap<String, String>()
+        mapOpenScreen[DigitalTopupEventTracking.Additional.IS_LOGIN_STATUS] = if (userId.isEmpty())  "false" else "true"
+        mapOpenScreen[DigitalTopupEventTracking.Additional.BUSINESS_UNIT] = DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+        mapOpenScreen[DigitalTopupEventTracking.Additional.CURRENT_SITE] = DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE
+        mapOpenScreen[DigitalTopupEventTracking.Additional.USER_ID] = userId
+        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY] = categoryName
+        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY_ID] = categoryId.toString()
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
+    }
+
     fun eventInputNumberManual(categoryId: Int, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
@@ -119,30 +135,30 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventClickCheckEnquiry(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickCheckEnquiry(categoryId: Int, operatorName: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_CHECK_TAGIHAN,
-                "$categoryName - $operatorName")
+                "${getCategoryName(categoryId)} - $operatorName")
         sendGeneralEvent(mapEvent, userId)
     }
 
-    fun eventClickTabMenuTelco(categoryName: String, userId: String, action: String) {
+    fun eventClickTabMenuTelco(categoryId: Int, userId: String, action: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 action,
-                "$categoryName")
+                "${getCategoryName(categoryId)}")
         sendGeneralEvent(mapEvent, userId)
     }
 
-    fun eventClickDotsMenuTelco(categoryName: String, userId: String) {
+    fun eventClickDotsMenuTelco(categoryId: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_DOTS_MENU,
-                "$categoryName")
+                "${getCategoryName(categoryId.toInt())}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -162,7 +178,7 @@ class DigitalTopupAnalytics {
             productTelcoList.add(DataLayer.mapOf(
                     DigitalTopupEventTracking.EnhanceEccomerce.NAME, element.itemProduct.attributes.desc,
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, element.itemProduct.id,
-                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, element.itemProduct.attributes.price,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, element.itemProduct.attributes.pricePlain.toString(),
                     DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
                     DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(element.itemProduct.attributes.categoryId),
                     DigitalTopupEventTracking.EnhanceEccomerce.LIST, "${getCategoryName(element.itemProduct.attributes.categoryId)} - product ${element.position} - " +
@@ -191,12 +207,12 @@ class DigitalTopupAnalytics {
     }
 
     fun clickEnhanceCommerceProduct(itemProduct: TelcoProduct, position: Int,
-                                    operatorName: String, userId: String) {
+                                    operatorName: String, userId: String, itemList: String) {
         val productTelcoList = ArrayList<Any>()
         productTelcoList.add(DataLayer.mapOf(
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.attributes.desc,
                 DigitalTopupEventTracking.EnhanceEccomerce.ID, itemProduct.id,
-                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.price,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.pricePlain.toString(),
                 DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
                 DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemProduct.attributes.categoryId),
                 DigitalTopupEventTracking.EnhanceEccomerce.LIST, itemProduct.attributes.desc,
@@ -208,6 +224,7 @@ class DigitalTopupAnalytics {
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_PRODUCT_CARD,
                         "eventLabel", "${getCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}",
+                        "item_list", itemList,
                         DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE,
                         DigitalTopupEventTracking.Additional.USER_ID, userId,
                         DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
@@ -228,7 +245,7 @@ class DigitalTopupAnalytics {
         productTelcoList.add(DataLayer.mapOf(
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.attributes.desc,
                 DigitalTopupEventTracking.EnhanceEccomerce.ID, itemProduct.id,
-                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.price,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.attributes.pricePlain.toString(),
                 DigitalTopupEventTracking.EnhanceEccomerce.BRAND, operatorName,
                 DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, getCategoryName(itemProduct.attributes.categoryId),
                 DigitalTopupEventTracking.EnhanceEccomerce.VARIANT, "none",
@@ -378,7 +395,7 @@ class DigitalTopupAnalytics {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()
             TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING.toLowerCase()
-            else -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
+            else -> TelcoComponentName.PRODUCT_PASCABAYAR.toLowerCase()
         }
     }
 }

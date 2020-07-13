@@ -30,6 +30,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
 
+    val productSocialProofPvDataModel: ProductSocialProofDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
+
     val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
@@ -99,6 +102,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val tickerInfoMap: ProductTickerInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TICKER_INFO] as? ProductTickerInfoDataModel
 
+    val shopCredibility: ProductShopCredibilityDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -118,7 +124,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 data = it
             }
             snapShotMap?.run {
-               data = it
+                data = it
             }
             mediaMap?.run {
                 shouldRenderImageVariant = true
@@ -157,6 +163,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             socialProofMap?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
+            }
+
+            productSocialProofPvDataModel?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
             }
@@ -215,6 +226,13 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopInfo = it.shopInfo
             }
 
+            shopCredibility?.run {
+                shopInfo = it.shopInfo
+                shopSpeed = it.shopSpeed
+                shopChatSpeed = it.shopChatSpeed
+                shopRating = it.shopRating
+            }
+
             miniShopInfo?.run {
                 shopName = it.shopInfo?.shopCore?.name ?: ""
             }
@@ -251,7 +269,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         basicContentMap?.shouldShowCod = isCod
     }
 
-    fun updateFulfillmentData(context: Context?, isFullfillment:Boolean) {
+    fun updateFulfillmentData(context: Context?, isFullfillment: Boolean) {
         val fullFillmentText = if (!isFullfillment) {
             ""
         } else {
@@ -274,6 +292,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             shopInfoMap?.run {
                 shopFeature = it.shopFeature
                 shopBadge = it.shopBadge
+            }
+
+            shopCredibility?.run {
+                shopFeature = it.shopFeature
             }
 
             mediaMap?.run {
@@ -301,6 +323,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 wishlistCount = it.wishlistCount.count
             }
 
+            productSocialProofPvDataModel?.run {
+                wishlistCount = it.wishlistCount.count
+            }
+
             miniSocialProofMap?.run {
                 wishlistCount = it.wishlistCount.count
                 shouldRenderSocialProof = true
@@ -311,9 +337,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productDiscussionMostHelpfulMap?.run {
-                questions = it.discussionMostHelpful.questions
-                totalQuestion = it.discussionMostHelpful.totalQuestion
-                isShimmering = false
+                if(it.discussionMostHelpful == null) {
+                    isShimmering = true
+                } else {
+                    it.discussionMostHelpful?.let {
+                        questions = it.questions
+                        totalQuestion = it.totalQuestion
+                        isShimmering = false
+                    }
+                }
             }
 
             productMostHelpfulMap?.run {
@@ -361,7 +393,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         mediaMap?.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it)
     }
 
-    fun updateVariantData(processedVariant:  List<VariantCategory>?) {
+    fun updateVariantData(processedVariant: List<VariantCategory>?) {
         productNewVariantDataModel?.listOfVariantCategory = processedVariant
     }
 

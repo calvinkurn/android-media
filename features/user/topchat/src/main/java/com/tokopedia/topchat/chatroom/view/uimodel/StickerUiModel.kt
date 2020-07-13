@@ -14,52 +14,30 @@ class StickerUiModel : SendableViewModel, Visitable<TopChatTypeFactory> {
      * Constructor when message received from WebSocket
      */
     constructor(
-            messageId: String,
-            fromUid: String,
-            from: String,
-            fromRole: String,
-            attachmentId: String,
-            attachmentType: String,
-            replyTime: String,
-            startTime: String = "",
-            message: String,
-            isRead: Boolean,
-            isDummy: Boolean,
-            isSender: Boolean,
-            sticker: StickerProfile
-    ) : super(messageId,
-            fromUid,
-            from,
-            fromRole,
-            attachmentId,
-            attachmentType,
-            replyTime,
-            startTime,
-            isRead,
-            isDummy,
-            isSender,
-            message) {
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, startTime: String = "",
+            message: String, isRead: Boolean, isDummy: Boolean, isSender: Boolean,
+            sticker: StickerProfile, source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            isRead, isDummy, isSender, message, source
+    ) {
         this.sticker = sticker
     }
 
+    /**
+     * Constructor for sending dummy
+     */
     constructor(
-            messageId: String,
-            fromUid: String,
-            from: String,
-            startTime: String,
+            messageId: String, fromUid: String, from: String, startTime: String,
             sticker: StickerProfile
-    ) : super(messageId,
-            fromUid,
-            from,
-            "",
-            "",
-            "",
-            BaseChatViewModel.SENDING_TEXT,
-            startTime,
-            false,
-            true,
-            true,
-            sticker.intention) {
+    ) : super(
+            messageId, fromUid, from, "",
+            "", "", BaseChatViewModel.SENDING_TEXT, startTime,
+            false, true, true, sticker.intention,
+            ""
+    ) {
         this.sticker = sticker
     }
 

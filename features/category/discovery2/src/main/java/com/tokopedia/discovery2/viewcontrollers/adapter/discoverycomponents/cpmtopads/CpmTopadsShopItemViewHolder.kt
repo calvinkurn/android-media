@@ -21,11 +21,11 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.topads.sdk.domain.model.ImageShop
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private lateinit var cpmTopadsItemViewModel: CpmTopadsShopItemViewModel
+    private var dataItem: DataItem? = null
 
     private val brandImage: ImageView = itemView.findViewById(R.id.shop_image)
     private val brandName: TextView = itemView.findViewById(R.id.shop_name)
@@ -33,13 +33,13 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopadsItemViewModel = discoveryBaseViewModel as CpmTopadsShopItemViewModel
         cpmTopadsItemViewModel.getComponent().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val data = item.data?.getOrElse(0) { DataItem() }
+            dataItem = item.data?.getOrElse(0) { DataItem() }
             ImageHandler.loadImageCircle2(itemView.context,
                     brandImage,
-                    data?.imageUrlMobile)
-            data?.let { setName(it) }
-            setTrackEvent(data, brandImage)
-            setClick(data)
+                    dataItem?.imageUrlMobile)
+            dataItem?.let { setName(it) }
+            setTrackEvent(dataItem, brandImage)
+            setClick(dataItem)
         })
 
     }
@@ -49,16 +49,9 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
         shopData.setsUrl(data?.imageUrlMobile ?: "")
         view.addOnImpressionListener(shopData, object : ViewHintListener {
             override fun onViewHint() {
-                sendUrlTrack(shopData.getsUrl())
                 sendTopAdsShopImpression(data)
             }
         })
-    }
-
-    private fun sendUrlTrack(url: String?) {
-        fragment.activity?.let {
-            ImpresionTask(it::class.qualifiedName).execute(url)
-        }
     }
 
     private fun sendTopAdsShopImpression(data: DataItem?) {
@@ -77,8 +70,7 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
     }
 
     private fun sendTopAdsShopClick(data: DataItem) {
-        //sending imageUrlMobile because imageClickUrl is null in data
-        sendUrlTrack(data.imageUrlMobile)
+        cpmTopadsItemViewModel.sendTopAdsClickTracking(data.shopAdsClickURL)
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(data)
     }
 
@@ -100,6 +92,11 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
 
         brandName.highlightColor = Color.TRANSPARENT
         brandName.setText(spannableString, TextView.BufferType.SPANNABLE)
+    }
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        dataItem?.let { cpmTopadsItemViewModel.sendTopAdsViewTracking(it.shopAdsViewURL) }
     }
 
 }

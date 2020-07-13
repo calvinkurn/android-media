@@ -48,16 +48,13 @@ public class ViewEngine {
 
     private WeakReference<Activity> activityWeakReference;
 
-
     private View inAppView;
-
 
     private int resCmClose = R.id.iv_close;
     private int resCmImage = R.id.iv_cmImage;
     private int resCmTitle = R.id.tv_cmTitle;
     private int resCmMessage = R.id.tv_cmMessage;
     private int buttonContainer = R.id.ll_buttonContainer;
-
 
     public ViewEngine(Activity activity) {
         activityWeakReference = new WeakReference<>(activity);
@@ -395,7 +392,7 @@ public class ViewEngine {
                 String deepLink = v.getTag().toString();
                 CmInAppListener listener = CMInAppManager.getCmInAppListener();
                 if (listener != null && !TextUtils.isEmpty(deepLink)) {
-                    listener.onCMinAppDismiss();
+                    listener.onCMinAppDismiss(cmInApp);
                     listener.onCMinAppInteraction(cmInApp);
                     listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp, elementType);
                 }
@@ -445,7 +442,7 @@ public class ViewEngine {
             CmInAppListener listener = CMInAppManager.getCmInAppListener();
             if (listener != null) {
                 listener.onCMInAppClosed(cmInApp);
-                listener.onCMinAppDismiss();
+                listener.onCMinAppDismiss(cmInApp);
                 listener.onCMinAppInteraction(cmInApp);
             }
             ((ViewGroup) view.getParent()).removeView(view);
@@ -463,7 +460,7 @@ public class ViewEngine {
                     CmInAppListener listener = CMInAppManager.getCmInAppListener();
                     if (listener != null) {
                         listener.onCMInAppClosed(cmInApp);
-                        listener.onCMinAppDismiss();
+                        listener.onCMinAppDismiss(cmInApp);
                     }
                     ((ViewGroup) v.getParent()).removeView(v);
                     return true;

@@ -8,6 +8,7 @@
 
         <activity
             android:name="com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
+            android:label="@string/checkout_module_title_activity_shipping_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
@@ -27,7 +28,7 @@
 
         <activity
             android:name="com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
-            android:label="@string/checkout_module_title_send_to_multiple_address"
+            android:label="@string/checkout_module_title_activity_multiple_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />

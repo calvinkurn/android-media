@@ -4,8 +4,9 @@
     <application>
 
         <activity
-            android:name=".view.activity.ShopOpenRoutingActivity"
-            android:label="@string/title_open_shop"
+            android:name=".presentation.view.activity.ShopOpenRevampActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -17,30 +18,6 @@
                     android:path="@string/path_shop_open"/>
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".view.activity.ShopOpenPostalCodeChooserActivity"
-            android:label="@string/title_shop_postal_code"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
-
-        <activity
-            android:name=".view.activity.ShopOpenDomainActivity"
-            android:label="@string/title_open_shop"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".view.activity.ShopOpenCreateReadyActivity"
-            android:theme="@style/Theme.White"
-            android:label="@string/title_open_shop"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name="com.tokopedia.shop.open.shop_open_revamp.presentation.view.activity.ShopOpenRevampActivity"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
 
     </application>
 

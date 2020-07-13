@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
@@ -24,8 +26,13 @@ import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
+import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
+import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
+import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -112,5 +119,20 @@ class DiscoveryModule {
     @Provides
     fun provideDiscoveryUIConfigQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_discovery_ui_config)
+    }
+
+    @Provides
+    fun provideQuickCouponGQLRepository(@ApplicationContext context: Context): QuickCouponRepository {
+        return QuickCouponGQLRepository(provideGetStringMethod(context))
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
+        return PageLoadTimePerformanceCallback(
+                DISCOVERY_PLT_PREPARE_METRICS,
+                DISCOVERY_PLT_NETWORK_METRICS,
+                DISCOVERY_PLT_RENDER_METRICS,0,0,0,0,null
+        )
     }
 }

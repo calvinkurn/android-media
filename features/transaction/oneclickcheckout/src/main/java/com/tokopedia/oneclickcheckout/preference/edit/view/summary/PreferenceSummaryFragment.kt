@@ -24,10 +24,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.domain.model.OccState
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceData
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
@@ -154,29 +155,24 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     activity?.setResult(RESULT_OK, Intent().putExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE, it.data))
                     activity?.finish()
                 }
-                is OccState.Fail -> {
+                is OccState.Failed -> {
                     progressDialog?.dismiss()
-                    if (!it.isConsumed) {
+                    it.getFailure()?.let { failure ->
                         view?.let { view ->
-                            if (it.throwable != null) {
-                                if (it.throwable is MessageErrorException) {
-                                    Toaster.make(view, it.throwable.message
-                                            ?: "Failed", type = Toaster.TYPE_ERROR)
-                                } else {
-                                    Toaster.make(view, it.throwable.localizedMessage
-                                            ?: "Failed", type = Toaster.TYPE_ERROR)
-                                }
+                            if (failure.throwable is MessageErrorException) {
+                                Toaster.make(view, failure.throwable.message
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             } else {
-                                Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
+                                Toaster.make(view, failure.throwable?.localizedMessage
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                             }
-                            viewModel.consumeEditResultFail()
                         }
                     }
                 }
                 else -> {
                     if (progressDialog == null) {
                         progressDialog = AlertDialog.Builder(context!!)
-                                .setView(R.layout.purchase_platform_progress_dialog_view)
+                                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                                 .setCancelable(false)
                                 .create()
                     }
@@ -186,7 +182,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun setupViews(data: GetPreferenceData) {
+    private fun setupViews(data: ProfilesItemModel) {
         if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
             val parent = activity
             if (parent is PreferenceEditParent) {
@@ -203,13 +199,13 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         }
 
         val addressModel = data.addressModel
-        tvAddressName?.text = addressModel?.addressName ?: ""
-        val receiverName = addressModel?.receiverName
-        val phone = addressModel?.phone
+        tvAddressName?.text = addressModel.addressName
+        val receiverName = addressModel.receiverName
+        val phone = addressModel.phone
         var receiverText = ""
-        if (receiverName != null) {
+        if (receiverName.isNotBlank()) {
             receiverText = " - $receiverName"
-            if (phone != null) {
+            if (phone.isNotBlank()) {
                 receiverText = "$receiverText ($phone)"
             }
         }
@@ -219,17 +215,17 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvAddressReceiver?.gone()
         }
-        tvAddressDetail?.text = addressModel?.fullAddress ?: ""
+        tvAddressDetail?.text = addressModel.fullAddress
 
         val shipmentModel = data.shipmentModel
-        tvShippingName?.text = "Pengiriman ${shipmentModel?.serviceName?.capitalize() ?: ""}"
-        tvShippingDuration?.text = "Durasi ${shipmentModel?.serviceDuration ?: ""}"
+        tvShippingName?.text = getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
+        tvShippingDuration?.text = getString(R.string.lbl_shipping_duration_prefix, shipmentModel.serviceDuration)
 
         val paymentModel = data.paymentModel
-        ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel?.image)
-        tvPaymentName?.text = paymentModel?.gatewayName ?: ""
-        val description = paymentModel?.description
-        if (description != null && description.isNotBlank()) {
+        ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel.image)
+        tvPaymentName?.text = paymentModel.gatewayName
+        val description = paymentModel.description
+        if (description.isNotBlank()) {
             tvPaymentDetail?.text = description
             tvPaymentDetail?.visible()
         } else {
@@ -377,7 +373,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                                     setTitle(getString(R.string.lbl_delete_preference_title))
                                     setDescription(getString(R.string.lbl_delete_preference_desc))
                                     setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
-                                    setSecondaryCTAText(getString(R.string.text_button_negative))
+                                    setSecondaryCTAText(getString(com.tokopedia.purchase_platform.common.R.string.text_button_negative))
                                     setPrimaryCTAClickListener {
                                         preferenceListAnalytics.eventClickDeletePreferenceFromTrashBin()
                                         dismiss()
@@ -406,36 +402,28 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setDataToParent(data: GetPreferenceData) {
+    private fun setDataToParent(data: ProfilesItemModel) {
         val parent = activity
         if (parent is PreferenceEditParent) {
             if (parent.getAddressId() == 0) {
-                val addressId = data.addressModel?.addressId
-                if (addressId != null) {
-                    parent.setAddressId(addressId)
-                    viewModel.profileAddressId = addressId
-                }
+                val addressId = data.addressModel.addressId
+                parent.setAddressId(addressId)
+                viewModel.profileAddressId = addressId
             }
             if (parent.getShippingId() == 0) {
-                val serviceId = data.shipmentModel?.serviceId
-                if (serviceId != null) {
-                    parent.setShippingId(serviceId)
-                    viewModel.profileServiceId = serviceId
-                }
+                val serviceId = data.shipmentModel.serviceId
+                parent.setShippingId(serviceId)
+                viewModel.profileServiceId = serviceId
             }
             if (parent.getGatewayCode().isEmpty()) {
-                val gatewayCode = data.paymentModel?.gatewayCode
-                if (gatewayCode != null) {
-                    parent.setGatewayCode(gatewayCode)
-                    viewModel.profileGatewayCode = gatewayCode
-                }
+                val gatewayCode = data.paymentModel.gatewayCode
+                parent.setGatewayCode(gatewayCode)
+                viewModel.profileGatewayCode = gatewayCode
             }
             if (parent.getPaymentQuery().isEmpty()) {
-                val metadata = data.paymentModel?.metadata
-                if (metadata != null) {
-                    parent.setPaymentQuery(metadata)
-                    viewModel.profilePaymentMetadata = metadata
-                }
+                val metadata = data.paymentModel.metadata
+                parent.setPaymentQuery(metadata)
+                viewModel.profilePaymentMetadata = metadata
             }
         }
     }

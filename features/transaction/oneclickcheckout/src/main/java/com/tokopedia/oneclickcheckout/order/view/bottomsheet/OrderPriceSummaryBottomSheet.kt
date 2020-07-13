@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -35,12 +36,12 @@ class OrderPriceSummaryBottomSheet {
 
     @SuppressLint("SetTextI18n")
     private fun setupView(child: View, orderCost: OrderCost) {
-        child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false)
+        child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
         val tvTotalProductDiscountValue = child.tv_total_product_discount_value
         val tvTotalProductDiscountLabel = child.tv_total_product_discount_label
         if (orderCost.productDiscountAmount > 0) {
-            tvTotalProductDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.productDiscountAmount, false)}"
+            tvTotalProductDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.productDiscountAmount, false).removeDecimalSuffix()}"
             tvTotalProductDiscountValue.visible()
             tvTotalProductDiscountLabel.visible()
         } else {
@@ -52,13 +53,13 @@ class OrderPriceSummaryBottomSheet {
         val tvTotalShippingDiscountValue = child.tv_total_shipping_discount_value
         val tvTotalShippingDiscountLabel = child.tv_total_shipping_discount_label
         if (orderCost.shippingDiscountAmount > 0 && orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
-            tvTotalShippingPriceValue.setText(R.string.label_free_shipping)
+            tvTotalShippingPriceValue.setText(com.tokopedia.purchase_platform.common.R.string.label_free_shipping)
             tvTotalShippingDiscountValue.gone()
             tvTotalShippingDiscountLabel.gone()
         } else {
-            tvTotalShippingPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee, false)
+            tvTotalShippingPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee, false).removeDecimalSuffix()
             if (orderCost.shippingDiscountAmount > 0) {
-                tvTotalShippingDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingDiscountAmount, false)}"
+                tvTotalShippingDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingDiscountAmount, false).removeDecimalSuffix()}"
                 tvTotalShippingDiscountValue.visible()
                 tvTotalShippingDiscountLabel.visible()
             } else {
@@ -70,7 +71,7 @@ class OrderPriceSummaryBottomSheet {
         val tvTotalInsurancePriceValue = child.tv_total_insurance_price_value
         val tvTotalInsurancePriceLabel = child.tv_total_insurance_price_label
         if (orderCost.insuranceFee > 0.0) {
-            tvTotalInsurancePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false)
+            tvTotalInsurancePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false).removeDecimalSuffix()
             tvTotalInsurancePriceLabel.visible()
             tvTotalInsurancePriceValue.visible()
         } else {
@@ -81,7 +82,7 @@ class OrderPriceSummaryBottomSheet {
         val tvTotalPaymentFeePriceValue = child.tv_total_payment_fee_price_value
         val tvTotalPaymentFeePriceLabel = child.tv_total_payment_fee_price_label
         if (orderCost.paymentFee > 0.0) {
-            tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false)
+            tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false).removeDecimalSuffix()
             tvTotalPaymentFeePriceLabel.visible()
             tvTotalPaymentFeePriceValue.visible()
         } else {
@@ -89,7 +90,7 @@ class OrderPriceSummaryBottomSheet {
             tvTotalPaymentFeePriceValue.gone()
         }
 
-        child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
+        child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
         val llCashback = child.ll_cashback
         val divider2 = child.divider2

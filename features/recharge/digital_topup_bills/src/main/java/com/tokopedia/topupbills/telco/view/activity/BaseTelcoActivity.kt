@@ -5,17 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.abs
 
 open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<DigitalTopupComponent>,
         TopupBillsMenuBottomSheets.MenuListener {
@@ -24,6 +28,9 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
+
+    lateinit var appBarLayout: AppBarLayout
+    lateinit var menuTelco: Menu
 
     private fun initInjector() {
         component.inject(this)
@@ -49,6 +56,27 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
         //draw background without overdraw GPU
         window.setBackgroundDrawableResource(R.color.digital_cardview_light_background)
+
+        setAnimationAppBarLayout()
+    }
+
+    private fun setAnimationAppBarLayout() {
+        appBarLayout = findViewById(R.id.app_bar_layout_telco)
+        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { p0, verticalOffSet ->
+            if (::menuTelco.isInitialized) {
+                if (abs(verticalOffSet) == appBarLayout.totalScrollRange) {
+                    //Collapsed
+                    (toolbar as HeaderUnify).transparentMode = false
+                    menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                            com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
+                } else {
+                    //Expanded
+                    (toolbar as HeaderUnify).transparentMode = true
+                    menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                            com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+                }
+            }
+        })
     }
 
     /* This Method is use to tracking Action click when user click TelcoProduct
@@ -64,8 +92,12 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_telco, menu)
-        return true
+        menu?.let {
+            menuTelco = menu
+            menuInflater.inflate(R.menu.menu_telco, menu)
+            return true
+        }
+        return false
     }
 
     override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {

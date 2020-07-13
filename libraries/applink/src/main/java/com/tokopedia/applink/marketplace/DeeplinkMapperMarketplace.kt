@@ -30,6 +30,8 @@ object DeeplinkMapperMarketplace {
                     ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
                 }
             }
+            deeplink.startsWith(ApplinkConst.OCC) ->
+                deeplink.replace(ApplinkConst.OCC, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             else -> return deeplink
         }
     }

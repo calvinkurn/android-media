@@ -47,15 +47,19 @@ object DeeplinkMapperDigital {
 
     fun getRegisteredNavigationDigital(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
-            if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
-            else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
-        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)) {
-            return getDigitalSmartcardNavigation(deeplink)
-        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS)) {
-            return ApplinkConsInternalDigital.SMART_BILLS
+        return when {
+            deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
+                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
+                else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
+                getDigitalSmartcardNavigation(deeplink)
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS) -> {
+                ApplinkConsInternalDigital.SMART_BILLS
+            }
+            else -> deeplink
         }
-        return deeplink
     }
 
     fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {

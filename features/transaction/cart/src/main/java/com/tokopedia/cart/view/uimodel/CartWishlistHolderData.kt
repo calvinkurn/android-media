@@ -5,6 +5,7 @@ package com.tokopedia.cart.view.uimodel
  */
 
 data class CartWishlistHolderData(
+        var hasSentImpressionAnalytics: Boolean = false,
         var lastFocussPosition: Int = 0,
         var wishList: List<CartWishlistItemHolderData> = arrayListOf()
 )

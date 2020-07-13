@@ -30,6 +30,7 @@ abstract class BaseTracking {
     protected object Category{
         const val KEY = "eventCategory"
         const val HOMEPAGE = "homepage"
+        const val HOMEPAGE_TOPADS = "homepage-topads"
     }
 
     protected object Action{
@@ -267,7 +268,10 @@ abstract class BaseTracking {
         eventAction: String,
         eventLabel: String,
         promotions: List<Promotion>,
-        userId: String = ""
+        userId: String = "",
+        screen: String = "",
+        currentSite: String = "",
+        businessUnit: String = ""
     ): Map<String, Any>{
         val dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
@@ -277,6 +281,9 @@ abstract class BaseTracking {
                 Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
+        if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
+        if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
         return dataLayer
     }
 
@@ -288,17 +295,23 @@ abstract class BaseTracking {
             promotions: List<Promotion> = listOf(),
             promotionObject: List<Any>? = null,
             channelId: String,
-            userId: String = ""
+            userId: String = "",
+            screen: String = "",
+            currentSite: String = "",
+            businessUnit: String = ""
     ): Map<String, Any>{
         val dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObject)?: Ecommerce.getEcommercePromoView(promotions),
+                Ecommerce.KEY, if (promotionObject != null) Ecommerce.getEcommerceObjectPromoView(promotionObject) else Ecommerce.getEcommercePromoView(promotions),
                 ChannelId.KEY, channelId
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
+        if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
+        if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
         return dataLayer
     }
 
@@ -314,7 +327,10 @@ abstract class BaseTracking {
             shopId: String,
             campaignCode: String,
             promotions: List<Promotion>,
-            userId: String = ""
+            userId: String = "",
+            screen: String = "",
+            currentSite: String = "",
+            businessUnit: String = ""
     ): Map<String, Any>{
         val dataLayer = DataLayer.mapOf(
                 Event.KEY, event,
@@ -331,6 +347,9 @@ abstract class BaseTracking {
                 ChannelId.KEY, channelId
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
+        if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
+        if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
         return dataLayer
     }
 

@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.PreferenceListResponseModel
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.PreferenceListResponseModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -113,8 +113,8 @@ class PreferenceListBottomSheet(
         rvPreferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.top = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
-                outRect.bottom = child.context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+                outRect.top = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
+                outRect.bottom = child.context?.resources?.getDimension(com.tokopedia.design.R.dimen.dp_6)?.toInt() ?: 0
             }
         })
         btnAddPreference?.setOnClickListener {
@@ -143,7 +143,7 @@ class PreferenceListBottomSheet(
         adapter?.submitList(preferences.profiles)
         progressBar?.gone()
         rvPreferenceList?.visible()
-        if (preferences.profiles?.size ?: 0 >= preferences.maxProfile) {
+        if (preferences.profiles.size >= preferences.maxProfile) {
             btnAddPreference?.visible()
             btnAddPreference?.isEnabled = false
         } else {

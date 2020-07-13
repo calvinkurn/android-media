@@ -19,10 +19,11 @@ import java.util.HashMap
 
 class PltShopPagePowerMerchantPerformanceTest {
 
-    companion object{
+    companion object {
         private const val SAMPLE_SHOP_ID = "1154916"
     }
 
+    private val TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE = "shop_page_test_case_page_load_time"
     private val TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE = "shop_page_header_test_case_page_load_time"
     private val TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_home_tab_test_case_page_load_time"
     private val TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_product_tab_test_case_page_load_time"
@@ -30,7 +31,7 @@ class PltShopPagePowerMerchantPerformanceTest {
     private var context: Context? = null
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationShopPageTestActivity> = ActivityTestRule(InstrumentationShopPageTestActivity::class.java,false, false)
+    var activityRule: ActivityTestRule<InstrumentationShopPageTestActivity> = ActivityTestRule(InstrumentationShopPageTestActivity::class.java, false, false)
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
@@ -38,12 +39,12 @@ class PltShopPagePowerMerchantPerformanceTest {
     @Before
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        context?.let{
+        context?.let {
             (it.applicationContext as? MockResponseInterface)?.reInitMockResponse(createShopPagePowerMerchantMockResponse(it))
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
-            activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
     }
 
@@ -80,7 +81,13 @@ class PltShopPagePowerMerchantPerformanceTest {
                     TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+        activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
+            savePLTPerformanceResultData(
+                    it.getPltPerformanceData(),
+                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE
+            )
+        }
+        activityRule.activity.deleteDatabase("tokopedia_graphql")
         activityRule.activity.finishAndRemoveTask()
     }
 

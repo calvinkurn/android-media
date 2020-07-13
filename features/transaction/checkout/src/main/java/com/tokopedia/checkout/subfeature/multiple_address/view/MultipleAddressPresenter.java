@@ -124,7 +124,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
                 DataChangeAddressRequest request = new DataChangeAddressRequest();
                 MultipleAddressItemData itemData = dataList.get(i).getItemListData().get(j);
-                request.setCartId(Integer.parseInt(itemData.getCartId()));
+                request.setCartIdStr(itemData.getCartId());
                 request.setProductId(Integer.parseInt(itemData.getProductId()));
                 request.setAddressId(Integer.parseInt(itemData.getRecipientAddressModel().getId()));
                 request.setNotes(itemData.getProductNotes());

@@ -35,7 +35,9 @@ import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
 
 public class SearchTracking {
 
-    private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+    private static final String ACTION_FIELD = "/searchproduct - %s";
+    private static final String ORGANIC = "organic";
+    private static final String ORGANIC_ADS = "organic ads";
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
     public static final String EVENT_CATEGORY_SEARCH_RESULT = "search result";
@@ -174,13 +176,8 @@ public class SearchTracking {
         );
     }
 
-    public static String getActionFieldString(int pageNumber) {
-        return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
-    }
-
-    public static void trackEventClickSearchResultProduct(ProductItemViewModel productItemViewModel,
-                                                          Object item,
-                                                          int pageNumber,
+    public static void trackEventClickSearchResultProduct(Object item,
+                                                          boolean isOrganicAds,
                                                           String eventLabel,
                                                           String filterSortParams) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -190,7 +187,7 @@ public class SearchTracking {
                         "eventLabel", eventLabel,
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", getActionFieldString(pageNumber)),
+                                        DataLayer.mapOf("list", getActionFieldString(isOrganicAds)),
                                         "products", DataLayer.listOf(item)
                                 )
                         ),
@@ -199,9 +196,14 @@ public class SearchTracking {
         );
     }
 
+    private static String getActionFieldString(boolean isOrganicAds) {
+        String organicStatus = isOrganicAds ? ORGANIC_ADS : ORGANIC;
+
+        return String.format(ACTION_FIELD, organicStatus);
+    }
+
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
                                                           List<Object> list,
-                                                          List<ProductItemViewModel> productItemViewModels,
                                                           String eventLabel,
                                                           String irisSessionId) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
@@ -557,12 +559,12 @@ public class SearchTracking {
                 String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId));
     }
 
-    public static void trackEventClickSearchBar() {
+    public static void trackEventClickSearchBar(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,
-                "");
+                keyword);
     }
 
     public static void trackEventImpressionBannedProductsEmptySearch(String keyword) {
@@ -832,6 +834,15 @@ public class SearchTracking {
                                 )
                         )
                 )
+        );
+    }
+
+    public static void trackEventClickInspirationCardOption(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+            SearchEventTracking.Event.SEARCH_RESULT,
+            SearchEventTracking.Category.SEARCH_RESULT,
+            SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
+            label
         );
     }
 }

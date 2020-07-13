@@ -32,6 +32,10 @@ object ProductTrackingConstant {
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_SCREEN_NAME = "screenName"
         const val KEY_TICKER_TYPE = "tickerType"
+        const val KEY_PRODUCT_PRICE = "productPrice"
+        const val KEY_PRODUCT_NAME = "productName"
+        const val KEY_GROUP_NAME = "productGroupName"
+        const val KEY_GROUP_ID = "productGroupId"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -161,6 +165,8 @@ object ProductTrackingConstant {
         const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
         const val CLICK_THREAD_DETAIL_DISCUSSION = "click - thread detail on diskusi"
         const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
+
+        const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
     }
 
 
@@ -168,9 +174,9 @@ object ProductTrackingConstant {
         const val EMPTY_LABEL = ""
         const val CLICK = "click"
         const val PDP = "pdp"
-        const val DISCUSSION_EMPTY_QUESTION = "count thread:{{0}};"
-        const val DISCUSSION_SEE_ALL ="count thread:{{%s}};"
-        const val DISCUSSION_DETAIL = "talk id:{{%s}};count thread:{{%s}};"
+        const val DISCUSSION_EMPTY_QUESTION = "count thread:0;"
+        const val DISCUSSION_SEE_ALL ="count thread:%s;"
+        const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
     }
 
     object Report {

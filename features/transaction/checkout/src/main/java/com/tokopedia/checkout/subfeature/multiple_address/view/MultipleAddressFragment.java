@@ -305,7 +305,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void showError(String message) {
         if (getView() != null && getActivity() != null) {
             if (TextUtils.isEmpty(message)) {
-                message = getActivity().getString(R.string.default_request_error_unknown);
+                message = getActivity().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
             }
             if (multipleAddressAdapter == null || multipleAddressAdapter.getItemCount() == 0) {
                 showErrorLayout(message);
@@ -383,7 +383,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     protected void initView(View view) {
         progressDialogNormal = new AlertDialog.Builder(getActivity())
-                .setView(R.layout.purchase_platform_progress_dialog_view)
+                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                 .setCancelable(false)
                 .create();
 

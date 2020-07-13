@@ -47,12 +47,10 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     private fun setupShopInfoTicker(statusInfo: ShopInfo.StatusInfo?, closedInfo: ShopInfo.ClosedInfo?) = with(view) {
         shop_ticker_info.show()
         when (statusInfo?.shopStatus) {
-            ProductShopStatusTypeDef.OPEN , ProductShopStatusTypeDef.INACTIVE -> {
-                if (statusInfo.isIdle) {
-                    val statusMessage = getStringRes(R.string.ticker_desc_shop_idle)
-                    val statusTitle = getStringRes(R.string.ticker_title_shop_idle)
-                    renderShopTicker(statusTitle, statusMessage, null)
-                }
+            ProductShopStatusTypeDef.OPEN, ProductShopStatusTypeDef.INACTIVE -> {
+                val statusMessage = getStringRes(R.string.ticker_desc_shop_idle)
+                val statusTitle = getStringRes(R.string.ticker_title_shop_idle)
+                renderShopTicker(statusTitle, statusMessage, null)
             }
             ProductShopStatusTypeDef.CLOSED -> {
                 val openDate = closedInfo?.closeDetail?.openDateUnix.toDateId("EEEE, dd MMM yyyy")

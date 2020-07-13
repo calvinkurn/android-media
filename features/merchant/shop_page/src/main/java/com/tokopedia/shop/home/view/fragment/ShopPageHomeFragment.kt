@@ -163,6 +163,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         initPltMonitoring()
         getIntentData()
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            sortId = it.getString(SAVED_SHOP_SORT_ID , "")
+            sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
@@ -216,6 +220,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
         observeShopSortSharedViewModel()
         observeLiveData()
+        loadInitialData()
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     private fun observeShopSortSharedViewModel() {
@@ -223,7 +232,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (!shopHomeAdapter.isLoading) {
                 sortId = it.first
                 sortName = it.second
-                shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                 shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                 shopHomeAdapter.refreshSticky()
                 refreshProductList()
@@ -296,7 +304,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    updateProductListData(it.data.first, it.data.second)
+                    updateProductListData(it.data.first, it.data.second, true)
                 }
             }
             stopPerformanceMonitor()
@@ -306,7 +314,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    updateProductListData(it.data.first, it.data.second)
+                    updateProductListData(it.data.first, it.data.second, false)
                 }
             }
         })
@@ -409,13 +417,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun updateProductListData(hasNextPage: Boolean, productList: List<ShopHomeProductViewModel>) {
-        shopHomeAdapter.setProductListData(productList)
+    private fun updateProductListData(
+            hasNextPage: Boolean,
+            productList: List<ShopHomeProductViewModel>,
+            isInitialData: Boolean
+    ) {
+        shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
-        shopHomeAdapter.hideLoading()
         val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
         viewModel?.getWishlistStatus(listProductWidget)
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
@@ -493,9 +504,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (shopHomeAdapter.isLoading) {
                         return
                     }
-                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopHomeAdapter.refreshSticky()
@@ -986,6 +997,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if (shopHomeAdapter.isLoading) {
             return
         }
+        shopPageHomeTracking.clickClearFilter(
+                isOwner,
+                customDimensionShopPage
+        )
         sortId = ""
         sortName = ""
         shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)

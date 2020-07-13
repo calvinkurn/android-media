@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
@@ -27,9 +28,9 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
-import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
@@ -75,14 +76,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, source: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
                         putString(QUESTION_ID, questionId)
                         putString(PARAM_SHOP_ID, shopId)
-                        putString(PARAM_PRODUCT_ID, productId)
-                        putBoolean(IS_FROM_INBOX, isFromInbox)
+                        putString(PARAM_SOURCE, source)
                     }
                 }
     }
@@ -93,7 +93,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var questionId = ""
     private var shopId = ""
     private var productId = ""
-    private var isFromInbox = false
+    private var source = ""
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
@@ -225,10 +225,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReplyRecyclerView.post {
-            talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
-            talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
-        }
+        talkReplyRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReplyRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -241,7 +244,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        castContextToTalkPerformanceMonitoringListener(context)
+        talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
@@ -249,6 +252,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             goToShopPageActivity(shopId)
             return
         }
+        goToProfileActivity(userId)
+    }
+
+    override fun goToProfilePage(userId: String) {
         goToProfileActivity(userId)
     }
 
@@ -477,7 +484,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
                         talkReplyRecyclerView.visibility = View.VISIBLE
-                        if(isFromInbox && viewModel.isMyShop) {
+                        if(isFromInbox() || isFromNotif()) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
@@ -488,6 +495,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         }
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
+                        setProductId(it.data.discussionDataByQuestionID.productId)
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
@@ -666,8 +674,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         arguments?.let {
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
-            productId = it.getString(PARAM_PRODUCT_ID, "")
-            isFromInbox = it.getBoolean(IS_FROM_INBOX)
+            source = it.getString(PARAM_SOURCE, "")
         }
         viewModel.setIsMyShop(shopId)
     }
@@ -700,5 +707,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
+    private fun isFromInbox(): Boolean {
+        return source == TalkConstants.INBOX_SOURCE
+    }
 
+    private fun isFromNotif(): Boolean {
+        return source == TalkConstants.NOTIFICATION_SOURCE
+    }
+
+    private fun setProductId(productId: String) {
+        this.productId = productId
+    }
 }

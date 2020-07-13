@@ -383,7 +383,9 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             private fun updateListener(text: String) {
                 val myRunnable = Runnable { onSearchTextChanged(text) }
-                Handler(context?.mainLooper).post(myRunnable)
+                context?.mainLooper?.let{
+                    Handler(it).post(myRunnable)
+                }
             }
         }
     }

@@ -141,7 +141,7 @@ class TalkReplyViewModel @Inject constructor(
                 _createNewCommentResult.postValue(Fail(Throwable(response.talkCreateNewComment.messageError.first())))
             }
         }) {
-            _createNewCommentResult.postValue(Fail(Throwable()))
+            _createNewCommentResult.postValue(Fail(it))
         }
     }
 

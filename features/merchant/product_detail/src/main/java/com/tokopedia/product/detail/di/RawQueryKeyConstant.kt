@@ -2,6 +2,9 @@ package com.tokopedia.product.detail.di
 
 object RawQueryKeyConstant {
     const val QUERY_SHOP = "query_shop"
+    const val QUERY_SHOP_SPEED = "query_shop_speed"
+    const val QUERY_SHOP_CHAT_SPEED = "query_shop_chat_speed"
+    const val QUERY_SHOP_RATING = "query_shop_rating"
     const val QUERY_SHOP_BADGE = "query_shop_badge"
     const val QUERY_SHOP_COMMITMENT = "query_shop_commitment"
     const val QUERY_PRODUCT_INFO = "query_product_info"

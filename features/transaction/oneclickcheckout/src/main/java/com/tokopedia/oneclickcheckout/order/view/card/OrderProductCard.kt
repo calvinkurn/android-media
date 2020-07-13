@@ -1,13 +1,14 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.graphics.Paint
 import android.text.Editable
-import android.text.Html
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -15,7 +16,9 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -38,6 +41,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
+    private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
@@ -138,7 +142,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             })
             etQty?.addTextChangedListener(quantityTextWatcher)
             btnQtyPlus?.setOnClickListener {
-                if (product.quantity.orderQuantity < product.quantity.maxOrderQuantity) {
+                if (product.quantity.orderQuantity < product.quantity.maxOrderQuantity && product.quantity.orderQuantity < product.quantity.maxOrderStock) {
                     product.quantity.orderQuantity++
                     etQty?.setText("${product.quantity.orderQuantity}")
                 }
@@ -153,20 +157,17 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
 
             validateQuantity()
-            renderProductPropertiesInvenage()
+            renderProductTickerMessage()
         }
     }
 
-    private fun renderProductPropertiesInvenage() {
-        if (product.productResponse.productInvenageTotal.byUserText.complete.isNotEmpty()) {
-            val completeText = product.productResponse.productInvenageTotal.byUserText.complete
-            val totalInOtherCart = product.productResponse.productInvenageTotal.byUser.inCart
-            val totalRemainingStock = product.productResponse.productInvenageTotal.byUser.lastStockLessThan
-            val invenageText = completeText.replace(view.context?.getString(R.string.product_invenage_remaining_stock)
-                    ?: "", "" + totalRemainingStock)
-                    .replace(view.context?.getString(R.string.product_invenage_in_other_cart)
-                            ?: "", "" + totalInOtherCart)
-            tvQuantityStockAvailable?.text = Html.fromHtml(invenageText)
+    private fun renderProductTickerMessage() {
+        if (product.tickerMessage.message.isNotEmpty()) {
+            var completeText = product.tickerMessage.message
+            for (replacement in product.tickerMessage.replacement) {
+                completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
+            }
+            tvQuantityStockAvailable?.text = MethodChecker.fromHtml(completeText)
         } else {
             tvQuantityStockAvailable?.text = ""
         }
@@ -175,20 +176,23 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private fun validateQuantity() {
         var error: String? = null
         val element = product.quantity
-        btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_enabled)
-        btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_enabled)
+        btnQtyMin?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_enabled)
+        btnQtyPlus?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_enabled)
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
-            error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
+            error = element.errorProductMinQuantity.replace(QuantityUiModel.VALUE_REPLACE_STRING, element.minOrderQuantity.toString())
         } else if (element.orderQuantity > element.maxOrderQuantity) {
-            error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+            error = element.errorProductMaxQuantity.replace(QuantityUiModel.VALUE_REPLACE_STRING, element.maxOrderQuantity.toString())
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_MAX_QTY)
+        } else if (element.orderQuantity > element.maxOrderStock) {
+            error = element.errorProductAvailableStock.replace(QuantityUiModel.VALUE_REPLACE_STRING, element.maxOrderStock.toString())
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_MAX_QTY)
         }
         if (element.orderQuantity <= element.minOrderQuantity) {
-            btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
+            btnQtyMin?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled)
         }
-        if (element.orderQuantity >= element.maxOrderQuantity) {
-            btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_disabled)
+        if (element.orderQuantity >= element.maxOrderQuantity || element.orderQuantity >= element.maxOrderStock) {
+            btnQtyPlus?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled)
         }
 
         if (error != null) {
@@ -211,7 +215,15 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
             }
         }
-        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
+        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
+
+        if (product.originalPrice.isNotBlank()) {
+            tvProductSlashPrice.text = product.originalPrice
+            tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            tvProductSlashPrice.visible()
+        } else {
+            tvProductSlashPrice.gone()
+        }
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             ivFreeShipping?.let {

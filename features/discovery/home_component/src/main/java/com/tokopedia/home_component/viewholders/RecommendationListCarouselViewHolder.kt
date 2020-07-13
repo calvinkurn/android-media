@@ -40,6 +40,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
+    override fun bind(element: RecommendationListCarouselDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun bind(element: RecommendationListCarouselDataModel) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
@@ -216,7 +220,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 discountPercentage = recommendation.recommendationDiscountLabel,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.channelModel.channelConfig.hasCloseButton,
+                                hasAddToCartButton = recommendation.grid.hasBuyButton,
                                 isTopAds = recommendation.isTopAds
                         )
                 )

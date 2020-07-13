@@ -10,12 +10,15 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
-    val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo)
-    val discoveryDataMapper = DiscoveryPageDataMapper(discoveryResponse.pageInfo)
-
-    discoveryPageData.components = discoveryDataMapper.getDiscvoeryComponentList(discoveryResponse.components.filter {
-        discoveryPageData.pageInfo.identifier?.let { identifier ->
+    val pageInfo = discoveryResponse.pageInfo
+    val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo)
+    discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentList(discoveryResponse.components.filter {
+        pageInfo.identifier?.let { identifier ->
             it.pageEndPoint = identifier
+        }
+        pageInfo.path?.let { path ->
+            it.pagePath = path
         }
         discoveryResponse.componentMap[it.id] = it
         it.renderByDefault
@@ -23,30 +26,36 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
-    fun getDiscvoeryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
+class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
+    fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
             listComponents.addAll(parseComponent(component, position))
-
         }
-
         return listComponents
     }
 
-    fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
+    private fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        component.position = position
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
+            ComponentNames.QuickCoupon.componentName -> {
+                if(component.isApplicable){
+                    listComponents.add(component)
+                }
+            }
+            ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
+            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName -> listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
 
-    fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
+    private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
 
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
@@ -79,7 +88,7 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
         return listComponents
     }
 
-    fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
+    private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
             listComponents.add(component.copy().apply {
@@ -90,7 +99,7 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
         } else {
             listComponents.add(component)
             component.getComponentsItem()?.let {
-                listComponents.addAll(getDiscvoeryComponentList(it))
+                listComponents.addAll(getDiscoveryComponentList(it))
             }
             if (component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
                 listComponents.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {

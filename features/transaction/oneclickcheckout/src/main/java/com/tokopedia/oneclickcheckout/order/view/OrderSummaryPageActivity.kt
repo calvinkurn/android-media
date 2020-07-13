@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
+import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
 import javax.inject.Inject
 
 class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
@@ -17,7 +18,8 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     override fun getNewFragment(): Fragment? {
-        return OrderSummaryPageFragment.newInstance(intent.getBooleanExtra(Constant.EXTRA_OCC_SOURCE_PDP, false))
+        return OrderSummaryPageFragment.newInstance(intent?.getBooleanExtra(Constant.EXTRA_OCC_SOURCE_PDP, false) ?: false,
+                intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,7 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
     override fun getComponent(): OrderSummaryPageComponent {
         return DaggerOrderSummaryPageComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .orderSummaryPageModule(OrderSummaryPageModule(this))
                 .build()
     }
 

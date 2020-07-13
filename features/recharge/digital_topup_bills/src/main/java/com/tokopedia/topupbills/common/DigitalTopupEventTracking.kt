@@ -8,11 +8,15 @@ interface DigitalTopupEventTracking {
 
     interface Additional {
         companion object {
-            val CURRENT_SITE = "currentSite"
-            val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
-            val BUSINESS_UNIT = "businessUnit"
-            val BUSINESS_UNIT_RECHARGE = "top up and tagihan"
-            val USER_ID = "userId"
+            const val CURRENT_SITE = "currentSite"
+            const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
+            const val BUSINESS_UNIT = "businessUnit"
+            const val BUSINESS_UNIT_RECHARGE = "top up and tagihan"
+            const val USER_ID = "userId"
+            const val DIGITAL_SCREEN_NAME = "/digital/"
+            const val IS_LOGIN_STATUS = "isLoggedInStatus"
+            const val CATEGORY = "category"
+            const val CATEGORY_ID = "digitalCategoryId"
         }
     }
 

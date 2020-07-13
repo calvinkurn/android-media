@@ -40,7 +40,7 @@ class CpmTopadsProductItemViewHolder(itemView: View, private val fragment: Fragm
             if (!it.applinks.isNullOrEmpty()) {
                 itemView.setOnClickListener { itemView ->
                     RouteManager.route(itemView.context, it.applinks)
-                    sendUrlTrack(it.imageUrlMobile)
+                    cpmTopadsProductItemViewModel.sendTopAdsTracking(it.imageClickUrl)
                     sendTopAdsShopClick(it)
                 }
             }
@@ -49,11 +49,5 @@ class CpmTopadsProductItemViewHolder(itemView: View, private val fragment: Fragm
 
     private fun sendTopAdsShopClick(data: DataItem) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(data)
-    }
-
-    private fun sendUrlTrack(url: String?) {
-        fragment.activity?.let {
-            ImpresionTask(it::class.qualifiedName).execute(url)
-        }
     }
 }

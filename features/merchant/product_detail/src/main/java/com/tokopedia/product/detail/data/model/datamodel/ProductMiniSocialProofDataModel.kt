@@ -35,7 +35,6 @@ data class ProductMiniSocialProofDataModel(
         return typeFactory.type(this)
     }
 
-
     /**
      * Social proof mini should only show 3 of this, with hierarchy
      * When it only contains 1 data, it will show single line social proof

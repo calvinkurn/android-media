@@ -61,6 +61,10 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         btnEnquiry.isEnabled = enable
     }
 
+    fun setLoadingButtonEnquiry(loading: Boolean) {
+        btnEnquiry.isLoading = loading
+    }
+
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
         enquiryResult.removeAllViews()
         for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {

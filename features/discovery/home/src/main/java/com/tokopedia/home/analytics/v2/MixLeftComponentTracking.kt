@@ -20,7 +20,7 @@ object MixLeftComponentTracking: BaseTracking()  {
     private const val CLICK_MIX_LEFT_BANNER = "click on banner dynamic channel left carousel"
     private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
     private const val PROMOTION_BANNER_ID = "%s_%s_%s_%s"
-    private const val PROMOTION_BANNER_NAME = "'/ - p%s - dynamic channel left carousel - banner - %s"
+    private const val PROMOTION_BANNER_NAME = "/ - p%s - dynamic channel left carousel - banner - %s"
 
 
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
@@ -31,7 +31,8 @@ object MixLeftComponentTracking: BaseTracking()  {
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, CLICK_MIX_LEFT_LOADMORE,
-                Label.KEY, channel.id + " - " + channel.channelHeader.name
+                Label.KEY, channel.id + " - " + channel.channelHeader.name,
+                ChannelId.KEY, channel.id
         ) as HashMap<String, Any>
     }
 
@@ -42,6 +43,7 @@ object MixLeftComponentTracking: BaseTracking()  {
                 Action.KEY, CLICK_MIX_LEFT_LOADMORE_CARD,
                 Label.KEY, channel.id + " - " + channel.channelHeader.name,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
+                ChannelId.KEY, channel.id,
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT
@@ -134,11 +136,15 @@ object MixLeftComponentTracking: BaseTracking()  {
             )
     )
 
-    fun getMixLeftBannerView(channel: ChannelModel, position: Int) = getBasicPromotionView(
+    fun getMixLeftBannerView(channel: ChannelModel, position: Int, userId: String) = getBasicPromotionView(
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_MIX_LEFT_BANNER,
             eventLabel = Label.NONE,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
+            userId = userId,
             promotions = listOf(
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryPersona),
@@ -149,7 +155,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             )
     )
 
-    fun getMixLeftBannerClick(channel: ChannelModel, position: Int) = getBasicPromotionChannelClick(
+    fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String) = getBasicPromotionChannelClick(
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_MIX_LEFT_BANNER,
@@ -160,6 +166,10 @@ object MixLeftComponentTracking: BaseTracking()  {
             affinity = channel.trackingAttributionModel.persona,
             attribution = channel.trackingAttributionModel.galaxyAttribution,
             shopId = channel.trackingAttributionModel.brandId,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
+            userId = userId,
             promotions = listOf(
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.channelBanner.attribution, channel.trackingAttributionModel.categoryPersona),
@@ -182,8 +192,8 @@ object MixLeftComponentTracking: BaseTracking()  {
         getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMore(channel))
     }
 
-    fun sendMixLeftBannerClick(channel: ChannelModel, position: Int){
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position))
+    fun sendMixLeftBannerClick(channel: ChannelModel, position: Int,  userId: String){
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position, userId))
     }
 
 }

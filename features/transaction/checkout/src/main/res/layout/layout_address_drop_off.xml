@@ -11,7 +11,7 @@
         android:layout_height="@dimen/dp_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_trade_in_drop_off" />
+        app:srcCompat="@drawable/checkout_module_ic_trade_in_drop_off" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_drop_off_address_title"

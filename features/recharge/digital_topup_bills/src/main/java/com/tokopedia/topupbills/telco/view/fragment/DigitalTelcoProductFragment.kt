@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
@@ -46,7 +48,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var shimmeringListLayout: LinearLayout
 
     private var titleProduct: String = ""
-    private var selectedProductId: Int = 0
+    private var selectedProduct: Int = 0
+    private var hasTitle = false
     private var productType = TelcoProductType.PRODUCT_LIST
 
     @Inject
@@ -98,7 +101,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         arguments?.let {
             titleProduct = it.getString(TITLE_PAGE)
             productType = it.getInt(PRODUCT_TYPE)
-            selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
+            selectedProduct = it.getInt(SELECTED_PRODUCT)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
             showShimmering()
@@ -111,12 +114,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProduct, position: Int) {
+            override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                 sharedModelPrepaid.setShowTotalPrice(true)
                 if (::selectedOperatorName.isInitialized) {
                     topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
-                            userSession.userId)
+                            userSession.userId, labelList)
                 }
             }
 
@@ -163,14 +166,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     telcoTelcoProductView.show()
 
                     val dataCollections = wrapDataCollections(it)
+                    if (hasTitle) {
+                        setMarginProductList(MARGIN_0,  telcoTelcoProductView)
+                    } else {
+                        setMarginProductList(MARGIN_18, telcoTelcoProductView)
+                    }
 
                     //set true on selected product datacollection list
                     var position = -1
-                    if (selectedProductId > 0) {
+                    val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+                    if (activeCategory == titleProduct && selectedProduct > 0) {
                         for (i in dataCollections.indices) {
-                            if (dataCollections[i].id == selectedProductId.toString()) {
+                            if (dataCollections[i].id == selectedProduct.toString()) {
                                 dataCollections[i].attributes.selected = true
                                 position = i
+                                break
                             }
                         }
                     }
@@ -182,10 +192,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setMarginProductList(spaceTop: Int, view: View) {
+        val params =  RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT)
+        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_0)
+        view.layoutParams = params
+    }
+
     private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
         val dataCollections = mutableListOf<TelcoProduct>()
+        hasTitle = productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA
         productInput.product.dataCollections.map {
-            if (productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA) {
+            if (hasTitle) {
                 if (it.name.isNotEmpty()) {
                     dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
                 } else {
@@ -230,18 +247,22 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     companion object {
 
-        val PRODUCT_TYPE = "product_type"
-        val TITLE_PAGE = "title_page"
-        val SELECTED_PRODUCT_ID = "selected_product_id"
-        val OPERATOR_NAME = "operator_name"
+        const val PRODUCT_TYPE = "product_type"
+        const val TITLE_PAGE = "title_page"
+        const val SELECTED_PRODUCT = "selected_product"
+        const val OPERATOR_NAME = "operator_name"
+
+        const val MARGIN_18 = 18
+        const val MARGIN_16 = 16
+        const val MARGIN_0 = 0
 
         fun newInstance(titlePage: String, operatorName: String, productType: Int,
-                        selectedProductId: Int): Fragment {
+                        selectedProduct: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
             bundle.putString(TITLE_PAGE, titlePage)
             bundle.putInt(PRODUCT_TYPE, productType)
-            bundle.putInt(SELECTED_PRODUCT_ID, selectedProductId)
+            bundle.putInt(SELECTED_PRODUCT, selectedProduct)
             bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle
             return fragment

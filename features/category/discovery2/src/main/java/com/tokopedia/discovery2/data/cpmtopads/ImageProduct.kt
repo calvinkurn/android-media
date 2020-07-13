@@ -8,5 +8,5 @@ data class ImageProduct(
         var imageUrl: String? = null,
 
         @SerializedName("image_click_url")
-        val imageClickUrl: String? = null
+        var imageClickUrl: String? = null
 )
