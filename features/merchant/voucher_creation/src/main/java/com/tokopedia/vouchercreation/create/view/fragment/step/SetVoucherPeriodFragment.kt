@@ -346,7 +346,7 @@ class SetVoucherPeriodFragment : Fragment() {
             context?.run {
                 Glide.with(this)
                         .asDrawable()
-                        .load(BANNER_BASE_URL)
+                        .load(getBannerBaseUiModel().bannerBaseUrl)
                         .signature(ObjectKey(System.currentTimeMillis().toString()))
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

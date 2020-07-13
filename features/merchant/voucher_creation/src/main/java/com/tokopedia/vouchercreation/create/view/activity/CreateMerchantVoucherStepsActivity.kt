@@ -126,7 +126,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::setVoucherPeriod,
                             ::getBannerVoucherUiModel,
                             ::getBannerBaseUiModel,
-                            ::onSuccessGetSquareBitmap,
+                            ::onSuccessGetBannerBitmap,
                             ::getVoucherReviewUiModel,
                             isCreateNew,
                             isEditVoucher))
@@ -139,6 +139,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::getBannerBitmap,
                             ::getVoucherId,
                             ::getPromoCodePrefix,
+                            ::getBannerBaseUiModel,
+                            ::getBannerVoucherUiModel,
                             this@CreateMerchantVoucherStepsActivity.isEditVoucher))
         }
     }
@@ -356,6 +358,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             isUserInputEnabled = false
             adapter = viewPagerAdapter
             registerOnPageChangeCallback(viewPagerOnPageChangeCallback)
+            offscreenPageLimit = fragmentStepsHashMap.size - 1
         }
     }
 
@@ -400,10 +403,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
                     voucherReviewUiModel.promoCode = voucherReviewUiModel.promoCode.replace(promoCodePrefix, "")
                     if (isDuplicateVoucher) {
-                        createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
+                        viewModel.setStepPosition(VoucherCreationStep.REVIEW)
                     } else if (isEditVoucher) {
                         intent?.getIntExtra(EDIT_STEP, VoucherCreationStep.REVIEW)?.let { step ->
-                            createMerchantVoucherViewPager?.currentItem = step
+                            viewModel.setStepPosition(step)
                         }
                     }
                     createMerchantVoucherViewPager?.setOnLayoutListenerReady()
@@ -553,7 +556,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         voucherReviewUiModel.shopAvatarUrl = shopAvatarUrl
     }
 
-    private fun onSuccessGetSquareBitmap(bitmap: Bitmap) {
+    private fun onSuccessGetBannerBitmap(bitmap: Bitmap) {
         bannerBitmap = bitmap
     }
 
