@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -29,11 +30,13 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
@@ -146,6 +149,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _animator: Animator? = null
     private var isFromWidget: Boolean? = false
     private var textChangedJob: Job? = null
+    private var returnToHomeDialog: DialogUnify? = null
+
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -216,7 +221,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) checkUserRole()
+    }
+
     private fun checkUserRole() {
+        progressBarSom?.show()
+        layoutSom?.hide()
         somListViewModel.loadUserRoles(userSession.userId.toIntOrZero())
     }
 
@@ -469,7 +481,35 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onUserNotAllowedToViewSOM() {
-        RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        showReturnToHomeDialog()
+    }
+
+    private fun showReturnToHomeDialog() {
+        context?.run {
+            if (returnToHomeDialog == null) {
+                returnToHomeDialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                    setTitle(getString(R.string.dialog_title_cannot_access_page))
+                    setDescription(getString(R.string.dialog_description_cannot_access_page))
+                    setPrimaryCTAText(getString(R.string.button_understand))
+                    setPrimaryCTAClickListener{
+                        goToSellerHome()
+                        dismiss()
+                    }
+                }
+            }
+
+            returnToHomeDialog?.show()
+        }
+    }
+
+    private fun goToSellerHome() {
+        context?.run {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.SELLER_HOME).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+        }
     }
 
     private fun onUserAllowedToViewSOM() {
