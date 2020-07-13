@@ -332,6 +332,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             viewModel.updateProductStatus(isChecked)
         }
 
+        // update product status for the first time
+        productStatusSwitch?.isChecked?.let { viewModel.updateProductStatus(it) }
+
         // track switch status on click
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked
@@ -365,13 +368,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     }
                     if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
                         AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
                     } else {
                         AddEditProductAddService.startService(it, saveInstanceCacheManager.id ?: "")
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
                     }
+                    activity?.setResult(RESULT_OK)
+                    activity?.finish()
                 }
             }
 
