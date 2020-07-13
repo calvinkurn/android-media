@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -73,9 +75,11 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadUserRoles(userId: Int) {
-        launch {
+        launchCatchError(block = {
             getUserRoleUseCase.setUserId(userId)
             _userRoleResult.postValue(getUserRoleUseCase.execute())
-        }
+        }, onError = {
+            _userRoleResult.postValue(Fail(it))
+        })
     }
 }
