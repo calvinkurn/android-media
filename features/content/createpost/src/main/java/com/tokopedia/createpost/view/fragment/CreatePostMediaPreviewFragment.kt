@@ -3,10 +3,10 @@ package com.tokopedia.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.fragment_af_media_preview.*
-
 
 
 /**
@@ -44,8 +43,8 @@ class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.af_update_post))
         dialog.setDesc(getString(R.string.af_delete_warning_desc))
-        dialog.setBtnOk(getString(R.string.cancel))
-        dialog.setBtnCancel(getString(R.string.title_delete))
+        dialog.setBtnOk(getString(com.tokopedia.imagepicker.R.string.cancel))
+        dialog.setBtnCancel(getString(com.tokopedia.design.R.string.title_delete))
         dialog.setOnOkClickListener{
             dialog.dismiss()
         }
@@ -173,11 +172,11 @@ class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
     private fun updateMainImageText() {
         if (tabLayout.selectedTabPosition == 0) {
             mainImageText.setText(R.string.af_main_image)
-            mainImageText.setTextColor(MethodChecker.getColor(context, R.color.black_38))
+            mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_38))
             mainImageIcon.show()
         } else {
             mainImageText.setText(R.string.af_set_main_image)
-            mainImageText.setTextColor(MethodChecker.getColor(context, R.color.medium_green))
+            mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.medium_green))
             mainImageIcon.hide()
         }
     }

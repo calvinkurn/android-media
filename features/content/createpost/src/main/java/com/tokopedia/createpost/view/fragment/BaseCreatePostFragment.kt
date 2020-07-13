@@ -445,8 +445,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.make(this, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_ERROR, getString(R.string.general_label_ok))
+                Toaster.make(this, getString(com.tokopedia.attachproduct.R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
             }
         }
     }
@@ -483,7 +483,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         product_attachment.adapter = adapter
         product_attachment.setHasFixedSize(true)
         product_attachment.layoutManager = productAttachmentLayoutManager
-        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
+        product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
 
         image_picker.setOnClickListener {
@@ -510,8 +510,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
                     dialog.setTitle(getString(R.string.af_update_post))
                     dialog.setDesc(getString(R.string.af_delete_warning_desc))
-                    dialog.setBtnOk(getString(R.string.cancel))
-                    dialog.setBtnCancel(getString(R.string.title_delete))
+                    dialog.setBtnOk(getString(com.tokopedia.imagepicker.R.string.cancel))
+                    dialog.setBtnCancel(getString(com.tokopedia.design.R.string.title_delete))
                     dialog.setOnOkClickListener {
                         dialog.dismiss()
                         media_attachment.bind(listOf(item))
@@ -563,7 +563,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         list_captions.adapter = captionsAdapter
         list_captions.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
+        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
         icon_add_product.setOnClickListener { onAddProduct() }
         label_add_product.setOnClickListener { onAddProduct() }
 
@@ -657,22 +657,22 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         var isFormInvalid = false
         if (isTypeAffiliate() && viewModel.adIdList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)) {
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(com.tokopedia.abstraction.R.string.label_add)) {
                 onRelatedAddProductClick()
             }
         } else if (!isTypeAffiliate() && viewModel.productIdList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)) {
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(com.tokopedia.abstraction.R.string.label_add)) {
                 onRelatedAddProductClick()
             }
         } else if (viewModel.completeImageList.isEmpty() && !viewModel.isEditState) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_empty_photo), getString(R.string.label_add)) {
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_photo), getString(com.tokopedia.abstraction.R.string.label_add)) {
                 goToImagePicker()
             }
         } else if ((caption.text?.length ?: 0) > MAX_CHAR) {
             isFormInvalid = true
-            showUnifyErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), getString(R.string.general_label_ok))
+            showUnifyErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), getString(com.tokopedia.resources.common.R.string.general_label_ok))
         }
         return isFormInvalid
     }
@@ -683,7 +683,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 Toaster.make(v, message.toString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
                 Toaster.apply {
-                    toasterCustomCtaWidth = resources.getDimension(R.dimen.dp_100).toPx().toInt()
+                    toasterCustomCtaWidth = resources.getDimension(com.tokopedia.design.R.dimen.dp_100).toPx().toInt()
                     make(v, message.toString(), Snackbar.LENGTH_LONG, TYPE_ERROR, action.toString(), View.OnClickListener {
                         actionClick?.invoke(it)
                     })
