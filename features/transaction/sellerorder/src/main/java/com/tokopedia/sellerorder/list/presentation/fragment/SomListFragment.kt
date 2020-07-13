@@ -42,6 +42,7 @@ import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
+import com.tokopedia.sellerorder.common.domain.model.Roles
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -80,6 +81,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
 import kotlinx.coroutines.*
@@ -93,6 +95,9 @@ import kotlin.collections.HashMap
  */
 class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
         SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -153,6 +158,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
         private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
         private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
+        private const val ERROR_GET_USER_ROLES = "Error when get user roles in seller order list page."
+
+        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
@@ -187,13 +195,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatusId = filterStatusIdStr.toIntOrNull() ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
+        checkUserRole()
         getDefaultKeywordOptionFromApplink()
-        loadTicker()
-        loadFilterList()
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
-        isFromWidget?.let {
-            if (it) SomAnalytics.eventClickWidgetNewOrder()
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -205,11 +208,16 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         prepareLayout()
         setListeners()
         setInitialValue()
+        observingUserRoles()
         observingTicker()
         observingFilter()
         observingStatusList()
         observingOrders()
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun checkUserRole() {
+        somListViewModel.loadUserRoles(userSession.userId.toIntOrZero())
     }
 
     private fun getDefaultKeywordOptionFromApplink() {
@@ -439,6 +447,41 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         }
     })
+
+    private fun observingUserRoles() {
+        somListViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.roles.any { allowedRoles.contains(it) }) {
+                        onUserAllowedToViewSOM()
+                    } else {
+                        onUserNotAllowedToViewSOM()
+                    }
+                }
+                is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_USER_ROLES)
+                    progressBarSom.hide()
+                    layoutSom.show()
+                    renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
+                }
+            }
+        })
+    }
+
+    private fun onUserNotAllowedToViewSOM() {
+        RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+    }
+
+    private fun onUserAllowedToViewSOM() {
+        progressBarSom.hide()
+        layoutSom.show()
+        loadTicker()
+        loadFilterList()
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        isFromWidget?.let {
+            if (it) SomAnalytics.eventClickWidgetNewOrder()
+        }
+    }
 
     private fun loadStatusOrderList() {
         activity?.resources?.let {
