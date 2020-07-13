@@ -76,6 +76,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private var isResultAfterAskPermission = false
     private var channelType = ChannelType.Unknown
 
+    private var toasterBottomMargin = 0
+
     private var systemUiVisibility: Int
         get() = window.decorView.systemUiVisibility
         set(value) {
@@ -101,6 +103,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             requestPermission()
         }
 
+        initPushStream()
         setupContent()
         initView()
         setupView()
@@ -117,7 +120,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     override fun onStart() {
         super.onStart()
-        initPushStream()
         viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
@@ -125,11 +127,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        viewModel.resumePushStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        viewModel.pausePushStream()
+    }
+
+    override fun onStop() {
+        viewModel.pausePushStream()
+        super.onStop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -304,10 +313,8 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 }
                 is NetworkResult.Fail -> {
                     loaderView.hide()
-                    findViewById<View>(android.R.id.content).showToaster(
+                    showToaster(
                             message = result.error.localizedMessage,
-                            duration = Toaster.LENGTH_INDEFINITE,
-                            type = Toaster.TYPE_ERROR,
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = View.OnClickListener { result.onRetry() }
                     )
@@ -422,6 +429,27 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                     finish()
                 }
         ).show()
+    }
+
+    private fun showToaster(
+            message: String,
+            type: Int = Toaster.TYPE_ERROR,
+            duration: Int = Toaster.LENGTH_INDEFINITE,
+            actionLabel: String = "",
+            actionListener: View.OnClickListener = View.OnClickListener { }
+    ) {
+        if (toasterBottomMargin == 0) {
+            toasterBottomMargin = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+        }
+
+        findViewById<View>(android.R.id.content)?.showToaster(
+                message = message,
+                duration = duration,
+                type = type,
+                actionLabel = actionLabel,
+                actionListener = actionListener,
+                bottomMargin = toasterBottomMargin
+        )
     }
 
     companion object {

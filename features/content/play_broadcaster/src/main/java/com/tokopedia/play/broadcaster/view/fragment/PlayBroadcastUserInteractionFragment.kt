@@ -157,21 +157,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        parentViewModel.resumePushStream()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        parentViewModel.pausePushStream()
-    }
-
-    override fun onStop() {
-        parentViewModel.pausePushStream()
-        super.onStop()
-    }
-
     override fun onDestroy() {
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()

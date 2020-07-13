@@ -162,9 +162,12 @@ class PlayBroadcastViewModel @Inject constructor(
 
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
 
-            launch {
-                if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
-                else if (configUiModel.channelType == ChannelType.Pause) getChannelById(configUiModel.channelId) // get channel when channel status is paused
+            if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
+            if (configUiModel.channelType == ChannelType.Pause) { // get channel when channel status is paused
+                val err = getChannelById(configUiModel.channelId)
+                if (err != null) {
+                    throw err
+                }
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
