@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -300,10 +301,29 @@ open class HomeViewModel @Inject constructor(
             if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
                 _reminderPlayLiveData.postValue(Result.success(isSet))
             } else {
+                rollbackRemindPlayBanner()
                 _reminderPlayLiveData.postValue(Result.error(Throwable(reminder.header.message)))
             }
         }){
+            rollbackRemindPlayBanner()
             _reminderPlayLiveData.postValue(Result.error(it))
+        }
+    }
+
+    private suspend fun rollbackRemindPlayBanner(){
+        val pair = _homeLiveData.value?.list?.withIndex()?.find { (index, model) -> model is PlayCarouselCardDataModel }
+        if(pair != null){
+            updateWidget(UpdateLiveDataModel(
+                    action = ACTION_UPDATE,
+                    position = pair.index,
+                    visitable = (pair.value as PlayCarouselCardDataModel).copy(
+                            playBannerCarouselDataModel = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(
+                                    channelList = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.map {
+                                        if(it is PlayBannerCarouselItemDataModel) it.copy(remindMe = it.remindMe) else it
+                                    }
+                            )
+                    )
+            ))
         }
     }
 

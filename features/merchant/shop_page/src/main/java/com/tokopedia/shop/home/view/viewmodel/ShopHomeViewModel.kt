@@ -70,8 +70,8 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>()
 
-    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
-    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
+    val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -148,24 +148,24 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean, position: Int){
         launchCatchError(block = {
             playToggleChannelReminderUseCase.setParams(channelId, isSet)
             val reminder = playToggleChannelReminderUseCase.executeOnBackground()
             if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
-                _reminderPlayLiveData.postValue(Success(isSet))
+                _reminderPlayLiveData.postValue(Pair(position, Success(isSet)))
             } else {
-                _reminderPlayLiveData.postValue(Fail(Throwable(reminder.header.message)))
+                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable(reminder.header.message))))
             }
         }){
-            _reminderPlayLiveData.postValue(Fail(it))
+            _reminderPlayLiveData.postValue(Pair(position, Fail(it)))
         }
     }
 
     private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
         getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
         val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
-        shopPageHomeLayoutUiModel.listWidget.withIndex().find { (index, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
+        shopPageHomeLayoutUiModel.listWidget.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
             val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
             if(playBannerDataModel.channelList.isNotEmpty()){
                 newHomeLayout[index] = (uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playBannerDataModel)

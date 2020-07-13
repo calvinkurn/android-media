@@ -3,41 +3,40 @@ package com.tokopedia.play_common.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
 import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 class PlayToggleChannelReminderUseCase(
-        private val graphqlUseCase: GraphqlUseCase<PlayToggleChannelReminder>
+        private val graphqlUseCase: GraphqlUseCase<PlayToggleChannelEntity>
 ) : UseCase<PlayToggleChannelReminder>(){
-    private val channel = "\$channel"
-    private val active = "\$active"
-    private val query = """
-        {
-          query playToggleChannelReminder(
-            channel: String,
-            active: Boolean
-          ){
-            playToggleChannelReminder(channel_id: $channel, set_active: $active){
-              header{
-                status
-              }
-            }
 
+    private val query = """
+      mutation playToggleChannelReminder(
+        ${'$'}channel: String,
+        ${'$'}active: Boolean
+      ){
+        playToggleChannelReminder(input:{channelID: ${'$'}channel, setActive: ${'$'}active}){
+          header{
+            status
           }
         }
-    """.trimIndent()
+      }
+        
+    """
     private val params = RequestParams.create()
 
     init {
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setTypeClass(PlayToggleChannelReminder::class.java)
+        graphqlUseCase.setTypeClass(PlayToggleChannelEntity::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         params.parameters.clear()
     }
 
     override suspend fun executeOnBackground(): PlayToggleChannelReminder {
-        return graphqlUseCase.executeOnBackground()
+        graphqlUseCase.setRequestParams(params.parameters)
+        return graphqlUseCase.executeOnBackground().playToggleChannelReminder
     }
 
     fun setParams(channel: String, active: Boolean){

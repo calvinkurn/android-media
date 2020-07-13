@@ -2,6 +2,11 @@ package com.tokopedia.play_common.domain.model
 
 import com.google.gson.annotations.SerializedName
 
+data class PlayToggleChannelEntity(
+        @SerializedName("playToggleChannelReminder")
+        val playToggleChannelReminder: PlayToggleChannelReminder
+)
+
 data class PlayToggleChannelReminder(
         @SerializedName("header")
     val header: PlayToggleChannelReminderHeader = PlayToggleChannelReminderHeader()
