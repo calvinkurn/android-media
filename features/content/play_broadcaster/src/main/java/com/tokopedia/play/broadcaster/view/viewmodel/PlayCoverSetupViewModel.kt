@@ -99,7 +99,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         get() = MAX_CHARS
 
     fun isValidCoverTitle(coverTitle: String): Boolean {
-        return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
+        return coverTitle.isNotBlank() && coverTitle.length <= MAX_CHARS
     }
 
     suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = withContext(dispatcher.io) {
