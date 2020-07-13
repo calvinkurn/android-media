@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class InstallmentDetailBottomSheet {
@@ -43,13 +44,27 @@ class InstallmentDetailBottomSheet {
     }
 
     private fun setupChild(child: View, fragment: OrderSummaryPageFragment) {
+        setupInstallments(child, fragment)
+        setupTerms(child, fragment)
+    }
+
+    private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment) {
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
-        ll.addView(View.inflate(fragment.context, R.layout.item_installment_detail, null), 0)
-        ll.addView(View.inflate(fragment.context, R.layout.item_installment_detail, null), 0)
-        ll.addView(View.inflate(fragment.context, R.layout.item_installment_detail, null), 0)
-        ll.addView(View.inflate(fragment.context, R.layout.item_installment_detail, null), 0)
-        ll.addView(View.inflate(fragment.context, R.layout.item_installment_detail, null), 0)
-        ll.addView(View.inflate(fragment.context, R.layout.item_installment_detail, null), 0)
+        for (i in 0..5) {
+            val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)
+            val tvInstallmentDetailName = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name)
+            val tvInstallmentDetailServiceFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee)
+            val tvInstallmentDetailFinalFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee)
+            val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
+            rbInstallmentDetail.setOnClickListener {
+                // callback listener
+                dismiss()
+            }
+            ll.addView(viewInstallmentDetailItem, 0)
+        }
+    }
+
+    private fun setupTerms(child: View, fragment: OrderSummaryPageFragment) {
         val body1 = child.findViewById<Typography>(R.id.body1)
         body1.text = SpannableStringBuilder().apply {
             val text = "Transaksi Anda akan langsung terkonversi menjadi cicilan. Syarat dan Ketentuan berlaku."
@@ -89,6 +104,10 @@ class InstallmentDetailBottomSheet {
                 child.findViewById<View>(R.id.body2).visible()
             }
         }
+    }
+
+    private fun dismiss() {
+        bottomSheetUnify?.dismiss()
     }
 
     interface InstallmentDetailBottomSheetListener {
