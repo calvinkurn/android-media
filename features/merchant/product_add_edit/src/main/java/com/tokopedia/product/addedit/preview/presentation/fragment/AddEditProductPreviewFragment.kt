@@ -476,12 +476,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 REQUEST_CODE_DETAIL -> {
                     dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
-                    productStatusSwitch?.isChecked?.let { viewModel.updateProductStatus(it) }
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productAddResult.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                     }
                     viewModel.productAddResult.value?.didBackPress = true
+                    productStatusSwitch?.isChecked?.let { viewModel.updateProductStatus(it) }
                     when (dataBackPressed) {
                         DETAIL_DATA -> {
                             viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
