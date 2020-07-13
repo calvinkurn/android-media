@@ -61,6 +61,11 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
         goToVerificationMethodPage()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        KeyboardHandler.hideSoftKeyboard(this)
+    }
+
     override fun onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this)
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)

@@ -3,6 +3,7 @@ package com.tokopedia.otp.verification.view.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
 import com.tokopedia.otp.verification.common.IOnBackPressed
 import com.tokopedia.otp.verification.common.di.VerificationComponent
@@ -32,6 +33,7 @@ class OnboardingMiscallFragment : BaseVerificationFragment(), IOnBackPressed {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

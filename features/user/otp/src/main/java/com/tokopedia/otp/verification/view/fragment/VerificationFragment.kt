@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -51,8 +50,6 @@ import com.tokopedia.pin.PinUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.item_verification_method.view.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -106,6 +103,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 modeListData.modeText != OtpConstant.OtpMode.GOOGLE_AUTH) {
             sendOtp()
         }
+        showKeyboard()
     }
 
     override fun onStart() {
@@ -125,6 +123,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         if (::countDownTimer.isInitialized) {
             countDownTimer.cancel()
         }
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     override fun onBackPressed(): Boolean {
@@ -204,7 +203,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                 hideLoading()
                 setPrefixMiscall(otpRequestData.prefixMisscall)
                 startCountDown()
-                showKeyboard()
                 viewBound.containerView?.let {
                     Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
@@ -391,6 +389,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun showKeyboard() {
+        viewBound.pin?.pinTextField?.requestFocus()
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.showSoftInput(viewBound.pin?.pinTextField, InputMethodManager.SHOW_FORCED)
     }
@@ -447,7 +446,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
                         sendOtp()
                         viewBound.pin?.value = ""
-                        showKeyboard()
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
