@@ -22,7 +22,6 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.config.GlobalConfig
@@ -43,6 +42,7 @@ import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidList
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,7 +55,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: TopupBillsCheckoutWidget
-    private lateinit var mainContainer: NestedScrollView
+    private lateinit var mainContainer: TelcoNestedCoordinatorLayout
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring

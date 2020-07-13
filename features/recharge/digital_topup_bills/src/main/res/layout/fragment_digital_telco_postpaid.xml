@@ -8,11 +8,11 @@
 
     <include layout="@layout/layout_shimmering_product_telco" />
 
-    <androidx.core.widget.NestedScrollView
+    <com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/main_layout"
@@ -69,9 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/separator"
-                android:orientation="horizontal"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
+                android:orientation="horizontal"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
@@ -83,6 +83,5 @@
                 android:layout_marginRight="@dimen/spacing_lvl4" />
 
         </RelativeLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
 </RelativeLayout>
