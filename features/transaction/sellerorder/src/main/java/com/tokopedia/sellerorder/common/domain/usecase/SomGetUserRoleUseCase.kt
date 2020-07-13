@@ -15,7 +15,7 @@ class SomGetUserRoleUseCase @Inject constructor(private val useCase: GraphqlUseC
         useCase.setTypeClass(SomGetUserRoleResponse::class.java)
 
         return try {
-            val result = useCase.executeOnBackground().data ?: SomGetUserRoleDataModel()
+            val result = useCase.executeOnBackground().goldGetUserShopInfo?.data ?: SomGetUserRoleDataModel()
             Success(result)
         } catch (throwable: Throwable) {
             Fail(throwable)
