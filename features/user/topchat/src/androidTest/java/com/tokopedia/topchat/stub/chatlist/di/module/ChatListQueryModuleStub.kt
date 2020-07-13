@@ -2,6 +2,7 @@ package com.tokopedia.topchat.stub.chatlist.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.R
@@ -54,6 +55,8 @@ class ChatListQueryModuleStub (
     fun provideRawQueryChatBlastSellerMetaData(@TopchatContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_blast_seller_metadata)
 
+//    @Provides
+//    fun provideGetChatListMessageInfoUseCase(): GraphqlUseCase<ChatListPojo> = chatListUseCase
     @Provides
-    fun provideGetChatListMessageInfoUseCase(): GraphqlUseCase<ChatListPojo> = chatListUseCase
+    fun provideGetChatListMessageInfoUseCase(): GraphqlUseCase<ChatListPojo>  = GraphqlUseCase(GraphqlInteractor.getInstance().graphqlRepository)
 }

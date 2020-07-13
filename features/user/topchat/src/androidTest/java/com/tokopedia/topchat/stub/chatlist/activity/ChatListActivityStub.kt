@@ -24,7 +24,7 @@ class ChatListActivityStub : ChatListActivity() {
     }
 
     fun setupTestFragment(
-            chatListUseCase: GraphqlUseCase<ChatListPojo> = GraphqlUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+            chatListUseCase: GraphqlUseCase<ChatListPojo>
     ) {
         this.chatListUseCase = chatListUseCase
         val newFragment = newFragment ?: return

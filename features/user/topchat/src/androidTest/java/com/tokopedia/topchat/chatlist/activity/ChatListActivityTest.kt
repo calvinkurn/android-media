@@ -9,6 +9,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -28,7 +30,8 @@ class ChatListActivityTest {
     private lateinit var userSession: UserSessionStub
     private lateinit var activity: ChatListActivityStub
 
-//    private var chatListUseCase: GraphqlUseCase<ChatListPojo> = mockk(relaxed = true)
+    @RelaxedMockK
+    private lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
 
 //    object Dummy {
 //        val exChatListPojo = ChatListPojo()
@@ -36,7 +39,7 @@ class ChatListActivityTest {
 
     @Before
     fun setup() {
-//        MockKAnnotations.init(this)
+        MockKAnnotations.init(this)
         userSession = mActivityTestRule.activity.userSessionInterface
         activity = mActivityTestRule.activity
     }
@@ -51,8 +54,7 @@ class ChatListActivityTest {
 //        }
 
         // When
-        var chatListUseCase: Any = mockk(relaxed = true)
-        activity.setupTestFragment()
+        activity.setupTestFragment(chatListUseCase)
         Thread.sleep(5000)
     }
 
@@ -60,7 +62,7 @@ class ChatListActivityTest {
     fun chatListActivityTest() {
         userSession.hasShopStub = true
 //        var chatListUseCase: GraphqlUseCase<ChatListPojo> = mockk(relaxed = true)
-        activity.setupTestFragment()
+        activity.setupTestFragment(chatListUseCase)
         Thread.sleep(5000)
 //        val scenario = launchFragmentInContainer<ChatTabListFragment>()
 //        val tabView = onView(
