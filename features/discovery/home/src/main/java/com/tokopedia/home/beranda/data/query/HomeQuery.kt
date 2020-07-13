@@ -16,6 +16,7 @@ object HomeQuery{
               message
               color
               layout
+              ticker_type
             }
           }
           slides(device: 32) {

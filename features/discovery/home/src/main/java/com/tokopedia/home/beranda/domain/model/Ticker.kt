@@ -23,5 +23,8 @@ data class Tickers(
         val message: String = "",
         @SerializedName("layout")
         @Expose
-        val layout: String = ""
+        val layout: String = "",
+        @SerializedName("ticker_type")
+        @Expose
+        val tickerType: Int = 0
 )

@@ -28,7 +28,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 val tickerDataList: MutableList<TickerData> = ArrayList()
 
                 for (tickerData in tickers) {
-                    tickerDataList.add(TickerData(emptyTitle, tickerData.message, TYPE_ANNOUNCEMENT, true))
+                    tickerDataList.add(TickerData(emptyTitle, tickerData.message, tickerData.tickerType, true))
                 }
                 val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
                 tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
