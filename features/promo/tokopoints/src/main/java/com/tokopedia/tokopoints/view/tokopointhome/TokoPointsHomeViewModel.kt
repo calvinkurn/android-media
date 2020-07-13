@@ -11,6 +11,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.util.*
+import java.lang.NullPointerException
 import javax.inject.Inject
 
 @TokoPointScope
@@ -30,6 +31,8 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
                 tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection, dataSection.sectionContent.sectionContent))
+            } else {
+                throw NullPointerException("error in data")
             }
         }) {
             tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
