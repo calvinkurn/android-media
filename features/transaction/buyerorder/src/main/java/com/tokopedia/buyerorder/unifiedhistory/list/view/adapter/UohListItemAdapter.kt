@@ -133,9 +133,15 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
 
                 if (uohItemList[position].metadata.dotMenus.isNotEmpty()) {
                     holder.itemView.iv_kebab_menu?.setOnClickListener {
-                        println("++ keklik sih.. ")
                         actionListener?.onKebabMenuClicked(uohItemList[position].metadata.dotMenus)
                     }
+                }
+
+                if (uohItemList[position].metadata.otherInfo.label.isNotEmpty()) {
+                    holder.itemView.label_other_info?.visible()
+                    holder.itemView.label_other_info?.text = uohItemList[position].metadata.otherInfo.label
+                } else {
+                    holder.itemView.label_other_info?.gone()
                 }
 
                 holder.itemView.tv_uoh_total_belanja?.text = uohItemList[position].metadata.totalPrice.label

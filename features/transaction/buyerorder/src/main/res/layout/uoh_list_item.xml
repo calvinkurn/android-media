@@ -168,7 +168,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_date"
-            android:layout_marginTop="@dimen/dp_12"/>
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@color/grey_200"/>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_info_inside_card"
@@ -237,35 +238,25 @@
 
         </RelativeLayout>
 
-        <!--<com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_uoh_product_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/fl_uoh_product_img"
-            app:layout_constraintTop_toTopOf="@id/fl_uoh_product_img"
-            app:typographyWeight="bold"
-            app:typographyType="heading_5"
-            android:textColor="@color/tkpd_transaction_font_title_recharge_widget"
-            tools:text="Kartu Nama Standar"/>
-
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_uoh_product_desc"
+            android:id="@+id/label_other_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/fl_uoh_product_img"
-            app:layout_constraintTop_toBottomOf="@id/tv_uoh_product_name"
-            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@id/rl_uoh_product"
+            app:layout_constraintStart_toStartOf="parent"
             app:typographyWeight="reguler"
-            tools:text="1 Barang (0.100 kg)"
-            android:textColor="@color/gray_product_desc"/>-->
-        
+            app:typographyType="body_3"
+            tools:text="+2 produk lainnya"
+            android:layout_marginTop="@dimen/dp_12"
+            android:textColor="@color/tkpd_transaction_font_title_recharge_widget"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_uoh_total_belanja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rl_uoh_product"
-            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintTop_toBottomOf="@id/label_other_info"
+            android:layout_marginTop="@dimen/dp_12"
             app:typographyWeight="reguler"
             app:typographyType="small"
             android:textColor="@color/tkpd_transaction_font_title_recharge_widget"
