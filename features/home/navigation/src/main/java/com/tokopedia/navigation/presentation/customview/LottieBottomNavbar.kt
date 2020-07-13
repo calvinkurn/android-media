@@ -92,6 +92,7 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun adjustBadgePosition() {
+        if (menu.isEmpty()) return
         val itemWidthSize = containerWidth/menu.size
         val badgeRightMargin = itemWidthSize/4
 
