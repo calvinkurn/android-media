@@ -132,6 +132,7 @@ class MultipleVariantEditSelectBottomSheet(
             dismiss()
             val multipleVariantEditSelectBottomSheet =
                     MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
+            multipleVariantEditSelectBottomSheet.isKeyboardOverlap = false
             multipleVariantEditSelectBottomSheet.setTrackerShopId(trackerShopId)
             multipleVariantEditSelectBottomSheet.setTrackerIsEditMode(trackerIsEditMode)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)

@@ -293,7 +293,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val hasWholesale = viewModel.hasWholesale.value ?: false
-        bottomSheet.isKeyboardOverlap = false
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
         bottomSheet.setEnableEditPrice(!hasWholesale)
