@@ -67,7 +67,7 @@ class AuthHelper {
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
             headerMap.remove(HEADER_RELEASE_TRACK)
 
-            headerMap[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
+            headerMap[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -107,7 +107,7 @@ class AuthHelper {
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
             headerMap.remove(HEADER_RELEASE_TRACK)
 
-            headerMap[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
+            headerMap[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${session.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -163,7 +163,7 @@ class AuthHelper {
             }
 
             finalHeader.remove(HEADER_RELEASE_TRACK)
-            finalHeader[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
+            finalHeader[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
             finalHeader[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             finalHeader[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -227,7 +227,7 @@ class AuthHelper {
             header.remove(HEADER_ACCOUNT_AUTHORIZATION)
             header.remove(HEADER_RELEASE_TRACK)
 
-            header[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
+            header[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
             header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             header[PARAM_OS_TYPE] = "1"
             header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
@@ -265,7 +265,7 @@ class AuthHelper {
             headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
             headers.remove(HEADER_RELEASE_TRACK)
-            headers[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
+            headers[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
             headers[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headers[PARAM_OS_TYPE] = "1"
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
