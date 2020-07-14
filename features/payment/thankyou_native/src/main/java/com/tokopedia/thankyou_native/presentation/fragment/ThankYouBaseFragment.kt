@@ -124,7 +124,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             container.addView(view)
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
-        getTrackingQueue()?.let { iRecommendationView?.loadRecommendation(this, it) }
+        if (::thanksPageData.isInitialized)
+            getTrackingQueue()?.let {
+                iRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
+                        this, it)
+            }
 
     }
     private fun addDigitalRecommendation(){
@@ -134,7 +138,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             container.addView(view)
             view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
-        getTrackingQueue()?.let { iDigitalRecommendationView?.loadRecommendation(this, it) }
+        if (::thanksPageData.isInitialized)
+            getTrackingQueue()?.let {
+                iDigitalRecommendationView?.loadRecommendation(thanksPageData.paymentID.toString(),
+                        this, it)
+            }
 
     }
 
