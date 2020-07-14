@@ -130,9 +130,11 @@
                     android:layout_height="@dimen/layout_lvl6"
                     android:background="@drawable/unify_textfield_bg"
                     android:imeOptions="actionDone"
+                    android:includeFontPadding="false"
                     android:inputType="textMultiLine"
                     android:textColor="@color/Neutral_N0"
                     android:textColorHint="@color/play_white_68"
+                    android:textCursorDrawable="@drawable/bg_cover_title_cursor"
                     />
 
                 <com.tokopedia.unifyprinciples.Typography

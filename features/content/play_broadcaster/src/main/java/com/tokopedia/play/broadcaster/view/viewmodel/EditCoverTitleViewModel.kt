@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.map
@@ -19,13 +19,16 @@ import javax.inject.Inject
  * Created by jegul on 01/07/20
  */
 class EditCoverTitleViewModel @Inject constructor(
-        private val channelConfigStore: ChannelConfigStore,
+        private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore
 ) : ViewModel() {
 
     private val channelId: String
-        get() = channelConfigStore.getChannelId()
+        get() = hydraConfigStore.getChannelId()
+
+    val maxTitleChars: Int
+        get() = hydraConfigStore.getMaxTitleChars()
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -37,6 +40,10 @@ class EditCoverTitleViewModel @Inject constructor(
     val observableUpdateTitle: LiveData<NetworkResult<Unit>>
         get() = _observableUpdateTitle
     private val _observableUpdateTitle = MutableLiveData<NetworkResult<Unit>>()
+
+    fun isValidCoverTitle(coverTitle: String): Boolean {
+        return coverTitle.isNotBlank() && coverTitle.length <= maxTitleChars
+    }
 
     fun editTitle(title: String) {
         setupDataStore.updateCoverTitle(title)

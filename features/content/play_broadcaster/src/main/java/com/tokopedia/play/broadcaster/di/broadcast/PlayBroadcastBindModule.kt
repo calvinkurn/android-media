@@ -42,6 +42,10 @@ abstract class PlayBroadcastBindModule {
 
     @Binds
     @PlayBroadcastScope
+    abstract fun bindCoverConfigStore(configStore: CoverConfigStoreImpl): CoverConfigStore
+
+    @Binds
+    @PlayBroadcastScope
     abstract fun bindHydraConfigStore(configStore: HydraConfigStoreImpl): HydraConfigStore
 
     /**

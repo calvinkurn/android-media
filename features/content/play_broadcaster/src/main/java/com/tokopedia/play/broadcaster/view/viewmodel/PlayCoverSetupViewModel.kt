@@ -8,7 +8,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
@@ -36,7 +36,7 @@ import javax.inject.Inject
  * @author by furqan on 09/06/2020
  */
 class PlayCoverSetupViewModel @Inject constructor(
-        private val channelConfigStore: ChannelConfigStore,
+        private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
@@ -47,7 +47,7 @@ class PlayCoverSetupViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val channelId: String
-        get() = channelConfigStore.getChannelId()
+        get() = hydraConfigStore.getChannelId()
 
     val cropState: CoverSetupState
         get() {
@@ -96,10 +96,10 @@ class PlayCoverSetupViewModel @Inject constructor(
     private val _observableUploadCoverEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
     val maxTitleChars: Int
-        get() = MAX_CHARS
+        get() = hydraConfigStore.getMaxTitleChars()
 
     fun isValidCoverTitle(coverTitle: String): Boolean {
-        return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
+        return coverTitle.isNotBlank() && coverTitle.length <= maxTitleChars
     }
 
     suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = withContext(dispatcher.io) {
@@ -248,8 +248,6 @@ class PlayCoverSetupViewModel @Inject constructor(
         private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
         private const val TEXT_PLAIN = "text/plain"
         private const val RESOLUTION_700 = "700"
-
-        private const val MAX_CHARS = 38
     }
 
 }

@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import com.otaliastudios.cameraview.CameraListener
-import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
@@ -186,20 +185,23 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun saveToFile(imageByte: ByteArray) {
-        val mCaptureNativeSize = cvCamera.pictureSize
-        try {
-            mCaptureNativeSize?.let {
-                CameraUtils.decodeBitmap(imageByte, it.width, it.height) { bitmap ->
-                    val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                            .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-                    onSuccessCaptureImageFromCamera(cameraResultFile)
-                }
-            }
-        } catch (error: Throwable) {
-            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
-            onSuccessCaptureImageFromCamera(cameraResultFile)
-        }
+//        val mCaptureNativeSize = cvCamera.pictureSize
+//        try {
+//            mCaptureNativeSize?.let {
+//                CameraUtils.decodeBitmap(imageByte, it.width, it.height) { bitmap ->
+//                    val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
+//                            .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
+//                    onSuccessCaptureImageFromCamera(cameraResultFile)
+//                }
+//            }
+//        } catch (error: Throwable) {
+//            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
+//                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
+//            onSuccessCaptureImageFromCamera(cameraResultFile)
+//        }
+        val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
+                .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false)
+        onSuccessCaptureImageFromCamera(cameraResultFile)
     }
 
     private fun onSuccessCaptureImageFromCamera(cameraResultFile: File) {

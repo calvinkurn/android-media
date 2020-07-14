@@ -54,7 +54,8 @@ class CoverSetupPartialView(
     private val clCropParent: ConstraintLayout = findViewById(R.id.cl_crop_parent)
     private val slCropParent: ScrollView = findViewById(R.id.sl_crop_parent)
 
-    private var mMaxTitleChars = DEFAULT_MAX_CHAR
+    private val mMaxTitleChars: Int
+        get() = dataSource.getMaxTitleCharacters()
 
     private val keyboardWatcher = KeyboardWatcher().apply {
         listen(rootView, object : KeyboardWatcher.Listener {
@@ -151,10 +152,6 @@ class CoverSetupPartialView(
         updateAddChangeCover()
     }
 
-    fun setMaxTitleChar(maxChar: Int) {
-        mMaxTitleChars = maxChar
-    }
-
     fun updateViewState() {
         updateAddChangeCover()
         updateButtonState()
@@ -182,7 +179,8 @@ class CoverSetupPartialView(
         tvCoverTitleCounter.setTextColor(
                 MethodChecker.getColor(
                         tvCoverTitleCounter.context,
-                        if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500
+                        else com.tokopedia.unifyprinciples.R.color.Neutral_N0
                 )
         )
     }
@@ -195,7 +193,11 @@ class CoverSetupPartialView(
 
     private fun updateTextField(text: String) {
         etCoverTitle.setTextFieldColor(
-                if (text.isEmpty() && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500 else com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                when {
+                    !etCoverTitle.hasFocus() -> com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                    !dataSource.isValidCoverTitle(text) -> com.tokopedia.unifyprinciples.R.color.Red_R500
+                    else -> com.tokopedia.unifyprinciples.R.color.Green_G400
+                }
         )
     }
 
@@ -277,13 +279,8 @@ class CoverSetupPartialView(
 
     interface DataSource {
 
+        fun getMaxTitleCharacters(): Int
         fun isValidCoverTitle(coverTitle: String): Boolean
         fun getCurrentCoverUri(): Uri?
     }
-
-    companion object {
-
-        private const val DEFAULT_MAX_CHAR = 38
-    }
-
 }

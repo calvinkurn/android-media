@@ -10,6 +10,7 @@ data class ConfigurationUiModel(
         val channelType: ChannelType,
         val durationConfig: DurationConfigUiModel,
         val productTagConfig: ProductTagConfigUiModel,
+        val coverConfig: CoverConfigUiModel,
         val countDown: Long // second
 )
 
@@ -23,4 +24,8 @@ data class ProductTagConfigUiModel(
         val maxProduct: Int,
         val minProduct: Int,
         val errorMessage: String
+)
+
+data class CoverConfigUiModel(
+        val maxChars: Int
 )

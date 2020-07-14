@@ -217,6 +217,10 @@ class PlayCoverSetupFragment @Inject constructor(
         coverSetupView = CoverSetupPartialView(
                 container = view as ViewGroup,
                 dataSource = object : CoverSetupPartialView.DataSource {
+                    override fun getMaxTitleCharacters(): Int {
+                        return viewModel.maxTitleChars
+                    }
+
                     override fun isValidCoverTitle(coverTitle: String): Boolean {
                         return viewModel.isValidCoverTitle(coverTitle)
                     }
