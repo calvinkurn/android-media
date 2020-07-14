@@ -196,4 +196,8 @@ object AccountConstants {
             const val ERROR_CODE_SELLER_ACCOUNT = "ACS001"
         }
     }
+
+    object Query{
+       const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
+    }
 }
