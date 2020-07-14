@@ -297,7 +297,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
-                    event_pdp_toolbar.menu.getItem(0).setIcon(R.drawable.ic_event_pdp_share_black)
+                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black)
                     widget_event_pdp_tab_section.setScrolledMode()
                     widget_event_pdp_tab_section.show()
                     isShow = true
@@ -306,7 +306,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
-                    event_pdp_toolbar.menu.getItem(0).setIcon(R.drawable.ic_event_pdp_share_white)
+                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white)
                     widget_event_pdp_tab_section.setNullMode()
                     widget_event_pdp_tab_section.hide()
                     isShow = false
