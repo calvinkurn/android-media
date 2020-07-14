@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
+import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
 import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
@@ -15,7 +16,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -25,8 +25,8 @@ class BuyerAccountViewModel @Inject constructor (
         private val getBuyerWalletBalanceUseCase: GetBuyerWalletBalanceUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        private val dispatcher: DispatcherProvider
+): BaseViewModel(dispatcher.io()) {
 
     private val _buyerAccountData = MutableLiveData<Result<AccountModel>>()
     val buyerAccountData: LiveData<Result<AccountModel>>
@@ -37,22 +37,22 @@ class BuyerAccountViewModel @Inject constructor (
             val accountModel = getBuyerAccountDataUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
-            withContext(dispatcher) {
+            withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
-
-                saveLocallyWallet(accountModel)
-                saveLocallyVccUserStatus(accountModel)
-                savePhoneVerified(accountModel)
-                saveIsAffiliateStatus(accountModel)
-                saveDebitInstantData(accountModel)
-
                 _buyerAccountData.value = Success(accountModel)
             }
         }, onError = {
             _buyerAccountData.value = Fail(it)
         })
+    }
 
+    fun saveLocallyAttributes(accountModel: AccountModel) {
+        saveLocallyWallet(accountModel)
+        saveLocallyVccUserStatus(accountModel)
+        savePhoneVerified(accountModel)
+        saveIsAffiliateStatus(accountModel)
+        saveDebitInstantData(accountModel)
     }
 
     private fun checkIsAffiliate(): Boolean {

@@ -114,14 +114,22 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if ((accountModel.getSaldoModel() != null &&
                 accountModel.getSaldoModel().getSaldo() != null) ||
+                (accountModel.getSaldo() != null) ||
                 (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
                         accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
 
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
+
+            long saldo = 0;
+            if(accountModel.getSaldo() != null) {
+                saldo = accountModel.getSaldo().getDepositLong();
+            } else if(accountModel.getSaldoModel() != null && accountModel.getSaldoModel().getSaldo() != null) {
+                saldo = accountModel.getSaldoModel().getSaldo().getDepositLong();
+            }
             tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
+                    (saldo, true));
 
             tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);

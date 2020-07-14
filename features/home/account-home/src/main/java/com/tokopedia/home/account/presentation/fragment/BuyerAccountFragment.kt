@@ -2,10 +2,12 @@ package com.tokopedia.home.account.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -26,6 +28,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
+import com.tokopedia.home.account.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
@@ -42,6 +45,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
 import javax.inject.Inject
 
@@ -57,6 +62,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(BuyerAccountViewModel::class.java) }
+
+    @Inject
+    lateinit var buyerAccountMapper: BuyerAccountMapper
 
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -92,6 +100,23 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
+
+        setObservers()
+    }
+
+    private fun setObservers() {
+        viewModel.buyerAccountData.observe(viewLifecycleOwner, Observer {
+            hideLoading()
+            when(it) {
+                is Success -> {
+                    viewModel.saveLocallyAttributes(it.data)
+                    loadBuyerData(buyerAccountMapper.call(it.data))
+                }
+                is Fail -> {
+                    Log.d("ACC-HOME", it.throwable.message)
+                }
+            }
+        })
     }
 
     private fun sendBuyerAccountItemImpression() {
@@ -352,11 +377,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         endlessRecyclerViewScrollListener?.resetState()
 
         context?.let {
-            val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
-                    .new_query_saldo_balance)
-            presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_buyer_account_home), saldoQuery)
-
+//            val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
+//                    .new_query_saldo_balance)
+//            presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
+//                    .query_buyer_account_home), saldoQuery)
+            showLoading()
             viewModel.getBuyerData()
         }
     }

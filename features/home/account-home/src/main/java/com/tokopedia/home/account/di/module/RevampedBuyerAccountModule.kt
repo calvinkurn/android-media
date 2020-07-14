@@ -8,6 +8,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.di.scope.BuyerAccountScope
+import com.tokopedia.home.account.presentation.util.dispatchers.AppDispatcherProvider
+import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -24,7 +26,9 @@ class RevampedBuyerAccountModule {
 
     @BuyerAccountScope
     @Provides
-    fun provideMainDispacther(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): DispatcherProvider {
+        return AppDispatcherProvider()
+    }
 
     @BuyerAccountScope
     @Provides

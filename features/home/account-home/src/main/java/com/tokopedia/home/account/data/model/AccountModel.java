@@ -210,6 +210,14 @@ public class AccountModel {
         this.saldoModel = saldoModel;
     }
 
+    public DepositModel getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(DepositModel depositModel) {
+        this.saldo = depositModel;
+    }
+
     public DebitInstantModel getDebitInstant() {
         return debitInstant;
     }
