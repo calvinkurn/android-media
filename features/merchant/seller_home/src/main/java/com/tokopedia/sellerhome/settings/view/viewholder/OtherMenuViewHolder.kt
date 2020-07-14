@@ -115,16 +115,17 @@ class OtherMenuViewHolder(private val itemView: View,
         fm: FragmentManager?,
         user: UserSessionInterface
     ) {
-        val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
-        val freeShippingLayout = itemView.shopInfoLayout.freeShippingLayout
+        itemView.shopInfoLayout.freeShippingLayout?.apply {
+            val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
 
-        freeShippingLayout.setOnClickListener {
-            freeShippingBottomSheet.show(fm)
-            SettingFreeShippingTracker.trackFreeShippingClick(user)
+            setOnClickListener {
+                freeShippingBottomSheet.show(fm)
+                SettingFreeShippingTracker.trackFreeShippingClick(user)
+            }
+            show()
+
+            SettingFreeShippingTracker.trackFreeShippingImpression(user)
         }
-
-        freeShippingLayout.show()
-        SettingFreeShippingTracker.trackFreeShippingImpression(user)
     }
 
     fun hideFreeShippingLayout() {
