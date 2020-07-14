@@ -322,29 +322,87 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
-
-
+        val adb = AlertDialog.Builder(activityContext)
+        val labelPositive: String
+        var labelNegative: String? = null
         when (resCode) {
-
+            CommonConstant.CouponRedemptionCode.LOW_POINT -> labelPositive = getString(R.string.tp_label_ok)
             CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
-                startActivity(intent)
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
-                        "")
+                labelPositive = getString(R.string.tp_label_complete_profile)
+                labelNegative = getString(R.string.tp_label_later)
             }
             CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                mViewModel.startSaveCoupon(item)
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                        title)
+                labelPositive = getString(R.string.tp_label_exchange)
+                labelNegative = getString(R.string.tp_label_betal)
             }
-
+            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
+            else -> labelPositive = getString(R.string.tp_label_ok)
         }
+        if (title == null || title.isEmpty()) {
+            adb.setTitle(R.string.tp_label_exchange_failed)
+        } else {
+            adb.setTitle(title)
+        }
+        adb.setMessage(MethodChecker.fromHtml(message))
+        if (labelNegative != null && !labelNegative.isEmpty()) {
+            adb.setNegativeButton(labelNegative) { dialogInterface: DialogInterface?, i: Int ->
+                when (resCode) {
+                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                            "")
+                    CommonConstant.CouponRedemptionCode.SUCCESS -> AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
+                            title)
+                    else -> {
+                    }
+                }
+            }
+        }
+        adb.setPositiveButton(labelPositive) { dialogInterface: DialogInterface, i: Int ->
+            when (resCode) {
+                CommonConstant.CouponRedemptionCode.LOW_POINT -> {
+                    dialogInterface.cancel()
+                    AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
+                            "")
+                }
+                CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
+                    dialogInterface.cancel()
+                    AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
+                            "")
+                }
+                CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
+                    AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
+                            "")
+                }
+                CommonConstant.CouponRedemptionCode.SUCCESS -> {
+                    mViewModel.startSaveCoupon(item)
+                    AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                            title)
+                }
+                else -> dialogInterface.cancel()
+            }
+        }
+        val dialog = adb.create()
+        dialog.show()
+        decorateDialog(dialog)
     }
 
     override fun onRealCodeReFresh(realCode: String) {

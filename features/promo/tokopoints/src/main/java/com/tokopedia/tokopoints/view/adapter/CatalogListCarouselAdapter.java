@@ -93,8 +93,15 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        holder.pointValue.setVisibility(View.VISIBLE);
+        //setting points info if exist in response
+        if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
+            holder.pointValue.setVisibility(View.GONE);
+        } else {
+            holder.pointValue.setVisibility(View.VISIBLE);
+            holder.pointValue.setText(item.getPointsStr());
+        }
 
-        holder.pointValue.setText("Gratis");
 
         //setting expiry time info if exist in response
         if (item.getExpiredLabel() == null || item.getExpiredLabel().isEmpty()) {
@@ -152,8 +159,13 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         }
 
         //disabling the coupons if not eligible for current membership
-        holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.black_54));
-
+        if (item.isDisabled()) {
+            ImageUtil.dimImage(holder.imgBanner);
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.tokopoints.R.color.clr_31353b));
+        } else {
+            ImageUtil.unDimImage(holder.imgBanner);
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.tokopoints.R.color.clr_31353b));
+        }
         if (item.isDisabledButton()) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
         } else {

@@ -99,7 +99,6 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="2dp"
-            android:fontFamily="sans-serif-medium"
             android:textColor="@color/medium_green"
             app:typographyType="heading_5"
             tools:text="Text point Value"
