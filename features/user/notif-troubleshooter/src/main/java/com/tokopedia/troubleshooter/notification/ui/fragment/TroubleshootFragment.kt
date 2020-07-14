@@ -132,7 +132,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
     private fun sendLog(triple: Triple<String?, Boolean?, Int?>) {
         if(triple.first.isNullOrEmpty() || !triple.second.isNotNull() || !triple.third.isNotNull()) return
 
-        Timber.w("P2#PUSH_NOTIF_TROUBLESHOOT#Troubleshooter;token='%s';setting='%s';importance='%s';",
+        Timber.w("P2#PUSH_NOTIF_TROUBLESHOOT#'Troubleshooter';token='%s';setting='%s';importance='%s';",
                 triple.first,
                 triple.second,
                 triple.third)
