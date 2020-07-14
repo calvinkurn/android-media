@@ -132,6 +132,7 @@ internal open class BannerView(activity: Activity) {
             trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
             RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
             analytics.click(data)
+            dialog?.dismiss()
         }
     }
 
