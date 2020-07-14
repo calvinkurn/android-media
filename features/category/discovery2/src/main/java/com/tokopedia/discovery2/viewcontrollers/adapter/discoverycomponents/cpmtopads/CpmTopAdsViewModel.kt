@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,7 +26,7 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     private val brandName = MutableLiveData<Result<String>>()
     private val imageUrl = MutableLiveData<Result<String>>()
 
-    private val cpmData = MutableLiveData<CpmModel>()
+    private val cpmData = MutableLiveData<Result<CpmModel>>()
 
     @Inject
     lateinit var cpmTopAdsUseCase: CpmTopAdsUseCase
@@ -48,7 +49,7 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
             withContext(Dispatchers.IO) {
                 val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(components.id, components.pageEndPoint) }
                 if (data != null) {
-                    cpmData.postValue(components.cpmData)
+                    cpmData.postValue(Success(components.cpmData as CpmModel))
                 }
 
 //                if (data != null) {
@@ -78,7 +79,7 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     fun getBrandName(): LiveData<Result<String>> = brandName
     fun getImageUrl(): LiveData<Result<String>> = imageUrl
 
-    fun getCpmData(): LiveData<CpmModel> = cpmData
+    fun getCpmData(): LiveData<Result<CpmModel>> = cpmData
 
 
 }
