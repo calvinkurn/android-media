@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 
-class ToolTipPopupWindow(
+class ToolTipStickerPopupWindow(
         private val context: Context?,
         private val presenter: TopChatContract.Presenter
 ) : PopupWindow(context) {

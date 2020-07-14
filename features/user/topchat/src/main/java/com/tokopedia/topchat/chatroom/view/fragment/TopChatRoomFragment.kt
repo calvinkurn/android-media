@@ -88,7 +88,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import com.tokopedia.topchat.common.custom.ToolTipPopupWindow
+import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
@@ -125,7 +125,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
-    private lateinit var toolTip: ToolTipPopupWindow
+    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
@@ -183,7 +183,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun initTooltipPopup() {
-        toolTip = ToolTipPopupWindow(context, presenter)
+        toolTip = ToolTipStickerPopupWindow(context, presenter)
     }
 
     private fun setupAnalytic() {
