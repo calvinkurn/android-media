@@ -29,7 +29,7 @@ class EventShare (private val activity: Activity) {
         generateBranchLink(data,loadShare,doneLoadShare,context)
     }
 
-    private fun openIntentShare(title: String,url:String, context:Context) {
+    private fun openIntentShare(title: String, url:String, context:Context) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = TYPE
@@ -48,7 +48,7 @@ class EventShare (private val activity: Activity) {
                     LinkerUtils.createShareRequest(0,
                             travelDataToLinkerDataMapper(data, context), object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
-                            openIntentShare(data.title,linkerShareData.shareContents, context)
+                            openIntentShare(data.title, linkerShareData.shareContents, context)
                             doneLoadShare()
                         }
 
@@ -57,7 +57,7 @@ class EventShare (private val activity: Activity) {
                         }
                     }))
         }else{
-            openIntentShare(data.title,data.webUrl,context)
+            openIntentShare(data.title, data.webUrl, context)
             doneLoadShare()
         }
     }
