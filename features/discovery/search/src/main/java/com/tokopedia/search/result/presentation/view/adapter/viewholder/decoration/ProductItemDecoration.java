@@ -163,7 +163,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getTopOffsetTopItem() {
-        return spacing - verticalCardViewOffset;
+        return (spacing / 2) - verticalCardViewOffset;
     }
 
     private int getTopOffsetNotTopItem() {

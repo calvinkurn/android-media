@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -51,6 +52,7 @@ object CartListPresenterAddToCartTest : Spek({
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
+    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
@@ -62,15 +64,14 @@ object CartListPresenterAddToCartTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase,
-                    updateCartUseCase, compositeSubscription,
-                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                    validateUsePromoRevampUseCase, TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
+                    compositeSubscription, addWishListUseCase, removeWishListUseCase,
+                    updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
+                    getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
+                    addToCartUseCase, addToCartExternalUseCase, getInsuranceCartUseCase,
+                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                    updateCartCounterUseCase, updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase,
+                    TestSchedulers
             )
         }
 
@@ -213,7 +214,7 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("success add to cart recommendation item") {
 
-            val productModel = CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0))
+            val productModel = CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
             val addToCartDataModel = AddToCartDataModel().apply {
                 status = AddToCartDataModel.STATUS_OK
                 data = DataModel().apply {
@@ -244,7 +245,7 @@ object CartListPresenterAddToCartTest : Spek({
 
         Scenario("failed add to cart recommendation item") {
 
-            val productModel = CartRecommendationItemHolderData(RecommendationItem(productId = 0, shopId = 0))
+            val productModel = CartRecommendationItemHolderData(false, RecommendationItem(productId = 0, shopId = 0))
             val addToCartDataModel = AddToCartDataModel().apply {
                 status = AddToCartDataModel.STATUS_ERROR
                 data = DataModel().apply {

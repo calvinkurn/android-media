@@ -5,7 +5,6 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -24,7 +23,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.shop_page_main.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -69,18 +67,32 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun showShopPageHeaderContent() {
-        view.shop_page_header_content_shimmer_loading.hide()
+        hideLoaderLoading()
         view.shop_page_header_content.show()
     }
 
     fun showShopPageHeaderContentError() {
-        view.shop_page_header_content_shimmer_loading.hide()
+        hideLoaderLoading()
         view.shop_page_header_content.invisible()
     }
 
     fun showShopPageHeaderContentLoading() {
-        view.shop_page_header_content_shimmer_loading.show()
+        showLoaderLoading()
         view.shop_page_header_content.hide()
+    }
+
+    private fun showLoaderLoading(){
+        view.loader_profile_image.show()
+        view.first_rect_loader_view.show()
+        view.second_rect_loader_view.show()
+        view.third_rect_loader_view.show()
+    }
+
+    private fun hideLoaderLoading(){
+        view.loader_profile_image.hide()
+        view.first_rect_loader_view.hide()
+        view.second_rect_loader_view.hide()
+        view.third_rect_loader_view.hide()
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
@@ -211,7 +223,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayGoldenShop() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageDrawable(GMConstant.getGMDrawable(context))
+        view.shop_page_main_profile_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
     }
 
     private fun displayOfficial() {

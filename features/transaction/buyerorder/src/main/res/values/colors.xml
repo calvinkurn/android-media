@@ -47,4 +47,5 @@
     <color name="tkpd_transaction_arrow_tint">#6c727c</color>
     <color name="detail_text_color">#31353b</color>
     <color name="green_template">#f3fef3</color>
+    <color name="gray_disable_button_text">#31353B</color>
 </resources>

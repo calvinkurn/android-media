@@ -44,7 +44,7 @@ data class ProductDetailViews(
         @Key("productImageUrl")
         val productImageUrl: String,
         @Key("isOfficialStore")
-        val officialStore: Int,
+        val officialStore: String,
         @Key("productPriceFormatted")
         val productPriceFormatted: String,
         @Key(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID)
@@ -53,6 +53,16 @@ data class ProductDetailViews(
         val layout: String,
         @Key(ProductTrackingConstant.Tracking.KEY_COMPONENT)
         val component: String,
+        @Key("productPrice" )
+        val productPrice: String,
+        @Key("productName")
+        val productName: String,
+        @Key("productGroupName")
+        val productGroupName: String,
+        @Key("productGroupId")
+        val productGroupId: String,
+        @Key("category")
+        val category: String,
         @Key(KEY_SESSION_IRIS)
         val sessionIris: String,
         @DefaultValueString("")
@@ -67,6 +77,9 @@ data class ProductDetailViews(
         @DefaultValueString("")
         @Key("eventAction")
         val eventAction: String?,
+        @DefaultValueString("")
+        @Key("eventLabel")
+        val eventLabel: String?,
         @DefaultValueString("")
         @Key("businessUnit")
         val businessUnit: String?,

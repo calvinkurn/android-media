@@ -28,6 +28,7 @@ import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,6 +67,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val getAtcUseCase = mockk<dagger.Lazy<AddToCartOccUseCase>>(relaxed = true)
     override val getRechargeRecommendationUseCase = mockk<dagger.Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
     override val declineRechargeRecommendationUseCase = mockk<dagger.Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
+    override val declineSalamWIdgetUseCase = mockk<dagger.Lazy<DeclineSalamWIdgetUseCase>>(relaxed = true)
+    override val getSalamWIdgetUseCase = mockk<dagger.Lazy<GetSalamWidgetUseCase>>(relaxed = true)
     override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
     override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
@@ -356,6 +359,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            getSalamWidgetUseCase = getSalamWIdgetUseCase,
+            declineSalamWIdgetUseCase = declineSalamWIdgetUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 }

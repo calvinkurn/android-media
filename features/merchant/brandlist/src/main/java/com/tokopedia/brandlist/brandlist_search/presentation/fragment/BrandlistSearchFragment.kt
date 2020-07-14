@@ -28,7 +28,7 @@ import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponen
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultUiModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.Constant
 import com.tokopedia.brandlist.common.LoadAllBrandState
@@ -94,7 +94,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 viewModel.loadMoreBrands(brandFirstLetter)
                 isLoadMore = true
 
-                if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
+                if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultUiModel) {
                     adapterBrandSearch?.showLoading()
                 }
             }
@@ -131,7 +131,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
-        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()))
         return view
     }
 
@@ -310,7 +310,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                         adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, lastTimeChipIsClicked, recyclerViewLastState)
                     }
 
-                    var _brandlistSearchMapperResult: List<BrandlistSearchResultViewModel> = listOf()
+                    var _brandlistSearchMapperResult: List<BrandlistSearchResultUiModel> = listOf()
                     if (totalBrandPerCharacter == 0) {
                         adapterBrandSearch?.mappingBrandSearchNotFound(
                                 _brandlistSearchMapperResult,

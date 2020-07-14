@@ -30,6 +30,7 @@ abstract class BaseTracking {
     protected object Category{
         const val KEY = "eventCategory"
         const val HOMEPAGE = "homepage"
+        const val HOMEPAGE_TOPADS = "homepage-topads"
     }
 
     protected object Action{
@@ -304,7 +305,7 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObject)?: Ecommerce.getEcommercePromoView(promotions),
+                Ecommerce.KEY, if (promotionObject != null) Ecommerce.getEcommerceObjectPromoView(promotionObject) else Ecommerce.getEcommercePromoView(promotions),
                 ChannelId.KEY, channelId
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId

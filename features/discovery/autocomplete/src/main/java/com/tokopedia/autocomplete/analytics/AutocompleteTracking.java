@@ -54,7 +54,6 @@ public class AutocompleteTracking {
     public static final String EVENT_IMPRESSED_INITIAL_STATE_PROMO = "promoViewIris";
 
     public static final String EVENTCATEGORY_TOP_NAV = "top nav";
-    public static final String EVENT_CATEGORY_DIGITAL_TOP_NAV = "digital - top nav";
     public static final String EVENT_CATEGORY_INITIAL_STATE = "initial-state";
 
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
@@ -72,6 +71,8 @@ public class AutocompleteTracking {
     public static final String EVENT_ACTION_IMPRESSED_RECENT_VIEW = "impression - recent view product";
     public static final String EVENT_ACTION_IMPRESSED_RECENT_SEARCH = "impression - recent search";
     public static final String EVENT_ACTION_IMPRESSED_POPULAR_SEARCH = "impression - popular search";
+    public static final String EVENT_ACTION_TOP_SHOP = "click - shop - carousel";
+    public static final String EVENT_ACTION_TOP_SHOP_SEE_MORE = "click - lihat toko lainnya - carousel";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -145,8 +146,8 @@ public class AutocompleteTracking {
 
     public static void eventClickCurated(String label, String campaignCode) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, EVENT_CLICK_TOP_NAV,
-                        EVENT_CATEGORY, EVENT_CATEGORY_DIGITAL_TOP_NAV,
+                DataLayer.mapOf(EVENT, EVENT_CLICK_SEARCH_RESULT,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
                         EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
                         CAMPAIGN_CODE, campaignCode
@@ -280,5 +281,27 @@ public class AutocompleteTracking {
                 )
         );
         iris.saveEvent(map);
+    }
+
+    public static void eventClickTopShop(String label) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                        EVENT_ACTION, EVENT_ACTION_TOP_SHOP,
+                        EVENT_LABEL, label
+                )
+        );
+    }
+
+    public static void eventClickTopShopSeeMore(String label) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                        EVENT_ACTION, EVENT_ACTION_TOP_SHOP_SEE_MORE,
+                        EVENT_LABEL, label
+                )
+        );
     }
 }

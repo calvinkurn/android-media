@@ -73,6 +73,10 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
     				videoURLIOS
     				isAutoplay
     			}
+    			videos{
+                    url
+                    source
+                }
     		}
     		... on pdpDataProductContent {
     			name
@@ -99,6 +103,8 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
     				isAppsOnly
     				isActive
     				hideGimmick
+    				isUsingOvo
+                    isCheckImei
     			}
     			stock {
     				useStock

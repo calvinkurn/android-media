@@ -81,6 +81,24 @@ class Option() : Parcelable {
     val isTypeRadio: Boolean
         get() = INPUT_TYPE_RADIO == inputType
 
+    val isTypeTextBox: Boolean
+        get() = Option.INPUT_TYPE_TEXTBOX == inputType
+
+    val isPriceRange: Boolean
+        get() = key == KEY_PRICE_RANGE_1 || key == KEY_PRICE_RANGE_2 || key == KEY_PRICE_RANGE_3
+
+    val isMinPriceOption: Boolean
+        get() = key == KEY_PRICE_MIN
+
+    val isMaxPriceOption: Boolean
+        get() = key == KEY_PRICE_MAX
+
+    val isMinMaxRangePriceOption: Boolean
+        get() = key == KEY_PRICE_MIN_MAX_RANGE
+
+    val isRatingOption: Boolean
+        get() = key == KEY_RATING
+
     override fun equals(obj: Any?): Boolean {
         if (this === obj) return true
 

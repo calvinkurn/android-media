@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +28,6 @@ import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandNotFoundViewHolder
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
@@ -39,7 +36,6 @@ import com.tokopedia.brandlist.common.Constant.DEFAULT_SELECTED_CHIPS
 import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
-import com.tokopedia.brandlist.common.widget.StickySingleHeaderView
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -101,7 +97,7 @@ class BrandlistPageFragment :
                     viewModel.loadMoreAllBrands(category, brandFirstLetter)
                     isLoadMore = true
 
-                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandViewModel) {
+                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
                         adapter?.showLoading()
                     }
                 }
@@ -132,7 +128,7 @@ class BrandlistPageFragment :
         val adapterTypeFactory = BrandlistPageAdapterTypeFactory(this, this)
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
-        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()))
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
         recyclerView?.addOnScrollListener(endlessScrollListener)
@@ -205,13 +201,13 @@ class BrandlistPageFragment :
     private fun createOnRefreshListener(): SwipeRefreshLayout.OnRefreshListener {
         return SwipeRefreshLayout.OnRefreshListener {
             adapter?.getVisitables()?.removeAll {
-                it is FeaturedBrandViewModel
-                        || it is PopularBrandViewModel
-                        || it is NewBrandViewModel
-                        || it is AllBrandHeaderViewModel
-                        || it is AllBrandGroupHeaderViewModel
-                        || it is AllbrandNotFoundViewModel
-                        || it is AllBrandViewModel
+                it is FeaturedBrandUiModel
+                        || it is PopularBrandUiModel
+                        || it is NewBrandUiModel
+                        || it is AllBrandHeaderUiModel
+                        || it is AllBrandGroupHeaderUiModel
+                        || it is AllbrandNotFoundUiModel
+                        || it is AllBrandUiModel
             }
 
             isChipSelected = false

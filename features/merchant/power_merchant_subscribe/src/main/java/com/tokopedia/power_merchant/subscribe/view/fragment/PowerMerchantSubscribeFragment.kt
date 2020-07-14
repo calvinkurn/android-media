@@ -1,8 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
-
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -12,7 +10,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -55,9 +52,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
-import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -95,7 +90,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         const val ACTIVATE_INTENT_CODE = 123
         const val AUTOEXTEND_INTENT_CODE = 321
         const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
-        const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
+        const val FREE_SHIPPING_INTENT_CODE = 323
 
         private const val APPLINK_PARAMS_KYC = "${PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
         const val APPLINK_POWER_MERCHANT_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC"
@@ -113,29 +108,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         renderInitialLayout()
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
-            if (getApprovalStatusPojo.kycProjectInfo.status == STATUS_VERIFIED) {
-                if (shopStatusModel.isPowerMerchantInactive()) {
-                    context?.let {
-                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
-                        } else {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE)
-                        }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    }
-                } else {
-                    context?.let {
-                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
-                        } else {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND)
-                        }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    }
-                }
-            } else {
-                setupDialogKyc()?.show()
-            }
+            openTermsAndCondition()
         }
 
         observeActivatePowerMerchant()
@@ -194,26 +167,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupDialogKyc(): Dialog? {
-        context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_kyc_verification)
-            dialog.btn_submit_kyc.setOnClickListener {
-                openTermsAndConditionKYC()
-                dialog.hide()
-            }
-            dialog.btn_close_kyc.setOnClickListener {
-                dialog.hide()
-            }
-
-            return dialog
-        }
-        return null
-    }
-
     private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
         val freeShippingEligible = freeShipping.isEligible
         val chargePeriod = !freeShipping.isTransitionPeriod
@@ -254,8 +207,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun openFreeShippingPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW,
             PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+        startActivityForResult(intent, FREE_SHIPPING_INTENT_CODE)
     }
 
     private fun trackSuccessBottomSheetPopUp(freeShipping: PowerMerchantFreeShippingStatus) {
@@ -414,12 +368,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             viewModel.onActivatePmSuccess()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
             onSuccessCancelMembership()
+        } else if (requestCode == FREE_SHIPPING_INTENT_CODE){
+            refreshData()
         }
     }
 
-    private fun openTermsAndConditionKYC() {
-        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_KYC) }
-        startActivity(intent)
+    private fun openTermsAndCondition() {
+        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it) }
+        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
     }
 
     private fun showEmptyState(throwable: Throwable) {
@@ -458,6 +414,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         freeShippingError.hide()
         freeShippingLayout.apply {
             onClickListener = {
+                openFreeShippingPage()
                 trackFreeShippingClick(freeShipping)
             }
             show(freeShipping)

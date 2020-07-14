@@ -28,14 +28,6 @@ public class NotificationSellerOrder {
         this.newOrder = newOrder;
     }
 
-    public int getReadyToShip() {
-        return readyToShip;
-    }
-
-    public void setReadyToShip(int readyToShip) {
-        this.readyToShip = readyToShip;
-    }
-
     public int getShipped() {
         return shipped;
     }

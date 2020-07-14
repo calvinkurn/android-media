@@ -43,6 +43,7 @@ public interface ApplinkConst {
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
+    String ATC_EXTERNAL = "tokopedia://cart?product_id={product_id}";
     String CHECKOUT = "tokopedia://checkout";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -249,7 +250,6 @@ public interface ApplinkConst {
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
-    String CREATE_PASSWORD = "tokopedia://createpassword";
     String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
@@ -305,6 +305,8 @@ public interface ApplinkConst {
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
+    String OCC = "tokopedia://occ";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -313,6 +315,7 @@ public interface ApplinkConst {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
         String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
+        String GIFT_TAP_TAP = "tokopedia://gamification_gift_60s";
     }
 
     interface Digital {
@@ -372,7 +375,6 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
-        String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
     }
 
@@ -425,6 +427,10 @@ public interface ApplinkConst {
         String PATH_ASK_BUYER = "askbuyer";
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
+        String SOURCE_PAGE = "source_page";
+
+        // chat source page
+        String SOURCE_CHAT_SEARCH = "chat_search";
     }
 
     interface AttachInvoice {
@@ -433,7 +439,6 @@ public interface ApplinkConst {
     }
 
     interface AttachVoucher {
-        String PARAM_SHOP_ID = "shop_id";
         String PARAM_VOUCHER_PREVIEW = "voucher_preview";
     }
 
@@ -488,6 +493,7 @@ public interface ApplinkConst {
         String EXTRA_IS_LEASING = "is_leasing";
         String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
         String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
+        String EXTRA_CUSTOM_DIMENSION40 = "custom_dimension40";
         String EXTRA_LAYOUT_NAME = "layout_name";
         String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
 

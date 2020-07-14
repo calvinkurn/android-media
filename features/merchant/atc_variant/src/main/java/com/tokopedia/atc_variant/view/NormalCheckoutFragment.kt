@@ -160,7 +160,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                            customEventAction: String?,
                            tradeInParams: TradeInParams?,
                            layoutName: String? = "",
-                           atcFromExternalSource: String? = null): NormalCheckoutFragment {
+                           atcFromExternalSource: String? = null,
+                           customDimension40: String? = ""
+        ): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -188,6 +190,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
+                    putString(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, customDimension40)
                     putString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, layoutName)
                     if (atcFromExternalSource != null) {
                         putString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, atcFromExternalSource)
@@ -829,6 +832,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         getPageReference(),
                         getCustomEventLabel(),
                         getCustomEventAction(),
+                        getCustomDimension40(),
                         layoutName)
             }
             activity?.run {
@@ -918,6 +922,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                         freeOngkir.isFreeOngkirActive,
                         getCustomEventLabel(),
                         getCustomEventAction(),
+                        getCustomDimension40(),
                         layoutName
                 )
             }
@@ -1055,9 +1060,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, "") ?: ""
     }
 
-
     private fun getCustomEventAction(): String {
         return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, "") ?: ""
+    }
+
+    private fun getCustomDimension40(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),

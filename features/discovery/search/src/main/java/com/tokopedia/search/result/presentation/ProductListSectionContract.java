@@ -10,11 +10,13 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.sortfilter.SortFilterItem;
 
 import org.json.JSONArray;
 
@@ -108,6 +110,8 @@ public interface ProductListSectionContract {
 
         BaseAppComponent getBaseAppComponent();
 
+        // Please remove when new bottom sheet filter is already stable
+        @Deprecated
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
         void renderFailRequestDynamicFilter();
@@ -152,7 +156,7 @@ public interface ProductListSectionContract {
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
-        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
 
@@ -167,6 +171,18 @@ public interface ProductListSectionContract {
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
         void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+
+        void onQuickFilterSelected(Option option);
+
+        void hideQuickFilterShimmering();
+
+        void setNewQuickFilter(List<SortFilterItem> items);
+
+        void showOnBoarding();
+
+        boolean isQuickFilterSelected(Option option);
+
+        void setProductCount(String productCountText);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -178,8 +194,6 @@ public interface ProductListSectionContract {
         void loadData(Map<String, Object> searchParameter);
 
         void onBannedProductsGoToBrowserClick(String url);
-
-        boolean isUsingBottomSheetFilter();
 
         String getUserId();
 
@@ -209,6 +223,15 @@ public interface ProductListSectionContract {
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
-        boolean isTrackingViewPortEnabled();
+        List<Option> getQuickFilterOptionList();
+
+        @Nullable
+        DynamicFilterModel getDynamicFilterModel();
+
+        void getProductCount(Map<String, String> mapParameter);
+
+        boolean isBottomSheetFilterRevampEnabled();
+
+        void onFreeOngkirOnBoardingShown();
     }
 }

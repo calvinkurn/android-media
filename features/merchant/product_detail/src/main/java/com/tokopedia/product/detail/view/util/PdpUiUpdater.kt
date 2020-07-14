@@ -30,6 +30,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
 
+    val productSocialProofPvDataModel: ProductSocialProofDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
+
     val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
@@ -160,6 +163,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             socialProofMap?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
+            }
+
+            productSocialProofPvDataModel?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
             }
@@ -315,6 +323,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 wishlistCount = it.wishlistCount.count
             }
 
+            productSocialProofPvDataModel?.run {
+                wishlistCount = it.wishlistCount.count
+            }
+
             miniSocialProofMap?.run {
                 wishlistCount = it.wishlistCount.count
                 shouldRenderSocialProof = true
@@ -325,9 +337,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productDiscussionMostHelpfulMap?.run {
-                questions = it.discussionMostHelpful.questions
-                totalQuestion = it.discussionMostHelpful.totalQuestion
-                isShimmering = false
+                if(it.discussionMostHelpful == null) {
+                    isShimmering = true
+                } else {
+                    it.discussionMostHelpful?.let {
+                        questions = it.questions
+                        totalQuestion = it.totalQuestion
+                        isShimmering = false
+                    }
+                }
             }
 
             productMostHelpfulMap?.run {

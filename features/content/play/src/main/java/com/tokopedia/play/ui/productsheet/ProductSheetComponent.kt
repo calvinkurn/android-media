@@ -83,9 +83,9 @@ open class ProductSheetComponent(
         }
     }
 
-    override fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel) {
+    override fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel, position: Int) {
         scope.launch {
-            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductCardClicked(product))
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductCardClicked(product, position))
         }
     }
 

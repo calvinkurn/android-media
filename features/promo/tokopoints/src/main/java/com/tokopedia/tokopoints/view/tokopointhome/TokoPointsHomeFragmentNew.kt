@@ -518,7 +518,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 mSumToken = tokenDetail.sumToken
                 textMessage.text = tokenDetail.floating.tokenClaimCustomText
                 if (tokenDetail.floating.tokenAsset.floatingImgUrl.endsWith(".gif")) {
-                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl, com.tokopedia.session.R.color.green_50)
+                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl, R.color.tp_green_token)
                 } else {
                     ImageHandler.loadImageFitCenter(context, imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl)
                 }

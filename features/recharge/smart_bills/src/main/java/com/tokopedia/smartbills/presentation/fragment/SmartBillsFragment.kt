@@ -232,6 +232,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
+            smartBillsAnalytics.eventOpenScreen()
 
             context?.let { context ->
                 // Setup ticker
@@ -356,7 +357,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun toggleAllItems(value: Boolean) {
-        smartBillsAnalytics.clickAllBills()
+        smartBillsAnalytics.clickAllBills(value)
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0
@@ -398,8 +399,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
                 val coachMark = CoachMarkBuilder().build()
                 coachMark.enableSkip = true
-                //Coachmark downgraded to 1.2.3 to fix crash
-//                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
+                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
                 coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
             }
         }

@@ -44,10 +44,10 @@ class BrandlistPageAdapter(
     }
 
     fun initAdapter(recyclerViewLastState: Parcelable?) {
-        visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, 0, recyclerViewLastState))
+        visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandUiModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(POPULAR_BRAND_POSITION, PopularBrandUiModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(NEW_BRAND_POSITION, NewBrandUiModel(mutableListOf(), null, brandlistPageFragment))
+        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderUiModel(brandlistPageFragment, 0, 1, 0, recyclerViewLastState))
     }
 
     fun getVisitables(): MutableList<Visitable<*>> {
@@ -97,7 +97,7 @@ class BrandlistPageAdapter(
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
         if (viewHolder is AllBrandGroupHeaderViewHolder) {
-            (visitables.get(ALL_BRAND_GROUP_HEADER_POSITION) as? AllBrandGroupHeaderViewModel)?.let {
+            (visitables.get(ALL_BRAND_GROUP_HEADER_POSITION) as? AllBrandGroupHeaderUiModel)?.let {
                 viewHolder.bind(it)
             }
         }

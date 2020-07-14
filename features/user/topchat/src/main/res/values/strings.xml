@@ -127,6 +127,7 @@ yang ditemukan</string>
     <string name="seller_empty_chat_subtitle">Lengkapi tokomu dengan produk unggulan dulu, yuk!</string>
     <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman penjual, yuk!</string>
     <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
+    <string name="empty_chat_smart_reply">Belum ada chat yang dibalas Smart Reply</string>
 
     <!--Delete Chat Popup-->
     <string name="topchat_chat_delete_title">Hapus Chat?</string>
@@ -162,4 +163,8 @@ yang ditemukan</string>
     <string name="desc_empty_chat_search_result">Coba cari ulang pakai kata kunci lain.</string>
     <string name="title_cta_change_chat_search_keywoard">Ganti Kata Kunci</string>
     <string name="tittle_load_more">Lihat Lebih</string>
+    <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
+    <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
+    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
 </resources>

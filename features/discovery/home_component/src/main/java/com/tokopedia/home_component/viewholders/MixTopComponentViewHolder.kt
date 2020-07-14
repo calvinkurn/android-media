@@ -83,6 +83,10 @@ class MixTopComponentViewHolder(
         }
     }
 
+    override fun bind(element: MixTopDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         mixTopComponentListener.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
     }
@@ -257,7 +261,9 @@ class MixTopComponentViewHolder(
                                     element.isFreeOngkirActive,
                                     element.freeOngkirImageUrl
                             ),
-                            isOutOfStock = element.isOutOfStock
+                            isOutOfStock = element.isOutOfStock,
+                            ratingCount = element.rating,
+                            reviewCount = element.countReview
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

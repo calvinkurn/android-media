@@ -19,7 +19,7 @@ import com.tkpd.remoteresourcerequest.type.RequestedResourceType
  */
 class DeferredImageView : AppCompatImageView {
     var mRemoteFileName: String = ""
-    var dpiSupportType = 0
+    var dpiSupportType = ImageDensityType.SUPPORT_MULTIPLE_DPI
 
     private var task: DeferredResourceTask? = null
 
@@ -69,15 +69,14 @@ class DeferredImageView : AppCompatImageView {
     }
 
     private fun downloadAndSetResource() {
-        check(mRemoteFileName.isNotEmpty()) {
-            context.getString(R.string.rem_res_req_exception_file_name_not_found)
-        }
         task?.let { it.deferredImageView?.clear() }
-        //start with originally no image
+        /* start with originally no image otherwise old dimensions will be picked for all decoding.
+        Also useful in case image is loaded dynamically based on conditions. So each images will be
+        decoded based on their actual requested dimens and not have any impact on other's decoding.
+         */
         setImageDrawable(null)
         task = ResourceDownloadManager.getManager()
                 .startDownload(getDensitySupportType(), null)
-
     }
 
     private fun getDensitySupportType(): RequestedResourceType {
@@ -88,27 +87,45 @@ class DeferredImageView : AppCompatImageView {
         super.onDetachedFromWindow()
         ResourceDownloadManager.getManager()
                 .stopDeferredImageViewRendering(task)
-
     }
 
     /**
-     * Use this method when you need to set a remote image
-     * in this View while accessing this object somewhere from
-     * the Java code
+     * Use this method when you need to set a remote image in this View from the Java code. Useful
+     * in the case when we need to set image based on conditions. E.g. in no network condition, or
+     * if a condition satisfies then display one image and if condition fails then another image.
      * @param name denotes name of the file to be downloaded and set to this ImageView.
      * **/
-
     fun loadRemoteImageDrawable(name: String) {
         mRemoteFileName = name
         downloadAndSetResource()
     }
 
     /**
-     * Use this method when you need to set an image drawable
-     * from local drawable resource folder
+     * This method gives more power to user to control this [DeferredImageView]. Similar to above
+     * method in some extant; only difference is user can control which image type can this view
+     * holds based on condition.
+     * @sample **********************************************************************************
+     *     if(isNetworkConnected)
+     *         iv.loadRemoteImageDrawable("abc.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
+     *     else
+     *         iv.loadRemoteImageDrawable("other_image.png", ImageDensityType.SUPPORT_SINGLE_DPI)
+     * ******************************************************************************************
+     * By default the density type will be ImageDensityType.SUPPORT_MULTIPLE_DPI
      * **/
+    fun loadRemoteImageDrawable(name: String, dpiSupportType: Int) {
+        mRemoteFileName = name
+        this.dpiSupportType = dpiSupportType
+        downloadAndSetResource()
+    }
+
+    /**
+     * Use this method when you need to set an image drawable from local drawable resource folder.
+     * e.g. when we want to show an error image from local if network is not available else show
+     * downloaded image.
+     */
     fun loadImageDrawable(@DrawableRes drawableId: Int) {
         task?.let { it.deferredImageView?.clear() }
+        setImageDrawable(null)
         setImageDrawable(getDrawable(drawableId))
     }
 
