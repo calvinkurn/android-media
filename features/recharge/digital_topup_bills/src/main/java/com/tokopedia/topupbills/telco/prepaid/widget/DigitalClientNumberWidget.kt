@@ -128,6 +128,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setVisibleResultNumber(show: Boolean) {
+        inputNumberResult.text = getInputNumber()
         if (show && getInputNumber().isNotEmpty()) {
             animateVisibilityView(layoutResult, layoutInputNumber)
         } else {

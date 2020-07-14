@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -32,6 +33,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val productCatalogItem: LiveData<TelcoProduct>
         get() = _productCatalogItem
 
+    private val _favNumberSelected = MutableLiveData<TopupBillsFavNumberItem>()
+    val favNumberSelected: LiveData<TopupBillsFavNumberItem>
+        get() = _favNumberSelected
+
     private val _showTotalPrice = MutableLiveData<Boolean>()
     val showTotalPrice: LiveData<Boolean>
         get() = _showTotalPrice
@@ -52,12 +57,24 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val loadingProductList: LiveData<Boolean>
         get() = _loadingProductList
 
+    private val _positionScrollItem = MutableLiveData<Int>()
+    val positionScrollItem : LiveData<Int>
+        get() = _positionScrollItem
+
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
     }
 
-    fun setShowTotalPrice(show: Boolean) {
-        _showTotalPrice.postValue(show)
+    fun setPositionScrollToItem(position: Int) {
+        _positionScrollItem.postValue(position)
+    }
+
+    fun setFavNumberSelected(favNumber: TopupBillsFavNumberItem) {
+        _favNumberSelected.postValue(favNumber)
+    }
+
+    fun hideTotalPrice() {
+        _showTotalPrice.postValue(false)
     }
 
     fun setSelectedCategoryViewPager(categoryName: String) {

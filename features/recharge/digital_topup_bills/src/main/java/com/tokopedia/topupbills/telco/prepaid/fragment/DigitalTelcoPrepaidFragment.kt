@@ -77,6 +77,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private var clientNumber = ""
     private var operatorId = ""
+    private var fromFavNumber = false
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
@@ -105,17 +106,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             if (isProductExist(it)) {
                 it?.run {
-                    buyWidget.setTotalPrice(it.attributes.price)
+                    buy_widget.setVisibilityLayout(true)
+                    buy_widget.setTotalPrice(it.attributes.price)
                     it.attributes.productPromo?.run {
                         if (this.newPrice.isNotEmpty()) {
-                            buyWidget.setTotalPrice(this.newPrice)
+                            buy_widget.setTotalPrice(this.newPrice)
                         }
                     }
 
                     productId = it.id.toIntOrZero()
                     price = it.attributes.pricePlain
                     checkVoucherWithDelay()
-                    generateCheckoutPassData(telcoClientNumberWidget.getInputNumber(),
+                    generateCheckoutPassData(telco_input_number.getInputNumber(),
                             if (it.attributes.productPromo != null) "1" else "0",
                             it.attributes.categoryId.toString(),
                             it.attributes.operatorId.toString(),
@@ -134,6 +136,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
                         R.raw.query_catalog_product_telco), menuId, operatorId, it)
             }
+        })
+
+        sharedModelPrepaid.positionScrollItem.observe(this, Observer {
+            nestedScrollView.fling(0)
+            nestedScrollView.smoothScrollTo(0, it)
         })
     }
 
@@ -171,20 +178,24 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         })
         viewPager.adapter = pagerAdapter
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
+        tabLayout.addOnTabSelectedListener(tabLayoutCallback)
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-                //do nothing
-            }
+    }
 
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-                //do nothing
-            }
+    private val tabLayoutCallback = object : TabLayout.OnTabSelectedListener {
+        override fun onTabReselected(p0: TabLayout.Tab?) {
+            //do nothing
+        }
 
-            override fun onTabSelected(p0: TabLayout.Tab) {
+        override fun onTabUnselected(p0: TabLayout.Tab?) {
+            //do nothing
+        }
+
+        override fun onTabSelected(p0: TabLayout.Tab) {
+            if (!fromFavNumber) {
                 viewPager.setCurrentItem(p0.position, true)
             }
-        })
+        }
     }
 
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -198,7 +209,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 nestedScrollView.smoothScrollTo(0, 0)
                 categoryId = getIdCategoryCurrentItem()
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
-                sharedModelPrepaid.setShowTotalPrice(false)
+                sharedModelPrepaid.hideTotalPrice()
                 sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
@@ -378,14 +389,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClearInputNumber()
                 showProducts = false
                 renderPromoAndRecommendation()
-                sharedModelPrepaid.setShowTotalPrice(false)
+
                 productId = 0
                 operatorId = ""
+                sharedModelPrepaid.hideTotalPrice()
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
                 operatorId = ""
                 productId = 0
+                sharedModelPrepaid.hideTotalPrice()
+
                 telcoClientNumberWidget.clearFocusAutoComplete()
                 startActivityForResult(activity?.let {
                     DigitalSearchNumberActivity.newInstance(it,
@@ -414,17 +428,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         tabLayout.removeAllTabs()
         listProductTab.add(
                 TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_PULSA,
-                        operatorName, TelcoProductType.PRODUCT_GRID, productId),
+                        operatorName, TelcoProductType.PRODUCT_GRID),
                         TelcoComponentName.PRODUCT_PULSA,
                         idProductTab++))
         listProductTab.add(
                 TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_PAKET_DATA,
-                        operatorName, TelcoProductType.PRODUCT_LIST, productId),
+                        operatorName, TelcoProductType.PRODUCT_LIST),
                         TelcoComponentName.PRODUCT_PAKET_DATA,
                         idProductTab++))
         listProductTab.add(
                 TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_ROAMING,
-                        operatorName, TelcoProductType.PRODUCT_LIST, productId),
+                        operatorName, TelcoProductType.PRODUCT_LIST),
                         TelcoComponentName.PRODUCT_ROAMING,
                         idProductTab++))
 
@@ -439,12 +453,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         setTabFromProductSelected()
     }
 
-    private fun generateBundleProduct(titlePage: String, operatorName: String, productType: Int,
-                                      selectedProduct: Int): Bundle {
+    private fun generateBundleProduct(titlePage: String, operatorName: String, productType: Int): Bundle {
         val bundle = Bundle()
         bundle.putString(DigitalTelcoProductFragment.TITLE_PAGE, titlePage)
         bundle.putInt(DigitalTelcoProductFragment.PRODUCT_TYPE, productType)
-        bundle.putInt(DigitalTelcoProductFragment.SELECTED_PRODUCT, selectedProduct)
         bundle.putString(DigitalTelcoProductFragment.OPERATOR_NAME, operatorName)
         return bundle
     }
@@ -457,10 +469,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
         viewPager.setCurrentItem(itemId, true)
+
+        if (fromFavNumber) {
+            tabLayout.getTabAt(itemId)?.let {
+                it.select()
+            }
+            fromFavNumber = false
+        }
     }
 
     private fun getLabelActiveCategory(): String {
-        return when (getIdCategoryCurrentItem()) {
+        return when (categoryId) {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
             TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
@@ -506,15 +525,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-        productId = 0
+        fromFavNumber = true
         if (orderClientNumber.productId.isNotEmpty() &&
-                orderClientNumber.categoryId.toIntOrNull() ?: 0 == getIdCategoryCurrentItem()) {
-            productId = orderClientNumber.productId.toIntOrNull() ?: 0
+                orderClientNumber.categoryId.toIntOrNull() ?: 0 == categoryId) {
+            sharedModelPrepaid.setFavNumberSelected(orderClientNumber)
+            sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
         }
 
         telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
         telcoClientNumberWidget.clearFocusAutoComplete()
-        sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
     }
 
     override fun handleCallbackSearchNumberCancel() {
@@ -601,6 +620,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onDestroy() {
         viewPager.unregisterOnPageChangeCallback(viewPagerCallback)
         viewPager.adapter = null
+        tabLayout.removeOnTabSelectedListener(tabLayoutCallback)
         super.onDestroy()
     }
 
@@ -617,7 +637,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
-        private const val ID_PRODUCT_EMPTY = "-1"
+        const val ID_PRODUCT_EMPTY = "-1"
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
