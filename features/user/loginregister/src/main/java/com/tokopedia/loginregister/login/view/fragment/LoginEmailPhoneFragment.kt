@@ -822,11 +822,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         analytics.trackLoginPhoneNumber()
         activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_LOGIN_PHONE_NUMBER)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
 
@@ -836,11 +832,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
         activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_REGISTER_PHONE_NUMBER)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }
     }
@@ -996,11 +988,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_SECURITY_QUESTION)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+            val intent =  goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
         }
     }
@@ -1092,6 +1080,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
+    }
+
+    private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        return intent
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
