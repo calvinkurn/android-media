@@ -16,6 +16,7 @@ import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +50,8 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val userRoleResult: LiveData<Result<SomGetUserRoleDataModel>>
         get() = _userRoleResult
 
+    private var getUserRolesJob: Job? = null
+
     fun loadTickerList(tickerQuery: String) {
         val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
         launch {
@@ -75,12 +78,14 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadUserRoles(userId: Int) {
-        launchCatchError(block = {
-            getUserRoleUseCase.setUserId(userId)
-            _userRoleResult.postValue(getUserRoleUseCase.execute())
-        }, onError = {
-            _userRoleResult.postValue(Fail(it))
-        })
+        if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
+            getUserRolesJob = launchCatchError(block = {
+                getUserRoleUseCase.setUserId(userId)
+                _userRoleResult.postValue(getUserRoleUseCase.execute())
+            }, onError = {
+                _userRoleResult.postValue(Fail(it))
+            })
+        }
     }
 
     fun clearUserRoles() {
