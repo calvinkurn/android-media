@@ -74,6 +74,9 @@ class ShopHomeViewModel @Inject constructor(
     val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
     private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
 
+    val updatePlayWidgetData: LiveData<ShopHomePlayCarouselUiModel> get() = _updatePlayWidgetData
+    private val _updatePlayWidgetData = MutableLiveData<ShopHomePlayCarouselUiModel>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -104,25 +107,12 @@ class ShopHomeViewModel @Inject constructor(
                 val newShopPageHomeLayoutUiModel = asyncCatchError(
                         dispatcherProvider.io(),
                         block = { getPlayWidgetCarousel(shopId, it) },
-                        onError = {
-                            it.printStackTrace()
-                            null
-                        }
+                        onError = {null}
                 )
 
-                newShopPageHomeLayoutUiModel.await().let { newShopPageHomeLayoutUiModelData ->
-                    if(newShopPageHomeLayoutUiModelData != null) _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
+                newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
+                    _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
                 }
-
-//                launchCatchError(coroutineContext, block = {
-//                    val carousel = getPlayWidgetCarousel(shopId, it)
-//                    if(carousel != null){
-//                        _shopHomeLayoutData.postValue(Success(carousel))
-//                    }
-//                }){
-//                    it.printStackTrace()
-//                    Log.e("LUKAS", it.toString())
-//                }
                 productList.await()?.let { productListData ->
                     _productListData.postValue(Success(productListData))
                 }
@@ -147,12 +137,13 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun onRefreshPlayBanner(shopId: String){
-        val result = _shopHomeLayoutData.value
+         val result = _shopHomeLayoutData.value
         if(result is Success){
             launchCatchError(block = {
-                val widgetCarouselData = getPlayWidgetCarousel(shopId, result.data)
-                widgetCarouselData?.let {
-                    _shopHomeLayoutData.postValue(Success(it))
+                result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->
+                    getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+                    val playWidgetEntity = getPlayWidgetUseCase.executeOnBackground()
+                    _updatePlayWidgetData.postValue((uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playWidgetEntity))
                 }
             }){
                 it.printStackTrace()
@@ -164,10 +155,10 @@ class ShopHomeViewModel @Inject constructor(
         launchCatchError(block = {
             playToggleChannelReminderUseCase.setParams(channelId, isSet)
             val reminder = playToggleChannelReminderUseCase.executeOnBackground()
-            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
                 _reminderPlayLiveData.postValue(Pair(position, Success(isSet)))
             } else {
-                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable(reminder.header.message))))
+                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable())))
             }
         }){
             _reminderPlayLiveData.postValue(Pair(position, Fail(it)))

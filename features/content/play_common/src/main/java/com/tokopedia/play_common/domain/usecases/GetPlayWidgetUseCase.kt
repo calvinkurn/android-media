@@ -1,8 +1,10 @@
 package com.tokopedia.play_common.domain.usecases
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import android.text.TextUtils
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play_common.domain.mapper.PlayWidgetMapper
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
@@ -10,7 +12,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetPlayWidgetUseCase(
-        private val graphqlUseCase: GraphqlUseCase<PlayGetWidgetEntity>
+        private val graphqlRepository: GraphqlRepository
 ): UseCase<PlayBannerCarouselDataModel>(){
 
     private val query = """
@@ -95,16 +97,27 @@ class GetPlayWidgetUseCase(
     """
     private val params = RequestParams.create()
 
-    init {
-        graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setTypeClass(PlayGetWidgetEntity::class.java)
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        params.parameters.clear()
-    }
-
     override suspend fun executeOnBackground(): PlayBannerCarouselDataModel {
-        graphqlUseCase.setRequestParams(params.parameters)
-        return PlayWidgetMapper.mapperToPlayBannerCarouselDataModel(graphqlUseCase.executeOnBackground().playGetWidgetV2)
+        val cacheStrategy =
+                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+
+        val request = GraphqlRequest(
+                query,
+                PlayGetWidgetEntity::class.java,
+                params.parameters
+        )
+
+        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+
+        response.getError(PlayGetWidgetEntity::class.java)?.let {
+            if (it.isNotEmpty()) {
+                if (!TextUtils.isEmpty(it[0].message)) {
+                    throw Throwable(it[0].message)
+                }
+            }
+        }
+        val data = response.getData<PlayGetWidgetEntity>(PlayGetWidgetEntity::class.java)
+        return PlayWidgetMapper.mapperToPlayBannerCarouselDataModel(data.playGetWidgetV2)
     }
 
     fun setParams(widgetType: String, authorId: String, authorType: String){

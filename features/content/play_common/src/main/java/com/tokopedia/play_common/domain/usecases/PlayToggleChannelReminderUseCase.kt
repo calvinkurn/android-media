@@ -4,13 +4,12 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
-import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 class PlayToggleChannelReminderUseCase(
         private val graphqlUseCase: GraphqlUseCase<PlayToggleChannelEntity>
-) : UseCase<PlayToggleChannelReminder>(){
+) : UseCase<PlayToggleChannelEntity>(){
 
     private val query = """
       mutation playToggleChannelReminder(
@@ -34,9 +33,9 @@ class PlayToggleChannelReminderUseCase(
         params.parameters.clear()
     }
 
-    override suspend fun executeOnBackground(): PlayToggleChannelReminder {
+    override suspend fun executeOnBackground(): PlayToggleChannelEntity {
         graphqlUseCase.setRequestParams(params.parameters)
-        return graphqlUseCase.executeOnBackground().playToggleChannelReminder
+        return graphqlUseCase.executeOnBackground()
     }
 
     fun setParams(channel: String, active: Boolean){

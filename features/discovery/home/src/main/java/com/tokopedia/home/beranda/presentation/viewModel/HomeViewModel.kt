@@ -298,11 +298,11 @@ open class HomeViewModel @Inject constructor(
         launchCatchError(block = {
             playToggleChannelReminderUseCase.setParams(channelId, isSet)
             val reminder = playToggleChannelReminderUseCase.executeOnBackground()
-            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
                 _reminderPlayLiveData.postValue(Result.success(isSet))
             } else {
                 rollbackRemindPlayBanner()
-                _reminderPlayLiveData.postValue(Result.error(Throwable(reminder.header.message)))
+                _reminderPlayLiveData.postValue(Result.error(Throwable()))
             }
         }){
             rollbackRemindPlayBanner()

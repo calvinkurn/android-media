@@ -53,7 +53,6 @@ object PlayWidgetMapper {
                 isAutoRefreshTimer = playWidget.meta.autoRefreshTimer,
                 seeMoreApplink = playWidget.meta.buttonApplink,
                 imageUrl = playWidget.meta.overlayImage,
-                serverTimeOffset = playWidget.meta.serverTimeOffset,
                 channelList = list,
                 gradients = playWidget.meta.gradient,
                 durationPlayWithData = playWidget.meta.maxAutoplayCell

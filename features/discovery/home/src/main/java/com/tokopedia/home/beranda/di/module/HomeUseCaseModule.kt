@@ -442,8 +442,7 @@ class HomeUseCaseModule {
     @Provides
     @HomeScope
     fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayGetWidgetEntity>(graphqlRepository)
-        return GetPlayWidgetUseCase(useCase)
+        return GetPlayWidgetUseCase(graphqlRepository)
     }
 
     @Provides
