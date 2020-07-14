@@ -95,8 +95,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Idle) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         }
-        mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
         mTimerDuration?.start()
+        mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
         mPlayPusherStatus = PlayPusherStatus.Active
     }
 
