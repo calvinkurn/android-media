@@ -26,6 +26,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +39,8 @@ import kotlin.collections.HashMap
 class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
-                                                 private val analytics: PromoCheckoutAnalytics)
+                                                 private val analytics: PromoCheckoutAnalytics,
+                                                 private val userSession: UserSessionInterface)
     : BaseViewModel(dispatcher) {
 
     // Fragment UI Model. Store UI model and state on fragment level
@@ -1466,5 +1468,13 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
     fun sendAnalyticsDismissLastSeen() {
         analytics.eventDismissLastSeen(getPageSource())
+    }
+
+    fun sendAnalyticsClickPromoInputField() {
+        analytics.eventClickInputField(getPageSource(), userSession.userId)
+    }
+
+    fun sendAnalyticsViewLastSeenPromo() {
+        analytics.eventShowLastSeenPopUp(getPageSource(), userSession.userId)
     }
 }

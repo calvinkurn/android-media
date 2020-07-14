@@ -573,6 +573,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+                viewModel.sendAnalyticsViewLastSeenPromo()
             }
         }
     }
@@ -812,6 +814,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoManualInputTextField() {
+        viewModel.sendAnalyticsClickPromoInputField()
         getOrShowLastSeenData()
     }
 
