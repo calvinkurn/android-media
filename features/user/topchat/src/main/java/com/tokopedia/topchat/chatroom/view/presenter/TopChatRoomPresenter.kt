@@ -499,7 +499,7 @@ class TopChatRoomPresenter @Inject constructor(
             opponentId: String,
             startTime: String
     ) {
-        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime)
+        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime, attachmentsPreview)
         val stringContract = CommonUtil.toJson(stickerContract)
         RxWebSocket.send(stringContract, listInterceptor)
     }
