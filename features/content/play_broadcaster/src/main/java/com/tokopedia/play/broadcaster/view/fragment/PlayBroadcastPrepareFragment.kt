@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -41,6 +42,9 @@ import javax.inject.Inject
 class PlayBroadcastPrepareFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : PlayBaseBroadcastFragment() {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -115,6 +119,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
+            analytic.clickPrepareBroadcast()
             openBroadcastSetupPage()
         }
 
@@ -146,6 +151,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
             tvTermsCondition.text = spannedTermsConditionText
 
             tvTermsCondition.setOnClickListener {
+                analytic.clickTnC()
                 openTermsConditionPage()
             }
 
