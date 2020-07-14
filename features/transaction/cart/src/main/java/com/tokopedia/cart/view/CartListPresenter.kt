@@ -3,19 +3,9 @@ package com.tokopedia.cart.view
 import android.os.Build
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
-import com.tokopedia.purchase_platform.common.feature.insurance.request.*
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
@@ -28,9 +18,20 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
+import com.tokopedia.purchase_platform.common.feature.insurance.request.*
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -63,6 +64,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val getWishlistUseCase: GetWishlistUseCase?,
                                             private val getRecommendationUseCase: GetRecommendationUseCase?,
                                             private val addToCartUseCase: AddToCartUseCase?,
+                                            private val addToCartExternalUseCase: AddToCartExternalUseCase?,
                                             private val getInsuranceCartUseCase: GetInsuranceCartUseCase?,
                                             private val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase?,
                                             private val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase?,
@@ -1057,7 +1059,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var productCategory = ""
         var productPrice = ""
         var externalSource = ""
-        var clickUrl = ""
         if (productModel is CartWishlistItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
@@ -1079,11 +1080,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productCategory = recommendationItem.categoryBreadcrumbs
             productPrice = recommendationItem.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
-            clickUrl = recommendationItem.clickUrl
-        }
 
-        if (!clickUrl.isEmpty())
-            view?.sendATCTrackingURL(clickUrl)
+            val clickUrl = recommendationItem.clickUrl
+            if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
+        }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
             this.productId = productId.toLong()
@@ -1105,6 +1105,19 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         ?.unsubscribeOn(schedulers.io)
                         ?.observeOn(schedulers.main)
                         ?.subscribe(AddToCartSubscriber(view, this, productModel))
+        )
+    }
+
+    override fun processAddToCartExternal(productId: Long) {
+        view?.showProgressLoading()
+        val requestParams = RequestParams.create()
+        requestParams.putLong(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId)
+        compositeSubscription.add(
+                addToCartExternalUseCase?.createObservable(requestParams)
+                        ?.subscribeOn(schedulers.io)
+                        ?.unsubscribeOn(schedulers.io)
+                        ?.observeOn(schedulers.main)
+                        ?.subscribe(AddToCartExternalSubscriber(view))
         )
     }
 

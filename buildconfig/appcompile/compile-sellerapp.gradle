@@ -1,7 +1,6 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("sellerapp")
 
-include "features:category:tradein_common"
 include "features:category:tradein"
 
 include "features:common:developer_options"
@@ -27,8 +26,6 @@ include "features:recharge:digitalproduct"
 
 include "features:discovery:discovery_common"
 include "features:discovery:category_common"
-include "features:discovery:flashsale_management"
-include 'features:discovery:flashsale_management_common'
 include 'features:discovery:productcard'
 include 'features:discovery:carousel_productcard'
 include 'features:discovery:recommendation_widget_common'
@@ -55,9 +52,7 @@ include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
-include "features:merchant:gold_merchant_resource"
 include "features:merchant:power_merchant_subscribe"
-include "features:merchant:product_draft_database"
 include "features:merchant:product_detail"
 include "features:merchant:product_detail_common"
 include "features:merchant:product_add_edit"
@@ -107,10 +102,6 @@ include "features:top_ads:top_ads_management_sourcetagging"
 include "features:top_ads:top_ads_detail_sheet"
 
 include "features:transaction:atc_common"
-include "features:transaction:express_checkout"
-include "features:transaction:express_checkout_common"
-include "features:transaction:transactionanalytics"
-include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
@@ -148,10 +139,8 @@ include "features:user:liveness"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"
-include "features:common:common_tradein"
 include "features:fintech:merchant_lending_widget"
 
-include 'tkpdloyalty'
 include 'tkpdcore'
 include 'tkpddesign'
 include 'tkpdseller'

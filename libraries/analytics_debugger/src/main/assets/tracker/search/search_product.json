@@ -54,7 +54,8 @@
           "dimension87": "search result",
           "dimension88": "search - product",
           "dimension90": "{{.*}}",
-          "dimension96": "{{.*}}"
+          "dimension96": "{{.*}}",
+          "dimension100": "{{.*}}"
         }
       ]
     },
@@ -102,7 +103,8 @@
           "dimension87": "search result",
           "dimension88": "search - product",
           "dimension90": "{{.*}}",
-          "dimension96": "{{.*}}"
+          "dimension96": "{{.*}}",
+          "dimension100": "{{.*}}"
         }
       ]
     }

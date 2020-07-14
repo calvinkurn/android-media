@@ -33,7 +33,8 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                     listener.onVideoPlayerClicked(
                             element.positionInFeed,
                             pagerPosition,
-                            element.postId.toString())
+                            element.postId.toString(),
+                            element.redirectLink)
                 }
             }
         } else {
@@ -55,11 +56,6 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                     }
                 }
         )
-        itemView.image.setOnClickListener{
-            if (canPlayVideo(element)) {
-                playVideo(element.url)
-            }
-        }
         itemView.image.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
             playVideo(element.url)
@@ -76,11 +72,11 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
         if (!isPlaying) {
             itemView.frame_video.visibility = View.INVISIBLE
             itemView.layout_video.setVideoURI(Uri.parse(url))
-            itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
+            itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
                     itemView.ic_play.visibility = View.GONE
-                    mp.setOnInfoListener(object: MediaPlayer.OnInfoListener{
+                    mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                                 itemView.frame_video.visibility = View.VISIBLE
@@ -108,7 +104,8 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
 
         fun onVideoPlayerClicked(positionInFeed: Int,
                                  contentPosition: Int,
-                                 postId: String)
+                                 postId: String,
+                                 redirectUrl: String)
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
