@@ -798,11 +798,11 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun isStickerTooltipAlreadyShow(): Boolean {
-        return sharedPref.getBoolean(TOOLTIP_ONBOARDING, false)
+        return sharedPref.getBoolean(STICKER_TOOLTIP_ONBOARDING, false)
     }
 
     override fun toolTipOnBoardingShown() {
-        sharedPref.edit().putBoolean(TOOLTIP_ONBOARDING, true).apply()
+        sharedPref.edit().putBoolean(STICKER_TOOLTIP_ONBOARDING, true).apply()
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
@@ -840,6 +840,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     companion object {
-        const val TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
+        const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
     }
 }
