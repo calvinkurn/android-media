@@ -445,6 +445,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun observingUserRoles() {
         somDetailViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
+            setLoadingIndicator(false)
             when (result) {
                 is Success -> {
                     if (result.data.roles.any { allowedRoles.contains(it) }) {
@@ -455,7 +456,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, "seller order detail page."))
-                    setLoadingIndicator(false)
+                    showToasterError(getString(R.string.global_error), view)
+                    refreshHandler?.finishRefresh()
                 }
             }
         })
