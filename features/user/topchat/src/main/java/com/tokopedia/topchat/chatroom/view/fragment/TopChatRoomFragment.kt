@@ -988,9 +988,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun pickVoucherToUpload() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER).apply {
-            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId.toString())
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER)
         startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
     }
 

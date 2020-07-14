@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
@@ -118,6 +119,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                             if (childResp != null) {
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
+                                Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
                             }
                         }
                     }

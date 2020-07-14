@@ -31,7 +31,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
 
     @Override
     public void getAllDraftCount() {
-        getAllProductsCountDraftUseCase.execute(getSubscriber());
+        fetchAllDraftProductCountUseCase.execute(getSubscriber());
     }
 
     @Override

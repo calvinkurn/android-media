@@ -35,8 +35,8 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
@@ -75,13 +75,13 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
-import kotlin.Unit;
 import rx.Subscriber;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_OLD_FILER_VS_NEW_FILTER;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_OLD_FILER_VS_NEW_FILTER;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_NEW_FILTER;
@@ -113,9 +113,6 @@ final class ProductListPresenter
     private SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
-    private boolean changeParamRow = false;
-    private boolean isUsingBottomSheetFilter = true;
-    private boolean enableTrackingViewPort = true;
     private boolean enableBottomSheetFilterRevampFirebase = true;
     private boolean enableBottomSheetFilterRevampABTest = true;
     private String additionalParams = "";
@@ -167,10 +164,6 @@ final class ProductListPresenter
         this.getProductCountUseCase = getProductCountUseCase;
         this.searchLocalCacheHandler = searchLocalCacheHandler;
 
-        this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
-        this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
-        this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
-        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true);
         this.enableBottomSheetFilterRevampFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true);
     }
 
@@ -204,11 +197,6 @@ final class ProductListPresenter
             e.printStackTrace();
             return false;
         }
-    }
-
-    @Override
-    public boolean isUsingBottomSheetFilter() {
-        return this.isUsingBottomSheetFilter;
     }
 
     @Override
@@ -387,7 +375,7 @@ final class ProductListPresenter
     }
 
     private String getSearchRows() {
-        return (changeParamRow) ? SearchConstant.SearchProduct.PARAMETER_ROWS : SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS;
+        return SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS;
     }
 
     private String getSearchSort(Map<String, Object> searchParameter) {
@@ -781,7 +769,7 @@ final class ProductListPresenter
 
     private void updateValueEnableGlobalNavWidget() {
         if (getView() != null) {
-            enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
+            enableGlobalNavWidget = !getView().isLandingPage();
         }
     }
 
@@ -1513,7 +1501,7 @@ final class ProductListPresenter
 
         if (item.isTopAds())
             getViewToTrackImpressedTopAdsProduct(item);
-        else if (enableTrackingViewPort)
+        else
             getViewToTrackImpressedOrganicProduct(item);
     }
 
@@ -1526,11 +1514,6 @@ final class ProductListPresenter
         if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
 
         getView().sendProductImpressionTrackingEvent(item);
-    }
-
-    @Override
-    public boolean isTrackingViewPortEnabled() {
-        return enableTrackingViewPort;
     }
 
     @Override
