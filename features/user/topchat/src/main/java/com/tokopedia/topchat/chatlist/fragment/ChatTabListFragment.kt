@@ -63,12 +63,14 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
 
-    lateinit var viewModelProvider: ViewModelProvider
-    lateinit var webSocketViewModel: WebSocketViewModel
-    lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
+    private lateinit var viewModelProvider: ViewModelProvider
+    private lateinit var webSocketViewModel: WebSocketViewModel
+    private lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
     private lateinit var searchToolTip: ToolTipSearchPopupWindow
 
+    private var coachMarkOnBoarding = CoachMarkBuilder().build()
     private var fragmentViewCreated = false
+    private var isFinishShowingCoachMarkOnBoarding = false
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
@@ -441,7 +443,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     override fun showSearchOnBoardingTooltip() {
-        if (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown()) return
+        if (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown() || !isFinishShowingCoachMarkOnBoarding) return
         val toolbar = chatTabListListener?.getActivityToolbar()
         toolbar?.post {
             val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
@@ -486,6 +488,8 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
                 tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 if (!isOnBoardingAlreadyShown()) {
                     showOnBoarding()
+                } else {
+                    isFinishShowingCoachMarkOnBoarding = true
                 }
             }
         })
@@ -515,7 +519,11 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
                         getString(R.string.coach_tab_description_buyer)
                 )
         )
-        CoachMarkBuilder().build().show(activity, TAG_ONBOARDING, tutorials)
+        coachMarkOnBoarding.onFinishListener = {
+            isFinishShowingCoachMarkOnBoarding = true
+            showSearchOnBoardingTooltip()
+        }
+        coachMarkOnBoarding.show(activity, TAG_ONBOARDING, tutorials)
         context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
     }
 
