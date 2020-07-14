@@ -183,24 +183,25 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (hasColorVariant) mIsVariantPhotosVisible.value = false
     }
 
-    fun updateSizechartFieldVisibility(
-            selectedVariantDetails: List<VariantDetail>,
-            unitValuesLevel1Size: Int,
-            unitValuesLevel2Size: Int
-    ) {
+    fun updateSizechartFieldVisibility(selectedVariantDetails: List<VariantDetail>) {
         var index = -1
         val isSizechartIdentifierExist = selectedVariantDetails.any {
             index += 1
             it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
         }
 
+        // get selected variant values for each level
+        val unitValuesLevel1 = selectedVariantUnitValuesMap[VARIANT_VALUE_LEVEL_ONE_POSITION].orEmpty()
+        val unitValuesLevel2 = selectedVariantUnitValuesMap[VARIANT_VALUE_LEVEL_TWO_POSITION].orEmpty()
+
+        // if identifier exist, then update sizechart visibility
         if (isSizechartIdentifierExist) {
             when (index) {
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                    mIsVariantSizechartVisible.value = unitValuesLevel1Size > 0
+                    mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty()
                 }
                 VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                    mIsVariantSizechartVisible.value = unitValuesLevel2Size > 0
+                    mIsVariantSizechartVisible.value = unitValuesLevel2.isNotEmpty()
                 }
             }
         }

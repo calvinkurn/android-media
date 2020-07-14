@@ -294,6 +294,9 @@ class AddEditProductVariantFragment :
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValuesLevel2)
             }
         }
+
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
@@ -372,12 +375,6 @@ class AddEditProductVariantFragment :
                 linkAddVariantValueLevel2.setTag(R.id.variant_detail, variantTypeDetail)
             }
         }
-
-        viewModel.updateSizechartFieldVisibility(
-                variantTypeAdapter?.getSelectedItems().orEmpty(),
-                variantValueAdapterLevel1?.itemCount.orZero(),
-                variantValueAdapterLevel2?.itemCount.orZero()
-        )
     }
 
     override fun onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues: List<UnitValue>, layoutPosition: Int, variantId: Int, variantTypeName: String) {
@@ -412,11 +409,8 @@ class AddEditProductVariantFragment :
             variantPhotoAdapter?.setData(variantPhotoList)
         }
 
-        viewModel.updateSizechartFieldVisibility(
-                variantTypeAdapter?.getSelectedItems().orEmpty(),
-                variantValueAdapterLevel1?.itemCount.orZero() + 1,
-                variantValueAdapterLevel2?.itemCount.orZero() + 1
-        )
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onVariantUnitPicked(selectedVariantUnit: Unit, layoutPosition: Int) {
@@ -501,11 +495,8 @@ class AddEditProductVariantFragment :
             variantPhotoAdapter?.addData(variantPhoto)
         }
 
-        viewModel.updateSizechartFieldVisibility(
-                variantTypeAdapter?.getSelectedItems().orEmpty(),
-                variantValueAdapterLevel1?.itemCount.orZero() + 1,
-                variantValueAdapterLevel2?.itemCount.orZero() + 1
-        )
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onRemoveButtonClicked(position: Int, layoutPosition: Int, removedUnitValue: UnitValue) {
@@ -543,11 +534,8 @@ class AddEditProductVariantFragment :
             variantPhotoAdapter?.removeData(position)
         }
 
-        viewModel.updateSizechartFieldVisibility(
-                variantTypeAdapter?.getSelectedItems().orEmpty(),
-                variantValueAdapterLevel1?.itemCount.orZero() - 1,
-                variantValueAdapterLevel2?.itemCount.orZero() - 1
-        )
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onItemClicked(position: Int) {
@@ -840,7 +828,9 @@ class AddEditProductVariantFragment :
         val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
                 ?: PictureVariantInputModel()
         viewModel.updateSizechart(sizechart)
-        //viewModel.updateSizechartFieldVisibility()
+
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
 
     }
 
