@@ -124,7 +124,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
             view.progress_bar.setValue(data.groupPriceDailySpentFmt.replace("Rp", "").trim().toInt(), true)
             view.progress_status1.text = data.groupPriceDailySpentFmt
-            view.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), data.groupPriceDaily)
+            view.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), data.groupPriceDaily)
         } else {
             view.progress_layout.visibility = View.GONE
         }
