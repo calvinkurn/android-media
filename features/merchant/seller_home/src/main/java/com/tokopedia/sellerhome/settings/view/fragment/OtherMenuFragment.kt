@@ -185,7 +185,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         if (bottomSheet is BottomSheetUnify) {
             bottomSheet.dismiss()
         }
-        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
     }
 
     override fun onRefreshShopInfo() {
