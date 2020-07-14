@@ -22,7 +22,6 @@ import rx.Subscriber;
 public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private FetchAllDraftProductUseCase fetchAllDraftProductUseCase;
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
-    private DeleteSingleDraftProductLegacyUseCase deleteSingleDraftProductLegacyUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
     private FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase;
@@ -31,14 +30,12 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     public ProductDraftListPresenterImpl(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                          FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase,
                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                         DeleteSingleDraftProductLegacyUseCase deleteSingleDraftProductLegacyUseCase,
                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase,
                                          ClearAllDraftProductLegacyUseCase clearAllDraftProductLegacyUseCase) {
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
         this.fetchAllDraftProductLegacyUseCase = fetchAllDraftProductLegacyUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
-        this.deleteSingleDraftProductLegacyUseCase = deleteSingleDraftProductLegacyUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
         this.clearAllDraftProductLegacyUseCase = clearAllDraftProductLegacyUseCase;
@@ -60,23 +57,25 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
     @Override
     public void deleteProductDraft(long draftProductId) {
-        if (GlobalConfig.isSellerApp()) {
+        //TODO milhamj
+//        if (GlobalConfig.isSellerApp()) {
             deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.Companion.createRequestParams(draftProductId),
                     getDeleteSubscriber());
-        } else {
-            deleteSingleDraftProductLegacyUseCase.execute(DeleteSingleDraftProductLegacyUseCase.createRequestParams(draftProductId),
-                    getDeleteSubscriber());
-        }
+//        } else {
+//            deleteSingleDraftProductLegacyUseCase.execute(DeleteSingleDraftProductLegacyUseCase.createRequestParams(draftProductId),
+//                    getDeleteSubscriber());
+//        }
 
     }
 
     @Override
     public void clearAllDraftData() {
-        if (GlobalConfig.isSellerApp()) {
+        //TODO milhamj
+//        if (GlobalConfig.isSellerApp()) {
             clearAllDraftProductUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
-        } else {
-            clearAllDraftProductLegacyUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
-        }
+//        } else {
+//            clearAllDraftProductLegacyUseCase.execute(RequestParams.EMPTY, getClearAllDraftSubscriber());
+//        }
     }
 
     private Subscriber<Boolean> getClearAllDraftSubscriber() {
