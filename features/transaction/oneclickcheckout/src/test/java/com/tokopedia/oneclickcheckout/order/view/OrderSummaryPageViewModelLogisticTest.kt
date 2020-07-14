@@ -243,15 +243,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Save Pinpoint Success`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(needPinpoint = true))
+        setUpCartAndRates()
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
-            {
-                "data": {
-                    "is_success": 1
-                }
-            }
-        """.trimIndent())
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 1}}")
+
         orderSummaryPageViewModel.savePinpoint("", "")
 
         assertEquals(OccGlobalEvent.TriggerRefresh(false), orderSummaryPageViewModel.globalEvent.value)
@@ -259,16 +254,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Save Pinpoint Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(needPinpoint = true))
+        setUpCartAndRates()
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": ["error"]
-            }
-        """.trimIndent())
+        every { editAddressUseCase.createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 0},\"message_error\": [\"error\"]}")
+
         orderSummaryPageViewModel.savePinpoint("", "")
 
         assertEquals(OccGlobalEvent.Error(errorMessage = "error"), orderSummaryPageViewModel.globalEvent.value)
@@ -276,10 +265,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Save Pinpoint Failed`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(needPinpoint = true))
-
+        setUpCartAndRates()
         val throwable = Throwable()
         every { editAddressUseCase.createObservable(any()) } returns Observable.error(throwable)
+
         orderSummaryPageViewModel.savePinpoint("", "")
 
         assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)

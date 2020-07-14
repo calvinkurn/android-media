@@ -66,6 +66,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import org.json.JSONObject
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
@@ -751,8 +752,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         if (!statusSuccess) {
                                             messageError = response.getJSONArray("message_error").getString(0)
                                         }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
+                                    } catch (e: JSONException) {
                                         statusSuccess = false
                                     }
 
