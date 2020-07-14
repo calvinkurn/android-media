@@ -12,7 +12,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
+import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,19 +36,36 @@ class BuyerAccountViewModel @Inject constructor (
     val buyerAccountData: LiveData<Result<AccountModel>>
         get() = _buyerAccountData
 
+    private val _buyerWalletBalance = MutableLiveData<WalletModel>()
+    val buyerWalletBalance: LiveData<WalletModel>
+        get() = _buyerWalletBalance
+
+    private val _buyerCheckAffiliate = MutableLiveData<Boolean>()
+    val buyerCheckAffiliate: LiveData<Boolean>
+        get() = _buyerCheckAffiliate
+
     fun getBuyerData(buyerQuery: String) {
         getBuyerAccountDataUseCase.getBuyerAccount(onSuccessGetBuyerData(), onErrorGetBuyerData(), buyerQuery)
+        checkIsAffiliate()
+        getBuyerWalletBalance()
     }
 
     private fun checkIsAffiliate() {
         if (userSession.isAffiliate) {
-            (_buyerAccountData.value as Success).data.isAffiliate = true
+//            (_buyerAccountData.value as Success).data.isAffiliate = true
+            _buyerCheckAffiliate.value = true
         } else {
             val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_affiliate_check)
             checkAffiliateUseCase.setTypeClass(AffiliateCheckData::class.java)
             checkAffiliateUseCase.setGraphqlQuery(query)
             checkAffiliateUseCase.execute(onSuccessCheckAffiliate(), onErrorCheckAffiliate())
         }
+    }
+
+    private fun getBuyerWalletBalance() {
+        val result = getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+//        (_buyerAccountData.value as Success).data.wallet = result
+        _buyerWalletBalance.value = result
     }
 
     private fun onErrorGetBuyerData(): (Throwable) -> Unit {
@@ -59,14 +78,12 @@ class BuyerAccountViewModel @Inject constructor (
     private fun onSuccessGetBuyerData(): (AccountModel) -> Unit {
         return {
             Log.d("BUYER-ACC", it.toString())
-            checkIsAffiliate()
 
             saveLocallyWallet(it)
             saveLocallyVccUserStatus(it)
             savePhoneVerified(it)
             saveIsAffiliateStatus(it)
             saveDebitInstantData(it)
-
             _buyerAccountData.value = Success(it)
         }
     }
@@ -80,7 +97,8 @@ class BuyerAccountViewModel @Inject constructor (
     private fun onSuccessCheckAffiliate(): (AffiliateCheckData) -> Unit {
         return {
             Log.d("BUYER-ACC-CA", it.toString())
-            (_buyerAccountData.value as Success).data.isAffiliate = true
+//            (_buyerAccountData.value as Success).data.isAffiliate = it.affiliateCheck.isIsAffiliate
+            _buyerCheckAffiliate.value = it.affiliateCheck.isIsAffiliate
         }
     }
 
