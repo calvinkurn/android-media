@@ -65,7 +65,6 @@ class SellerHomeViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var mViewModel: SellerHomeViewModel
     private lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
