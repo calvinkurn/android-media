@@ -77,10 +77,10 @@ class SomFilterFragment : BaseDaggerFragment() {
         private const val REQUEST_ORDER_TYPE_LIST = 2881
         private const val REQUEST_ORDER_STATUS_LIST = 2882
 
-        private const val ERROR_GET_FILTER_DATA = "When get filters data."
-        private const val ERROR_GET_ORDER_TYPE_FILTER = "When get order type filters."
-        private const val ERROR_GET_COURIER_TYPE_FILTER = "When get courier type filters."
-        private const val ERROR_GET_STATUS_ORDER_TYPE_FILTER = "When get status order type filters."
+        private const val ERROR_GET_FILTER_DATA = "Error When get filters data."
+        private const val ERROR_GET_ORDER_TYPE_FILTER = "Error When get order type filters."
+        private const val ERROR_GET_COURIER_TYPE_FILTER = "Error When get courier type filters."
+        private const val ERROR_GET_STATUS_ORDER_TYPE_FILTER = "Error When get status order type filters."
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomFilterFragment {
