@@ -254,6 +254,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     bottomSheets.show(it, "")
                 }
             } else if(isScheduleWithoutDatePicker(productDetailData)) {
+                selectedDate = productDetailData.dates.first()
                 if (userSession.isLoggedIn) { goToTicketPageWithoutDate() }
                 else {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
@@ -352,7 +353,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     private fun goToTicketPageWithoutDate() {
         context?.let {
             RouteManager.route(it,
-                    "${ApplinkConstInternalEntertainment.EVENT_PACKAGE}/$urlPDP")
+                    getString(R.string.ent_pdp_param_to_package, ApplinkConstInternalEntertainment.EVENT_PACKAGE, urlPDP, selectedDate, "", ""))
         }
     }
 
@@ -456,7 +457,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun share(productDetailData: ProductDetailData) {
         activity?.run {
-            EventShare(this).shareTravelAgent(productDetailData, { showLoading() }, { hideLoading() }, this.applicationContext)
+            EventShare(this).shareEvent(productDetailData, { showLoading() }, { hideLoading() }, this.applicationContext)
         }
     }
 
