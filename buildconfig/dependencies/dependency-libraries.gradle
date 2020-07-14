@@ -99,7 +99,7 @@ ext {
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
             mapviewer               : ":libraries:mapviewer",
-            tokofix                 : ":libraries:tokofix",
+            tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
             lint                    : ":libraries:lint"

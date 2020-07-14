@@ -172,12 +172,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         }
     }
 
-public void sendAnalyticsAnomalyResponse(String title,
-
-                                      String accessToken, String refreshToken,
-
-                                      String response, String request){}
-
     @Override
     public Class<?> getDeeplinkClass() {
         return null;

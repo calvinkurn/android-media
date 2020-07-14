@@ -300,6 +300,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
+    //ShopFavouriteListActivity
+    @JvmField
+    val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
     @JvmField
     val ARGS_SHOP_ID = "ARGS_SHOP_ID"
 

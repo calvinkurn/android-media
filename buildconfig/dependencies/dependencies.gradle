@@ -11,6 +11,7 @@ ext {
     lifeCycleVersion = "2.1.0"
     workManagerVersion = "2.3.4"
 
+    appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
@@ -25,6 +26,7 @@ ext {
     rulesVersion = "1.1.0"
     apolloVersion = '0.3.0'
     lottieVersion = '3.4.1'
+    cardioVersion = '5.5.1'
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
     roomVersion = '2.2.1'
@@ -96,7 +98,7 @@ ext {
     unifyDialogVersion = '1.0.3'
     unifyDatePickerVersion = '1.0.5'
     unifyPinVersion = '1.0.1'
-    unifyEmptyStateVersion = '1.0.5'
+    unifyEmptyStateVersion = '1.0.6-beta-1'
     unifyGlobalErrorVersion = '1.0.9'
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.3'
@@ -135,7 +137,7 @@ ext {
             recyclerViewV7    : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
             mediaV7           : "androidx.media:media:${supportLibraryVersion}",
             supportV4         : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
-            appCompactV7      : "androidx.appcompat:appcompat:${supportLibraryVersion}",
+            appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
             supportV13        : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
             design            : "com.google.android.material:material:${materialVersion}",
             cardViewV7        : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
@@ -223,6 +225,7 @@ ext {
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:8.3.18",
+            robust                : "com.meituan.robust:robust:0.4.99",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",

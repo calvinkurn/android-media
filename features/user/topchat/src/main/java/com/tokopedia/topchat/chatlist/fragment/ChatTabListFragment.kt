@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.fragment
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -87,7 +88,14 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         initData()
         initOnBoarding()
         initChatCounterObserver()
+        initBackground()
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun initBackground() {
+        if (GlobalConfig.isSellerApp()) {
+            viewPager?.setBackgroundColor(Color.WHITE)
+        }
     }
 
     override fun onStart() {

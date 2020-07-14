@@ -97,6 +97,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         variantList.apply {
             adapter = this@QuickEditVariantBottomSheet.adapter
             layoutManager = LinearLayoutManager(this@QuickEditVariantBottomSheet.context)
+            itemAnimator = null
         }
     }
 

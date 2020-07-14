@@ -55,6 +55,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
     testImplementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
