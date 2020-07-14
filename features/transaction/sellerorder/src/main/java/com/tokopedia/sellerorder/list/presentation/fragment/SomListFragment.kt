@@ -43,12 +43,15 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.domain.model.Roles
+import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -160,7 +163,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
         private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
         private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
-        private const val ERROR_GET_USER_ROLES = "Error when get user roles in seller order list page."
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -467,7 +469,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_USER_ROLES)
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(ERROR_GET_USER_ROLES, "seller order list page."))
                     toggleSomLayout(false)
                     renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                 }
@@ -870,8 +872,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onListItemClicked(orderId: String) {
         eventClickOrder(tabActive)
+        val userRolesResult = somListViewModel.userRoleResult.value
+        val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else SomGetUserRoleDataModel()
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
+            putExtra(PARAM_USER_ROLES, userRoles)
             startActivityForResult(this, FLAG_DETAIL)
         }
     }
