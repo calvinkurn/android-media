@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.common.view.model
 
+import androidx.lifecycle.LiveData
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
@@ -42,3 +43,13 @@ data class OccEvent<out T: Any>(private val data: T) {
 }
 
 data class Failure(val throwable: Throwable? = null, val errorMessage: String = "")
+
+@Suppress("UNCHECKED_CAST")
+class OccMutableLiveData<T>(initialValue: T): LiveData<T>(initialValue) {
+
+    override fun getValue(): T = super.getValue() as T
+
+    public override fun setValue(value: T) {
+        super.setValue(value)
+    }
+}

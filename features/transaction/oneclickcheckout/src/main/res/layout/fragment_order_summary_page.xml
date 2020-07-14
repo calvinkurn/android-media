@@ -28,6 +28,7 @@
                     android:id="@+id/ticker_osp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:closeButtonVisibility="visible"
                     app:descriptionText="Atur pilihan kamu sekarang lewat ikon setting atau tambah pilihan baru"
                     app:layout_constraintEnd_toEndOf="parent"
