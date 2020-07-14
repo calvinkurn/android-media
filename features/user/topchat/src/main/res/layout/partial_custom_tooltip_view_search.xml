@@ -34,7 +34,7 @@
             android:layout_marginRight="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
-            android:text="Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu."
+            android:text="@string/title_topchat_tooltip_search_onboarding"
             android:textColor="@color/white"
             app:typographyType="body_3" />
 
