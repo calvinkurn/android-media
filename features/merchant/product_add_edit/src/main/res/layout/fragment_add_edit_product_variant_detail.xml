@@ -82,7 +82,6 @@
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:checked="true"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstDivider" />
 
