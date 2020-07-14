@@ -270,7 +270,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         super.onStart()
         activity?.run {
             TalkReplyTracking.
-            sendScreen(screenName)
+            sendScreen(screenName, productId, viewModel.userId)
         }
     }
 

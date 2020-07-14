@@ -273,7 +273,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onStart() {
         super.onStart()
         activity?.run {
-            TalkReadingTracking.sendScreen(screenName)
+            TalkReadingTracking.sendScreen(screenName, productId, viewModel.isUserLoggedIn(), viewModel.userId)
         }
     }
 
