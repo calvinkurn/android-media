@@ -57,7 +57,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     fun initView() {
-        if (::product.isInitialized) {
+        if (isProductInitialized()) {
             ivProductImage?.let {
                 ImageHandler.loadImageFitCenter(view.context, it, product.productImageUrl)
             }

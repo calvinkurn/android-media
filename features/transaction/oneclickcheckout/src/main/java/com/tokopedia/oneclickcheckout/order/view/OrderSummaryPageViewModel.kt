@@ -66,7 +66,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.json.JSONException
 import org.json.JSONObject
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
@@ -196,34 +195,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun getRates() {
-        val currPromo = if (_orderPreference?.shipping?.isApplyLogisticPromo == true) _orderPreference?.shipping?.logisticPromoViewModel?.promoCode
-                ?: "" else ""
-        val shippingParam = generateShippingParam()
-        val ratesParamBuilder = RatesParam.Builder(generateListShopShipment(), shippingParam)
-        val ratesParam = ratesParamBuilder.build()
-        ratesParam.occ = "1"
         compositeSubscription.add(
-                ratesUseCase.execute(ratesParam)
-                        .map {
-                            val data = ratesResponseStateConverter.fillState(it, generateListShopShipment(), _orderPreference?.shipping?.shipperProductId
-                                    ?: 0, _orderPreference?.shipping?.serviceId ?: 0)
-                            if (data.shippingDurationViewModels != null) {
-                                val logisticPromo = data.logisticPromo
-                                if (logisticPromo != null) {
-                                    // validate army courier
-                                    val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
-                                    if (serviceData == null) {
-                                        data.logisticPromo = null
-                                    } else {
-                                        val courierData: ShippingCourierUiModel? = getCourierDataBySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList)
-                                        if (courierData == null) {
-                                            data.logisticPromo = null
-                                        }
-                                    }
-                                }
-                            }
-                            return@map data
-                        }.subscribe(object : Observer<ShippingRecommendationData> {
+                ratesUseCase.execute(generateRatesParam())
+                        .map(::mapShippingRecommendationData)
+                        .subscribe(object : Observer<ShippingRecommendationData> {
                             override fun onError(e: Throwable?) {
                                 _orderPreference = _orderPreference?.copy(shipping = OrderShipment(
                                         serviceName = _orderPreference?.preference?.shipment?.serviceName,
@@ -240,6 +215,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 if (value != null) {
                                     val curShip = value.preference.shipment
                                     var shipping = value.shipping
+                                    val currPromo = if (shipping?.isApplyLogisticPromo == true) shipping.logisticPromoViewModel?.promoCode
+                                            ?: "" else ""
                                     var shippingErrorId: String? = null
                                     var preselectedSpId: String? = null
 
@@ -258,7 +235,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                         shippingErrorId = durationError.errorId
                                                         shipping = OrderShipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                serviceDuration = generateServiceDuration(shippingDurationViewModel.serviceData.serviceName),
+                                                                serviceDuration = shippingDurationViewModel.serviceData.serviceName,
                                                                 serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                 needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                                                                 serviceErrorMessage = durationError.errorMessage,
@@ -294,7 +271,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                                     serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
                                                                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                     serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                    serviceDuration = generateServiceDuration(shippingDurationViewModel.serviceData.serviceName),
+                                                                    serviceDuration = shippingDurationViewModel.serviceData.serviceName,
                                                                     serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                                     isApplyLogisticPromo = false,
@@ -320,7 +297,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                         shippingErrorId = durationError.errorId
                                                         shipping = OrderShipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                serviceDuration = generateServiceDuration(shippingDurationViewModel.serviceData.serviceName),
+                                                                serviceDuration = shippingDurationViewModel.serviceData.serviceName,
                                                                 serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                 needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                                                                 serviceErrorMessage = durationError.errorMessage,
@@ -357,7 +334,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                                     serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
                                                                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                     serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                    serviceDuration = generateServiceDuration(shippingDurationViewModel.serviceData.serviceName),
+                                                                    serviceDuration = shippingDurationViewModel.serviceData.serviceName,
                                                                     serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                                     shippingRecommendationData = shippingRecommendationData)
@@ -391,7 +368,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     return
                                                 }
                                             } else {
-                                                shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
+                                                shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null,
+                                                        logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
                                             }
                                         } else {
                                             shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
@@ -406,13 +384,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     if (shipping?.serviceErrorMessage.isNullOrEmpty()) {
                                         validateUsePromo()
                                     } else {
-                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
-                                        if (shippingErrorId?.isNotEmpty() == true) {
-                                            if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
-                                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
-                                            } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
-                                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
-                                            }
+                                        orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
+                                        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
+                                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
+                                        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
+                                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
                                         }
                                     }
                                     sendViewOspEe()
@@ -430,16 +406,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
+    private fun generateRatesParam(): RatesParam {
+        return RatesParam.Builder(generateListShopShipment(), generateShippingParam()).build().apply {
+            occ = "1"
+        }
+    }
+
     fun generateShippingParam(): ShippingParam {
         return ShippingParam().apply {
+            val address = _orderPreference?.preference?.address
+
             originDistrictId = orderShop.districtId.toString()
             originPostalCode = orderShop.postalCode
             originLatitude = orderShop.latitude
             originLongitude = orderShop.longitude
-            destinationDistrictId = _orderPreference?.preference?.address?.districtId?.toString()
-            destinationPostalCode = _orderPreference?.preference?.address?.postalCode
-            destinationLatitude = _orderPreference?.preference?.address?.latitude
-            destinationLongitude = _orderPreference?.preference?.address?.longitude
+            destinationDistrictId = address?.districtId?.toString()
+            destinationPostalCode = address?.postalCode
+            destinationLatitude = address?.latitude
+            destinationLongitude = address?.longitude
             shopId = orderShop.shopId.toString()
             token = orderKero.keroToken
             ut = orderKero.keroUT
@@ -447,17 +431,34 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             isPreorder = orderProduct.isPreorder != 0
             categoryIds = orderProduct.categoryId.toString()
             uniqueId = orderCart.cartString
-            addressId = _orderPreference?.preference?.address?.addressId ?: 0
+            addressId = address?.addressId ?: 0
             products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
             weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
             productInsurance = orderProduct.productFinsurance
-
             orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
         }
     }
 
     fun generateListShopShipment(): List<ShopShipment> {
         return orderShop.shopShipment
+    }
+
+    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData): ShippingRecommendationData {
+        val data = ratesResponseStateConverter.fillState(shippingRecommendationData, generateListShopShipment(), _orderPreference?.shipping?.shipperProductId
+                ?: 0, _orderPreference?.shipping?.serviceId ?: 0)
+        if (data.shippingDurationViewModels != null) {
+            val logisticPromo = data.logisticPromo
+            if (logisticPromo != null) {
+                // validate army courier
+                val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
+                if (serviceData == null) {
+                    data.logisticPromo = null
+                } else if (getCourierDataBySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList) == null) {
+                    data.logisticPromo = null
+                }
+            }
+        }
+        return data
     }
 
     private fun getCourierDataBySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
@@ -480,14 +481,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             return OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
         }
         return shipping
-    }
-
-    private fun generateServiceDuration(tempServiceDuration: String): String {
-        return if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-            "$LABEL_DURATION_PREFIX ${tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))}"
-        } else {
-            NO_EXACT_DURATION_MESSAGE
-        }
     }
 
     private fun clearOldLogisticPromo(oldPromoCode: String) {
@@ -573,7 +566,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                                 needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                                                         orderPreference.value = OccState.Success(_orderPreference!!)
                                                         globalEvent.value = OccGlobalEvent.Normal
-                                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                                         updatePromoState(response.promoUiModel)
                                                         return
                                                     }
@@ -584,7 +576,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null))
                                     orderPreference.value = OccState.Success(_orderPreference!!)
                                     globalEvent.value = OccGlobalEvent.Normal
-                                    orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                     updatePromoState(response.promoUiModel)
                                 }
 
@@ -677,7 +668,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else null,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
                     serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
-                    serviceDuration = generateServiceDuration(selectedShippingDurationViewModel.serviceData.serviceName),
+                    serviceDuration = selectedShippingDurationViewModel.serviceData.serviceName,
                     serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
                     shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                     ratesId = selectedShippingCourierUiModel.ratesId,
@@ -720,7 +711,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun savePinpoint(longitude: String, latitude: String) {
-        val params = generateAuthParam()
+        val params = AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
         val op = _orderPreference
         if (op != null) {
             params[EditAddressParam.ADDRESS_ID] = op.preference.address.addressId.toString()
@@ -760,7 +751,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         if (!statusSuccess) {
                                             messageError = response.getJSONArray("message_error").getString(0)
                                         }
-                                    } catch (e: JSONException) {
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
                                         statusSuccess = false
                                     }
 
@@ -780,10 +772,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             })
             )
         }
-    }
-
-    private fun generateAuthParam(): MutableMap<String, String> {
-        return AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
     }
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
@@ -839,7 +827,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                             needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                                                     orderPreference.value = OccState.Success(_orderPreference!!)
                                                     globalEvent.value = OccGlobalEvent.Normal
-                                                    orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                                     updatePromoState(response.promoUiModel)
                                                     return
                                                 }
@@ -1336,7 +1323,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
                                 validateUsePromoRevampUiModel = result
                                 updatePromoState(result.promoUiModel)
-                                orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                             }
 
                             override fun onCompleted() {
@@ -1348,6 +1334,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value?.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = ButtonBayarState.NORMAL)
+        orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
         calculateTotal()
     }
 
@@ -1483,9 +1470,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     companion object {
-        const val LABEL_DURATION_PREFIX = "Durasi"
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
-        const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
         const val NO_DURATION_AVAILABLE = "Durasi pengiriman tidak tersedia"
         const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
 

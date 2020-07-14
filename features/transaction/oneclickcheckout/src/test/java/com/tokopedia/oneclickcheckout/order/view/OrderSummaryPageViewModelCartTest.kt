@@ -144,7 +144,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.getOccCart(true, "")
 
         assertEquals(OccState.Success(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile,
-                shipping = OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "Durasi 2 hari", serviceId = 1, shipperName = "kirimin",
+                shipping = OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
                         shipperId = 0, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
                         insuranceData = shippingRecommendationData.shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.insurance))),
                 orderSummaryPageViewModel.orderPreference.value)

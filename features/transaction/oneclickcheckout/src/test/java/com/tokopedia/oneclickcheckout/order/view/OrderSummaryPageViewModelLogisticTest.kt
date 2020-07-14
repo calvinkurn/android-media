@@ -66,7 +66,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(
                 OrderShipment(
                         serviceName = helper.firstDuration.serviceData.serviceName,
-                        serviceDuration = "Durasi 1 hari",
+                        serviceDuration = helper.firstDuration.serviceData.serviceName,
                         serviceId = helper.firstDuration.serviceData.serviceId,
                         shipperName = helper.secondCourierFirstDuration.productData.shipperName,
                         shipperId = helper.secondCourierFirstDuration.productData.shipperId,
@@ -90,7 +90,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(
                 OrderShipment(
                         serviceName = helper.secondDuration.serviceData.serviceName,
-                        serviceDuration = "Durasi 2 hari",
+                        serviceDuration = helper.secondDuration.serviceData.serviceName,
                         serviceId = helper.secondDuration.serviceData.serviceId,
                         shipperName = helper.firstCourierSecondDuration.productData.shipperName,
                         shipperId = helper.firstCourierSecondDuration.productData.shipperId,
@@ -248,7 +248,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
             {
                 "data": {
-                    "is_success" : 1
+                    "is_success": 1
                 }
             }
         """.trimIndent())
@@ -264,7 +264,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
             {
                 "data": {
-                    "is_success" : 0
+                    "is_success": 0
                 },
                 "message_error": ["error"]
             }

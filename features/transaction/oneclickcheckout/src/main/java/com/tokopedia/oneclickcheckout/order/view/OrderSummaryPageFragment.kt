@@ -135,7 +135,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private lateinit var orderPreferenceCard: OrderPreferenceCard
 
     private var progressDialog: AlertDialog? = null
-    private var dialogUnify: DialogUnify? = null
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false

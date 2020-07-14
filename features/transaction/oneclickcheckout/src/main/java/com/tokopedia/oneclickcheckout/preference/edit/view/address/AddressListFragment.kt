@@ -26,7 +26,6 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -40,7 +39,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companio
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.empty_list_address.*
-import kotlinx.android.synthetic.main.fragment_choose_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -61,7 +59,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     private lateinit var searchAddress: SearchInputView
     private val adapter = AddressListItemAdapter(this)
 
-    private var addressList: RecyclerView? = null
+    private var addressListRv: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var searchInputView: SearchInputView? = null
     private var buttonSaveAddress: UnifyButton? = null
@@ -117,7 +115,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     swipeRefreshLayout?.isRefreshing = false
                     globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
-                    renderData(it.data.listAddress)
+                    adapter.setData(it.data.listAddress)
                 }
 
                 is OccState.Failed -> {
@@ -132,20 +130,14 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         })
     }
 
-    private fun renderData(data: List<RecipientAddressModel>) {
-        adapter.addressList.clear()
-        adapter.addressList.addAll(data)
-        adapter.notifyDataSetChanged()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initHeader()
         initView()
         initViewModel()
         initSearch()
-        address_list_rv.adapter = adapter
-        address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        addressListRv?.adapter = adapter
+        addressListRv?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
     }
 
@@ -162,20 +154,20 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             emptyStateLayout?.gone()
             textSearchError?.gone()
             searchAddress.visible()
-            addressList?.visible()
+            addressListRv?.visible()
             bottomLayout?.visible()
         } else if (isFirstLoad) {
             buttonSaveAddress?.text = getString(R.string.label_button_input_address_empty)
             buttonSaveAddress?.setOnClickListener {
                 goToPickLocation(REQUEST_FIRST_CREATE)
             }
-            addressList?.gone()
+            addressListRv?.gone()
             searchAddress.gone()
             textSearchError?.gone()
             emptyStateLayout?.visible()
             bottomLayout?.visible()
         } else {
-            addressList?.gone()
+            addressListRv?.gone()
             bottomLayout?.gone()
             emptyStateLayout?.gone()
             searchAddress.visible()
@@ -191,7 +183,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun initView() {
-        addressList = view?.findViewById(R.id.address_list_rv)
+        addressListRv = view?.findViewById(R.id.address_list_rv)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         searchInputView = view?.findViewById(R.id.search_input_view)
         buttonSaveAddress = view?.findViewById(R.id.btn_save_address)
@@ -236,8 +228,6 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         } else {
             val parent = activity
             if (parent is PreferenceEditParent) {
-                parent.hideDeleteButton()
-                parent.hideAddButton()
                 parent.showAddButton()
                 parent.setAddButtonOnClickListener {
                     goToPickLocation(REQUEST_CREATE)
@@ -272,8 +262,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun initSearchView() {
-        searchAddress.searchTextView.setOnClickListener(onSearchViewClickListener())
-        searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
+        searchAddress.searchTextView.setOnClickListener { view ->
+            searchAddress.searchTextView.isCursorVisible = true
+            openSoftKeyboard()
+        }
         searchAddress.setResetListener {
             performSearch("")
         }
@@ -301,21 +293,6 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     private fun openSoftKeyboard() {
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
                 searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun onSearchViewTouchListener(): View.OnTouchListener {
-        return View.OnTouchListener { _, _ ->
-            searchAddress.searchTextView.isCursorVisible = true
-            openSoftKeyboard()
-            false
-        }
-    }
-
-    private fun onSearchViewClickListener(): View.OnClickListener {
-        return View.OnClickListener { view ->
-            searchAddress.searchTextView.isCursorVisible = true
-            openSoftKeyboard()
-        }
     }
 
     private fun goToPickLocation(requestCode: Int) {
@@ -391,7 +368,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         }
         searchAddress.gone()
         textSearchError?.gone()
-        addressList?.gone()
+        addressListRv?.gone()
         bottomLayout?.gone()
         emptyStateLayout?.gone()
         globalErrorLayout?.visible()
