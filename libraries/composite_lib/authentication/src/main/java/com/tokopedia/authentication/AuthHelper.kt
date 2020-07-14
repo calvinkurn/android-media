@@ -1,17 +1,15 @@
 package com.tokopedia.authentication
 
 import android.os.Build
-import androidx.collection.ArrayMap
 import android.util.Base64
+import androidx.collection.ArrayMap
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.HashMap
-import java.util.Locale
+import java.util.*
 import java.util.regex.Pattern
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -20,40 +18,28 @@ import javax.crypto.spec.SecretKeySpec
 class AuthHelper {
     companion object {
 
-        class ReleaseTrackTransformer: (String) -> String {
-            override operator fun invoke(x: String): String  {
-                return if(x.contains(RELEASE_TRACK_BETA)){ RELEASE_TRACK_BETA }
-                else if(x.contains(RELEASE_TRACK_INTERNAL)){ RELEASE_TRACK_INTERNAL}
-                else {RELEASE_TRACK_DEFAULT}
-            }
-        }
+        val p = Pattern.compile("([\\d]*[^-\\w][\\d]*){1}")
 
-        val p = Pattern.compile("([\\d]*[^-\\w][\\d]*){1}");
-
-        class VersionNameTransformer:(String)-> String {
-            override operator fun invoke(x: String): String {
-                // save raw version name
-                GlobalConfig.RAW_VERSION_NAME = x;
-
-                val m = p.matcher(x);
-                while(m.find()){
-                    return m.group(0)
-                }
-                return x
-            }
+        @JvmStatic
+        fun getReleaseTrack(versionName: String) = if (versionName.contains(RELEASE_TRACK_BETA)) {
+            RELEASE_TRACK_BETA
+        } else if (versionName.contains(RELEASE_TRACK_INTERNAL)) {
+            RELEASE_TRACK_INTERNAL
+        } else {
+            RELEASE_TRACK_DEFAULT
         }
 
         @JvmStatic
-        val versionName: (String) -> String = VersionNameTransformer()
+        fun getVersionName(versionName: String): String {
+            // save raw version name
+            GlobalConfig.RAW_VERSION_NAME = versionName
 
-        @JvmStatic
-        val releaseTrack : (String) -> String = ReleaseTrackTransformer()
-
-        @JvmStatic
-        fun getReleaseTrack(versionName:String) = releaseTrack(versionName)
-
-        @JvmStatic
-        fun getVersionName(versionName:String) = versionName(versionName)
+            val m = p.matcher(versionName)
+            while (m.find()) {
+                return m.group(0)
+            }
+            return versionName
+        }
 
         @JvmStatic
         fun getDefaultHeaderMap(
@@ -81,7 +67,7 @@ class AuthHelper {
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
             headerMap.remove(HEADER_RELEASE_TRACK)
 
-            headerMap[HEADER_RELEASE_TRACK] = versionName(GlobalConfig.RAW_VERSION_NAME)
+            headerMap[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -121,7 +107,7 @@ class AuthHelper {
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
             headerMap.remove(HEADER_RELEASE_TRACK)
 
-            headerMap[HEADER_RELEASE_TRACK] = versionName(GlobalConfig.RAW_VERSION_NAME)
+            headerMap[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${session.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -177,7 +163,7 @@ class AuthHelper {
             }
 
             finalHeader.remove(HEADER_RELEASE_TRACK)
-            finalHeader[HEADER_RELEASE_TRACK] = versionName(GlobalConfig.RAW_VERSION_NAME)
+            finalHeader[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
             finalHeader[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             finalHeader[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -241,7 +227,7 @@ class AuthHelper {
             header.remove(HEADER_ACCOUNT_AUTHORIZATION)
             header.remove(HEADER_RELEASE_TRACK)
 
-            header[HEADER_RELEASE_TRACK] = versionName(GlobalConfig.RAW_VERSION_NAME)
+            header[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
             header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             header[PARAM_OS_TYPE] = "1"
             header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
@@ -279,7 +265,7 @@ class AuthHelper {
             headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
             headers.remove(HEADER_RELEASE_TRACK)
-            headers[HEADER_RELEASE_TRACK] = versionName(GlobalConfig.RAW_VERSION_NAME)
+            headers[HEADER_RELEASE_TRACK] = getVersionName(GlobalConfig.RAW_VERSION_NAME)
             headers[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headers[PARAM_OS_TYPE] = "1"
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
