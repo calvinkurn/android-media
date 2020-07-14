@@ -143,9 +143,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
     fun loadEtalaseList() {
         _observableEtalase.value = PageResult.Loading(emptyList())
         scope.launch {
-            val etalaseList = getEtalaseList()
-            val newMap = updateEtalaseMap(etalaseList)
-            broadcastNewEtalaseList(newMap)
+            try {
+                val etalaseList = getEtalaseList()
+                val newMap = updateEtalaseMap(etalaseList)
+                broadcastNewEtalaseList(newMap)
+            } catch (e: Throwable) {
+                _observableEtalase.value = PageResult(emptyList(), PageResultState.Fail(e))
+            }
         }
     }
 
