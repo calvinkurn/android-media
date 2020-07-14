@@ -44,7 +44,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -119,6 +119,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                     false);
             int position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1);
+            if(position < 0 || adapter.getList().size() < position) return;
+
             if(adapter.getList().get(position) instanceof  Recommendation){
                 Recommendation recommendation = (Recommendation) adapter.getList().get(position);
                 recommendation.getRecommendationItem().setWishlist(wishlistStatusFromPdp);
@@ -450,7 +452,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(item.getTrackerImageUrl());
+        new TopAdsUrlHitter(getActivity().getClass().getName()).hitImpressionUrl(getContext(), item.getTrackerImageUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -459,7 +461,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(item.getClickUrl());
+        new TopAdsUrlHitter(getActivity().getClass().getName()).hitClickUrl(getContext(), item.getClickUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 

@@ -64,6 +64,7 @@ dependencies {
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.interestPick)
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.digitalHomepage)
@@ -80,6 +81,7 @@ dependencies {
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.homeWishlist)
     implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
@@ -96,6 +98,7 @@ dependencies {
     //Merchant
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.favorite)
     implementation project(rootProject.ext.features.brandlist)
     //Operational
@@ -124,8 +127,6 @@ dependencies {
     implementation project(rootProject.ext.features.managename)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     //Entertainment
-    implementation project(rootProject.ext.features.eventHome)
-    implementation project(rootProject.ext.features.eventSearch)
     implementation project(rootProject.ext.features.orderhistory)
     //Transaction
     implementation project(rootProject.ext.features.checkout)

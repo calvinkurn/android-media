@@ -1,4 +1,5 @@
 {
+  "readme": "Autocomplete Initial State Tracking",
   "query" : [
     {
       "event": "clickTopNav",

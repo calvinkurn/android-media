@@ -113,7 +113,7 @@ class TopAdsImageView : AppCompatImageView {
      * If imageUrl is null or empty view will hide itself
      * @param imageData The object of TopAdsViewModel
      * */
-    fun loadImage(imageData: TopAdsImageViewModel) {
+    fun loadImage(imageData: TopAdsImageViewModel, onLoadFailed:() -> Unit = {}) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
             Glide.with(context)
                     .load(imageData.imageUrl)
@@ -124,11 +124,11 @@ class TopAdsImageView : AppCompatImageView {
 
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             Timber.d("Error in loading TopAdsImageView")
+                            onLoadFailed.invoke()
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-
                             topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
                             Timber.d("TopAdsImageView is loaded successfully")
 
@@ -157,7 +157,8 @@ class TopAdsImageView : AppCompatImageView {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        topAdsImageViewViewModel.onClear()
+        if (::topAdsImageViewViewModel.isInitialized) {
+            topAdsImageViewViewModel.onClear()
+        }
     }
-
 }

@@ -183,7 +183,9 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         for (filter in selectedOption) {
             filters += "$filter;"
         }
-        filters = filters.substring(0, filters.length - 1)
+        if (filters.isNotEmpty()){
+            filters = filters.substring(0, filters.length - 1)
+        }
         return filters
     }
 
