@@ -3,14 +3,18 @@ package com.tokopedia.topchat.chatlist.activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment
+import com.tokopedia.topchat.common.custom.ToolTipSearchPopupWindow
 
 
 class ChatListActivity : BaseSimpleActivity() {
+
+    private lateinit var searchToolTip: ToolTipSearchPopupWindow
 
     override fun getLayoutRes(): Int = R.layout.activity_chat_tab_list
     override fun getParentViewResourceID(): Int = R.id.fragmentContainer
@@ -22,6 +26,19 @@ class ChatListActivity : BaseSimpleActivity() {
         useLightNotificationBar()
         initWindowBackground()
         initTopchatToolbar()
+        initToolTip()
+    }
+
+    private fun initToolTip() {
+        searchToolTip = ToolTipSearchPopupWindow(this)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        toolbar?.post {
+            val searchView = findViewById<View>(R.id.menu_chat_search)
+            searchToolTip.showAtBottom(searchView)
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     private fun useLightNotificationBar() {

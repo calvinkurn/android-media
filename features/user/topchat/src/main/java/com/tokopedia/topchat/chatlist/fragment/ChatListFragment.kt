@@ -85,10 +85,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -293,7 +296,9 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     ) {
         adapter?.let { adapter ->
             when {
-                index >= adapter.list.size -> { return }
+                index >= adapter.list.size -> {
+                    return
+                }
                 //not found on list
                 index == -1 -> {
                     if (adapter.hasEmptyModel()) {
