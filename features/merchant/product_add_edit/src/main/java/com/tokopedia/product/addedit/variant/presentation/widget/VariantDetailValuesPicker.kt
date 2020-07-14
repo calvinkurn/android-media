@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.Unit
@@ -174,6 +175,8 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                     listItemUnify.isBold = false
                     listItemUnify.listTitle?.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
                 }
+                listItemUnify.listRightCheckbox?.setPadding(0,0,0,0)
+                listItemUnify.listRightCheckbox?.setMargin(0,0,0,0)
             }
         }
     }
