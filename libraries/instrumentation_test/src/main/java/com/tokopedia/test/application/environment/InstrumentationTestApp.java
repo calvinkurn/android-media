@@ -69,12 +69,7 @@ public class InstrumentationTestApp extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
-        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(InstrumentationTestApp.this);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        initAkamaiBotManager();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
@@ -84,6 +79,16 @@ public class InstrumentationTestApp extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         enableTopAdsDetector();
         super.onCreate();
+    }
+
+    private void initAkamaiBotManager() {
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(InstrumentationTestApp.this);
+        //Thread sleep to ensure akamai hit properly
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void enableTopAdsDetector() {
