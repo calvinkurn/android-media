@@ -266,13 +266,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToPdp(productId)
     }
 
-    override fun onStart() {
-        super.onStart()
-        activity?.run {
-            TalkReplyTracking.sendScreen(screenName, productId, viewModel.userId)
-        }
-    }
-
     private fun goToReportActivity(commentId: String) {
         val intent = if(commentId.isNotBlank()) {
             context?.let { ReportTalkActivity.createIntentReportComment(it, questionId, commentId, shopId, productId) }
@@ -495,6 +488,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
                         initTextBox(discussionDataByQuestionID.maxAnswerLength)
                         setProductId(it.data.discussionDataByQuestionID.productId)
+                        TalkReplyTracking.sendScreen(screenName, productId, viewModel.userId)
                         hidePageError()
                         hidePageLoading()
                         replySwipeRefresh.isRefreshing = false
