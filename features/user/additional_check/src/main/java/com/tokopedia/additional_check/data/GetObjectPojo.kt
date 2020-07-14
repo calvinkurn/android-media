@@ -1,6 +1,8 @@
 package com.tokopedia.additional_check.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Yoris Prayogo on 2019-11-08.
@@ -12,17 +14,17 @@ data class GetObjectPojo(
         val status: Boolean = false,
 
         @SerializedName("data")
-        val bottomSheetModel: BottomSheetModel? = null
+        val twoFactorResult: TwoFactorResult? = null
 )
 
-data class BottomSheetModel(
-        @SerializedName("image")
-        val image: String = "",
-        @SerializedName("text")
-        val text: String = "",
-        @SerializedName("applink")
-        val applink: String = "",
-        @SerializedName("title")
-        val title: String = "",
-        @SerializedName("btn_text")
-        val btnText: String = "")
+@Parcelize
+data class TwoFactorResult(
+        @SerializedName("interval")
+        val interval: Long = 0L,
+        @SerializedName("isSkipable")
+        val isSkipable: Boolean = false,
+        @SerializedName("isHavePin")
+        val isHavePin: Boolean = false,
+        @SerializedName("isHavePhone")
+        val isHavePhone: Boolean = false
+): Parcelable

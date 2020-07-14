@@ -17,11 +17,10 @@ val responseAtcSuccess = """
     {
        "status": true,
        "data": {
-           "image": "",
-           "text": "Demi keamanan akunmu silahkan verifikasi dulu yuk!",
-           "title": "Verifikasi akun",
-           "applink": "tokopedia://setting/profile",
-           "btn_text": "Verifikasi"
-       }
+           "interval": 1594210316352,
+           "isSkipable": false,
+           "isHavePin": false,
+           "isHavePhone": true
+        }
    }
 """.trimIndent()
