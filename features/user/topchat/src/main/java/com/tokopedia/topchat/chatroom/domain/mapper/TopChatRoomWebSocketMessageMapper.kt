@@ -53,7 +53,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(jsonAttributes,
+        val pojo = GsonBuilder().create().fromJson(jsonAttributes,
                 TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
@@ -88,7 +88,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 voucherModel,
                 "",
                 item.blastId.toString(),
-                item.source
+                item.source,
+                voucher.isPublic
         )
     }
 

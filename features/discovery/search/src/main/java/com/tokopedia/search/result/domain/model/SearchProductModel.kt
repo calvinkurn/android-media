@@ -292,6 +292,10 @@ data class SearchProductModel(
             @Expose
             val boosterList: String = "",
 
+            @SerializedName("source_engine")
+            @Expose
+            val sourceEngine: String = "",
+
             @SerializedName("labelGroups")
             @Expose
             val labelGroupList: List<ProductLabelGroup> = listOf(),

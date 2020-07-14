@@ -46,7 +46,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -346,7 +346,17 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) ImpresionTask(className).execute(item.clickUrl)
+        if (item.isTopAds) {
+            context?.run {
+                TopAdsUrlHitter(className).hitClickUrl(
+                        this,
+                        item.clickUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl
+                )
+            }
+        }
         DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
                 item,
                 item.position,
@@ -363,7 +373,17 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) ImpresionTask(className).execute(item.trackerImageUrl)
+        if (item.isTopAds) {
+            context?.run {
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                        this,
+                        item.trackerImageUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl
+                )
+            }
+        }
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,

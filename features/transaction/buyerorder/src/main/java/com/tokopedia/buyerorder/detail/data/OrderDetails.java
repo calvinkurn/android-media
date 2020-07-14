@@ -85,6 +85,10 @@ public class OrderDetails {
     @Expose
     private RequestCancelInfo requestCancelInfo;
 
+    @SerializedName("metadata")
+    @Expose
+    private String metadata;
+
     static final String ATTRIBUTE_BOUGHT_DATE = "Tanggal Pembelian";
     static final String ATTRIBUTE_ID = "id";
 
@@ -293,4 +297,6 @@ public class OrderDetails {
     public String getInvoiceUrl() {
         return invoice.invoiceUrl();
     }
+
+    public String getMetadata(){ return metadata;}
 }

@@ -231,7 +231,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             editTextSearch.setSingleLine()
             editTextSearch.ellipsize = TextUtils.TruncateAt.END
             editTextSearch.setOnClickListener {
-                searchBarAnalytics.eventTrackingSearchBar(screenName)
+                searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
                 if (placeholder.isEmpty()) {
                     RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
                 } else {

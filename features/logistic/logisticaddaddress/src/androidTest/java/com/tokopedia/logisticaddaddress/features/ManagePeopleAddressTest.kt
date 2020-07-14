@@ -97,6 +97,6 @@
 //
 //    companion object {
 //        const val FIRST_ZIP_ITEM = 1
-//        const val NETWORK_DELAY = 2000L
+//        const val NETWORK_DELAY = 3000L
 //    }
 //}

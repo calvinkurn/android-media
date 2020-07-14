@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.merchantvoucher.common.gql.data.*
 
-open class VoucherUiModel(
+open class VoucherUiModel constructor(
         voucherId: Int,
         voucherName: String?,
         voucherCode: String?,
@@ -16,7 +16,8 @@ open class VoucherUiModel(
         tnc: String?,
         merchantVoucherBanner: MerchantVoucherBanner?,
         merchantVoucherStatus: MerchantVoucherStatus?,
-        restrictedForLiquidProduct: Boolean
+        restrictedForLiquidProduct: Boolean,
+        val isPublic: Int = 1
 ) : MerchantVoucherModel(
         voucherId,
         voucherName,

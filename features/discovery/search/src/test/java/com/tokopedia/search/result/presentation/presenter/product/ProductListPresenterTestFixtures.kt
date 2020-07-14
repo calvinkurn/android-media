@@ -40,10 +40,6 @@ internal open class ProductListPresenterTestFixtures {
     protected val seamlessLoginUseCase = mockk<SeamlessLoginUsecase>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>().also {
-        every { it.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true) } answers { secondArg() }
-        every { it.getBoolean(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false) } answers { secondArg() }
-        every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true) } answers { secondArg() }
-        every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { secondArg() }
         // Test this toggle as false until old quick filter is not needed anymore
         every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true) } answers { false }
     }
