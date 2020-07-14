@@ -482,7 +482,10 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     private fun initOnBoarding() {
-        if (!userSession.hasShop()) return
+        if (!userSession.hasShop()){
+            isFinishShowingCoachMarkOnBoarding = true
+            return
+        }
         tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
