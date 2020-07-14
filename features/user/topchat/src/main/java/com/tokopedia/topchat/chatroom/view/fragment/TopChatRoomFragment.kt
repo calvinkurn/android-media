@@ -318,6 +318,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         fpm.stopTrace()
     }
 
+    private fun showStickerOnBoardingTooltip() {
+        if (!presenter.isStickerTooltipAlreadyShow()) {
+            toolTip.showAtTop(getViewState().chatStickerMenuButton)
+        }
+    }
+
     private fun checkCanAttachVoucher() {
         if (amISeller) {
             chatMenu?.addVoucherAttachmentMenu()
