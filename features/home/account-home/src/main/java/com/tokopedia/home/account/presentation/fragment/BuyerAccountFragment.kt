@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -32,6 +34,7 @@ import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
+import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -50,6 +53,10 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(BuyerAccountViewModel::class.java) }
 
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -349,6 +356,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                     .new_query_saldo_balance)
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
                     .query_buyer_account_home), saldoQuery)
+
+            viewModel.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw.query_buyer_account_home), saldoQuery)
         }
     }
 
