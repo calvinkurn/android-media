@@ -121,7 +121,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun getScreenName(): String {
-        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
+        return TalkTrackingConstants.SCREEN_NAME_TALK
     }
 
     override fun initInjector() {

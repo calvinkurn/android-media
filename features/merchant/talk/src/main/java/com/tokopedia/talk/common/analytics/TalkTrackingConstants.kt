@@ -17,5 +17,4 @@ object TalkTrackingConstants {
     const val CURRENT_SITE_TALK = "tokopediamarketplace"
     const val EVENT_CATEGORY_TALK = "product talk"
     const val SCREEN_NAME_TALK = "/product-talk"
-    const val TALK_SEND_SCREEN_SCREEN_NAME = "Product Talk"
 }
