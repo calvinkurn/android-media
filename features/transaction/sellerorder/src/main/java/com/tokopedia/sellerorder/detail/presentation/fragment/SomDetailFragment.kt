@@ -38,10 +38,13 @@ import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.domain.model.Roles
+import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -72,6 +75,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_CUST_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_INVOICE_NO
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
@@ -89,6 +93,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -110,7 +115,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
@@ -138,6 +145,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder().build()
@@ -197,11 +207,14 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         private const val ERROR_EDIT_AWB = "Error when edit AWB."
         private const val ERROR_REJECT_ORDER = "Error when rejecting order."
 
+        private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_ORDER_ID, bundle.getString(PARAM_ORDER_ID))
+                    putParcelable(PARAM_USER_ROLES, bundle.getParcelable(PARAM_USER_ROLES))
                 }
             }
         }
@@ -240,8 +253,13 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
+            val userRoles = arguments?.getParcelable<SomGetUserRoleDataModel?>(PARAM_USER_ROLES)
+            if (userRoles != null) {
+                somDetailViewModel.setUserRoles(userRoles)
+            } else {
+                checkUserRole()
+            }
         }
-        loadDetail()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -258,6 +276,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         observingRejectOrder()
         observingEditAwb()
         observingSetDelivered()
+        observingUserRoles()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -276,6 +295,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
         coachMarkItems.add(coachMarkItemShipping)
         addedCoachMark()
+    }
+
+    private fun checkUserRole() {
+        setLoadingIndicator(true)
+        somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
     }
 
     private fun prepareLayout() {
@@ -417,6 +441,32 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 }
             }
         })
+    }
+
+    private fun observingUserRoles() {
+        somDetailViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.roles.any { allowedRoles.contains(it) }) {
+                        onUserAllowedToViewSOM()
+                    } else {
+                        onUserNotAllowedToViewSOM()
+                    }
+                }
+                is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, "seller order detail page."))
+                    setLoadingIndicator(false)
+                }
+            }
+        })
+    }
+
+    private fun onUserNotAllowedToViewSOM() {
+        context?.run { Utils.showReturnToHomeDialog(this) }
+    }
+
+    private fun onUserAllowedToViewSOM() {
+        loadDetail()
     }
 
     private fun renderDetail() {
@@ -1390,10 +1440,21 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onRefresh(view: View?) {
-        loadDetail()
+        if (isUserRoleFetched(somDetailViewModel.userRoleResult.value)) {
+            loadDetail()
+        } else {
+            checkUserRole()
+        }
     }
 
     private fun openWebview(url: String) {
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
+    }
+
+    private fun isUserRoleFetched(value: Result<SomGetUserRoleDataModel>?): Boolean {
+        return when (value) {
+            is Success -> true
+            else -> false
+        }
     }
 }

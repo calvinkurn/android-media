@@ -3,27 +3,16 @@ package com.tokopedia.sellerorder.detail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_IS_FROM_FINTECH
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
-import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_ORDERID
+import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
+import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -35,7 +24,8 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                                              private val somReasonRejectUseCase: SomReasonRejectUseCase,
                                              private val somRejectOrderUseCase: SomRejectOrderUseCase,
                                              private val somEditRefNumUseCase: SomEditRefNumUseCase,
-                                             private val somSetDeliveredUseCase: SomSetDeliveredUseCase) : BaseViewModel(dispatcher.ui()) {
+                                             private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
+                                             private val getUserRoleUseCase: SomGetUserRoleUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
     val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
@@ -60,6 +50,10 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private val _setDelivered = MutableLiveData<Result<SetDeliveredResponse>>()
     val setDelivered: LiveData<Result<SetDeliveredResponse>>
         get() = _setDelivered
+
+    private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleDataModel>>()
+    val userRoleResult: LiveData<Result<SomGetUserRoleDataModel>>
+        get() = _userRoleResult
 
     fun loadDetailOrder(detailQuery: String, orderId: String) {
         launch {
@@ -95,5 +89,18 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         launch {
             _setDelivered.postValue(somSetDeliveredUseCase.execute(rawQuery, orderId, receivedBy))
         }
+    }
+
+    fun loadUserRoles(userId: Int) {
+        launchCatchError(block = {
+            getUserRoleUseCase.setUserId(userId)
+            _userRoleResult.postValue(getUserRoleUseCase.execute())
+        }, onError = {
+            _userRoleResult.postValue(Fail(it))
+        })
+    }
+
+    fun setUserRoles(userRoles: SomGetUserRoleDataModel) {
+        _userRoleResult.postValue(Success(userRoles))
     }
 }
