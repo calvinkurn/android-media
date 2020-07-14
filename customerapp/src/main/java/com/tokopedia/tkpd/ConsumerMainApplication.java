@@ -30,6 +30,7 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -147,11 +148,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 openShakeDetectCampaignPage(isLongShake);
             }
         }));
+
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
     private void createAndCallPreSeq(){

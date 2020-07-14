@@ -590,6 +590,7 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation project(rootProject.ext.features.additional_check)
 
 
     if (enableHermes) {
