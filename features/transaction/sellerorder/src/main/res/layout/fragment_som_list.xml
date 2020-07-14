@@ -103,6 +103,7 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <FrameLayout
+            android:id="@+id/filterButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"

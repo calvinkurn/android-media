@@ -220,14 +220,16 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser && !isUserRoleFetched()) checkUserRole()
-        else if (!isVisibleToUser) somListViewModel.clearUserRoles()
+        else if (!isVisibleToUser && isUserRoleFetched()) somListViewModel.clearUserRoles()
     }
 
     private fun isUserRoleFetched(): Boolean {
-        somListViewModel.userRoleResult.value?.run {
-            return when (this) {
-                is Success -> true
-                else -> false
+        if (::viewModelFactory.isInitialized) {
+            somListViewModel.userRoleResult.value?.run {
+                return when (this) {
+                    is Success -> true
+                    else -> false
+                }
             }
         }
         return false
@@ -497,6 +499,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         toggleSomLayout(false)
         loadTicker()
         loadFilterList()
+        rl_search_filter.show()
+        filterButton.show()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
         isFromWidget?.let {
             if (it) SomAnalytics.eventClickWidgetNewOrder()
@@ -723,6 +727,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
+        filterButton.showWithCondition(isUserRoleFetched())
         rl_search_filter.showWithCondition(isUserRoleFetched())
         refreshHandler?.finishRefresh()
         order_list_rv?.visibility = View.GONE
