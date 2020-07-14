@@ -20,7 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -428,7 +428,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void logUnknownError(Throwable throwable) {
         try {
-            Crashlytics.logException(throwable);
+            FirebaseCrashlytics.getInstance().recordException(throwable);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }

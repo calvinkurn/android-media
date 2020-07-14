@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -325,7 +325,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public void logUnknownError(Throwable message) {
         try {
-            Crashlytics.logException(message);
+            FirebaseCrashlytics.getInstance().recordException(message);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
