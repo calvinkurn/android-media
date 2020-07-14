@@ -125,16 +125,17 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
         viewModel.combineTuple(viewModel.token, viewModel.notificationSetting, viewModel.notificationImportance)
                 .observe(viewLifecycleOwner, Observer {triple ->
                     Timber.d("Troubleshoot Triple $triple")
-                    sendLog(triple.first,
-                            triple.second,
-                            triple.third)
+                    sendLog(triple)
         })
     }
 
-    private fun sendLog(first: String?, second: Boolean?, third: Int?) {
-        if(first.isNullOrEmpty() || !second.isNotNull() || third.isNotNull()) {
+    private fun sendLog(triple: Triple<String?, Boolean?, Int?>) {
+        if(triple.first.isNullOrEmpty() || !triple.second.isNotNull() || !triple.third.isNotNull()) return
 
-        }
+        Timber.w("P2#PUSH_NOTIF_TROUBLESHOOT#Troubleshooter;token='%s';setting='%s';importance='%s';",
+                triple.first,
+                triple.second,
+                triple.third)
     }
 
     private fun setUpdateTokenStatus(newToken: String) {
