@@ -5,6 +5,8 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.database.DatabaseProvider
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -14,6 +16,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
+import com.google.android.exoplayer2.upstream.cache.*
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -23,22 +26,32 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import kotlinx.coroutines.*
+import timber.log.Timber
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 import kotlin.properties.Delegates
 
 /**
  * Created by jegul on 03/12/19
  */
-class PlayVideoManager private constructor(private val applicationContext: Context) {
+//TODO("Figure out how to manage cache more graceful")
+class PlayVideoManager private constructor(private val applicationContext: Context) : CoroutineScope {
 
     companion object {
+        private const val MAX_CACHE_BYTES: Long = 10 * 1024 * 1024
+        private const val CACHE_FOLDER_NAME = "play_video"
+
         private const val RETRY_COUNT_LIVE = 1
         private const val RETRY_COUNT_DEFAULT = 2
         private const val RETRY_DELAY = 2000L
 
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
+
+        private const val USE_CACHE = false
 
         @Volatile
         private var INSTANCE: PlayVideoManager? = null
@@ -61,6 +74,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    private val job = SupervisorJob()
+
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
     private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
@@ -80,10 +98,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         override fun onPlayerError(error: ExoPlaybackException) {
             val parsedException = exoPlaybackExceptionParser.parse(error)
-//            if (parsedException.isBlackListedException) {
-//                stopPlayer()
-//                return
-//            }
 
             if (
                     parsedException.isBehindLiveWindowException ||
@@ -92,8 +106,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stopPlayer()
-                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
+                    stop()
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else if (
                     parsedException.isUnknownHostException ||
@@ -101,16 +115,23 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             ) {
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stopPlayer(resetState = false)
-                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
+                    stop(resetState = false)
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
-            }
-            else {
+            } else if (parsedException.isUnexpectedLoaderException) {
+                val prepareState = currentPrepareState
+                if (prepareState is PlayVideoPrepareState.Prepared) {
+                    release()
+                    launch { deleteCache() }
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
+                }
+            } else {
                 //For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stopPlayer()
-                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
+                    release()
+                    launch { deleteCache() }
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
             _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
@@ -138,18 +159,32 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     val videoPlayer: SimpleExoPlayer
         get() = playerModel.player
 
+    val currentUri: Uri?
+        get() {
+            return when (val currentState = currentPrepareState) {
+                is PlayVideoPrepareState.Unprepared -> currentState.previousUri
+                is PlayVideoPrepareState.Prepared -> currentState.uri
+            }
+        }
+
+    /**
+     * Cache
+     */
+    private val cacheFile: File
+        get() = File(applicationContext.filesDir, CACHE_FOLDER_NAME)
+    private val cacheEvictor: CacheEvictor
+        get() = LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES)
+    private val cacheDbProvider: DatabaseProvider
+        get() = ExoDatabaseProvider(applicationContext)
+
     //region public method
-    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
+    fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
         if (uri.toString().isEmpty()) {
-            releasePlayer()
+            release()
             return
         }
 
         val prepareState = currentPrepareState
-        val currentUri: Uri? = when (prepareState) {
-            is PlayVideoPrepareState.Unprepared -> prepareState.previousUri
-            is PlayVideoPrepareState.Prepared -> prepareState.uri
-        }
         if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
             val lastPosition = if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
@@ -157,7 +192,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             playVideoWithUri(uri, autoPlay, lastPosition, resetState)
             currentPrepareState = PlayVideoPrepareState.Prepared(uri, if (prepareState is PlayVideoPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
         }
-        if (!videoPlayer.isPlaying) resumeCurrentVideo()
+        if (!videoPlayer.isPlaying && autoPlay) resume()
     }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
@@ -170,34 +205,36 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     //endregion
 
     //region player control
-    fun resumeCurrentVideo() {
+    fun resume() {
         playerModel.loadControl.setPreventLoading(false)
-        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) resetCurrentVideo()
+        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) reset()
         videoPlayer.playWhenReady = true
     }
 
-    fun pauseCurrentVideo(preventLoadingBuffer: Boolean) {
+    fun pause(preventLoadingBuffer: Boolean) {
         playerModel.loadControl.setPreventLoading(preventLoadingBuffer)
         videoPlayer.playWhenReady = false
     }
 
-    fun resumeOrPlayPreviousVideo() {
+    fun resumeOrPlayPreviousVideo(autoPlay: Boolean) {
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
-            safePlayVideoWithUri(prepareState.previousUri)
-        }
+            playUri(prepareState.previousUri, autoPlay)
+        } else if (prepareState is PlayVideoPrepareState.Prepared) resume()
     }
 
-    fun resetCurrentVideo() {
+    fun reset() {
         videoPlayer.seekTo(0)
     }
 
-    fun releasePlayer() {
+    fun release() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
+        launch { releaseCache() }
+        playerModel.copy(cache = null)
     }
 
-    fun stopPlayer(resetState: Boolean = true) {
+    fun stop(resetState: Boolean = true) {
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
@@ -225,9 +262,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun getObservablePlayVideoState(): LiveData<PlayVideoState> = _observablePlayVideoState
     fun getObservableVideoPlayer(): LiveData<out ExoPlayer> = _observableVideoPlayer
 
-    fun isVideoPlaying(): Boolean = videoPlayer.isPlaying
+    fun isPlaying(): Boolean = videoPlayer.isPlaying
 
-    fun getDurationVideo(): Long {
+    fun getVideoDuration(): Long {
         return videoPlayer.duration
     }
 
@@ -237,7 +274,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         return videoPlayer.volume == VIDEO_MIN_SOUND
     }
 
-    fun muteVideo(shouldMute: Boolean) {
+    fun mute(shouldMute: Boolean) {
         videoPlayer.volume = if (shouldMute) VIDEO_MIN_SOUND else VIDEO_MAX_SOUND
     }
 
@@ -250,11 +287,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     fun isVideoLive(): Boolean = videoPlayer.isCurrentWindowLive
+
+    fun getVideoState(): PlayVideoState = _observablePlayVideoState.value ?: PlayVideoState.NoMedia
     //endregion
 
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Play"))
+        val mDefaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+        val mDataSourceFactory = if (USE_CACHE) CacheDataSourceFactory(playerModel.cache, mDefaultDataSourceFactory) else mDefaultDataSourceFactory
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
@@ -265,7 +305,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
         return mediaSource.createMediaSource(uri)
     }
-    //endregion
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
         return object : DefaultLoadErrorHandlingPolicy() {
@@ -288,10 +327,40 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 .build()
                 .apply { addListener(playerEventListener) }
 
-        return PlayPlayerModel(videoPlayer, videoLoadControl)
+        return PlayPlayerModel(videoPlayer, videoLoadControl, initCache(playerModel))
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
         return PlayVideoLoadControl(bufferControl)
     }
+
+    private fun initCache(playerModel: PlayPlayerModel?): Cache {
+        return if (playerModel?.cache == null) {
+            SimpleCache(
+                    cacheFile,
+                    cacheEvictor,
+                    cacheDbProvider
+            )
+        } else playerModel.cache
+    }
+
+    /**
+     * If and only if these functions cause leak, please contact the owner of this module
+     */
+    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
+        try {
+            playerModel.cache?.release()
+        } catch (e: Throwable) {
+            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
+        }
+    }
+
+    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
+        try {
+            SimpleCache.delete(cacheFile, cacheDbProvider)
+        } catch (e: Throwable) {
+            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
+        }
+    }
+    //endregion
 }

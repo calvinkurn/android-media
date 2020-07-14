@@ -15,6 +15,30 @@ buildscript {
     }
 }
 
+android {
+    flavorDimensions "tier", "client"
+    productFlavors {
+        prod {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
+        }
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -30,7 +54,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -55,6 +78,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -77,7 +101,6 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -95,6 +118,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.productCard)
 
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {

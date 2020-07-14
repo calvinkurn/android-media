@@ -28,6 +28,14 @@ object ProductTrackingConstant {
         const val KEY_DETAIl = "detail"
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
+        const val KEY_BUSINESS_UNIT = "businessUnit"
+        const val KEY_CURRENT_SITE = "currentSite"
+        const val KEY_SCREEN_NAME = "screenName"
+        const val KEY_TICKER_TYPE = "tickerType"
+        const val KEY_PRODUCT_PRICE = "productPrice"
+        const val KEY_PRODUCT_NAME = "productName"
+        const val KEY_GROUP_NAME = "productGroupName"
+        const val KEY_GROUP_ID = "productGroupId"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -63,6 +71,9 @@ object ProductTrackingConstant {
         const val KEY_COMPONENT = "component"
         const val KEY_ISLOGGIN = "isLoggedInStatus"
         const val KEY_ADD = "add"
+        const val BUSINESS_UNIT = "physical goods"
+        const val CURRENT_SITE = "tokopediamarketplace"
+        const val KEY_DISCUSSION_USER_ID = "userId"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
@@ -77,7 +88,6 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_98 = "dimension98"
 
     }
-
     object Action {
         const val CLICK = "click"
         const val ADD = "add"
@@ -92,7 +102,7 @@ object ProductTrackingConstant {
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_VARIANT = "click - variant"
         const val CLICK_SHIPPING = "click - shipping"
-        const val CLICK_RATE_ESTIMATE = "click - hitung estimasi ongkir"
+        const val CLICK_RATE_ESTIMATE = "click - estimasi ongkir"
         const val CLICK_PRODUCT_PICTURE = "click - product picture"
         const val SWIPE_PRODUCT_PICTURE = "click - swipe product picture"
         const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
@@ -133,8 +143,11 @@ object ProductTrackingConstant {
         const val CLICK_CHOOSE_PRODUCT_VARIANT = "click - choose product variant"
         const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
-        const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+        const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - before login"
         const val CLICK_WHOLESALE = "click - info harga grosir"
+        const val CLICK_REVIEW_IMAGE_MEDIA = "click - foto dari pembeli on product image"
+        const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
+        const val CLICK_TICKER = "click - selengkapnya on component ticker"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
@@ -148,12 +161,22 @@ object ProductTrackingConstant {
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
+
+        const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
+        const val CLICK_THREAD_DETAIL_DISCUSSION = "click - thread detail on diskusi"
+        const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
+
+        const val CLICK_SEE_ALL_ULASAN = "click - lihat semua ulasan"
     }
+
 
     object Label {
         const val EMPTY_LABEL = ""
         const val CLICK = "click"
         const val PDP = "pdp"
+        const val DISCUSSION_EMPTY_QUESTION = "count thread:0;"
+        const val DISCUSSION_SEE_ALL ="count thread:%s;"
+        const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
     }
 
     object Report {

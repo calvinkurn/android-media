@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-
+import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -30,23 +30,27 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.test.application.environment.interceptor.MockInterceptor;
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
-import com.tokopedia.test.application.util.MockResponseList;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter, MockResponseInterface {
+
+    private static String KEY_MOCK_CLASS_PATH = "mockClassPath";
 
     @Override
     public void onCreate() {
@@ -64,22 +68,50 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
         GlobalConfig.DEBUG = true;
-        enableMockResponse();
+        checkMockClassArguments();
         super.onCreate();
     }
 
-public void sendAnalyticsAnomalyResponse(String title,
+    public void setupMockResponse(MockModelConfig mockModelConfig) {
+        if (GlobalConfig.DEBUG && mockModelConfig != null) {
+            List<Interceptor> testInterceptors = new ArrayList<>();
+            testInterceptors.add(new MockInterceptor(mockModelConfig));
+            GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
+        }
+    }
 
-                                      String accessToken, String refreshToken,
-
-                                      String response, String request){}
-
-    public void enableMockResponse() {
+    //Deprecated, please use MockModelConfig and inject mock class object from command line
+    @Deprecated
+    @Override
+    public void reInitMockResponse(HashMap<String, String> mapMockResponse) {
         if (GlobalConfig.DEBUG) {
             List<Interceptor> testInterceptors = new ArrayList<>();
-            testInterceptors.add(new MockInterceptor(MockResponseList.INSTANCE.create(this)));
+            testInterceptors.add(new MockInterceptor(
+                    new MockModelConfig() {
+                        @NotNull
+                        @Override
+                        public MockModelConfig createMockModel(@NotNull Context context) {
+                            for (Map.Entry<String,String> entry : mapMockResponse.entrySet())
+                                addMockResponse(entry.getKey(), entry.getValue(), FIND_BY_CONTAINS);
+                            return this;
+                        }
+                    }
+            ));
 
             GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
+        }
+    }
+
+    private void checkMockClassArguments() {
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        String className = arguments.getString(KEY_MOCK_CLASS_PATH);
+        try {
+            MockModelConfig mockModelConfig =
+                    (MockModelConfig) Class.forName(className).newInstance();
+            mockModelConfig.createMockModel(getApplicationContext());
+            setupMockResponse(mockModelConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -147,21 +179,6 @@ public void sendAnalyticsAnomalyResponse(String title,
 
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
         return null;
     }
 
@@ -357,6 +374,11 @@ public void sendAnalyticsAnomalyResponse(String title,
 
     @Override
     public void doRelogin(String newAccessToken) {
+
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
 

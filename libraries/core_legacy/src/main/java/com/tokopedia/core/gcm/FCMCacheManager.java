@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
-
-import static com.tokopedia.user.session.Constants.GCM_ID;
-import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -32,9 +30,9 @@ import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 public class FCMCacheManager {
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
+    public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
-    private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
     private Context context;
@@ -151,15 +149,22 @@ public class FCMCacheManager {
     }
 
     public static void storeRegId(String id, Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putString(GCM_ID, id);
-        cache.applyEditor();
+        new UserSession(context).setDeviceId(id);
     }
 
     public static void storeFcmTimestamp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
-        cache.applyEditor();
+        UserSession userSession = new UserSession(context);
+        userSession.setFcmTimestamp();
+    }
+
+    public static boolean isFcmExpired(Context context) {
+        long lastFCMUpdate = new UserSession(context).getFcmTimestamp();
+        if (lastFCMUpdate <= 0) {
+            FCMCacheManager.storeFcmTimestamp(context);
+            return false;
+        }
+
+        return (System.currentTimeMillis() - lastFCMUpdate) >= GCM_ID_EXPIRED_TIME;
     }
 
     public static String getRegistrationId(Context context) {
@@ -167,14 +172,14 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString("gcm_id", "").equals("")) {
+        UserSession userSession = new UserSession(context);
+        String deviceId = userSession.getDeviceId();
+        if (TextUtils.isEmpty(deviceId)) {
             String tempID = getTempFcmId();
-            cache.putString("gcm_id", tempID);
-            cache.applyEditor();
+            userSession.setDeviceId(tempID);
             return tempID;
         }
-        return cache.getString("gcm_id", "");
+        return deviceId;
     }
 
     public String getRegistrationId() {

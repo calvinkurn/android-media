@@ -8,13 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -28,6 +29,8 @@ import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.BaseNotificationFragment
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
@@ -43,6 +46,8 @@ import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewMo
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.util.viewModelProvider
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 
@@ -50,9 +55,12 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var presenter: NotificationUpdatePresenter
-    @Inject lateinit var analytics: NotificationUpdateAnalytics
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var presenter: NotificationUpdatePresenter
+    @Inject
+    lateinit var analytics: NotificationUpdateAnalytics
 
     private lateinit var viewModel: NotificationUpdateViewModel
 
@@ -95,7 +103,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     * the id comes from tokopedia://notif-center/{id}
     * */
     private val notificationId by lazy {
-        (activity as NotificationActivity).notificationId
+        (activity as? NotificationActivity)?.notificationId ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,9 +112,16 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         initLoadPresenter()
         initObservable()
 
-        bottomFilterView()?.setButton1OnClickListener {
-            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
-            presenter.markAllReadNotificationUpdate(::onSuccessMarkAllRead)
+        //setup floatingButtonUnify
+        val markReadStr = context?.getString(R.string.mark_all_as_read) ?: "Tandai semua dibaca"
+        bottomFilterView()?.let {
+            val markReadItem = arrayListOf(
+                    FloatingButtonItem(markReadStr, false) {
+                        analytics.trackMarkAllAsRead(markAllReadCounter.toString())
+                        presenter.markAllReadNotificationUpdate(::onSuccessMarkAllRead)
+                    }
+            )
+            it.addItem(markReadItem)
         }
 
         lstFilter?.adapter = filterAdapter
@@ -145,10 +160,23 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun initInjector() {
-        (activity as NotificationActivity)
-                .notificationComponent
-                .inject(this)
+        if (GlobalConfig.isSellerApp()) {
+            initSellerAppInjector()
+        } else {
+            (activity as NotificationActivity)
+                    .notificationComponent
+                    .inject(this)
+        }
         presenter.attachView(this)
+    }
+
+    private fun initSellerAppInjector() {
+        val component = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+        DaggerNotificationComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(requireContext()))
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -282,7 +310,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = view?.findViewById(R.id.swipeToRefresh)
 
-    override fun bottomFilterView(): BottomActionView? = view?.findViewById(R.id.filterBtn)
+    override fun bottomFilterView(): FloatingButtonUnify? = view?.findViewById(R.id.filterBtn)
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 

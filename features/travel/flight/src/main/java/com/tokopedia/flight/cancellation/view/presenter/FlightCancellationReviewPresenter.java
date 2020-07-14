@@ -6,14 +6,12 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationRequestUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -72,15 +70,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                 viewModel.getCancellationReasonAndAttachment().getReason() : null;
         String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
-        List<FlightCancellationAttachmentModel> attachmentViewModelList = (viewModel.getCancellationReasonAndAttachment() != null) ?
-                viewModel.getCancellationReasonAndAttachment().getAttachments() : null;
 
         flightCancellationRequestUseCase.execute(
                 flightCancellationRequestUseCase.createRequest(
                         getView().getInvoiceId(),
                         reason,
                         reasonId,
-                        attachmentViewModelList,
                         viewModel.getGetCancellations()
                 ),
                 new Subscriber<CancellationRequestEntity>() {

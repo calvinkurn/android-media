@@ -117,6 +117,7 @@ class UpdateNewPhoneEmailFragment : BaseDaggerFragment() {
 
         submissionButton?.setOnClickListener {
             analytics.eventClickKirimPengajuan()
+            analytics.eventClickButtonSubmission()
             updateNewPhoneEmailInteractor?.onSubmissionButtonClicked(
                     newEmailEditText?.text.toString(),
                     newPhoneEditText?.text.toString(),
@@ -138,13 +139,17 @@ class UpdateNewPhoneEmailFragment : BaseDaggerFragment() {
     }
 
     fun showErrorPhone(phoneErrorId: Int) {
-        phoneErrorTextView?.text = getString(phoneErrorId)
+        val message = getString(phoneErrorId)
+        analytics.eventFailedClickButtonSubmission(message)
+        phoneErrorTextView?.text = message
         phoneErrorTextView?.visibility = View.VISIBLE
         phoneHintTextView?.visibility = View.GONE
     }
 
     fun showErrorEmail(error_invalid_email: Int) {
-        emailErrorTextView?.text = getString(error_invalid_email)
+        val message = getString(error_invalid_email)
+        analytics.eventFailedClickButtonSubmission(message)
+        emailErrorTextView?.text = message
         emailErrorTextView?.visibility = View.VISIBLE
         emailHintTextView?.visibility = View.GONE
     }

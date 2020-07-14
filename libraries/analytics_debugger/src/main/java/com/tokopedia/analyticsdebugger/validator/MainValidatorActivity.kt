@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.validator.detail.ValidatorDetailFragment
 import com.tokopedia.analyticsdebugger.validator.list.ValidatorListFragment
 import com.tokopedia.analyticsdebugger.validator.main.MainValidatorFragment
@@ -33,11 +34,11 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
         }
     }
 
-    override fun goDetail(expected: String, actual: String, timestamp: String) {
+    override fun goDetail(expected: String, actual: List<GtmLogUi>) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("detail")
                 .setCustomAnimations(R.anim.slide_left_in, 0, R.anim.pop_delay_in, R.anim.slide_right_out)
-                .replace(R.id.container, ValidatorDetailFragment.newIntent(expected, actual, timestamp))
+                .replace(R.id.container, ValidatorDetailFragment.newIntent(expected, actual))
                 .commit()
     }
 

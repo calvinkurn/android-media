@@ -49,8 +49,8 @@ open class BaseChatViewStateImpl(
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
-    protected lateinit var attachmentMenu: AttachmentMenuRecyclerView
-    protected lateinit var attachmentMenuContainer: FrameLayout
+    protected var attachmentMenu: AttachmentMenuRecyclerView? = null
+    protected var attachmentMenuContainer: FrameLayout? = null
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -99,13 +99,16 @@ open class BaseChatViewStateImpl(
                 .skip(1)
                 .subscribe(onChatDeBounceSubscriber, onError)
 
-        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
+        setupChatMenu()
+    }
 
-        attachmentMenu.container = attachmentMenuContainer
+    protected open fun setupChatMenu() {
+        attachmentMenu?.setAttachmentMenuListener(attachmentMenuListener)
+        attachmentMenu?.container = attachmentMenuContainer
         chatMenuButton.setOnClickListener {
-            attachmentMenu.toggle()
+            attachmentMenu?.toggle()
         }
     }
 
@@ -281,22 +284,24 @@ open class BaseChatViewStateImpl(
     }
 
     override fun onKeyboardOpened() {
-        showChatMenu()
-    }
-
-    override fun onKeyboardClosed() {
         hideChatMenu()
     }
 
-    private fun showChatMenu() {
-        attachmentMenu.isKeyboardOpened = true
-        attachmentMenu.hideMenu()
+    override fun onKeyboardClosed() {
+        showChatMenu()
     }
 
-    private fun hideChatMenu() {
-        attachmentMenu.isKeyboardOpened = false
-        if (attachmentMenu.showDelayed) {
-            attachmentMenu.showDelayed()
+    override fun hideChatMenu() {
+        attachmentMenu?.isKeyboardOpened = true
+        attachmentMenu?.hideMenu()
+    }
+
+    override fun showChatMenu() {
+        attachmentMenu?.isKeyboardOpened = false
+        attachmentMenu?.let {
+            if (it.showDelayed) {
+                it.showDelayed()
+            }
         }
     }
 
@@ -318,11 +323,11 @@ open class BaseChatViewStateImpl(
     }
 
     override fun isAttachmentMenuVisible(): Boolean {
-        return attachmentMenu.isVisible
+        return attachmentMenu?.isVisible ?: false
     }
 
     override fun hideAttachmentMenu() {
-        return attachmentMenu.hideMenu()
+        attachmentMenu?.hideMenu()
     }
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {}

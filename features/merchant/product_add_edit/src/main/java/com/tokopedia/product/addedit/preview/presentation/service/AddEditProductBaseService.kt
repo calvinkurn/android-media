@@ -1,8 +1,11 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.core.app.JobIntentService
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
@@ -76,6 +79,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun setUploadProductDataSuccess() {
         notificationManager?.onSuccessUpload()
+        sendSuccessBroadcast()
     }
 
     fun setUploadProductDataError(errorMessage: String) {
@@ -164,15 +168,23 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 result.uploadId
             }
             is UploadResult.Error -> {
-                val message = "Error upload image %s because %s".format(filePath, result.reason.name)
+                val message = "Error upload image %s because %s".format(filePath, result.message)
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
 
-                notificationManager?.onFailedUpload(result.reason.name)
+                notificationManager?.onFailedUpload(result.message)
                 ""
             }
         }
+    }
+
+    private fun sendSuccessBroadcast() {
+        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+        val bundle = Bundle()
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
+        result.putExtras(bundle)
+        sendBroadcast(result)
     }
 }

@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 const val ERROR_CODE = 403
 const val HEADER_AKAMAI_KEY = "server"
 const val HEADER_AKAMAI_VALUE = "akamai"
-const val ERROR_MESSAGE_AKAMAI = "Kami mendeteksi aktivitas tidak biasa dari akunmu. Harap hubungi Pusat Bantuan."
+const val ERROR_MESSAGE_AKAMAI = "Oops, ada kendala pada akunmu. Silakan coba kembali atau hubungi Tokopedia Care untuk bantuan lanjutan."
 
 private val getAnyPattern = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
 val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
@@ -28,7 +28,6 @@ val registeredGqlFunctions = mapOf(
         "login_token" to "login",
         "register" to "register",
         "pdpGetLayout" to "pdpGetLayout",
-        "checkout_general" to "checkout",
         "atcOCS" to "atconeclickshipment",
         "getPDPInfo" to "product_info",
         "shopInfoByID" to "shop_info",
@@ -39,7 +38,8 @@ val registeredGqlFunctions = mapOf(
         "add_to_cart_occ" to "atcocc",
         "one_click_checkout" to "checkoutocc",
         "add_to_cart_transactional" to "atc",
-        "add_to_cart" to "atc"
+        "add_to_cart" to "atc",
+        "checkout" to "checkout"
 )
 
 fun isAkamai(query: String): Boolean {

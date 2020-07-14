@@ -9,10 +9,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.ProductPicture
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombination
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -26,12 +30,10 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -43,8 +45,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
@@ -105,6 +107,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
+    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
+
+    val hasWholesale: Boolean
+        get() = productInputModel.value?.detailInputModel?.wholesaleList?.isNotEmpty() ?: false
+
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -118,7 +125,16 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
+
+                        // decrement wholesale min order by one because of > symbol
+                        val initialWholeSaleList =  productInputModel.detailInputModel.wholesaleList
+                        val actualWholeSaleList = decrementWholeSaleMinOrder(initialWholeSaleList)
+
+                        // reassign wholesale information with the actual wholesale values
+                        productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
+
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -136,9 +152,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(productAddResult) {
@@ -184,36 +204,16 @@ class AddEditProductPreviewViewModel @Inject constructor(
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
-    fun updateDetailInputModel(detailInputModel: DetailInputModel) {
-        this.detailInputModel.value = detailInputModel
-        productInputModel.value?.let { it.detailInputModel = detailInputModel }
-    }
-
-    fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {
-        productInputModel.value?.descriptionInputModel = descriptionInputModel
-    }
-
-    fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
-        variantInputModel.isRemoveVariant = getIsRemoveVariant(variantInputModel.productVariant)
-        productInputModel.value?.variantInputModel = variantInputModel
-    }
-
-    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombination>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        productInputModel.value?.variantInputModel?.isRemoveVariant =
-                getIsRemoveVariant(productVariant)
         productInputModel.value?.variantInputModel?.productVariant =
                 mapProductVariant(productVariant, variantOptionParent)
         productInputModel.value?.variantInputModel?.variantOptionParent =
                 mapVariantOption(variantOptionParent)
     }
 
-    fun updateSizeChart(productSizeChart: PictureViewModel?) {
+    fun updateSizeChart(productSizeChart: ProductPicture?) {
         productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
-    }
-
-    fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
-        productInputModel.value?.shipmentInputModel = shipmentInputModel
     }
 
     fun updateProductStatus(isActive: Boolean) {
@@ -299,12 +299,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return errorMessage
     }
 
-    fun validateProductInput(): String {
-        val detailInputModel = productInputModel.value?.detailInputModel ?: DetailInputModel()
-        return validateProductInput(detailInputModel)
-    }
-
-    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+    fun incrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
         wholesaleList.forEach { wholesaleInputModel ->
             // recalculate wholesale min order because of > symbol
             val oldValue = wholesaleInputModel.quantity.toBigInteger()
@@ -314,9 +309,19 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return wholesaleList
     }
 
-    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    fun decrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue - 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
+    }
+
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombination>,
                                   variantOptionParent: ArrayList<ProductVariantOptionParent>
-    ): ArrayList<ProductVariantCombinationViewModel> {
+    ): ArrayList<ProductVariantCombination> {
         productVariant.forEach { variant ->
             val options: ArrayList<Int> = ArrayList()
             val level1Id = getVariantOptionIndex(variant.level1String, variantOptionParent)
@@ -360,13 +365,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
-    // isRemoveVariant used for indicating productVariant size is decreased when not in draft mode
-    private fun getIsRemoveVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>): Boolean {
-        return if (draftId.isEmpty()) {
-            productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
-        } else {
-            false
+    // disable removing variant when in edit mode and if product have a variant
+    fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
+        val variantInputModel  = inputModel.variantInputModel
+        variantInputModel.apply {
+            if (isEditing.value == true) {
+                if (productVariant.size > 0) {
+                    return variantOptionParent.getOrNull(0) != null
+                }
+            }
         }
+        return false
     }
 
 }

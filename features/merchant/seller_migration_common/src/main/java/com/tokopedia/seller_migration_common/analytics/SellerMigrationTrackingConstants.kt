@@ -1,0 +1,27 @@
+package com.tokopedia.seller_migration_common.analytics
+
+object SellerMigrationTrackingConstants {
+    private const val EVENT_CLICK_GO_TO_SELLER_APP = "click go to seller app"
+    private const val EVENT_CLICK_LEARN_MORE = "click learn more"
+    const val USER_ID_VALUE = "%s"
+    const val TRACKING_EVENT = "event"
+    const val TRACKING_EVENT_CATEGORY = "eventCategory"
+    const val TRACKING_EVENT_ACTION = "eventAction"
+    const val TRACKING_EVENT_LABEL = "eventLabel"
+    const val TRACKING_USER_ID = "userId"
+    const val EVENT_CLICK_SELLER_MIGRATION = "clickSellerMigration"
+    const val EVENT_CATEGORY_SELLER_MIGRATION = "seller app migration"
+    const val EVENT_CLICK_ACCOUNT_TICKER = "click in here - store tab"
+    const val EVENT_CLICK_CHAT_TICKER = "$EVENT_CLICK_LEARN_MORE - chat page"
+    const val EVENT_CLICK_PRODUCT_TICKER = "$EVENT_CLICK_LEARN_MORE - product page"
+    const val EVENT_CLICK_REVIEW_TICKER = "$EVENT_CLICK_LEARN_MORE - review page"
+    const val EVENT_CLICK_LEARN_MORE_VOUCHER = "$EVENT_CLICK_LEARN_MORE - mvc sheet"
+    const val EVENT_CLICK_VOUCHER_BOTTOM_SHEET = "click voucher toko cashback"
+    const val EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT = "$EVENT_CLICK_GO_TO_SELLER_APP - store tab"
+    const val EVENT_CLICK_GO_TO_SELLER_APP_CHAT = "$EVENT_CLICK_GO_TO_SELLER_APP - chat page"
+    const val EVENT_CLICK_GO_TO_SELLER_APP_PRODUCT = "$EVENT_CLICK_GO_TO_SELLER_APP - product page"
+    const val EVENT_CLICK_GO_TO_SELLER_APP_REVIEW = "$EVENT_CLICK_GO_TO_SELLER_APP - review page"
+    const val EVENT_CLICK_GO_TO_SELLER_APP_VOUCHER = "$EVENT_CLICK_GO_TO_SELLER_APP - mvc sheet"
+    const val EVENT_LABEL_TO_APP_STORE = "playstore"
+    const val EVENT_LABEL_TO_SELLER_APP = "seller app"
+}

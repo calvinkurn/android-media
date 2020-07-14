@@ -18,7 +18,7 @@ public interface SearchEventTracking {
 
     interface Category {
         String EVENT_TOP_NAV = "top nav";
-        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search - search result page";
+        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search result page";
         String SEARCH = "Search";
         String FILTER_PRODUCT = "filter product";
         String SEARCH_RESULT = "search result";
@@ -72,6 +72,10 @@ public interface SearchEventTracking {
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
+        String IMPRESSION_BROAD_MATCH = "impression - broad match";
+        String CLICK_BROAD_MATCH_LIHAT_SEMUA = "click - broad match lihat semua";
+        String CLICK_BROAD_MATCH = "click - broad match";
+        String CLICK_INSPIRATION_CARD = "click inspiration card";
     }
 
     interface Label {

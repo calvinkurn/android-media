@@ -58,13 +58,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createAndCallChkApk();
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
-
-
-        checkInstallReferrerInitialised();
-        syncFcmToken();
+        executeInBackground();
     }
 
     private void checkInstallReferrerInitialised() {
@@ -76,12 +70,17 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void createAndCallChkApk(){
+    private void executeInBackground(){
         WeaveInterface chkTmprApkWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Boolean execute() {
                 trackIrisEventForAppOpen();
+                CMPushNotificationManager.getInstance()
+                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
+
+                checkInstallReferrerInitialised();
+                syncFcmToken();
                 return checkApkTempered();
             }
         };

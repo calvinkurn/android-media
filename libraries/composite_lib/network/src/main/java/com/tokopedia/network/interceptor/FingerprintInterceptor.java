@@ -55,9 +55,6 @@ public class FingerprintInterceptor implements Interceptor {
                 userSession.getAccessToken()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());
-
-
-
         return newRequest;
     }
 }

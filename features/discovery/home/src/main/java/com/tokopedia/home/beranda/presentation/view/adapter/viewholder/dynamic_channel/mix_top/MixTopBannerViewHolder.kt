@@ -26,8 +26,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.home.util.setGradientBackground
-import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -72,10 +72,7 @@ class MixTopBannerViewHolder(
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
-        super.setupContent(channel, payloads)
-        val visitables = mappingVisitablesFromChannel(channel)
-        mappingHeader(channel)
-        mappingItem(channel, visitables)
+        mappingView(channel)
     }
 
     override fun getViewHolderClassName(): String {
@@ -83,27 +80,27 @@ class MixTopBannerViewHolder(
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.header.name) as HashMap<String, Any>)
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
         RouteManager.route(itemView.context, applink)
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.id, channel.header.name, homeCategoryListener.userId) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
-        val grid = MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)
+        val grid = MixTopTracking.mapGridToProductTracker(grid, channel.id, position+1, channel.persoType, channel.categoryID)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
                         listOf(grid),
                         channel.header.name,
-                        position.toString()
+                        adapterPosition.toString()
                 ) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
-                listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
+                listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position+1, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
                 adapterPosition.toString(),
@@ -154,7 +151,7 @@ class MixTopBannerViewHolder(
         bannerDescription.setTextColor(textColor)
 
         bannerUnifyButton.setOnClickListener {
-            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.header.name, ctaData.text) as HashMap<String, Any>)
+            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.id, channel.header.name, ctaData.text) as HashMap<String, Any>)
             if (ctaData.couponCode.isEmpty()) {
                 homeCategoryListener.onSectionItemClicked(channel.banner.applink)
             } else {
@@ -164,6 +161,11 @@ class MixTopBannerViewHolder(
 
         itemView.setOnClickListener {
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
+        }
+
+        background.setOnClickListener {
+            homeCategoryListener.onDynamicChannelClicked(bannerItem.applink)
+            homeCategoryListener.sendEETracking(MixTopTracking.getBackgroundClick(channel, homeCategoryListener.userId) as HashMap<String, Any>)
         }
     }
 
@@ -181,7 +183,8 @@ class MixTopBannerViewHolder(
 
         if (cta.text.isEmpty()) {
             bannerUnifyButton.visibility = View.GONE
-            return
+        }else {
+            bannerUnifyButton.visibility = View.VISIBLE
         }
         var mode = CTA_MODE_MAIN
         var type = CTA_TYPE_FILLED
@@ -243,7 +246,7 @@ class MixTopBannerViewHolder(
         val list :MutableList<FlashSaleDataModel> = mutableListOf()
         for (element in channel.grids) {
             list.add(FlashSaleDataModel(
-                    ProductCardFlashSaleModel(
+                    ProductCardModel(
                             slashedPrice = element.slashedPrice,
                             productName = element.name,
                             formattedPrice = element.price,
@@ -254,12 +257,16 @@ class MixTopBannerViewHolder(
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
                             labelGroupList = element.labelGroup.map {
-                                ProductCardFlashSaleModel.LabelGroup(
+                                ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
                                         type = it.type
                                 )
                             },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    element.freeOngkir.isActive,
+                                    element.freeOngkir.imageUrl
+                            ),
                             isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
@@ -272,7 +279,7 @@ class MixTopBannerViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -280,7 +287,7 @@ class MixTopBannerViewHolder(
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }

@@ -39,14 +39,6 @@ public class NotificationData {
     @Expose
     private NotificationSellerOrder sellerOrder;
 
-    public int getTotalCart() {
-        return totalCart;
-    }
-
-    public void setTotalCart(int totalCart) {
-        this.totalCart = totalCart;
-    }
-
     public Sales getSales() {
         return sales;
     }

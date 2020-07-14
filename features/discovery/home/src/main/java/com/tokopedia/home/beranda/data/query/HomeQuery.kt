@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.query
 
 object HomeQuery{
     fun getQuery() = """
+        query homeData
         {
         status
           ticker {
@@ -36,13 +37,6 @@ object HomeQuery{
             }
           }
           dynamicHomeIcon {
-            useCaseIcon {
-              id
-              name
-              url
-              imageUrl
-              applinks
-            }
             dynamicIcon {
               id
               galaxy_attribution
@@ -84,16 +78,9 @@ object HomeQuery{
                 backImage
                 textColor
               }
-              hero {
-                id
-                name
-                url
-                applink
-                imageUrl
-                attribution
-              }
               grids {
                 id
+                back_color
                 name
                 url
                 applink
@@ -124,6 +111,9 @@ object HomeQuery{
                   position
                   type
                 }
+                has_buy_button
+                rating
+                count_review
               }
               banner {
                 id
@@ -145,31 +135,15 @@ object HomeQuery{
               }
             }
           }
-          spotlight {
-            spotlights {
-              id
-              galaxy_attribution
-              persona
-              brand_id
-              category_persona
-              title
-              description
-              background_image_url
-              tag_name
-              tag_name_hexcolor
-              tag_hexcolor
-              cta_text
-              cta_text_hexcolor
-              url
-              applink
-            }
-          }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
-              name
-              is_active
+                event_time
+                server_time
+                flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh"){
+                    name
+                    is_active
+                }
             }
-          }
         }
     """.trimIndent()
 }
+

@@ -7,7 +7,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard.ProductCardFlashSaleView
+import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class FlashSaleViewHolder (view: View,
@@ -19,8 +20,7 @@ class FlashSaleViewHolder (view: View,
         private const val className = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
     }
 
-    private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
-
+    private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
     override fun bind(element: FlashSaleDataModel) {
         setLayout(itemView.context, element)
     }
@@ -31,13 +31,19 @@ class FlashSaleViewHolder (view: View,
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression)
+                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
+                            element.grid.id,
+                            element.grid.name,
+                            element.grid.imageUrl)
                 }
                 element.listener.onFlashSaleCardImpressed(adapterPosition, channels, element.grid)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl)
+                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
+                            element.grid.id,
+                            element.grid.name,
+                            element.grid.imageUrl)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }

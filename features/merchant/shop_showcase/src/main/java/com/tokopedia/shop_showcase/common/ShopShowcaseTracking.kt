@@ -186,17 +186,16 @@ class ShopShowcaseTracking (context: Context?) {
         )
     }
 
-    fun addShowcaseClickFinishButton(shopId: String, shopType: String, isActionEdit: Boolean) {
-        page = if(isActionEdit) {
-            EDIT_SHOWCASE_PAGE
+    fun addShowcaseIsCreatedSuccessfully(shopId: String, shopType: String, isSuccess: Boolean = false) {
+        eventAction = if(isSuccess) {
+            CLICK_FINISH_SUCCESS
         } else {
-            ADD_SHOWCASE_PAGE
+            CLICK_FINISH_ERROR
         }
-        eventAction = "click finish on edit product page"
         tracker.sendEnhanceEcommerceEvent(
                 getDataLayer(
                         CLICK_ETALASE,
-                        page,
+                        ADD_SHOWCASE_PAGE,
                         eventAction,
                         "",
                         shopId,

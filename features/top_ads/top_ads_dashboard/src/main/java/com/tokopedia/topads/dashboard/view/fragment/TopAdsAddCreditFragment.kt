@@ -1,5 +1,8 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,21 +10,26 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditTypeFactory
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.DataCreditViewHolder
 import com.tokopedia.topads.dashboard.view.listener.TopAdsAddCreditView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.fragment_top_ads_add_credit.*
 import javax.inject.Inject
 
 class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFactory>(), TopAdsAddCreditView, DataCreditViewHolder.OnSelectedListener {
 
     private var selectedCreditPos = -1
+    private var userSession: UserSessionInterface? = null
 
     @Inject
     lateinit var presenter: TopAdsAddCreditPresenter
@@ -88,8 +96,25 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
     private fun chooseCredit() {
         if (selectedCreditPos > -1) {
             val selected = adapter.data[selectedCreditPos]
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, resources.getString(R.string.title_top_ads_add_credit), selected.productUrl)
+            activity?.let {
+                it.setResult(Activity.RESULT_OK)
+                val intent = Intent(activity, TopAdsPaymentCreditActivity::class.java).apply {
+                    putExtra(KEY_URL, getUrl(selected))
+                    putExtra(KEY_TITLE, resources.getString(R.string.title_top_ads_add_credit))
+                }
+                startActivity(intent)
+                it.finish()
+            }
         }
+
+    }
+
+    private fun getUrl(selected: DataCredit): String {
+        userSession = UserSession(activity)
+        return URLGenerator.generateURLSessionLogin(
+                Uri.encode(selected.productUrl),
+                userSession?.deviceId,
+                userSession?.userId)
     }
 
     override fun onDestroy() {

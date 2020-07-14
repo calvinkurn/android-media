@@ -56,9 +56,9 @@ object PayloadConverter {
             model.carouselList = carouselList
             model.carouselIndex = data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0)
         }
-        model.isVibration = data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true)
-        model.isUpdateExisting = data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false)
-        model.isTest = data.getBoolean(CMConstant.PayloadKeys.IS_TEST, false)
+        model.isVibration = (data.getString(CMConstant.PayloadKeys.VIBRATE) ?: "true").toBoolean()
+        model.isUpdateExisting = (data.getString(CMConstant.PayloadKeys.UPDATE_NOTIFICATION) ?: "false").toBoolean()
+        model.isTest = (data.getString(CMConstant.PayloadKeys.IS_TEST) ?: "false").toBoolean()
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList

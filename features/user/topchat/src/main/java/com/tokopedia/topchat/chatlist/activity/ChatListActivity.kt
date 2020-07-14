@@ -18,7 +18,7 @@ class ChatListActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? = ChatTabListFragment.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         useLightNotificationBar()
         initWindowBackground()
         initTopchatToolbar()

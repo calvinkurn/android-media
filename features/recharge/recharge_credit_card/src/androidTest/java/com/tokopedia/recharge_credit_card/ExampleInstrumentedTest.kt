@@ -17,6 +17,5 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.tokopedia.recharge_credit_card.test", appContext.packageName)
     }
 }

@@ -2,11 +2,10 @@ package com.tokopedia.flight.searchV4.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
+import com.tokopedia.flight.common.view.adapter.FlightAdapterTypeFactory
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResultModel
 
@@ -14,12 +13,11 @@ import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResult
  * @author by furqan on 13/04/2020
  */
 class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFlightSearchListener)
-    : BaseAdapterTypeFactory(), ErrorNetworkViewHolder.OnRetryListener {
+    : FlightAdapterTypeFactory(), ErrorNetworkViewHolder.OnRetryListener {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             FlightSearchViewHolder.LAYOUT -> FlightSearchViewHolder(parent, onFlightSearchListener)
-            EmptyResultViewHolder.LAYOUT -> EmptyResultViewHolder(parent)
             ErrorNetworkViewHolder.LAYOUT -> ErrorNetworkViewHolder(parent)
             FlightSearchShimmeringViewHolder.LAYOUT -> FlightSearchShimmeringViewHolder(parent)
             FlightSearchSeeAllViewHolder.LAYOUT -> FlightSearchSeeAllViewHolder(parent, onFlightSearchListener)
@@ -28,8 +26,6 @@ class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFligh
     }
 
     override fun type(loadingModel: LoadingModel): Int = FlightSearchShimmeringViewHolder.LAYOUT
-
-    fun type(emptyModel: EmptyResultModel): Int = EmptyResultViewHolder.LAYOUT
 
     fun type(seeAllResultModel: FlightSearchSeeAllResultModel): Int = FlightSearchSeeAllViewHolder.LAYOUT
 

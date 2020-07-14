@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
 import com.tokopedia.flight.R
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_flight_select_passenger.*

@@ -18,7 +18,7 @@ public class Reason {
     private String title;
     @SerializedName("required_docs")
     @Expose
-    private List<String> requiredDocs;
+    private List<ReasonRequiredDocs> requiredDocs;
 
     public String getId() {
         return id;
@@ -36,11 +36,11 @@ public class Reason {
         this.title = title;
     }
 
-    public List<String> getRequiredDocs() {
+    public List<ReasonRequiredDocs> getRequiredDocs() {
         return requiredDocs;
     }
 
-    public void setRequiredDocs(List<String> requiredDocs) {
+    public void setRequiredDocs(List<ReasonRequiredDocs> requiredDocs) {
         this.requiredDocs = requiredDocs;
     }
 }
