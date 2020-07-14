@@ -84,6 +84,9 @@ class MixLeftComponentViewHolder (itemView: View,
         }
     }
 
+    override fun bind(element: MixLeftDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1

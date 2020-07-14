@@ -9,6 +9,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -50,6 +51,7 @@ import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -161,6 +163,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         } else false
 
     lateinit var viewModel: ShopPageProductListViewModel
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -467,7 +470,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 (parentFragment as? ShopPageFragment)?.refreshData()
             }
             REQUEST_CODE_SORT -> {
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     if (shopProductAdapter.isLoading) {
                         return
                     }
@@ -503,7 +506,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun scrollToProductEtalaseSegment(){
+    private fun scrollToProductEtalaseSegment() {
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
         recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         gridLayoutManager.scrollToPositionWithOffset(
@@ -824,6 +827,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
         }
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltRenderPage(it)
+            }
+        }
     }
 
     private fun stopMonitoringPltRenderPage() {
@@ -832,6 +840,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
+        stopPerformanceMonitoring()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -858,7 +867,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopRef = it.getString(SAVED_SHOP_REF).orEmpty()
             isGoldMerchant = it.getBoolean(SAVED_SHOP_IS_GOLD_MERCHANT)
             isOfficialStore = it.getBoolean(SAVED_SHOP_IS_OFFICIAL)
-            sortId = it.getString(SAVED_SHOP_SORT_ID , "")
+            sortId = it.getString(SAVED_SHOP_SORT_ID, "")
             sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
         }
         initRecyclerView(view)
@@ -921,7 +930,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun observeViewModelLiveData() {
         viewModel.etalaseListData.observe(this, Observer {
-            startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
                     onSuccessGetEtalaseListData(it.data)
@@ -973,6 +981,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         })
 
         viewModel.productListData.observe(this, Observer {
+            startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
                     onSuccessGetProductListData(it.data.first, it.data.second)
@@ -981,7 +990,12 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     showErrorToasterWithRetry(it.throwable)
                 }
             }
-            stopMonitoringPltRenderPage()
+            recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    stopMonitoringPltRenderPage()
+                    recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
         })
 
         viewModel.claimMembershipResp.observe(this, Observer {
@@ -1049,7 +1063,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
         }
-        stopPerformanceMonitoring()
     }
 
     private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
@@ -1147,6 +1160,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun stopPerformanceMonitoring() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltRenderPage(it)
+            }
+        }
         (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
@@ -1161,7 +1179,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
-    private fun getSelectedEtalaseChip(): String{
+    private fun getSelectedEtalaseChip(): String {
         return selectedEtalaseName.takeIf { it.isNotEmpty() } ?: defaultEtalaseName
     }
 
@@ -1178,6 +1196,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (shopProductAdapter.isLoading) {
             return
         }
+        shopPageTracking?.clickClearFilter(
+                isOwner,
+                customDimensionShopPage
+        )
         sortId = ""
         sortName = ""
         shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)

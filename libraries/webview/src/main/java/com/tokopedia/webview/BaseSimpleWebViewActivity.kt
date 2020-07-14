@@ -17,12 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.utils.uri.DeeplinkUtils.getDataUri
-import com.tokopedia.utils.uri.DeeplinkUtils.getExtraReferrer
-import com.tokopedia.utils.uri.DeeplinkUtils.getReferrerCompatible
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -31,7 +27,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private set
     private var allowOverride = true
     private var needLogin = false
-    var title = ""
+    var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
@@ -41,7 +37,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun setupToolbar() {
         if (showTitleBar) {
-            updateTitle(title)
+            updateTitle(webViewTitle)
             supportActionBar?.show()
         } else {
             supportActionBar?.hide()
@@ -54,7 +50,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             showTitleBar = getBoolean(KEY_TITLEBAR, true)
             allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
-            title = getString(KEY_TITLE, DEFAULT_TITLE)
+            webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
         }
 
         intent.data?.run {
@@ -74,7 +70,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             isLoginRequire?.let { needLogin = it.toBoolean() }
 
             val needTitle = getQueryParameter(KEY_TITLE)
-            needTitle?.let { title = it }
+            needTitle?.let { webViewTitle = it }
         }
     }
 

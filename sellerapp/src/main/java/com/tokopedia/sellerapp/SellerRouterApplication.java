@@ -38,8 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
-import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
@@ -121,7 +119,6 @@ public abstract class SellerRouterApplication extends MainApplication
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         CoreNetworkRouter,
-        FlashSaleRouter,
         LinkerRouter,
         SellerHomeRouter,
         LoginRouter {
@@ -437,12 +434,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public ApplinkDelegate applinkDelegate() {
         return null;
-    }
-
-    @Override
-    public @NonNull
-    Intent getFlashSaleDashboardIntent(@NonNull Context context) {
-        return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
     }
 
     @Override

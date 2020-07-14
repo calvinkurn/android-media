@@ -10,16 +10,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
-import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
-import com.tokopedia.find_native.analytics.FindPageAnalytics.Companion.findPageAnalytics
-import com.tokopedia.find_native.view.fragment.FindNavFragment
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.find_native.R
+import com.tokopedia.find_native.analytics.FindPageAnalytics.Companion.findPageAnalytics
+import com.tokopedia.find_native.view.fragment.FindNavFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -227,7 +227,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         searchNavContainer?.onSortSelected(showTick)
     }
 
-    override fun onButtonClicked(bannedProduct: Data) {
+    override fun onButtonClicked(bannedProduct: BannedData) {
         //To handle Analytics
     }
 
