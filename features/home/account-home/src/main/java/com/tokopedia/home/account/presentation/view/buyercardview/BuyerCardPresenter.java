@@ -2,6 +2,10 @@ package com.tokopedia.home.account.presentation.view.buyercardview;
 
 import android.opengl.Visibility;
 
+import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCardContract.View;
+
+import static android.view.View.GONE;
+
 /**
  * @author okasurya on 8/29/18.
  */
@@ -36,19 +40,19 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
             view.setMemberStatus(buyerCard.getMemberStatus());
 
             if (buyerCard.getTokopointSize() == 0) {
-                view.setCardVisibility(0);
+                view.setCardVisibility(GONE);
             }
             if (buyerCard.getCouponSize() == 0) {
-                view.setVisibilityCenterLayout(0);
-                view.setVisibilityDividerFirst(0);
+                view.setVisibilityCenterLayout(GONE);
+                view.setVisibilityDividerFirst(GONE);
             }
             if (buyerCard.getTokomemberSize() == 0) {
-                view.setVisibilityRightLayout(0);
-                view.setVisibilityDividerSecond(0);
+                view.setVisibilityRightLayout(GONE);
+                view.setVisibilityDividerSecond(GONE);
             }
 
             if (buyerCard.getTokopointSize() == 0 && buyerCard.getCouponSize() == 0 && buyerCard.getTokomemberSize() == 0){
-                view.setWidgetVisibility(0);
+                view.setWidgetVisibility(GONE);
             }
         }
     }

@@ -129,10 +129,10 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
         }
         if (item.isDisabledButton) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))

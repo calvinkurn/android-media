@@ -352,6 +352,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mContainerPointDetail = view.findViewById(R.id.container_point_detail)
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom)
         mAppBarHeader = view.findViewById(R.id.app_bar_header)
+        appBarCollapseListener!!.hideToolbarElevation()
         if (arguments != null && arguments!!.getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById<View>(R.id.text_my_coupon).visibility = View.GONE
         }

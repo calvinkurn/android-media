@@ -157,7 +157,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onProfileCompletionClicked(BuyerCardViewModel element) {
-        openApplink(ApplinkConst.TOKOPOINTS);
+        openApplink(ApplinkConst.PROFILE_COMPLETION);
     }
 
     @Override

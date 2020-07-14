@@ -412,7 +412,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
 
         if (dataList != null && dataList.isNotEmpty()) {
-            dynamicAction?.setFirstLayoutVisibility(1)
+            dynamicAction?.setFirstLayoutVisibility(View.VISIBLE)
             dataList[0]?.cta?.text?.let { dynamicAction?.setFirstLayoutText(it) }
             dataList[0]?.iconImageURL?.let { dynamicAction?.setFirstLayoutIcon(it) }
             if (dataList[0]?.counter?.isShowCounter!! && dataList[0]?.counter?.counterStr != "0") {
@@ -422,7 +422,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dataList[0]?.cta?.let { dynamicAction?.setLayoutClickListener(it.appLink, it.text) }
             }
             if (dataList.size > 1) {
-                dynamicAction?.setCenterLayoutVisibility(1)
+                dynamicAction?.setCenterLayoutVisibility(View.VISIBLE)
                 dataList[1]?.cta?.text?.let { dynamicAction?.setCenterLayoutText(it) }
                 dataList[1]?.iconImageURL?.let { dynamicAction?.setCenterLayoutIcon(it) }
                 if (dataList[1]?.counter?.isShowCounter!! && dataList[1]?.counter?.counterStr != "0") {
@@ -431,10 +431,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.let { dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text) }
                 }
-                dynamicAction?.setVisibilityDividerOne(1)
+                dynamicAction?.setVisibilityDividerOne(View.VISIBLE)
             }
             if (dataList.size > 2) {
-                dynamicAction?.setRightLayoutVisibility(1)
+                dynamicAction?.setRightLayoutVisibility(View.VISIBLE)
                 dataList[2]?.cta?.text?.let { dynamicAction?.setRightLayoutText(it) }
                 dataList[2]?.iconImageURL?.let { dynamicAction?.setRightLayoutIcon(it) }
                 if (dataList[2]?.counter?.isShowCounter!! && dataList[2]?.counter?.counterStr != "0") {
@@ -443,7 +443,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let { dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
                 }
-                dynamicAction?.setVisibilityDividerTwo(1)
+                dynamicAction?.setVisibilityDividerTwo(View.VISIBLE)
             }
         }
     }
