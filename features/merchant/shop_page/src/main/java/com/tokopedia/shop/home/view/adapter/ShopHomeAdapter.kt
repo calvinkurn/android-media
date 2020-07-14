@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -31,6 +32,20 @@ class ShopHomeAdapter(
     var isOwner: Boolean = false
     private var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
 
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if(holder is ShopHomePlayCarouselViewHolder) {
+            holder.onResume()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        if(holder is ShopHomePlayCarouselViewHolder) {
+            holder.onPause()
+        }
+        super.onViewDetachedFromWindow(holder)
+    }
+
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
@@ -44,6 +59,18 @@ class ShopHomeAdapter(
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
         notifyItemRangeInserted(lastIndex, productList.size)
+    }
+
+    fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
+        visitables.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let {
+            if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
+                visitables.removeAt(it.index)
+                notifyItemRemoved(it.index)
+            } else {
+                visitables[it.index] = playCarouselUiModel
+                notifyItemChanged(it.index)
+            }
+        }
     }
 
     fun setEtalaseTitleData() {

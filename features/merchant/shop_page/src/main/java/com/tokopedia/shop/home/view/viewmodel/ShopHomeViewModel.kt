@@ -73,6 +73,9 @@ class ShopHomeViewModel @Inject constructor(
     val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
     private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
 
+    val updatePlayWidgetData: LiveData<ShopHomePlayCarouselUiModel> get() = _updatePlayWidgetData
+    private val _updatePlayWidgetData = MutableLiveData<ShopHomePlayCarouselUiModel>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -132,16 +135,13 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun onRefreshPlayBanner(shopId: String){
-        val result = _shopHomeLayoutData.value
+         val result = _shopHomeLayoutData.value
         if(result is Success){
             launchCatchError(block = {
-                val newShopPageHomeLayoutUiModel = asyncCatchError(
-                        dispatcherProvider.io(),
-                        block = { getPlayWidgetCarousel(shopId, result.data) },
-                        onError = {null}
-                )
-                newShopPageHomeLayoutUiModel.await()?.let {
-                    _shopHomeLayoutData.postValue(Success(it))
+                result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->
+                    getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+                    val playWidgetEntity = getPlayWidgetUseCase.executeOnBackground()
+                    _updatePlayWidgetData.postValue((uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playWidgetEntity))
                 }
             }){
             }
@@ -152,10 +152,10 @@ class ShopHomeViewModel @Inject constructor(
         launchCatchError(block = {
             playToggleChannelReminderUseCase.setParams(channelId, isSet)
             val reminder = playToggleChannelReminderUseCase.executeOnBackground()
-            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
                 _reminderPlayLiveData.postValue(Pair(position, Success(isSet)))
             } else {
-                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable(reminder.header.message))))
+                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable())))
             }
         }){
             _reminderPlayLiveData.postValue(Pair(position, Fail(it)))

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class PlayToggleChannelEntity(
         @SerializedName("playToggleChannelReminder")
-        val playToggleChannelReminder: PlayToggleChannelReminder
+        val playToggleChannelReminder: PlayToggleChannelReminder?
 )
 
 data class PlayToggleChannelReminder(

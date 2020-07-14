@@ -103,6 +103,14 @@ class ShopHomePlayCarouselViewHolder(
         playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
     }
 
+    fun onResume(){
+        itemView.play_banner_carousel?.onResume()
+    }
+
+    fun onPause(){
+        itemView.play_banner_carousel?.onPause()
+    }
+
     fun onDestroy(){
         itemView.play_banner_carousel?.onDestroy()
     }
