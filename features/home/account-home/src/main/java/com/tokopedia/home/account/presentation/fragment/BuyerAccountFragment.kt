@@ -357,7 +357,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
                     .query_buyer_account_home), saldoQuery)
 
-            viewModel.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw.query_buyer_account_home), saldoQuery)
+            viewModel.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw.new_query_buyer_account_home))
         }
     }
 

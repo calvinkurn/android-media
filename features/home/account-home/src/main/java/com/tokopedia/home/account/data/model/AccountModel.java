@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.home.account.data.pojo.UserProfileCompletion;
 import com.tokopedia.navigation_common.model.DebitInstantModel;
+import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.MembershipSumUserCard;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -78,6 +79,9 @@ public class AccountModel {
 
     @SerializedName("CheckEligible")
     private PremiumAccountResponse premiumAccountResponse;
+
+    @SerializedName("balance")
+    private DepositModel saldo = new DepositModel();
 
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();
 

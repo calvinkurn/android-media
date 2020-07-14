@@ -10,9 +10,8 @@ import com.tokopedia.affiliatecommon.R
 import com.tokopedia.affiliatecommon.data.pojo.checkaffiliate.AffiliateCheckData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.home.account.data.model.AccountModel
+import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
-import com.tokopedia.home.account.revamp.domain.GetUserSaldoUseCase
-import com.tokopedia.navigation_common.model.SaldoModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,7 +23,7 @@ import javax.inject.Inject
 class BuyerAccountViewModel @Inject constructor (
         private val getBuyerAccountDataUseCase: GetBuyerAccountDataUseCase,
         private val checkAffiliateUseCase: GraphqlUseCase<AffiliateCheckData>,
-        private val getUserSaldoUseCase: GetUserSaldoUseCase,
+        private val getBuyerWalletBalanceUseCase: GetBuyerWalletBalanceUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
         private val context: Context,
@@ -35,21 +34,13 @@ class BuyerAccountViewModel @Inject constructor (
     val buyerAccountData: LiveData<Result<AccountModel>>
         get() = _buyerAccountData
 
-    private val _isAffiliate = MutableLiveData<Boolean>()
-    val isAffiliate: LiveData<Boolean>
-        get() = _isAffiliate
-
-    fun getBuyerData(buyerQuery: String, saldoQuery: String) {
-        getBuyerAccountDataUseCase.getBuyerAccount(onSuccessGetBuyerData(saldoQuery), onErrorGetBuyerData(), buyerQuery)
-    }
-
-    private fun getSaldo(rawQuery: String) {
-        getUserSaldoUseCase.getUserSaldo(onSuccessGetSaldo(), onErrorSaldo(), rawQuery)
+    fun getBuyerData(buyerQuery: String) {
+        getBuyerAccountDataUseCase.getBuyerAccount(onSuccessGetBuyerData(), onErrorGetBuyerData(), buyerQuery)
     }
 
     private fun checkIsAffiliate() {
         if (userSession.isAffiliate) {
-            _isAffiliate.postValue(true)
+            (_buyerAccountData.value as Success).data.isAffiliate = true
         } else {
             val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_affiliate_check)
             checkAffiliateUseCase.setTypeClass(AffiliateCheckData::class.java)
@@ -65,10 +56,9 @@ class BuyerAccountViewModel @Inject constructor (
         }
     }
 
-    private fun onSuccessGetBuyerData(query: String): (AccountModel) -> Unit {
+    private fun onSuccessGetBuyerData(): (AccountModel) -> Unit {
         return {
             Log.d("BUYER-ACC", it.toString())
-            getSaldo(query)
             checkIsAffiliate()
 
             saveLocallyWallet(it)
@@ -81,23 +71,6 @@ class BuyerAccountViewModel @Inject constructor (
         }
     }
 
-    private fun onErrorSaldo(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-        }
-    }
-
-    private fun onSuccessGetSaldo(): (SaldoModel) -> Unit {
-        return {
-            Log.d("BUYER-ACC-Saldo", it.toString())
-            _buyerAccountData.value = _buyerAccountData.value.also {accountData ->
-                when(accountData) {
-                    is Success -> { accountData.data.saldoModel = it }
-                }
-            }
-        }
-    }
-
     private fun onErrorCheckAffiliate(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
@@ -107,11 +80,7 @@ class BuyerAccountViewModel @Inject constructor (
     private fun onSuccessCheckAffiliate(): (AffiliateCheckData) -> Unit {
         return {
             Log.d("BUYER-ACC-CA", it.toString())
-            _buyerAccountData.value = _buyerAccountData.value.also {accountData ->
-                when(accountData) {
-                    is Success -> { accountData.data.isAffiliate = it.affiliateCheck.isIsAffiliate }
-                }
-            }
+            (_buyerAccountData.value as Success).data.isAffiliate = true
         }
     }
 
@@ -147,6 +116,5 @@ class BuyerAccountViewModel @Inject constructor (
     override fun onCleared() {
         super.onCleared()
         getBuyerAccountDataUseCase.cancelJobs()
-        getUserSaldoUseCase.cancelJobs()
     }
 }
