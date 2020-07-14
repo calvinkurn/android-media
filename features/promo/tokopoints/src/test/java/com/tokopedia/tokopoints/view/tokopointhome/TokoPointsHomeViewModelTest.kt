@@ -48,16 +48,12 @@ class TokoPointsHomeViewModelTest {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
         }
-        val tokenObserver = mockk<Observer<LuckyEggEntity>> {
-            every { onChanged(any()) } just Runs
+        val data = mockk<TokopediaRewardTopSection>{
+            every { isShowIntroActivity } returns false
         }
-        val data = mockk<TokopediaRewardTopSection>()
         val dataSection = mockk<List<SectionContent>>()
-        val tokenData = mockk<LuckyEggEntity> {
-            every { resultStatus.code } returns CommonConstant.CouponRedemptionCode.SUCCESS
-        }
         coEvery { repository.getTokoPointDetailData() } returns mockk {
-            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
+            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk{
                 every { tokopediaRewardTopSection } returns data
             }
             every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
@@ -65,16 +61,12 @@ class TokoPointsHomeViewModelTest {
                     every { sectionContent } returns dataSection
                 }
             }
-            every { getData<TokenDetailOuter>(TokenDetailOuter::class.java) } returns mockk {
-                every { tokenDetail } returns tokenData
-            }
         }
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
         verify(ordering = Ordering.ORDERED) {
             tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
             tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-            tokenObserver.onChanged(any())
         }
 
         val result = viewModel.tokopointDetailLiveData.value as Success
@@ -85,9 +77,6 @@ class TokoPointsHomeViewModelTest {
     @Test
     fun `getTokoPointDetail for token detail success and error in detail`() {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
-            every { onChanged(any()) } just Runs
-        }
-        val tokenObserver = mockk<Observer<LuckyEggEntity>> {
             every { onChanged(any()) } just Runs
         }
         val data = mockk<TokopediaRewardTopSection>()
@@ -110,16 +99,12 @@ class TokoPointsHomeViewModelTest {
         viewModel.getTokoPointDetail()
         verify(ordering = Ordering.ORDERED) {
             tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokenObserver.onChanged(any())
         }
     }
 
     @Test
     fun `getTokoPointDetail for error`() {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
-            every { onChanged(any()) } just Runs
-        }
-        val tokenObserver = mockk<Observer<LuckyEggEntity>> {
             every { onChanged(any()) } just Runs
         }
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class TokopediaRewardTopSection(
 
         @SerializedName("isShowIntroPage")
-        val isShowIntroActivity: Boolean,
+        val isShowIntroActivity: Boolean = false,
 
         @SerializedName("backgroundImageURLMobile")
         val backgroundImageURLMobile: String? = null,
