@@ -206,6 +206,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         private const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
         private const val ERROR_EDIT_AWB = "Error when edit AWB."
         private const val ERROR_REJECT_ORDER = "Error when rejecting order."
+        private const val PAGE_NAME = "seller order detail page."
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -455,7 +456,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, "seller order detail page."))
+                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
                     showToasterError(getString(R.string.global_error), view)
                     refreshHandler?.finishRefresh()
                 }

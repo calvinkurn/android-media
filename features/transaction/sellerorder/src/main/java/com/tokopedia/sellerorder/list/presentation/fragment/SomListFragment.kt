@@ -160,6 +160,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private const val ERROR_GET_FILTER = "Error when get filters in seller order list page."
         private const val ERROR_GET_STATUS_LIST = "Error when get order status list in seller order list page."
         private const val ERROR_GET_ORDER_LIST = "Error when get list of order in seller order list page."
+        private const val PAGE_NAME = "seller order list page."
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -480,7 +481,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         }
                     }
                     is Fail -> {
-                        SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(ERROR_GET_USER_ROLES, "seller order list page."))
+                        SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(ERROR_GET_USER_ROLES, PAGE_NAME))
                         toggleSomLayout(false)
                         renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
                     }
