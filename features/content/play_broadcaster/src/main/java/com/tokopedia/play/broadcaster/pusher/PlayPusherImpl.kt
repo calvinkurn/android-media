@@ -95,8 +95,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         if (isPushing() || mPlayPusherStatus != PlayPusherStatus.Idle) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         }
-        mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
         mTimerDuration?.start()
+        mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
         mPlayPusherStatus = PlayPusherStatus.Active
     }
 
@@ -108,7 +108,12 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.stopPush()
             mTimerDuration?.stop()
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+            // crashlytics
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
+        }
         mPlayPusherStatus = PlayPusherStatus.Stop
     }
 
@@ -117,7 +122,14 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun resume() {
-        mAliVcLivePusher?.resumeAsync()
+        try {
+            mAliVcLivePusher?.resumeAsync()
+        } catch (e: Exception) {
+            // crashlytics
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
+        }
         if (mPlayPusherStatus != PlayPusherStatus.Paused) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         } else {
@@ -127,7 +139,14 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override suspend fun pause() {
-        mAliVcLivePusher?.pause()
+        try {
+            mAliVcLivePusher?.pause()
+        } catch (e: Exception) {
+            // crashlytics
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
+        }
         if (mPlayPusherStatus != PlayPusherStatus.Active) {
             throw IllegalStateException("Current pusher status is ${mPlayPusherStatus.name}")
         } else {

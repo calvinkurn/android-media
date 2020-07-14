@@ -113,14 +113,6 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableChannelId: LiveData<String> = MediatorLiveData<String>().apply {
-        addSource(_observableConfigInfo) {
-            if (it is NetworkResult.Success) setChannelId(it.data.channelId)
-        }
-        addSource(_observableChannelInfo) {
-            if (it is NetworkResult.Success) setChannelId(it.data.channelId)
-        }
-    }
     private val _observableLiveNetworkState = MediatorLiveData<Event<PlayPusherNetworkState>>().apply {
         addSource(playPusher.getObservablePlayPusherNetworkState()) {
             value = Event(it)
@@ -128,22 +120,16 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
 
-    private val channelIdObserver = object : Observer<String> {
-        override fun onChanged(t: String?) {}
-    }
-
     private val metricsChannel = BroadcastChannel<PlayMetricUiModel>(Channel.BUFFERED)
 
     init {
         scope.launch { initMetricsChannel() }
-        _observableChannelId.observeForever(channelIdObserver)
 
         _observableChatList.value = mutableListOf()
     }
 
     override fun onCleared() {
         super.onCleared()
-        _observableChannelId.removeObserver(channelIdObserver)
         scope.cancel()
     }
 
@@ -161,6 +147,7 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
             val configUiModel = PlayBroadcastUiMapper.mapConfiguration(config)
+            setChannelId(configUiModel.channelId)
 
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
             if (configUiModel.channelType == ChannelType.Pause) { // get channel when channel status is paused
@@ -213,6 +200,7 @@ class PlayBroadcastViewModel @Inject constructor(
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
             _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
 
+            setChannelId(channelInfo.channelId)
             setIngestUrl(channelInfo.ingestUrl)
             setSelectedProduct(PlayBroadcastUiMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
