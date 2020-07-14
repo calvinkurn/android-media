@@ -15,7 +15,13 @@ import kotlinx.android.synthetic.main.card_address_list.view.*
 
 class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
-    var addressList = mutableListOf<RecipientAddressModel>()
+    private var addressList = mutableListOf<RecipientAddressModel>()
+
+    fun setData(data: List<RecipientAddressModel>) {
+        addressList.clear()
+        addressList.addAll(data)
+        notifyDataSetChanged()
+    }
 
     interface onSelectedListener {
         fun onSelect(addressId: String)

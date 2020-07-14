@@ -57,7 +57,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     fun initView() {
-        if (::product.isInitialized) {
+        if (isProductInitialized()) {
             ivProductImage?.let {
                 ImageHandler.loadImageFitCenter(view.context, it, product.productImageUrl)
             }
@@ -207,15 +207,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun showPrice() {
-        var productPrice = product.productPrice
-        if (product.wholesalePrice.isNotEmpty()) {
-            for (wholesalePrice in product.wholesalePrice) {
-                if (product.quantity.orderQuantity >= wholesalePrice.qtyMin) {
-                    productPrice = wholesalePrice.prdPrc.toLong()
-                }
-            }
-        }
-        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
+        tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
 
         if (product.originalPrice.isNotBlank()) {
             tvProductSlashPrice.text = product.originalPrice

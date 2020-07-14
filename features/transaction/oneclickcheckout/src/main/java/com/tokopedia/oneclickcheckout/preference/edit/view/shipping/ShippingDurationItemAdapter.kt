@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.LogisticPromoInfo
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem
@@ -80,7 +81,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
             itemShippingText.text = data.servicesName
             itemShippingPrice.text = data.texts?.textRangePrice
             when {
-                data.errorMessage.isNotEmpty() && data.errorMessage != "Belum PinPoint" -> {
+                data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
                     itemShippingDesc.visible()
                     itemShippingDesc.text = data.errorMessage
                 }

@@ -20,9 +20,9 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
@@ -104,22 +104,18 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
 
         if (shipping == null) {
-            val tempServiceDuration = shipmentModel.serviceDuration
-            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
-            } else {
-                OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-            }
-            tvShippingDuration?.text = serviceDur
+            tvShippingDuration?.text = generateServiceDuration(shipmentModel.serviceDuration)
             tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
             tvShippingPrice?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "${generateServiceDuration(shipping.serviceDuration)} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                    tvShippingDuration?.setOnClickListener { }
+                    tvShippingDuration?.setOnClickListener {
+                        // no op
+                    }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
                             ?: 0, false).removeDecimalSuffix()
                     tvShippingPrice?.setOnClickListener {
@@ -133,38 +129,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingChangeDuration?.gone()
 
                     //BBO
-                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-                        tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
-                        tickerShippingPromo?.visible()
-                        tickerAction?.setOnClickListener {
-                            listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
-                        }
-                    } else {
-                        tickerShippingPromo?.gone()
-                    }
+                    renderBboTicker(shipping)
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                        tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
-                        val tempServiceDuration = shipping.logisticPromoViewModel.title
-                        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
-                        } else {
-                            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-                        }
-                        tvShippingDuration?.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-                            tvShippingPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
-                            tvShippingSlashPrice?.gone()
-                        } else {
-                            tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-                            tvShippingSlashPrice?.paintFlags?.let {
-                                tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
-                            }
-                            tvShippingSlashPrice?.visible()
-                        }
-                    }
+                    renderBbo(shipping, tvShippingPrice)
 
                 } else {
                     tvShippingName?.text = view.context.getString(R.string.lbl_shipping)
@@ -186,59 +154,67 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingCourier?.visible()
 
                     //BBO
-                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-                        tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
-                        tickerShippingPromo?.visible()
-                        tickerAction?.setOnClickListener {
-                            listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
-                        }
-                    } else {
-                        tickerShippingPromo?.gone()
-                    }
+                    renderBboTicker(shipping)
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                        tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
-                        val tempServiceDuration = shipping.logisticPromoViewModel.title
-                        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
-                            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
-                        } else {
-                            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
-                        }
-                        tvShippingDuration?.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-                            tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping_with_price)
-                            tvShippingSlashPrice?.gone()
-                        } else {
-                            tvShippingCourier?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                            tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-                            tvShippingSlashPrice?.paintFlags?.let {
-                                tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
-                            }
-                            tvShippingSlashPrice?.visible()
-                        }
-                    }
+                    renderBbo(shipping, tvShippingCourier)
                 }
             } else {
-                if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = shipping.serviceDuration
-                    tvShippingCourierLbl?.gone()
-                    tvShippingCourier?.gone()
-                    tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                    tvShippingPrice?.gone()
-                    tvShippingSlashPrice?.gone()
-                    tvShippingMessage?.text = shipping.serviceErrorMessage
-                    if (shipping.shippingRecommendationData != null) {
-                        tvShippingChangeDuration?.setOnClickListener {
-                            listener.chooseDuration(true)
-                        }
-                        tvShippingChangeDuration?.visible()
-                    } else {
-                        tvShippingChangeDuration?.gone()
+                tvShippingDuration?.text = generateServiceDuration(shipping.serviceDuration)
+                tvShippingCourierLbl?.gone()
+                tvShippingCourier?.gone()
+                tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvShippingPrice?.gone()
+                tvShippingSlashPrice?.gone()
+                tvShippingMessage?.text = shipping.serviceErrorMessage
+                if (shipping.shippingRecommendationData != null) {
+                    tvShippingChangeDuration?.setOnClickListener {
+                        listener.chooseDuration(true)
                     }
-                    tvShippingMessage?.visible()
+                    tvShippingChangeDuration?.visible()
+                } else {
+                    tvShippingChangeDuration?.gone()
                 }
+                tvShippingMessage?.visible()
             }
+        }
+    }
+
+    private fun renderBbo(shipping: OrderShipment, tvBboPrice: Typography?) {
+        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+            tvShippingDuration?.text = generateServiceDuration(shipping.logisticPromoViewModel.title)
+            if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
+                tvBboPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
+                tvShippingSlashPrice?.gone()
+            } else {
+                tvBboPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
+                tvShippingSlashPrice?.paintFlags?.let {
+                    tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+                tvShippingSlashPrice?.visible()
+            }
+        }
+    }
+
+    private fun renderBboTicker(shipping: OrderShipment) {
+        if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
+            tickerShippingPromoDescription?.text = "${shipping.logisticPromoTickerMessage}"
+            tickerShippingPromo?.visible()
+            tickerAction?.setOnClickListener {
+                listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
+            }
+        } else {
+            tickerShippingPromo?.gone()
+        }
+    }
+
+    private fun generateServiceDuration(tempServiceDuration: String?): String {
+        return if (tempServiceDuration == null || !tempServiceDuration.contains("(") || !tempServiceDuration.contains(")")) {
+            view.context.getString(R.string.lbl_no_exact_shipping_duration)
+        } else {
+            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
         }
     }
 

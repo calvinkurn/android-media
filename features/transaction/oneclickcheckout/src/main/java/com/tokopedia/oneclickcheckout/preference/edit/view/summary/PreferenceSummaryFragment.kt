@@ -126,7 +126,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModel() {
-        viewModel.preference.observe(this, Observer {
+        viewModel.preference.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -136,11 +136,11 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     setDataToParent(it.data)
                     setupViews(it.data)
                 }
-                is OccState.Fail -> {
+                is OccState.Failed -> {
                     swipeRefreshLayout?.isRefreshing = false
                     buttonSavePreference?.isEnabled = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
                     }
                 }
                 else -> {
@@ -149,7 +149,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
         })
-        viewModel.editResult.observe(this, Observer {
+        viewModel.editResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
@@ -251,7 +251,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                 view?.let {
@@ -259,7 +259,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
@@ -274,7 +274,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
+                    Toaster.make(it, throwable?.message
                             ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                 }
             }

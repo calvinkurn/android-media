@@ -9,6 +9,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorSe
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceTextData
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelWithPriceMapper
@@ -67,7 +68,7 @@ class ShippingDurationViewModelTest {
 
         shippingDurationViewModel.getShippingDuration()
 
-        assertEquals(OccState.Fail(false, response, ""), shippingDurationViewModel.shippingDuration.value)
+        assertEquals(OccState.Failed(Failure(response)), shippingDurationViewModel.shippingDuration.value)
     }
 
     @Test
@@ -76,9 +77,11 @@ class ShippingDurationViewModelTest {
         every { useCase.execute(any(), any()) } answers { (secondArg() as ((Throwable) -> Unit)).invoke(response) }
 
         shippingDurationViewModel.getShippingDuration()
-        shippingDurationViewModel.consumeGetShippingDurationFail()
 
-        assertEquals(OccState.Fail(true, response, ""), shippingDurationViewModel.shippingDuration.value)
+        //consume failure
+        (shippingDurationViewModel.shippingDuration.value as OccState.Failed).getFailure()
+
+        assertEquals(null, (shippingDurationViewModel.shippingDuration.value as OccState.Failed).getFailure())
     }
 
     @Test
@@ -100,7 +103,7 @@ class ShippingDurationViewModelTest {
 
         shippingDurationViewModel.getRates(ArrayList(), shippingParam)
 
-        assertEquals(OccState.Fail(false, response, ""), shippingDurationViewModel.shippingDuration.value)
+        assertEquals(OccState.Failed(Failure(response)), shippingDurationViewModel.shippingDuration.value)
     }
 
     @Test

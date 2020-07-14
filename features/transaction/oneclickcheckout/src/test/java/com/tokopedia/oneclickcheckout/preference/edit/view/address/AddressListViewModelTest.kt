@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
@@ -66,7 +67,7 @@ class AddressListViewModelTest {
 
         addressListViewModel.searchAddress("")
 
-        assertEquals(OccState.Fail(false, response, ""), addressListViewModel.addressList.value)
+        assertEquals(OccState.Failed(Failure(response)), addressListViewModel.addressList.value)
     }
 
     @Test
@@ -75,8 +76,10 @@ class AddressListViewModelTest {
         every { getAddressCornerUseCase.getAll(any()) } returns Observable.error(response)
 
         addressListViewModel.searchAddress("")
-        addressListViewModel.consumeSearchAddressFail()
 
-        assertEquals(OccState.Fail(true, response, ""), addressListViewModel.addressList.value)
+        //consume failure
+        (addressListViewModel.addressList.value as OccState.Failed).getFailure()
+
+        assertEquals(null, (addressListViewModel.addressList.value as OccState.Failed).getFailure())
     }
 }

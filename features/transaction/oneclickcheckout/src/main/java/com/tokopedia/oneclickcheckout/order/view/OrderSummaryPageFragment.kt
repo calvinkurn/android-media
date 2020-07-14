@@ -135,8 +135,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private lateinit var orderPreferenceCard: OrderPreferenceCard
 
     private var progressDialog: AlertDialog? = null
-    private var coachMark: CoachMark? = null
-    private var dialogUnify: DialogUnify? = null
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false
@@ -247,7 +245,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.orderPreference.observe(this, Observer {
+        viewModel.orderPreference.observe(viewLifecycleOwner, Observer {
             if (it is OccState.FirstLoad) {
                 swipeRefreshLayout?.isRefreshing = false
                 globalError?.gone()
@@ -299,24 +297,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             } else if (it is OccState.Loading) {
                 swipeRefreshLayout?.isRefreshing = true
-            } else if (it is OccState.Fail) {
+            } else if (it is OccState.Failed) {
                 swipeRefreshLayout?.isRefreshing = false
-                if (it.throwable != null) {
-                    handleError(it.throwable)
+                it.getFailure()?.let { failure ->
+                    handleError(failure.throwable)
                 }
             }
         })
 
-        viewModel.orderTotal.observe(this, Observer {
+        viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
             setupPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
 
-        viewModel.orderPromo.observe(this, Observer {
+        viewModel.orderPromo.observe(viewLifecycleOwner, Observer {
             setupButtonPromo(it)
         })
 
-        viewModel.globalEvent.observe(this, Observer {
+        viewModel.globalEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
@@ -528,31 +526,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
             }
-            coachMark = CoachMarkBuilder().build()
-            coachMark?.let { coachMark ->
-                coachMark.enableSkip = true
-                if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-                    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-                }
-                coachMark.overlayOnClickListener = ({
-                    //do nothing
-                })
-                coachMark.onFinishListener = ({
-                    this.coachMark = null
-                })
-                coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
-                    override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-                        if (nextStep == 0) {
-                            scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
-                        } else if (nextStep == 3) {
-                            scrollview.scrollTo(0, layoutPayment.bottom)
-                        }
-                        return false
-                    }
-                })
-                coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
-                orderSummaryAnalytics.eventViewOnboardingTicker()
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.enableSkip = true
+            if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+                coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
             }
+            coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
+                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                    if (nextStep == 0) {
+                        scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
+                    } else if (nextStep == 3) {
+                        scrollview.scrollTo(0, layoutPayment.bottom)
+                    }
+                    return false
+                }
+            })
+            coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
+            orderSummaryAnalytics.eventViewOnboardingTicker()
         }
     }
 
@@ -930,7 +920,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.updateProduct(product, shouldReloadRates)
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                 view?.let {
@@ -938,7 +928,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage?.toIntOrNull() ?: 0) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
@@ -953,7 +943,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
+                    Toaster.make(it, throwable?.message
                             ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }
@@ -1089,7 +1079,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
-        coachMark?.close()
         if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
             viewModel.updateCart()
         }
