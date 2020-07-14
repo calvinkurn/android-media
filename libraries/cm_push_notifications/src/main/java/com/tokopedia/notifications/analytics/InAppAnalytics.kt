@@ -14,16 +14,25 @@ object InAppAnalytics {
     private const val KEY_PROMO_CLICK = "promoClick"
     private const val KEY_PROMOTIONS = "promotions"
 
+    private const val KEY_ID = "id"
+    private const val KEY_NAME = "name"
+    private const val KEY_CREATIVE = "creative"
+    private const val KEY_CREATIVE_URL = "creative_url"
+    private const val KEY_POSITION = "position"
+    private const val KEY_CATEGORY = "category"
+    private const val KEY_PROMO_ID = "promo_id"
+    private const val KEY_PROMO_CODE = "promo_code"
+
     fun impression(data: CMInApp) {
         val promotion = mapOf(
-                "id" to data.getId().toString(), // name
-                "name" to data.getCmLayout().appLink, // applink
-                "creative" to "", // campaign name
-                "creative_url" to "", // optional
-                "position" to "1",
-                "category" to "",
-                "promo_id" to "",
-                "promo_code" to ""
+                KEY_ID to data.getId().toString(), // name
+                KEY_NAME to data.getCmLayout().appLink, // applink
+                KEY_CREATIVE to "", // campaign name
+                KEY_CREATIVE_URL to "", // optional
+                KEY_POSITION to "1",
+                KEY_CATEGORY to "",
+                KEY_PROMO_ID to "",
+                KEY_PROMO_CODE to ""
         )
 
         sendTracker(mapOf(
@@ -41,14 +50,14 @@ object InAppAnalytics {
 
     fun click(data: CMInApp) {
         val promotion = mapOf(
-                "id" to data.getId().toString(), // name
-                "name" to data.getCmLayout().appLink, // applink
-                "creative" to "", // campaign name
-                "creative_url" to "", // optional
-                "position" to "1",
-                "category" to "",
-                "promo_id" to "",
-                "promo_code" to ""
+                KEY_ID to data.getId().toString(), // name
+                KEY_NAME to data.getCmLayout().appLink, // applink
+                KEY_CREATIVE to "", // campaign name
+                KEY_CREATIVE_URL to "", // optional
+                KEY_POSITION to "1",
+                KEY_CATEGORY to "",
+                KEY_PROMO_ID to "",
+                KEY_PROMO_CODE to ""
         )
 
         sendTracker(mapOf(
