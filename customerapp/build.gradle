@@ -353,7 +353,6 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.playCommon)
-    implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
