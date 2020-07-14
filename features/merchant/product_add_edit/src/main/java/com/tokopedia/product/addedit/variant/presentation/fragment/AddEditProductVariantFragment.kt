@@ -600,6 +600,7 @@ class AddEditProductVariantFragment :
             variantValuePicker?.showCloseIcon = false
             variantValuePicker?.showKnob = true
             variantValuePicker?.isHideable = true
+            variantValuePicker?.clearContentPadding = true
             val variantValuePickerLayout = VariantDetailValuesPicker(context)
             variantValuePickerLayout.setLayoutPosition(layoutPosition)
             variantValuePickerLayout.setSelectedVariantUnit(selectedVariantUnit)
@@ -619,6 +620,7 @@ class AddEditProductVariantFragment :
         variantUnitPicker?.setTitle("Pilih " + variantDetail.name)
         variantUnitPicker?.showCloseIcon = true
         variantValuePicker?.isHideable = true
+        variantUnitPicker?.clearContentPadding = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
         variantUnitPickerLayout.setSelectedVariantUnit(selectedVariantUnit)
