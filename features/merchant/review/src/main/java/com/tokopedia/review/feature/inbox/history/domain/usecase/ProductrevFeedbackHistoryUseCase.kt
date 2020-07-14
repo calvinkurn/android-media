@@ -29,17 +29,16 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
                         }
                         status {
                           hasResponse
+                          anonymous
                         }
                         review {
                           feedbackID
+                          userName
                           rating
                           reviewText
                           attachmentsURL
                         }
                       }
-                      searchQuery
-                      page
-                      limit
                       hasNext
                     }
                 }

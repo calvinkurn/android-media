@@ -7,6 +7,9 @@ data class ProductrevFeedbackHistoryReview(
         @SerializedName("feedbackID")
         @Expose
         val feedbackId: Int = 0,
+        @SerializedName("userName")
+        @Expose
+        val userName: String = "",
         @SerializedName("rating")
         @Expose
         val rating: Int = 0,
