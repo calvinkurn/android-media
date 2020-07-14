@@ -299,6 +299,7 @@ ext {
             json                  : "org.json:json:20140107",
             benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
             testCore              : "androidx.test:core:$testCore",
+            testCoreKtx           : "androidx.test:core-ktx:$testCore",
             fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest"
     ]
 

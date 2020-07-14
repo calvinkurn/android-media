@@ -71,7 +71,11 @@ public class InstrumentationTestApp extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        try{
+            LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
         GlobalConfig.DEBUG = true;
