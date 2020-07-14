@@ -4,7 +4,8 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
@@ -12,6 +13,8 @@ import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.variant_common.model.VariantMultiOriginResponse
+import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -19,14 +22,15 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
                                                       private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2ShopData>() {
 
     companion object {
-        fun createParams(shopId: Int, productId: String, warehouseId: String, forceRefresh: Boolean,
-                         tradeinParams: TradeInParams): RequestParams {
+        fun createParams(shopId: Int, productId: String, forceRefresh: Boolean, tradeinParams: TradeInParams,
+                         cartTypeParam: List<CartRedirectionParams>, warehouseId: String?): RequestParams {
             val requestParams = RequestParams()
             requestParams.putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             requestParams.putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-            requestParams.putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
             requestParams.putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
             requestParams.putObject(ProductDetailCommonConstant.PARAM_TRADE_IN, tradeinParams)
+            requestParams.putObject(ProductDetailCommonConstant.PARAM_CART_TYPE, cartTypeParam)
+            requestParams.putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
 
             return requestParams
         }
@@ -38,20 +42,24 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val p2Shop = ProductInfoP2ShopData()
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-        val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, "")
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
         val tradeInParams: TradeInParams = requestParams.getObject(ProductDetailCommonConstant.PARAM_TRADE_IN) as TradeInParams
+        val cartTypeParam = requestParams.getObject(ProductDetailCommonConstant.PARAM_CART_TYPE)
+        val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, null)
+
+        val getCartTypeParams = mapOf(ProductDetailCommonConstant.PARAMS to cartTypeParam)
+        val getCartTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_CART_TYPE],
+                CartRedirectionResponse::class.java, getCartTypeParams)
+
+
+        val warehouseParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_IDS to productId,
+                ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId)
+        val warehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
+                VariantMultiOriginResponse::class.java, warehouseParam)
 
         val shopParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId),
                 ProductDetailCommonConstant.PARAM_SHOP_FIELDS to ProductDetailCommonConstant.DEFAULT_SHOP_FIELDS)
         val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
-
-        val nearestWarehouseParam = mapOf(
-                "productIds" to listOf(productId),
-                "warehouseID" to warehouseId
-        )
-        val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
-                MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
         /*
          * Since GraphqlRepository doesn't support caching Pojo parameter,
@@ -78,10 +86,14 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
                 TradeinResponse::class.java, pdpTradeinParam)
 
-        val requests = mutableListOf(shopRequest, nearestWarehouseRequest, pdpTradeinRequest)
+        val requests = mutableListOf(shopRequest, pdpTradeinRequest, getCartTypeRequest, warehouseRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
+
+            if (gqlResponse.getError(VariantMultiOriginResponse::class.java)?.isNotEmpty() != true) {
+                p2Shop.variantMultiOrigin = gqlResponse.getData<VariantMultiOriginResponse>(VariantMultiOriginResponse::class.java).result.data.firstOrNull() ?: VariantMultiOriginWarehouse()
+            }
 
             if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 val result = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java)
@@ -89,16 +101,14 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
                     p2Shop.shopInfo = result.result.data.first()
             }
 
-            if (gqlResponse.getError(MultiOriginWarehouse.Response::class.java)?.isNotEmpty() != true) {
-                gqlResponse.getData<MultiOriginWarehouse.Response>(MultiOriginWarehouse.Response::class.java)
-                        .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
-            }
-
             if (gqlResponse.getError(TradeinResponse::class.java)?.isNotEmpty() != true) {
                 val tradeinResponse: TradeinResponse = gqlResponse.getData(TradeinResponse::class.java)
                 p2Shop.tradeinResponse = tradeinResponse
             }
 
+            if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
+                p2Shop.cartRedirectionResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
+            }
         } catch (t: Throwable) {
             Timber.d(t)
         }

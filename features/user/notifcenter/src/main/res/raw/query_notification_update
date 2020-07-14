@@ -27,6 +27,8 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
       status
       read_status
       type_link
+      show_bottomsheet
+      type_bottomsheet
       data_notification {
         app_link
         desktop_link
@@ -35,6 +37,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         checkout_url
       }
       product_data {
+        stock
         product_id
         name
         url

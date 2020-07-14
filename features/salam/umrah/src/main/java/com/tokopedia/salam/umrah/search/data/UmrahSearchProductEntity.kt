@@ -95,8 +95,8 @@ data class UmrahSearchProduct(
         @Expose
         val variant: List<UmrahVariant> = arrayListOf()
 ) : Visitable<UmrahSearchAdapterTypeFactory> {
-        override fun type(typeFactory: UmrahSearchAdapterTypeFactory?): Int =
-                typeFactory?.type() ?: 0
+        override fun type(typeFactory: UmrahSearchAdapterTypeFactory): Int =
+                typeFactory.type(this)
         data class UmrahSearchProductUI(
                 @SerializedName("hotelStars")
                 @Expose

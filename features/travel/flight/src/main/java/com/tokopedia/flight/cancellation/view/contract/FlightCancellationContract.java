@@ -1,8 +1,8 @@
 package com.tokopedia.flight.cancellation.view.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.List;
@@ -18,11 +18,11 @@ public interface FlightCancellationContract {
 
         void renderCancelableList();
 
-        void setFlightCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList);
+        void setFlightCancellationViewModel(List<FlightCancellationModel> flightCancellationViewModelList);
 
-        void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList);
+        void setSelectedCancellationViewModel(List<FlightCancellationModel> flightCancellationViewModelList);
 
-        void setPassengerRelations(Map<String, FlightCancellationPassengerViewModel> passengerRelations);
+        void setPassengerRelations(Map<String, FlightCancellationPassengerModel> passengerRelations);
 
         String getInvoiceId();
 
@@ -30,11 +30,11 @@ public interface FlightCancellationContract {
 
         List<FlightCancellationJourney> getFlightCancellationJourney();
 
-        List<FlightCancellationViewModel> getCurrentFlightCancellationViewModel();
+        List<FlightCancellationModel> getCurrentFlightCancellationViewModel();
 
-        List<FlightCancellationViewModel> getSelectedCancellationViewModel();
+        List<FlightCancellationModel> getSelectedCancellationViewModel();
 
-        Map<String, FlightCancellationPassengerViewModel> getPassengerRelations();
+        Map<String, FlightCancellationPassengerModel> getPassengerRelations();
 
         void navigateToReasonAndProofPage();
 
@@ -61,11 +61,11 @@ public interface FlightCancellationContract {
 
         void onNextButtonClicked();
 
-        void checkPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        void checkPassenger(FlightCancellationPassengerModel passengerViewModel, int position);
 
-        void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        void uncheckPassenger(FlightCancellationPassengerModel passengerViewModel, int position);
 
-        boolean isPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel);
+        boolean isPassengerChecked(FlightCancellationPassengerModel passengerViewModel);
 
         boolean canGoNext();
 

@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+}
+
+project.ext {
+    artifactId = 'chucker_no_op'
+    groupId = 'com.tokopedia.chuckernoop'
+    versionName = "0.0.2"
+    artifactName = "chucker-no-op-release"
+}
+
+apply from: '../publish_local.gradle'

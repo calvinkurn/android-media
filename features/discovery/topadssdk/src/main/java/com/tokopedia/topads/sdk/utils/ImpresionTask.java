@@ -2,25 +2,38 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.os.AsyncTask;
 
+import com.tokopedia.entertainment.home.alert.ImpressionTaskAlert;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
+
 
 /**
  * @author by errysuprayogi on 7/12/17.
  */
 public class ImpresionTask extends AsyncTask<String, Void, String> {
 
-    private ImpressionListener impressionListener;
+    private static final String KEY_SESSION_ID ="Tkpd-SessionID";
 
-    public ImpresionTask() {
+    private ImpressionListener impressionListener;
+    private ImpressionTaskAlert taskAlert;
+    private UserSessionInterface userSession;
+
+    public ImpresionTask(String className) {
+        taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
-    public ImpresionTask(ImpressionListener impressionListener) {
+    public ImpresionTask(String className, ImpressionListener impressionListener) {
         this.impressionListener = impressionListener;
+        taskAlert = ImpressionTaskAlert.getInstance(className);
+    }
+
+    public ImpresionTask(UserSessionInterface userSession) {
+        this.userSession = userSession;
     }
 
     @Override
@@ -29,6 +42,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
         if(url!=null) {
             HttpRequest request = new HttpRequest.HttpRequestBuilder()
                     .setBaseUrl(url)
+                    .addHeader(KEY_SESSION_ID, (userSession != null) ? userSession.getDeviceId() :"")
                     .setMethod(HttpMethod.GET)
                     .build();
             try {
@@ -36,6 +50,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
             }
+            taskAlert.track(url);
         }
         return null;
     }

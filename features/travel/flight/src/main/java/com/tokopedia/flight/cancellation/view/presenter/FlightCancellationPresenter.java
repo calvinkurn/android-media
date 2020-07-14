@@ -5,8 +5,8 @@ import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetCancelablePassengerUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         boolean canGoToNext = false;
         boolean isRefundable = false;
 
-        for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+        for (FlightCancellationModel item : getView().getSelectedCancellationViewModel()) {
             if (item.getPassengerViewModelList().size() > 0) {
                 canGoToNext = true;
             }
@@ -67,8 +67,8 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     @Override
-    public void checkPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position) {
-        FlightCancellationViewModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
+    public void checkPassenger(FlightCancellationPassengerModel passengerViewModel, int position) {
+        FlightCancellationModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
         if (!flightCancellationViewModel.getPassengerViewModelList().contains(passengerViewModel)) {
             flightCancellationViewModel.getPassengerViewModelList().add(passengerViewModel);
             if (passengerViewModel.getRelations().size() > 0) {
@@ -84,8 +84,8 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     @Override
-    public void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position) {
-        FlightCancellationViewModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
+    public void uncheckPassenger(FlightCancellationPassengerModel passengerViewModel, int position) {
+        FlightCancellationModel flightCancellationViewModel = getView().getSelectedCancellationViewModel().get(position);
         flightCancellationViewModel.getPassengerViewModelList().remove(passengerViewModel);
 
         if (passengerViewModel.getRelations().size() > 0) {
@@ -96,8 +96,8 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
     }
 
     @Override
-    public boolean isPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel) {
-        for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+    public boolean isPassengerChecked(FlightCancellationPassengerModel passengerViewModel) {
+        for (FlightCancellationModel item : getView().getSelectedCancellationViewModel()) {
             if (item.getPassengerViewModelList().contains(passengerViewModel)) {
                 return true;
             } else if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
@@ -112,7 +112,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         boolean canGoToNext = false;
 
         if (getView().getSelectedCancellationViewModel() != null) {
-            for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+            for (FlightCancellationModel item : getView().getSelectedCancellationViewModel()) {
                 if (item.getPassengerViewModelList().size() > 0) {
                     canGoToNext = true;
                 }
@@ -137,7 +137,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                 flightCancellationGetCancelablePassengerUseCase.generateRequestParams(
                         getView().getInvoiceId()
                 ),
-                new Subscriber<List<FlightCancellationViewModel>>() {
+                new Subscriber<List<FlightCancellationModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -152,33 +152,29 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                     }
 
                     @Override
-                    public void onNext(List<FlightCancellationViewModel> flightCancellationViewModels) {
+                    public void onNext(List<FlightCancellationModel> flightCancellationViewModels) {
                         transformJourneyToCancellationViewModel(flightCancellationViewModels);
                     }
                 }
         );
     }
 
-    private void transformJourneyToCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
-        List<FlightCancellationViewModel> selectedViewModel = new ArrayList<>();
-        List<FlightCancellationViewModel> cancellationModelList = new ArrayList<>();
-        Map<String, FlightCancellationPassengerViewModel> passengerRelations = new HashMap<>();
+    private void transformJourneyToCancellationViewModel(List<FlightCancellationModel> flightCancellationViewModelList) {
+        List<FlightCancellationModel> selectedViewModel = new ArrayList<>();
+        List<FlightCancellationModel> cancellationModelList = new ArrayList<>();
+        Map<String, FlightCancellationPassengerModel> passengerRelations = new HashMap<>();
 
-        for (FlightCancellationViewModel item : flightCancellationViewModelList) {
+        for (FlightCancellationModel item : flightCancellationViewModelList) {
             for (FlightCancellationJourney journeyItem : getView().getFlightCancellationJourney()) {
                 if (item.getFlightCancellationJourney().getJourneyId().equals(journeyItem.getJourneyId())) {
-                    FlightCancellationViewModel flightCancellationViewModel = new FlightCancellationViewModel();
+                    FlightCancellationModel flightCancellationViewModel = new FlightCancellationModel();
                     flightCancellationViewModel.setFlightCancellationJourney(journeyItem);
                     flightCancellationViewModel.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
                     cancellationModelList.add(flightCancellationViewModel);
 
-                    FlightCancellationViewModel cancellationForSelectedViewModelList = new FlightCancellationViewModel();
+                    FlightCancellationModel cancellationForSelectedViewModelList = new FlightCancellationModel();
                     cancellationForSelectedViewModelList.setFlightCancellationJourney(journeyItem);
-                    if (item.getPassengerViewModelList().size() == 1 && item.getPassengerViewModelList().get(0).getStatusString() == null) {
-                        cancellationForSelectedViewModelList.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
-                    }else {
-                        cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<FlightCancellationPassengerViewModel>());
-                    }
+                    cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<>());
                     selectedViewModel.add(cancellationForSelectedViewModelList);
 
                     passengerRelations.putAll(buildPassengerRelationsMap(flightCancellationViewModel.getPassengerViewModelList()));
@@ -194,7 +190,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                     cancellationModelList.get(1).getFlightCancellationJourney().getDepartureTime());
 
             if (firstJourney.after(secondJourney)) {
-                FlightCancellationViewModel temp = cancellationModelList.get(0);
+                FlightCancellationModel temp = cancellationModelList.get(0);
                 cancellationModelList.set(0, cancellationModelList.get(1));
                 cancellationModelList.set(1, temp);
             }
@@ -206,7 +202,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
                     selectedViewModel.get(1).getFlightCancellationJourney().getDepartureTime());
 
             if (firstJourney.after(secondJourney)) {
-                FlightCancellationViewModel temp = selectedViewModel.get(0);
+                FlightCancellationModel temp = selectedViewModel.get(0);
                 selectedViewModel.set(0, selectedViewModel.get(1));
                 selectedViewModel.set(1, temp);
             }
@@ -218,18 +214,18 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         getView().renderCancelableList();
     }
 
-    private Map<String, FlightCancellationPassengerViewModel> buildPassengerRelationsMap(List<FlightCancellationPassengerViewModel> passengerList) {
-        Map<String, FlightCancellationPassengerViewModel> passengerRelations = new HashMap<>();
+    private Map<String, FlightCancellationPassengerModel> buildPassengerRelationsMap(List<FlightCancellationPassengerModel> passengerList) {
+        Map<String, FlightCancellationPassengerModel> passengerRelations = new HashMap<>();
 
-        for (FlightCancellationPassengerViewModel item : passengerList) {
+        for (FlightCancellationPassengerModel item : passengerList) {
             passengerRelations.put(item.getRelationId(), item);
         }
 
         return passengerRelations;
     }
 
-    private List<FlightCancellationPassengerViewModel> transformPassengerList(List<FlightCancellationPassengerViewModel> passengerList) {
-        for (FlightCancellationPassengerViewModel item : passengerList) {
+    private List<FlightCancellationPassengerModel> transformPassengerList(List<FlightCancellationPassengerModel> passengerList) {
+        for (FlightCancellationPassengerModel item : passengerList) {
             item.setTitleString(getTitleString(item.getTitle()));
         }
 
@@ -249,12 +245,12 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         }
     }
 
-    private void checkAllRelations(FlightCancellationPassengerViewModel passengerViewModel) {
+    private void checkAllRelations(FlightCancellationPassengerModel passengerViewModel) {
 
         for (String relationId : passengerViewModel.getRelations()) {
-            FlightCancellationPassengerViewModel relationPassenger = getView().getPassengerRelations().get(relationId);
+            FlightCancellationPassengerModel relationPassenger = getView().getPassengerRelations().get(relationId);
 
-            for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+            for (FlightCancellationModel item : getView().getSelectedCancellationViewModel()) {
                 if (relationId.contains(item.getFlightCancellationJourney().getJourneyId()) &&
                         !item.getPassengerViewModelList().contains(relationPassenger)) {
                     item.getPassengerViewModelList().add(relationPassenger);
@@ -263,10 +259,10 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         }
     }
 
-    private void uncheckAllRelations(FlightCancellationPassengerViewModel passengerViewModel) {
+    private void uncheckAllRelations(FlightCancellationPassengerModel passengerViewModel) {
         for (String relationId : passengerViewModel.getRelations()) {
-            FlightCancellationPassengerViewModel relationPassenger = getView().getPassengerRelations().get(relationId);
-            for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+            FlightCancellationPassengerModel relationPassenger = getView().getPassengerRelations().get(relationId);
+            for (FlightCancellationModel item : getView().getSelectedCancellationViewModel()) {
                 item.getPassengerViewModelList().remove(relationPassenger);
             }
         }

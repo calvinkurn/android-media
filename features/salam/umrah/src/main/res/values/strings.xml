@@ -281,6 +281,12 @@
     <string name="umrah_youtube_link">https://www.youtube.com/watch?v=%s</string>
     <string name="umrah_travel_share_name">Cari Paket Umroh dari %s | Tokopedia Salam</string>
     <string name="umrah_travel_share_desc">Paket perjalanan umroh %s terlengkap di Tokopedia Salam. Cek daftar paket umroh dari %s sekarang:</string>
+    <string name="umrah_travel_see_all_list">Lihat Semua</string>
 
 
+
+    <string name="umrah_search_empty_state_sub_title">Ubah detail pencarianmu dan cari sekali lagi.</string>
+    <string name="umrah_search_empty_state_title">Paket yang dicari belum tersedia</string>
+    <string name="umrah_search_empty_state_button">Cari Paket Umroh Lainnya</string>
+    <string name="umrah_search_empty_state_text">Pilihan paket terbaik untukmu</string>
 </resources>

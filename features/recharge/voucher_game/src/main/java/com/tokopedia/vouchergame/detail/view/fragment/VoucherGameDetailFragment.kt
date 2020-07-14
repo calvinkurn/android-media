@@ -21,25 +21,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -79,7 +80,16 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     lateinit var adapter: VoucherGameDetailAdapter
 
-    lateinit var selectedProduct: VoucherGameProduct
+    private var selectedProduct: VoucherGameProduct? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                productId = value.id.toIntOrNull() ?: 0
+                productName = value.attributes.desc
+                price = value.attributes.pricePlain.toIntOrNull() ?: 0
+                checkVoucherWithDelay()
+            }
+        }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
     lateinit var voucherGameOperatorData: CatalogOperatorAttributes
@@ -89,6 +99,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     lateinit var enquiryData: List<CatalogProductInput>
     var inputData: MutableMap<String, String> = mutableMapOf()
+    private var inputFieldCount = 0
     var isEnquired = false
         set(value) {
             field = value
@@ -110,11 +121,18 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
+            // Initalize variables of base topup bills fragment
+            menuId = voucherGameExtraParam.menuId.toIntOrNull() ?: 0
+            categoryId = voucherGameExtraParam.categoryId.toIntOrNull() ?: 0
+            productId = voucherGameExtraParam.productId.toIntOrNull() ?: 0
+
             voucherGameOperatorData =
                     it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: CatalogOperatorAttributes()
             it.getString(EXTRA_INPUT_FIELD_1)?.let { input -> inputData[EXTRA_INPUT_FIELD_1] = input }
             it.getString(EXTRA_INPUT_FIELD_2)?.let { input -> inputData[EXTRA_INPUT_FIELD_2] = input }
         }
+
+        operatorName = voucherGameOperatorData.name
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -164,7 +182,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.onSaveInstanceState(outState)
         if (input_field_1.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_1, input_field_1.getInputText())
         if (input_field_2.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_2, input_field_2.getInputText())
-        if (::selectedProduct.isInitialized) voucherGameExtraParam.productId = selectedProduct.id
+        selectedProduct?.run { voucherGameExtraParam.productId = id }
         outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
     }
@@ -203,7 +221,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         })
 
         checkout_view.setVisibilityLayout(false)
-        checkout_view.setListener(this)
+        checkout_view.listener = this
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
@@ -213,9 +231,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
             voucherGameAnalytics.categoryName = data.catalog.label
-            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+            (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
 
@@ -223,19 +242,31 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     }
 
-    override fun showEnquiryError(t: Throwable) {
+    override fun onEnquiryError(error: Throwable) {
         toggleEnquiryLoadingBar(false)
         isEnquired = false
         NetworkErrorHelper.createSnackbarRedWithAction(
-                activity, ErrorHandler.getErrorMessage(context, t)) { enquireFields() }.showRetrySnackbar()
+                activity, ErrorHandler.getErrorMessage(context, error)) { enquireFields() }.showRetrySnackbar()
     }
 
-    override fun showMenuDetailError(t: Throwable) {
+    override fun onMenuDetailError(error: Throwable) {
 
     }
 
-    override fun showFavoriteNumbersError(t: Throwable) {
+    override fun onCatalogPluginDataError(error: Throwable) {
 
+    }
+
+    override fun onFavoriteNumbersError(error: Throwable) {
+
+    }
+
+    override fun onCheckVoucherError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+    }
+
+    override fun onExpressCheckoutError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
@@ -247,17 +278,18 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
         else {
             enquiryData = data.enquiryFields
-            inputFieldCount = enquiryData.size
+            // Chcek if input count is valid
+            if (enquiryData.size in INPUT_COUNT_MIN..INPUT_COUNT_MAX) inputFieldCount = enquiryData.size
 
-            // Show first input field (guaranteed to have an input field)
-            setupEnquiryField(input_field_1, enquiryData[0])
-
-            // Hide second field if there is only one field, setup second field otherwise
-            when (inputFieldCount) {
-                1 -> input_field_2.visibility = View.GONE
-                2 -> setupEnquiryField(input_field_2, enquiryData[1])
+            if (hasFirstInput()) {
+                // Show first input field
+                setupEnquiryField(input_field_1, enquiryData[0])
+                // Hide second field if there is only one field, setup second field otherwise
+                if (hasSecondInput()) {
+                    setupEnquiryField(input_field_2, enquiryData[1])
+                }
+                input_field_container.visibility = View.VISIBLE
             }
-            input_field_container.visibility = View.VISIBLE
         }
     }
 
@@ -286,9 +318,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun checkAutoFillInput() {
-        if (inputFieldCount in 1..2 && ::enquiryData.isInitialized && inputData.isNotEmpty()) {
-            inputData[EXTRA_INPUT_FIELD_1]?.let { input -> input_field_1.setInputText(input) }
-            inputData[EXTRA_INPUT_FIELD_2]?.let { input -> input_field_2.setInputText(input) }
+        if (::enquiryData.isInitialized && hasInputs() && inputData.isNotEmpty()) {
+            inputData[EXTRA_INPUT_FIELD_1]?.let { input ->
+                if (hasFirstInput()) input_field_1.setInputText(input)
+            }
+            inputData[EXTRA_INPUT_FIELD_2]?.let { input ->
+                if (hasSecondInput()) input_field_2.setInputText(input)
+            }
             if (inputData.size == inputFieldCount) enquireFields()
         }
     }
@@ -301,26 +337,29 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun enquireFields() {
-        if (inputFieldCount in 1..2 && ::enquiryData.isInitialized) {
+        if (::enquiryData.isInitialized) {
             val input1 = input_field_1.getInputText()
             val input2 = input_field_2.getInputText()
+            var isValid = false
 
-            // Add case when user is still filling the fields (only 1/2 fields are filled)
-            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) {
-                isEnquired = false
-                setInputFieldsError(false)
-                return
+            if (hasFirstInput()) {
+                isValid = verifyField(enquiryData[0].validations, input1)
             }
+            if (hasSecondInput()) {
+                // Add case when user is still filling the fields (only 1/2 fields are filled)
+                if (input1.isEmpty() xor input2.isEmpty()) {
+                    isEnquired = false
+                    setInputFieldsError(false)
+                    return
+                }
 
-            // Verify fields
-            var isValid: Boolean
-            isValid = verifyField(enquiryData[0].validations, input1)
-            if (isValid && inputFieldCount == 2) {
-                isValid = verifyField(enquiryData[1].validations, input2)
+                if (isValid) {
+                    isValid = verifyField(enquiryData[1].validations, input2)
+                }
             }
 
             if (isValid) {
-            // Enquiry query is not ready, temporarily validate enquiry
+                // Enquiry query is not ready, temporarily validate enquiry
                 isEnquired = true
 //                toggleEnquiryLoadingBar(true)
 //                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
@@ -484,7 +523,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                    R.raw.query_voucher_game_products),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }
@@ -532,7 +571,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun selectProduct(product: VoucherGameProduct, position: Int) {
         // Show selected item in list
-        if (::selectedProduct.isInitialized && product == selectedProduct) return
+        if (selectedProduct != null && product == selectedProduct) return
 
         adapter.setSelectedProduct(position)
         // Update selected product
@@ -543,44 +582,52 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun showCheckoutView() {
         checkout_view.setVisibilityLayout(true)
-        checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
+        selectedProduct?.attributes?.run {
+            checkout_view.setTotalPrice(promo?.newPrice ?: price)
+        }
         // Try to enquire if currently not enquired
         enquireFields()
     }
 
+    override fun getCheckoutView(): TopupBillsCheckoutWidget? {
+        return checkout_view
+    }
+
     override fun onClickNextBuyButton() {
-        if (::voucherGameOperatorData.isInitialized) {
-            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                    voucherGameOperatorData.name, product = selectedProduct)
-        }
         processCheckout()
     }
 
     private fun processCheckout() {
         // Setup checkout pass data
-        if (::voucherGameExtraParam.isInitialized && ::selectedProduct.isInitialized) {
-            var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                    .categoryId(voucherGameExtraParam.categoryId)
-                    .instantCheckout("0")
-                    .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
-                    .operatorId(voucherGameExtraParam.operatorId)
-                    .productId(selectedProduct.id)
-                    .utmCampaign(voucherGameExtraParam.categoryId)
-                    .utmContent(GlobalConfig.VERSION_NAME)
-                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                    .voucherCodeCopied("")
-            if (inputFieldCount in 1..2) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
+        if (::voucherGameExtraParam.isInitialized) {
+            selectedProduct?.run {
+                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
+                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                        .categoryId(voucherGameExtraParam.categoryId)
+                        .instantCheckout("0")
+                        .isPromo(if (attributes.promo != null) "1" else "0")
+                        .operatorId(voucherGameExtraParam.operatorId)
+                        .productId(id)
+                        .utmCampaign(voucherGameExtraParam.categoryId)
+                        .utmContent(GlobalConfig.VERSION_NAME)
+                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                        .voucherCodeCopied("")
+                if (hasFirstInput()) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
+                }
+                if (hasSecondInput()) {
+                    checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
+                }
+                checkoutPassData = checkoutPassDataBuilder.build()
             }
-            if (inputFieldCount == 2) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
-            }
-            checkoutPassData = checkoutPassDataBuilder.build()
-
-            processToCart()
         }
+
+        val inputs = inputData
+        inputs[TopupBillsViewModel.ENQUIRY_PARAM_OPERATOR_ID] = voucherGameExtraParam.operatorId
+        inputFields = inputs
+
+        processTransaction()
     }
 
     private fun getAllProductsList(data: VoucherGameDetailData): List<VoucherGameProduct> {
@@ -591,15 +638,31 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         return productList
     }
 
+    private fun hasInputs(): Boolean {
+        return inputFieldCount > 0
+    }
+
+    private fun hasFirstInput(): Boolean {
+        return hasNthInput(1)
+    }
+
+    private fun hasSecondInput(): Boolean {
+        return hasNthInput(2)
+    }
+
+    private fun hasNthInput(n: Int): Boolean {
+        return inputFieldCount >= n
+    }
+
     companion object {
-
-        var inputFieldCount = 0
-
         val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val PRODUCT_ITEM_SPAN_SIZE = 2
+
+        const val INPUT_COUNT_MIN = 0
+        const val INPUT_COUNT_MAX = 2
 
         const val EXTRA_PARAM_OPERATOR_DATA = "EXTRA_PARAM_OPERATOR_DATA"
         const val EXTRA_INPUT_FIELD_1 = "EXTRA_INPUT_FIELD_1"

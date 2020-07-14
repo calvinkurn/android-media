@@ -21,8 +21,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -33,7 +36,7 @@ dependencies {
 project.ext {
     artifactId = 'tokopoints-notification'
     groupId = 'com.tokopedia.promo'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "tokopoints_notification-release"
 }
 

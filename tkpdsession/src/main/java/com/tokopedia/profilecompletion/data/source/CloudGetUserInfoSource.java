@@ -2,11 +2,12 @@ package com.tokopedia.profilecompletion.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -44,7 +45,8 @@ public class CloudGetUserInfoSource {
         return new Action1<GetUserInfoDomainModel>() {
             @Override
             public void call(GetUserInfoDomainModel getUserInfoDomainModel) {
-                if (!sessionHandler.isV4Login()) {
+                UserSessionInterface userSession = new UserSession(context);
+                if (!userSession.isLoggedIn()) {
                     sessionHandler.setTempLoginSession(String.valueOf(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getUserId()));
                     sessionHandler.setTempPhoneNumber(getUserInfoDomainModel.getGetUserInfoDomainData

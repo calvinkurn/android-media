@@ -8,4 +8,9 @@
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
 
+
+    <declare-styleable name="ProductRoundedImageView">
+        <attr name="borderRadius" format="dimension" />
+    </declare-styleable>
+
 </resources>

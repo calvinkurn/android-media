@@ -103,12 +103,14 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                         with(it.data) {
                             if (catalog.label.isNotEmpty()) {
                                 val categoryName = catalog.label
-                                (activity as BaseVoucherGameActivity).updateTitle(categoryName)
+                                (activity as? BaseVoucherGameActivity)?.updateTitle(categoryName)
                                 voucherGameAnalytics.categoryName = categoryName
                                 voucherGameExtraParam.categoryId.toIntOrNull()?.let { id ->
                                     rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryName,
                                             id.toString())
-                                    rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName,
+                                    rechargeAnalytics.eventOpenScreen(
+                                            userSession.isLoggedIn,
+                                            categoryName,
                                             id.toString())
                                 }
                             }

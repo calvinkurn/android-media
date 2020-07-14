@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_4"
+    app:cardUseCompatPadding="true">
+
+    <ImageView
+        android:id="@+id/ec_image_bg_background"
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
+        app:srcCompat="@drawable/ic_squircle_border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ec_image_bg"
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
+        android:padding="@dimen/dp_10"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/ec_new_label"
+        style="@style/TextView.Micro.WhitePrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:background="@drawable/ec_bg_red_label"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:text="@string/ec_new_label"
+        android:textSize="@dimen/sp_8"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ec_image_bg"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ec_typography_icon_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_36"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@+id/ec_image_bg"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Kupon Membership" />
+</androidx.constraintlayout.widget.ConstraintLayout>

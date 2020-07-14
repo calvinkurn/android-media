@@ -1,7 +1,6 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData
@@ -9,7 +8,6 @@ import com.tokopedia.tradein.repository.TradeInRepository
 import javax.inject.Inject
 
 class MoneyInCourierRatesUseCase@Inject constructor(
-        @ApplicationContext private val context: Context,
         private val repository: TradeInRepository) {
 
     fun createRequestParams(destination: String): Map<String, Any> {
@@ -25,11 +23,11 @@ class MoneyInCourierRatesUseCase@Inject constructor(
         return request
     }
 
-    private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_courier_rates)
+    private fun getQuery(resources: Resources?): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_courier_rates)
     }
 
-    suspend fun getCourierRates(destination: String): ResponseData {
-        return repository.getGQLData(getQuery(), ResponseData::class.java, createRequestParams(destination)) as ResponseData
+    suspend fun getCourierRates(resources: Resources?, destination: String): ResponseData {
+        return repository.getGQLData(getQuery(resources), ResponseData::class.java, createRequestParams(destination))
     }
 }

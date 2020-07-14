@@ -25,10 +25,10 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterT
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import static android.app.Activity.RESULT_OK;
  * @author by furqan on 21/03/18.
  */
 
-public class FlightCancellationFragment extends BaseListFragment<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory>
+public class FlightCancellationFragment extends BaseListFragment<FlightCancellationModel, FlightCancellationAdapterTypeFactory>
         implements FlightCancellationContract.View, FlightCancellationViewHolder.FlightCancellationListener {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
@@ -55,10 +55,10 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
 
     private String invoiceId;
-    private List<FlightCancellationViewModel> flightCancellationViewModelList;
-    private FlightCancellationWrapperViewModel flightCancellationWrapperViewModel;
+    private List<FlightCancellationModel> flightCancellationViewModelList;
+    private FlightCancellationWrapperModel flightCancellationWrapperViewModel;
     List<FlightCancellationJourney> flightCancellationJourneyList;
-    private Map<String, FlightCancellationPassengerViewModel> passengerRelationMap;
+    private Map<String, FlightCancellationPassengerModel> passengerRelationMap;
     private RecyclerView recyclerView;
 
     @Inject
@@ -119,8 +119,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @NonNull
     @Override
-    protected BaseListAdapter<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory> createAdapterInstance() {
-        BaseListAdapter<FlightCancellationViewModel, FlightCancellationAdapterTypeFactory> adapter = super.createAdapterInstance();
+    protected BaseListAdapter<FlightCancellationModel, FlightCancellationAdapterTypeFactory> createAdapterInstance() {
+        BaseListAdapter<FlightCancellationModel, FlightCancellationAdapterTypeFactory> adapter = super.createAdapterInstance();
         ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
         errorNetworkModel.setIconDrawableRes(com.tokopedia.flight.R.drawable.ic_flight_empty_state);
         errorNetworkModel.setOnRetryListener(this);
@@ -138,9 +138,9 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     private void initialVariable() {
         invoiceId = getArguments().getString(EXTRA_INVOICE_ID);
         flightCancellationJourneyList = getArguments().getParcelableArrayList(EXTRA_CANCEL_JOURNEY);
-        flightCancellationWrapperViewModel = new FlightCancellationWrapperViewModel();
+        flightCancellationWrapperViewModel = new FlightCancellationWrapperModel();
         flightCancellationWrapperViewModel.setInvoice(invoiceId);
-        flightCancellationWrapperViewModel.setCancellationReasonAndAttachment(new FlightCancellationReasonAndAttachmentViewModel());
+        flightCancellationWrapperViewModel.setCancellationReasonAndAttachment(new FlightCancellationReasonAndAttachmentModel());
         passengerRelationMap = new HashMap<>();
     }
 
@@ -155,7 +155,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public void onItemClicked(FlightCancellationViewModel viewModel) {
+    public void onItemClicked(FlightCancellationModel viewModel) {
 
     }
 
@@ -185,17 +185,17 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public void setFlightCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
+    public void setFlightCancellationViewModel(List<FlightCancellationModel> flightCancellationViewModelList) {
         this.flightCancellationViewModelList = flightCancellationViewModelList;
     }
 
     @Override
-    public void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList) {
+    public void setSelectedCancellationViewModel(List<FlightCancellationModel> flightCancellationViewModelList) {
         this.flightCancellationWrapperViewModel.setGetCancellations(flightCancellationViewModelList);
     }
 
     @Override
-    public void setPassengerRelations(Map<String, FlightCancellationPassengerViewModel> passengerRelations) {
+    public void setPassengerRelations(Map<String, FlightCancellationPassengerModel> passengerRelations) {
         this.passengerRelationMap = passengerRelations;
     }
 
@@ -210,17 +210,17 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public List<FlightCancellationViewModel> getCurrentFlightCancellationViewModel() {
+    public List<FlightCancellationModel> getCurrentFlightCancellationViewModel() {
         return flightCancellationViewModelList;
     }
 
     @Override
-    public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
+    public List<FlightCancellationModel> getSelectedCancellationViewModel() {
         return flightCancellationWrapperViewModel.getGetCancellations();
     }
 
     @Override
-    public Map<String, FlightCancellationPassengerViewModel> getPassengerRelations() {
+    public Map<String, FlightCancellationPassengerModel> getPassengerRelations() {
         return passengerRelationMap;
     }
 
@@ -280,27 +280,17 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
+    public void onPassengerChecked(FlightCancellationPassengerModel passengerViewModel, int position) {
         flightCancellationPresenter.checkPassenger(passengerViewModel, position);
     }
 
     @Override
-    public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
+    public void onPassengerUnchecked(FlightCancellationPassengerModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
     }
 
     @Override
-    public boolean shouldCheckAll() {
-        if (flightCancellationViewModelList.size() == 1 &&
-                flightCancellationViewModelList.get(0).getPassengerViewModelList().size() == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isChecked(FlightCancellationPassengerViewModel passengerViewModel) {
+    public boolean isChecked(FlightCancellationPassengerModel passengerViewModel) {
         return flightCancellationPresenter.isPassengerChecked(passengerViewModel);
     }
 

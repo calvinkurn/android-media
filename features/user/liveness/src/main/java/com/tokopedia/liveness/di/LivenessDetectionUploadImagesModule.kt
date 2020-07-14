@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit
 class LivenessDetectionUploadImagesModule {
 
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
-    private val NET_READ_TIMEOUT = 100
-    private val NET_WRITE_TIMEOUT = 100
-    private val NET_CONNECT_TIMEOUT = 100
+    private val NET_READ_TIMEOUT = 300
+    private val NET_WRITE_TIMEOUT = 300
+    private val NET_CONNECT_TIMEOUT = 300
     private val NET_RETRY = 3
 
     @LivenessDetectionScope
@@ -87,7 +87,8 @@ class LivenessDetectionUploadImagesModule {
 
     @LivenessDetectionScope
     @Provides
-    fun provideOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
+    fun provideOkHttpClient(@ApplicationContext context: Context,
+                            tkpdAuthInterceptor: TkpdAuthInterceptor,
                             retryPolicy: OkHttpRetryPolicy,
                             loggingInterceptor: HttpLoggingInterceptor,
                             errorHandlerInterceptor: ErrorResponseInterceptor,
@@ -95,12 +96,12 @@ class LivenessDetectionUploadImagesModule {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorHandlerInterceptor)
         builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(chuckerInterceptor)
-        builder.addInterceptor(AkamaiBotInterceptor())
+        builder.addInterceptor(AkamaiBotInterceptor(context))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             builder.addInterceptor(loggingInterceptor)
+            builder.addInterceptor(chuckerInterceptor)
         }
         builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
         builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

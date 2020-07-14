@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
@@ -19,14 +19,11 @@ import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
 class ProductRecommendationViewHolder(private val view: View,
                                       private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
-    var carouselModelId: String? = null
-
     companion object {
         val LAYOUT = R.layout.item_dynamic_recommendation
     }
 
     override fun bind(element: ProductRecommendationDataModel) {
-        this.carouselModelId = element.name
         view.rvProductRecom.gone()
         view.visible()
         view.loadingRecom.visible()
@@ -52,22 +49,18 @@ class ProductRecommendationViewHolder(private val view: View,
     }
 
     private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
-        view.rvProductRecom.bindCarouselProductCardView(
-                carouselCardSavedStatePosition = listener.getRecommendationCarouselSavedState(),
-                viewHolderPosition = adapterPosition,
-                parentView = view,
-                isScrollable = true,
-                carouselModelId = carouselModelId,
+        view.rvProductRecom.bindCarouselProductCardViewGrid(
+                scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = product.recommendationItemList[adapterPosition]
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
-                            ImpresionTask().execute(topAdsClickUrl)
+                            listener.sendTopAds(topAdsClickUrl)
                         }
 
-                        listener.eventRecommendationClick(productRecommendation, adapterPosition, product.pageName, product.title, componentTrackDataModel)
+                        listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
 
                         view.context?.run {
                             RouteManager.route(this,
@@ -77,23 +70,21 @@ class ProductRecommendationViewHolder(private val view: View,
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return product.recommendationItemList[adapterPosition]
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return product.recommendationItemList.getOrNull(carouselProductCardPosition)
                     }
 
-                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        if (product.recommendationItemList.size > adapterPosition) {
-                            val productRecommendation = product.recommendationItemList[adapterPosition]
-                            val topAdsImageUrl = productRecommendation.trackerImageUrl
-                            if (productCardModel.isTopAds) {
-                                ImpresionTask().execute(topAdsImageUrl)
-                            }
-
-                            listener.eventRecommendationImpression(productRecommendation,
-                                    adapterPosition,
-                                    product.pageName,
-                                    product.title, componentTrackDataModel)
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        val topAdsImageUrl = productRecommendation.trackerImageUrl
+                        if (productCardModel.isTopAds) {
+                            listener.sendTopAds(topAdsImageUrl)
                         }
+
+                        listener.eventRecommendationImpression(productRecommendation,
+                                carouselProductCardPosition,
+                                product.pageName,
+                                product.title, componentTrackDataModel)
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())
@@ -104,6 +95,7 @@ class ProductRecommendationViewHolder(private val view: View,
 
     override fun onViewRecycled() {
         listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
+        itemView.rvProductRecom?.recycle()
         super.onViewRecycled()
     }
 }

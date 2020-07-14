@@ -17,9 +17,4 @@ public class ApplinkTypeFactoryList implements ApplinkTypeFactory{
     public AbstractApplinkBuildAndShowNotification type(DiscussionPushNotificationWrapper elements) {
         return new DiscussionPushNotificationBuildAndShow(elements);
     }
-
-    @Override
-    public AbstractApplinkBuildAndShowNotification buildAndShowNotification() {
-        return null;
-    }
 }

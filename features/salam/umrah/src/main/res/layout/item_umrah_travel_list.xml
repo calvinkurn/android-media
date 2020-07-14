@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view_widget_umrah_travel_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8">
+
+    <View
+        android:id="@+id/umrah_travel_list_item_circle_bg"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/umrah_bg_pdp_travel_agent"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_widget_umrah_travel_list_item_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tg_widget_umrah_travel_list_item_title" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_widget_umrah_travel_list_item"
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_8"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/tg_widget_umrah_travel_list_item_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tg_widget_umrah_travel_list_item_title" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_umrah_verified_blue"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_travel_list_item_desc"
+        app:layout_constraintLeft_toRightOf="@+id/umrah_travel_list_item_circle_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_umrah_verified_blue" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_widget_umrah_travel_list_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_travel_list_item_desc"
+        app:layout_constraintLeft_toRightOf="@+id/iv_umrah_verified_blue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Patuna Tour Travel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_widget_umrah_travel_list_item_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/umrah_green_permission"
+        app:layout_constraintLeft_toRightOf="@+id/umrah_travel_list_item_circle_bg"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_travel_list_item_title"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Ijin Umrah No. 123/123" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_widget_umrah_travel_list_item_founded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintLeft_toRightOf="@+id/umrah_travel_list_item_circle_bg"
+        app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_travel_list_item_desc"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Berdiri Sejak 200" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

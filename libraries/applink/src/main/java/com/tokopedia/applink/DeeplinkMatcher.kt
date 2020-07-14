@@ -32,7 +32,6 @@ import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
-import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
 import com.tokopedia.applink.DeepLinkChecker.TRAVEL_HOMEPAGE
 import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
 
@@ -54,6 +53,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
             add(Pattern(GT, 0, mapOf(0 to "peluang")) to PELUANG)
             add(Pattern(GT, 0, mapOf(0 to "peluang.pl")) to PELUANG)
+            add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
             add(Pattern(GT, 0, mapOf(0 to "p")) to CATEGORY)
             add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
             add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
@@ -63,7 +63,6 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 2, mapOf(0 to "b")) to DISCOVERY_PAGE)
             add(Pattern(EQ, 2, mapOf(0 to "discovery")) to DISCOVERY_PAGE)
             add(Pattern(EQ, 1, mapOf(0 to "pulsa")) to RECHARGE)
-            add(Pattern(GT, 0, mapOf(0 to "toppicks")) to TOPPICKS)
             add(Pattern(EQ, 3, mapOf(1 to "etalase")) to ETALASE)
             add(Pattern(GT, 0, mapOf(0 to "referral")) to REFERRAL)
             add(Pattern(GT, 0, mapOf(0 to "tokopoints")) to TOKOPOINT)

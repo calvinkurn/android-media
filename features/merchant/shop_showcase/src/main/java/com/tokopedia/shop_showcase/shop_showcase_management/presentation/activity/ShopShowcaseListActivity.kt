@@ -9,6 +9,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -62,11 +63,6 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
             shopId = userSession.shopId
         }
 
-//        if (isNeedToGoToAddShowcase) {
-//            val addShowcaseIntent = RouteManager.getIntent(this, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
-//            startActivityForResult(addShowcaseIntent, REQUEST_CODE_ADD_ETALASE)
-//        }
-
         getShopType()
         setupInitialFragment()
         setupStatusbar()
@@ -79,35 +75,18 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
                     isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
             navigateToOtherFragment(fragmentShowcaseList, null)
         } else if (page == PageNameConstant.SHOWCASE_LIST_REORDER_PAGE) {
+            isNeedToGoToAddShowcase = false
             val fragmentShowcaseReorder = ShopShowcaseListReorderFragment.createInstance(
                     shopType, showcaseList, isMyShop())
             navigateToOtherFragment(fragmentShowcaseReorder, null)
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        when (requestCode) {
-//            REQUEST_CODE_ADD_ETALASE -> {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    val intent = Intent()
-//                    setResult(Activity.RESULT_OK, intent)
-//                    finish()
-//                } else if (resultCode == Activity.RESULT_CANCELED) {
-//                    val intent = Intent()
-//                    setResult(Activity.RESULT_CANCELED, intent)
-//                    finish()
-//                } 
-//            }
-//        }
-//
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
-
     private fun setupStatusbar(){
         val window: Window = getWindow()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = resources.getColor(android.R.color.white)
+            getWindow().statusBarColor = ContextCompat.getColor(this, android.R.color.white)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

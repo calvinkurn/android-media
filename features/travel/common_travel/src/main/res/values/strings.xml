@@ -30,5 +30,5 @@
     <string name="travel_departure_trip_price_value"><![CDATA[<b>%s</b> /org]]></string>
 
     <string name="phone_code_format">+%1$d</string>
-    <string name="flight_label_search_hint_airport">Ketik kota atau bandara %s</string>
+    <string name="flight_label_search_hint_airport">Cari bandara atau kota yang dituju</string>
 </resources>

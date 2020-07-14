@@ -11,12 +11,11 @@ import android.view.MenuItem
 import android.view.Menu
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.DigitalBrowseComponentInstance
 import com.tokopedia.browse.R
-import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
@@ -143,7 +142,6 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         lateinit var intent: Intent
 
         @JvmStatic
-        @DeepLink(ApplinkConst.Digital.DIGITAL_BROWSE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             intent = Intent(context, DigitalBrowseHomeActivity::class.java)
@@ -162,7 +160,8 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         }
 
         private fun openBelanjaActivity(context: Context): Intent {
-            return BaseCategoryBrowseActivity.newIntent(context)
+            return RouteManager.getIntent(context, INTERNAL_BELANJA_CATEGORY)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
 
     }

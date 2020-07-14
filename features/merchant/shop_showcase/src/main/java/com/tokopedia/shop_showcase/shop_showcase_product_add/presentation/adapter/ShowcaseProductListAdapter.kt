@@ -13,7 +13,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder.ShowcaseProductItemViewHolder
 import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
-import kotlinx.android.synthetic.main.item_add_product_showcase_grid.view.*
+import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
 
 /**
  * @author by Rafli Syam on 2020-03-09
@@ -32,18 +32,20 @@ class ShowcaseProductListAdapter(
 
     private var shopProductList: MutableList<BaseShowcaseProduct> = mutableListOf()
     private var selectedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
+    private var excludedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
+    private var deletedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
     private val fragmentView: View = parentFragmentView
     private val loadingModel = LoadingShowcaseProduct()
     private val viewListener: ShopShowcaseProductAddListener = listener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductItemViewHolder {
         val view = if (viewType == VIEW_SHOW_CASE) {
-            LayoutInflater.from(context).inflate(R.layout.item_add_product_showcase_grid, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false)
         }
         else {
             LayoutInflater.from(context).inflate(R.layout.item_showcase_product_loading, parent, false)
         }
-        return ShowcaseProductItemViewHolder(view, context)
+        return ShowcaseProductItemViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -61,57 +63,56 @@ class ShowcaseProductListAdapter(
         val item = shopProductList[position]
         holder.bind(item)
         if (item is ShowcaseProduct) {
-            holder.itemView.parent_card_view.setOnClickListener {
-                val cardState = !item.ishighlighted
-                val appendState = !item.isNewAppended
+            holder.itemView.parent_item_product_card.setOnClickListener {
+                chooseProduct(holder, item)
+            }
 
-                if (cardState) {
-                    if(!item.isNoNeedToAppend)
-                        selectedProduct.add(shopProductList[position] as ShowcaseProduct)
-                } else {
-
-                    val deletedProduct = shopProductList[position] as ShowcaseProduct
-                    val targetedProduct = selectedProduct.singleOrNull {
-                        it.productId == deletedProduct.productId
-                    }
-                    if(targetedProduct != null) {
-                        selectedProduct.run {
-                            if(contains(targetedProduct))
-                                remove(targetedProduct)
-                        }
-                    } else {
-                        item.isNoNeedToAppend = true
-                    }
-
-                }
-                item.ishighlighted = cardState
-                item.isNewAppended = appendState
-                holder.renderCardState(item)
-                showProductCounter(getSelectedProductSize())
-                viewListener.onCLickProductCardTracking()
+            holder.itemView.card_checkbox.setOnClickListener {
+                chooseProduct(holder, item)
             }
         }
     }
 
-    fun updateShopProductList(isLoadNextPage: Boolean, productList: List<ShowcaseProduct>, previouslySelectedProduct: List<ShowcaseProduct>, appendedProductList: List<ShowcaseProduct>, isActionEdit: Boolean) {
+    private fun chooseProduct(holder: ShowcaseProductItemViewHolder, item: ShowcaseProduct) {
+        val cardState = !item.ishighlighted
+        if (cardState) {
+            item.isNewAppended = excludedProduct.none { excludedProduct ->
+                excludedProduct.productId == item.productId
+            }
+            if(deletedProduct.size > 0)
+                deletedProduct.remove(item)
+            selectedProduct.add(item)
+        } else {
+            item.isNewAppended = false
+            val targetedProduct = selectedProduct.singleOrNull {
+                it.productId == item.productId
+            }
+            if(targetedProduct != null) {
+                selectedProduct.remove(targetedProduct)
+            }
+        }
+        item.ishighlighted = cardState
+        holder.renderCardState(item)
+        showProductCounter(getSelectedProductSize())
+        viewListener.onCLickProductCardTracking()
+    }
+
+    fun updateShopProductList(isLoadNextPage: Boolean,
+                              productList: List<ShowcaseProduct>,
+                              excludedProductList: ArrayList<ShowcaseProduct>,
+                              previouslySelected: List<ShowcaseProduct>) {
+        excludedProduct = excludedProductList
+
         if (!isLoadNextPage) {
             shopProductList = productList.toMutableList()
         } else {
             shopProductList.addAll(productList.toMutableList())
         }
         if(selectedProduct.isEmpty()) {
-            selectedProduct = if(!isActionEdit) {
-                ArrayList(previouslySelectedProduct)
-            } else {
-                ArrayList(appendedProductList)
-            }
+            selectedProduct = ArrayList(previouslySelected)
             showProductCounter(getSelectedProductSize())
         }
         notifyDataSetChanged()
-    }
-
-    fun isShowCaseProductItem(position: Int): Boolean {
-        return shopProductList[position] is ShowcaseProduct
     }
 
     fun showLoadingProgress() {
@@ -131,10 +132,27 @@ class ShowcaseProductListAdapter(
         return selectedProduct
     }
 
+    fun getDeletedProduct(): ArrayList<ShowcaseProduct> {
+        return deletedProduct
+    }
+
     // TODO: Move this to fragment level soon!!
     private fun showProductCounter(totalSelectedProduct: Int) {
         if(totalSelectedProduct > 0) {
-            val item = selectedProduct[0]
+            var idx = 0
+            val item = if(excludedProduct.size > 0) {
+                // if in edit mode, find first appended product to show product image on counter
+                for(i in 0 until selectedProduct.size) {
+                    if(selectedProduct[i].isNewAppended) {
+                        idx = i
+                        break
+                    }
+                }
+                selectedProduct[idx]
+            } else {
+                // if in create mode, just use first selected product image
+                selectedProduct[idx]
+            }
             ImageHandler.LoadImage(
                     fragmentView.product_choosen_image,
                     item.productImageUrl
@@ -150,7 +168,10 @@ class ShowcaseProductListAdapter(
     }
 
     private fun getSelectedProductSize(): Int {
-        return selectedProduct.size
+        val appendedProduct = selectedProduct.filter {
+            it.isNewAppended
+        }
+        return appendedProduct.size
     }
 
 }

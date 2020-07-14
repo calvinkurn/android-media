@@ -58,19 +58,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     abstract fun onSendButtonClicked()
     abstract fun getUserSession(): UserSessionInterface
 
-    private var rvAttachmentMenu: AttachmentMenuRecyclerView? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindViewId(view)
         setupViewState(view)
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
-    }
-
-    private fun bindViewId(view: View) {
-        rvAttachmentMenu = view.findViewById(rvAttachmentMenuId())
     }
 
     private fun setupViewState(view: View?) {
@@ -258,10 +251,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return false
     }
 
-    fun addVoucherAttachmentMenu() {
-        rvAttachmentMenu?.addVoucherAttachmentMenu()
-    }
-
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return emptyList()
     }
@@ -280,9 +269,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 
-    override fun onClickAddToWishList(productId: String, success: () -> Unit) {}
+    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {}
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
+
+    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) { }
 
     override fun onItemClicked(t: Visitable<*>?) {}
 }

@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:siv_search_hint="@string/cari_produk"
-        app:siv_search_icon="@drawable/topads_create_ic_search" />
+        app:siv_search_icon="@drawable/topads_ic_search" />
 
     <ImageButton
         android:id="@+id/btn_sort"
@@ -35,7 +35,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/searchInputView"
         app:layout_constraintTop_toTopOf="@+id/searchInputView"
-        app:srcCompat="@drawable/topads_create_ic_sort" />
+        app:srcCompat="@drawable/topads_ic_sort" />
 
 
     <View
@@ -62,7 +62,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/view3"
         app:layout_constraintTop_toTopOf="@+id/view3"
-        app:srcCompat="@drawable/topads_create_ic_filter" />
+        app:srcCompat="@drawable/topads_ic_filter" />
 
     <RadioGroup
         android:id="@+id/promotedGroup"
@@ -104,7 +104,7 @@
         android:layout_width="0dp"
         android:layout_height="6dp"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/topads_create_bg_shader_gray"
+        android:background="@drawable/topads_bg_shader_gray"
         android:rotation="180"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +140,7 @@
         android:text="@string/tip_memilih_produk"
         android:textAllCaps="false"
         app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
         app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -150,7 +150,7 @@
         android:layout_width="0dp"
         android:layout_height="6dp"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/topads_create_bg_shader_gray"
+        android:background="@drawable/topads_bg_shader_gray"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

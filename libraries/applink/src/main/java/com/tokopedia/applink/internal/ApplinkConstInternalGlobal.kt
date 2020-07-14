@@ -1,5 +1,6 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.ApplinkConst.DFFALLBACKURL_KEY
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -160,14 +161,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_SHOP_ID = "shop_id"
 
-    // TalkProductActivity
-    // tokopedia-android-internal://global/product-talk
+    // TalkReadingActivity
+    // tokopedia-android-internal://talk/product-talk
     @JvmField
     val PRODUCT_TALK_BASE = "$INTERNAL_GLOBAL/product-talk/"
     @JvmField
     val PRODUCT_TALK = "$PRODUCT_TALK_BASE{product_id}/"
     @JvmField
     val PARAM_PRODUCT_ID = "product_id"
+
+    // TalkReplyActivity
+    // tokopedia-android-internal://talk/reply-talk
+    @JvmField
+    val TALK_REPLY_BASE = "$INTERNAL_GLOBAL/reply-talk/"
+    @JvmField
+    val TALK_REPLY = "$TALK_REPLY_BASE{question_id}/"
 
     // TalkDetailsActivity
     // tokopedia-android-internal://global/detail-talk
@@ -223,6 +231,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
 
+    // RegisterFingerprintOnboardingActivity
+    // tokopedia-android-internal://global/add-fingerprint-onboarding
+    @JvmField
+    val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
+
     // PinCompleteActivity
     // tokopedia-android-internal://global/add-pin-complete
     @JvmField
@@ -243,10 +256,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 
-    // ChangePPasswordActivity
+    // ChangePasswordActivity
     // tokopedia-android-internal://global/change-password
     @JvmField
     val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
+
+    // HasPasswordActivity
+    // tokopedia-android-internal://global/has-password
+    @JvmField
+    val HAS_PASSWORD = "$INTERNAL_GLOBAL/has-password"
 
     // ChangePinActivity
     // tokopedia-android-internal://global/change-pin
@@ -261,7 +279,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -383,8 +401,7 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}"
+        DFFALLBACKURL_KEY +"={fallbackUrl}"
 
     /**
      * LogoutActivity
@@ -396,7 +413,6 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
-
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
@@ -433,12 +449,13 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/gamification2
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
-
-    //ManageGeneral Activity
-    @JvmField
-    val MANAGE_GENERAL = "$INTERNAL_GLOBAL/manage-general"
+    val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
 
     //ManageNotificationActivity
     @JvmField
     val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

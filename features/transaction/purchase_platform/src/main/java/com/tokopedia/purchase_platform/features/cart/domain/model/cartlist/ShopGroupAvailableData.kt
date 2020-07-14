@@ -32,6 +32,7 @@ data class ShopGroupAvailableData(
         var isHasPromoList: Boolean = false,
         var cartString: String? = null,
         var voucherOrdersItemData: VoucherOrdersItemData? = null,
+        var promoCodes: List<String>? = emptyList(),
 
         // Total data which is calculated from cartItemDataList
         var totalPrice: Long = 0,
@@ -82,6 +83,7 @@ data class ShopGroupAvailableData(
         totalPrice = parcel.readLong()
         totalCashback = parcel.readLong()
         totalItem = parcel.readInt()
+        promoCodes = parcel.createStringArrayList()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

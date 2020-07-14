@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticorder.R;
-import com.tokopedia.transaction.common.data.order.CourierViewModel;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
 
 import java.util.List;
 

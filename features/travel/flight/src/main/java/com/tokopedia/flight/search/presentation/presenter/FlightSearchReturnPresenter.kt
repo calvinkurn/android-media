@@ -7,8 +7,8 @@ import com.tokopedia.flight.search.domain.FlightGetComboKeyUseCase
 import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.contract.FlightSearchReturnContract
-import com.tokopedia.flight.search.presentation.model.FlightFareViewModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -29,10 +29,10 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
 
     private val compositeSubscription = CompositeSubscription()
 
-    override fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyViewModel, adapterPosition: Int) {
+    override fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyModel: FlightJourneyModel, adapterPosition: Int) {
         if (adapterPosition >= 0) {
             flightAnalytics.eventSearchProductClickFromList((view as FlightSearchContract.View)
-                    .getSearchPassData(), returnJourneyViewModel, adapterPosition)
+                    .getSearchPassData(), returnJourneyModel, adapterPosition)
         }
 
         val priceViewModel = view.getFlightPriceViewModel()
@@ -41,12 +41,12 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase
                         .createRequestParams(selectedFlightDeparture)),
                 flightGetComboKeyUseCase.createObservable(flightGetComboKeyUseCase
-                        .createRequestParams(selectedFlightDeparture, returnJourneyViewModel.id))
+                        .createRequestParams(selectedFlightDeparture, returnJourneyModel.id))
         ) { departureJourney, comboKey ->
             priceViewModel.comboKey = comboKey
             if (departureJourney != null &&
-                    isValidReturnJourney(departureJourney, returnJourneyViewModel)) {
-                priceViewModel.returnPrice = buildFare(returnJourneyViewModel.fare, true)
+                    isValidReturnJourney(departureJourney, returnJourneyModel)) {
+                priceViewModel.returnPrice = buildFare(returnJourneyModel.fare, true)
                 true
             } else {
                 false
@@ -58,8 +58,8 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 .subscribe(object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
-                            view.navigateToCart(returnFlightSearchViewModel = returnJourneyViewModel,
-                                    flightPriceViewModel = priceViewModel)
+                            view.navigateToCart(returnFlightSearchModel = returnJourneyModel,
+                                    flightPriceModel = priceViewModel)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }
@@ -117,7 +117,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
                             view.navigateToCart(selectedFlightReturn = selectedFlightReturn,
-                                    flightPriceViewModel = priceViewModel, selectedFlightTerm = selectedTerm)
+                                    flightPriceModel = priceViewModel, selectedFlightTerm = selectedTerm)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }
@@ -135,11 +135,11 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         flightSearchJourneyByIdUseCase.unsubscribe()
     }
 
-    private fun isValidReturnJourney(departureViewModel: FlightJourneyViewModel, returnViewModel: FlightJourneyViewModel): Boolean {
-        if (departureViewModel.routeList != null && returnViewModel.routeList != null) {
-            if (departureViewModel.routeList.size > 0 && returnViewModel.routeList.size > 0) {
-                val lastDepartureRoute = departureViewModel.routeList[departureViewModel.routeList.size - 1]
-                val firstReturnRoute = returnViewModel.routeList[0]
+    private fun isValidReturnJourney(departureModel: FlightJourneyModel, returnModel: FlightJourneyModel): Boolean {
+        if (departureModel.routeList != null && returnModel.routeList != null) {
+            if (departureModel.routeList.size > 0 && returnModel.routeList.size > 0) {
+                val lastDepartureRoute = departureModel.routeList[departureModel.routeList.size - 1]
+                val firstReturnRoute = returnModel.routeList[0]
                 val departureArrivalTime = FlightDateUtil.stringToDate(
                         FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, lastDepartureRoute.arrivalTimestamp)
                 val returnDepartureTime = FlightDateUtil.stringToDate(
@@ -157,9 +157,9 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         return true
     }
 
-    private fun buildFare(journeyFare: FlightFareViewModel, isNeedCombo: Boolean): FlightFareViewModel =
+    private fun buildFare(journeyFare: FlightFareModel, isNeedCombo: Boolean): FlightFareModel =
             if (isNeedCombo) {
-                FlightFareViewModel(
+                FlightFareModel(
                         journeyFare.adult,
                         journeyFare.adultCombo,
                         journeyFare.child,
@@ -174,7 +174,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                         journeyFare.infantNumericCombo
                 )
             } else {
-                FlightFareViewModel(
+                FlightFareModel(
                         journeyFare.adult,
                         "",
                         journeyFare.child,

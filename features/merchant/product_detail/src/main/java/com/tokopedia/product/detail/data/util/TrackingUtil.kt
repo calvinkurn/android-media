@@ -77,6 +77,13 @@ object TrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun addComponentOvoTracker(mapEvent: MutableMap<String, Any>, productId: String, userId: String) {
+        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     fun removeCurrencyPrice(priceFormatted: String): String {
         return try {
             priceFormatted.replace("[^\\d]".toRegex(), "")
@@ -119,5 +126,19 @@ object TrackingUtil {
 
     fun getFormattedPrice(price: Int): String {
         return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    }
+
+    fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {
+        with(ProductTrackingConstant.Tracking) {
+            mapEvent.putAll(
+                    mapOf(
+                            KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                            KEY_CURRENT_SITE to CURRENT_SITE,
+                            KEY_DISCUSSION_USER_ID to "{{$userId}}",
+                            KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
+                    )
+            )
+        }
+        return mapEvent
     }
 }

@@ -1,0 +1,20 @@
+query{
+  TravelCollectiveRecentSearches(product:HOTEL, platform: HOTELPAGE){
+    items {
+      product
+      title
+      subtitle
+      prefix
+      prefixStyling
+      value
+      webURL
+      appURL
+      imageURL
+    }
+    meta {
+      title
+      webURL
+      appURL
+    }
+  }
+}

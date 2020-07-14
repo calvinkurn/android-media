@@ -14,6 +14,7 @@ internal class SimilarSearchActivityTest {
 
     @Test
     fun testOpenActivity() {
+
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(Intent.ACTION_VIEW).also {
             it.data = Uri.parse("${ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE}/433759643/")

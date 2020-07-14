@@ -7,14 +7,16 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.DrawableRes;
-import androidx.cardview.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
+
+import androidx.annotation.DrawableRes;
+import androidx.cardview.widget.CardView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -272,7 +274,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     @Override
     public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
         finishLoadingProgress();
-        CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
+        Toast.makeText(getActivity(), MethodChecker.fromHtml(actionViewData.getMessage()), Toast.LENGTH_LONG).show();
         getActivity().finish();
     }
 

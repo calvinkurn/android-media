@@ -9,26 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.TextViewCompat
-import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
+import com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
+import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
 import kotlin.math.max
 
 class HotelSearchFilterFragment: BaseDaggerFragment() {
     var filter: Filter = Filter()
     var selectedFilter: ParamFilter = ParamFilter()
-    lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
-    lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
+
     lateinit var manager: SaveInstanceCacheManager
     private val starAdapter: HotelSearchResultFilterAdapter by lazy {
         HotelSearchResultFilterAdapter(HotelSearchResultFilterAdapter.MODE_MULTIPLE)
@@ -58,7 +57,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         setupAccomodationType(filter.accomodation)
         setupRating(filter.filterReview)
         setupPayAtHotel()
-        save_filter.button.setOnClickListener {
+        save_filter.setOnClickListener {
             selectedFilter.star = starAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
             selectedFilter.propertyType = propertyTypeAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
             selectedFilter.paymentType = if (switch_pay_at_hotel.isChecked) PAYMENT_TYPE_PAY_AT_HOTEL else 0
@@ -77,53 +76,40 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             starAdapter.clearSelection()
             propertyTypeAdapter.clearSelection()
             switch_pay_at_hotel.isChecked = false
-            price_range_input_view.setData(filter.price.minPrice, filter.price.maxPrice,
-                    filter.price.minPrice, filter.price.maxPrice)
+            price_range_input_view.initView(filter.price.minPrice, filter.price.maxPrice, filter.price.maxPrice)
             rating_seekbar.progress = rating_seekbar.max
         }
     }
 
     private fun setupPayAtHotel() {
         switch_pay_at_hotel.isChecked = selectedFilter.paymentType == PAYMENT_TYPE_PAY_AT_HOTEL
+
+        // need to hide pay at hotel filter for now
+        hidePayAtHotelFilter()
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
         val filterAccomodation = accomodation.map {
             HotelSearchResultFilterAdapter.HotelFilterItem(it.id.toString(), it.displayName, false) }
         filter_accomodation_type.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+        filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                 LinearLayoutManager.HORIZONTAL))
         filter_accomodation_type.adapter = propertyTypeAdapter
         propertyTypeAdapter.updateItems(filterAccomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
     }
 
     private fun setupPriceFilter(price: Filter.FilterPrice) {
-        val minPriceEditText = price_range_input_view.minValueEditText
-        if (::minCurrencyTextWatcher.isInitialized){
-            minPriceEditText.removeTextChangedListener(minCurrencyTextWatcher)
+        price_range_input_view.initView(selectedFilter.minPrice, selectedFilter.maxPrice, price.maxPrice)
+        price_range_input_view.onValueChangedListener = object: HotelFilterPriceRangeSlider.OnValueChangedListener{
+            override fun onValueChanged(startValue: Int, endValue: Int) {
+                onFilterPriceValueChangedListener(startValue, endValue)
+            }
         }
-        minCurrencyTextWatcher = CurrencyTextWatcher(minPriceEditText, CurrencyEnum.RP)
-        minPriceEditText.addTextChangedListener(minCurrencyTextWatcher)
+    }
 
-        val maxPriceEditText = price_range_input_view.maxValueEditText
-        if (::maxCurrencyTextWatcher.isInitialized){
-            maxPriceEditText.removeTextChangedListener(maxCurrencyTextWatcher)
-        }
-        maxCurrencyTextWatcher = CurrencyTextWatcher(maxPriceEditText, CurrencyEnum.RP)
-        maxPriceEditText.addTextChangedListener(maxCurrencyTextWatcher)
-        if (selectedFilter.maxPrice == 0 || selectedFilter.maxPrice == price.maxPrice) maxCurrencyTextWatcher.format = getString(R.string.hotel_search_filter_max_string_format_with_plus)
-        price_range_input_view.setPower(1.0)
-
-        val filteredMinPrice = if (selectedFilter.minPrice < price.minPrice) price.minPrice else selectedFilter.minPrice
-        val filteredMaxPrice = if (selectedFilter.maxPrice == 0 || selectedFilter.maxPrice > price.maxPrice) price.maxPrice else selectedFilter.maxPrice
-
-        price_range_input_view.setData(price.minPrice, price.maxPrice, filteredMinPrice, filteredMaxPrice)
-        price_range_input_view.setOnValueChangedListener { minValue, maxValue, minBound, maxBound ->
-            selectedFilter.minPrice = minValue
-            selectedFilter.maxPrice = maxValue
-            if (selectedFilter.maxPrice == maxBound) maxCurrencyTextWatcher.format = getString(R.string.hotel_search_filter_max_string_format_with_plus)
-            else maxCurrencyTextWatcher.format = getString(R.string.hotel_search_filter_max_string_format)
-        }
+    private fun onFilterPriceValueChangedListener(minValue: Int, maxValue: Int) {
+        if (minValue >= 0) selectedFilter.minPrice = minValue
+        if (maxValue >= 0) selectedFilter.maxPrice = maxValue
     }
 
     private fun setupRating(filterReview: Filter.FilterReview) {
@@ -140,14 +126,14 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
 
             when {
-                item > 0 -> stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
-                else -> stepView.findViewById<TextViewCompat>(R.id.title_step).text = getString(R.string.hotel_search_filter_rating_all)
+                item > 0 -> stepView.findViewById<TextView>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
+                else -> stepView.findViewById<TextView>(R.id.title_step).text = getString(R.string.hotel_search_filter_rating_all)
             }
 
             base_rating_step.addView(stepView)
             if (index < ratingStep.size - 1){
                 val separator = View(context)
-                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_0),
+                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
                         ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                 separator.layoutParams = lp
                 base_rating_step.addView(separator)
@@ -171,11 +157,17 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val filterStars
                 = filterStar.stars.map { HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), true) }
         filter_star.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
-        filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
+        filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter
         starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())
+    }
+
+    private fun hidePayAtHotelFilter() {
+        layout_filter_pay_at_hotel.visibility = View.GONE
+        divider_layout_pay_at_hotel.visibility = View.GONE
+        hotel_filter_rating_title.setMargin(0,0,0,0)
     }
 
     companion object {

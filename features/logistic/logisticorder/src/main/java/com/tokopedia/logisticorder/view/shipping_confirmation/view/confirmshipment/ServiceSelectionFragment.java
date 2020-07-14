@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
-import com.tokopedia.transaction.common.data.order.CourierServiceModel;
-import com.tokopedia.transaction.common.data.order.CourierViewModel;
-import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierServiceModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierViewModel;
 
 import java.util.List;
 

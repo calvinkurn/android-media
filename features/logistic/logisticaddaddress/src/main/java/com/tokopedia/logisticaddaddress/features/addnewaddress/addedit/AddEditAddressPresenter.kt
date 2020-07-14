@@ -2,7 +2,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
@@ -33,15 +32,16 @@ class AddEditAddressPresenter
         getDistrictUseCase.unsubscribe()
     }
 
-    fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
+    fun saveAddress(model: SaveAddressDataModel, typeForm: String, isFullFlow: Boolean, isLogisticLabel: Boolean) {
+        val formType = if (typeForm == AddressConstants.ANA_POSITIVE) "1" else "0"
         addAddressUseCase
-                .execute(model)
+                .execute(model, formType)
                 .subscribe(object : Subscriber<AddAddressResponse>() {
                     override fun onNext(response: AddAddressResponse) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
-                            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(isFullFlow, isLogisticLabel)
                         } else {
-                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(isFullFlow, isLogisticLabel)
                         }
                         response.keroAddAddress.data.run {
                             if (isSuccess == 1) {
@@ -57,9 +57,9 @@ class AddEditAddressPresenter
 
                     override fun onError(e: Throwable) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
-                            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e.printStackTrace().toString(), isFullFlow, isLogisticLabel)
                         } else {
-                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e.printStackTrace().toString(), isFullFlow, isLogisticLabel)
                         }
                         view?.showError(e)
                     }

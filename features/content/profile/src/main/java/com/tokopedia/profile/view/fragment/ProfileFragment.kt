@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
@@ -43,10 +42,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
@@ -709,13 +706,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             if (it.isFollowed) {
-                ToasterNormal
-                        .make(view,
-                                getString(R.string.follow_success_toast),
-                                BaseToaster.LENGTH_LONG)
-                        .setAction(getString(R.string.follow_success_check_now),
-                                followSuccessOnClickListener(it))
-                        .show()
+                Toaster.make(view!!, getString(R.string.follow_success_toast),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.follow_success_check_now), followSuccessOnClickListener(it))
             }
 
             setFollowBtn(it, false)
@@ -746,12 +738,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-        val snackbar = ToasterNormal.make(view,
-                getString(R.string.profile_post_deleted),
-                BaseToaster.LENGTH_LONG
-        )
-        snackbar.setAction(com.tokopedia.affiliatecommon.R.string.af_title_ok) { snackbar.dismiss() }.show()
-
+        Toaster.make(view!!, getString(R.string.profile_post_deleted), Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {  })
         if (adapter.data.isEmpty()) {
             onSwipeRefresh()
         }
@@ -867,7 +855,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
-                              url: String, iamgeUrl: String) {
+                              url: String, imageUrl: String) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
@@ -954,6 +942,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
+    }
+
+    override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
+
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
@@ -1672,9 +1664,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {
-        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
-                .show()
+        listener?.let {
+            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), it)
+        }
     }
 
     private fun showToast(message: String) {
@@ -1708,19 +1700,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onSuccessReportContent() {
-        ToasterNormal
-                .make(view,
+        Toaster.make(view!!,
                         getString(R.string.profile_feed_content_reported),
-                        BaseToaster.LENGTH_LONG)
-                .setAction(com.tokopedia.design.R.string.label_close) { }
-                .show()
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  })
     }
 
     private fun onErrorReportContent(errorMsg: String?) {
-        ToasterError
-                .make(view, errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(com.tokopedia.design.R.string.label_close) { }
-                .show()
+        errorMsg?.let {
+            Toaster.make(view!!, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+        }
     }
 
     private fun onGoToLink(link: String) {

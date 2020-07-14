@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
@@ -28,22 +29,27 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
+import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity.Companion.ROOM_DETAIL_SCREEN_NAME
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
+import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -112,8 +118,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     when {
                         ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
                         ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> {
-                            showFailedGetRoomErrorDialog()
+                            showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         }
+                        ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
                         else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
                 }
@@ -133,7 +140,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        trackingHotelUtil.hotelViewRoomDetail(hotelRoom, addToCartParam, roomIndex)
+        trackingHotelUtil.hotelViewRoomDetail(context, hotelRoom, addToCartParam, roomIndex, ROOM_DETAIL_SCREEN_NAME)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -168,7 +175,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = room_detail_detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         room_detail_collapsing_toolbar.title = ""
@@ -182,11 +189,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     room_detail_collapsing_toolbar.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     room_detail_collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
@@ -204,9 +211,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
             room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
-                    trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
-                            hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString())
-                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, null)
+                    trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
+                            hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
+                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
             }
         }
@@ -221,21 +228,18 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
         room_detail_header_facilities.removeAllViews()
         context?.run {
-            val breakfastTextView = FacilityTextView(this)
-            if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
-            } else {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
-            }
-            room_detail_header_facilities.addView(breakfastTextView)
 
-            val refundableTextView = FacilityTextView(this)
-            if (hotelRoom.refundInfo.isRefundable) {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-            } else {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            if (hotelRoom.breakfastInfo.breakFast.isNotEmpty()) {
+                val breakfastTextView = FacilityTextView(this)
+                breakfastTextView.setIconAndText(hotelRoom.breakfastInfo.iconUrl, hotelRoom.breakfastInfo.breakFast)
+                room_detail_header_facilities.addView(breakfastTextView)
             }
-            room_detail_header_facilities.addView(refundableTextView)
+
+            if (hotelRoom.refundInfo.refundStatus.isNotEmpty()) {
+                val refundableTextView = FacilityTextView(this)
+                refundableTextView.setIconAndText(hotelRoom.refundInfo.iconUrl, hotelRoom.refundInfo.refundStatus)
+                room_detail_header_facilities.addView(refundableTextView)
+            }
         }
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
@@ -351,6 +355,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     }
 
     private fun setupRoomPrice() {
+        if (hotelRoom.roomPrice.deals.tagging.isNotEmpty()) {
+            room_detail_tagging.show()
+            room_detail_tagging.text = hotelRoom.roomPrice.deals.tagging
+        } else room_detail_tagging.hide()
+
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.isEnabled = true
@@ -358,7 +367,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             progressDialog.show()
             if (userSessionInterface.isLoggedIn) {
                 room_detail_button.isEnabled = false
-                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam)
+                trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
+                        ROOM_DETAIL_SCREEN_NAME)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 navigateToLoginPage()
@@ -369,7 +379,18 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQ_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
+                progressDialog.show()
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
         }
     }
 
@@ -386,10 +407,14 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
-    private fun showFailedGetRoomErrorDialog() {
+    private fun navigateToAddEmailPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+    }
+
+    private fun showFailedGetRoomErrorDialog(message: String) {
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
         dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
-        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setDescription(message)
         dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
         dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
         dialog.setPrimaryCTAClickListener {
@@ -408,6 +433,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
+        const val REQ_CODE_LOGIN = 1345
 
         fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {

@@ -22,6 +22,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -42,15 +43,13 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
+    private Typography tvShippingInformation;
 
     private int cartPosition;
-    private ShippingDurationAdapter adapter;
 
-    public ShippingDurationViewHolder(View itemView, ShippingDurationAdapter adapter,
-                                      int cartPosition) {
+    public ShippingDurationViewHolder(View itemView, int cartPosition) {
         super(itemView);
         this.cartPosition = cartPosition;
-        this.adapter = adapter;
 
         tvOrderPrioritas = itemView.findViewById(R.id.tv_order_prioritas);
         tvError = itemView.findViewById(R.id.tv_error);
@@ -61,11 +60,17 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvCod = itemView.findViewById(R.id.tv_cod_availability);
+        tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener,
                          boolean isDisableOrderPrioritas) {
+        if (shippingDurationUiModel.isShowShippingInformation()) {
+            tvShippingInformation.setVisibility(View.VISIBLE);
+        } else {
+            tvShippingInformation.setVisibility(View.GONE);
+        }
 
         if (shippingDurationAdapterListener.isToogleYearEndPromotionOn() &&
                 shippingDurationUiModel.getServiceData().getIsPromo() == 1) {
@@ -96,10 +101,10 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             if (!isDisableOrderPrioritas && shippingDurationUiModel.getServiceData().getOrderPriority().getNow()) {
                 String orderPrioritasTxt = itemView.getContext().getString(R.string.order_prioritas);
                 SpannableString orderPrioritasLabel = new SpannableString(orderPrioritasTxt);
-                orderPrioritasLabel.setSpan(new StyleSpan(Typeface.BOLD),16,orderPrioritasTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                orderPrioritasLabel.setSpan(new StyleSpan(Typeface.BOLD), 16, orderPrioritasTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 tvOrderPrioritas.setText(MethodChecker.fromHtml(shippingDurationUiModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage()));
                 tvOrderPrioritas.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 tvOrderPrioritas.setVisibility(View.GONE);
             }
 

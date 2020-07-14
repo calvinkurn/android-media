@@ -48,4 +48,19 @@
 
     <string name="title_topchat">Chat</string>
 
+
+    <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+
+    <!-- Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
+    <!-- Shop Score -->
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
+    
+    <!--Product Add Edit-->
+    <string name="title_product_add_edit">Product Add Edit</string>
+
+    <!-- Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
+
 </resources>

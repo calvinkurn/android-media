@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Result
+import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -23,14 +24,10 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: GeolocationRemoteDataSource
+        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>
 ): HomeRepository {
 
-    override fun getHomeData(): Flow<HomeData?> {
-        return homeCachedDataSource.getCachedHomeData().map {
-            it ?: homeDefaultDataSource.getDefaultHomeData()
-        }
-    }
+    override fun getHomeData() = homeCachedDataSource.getCachedHomeData()
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
         val response = homeRemoteDataSource.getHomeData()
@@ -42,10 +39,14 @@ class HomeRepositoryImpl @Inject constructor(
             }
         }
         val homeData = response.getSuccessData<HomeData>()
-        homeCachedDataSource.saveToDatabase(homeData)
+        if (homeData.dynamicHomeChannel.channels.isEmpty()) {
+            homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
+        } else {
+            homeCachedDataSource.saveToDatabase(homeData)
+        }
         emit(Result.success(null))
     }
 
-    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.sendGeolocationInfo()
+    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.get().sendGeolocationInfo()
 
 }

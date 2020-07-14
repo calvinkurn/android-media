@@ -12,7 +12,8 @@ data class ProductSocialProofDataModel(
         var rating: Float? = null,
         var wishListCount: Int = 0,
         var stats: Stats? = null,
-        var txStats: TxStatsDynamicPdp? = null
+        var txStats: TxStatsDynamicPdp? = null,
+        var isSocialProofPv: Boolean = false
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder =  ImpressHolder()
 

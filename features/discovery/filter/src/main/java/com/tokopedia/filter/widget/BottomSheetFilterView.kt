@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.TextView
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
@@ -148,7 +148,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
             FilterTracking.eventFilterJourney(it, filterTitle, option.name,
                 false, isChecked, option.isAnnotation)
         }
-        filterController.setFilter(option, isChecked)
+        filterController.setFilter(option, isChecked, option.isTypeRadio)
         applyFilter()
     }
 
@@ -161,12 +161,6 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     override fun removeSavedTextInput(uniqueId: String) {
         val option = OptionHelper.generateOptionFromUniqueId(uniqueId)
         filterController.setFilter(option, false, true)
-
-        val key = OptionHelper.parseKeyFromUniqueId(uniqueId)
-        trackingData?.let {
-            FilterTracking.eventFilterJourney(it, key, "",
-                false, false, option.isAnnotation)
-        }
         updateResetButtonVisibility()
     }
 
@@ -174,12 +168,6 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
         val textInputOption = OptionHelper.generateOptionFromUniqueId(uniqueId)
         textInputOption.value = textInput
         filterController.setFilter(textInputOption, true, true)
-
-        val key = textInputOption.key
-        trackingData?.let {
-            FilterTracking.eventFilterJourney(it, key, textInput,
-                false, true, textInputOption.isAnnotation)
-        }
         updateResetButtonVisibility()
     }
 
@@ -270,7 +258,12 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     override fun onPriceSliderRelease(minValue: Int, maxValue: Int) {
-        if (filterController.isSliderValueHasChanged(minValue, maxValue)) {
+        if (filterController.isSliderMinValueHasChanged(minValue)) {
+            sendTrackingPriceMin(minValue)
+            applyFilter()
+        }
+        if (filterController.isSliderMaxValueHasChanged(maxValue)) {
+            sendTrackingPriceMax(maxValue)
             applyFilter()
         }
     }
@@ -279,8 +272,28 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
         filterController.saveSliderValueStates(minValue, maxValue)
     }
 
-    override fun onPriceEditedFromTextInput(minValue: Int, maxValue: Int) {
+    override fun onMinPriceEditedFromTextInput(minValue: Int) {
+        sendTrackingPriceMin(minValue)
         applyFilter()
+    }
+
+    override fun onMaxPriceEditedFromTextInput(maxValue: Int) {
+        sendTrackingPriceMax(maxValue)
+        applyFilter()
+    }
+
+    private fun sendTrackingPriceMin(value: Int) {
+        trackingData?.let {
+            FilterTracking.eventFilterJourney(it, Option.KEY_PRICE_MIN, value.toString(),
+                    false, true, false)
+        }
+    }
+
+    private fun sendTrackingPriceMax(value: Int) {
+        trackingData?.let {
+            FilterTracking.eventFilterJourney(it, Option.KEY_PRICE_MAX, value.toString(),
+                    false, true, false)
+        }
     }
 
     override fun isSelectedCategory(option: Option): Boolean {

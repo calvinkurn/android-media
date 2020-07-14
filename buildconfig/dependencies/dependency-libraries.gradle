@@ -2,29 +2,32 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.10-sellerapp",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.12-alpha",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.35-sellerapp",
-            network                 : "com.tokopedia.network:network:1.0.19-sellerapp",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
+            network                 : "com.tokopedia.network:network:1.1.4",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.10",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.11",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.16",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
-            analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.1-alpha",
-            analyticParam           : "com.tokopedia.analytic:param:0.0.1-alpha",
-            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.1-alpha",
-            analyticFirebaseRules    : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha2"
-
-
+            betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
+            chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
+            akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2",
+            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.5",
+            fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.4",
+            analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.3",
+            analyticParam           : "com.tokopedia.analytic:param:0.0.2",
+            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.3",
+            analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
+            analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3"
     ]
 
     // Sort and categorize alphabetically by folder name
     libraries = [
             adapterDelegate         : ":libraries:adapter_delegate",
+            akamaiBotLib            : ":libraries:akamai_bot_lib",
             analytics               : ":libraries:analytics",
             analyticsDebugger       : ":libraries:analytics_debugger",
             analyticsDebuggerNoop   : ":libraries:analytics_debugger_noop",
@@ -43,15 +46,17 @@ ext {
             datePickerRange         : ":libraries:date_picker_range",
             deviceInfo              : ":libraries:device_info",
             dynamicFeatures         : ":libraries:dynamic_features",
+            encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             graphView               : ":libraries:graph_view",
+            graphql                 : ":libraries:graphql",
             imagePicker             : ":libraries:image_picker",
             imagePreview            : ":libraries:image_preview",
             imageuploader           : ":libraries:imageuploader",
             inappupdate             : ":libraries:inappupdate",
             instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
-//            iris                    : ":libraries:iris_no_op",
+            irisSession             : ":libraries:iris_session",
             kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
             liveness_lib            : ":libraries:liveness_lib",
@@ -67,6 +72,8 @@ ext {
             remoteConfig            : ":libraries:remote_config",
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
+            preReleaseInspector     : ":libraries:pre_release_inspector",
+            preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
             sharedata               : ":libraries:sharedata",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
@@ -82,12 +89,14 @@ ext {
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
-            promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
+            utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
+            mapviewer               : ":libraries:mapviewer",
+            tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central"
     ]
 }

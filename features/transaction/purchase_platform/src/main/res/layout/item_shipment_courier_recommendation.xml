@@ -18,6 +18,8 @@
         android:id="@+id/ticker_promo_logistic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         android:visibility="visible"
         tools:layout_height="50dp" />
 

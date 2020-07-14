@@ -10,12 +10,14 @@ object SomConsts {
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_TAB_ACTIVE = "tab_active"
     const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
     const val PARAM_BOOKING_CODE = "bookingCode"
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
+    const val PARAM_ORDER_CODE = "order_code"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -31,6 +33,7 @@ object SomConsts {
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
+    const val FROM_WIDGET_TAG = "from widget"
 
     const val STATUS_ALL_ORDER = "all_order"
     const val STATUS_NEW_ORDER = "new_order"
@@ -139,6 +142,7 @@ object SomConsts {
 
     const val REPLACE_CUST_NAME = "#custName"
     const val REPLACE_INVOICE_NO = "#invoiceNo"
+    const val REPLACE_SOM_NOTES = "#notes"
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2

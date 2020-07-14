@@ -1,12 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
 import android.content.Context
-import androidx.annotation.LayoutRes
-import com.google.android.material.tabs.TabLayout
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
@@ -14,26 +13,25 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
-
-import java.util.ArrayList
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import java.util.*
 
 /**
  * Created by henrypriyono on 22/03/18.
  */
 
 class HomeRecommendationFeedViewHolder(itemView: View,
-                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedViewModel>(itemView), HomeTabFeedListener {
+                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
     private val homeFeedsViewPager: ViewPager = itemView.findViewById(R.id.view_pager_home_feeds)
     private val homeFeedsTabLayout: CollapsingTabLayout = itemView.findViewById(R.id.tab_layout_home_feeds)
     private val homeFeedsTabShadow: View = itemView.findViewById(R.id.view_feed_shadow)
     private val container: View = itemView.findViewById(R.id.home_recommendation_feed_container)
     private val context: Context = itemView.context
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null
-    private var feedTabModelList: List<FeedTabModel>? = null
+    private var recommendationTabDataModelList: List<RecommendationTabDataModel>? = null
 
-    override fun bind(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel) {
+    override fun bind(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel) {
         val layoutParams = container.layoutParams
 
         //we must specify height for viewpager, so it can't scroll up anymore and create
@@ -42,13 +40,13 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         layoutParams.height = listener.windowHeight - listener.homeMainToolbarHeight + context.resources.getDimensionPixelSize(R.dimen.dp_8)
         container.layoutParams = layoutParams
 
-        feedTabModelList = homeRecommendationFeedViewModel.feedTabModel
+        recommendationTabDataModelList = homeRecommendationFeedDataModel.recommendationTabDataModel
 
         homeFeedsTabLayout.visibility = View.VISIBLE
         homeFeedsViewPager.visibility = View.VISIBLE
 
         initViewPagerAndTablayout()
-        homeRecommendationFeedViewModel.isNewData = false
+        homeRecommendationFeedDataModel.isNewData = false
     }
 
     private fun initViewPagerAndTablayout() {
@@ -56,18 +54,17 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 listener,
                 listener.eggListener,
                 this,
-                listener.childFragmentManager,
-                feedTabModelList,
-                listener.trackingQueue,
+                listener.childsFragmentManager,
+                recommendationTabDataModelList,
                 listener.parentPool)
 
         homeFeedsViewPager.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
         homeFeedsViewPager.adapter = homeFeedPagerAdapter
-        homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(feedTabModelList!!))
+        homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!))
         homeFeedsTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position < feedTabModelList!!.size) {
-                    val selectedFeedTabModel = feedTabModelList!![tab.position]
+                if (tab.position < recommendationTabDataModelList!!.size) {
+                    val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
                     HomePageTracking.eventClickOnHomePageRecommendationTab(
                             context,
                             selectedFeedTabModel
@@ -88,9 +85,9 @@ class HomeRecommendationFeedViewHolder(itemView: View,
     }
 
 
-    private fun convertToTabItemDataList(feedTabModelList: List<FeedTabModel>): List<CollapsingTabLayout.TabItemData> {
+    private fun convertToTabItemDataList(recommendationTabDataModelList: List<RecommendationTabDataModel>): List<CollapsingTabLayout.TabItemData> {
         val tabItemDataList = ArrayList<CollapsingTabLayout.TabItemData>()
-        for (feedTabModel in feedTabModelList) {
+        for (feedTabModel in recommendationTabDataModelList) {
             tabItemDataList.add(CollapsingTabLayout.TabItemData(feedTabModel.name, feedTabModel.imageUrl))
         }
         return tabItemDataList

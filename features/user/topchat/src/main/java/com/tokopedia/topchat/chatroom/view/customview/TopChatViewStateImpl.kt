@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -27,6 +28,8 @@ import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -38,7 +41,6 @@ import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 
 /**
  * @author : Steven 29/11/18
@@ -50,7 +52,8 @@ class TopChatViewStateImpl(
         private val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
-        attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+        private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
@@ -62,6 +65,8 @@ class TopChatViewStateImpl(
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
+    private var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
+    var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -81,17 +86,7 @@ class TopChatViewStateImpl(
     override fun getSendButtonId() = R.id.send_but
     override fun getNotifierId() = R.id.notifier
     override fun getChatMenuId() = R.id.iv_chat_menu
-    override fun getAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRootViewId() = R.id.main
-    override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
-
-    override fun getInterlocutorName(headerName: CharSequence): CharSequence {
-        var name = headerName
-        if (name.length > 12) {
-            name = name.substring(0, 12) + "..."
-        }
-        return name
-    }
 
     init {
         initView()
@@ -117,6 +112,67 @@ class TopChatViewStateImpl(
 
         initProductPreviewLayout()
         initHeaderLayout()
+        setupChatStickerMenu()
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addHeaderDateIfDifferent(visitable)
+        super.onReceiveMessageEvent(visitable)
+    }
+
+    override fun setupChatMenu() {
+        chatMenu?.setupAttachmentMenu(attachmentMenuListener)
+        chatMenuButton.setOnClickListener {
+            chatMenu?.toggleAttachmentMenu()
+        }
+    }
+
+    private fun setupChatStickerMenu() {
+        chatMenu?.setStickerMenuListener(stickerMenuListener)
+        chatStickerMenuButton?.setOnClickListener {
+            chatMenu?.toggleStickerMenu()
+        }
+    }
+
+    override fun onStickerOpened() {
+        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_keyboard)
+        chatStickerMenuButton?.setOnClickListener {
+            replyEditText.requestFocus()
+            chatMenu?.showKeyboard(replyEditText)
+        }
+    }
+
+    override fun onStickerClosed() {
+        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_sticker)
+        chatStickerMenuButton?.setOnClickListener {
+            chatMenu?.toggleStickerMenu()
+        }
+    }
+
+    override fun onKeyboardOpened() {
+        chatMenu?.isKeyboardOpened = true
+        hideChatMenu()
+    }
+
+    override fun onKeyboardClosed() {
+        chatMenu?.isKeyboardOpened = false
+        showChatMenu()
+    }
+
+    override fun hideChatMenu() {
+        chatMenu?.hideMenu()
+    }
+
+    override fun showChatMenu() {
+        chatMenu?.showMenuDelayed()
+    }
+
+    override fun isAttachmentMenuVisible(): Boolean {
+        return chatMenu?.isVisible == true
+    }
+
+    override fun hideAttachmentMenu() {
+        chatMenu?.hideMenu()
     }
 
     private fun initHeaderLayout() {
@@ -426,7 +482,7 @@ class TopChatViewStateImpl(
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
         myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
         myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setBtnOk(view.context.getString(R.string.topchat_chat_delete_confirm))
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
@@ -435,11 +491,11 @@ class TopChatViewStateImpl(
         myAlertDialog.show()
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
         val action = notifier.findViewById<View>(R.id.action)
-        if (b) {
+        if (isWebSocketError) {
             title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 

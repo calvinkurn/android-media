@@ -69,31 +69,31 @@ class FlightFilterViewModel @Inject constructor(
 
     fun filterTransit(selectedTransits: List<TransitEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
-        updatedFilterModel.transitTypeList = selectedTransits
+        updatedFilterModel.transitTypeList = selectedTransits.toMutableList()
         mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterDepartureTime(selectedDepartureTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
-        updatedFilterModel.departureTimeList = selectedDepartureTimes
+        updatedFilterModel.departureTimeList = selectedDepartureTimes.toMutableList()
         mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterArrivalTime(selectedArrivalTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
-        updatedFilterModel.arrivalTimeList = selectedArrivalTimes
+        updatedFilterModel.arrivalTimeList = selectedArrivalTimes.toMutableList()
         mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterAirlines(selectedArlines: List<String>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
-        updatedFilterModel.airlineList = selectedArlines
+        updatedFilterModel.airlineList = selectedArlines.toMutableList()
         mutableFilterModel.value = updatedFilterModel
     }
 
     fun filterFacilities(selectedFacilities: List<FlightFilterFacilityEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
-        updatedFilterModel.facilityList = selectedFacilities
+        updatedFilterModel.facilityList = selectedFacilities.toMutableList()
         mutableFilterModel.value = updatedFilterModel
     }
 
@@ -119,7 +119,7 @@ class FlightFilterViewModel @Inject constructor(
         launch(dispatcherProvider.ui()) {
             filterModel.value?.let {
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
+                        flightSearchStatisticUseCase.createRequestParams(it)))
             }
         }
     }
@@ -140,8 +140,20 @@ class FlightFilterViewModel @Inject constructor(
             // Sort
             items.add(SORT_ORDER, FlightSortModel())
 
+            // Transit
+            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
+
+            // Departure Time
+            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
+
+            // Arrival Time
+            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
+
             // Airline
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
+
+            // Facility
+            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
             // Price
             val selectedMinPrice = filterModel.value?.priceMin ?: 0
@@ -153,18 +165,6 @@ class FlightFilterViewModel @Inject constructor(
                     selectedEndValue = if (selectedMaxPrice < it.maxPrice) selectedMaxPrice else it.maxPrice
             ))
 
-            // Departure Time
-            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
-
-            // Arrival Time
-            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
-
-            // Transit
-            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
-
-            // Facility
-            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
-
         }
 
         filterViewData.postValue(items)
@@ -172,7 +172,7 @@ class FlightFilterViewModel @Inject constructor(
 
     private fun resetFilterModel(): FlightFilterModel {
         val filterModel = mutableFilterModel.value?.copy() ?: FlightFilterModel()
-        filterModel.setHasFilter(false)
+        filterModel.isHasFilter = false
         filterModel.isSpecialPrice = false
         filterModel.priceMin = mutableStatisticModel.value?.minPrice ?: 0
         filterModel.priceMax = mutableStatisticModel.value?.maxPrice ?: Integer.MAX_VALUE
@@ -188,14 +188,12 @@ class FlightFilterViewModel @Inject constructor(
 
     companion object {
         const val SORT_ORDER = 0
-        const val AIRLINE_ORDER = 1
-        const val PRICE_ORDER = 2
-        const val DEPARTURE_TIME_ORDER = 3
-        const val ARRIVAL_TIME_ORDER = 4
-        const val TRANSIT_ORDER = 5
-        const val FACILITY_ORDER = 6
-
-        const val FILTER_SECTION_SIZE = 7
+        const val TRANSIT_ORDER = 1
+        const val DEPARTURE_TIME_ORDER = 2
+        const val ARRIVAL_TIME_ORDER = 3
+        const val AIRLINE_ORDER = 4
+        const val FACILITY_ORDER = 5
+        const val PRICE_ORDER = 6
 
         const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }

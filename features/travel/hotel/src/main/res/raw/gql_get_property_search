@@ -21,6 +21,11 @@ query PropertySearch($data:PropertySearchRequest!){
               priceAmount
             }
           }
+          deals {
+            tagging
+            price
+            priceAmount
+          }
         }
         roomAvailability
         image {

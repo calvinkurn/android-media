@@ -10,7 +10,10 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 
@@ -37,7 +40,6 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
 
-        fun showErrorWebSocket(b: Boolean)
 
         fun getStringArgument(key: String, savedInstanceState: Bundle?): String
 
@@ -54,6 +56,14 @@ interface TopChatContract {
         fun sendAnalyticAttachmentSent(attachment: SendablePreview)
 
         fun redirectToBrowser(url: String)
+
+        fun isUseNewCard(): Boolean
+
+        fun isUseCarousel(): Boolean?
+
+        fun renderOrderProgress(chatOrder: ChatOrderProgress)
+
+        fun getChatMenuView(): ChatMenuView?
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -80,7 +90,11 @@ interface TopChatContract {
 
         fun startUploadImages(it: ImageUploadViewModel)
 
-        fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
+        fun loadPreviousChat(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+        )
 
         fun isUploading(): Boolean
 
@@ -104,6 +118,10 @@ interface TopChatContract {
                                onSuccess: (Boolean) -> Unit)
 
         fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
+                                      startTime: String, opponentId: String,
+                                      onSendingMessage: () -> Unit)
+
+        fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
                                       startTime: String, opponentId: String,
                                       onSendingMessage: () -> Unit)
 
@@ -138,5 +156,11 @@ interface TopChatContract {
                 userId: String,
                 wishListActionListener: WishListActionListener
         )
+
+        fun updateMinReplyTime(chatRoom: ChatroomViewModel)
+
+        fun getOrderProgress(messageId: String)
+
+        fun getStickerGroupList(chatRoom: ChatroomViewModel)
     }
 }

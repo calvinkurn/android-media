@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,18 +14,23 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
+import com.tokopedia.product.detail.view.listener.ProductFullDescriptionListener
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
 import kotlinx.android.synthetic.main.fragment_product_full_description.*
 
-class ProductFullDescriptionFragment : BaseDaggerFragment() {
+class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescriptionListener {
 
     companion object {
         private const val PARAM_DESCRIPTION_DATA = "description_data"
@@ -83,6 +89,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment() {
 
             txt_product_descr.autoLinkMask = 0
             Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)
+            txt_product_descr.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
         }
     }
 
@@ -95,6 +102,15 @@ class ProductFullDescriptionFragment : BaseDaggerFragment() {
                 startActivity(Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://www.youtube.com/watch?v=" + vids[index].url)));
             }
+        }
+    }
+
+    override fun onBranchClicked(url: String) {
+        if (!GlobalConfig.isSellerApp()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            intent.putExtra(RouteManager.BRANCH, url)
+            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
+            startActivity(intent)
         }
     }
 }

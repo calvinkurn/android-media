@@ -8,6 +8,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,12 +87,27 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("donation_checkbox_status")
     @Expose
     private boolean donationCheckboxStatus;
+    @SerializedName("campaign_timer")
+    @Expose
+    private CampaignTimer campaignTimer;
     @SerializedName("addresses")
     @Expose
     private Addresses addresses;
     @SerializedName("disabled_features_detail")
     @Expose
     private DisabledFeaturesDetail disabledFeaturesDetail;
+    @SerializedName("promo")
+    @Expose
+    private PromoSAFResponse promoSAFResponse;
+    @SerializedName("potential_gained_points")
+    @Expose
+    private PotentialGainedPoints potentialGainedPoints;
+    @SerializedName("open_prerequisite_site")
+    @Expose
+    private boolean openPrerequisiteSite;
+    @SerializedName("eligible_new_shipping_experience")
+    @Expose
+    private boolean eligibleNewShippingExperience;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -184,11 +200,33 @@ public class ShipmentAddressFormDataResponse {
         return donationCheckboxStatus;
     }
 
+    public CampaignTimer getCampaignTimer() {
+        return campaignTimer;
+    }
+
     public Addresses getAddresses() {
         return addresses;
     }
 
     public DisabledFeaturesDetail getDisabledFeaturesDetail() {
         return disabledFeaturesDetail;
+    }
+
+    public PromoSAFResponse getPromoSAFResponse() { return promoSAFResponse; }
+
+    public void setPromoSAFResponse(PromoSAFResponse promoSAFResponse) { this.promoSAFResponse = promoSAFResponse; }
+
+    public PotentialGainedPoints getPotentialGainedPoints() { return potentialGainedPoints; }
+
+    public void setPotentialGainedPoints(PotentialGainedPoints potentialGainedPoints) {
+        this.potentialGainedPoints = potentialGainedPoints;
+    }
+
+    public boolean isOpenPrerequisiteSite() {
+        return openPrerequisiteSite;
+    }
+
+    public boolean isEligibleNewShippingExperience() {
+        return eligibleNewShippingExperience;
     }
 }

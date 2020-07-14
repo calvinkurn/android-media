@@ -1,10 +1,8 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionRepository
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter
@@ -55,7 +53,7 @@ class TokopointsHomeRepository @Inject constructor(@Named(TP_GQL_TOKOPOINT_DETAI
         val request5 = GraphqlRequest(tp_gql_sum_coupon,
                 TokoPointSumCouponOuter::class.java, false)
         mGetCouponCountUseCase.addRequest(request5)
-        mGetTokoPointDetailUseCase.executeOnBackground().getSuccessData<TokoPointSumCouponOuter>()
+        mGetCouponCountUseCase.executeOnBackground().getSuccessData<TokoPointSumCouponOuter>()
 
     }
 }

@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.view.uimodel.TotalLikeUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 02/12/19
@@ -28,6 +30,7 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
 
     private val animationLike = view.findViewById<LottieAnimationView>(R.id.animation_like)
     private val vLikeClickArea = view.findViewById<View>(R.id.v_like_click_area)
+    private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
 
     init {
         animationLike.addAnimatorListener(object : Animator.AnimatorListener {
@@ -63,7 +66,11 @@ class LikeView(container: ViewGroup, listener: Listener) : UIView(container) {
         view.hide()
     }
 
-    fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
+    internal fun setTotalLikes(totalLikes: TotalLikeUiModel) {
+        tvTotalLikes.text = totalLikes.totalLikeFormatted
+    }
+
+    internal fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
         if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
         else {
             if (animate) animationLike.playAnimation()

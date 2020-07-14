@@ -33,7 +33,7 @@ open class OneTapComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             ScreenStateEvent.ShowOneTapOnboarding -> uiView.showAnimated()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                         }
                     }
         }

@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -85,10 +85,7 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> implements De
         } else {
             dealType = DealsAnalytics.TRENDING_DEALS;
         }
-
-        DaggerDealsComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
-        ).build().inject(this);
+        DealsComponentInstance.getDealsComponent(getActivity().getApplication()).inject(this);
     }
 
 

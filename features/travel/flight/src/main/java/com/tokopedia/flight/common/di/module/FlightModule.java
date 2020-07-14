@@ -9,10 +9,10 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
-import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
-import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
+import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
@@ -33,9 +33,6 @@ import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.review.data.FlightBookingDataSource;
-import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
-import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
@@ -115,18 +112,11 @@ public class FlightModule {
     @FlightScope
     @Provides
     public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
-                                                    FlightCartDataSource flightCartDataSource,
-                                                    FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
-                                                    FlightBookingDataSource flightBookingDataSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
-                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource,
-                                                    FlightBookingCartDataSource flightBookingCartDataSource) {
-        return new FlightRepositoryImpl(getFlightClassesUseCase, flightCartDataSource,
-                flightCheckVoucheCodeDataSource, flightBookingDataSource, flightOrderDataSource,
-                flightOrderMapper, flightCancellationCloudDataSource, flightCancelVoucherDataSource,
-                flightBookingCartDataSource);
+                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
+        return new FlightRepositoryImpl(getFlightClassesUseCase, flightOrderDataSource,
+                flightOrderMapper, flightCancellationCloudDataSource);
     }
 
     @Provides
@@ -200,6 +190,24 @@ public class FlightModule {
     }
 
     @Provides
+    @FlightScope
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao provideFlightJourneyNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightJourneyCoroutineDao();
+    }
+
+    @Provides
+    @FlightScope
+    com.tokopedia.flight.searchV4.data.FlightRouteDao provideRouteNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightRouteCoroutineDao();
+    }
+
+    @Provides
+    @FlightScope
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightComboCoroutineDao();
+    }
+
+    @Provides
     FlightRoomDb provideFlightAirportRoomDb(@ApplicationContext Context context) {
         return FlightRoomDb.getDatabase(context);
     }
@@ -251,5 +259,10 @@ public class FlightModule {
         return new TrackingCrossSellUtil();
     }
 
+    @FlightScope
+    @Provides
+    public TravelDispatcherProvider provideDispatcherProvider() {
+        return new TravelProductionDispatcherProvider();
+    }
 
 }

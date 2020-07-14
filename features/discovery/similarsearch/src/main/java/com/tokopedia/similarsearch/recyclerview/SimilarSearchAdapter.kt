@@ -58,12 +58,4 @@ internal class SimilarSearchAdapter(
 
         diffResult.dispatchUpdatesTo(this)
     }
-
-    fun updateSimilarProductItemWishlistStatus(similarProductItem: Product) {
-        val index = list.indexOfFirst { it is Product && it.id == similarProductItem.id }
-
-        list[index] = similarProductItem
-
-        notifyItemChanged(index, similarProductItem.isWishlisted)
-    }
 }

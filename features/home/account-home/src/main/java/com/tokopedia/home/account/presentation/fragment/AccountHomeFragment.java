@@ -239,10 +239,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(e);
+            ((BaseAccountView) currentFragment).showError(e, errorCode);
         }
     }
 

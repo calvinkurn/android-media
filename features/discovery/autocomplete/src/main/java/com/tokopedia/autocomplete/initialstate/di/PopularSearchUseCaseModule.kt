@@ -1,16 +1,15 @@
 package com.tokopedia.autocomplete.initialstate.di
 
-import com.tokopedia.autocomplete.di.AutoCompleteScope
 import com.tokopedia.autocomplete.initialstate.InitialStateRepository
 import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearchUseCase
 import dagger.Module
 import dagger.Provides
 
-@AutoCompleteScope
+@InitialStateScope
 @Module
 class PopularSearchUseCaseModule {
 
-    @AutoCompleteScope
+    @InitialStateScope
     @Provides
     internal fun providePopularSearchUseCase(
             initialStateRepository: InitialStateRepository

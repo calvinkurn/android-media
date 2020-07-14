@@ -1,7 +1,6 @@
 package com.tokopedia.salam.umrah.search.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import org.junit.Assert.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -23,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 @RunWith(JUnit4::class)
 class UmrahSearchViewModelTest{
@@ -109,9 +109,12 @@ class UmrahSearchViewModelTest{
     @Test
     fun searchUmrahProducts_shouldReturn1Data() {
         // given
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(UmrahSearchProductEntity::class.java to UmrahSearchProductEntity(umrahSearchProducts)),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = UmrahSearchProductEntity::class.java
+        result[objectType] = UmrahSearchProductEntity(umrahSearchProducts)
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { mGraphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         // when
@@ -128,9 +131,15 @@ class UmrahSearchViewModelTest{
     @Test
     fun searchUmrahProducts_shouldReturnFail() {
         // given
-        val gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(UmrahSearchProductEntity::class.java to listOf(GraphqlError())), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = UmrahSearchProductEntity::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+
+        val gqlResponseFail = GraphqlResponse(result, errors, false)
+
         coEvery { mGraphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
         // when
@@ -139,5 +148,13 @@ class UmrahSearchViewModelTest{
         // then
         val actual = umrahSearchViewModel.searchResult.value
         assertTrue(actual is Fail)
+    }
+
+    @Test
+    fun searchResetParam_shouldResetParam(){
+        umrahSearchViewModel.resetSearchParam()
+
+        val actual = UmrahSearchProductDataParam()
+        assert(actual==umrahSearchViewModel.getSearchParam())
     }
 }

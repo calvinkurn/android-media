@@ -10,6 +10,7 @@ import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
+import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -98,4 +99,6 @@ class WishlistModule {
             GraphqlHelper.loadRawString(context.resources,
                     com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
 }

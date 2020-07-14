@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -12,11 +12,10 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchReturnFragment
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class FlightSearchReturnActivity : FlightSearchActivity(),
         FlightSearchFragment.OnFlightSearchFragmentListener {
@@ -26,28 +25,19 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     private lateinit var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+
+        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
+        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
+        super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment {
-        val priceViewModel: FlightPriceViewModel = intent.getParcelableExtra<FlightPriceViewModel>(EXTRA_PRICE_VIEW_MODEL)
-        return FlightSearchReturnFragment.newInstance(passDataViewModel, selectedDepartureID,
+        val priceModel: FlightPriceModel = intent.getParcelableExtra<FlightPriceModel>(EXTRA_PRICE_VIEW_MODEL)
+        return FlightSearchReturnFragment.newInstance(passDataModel, selectedDepartureID,
                 intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),
-                priceViewModel,
+                priceModel,
                 intent.getBooleanExtra(EXTRA_IS_COMBINE_DONE, false))
-    }
-
-    override fun initializeToolbarData() {
-        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
-        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
-
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                passDataViewModel.returnDate)
-        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
-        classString = passDataViewModel.flightClass.title
     }
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH_RETURN
@@ -64,56 +54,58 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         }
     }
 
-    override fun getDepartureAirport(): FlightAirportViewModel = passDataViewModel.arrivalAirport
+    override fun getDepartureAirport(): FlightAirportModel = passDataModel.arrivalAirport
 
-    override fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
+    override fun getArrivalAirport(): FlightAirportModel = passDataModel.departureAirport
 
-    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                              isBestPairing: Boolean, isCombineDone: Boolean) {
+    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceModel: FlightPriceModel,
+                              isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        passDataModel.searchRequestId = requestId
+        startActivityForResult(FlightBookingActivity
+                .getCallingIntent(this,
+                        passDataModel,
+                        selectedDepartureID,
+                        selectedDepartureTerm,
+                        flightPriceModel,
+                        selectedFlightID,
+                        selectedFlightTerm),
+                REQUEST_CODE_BOOKING)
+    }
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
-            startActivityForResult(FlightBookingActivity
-                    .getCallingIntent(this,
-                            passDataViewModel,
-                            selectedDepartureID,
-                            selectedDepartureTerm,
-                            flightPriceViewModel,
-                            selectedFlightID,
-                            selectedFlightTerm),
-                    REQUEST_CODE_BOOKING)
-        } else {
-            startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
-                    .getCallingIntent(this,
-                            passDataViewModel,
-                            selectedDepartureID,
-                            flightPriceViewModel,
-                            selectedFlightID),
-                    REQUEST_CODE_BOOKING)
-        }
+    override fun isReturnPage(): Boolean = true
+
+    override fun initializeToolbarData() {
+
+        dateString = FlightDateUtil.formatDate(
+                FlightDateUtil.DEFAULT_FORMAT,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                passDataModel.returnDate)
+        passengerString = buildPassengerTextFormatted(passDataModel.flightPassengerViewModel)
+        classString = passDataModel.flightClass.title
     }
 
     companion object {
-        val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
-        val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
-        val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
-        val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
-        val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
+        const val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
+        const val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
+        const val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
+        const val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
+        const val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
 
-        private val REQUEST_CODE_BOOKING = 13
+        private const val REQUEST_CODE_BOOKING = 13
 
         fun getCallingIntent(context: Context,
-                             passDataViewModel: FlightSearchPassDataViewModel,
+                             passDataModel: FlightSearchPassDataModel,
                              selectedDepartureID: String,
                              selectedDepartureTerm: String,
                              isBestPairing: Boolean,
-                             priceViewModel: FlightPriceViewModel,
+                             priceModel: FlightPriceModel,
                              isCombineDone: Boolean): Intent {
             val intent = Intent(context, FlightSearchReturnActivity::class.java)
-            intent.putExtra(EXTRA_PASS_DATA, passDataViewModel)
+            intent.putExtra(EXTRA_PASS_DATA, passDataModel)
             intent.putExtra(EXTRA_DEPARTURE_ID, selectedDepartureID)
             intent.putExtra(EXTRA_DEPARTURE_TERM, selectedDepartureTerm)
             intent.putExtra(EXTRA_IS_BEST_PAIRING, isBestPairing)
-            intent.putExtra(EXTRA_PRICE_VIEW_MODEL, priceViewModel)
+            intent.putExtra(EXTRA_PRICE_VIEW_MODEL, priceModel)
             intent.putExtra(EXTRA_IS_COMBINE_DONE, isCombineDone)
 
             return intent

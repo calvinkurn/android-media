@@ -23,20 +23,22 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.elevation = 0.0f
+
+        setTitle(R.string.hotel_review_title)
     }
 
     override fun getNewFragment(): Fragment =
-            HotelReviewFragment.createInstance(intent.getIntExtra(HotelReviewFragment.ARG_PROPERTY_ID, 0))
+            HotelReviewFragment.createInstance(intent.getLongExtra(HotelReviewFragment.ARG_PROPERTY_ID, 0))
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = "Ulasan"
+    override fun getScreenName(): String = ""
 
     companion object {
-        fun getCallingIntent(context: Context, propertyId: Int): Intent = Intent(context, HotelReviewActivity::class.java)
+        fun getCallingIntent(context: Context, propertyId: Long): Intent = Intent(context, HotelReviewActivity::class.java)
                 .putExtra(HotelReviewFragment.ARG_PROPERTY_ID,propertyId)
     }
 

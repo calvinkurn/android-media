@@ -2,6 +2,13 @@ apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 
+repositories{
+    flatDir {
+        dirs 'libs'
+        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -58,7 +65,8 @@ dependencies {
 
     //Content
 //    implementation project(rootProject.ext.features.profile)
-
+    //Discovery
+    implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
 //    implementation project(rootProject.ext.features.instantLoan)
 //    implementation project(rootProject.ext.features.saldodetails)
@@ -71,6 +79,7 @@ dependencies {
 //    implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.changepassword)
 //    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
@@ -79,4 +88,8 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
 //    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.shopShowcase)
+    implementation project(rootProject.ext.features.voucherCreation)
+    implementation project(rootProject.ext.features.sellerSearch)
 }

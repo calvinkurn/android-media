@@ -208,6 +208,18 @@ public class ChannelInfoViewModel implements Parcelable {
         chatPermitViewModel = in.readParcelable(ChatPermitModel.class.getClassLoader());
     }
 
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(channelId);
@@ -250,18 +262,6 @@ public class ChannelInfoViewModel implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
-        @Override
-        public ChannelInfoViewModel createFromParcel(Parcel in) {
-            return new ChannelInfoViewModel(in);
-        }
-
-        @Override
-        public ChannelInfoViewModel[] newArray(int size) {
-            return new ChannelInfoViewModel[size];
-        }
-    };
 
     public String getChannelId() {
         return channelId;

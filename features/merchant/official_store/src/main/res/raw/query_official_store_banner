@@ -11,6 +11,7 @@ query OfficialStoreBanners($page: String) {
           persona
        	  category_persona
        	  brand_id
+       	  campaignCode
         }
     }
 }

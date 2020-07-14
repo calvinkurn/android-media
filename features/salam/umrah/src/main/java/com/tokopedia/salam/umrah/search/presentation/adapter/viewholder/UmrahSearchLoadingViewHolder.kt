@@ -11,8 +11,7 @@ import com.tokopedia.salam.umrah.R
  */
 class UmrahSearchLoadingViewHolder(itemView: View) : AbstractViewHolder<LoadingModel>(itemView) {
     override fun bind(element: LoadingModel) {
-        itemView.layoutParams = AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)
+
     }
     companion object {
         val LAYOUT = R.layout.item_umrah_search_shimmering

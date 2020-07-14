@@ -43,29 +43,39 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.liveness_lib)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.unifyDependencies.icon
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.playCore)
 
-    implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.playCore)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.cameraView
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
@@ -73,14 +83,16 @@ dependencies {
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.retrofitMock
     testImplementation rootProject.ext.testDependencies.retrofitMockWebser
-    testImplementation "org.jetbrains.kotlin:kotlin-test:1.3.61"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 }
 
+project.ext {
+    artifactId = 'liveness'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.2"
+    artifactName = "liveness-release"
+}
+
+apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'

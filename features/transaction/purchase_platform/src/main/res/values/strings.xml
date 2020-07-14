@@ -32,6 +32,7 @@
     <string name="label_hardcoded_order_prioritas_info">Pesanan diproses dalam 1 jam</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_action_snackbar_close">Tutup</string>
+    <string name="label_action_snackbar_retry">Coba lagi</string>
     <string name="label_dropshipper_info">Anda dapat mengirimkan barang ke alamat lain dengan data Anda sebagai pengirim</string>
     <string name="message_error_dropshipper_name_min_length">Nama terlalu pendek</string>
     <string name="message_error_dropshipper_name_max_length">Nama terlalu panjang</string>
@@ -96,7 +97,9 @@
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
-    <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
+    <string name="message_error_courier_not_selected">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
+    <string name="message_error_multiple_courier_not_selected">Pilih pengiriman untuk %d pesananmu dulu yuk sebelum lanjut bayar.</string>
+    <string name="message_error_dropshipper_empty">Pastikan Anda telah melengkapi informasi tambahan.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
     <string name="cart">Keranjang</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
@@ -120,11 +123,11 @@
     <string name="label_button_change_courier_recommendation">Ubah Kurir</string>
     <string name="label_hardcoded_courier_ticker_bold_part">pk 14:00</string>
     <string name="label_button_change_note">Ubah Catatan</string>
-    <string name="label_select_all_product">Pilih semua produk</string>
+    <string name="label_select_all_product">Pilih Semua Barang</string>
     <string name="message_checkout_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda checkout</string>
     <string name="message_delete_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda hapus</string>
     <string name="label_price_total">Total Harga</string>
-    <string name="label_shop_summary">Ringkasan Belanja</string>
+    <string name="label_shop_summary">Ringkasan belanja</string>
     <string name="toast_message_add_wishlist_success">Sukses menambah wishlist</string>
     <string name="toast_message_remove_wishlist_success">Sukses menghapus wishlist</string>
     <string name="label_change_courier">Ubah Kurir</string>
@@ -182,8 +185,9 @@
     <string name="button_mengerti">Mengerti</string>
     <string name="gratis_ongkir">Gratis Ongkir</string>
     <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
-    <string name="label_promo_not_eligible_info"><![CDATA[Promo yang tidak memenuhi syarat & ketentuan akan dinon-aktifkan untuk pembayaran ini.]]></string>
-    <string name="label_button_continue">Lanjutkan</string>
+    <string name="label_promo_not_eligible_info">Ada promo yang tidak bisa dipakai untuk transaksi ini</string>
+    <string name="label_button_continue">Lanjut Bayar</string>
+    <string name="label_button_select_other_promo">Pilih Promo Lain</string>
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
@@ -208,7 +212,7 @@
 
     <string name="label_total_cashback">Total Cashback</string>
     <string name="label_total_discount">Total Diskon</string>
-    <string name="label_shipping_discount">Total Potongan Ongkos Kirim</string>
+    <string name="label_shipping_discount">Total Diskon Ongkos Kirim</string>
     <string name="label_product_discount">Total Diskon Barang</string>
     <string name="activity_title_checkout_variant">Detail Produk</string>
     <string name="bottomsheet_title_no_pinpoint">Tandai Lokasi Pengiriman</string>
@@ -260,4 +264,119 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
 
+    <string name="checkout_module_promo_activity_title">Pakai Kupon/Promo</string>
+
+    <string name="promo_funnel_icon_desc">promo_funnel_icon</string>
+    <string name="promo_funnel_label">Makin hemat pakai promo</string>
+    <string name="promo_desc_no_selected_item">Pilih barang dulu sebelum pakai promo</string>
+    <string name="promo_benefit_info">3 promo dipakai</string>
+    <string name="promo_funnel_icon_chev_desc">promo_funnel_icon_2</string>
+
+    <string name="cart_empty_with_promo_title">Ada promo menunggumu, nih!</string>
+    <string name="cart_empty_with_promo_desc">Ayo belanja min. Rp100.000 untuk pakai promo cashback 10% maks. Rp50.000!</string>
+    <string name="cart_empty_with_promo_btn">Belanja Pakai Promo</string>
+    <string name="promo_checkout_label_promo_recommendation_title">Ada %d promo terbaik untukmu</string>
+    <string name="promo_checkout_label_promo_recommendation_title_after_apply">%d promo terbaik dipilih</string>
+    <string name="promo_checkout_label_recommendation_benefit">Kamu bisa hemat %s</string>
+    <string name="promo_checkout_label_button_apply_promo">Pakai Promo (%d)</string>
+
+    <string name="promo_checkout_inactive_label">Promo gagal ditampilkan</string>
+    <string name="promo_checkout_inactive_desc">Coba refresh beberapa saat lagi</string>
+
+    <string name="promo_summary_usage_label">Diskon barang</string>
+    <string name="promo_summary_usage_value">Rp20.000</string>
+    <string name="promo_choose_item_cart">Pilih barang dulu biar bisa pakai berbagai promo terbaik</string>
+    <string name="label_subtitle_promo_selected">Promo dipilih</string>
+    <string name="label_subtitle_only_one_promo">Hanya bisa pilih 1</string>
+    <string name="label_promo_show_detail">Lihat Detail</string>
+    <string name="label_promo_recommendation_select">Pilih</string>
+    <string name="label_promo_recommendation_selected">Dipilih</string>
+    <string name="label_title_promo_dialog_backpressed">Simpan promo sebelum keluar?</string>
+    <string name="label_description_promo_dialog_backpressed">Kamu baru saja mengubah pilihan promo. Mau disimpan?</string>
+    <string name="label_primary_cta_promo_dialog_backpressed">Simpan Promo Baru</string>
+    <string name="label_secondary_cta_promo_dialog_backpressed">Keluar Halaman</string>
+    <string name="label_error_global_promo_checkout">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
+    <string name="label_promo_page_summary_benefit_title">Kamu bisa hemat</string>
+    <string name="label_button_buy_without_promo">Belanja Tanpa Promo</string>
+    <string name="label_subtitle_promo_eligibility_header">Kamu bisa gabungkan promo biar makin hemat</string>
+    <string name="label_title_promo_eligibility_header">Pilih promo</string>
+    <string name="label_promo_input_hint">Masukkan kode promo</string>
+    <string name="label_button_apply_manual_input_promo">Terapkan</string>
+    <string name="label_prefix_attempted_promo_code">Kode promo:&#160;</string>
+
+    <string name="occ_preference">Pengaturan Beli Langsung</string>
+    <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>
+    <string name="preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu untuk langsung dipakai setiap belanja.</string>
+    <string name="add_first_preference">Atur</string>
+    <string name="add_preference">Tambah Pilihan</string>
+    <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
+    <string name="lbl_default_preference">Utama</string>
+
+    <!--Choose Address-->
+    <string name="hint_find_address">Cari alamat</string>
+    <string name="label_button_save_address">Simpan Alamat</string>
+    <string name="text_detail_address">Tokopedia Tower Ciputra World 2 Lantai 46, Jl. Prof. Dr. Satrio No. Kav. 11, RT.3/RW.3, Kota Jakarta Selatan 12950</string>
+    <string name="text_address_type">Kantor</string>
+    <string name="text_address_name">Tari</string>
+    <string name="text_address_number">081808180008</string>
+    <string name="title_empty_address">Mau dikirim ke mana barangmu?</string>
+    <string name="text_empty_address">Tambahkan alamat pengiriman barang untuk mempermudah proses pembelian</string>
+    <string name="label_button_input_address">Simpan Alamat</string>
+    <string name="label_button_input_address_empty">Tambah Alamat</string>
+    <string name="activity_title_choose_address">Pilih Alamat Pengiriman</string>
+    <string name="activity_subtitle_choose_address">Langkah 1 dari 3</string>
+    <string name="no_pinpoint">Belum Pinpoint</string>
+    <string name="pinpoint">Sudah Pinpoint</string>
+
+    <!--Shipping Duration-->
+    <string name="label_button_choose_shipping_duration">Simpan Durasi Pengiriman</string>
+    <string name="text_shipping_duration">Instan (3 jam)</string>
+    <string name="text_shipping_price">Rp15.000 - Rp17.000</string>
+    <string name="text_shipping_desc">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
+    <string name="activity_title_shipping_duration">Pilih Durasi Pengiriman</string>
+    <string name="activity_subtitle_shipping_address">Langkah 2 dari 3</string>
+    <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
+
+    <string name="one_click_checkout">Beli Langsung</string>
+    <string name="pay">Bayar</string>
+    <string name="preference_number">Pilihan %1d</string>
+    <string name="preference_number_summary">Pilihan</string>
+
+    <string name="lbl_summary_preference_title">Pengaturan Beli Langsung</string>
+    <string name="lbl_summary_preference_option">Pilihan</string>
+    <string name="lbl_summary_preference_with_number_title">Atur</string>
+    <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
+
+    <string name="lbl_choose_payment">Pilih Metode Pembayaran</string>
+    <string name="step_choose_payment">Langkah 3 dari 3</string>
+    <string name="lbl_save">Simpan</string>
+
+    <string name="lbl_delete_preference_title">Hapus pilihan ini?</string>
+    <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
+    <string name="lbl_delete_preference_ok">Ya, Hapus</string>
+    <string name="atur_pilihan">Atur Pilihan</string>
+    <string name="label_pilih">Pilih</string>
+    <string name="label_kurir">Kurir</string>
+    <string name="label_choose_other_preference">Ganti Pilihan Lain</string>
+    <string name="label_create_other_preference">Buat Pilihan Lain</string>
+    <string name="label_choose_this_preference">Gunakan Pilihan Ini</string>
+    <string name="label_used">Digunakan</string>
+
+    <string name="label_pay_total">Total Bayar</string>
+    <string name="label_cashback_ovo_points">Cashback OVO Points</string>
+
+    <string name="lbl_osp_free_shipping">Pengiriman Bebas Ongkir</string>
+    <string name="lbl_osp_free_shipping_with_price">Bebas Ongkir - Rp 0</string>
+    <string name="lbl_osp_free_shipping_only_price">Rp 0</string>
+
+    <string name="lbl_osp_header">Barang yang dibeli</string>
+    <string name="lbl_osp_secondary_header_intro">Hai!</string>
+    <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
+
+    <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
+    <string name="message_error_checkout_empty">Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.</string>
+
+    <string name="label_choose_shipping">Pilih Pengiriman</string>
+    <string name="label_otdg_tnc"><![CDATA[S&K Berlaku]]></string>
+    <string name="label_check">Cek</string>
 </resources>

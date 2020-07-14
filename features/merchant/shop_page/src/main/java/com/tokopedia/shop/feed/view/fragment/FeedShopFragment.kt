@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -21,10 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -122,7 +120,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val KOL_COMMENT_CODE = 13
 
         private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
-        private const val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
+        private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
 
         //region Content Report Param
         private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
@@ -158,10 +156,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
         return view!!.findViewById(R.id.swipeToRefresh)
     }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
+        userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
+        isLoadingInitialData = true
     }
 
     override fun onPause() {
@@ -238,7 +243,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
+            when (requestCode) {
                 OPEN_CONTENT_REPORT -> {
                     if (data!!.getBooleanExtra(CONTENT_REPORT_RESULT_SUCCESS, false)) {
                         onSuccessReportContent()
@@ -258,6 +263,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     onSwipeRefresh()
                 }
             }
+        }
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && isResumed) {
+            onResume()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (userVisibleHint && isLoadingInitialData) {
+            loadInitialData()
         }
     }
 
@@ -284,6 +303,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isForceRefresh = true
         isLoading = false
         if (element.isNotEmpty()) {
+            trackFeedShopImpression(element)
             if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
                 showFAB()
             } else {
@@ -294,6 +314,22 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         } else {
             dataList.add(getEmptyResultViewModel())
             renderList(dataList)
+        }
+    }
+
+    private fun trackFeedShopImpression(listFeed: List<Visitable<*>>) {
+        for (i in listFeed.indices) {
+            val visitable = listFeed[i]
+            if (visitable is DynamicPostViewModel) {
+                val trackingPostModel = visitable.trackingPostModel
+                if (visitable.postTag.items.isNotEmpty()) {
+                    postTagAnalytics.trackViewPostTagFeedShop(
+                            visitable.id,
+                            visitable.postTag.items,
+                            visitable.header.followCta.authorType,
+                            trackingPostModel)
+                }
+            }
         }
     }
 
@@ -321,6 +357,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
         isLoading = false
         updateCursor(lastCursor)
+        trackFeedShopImpression(visitables)
         renderList(visitables, lastCursor.isNotEmpty())
     }
 
@@ -494,13 +531,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, imageUrl: String) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
                 override fun onShareItemClicked(packageName: String) {
 
                 }
-            },"", iamgeUrl, url, description, title)
+            }, "", imageUrl, url, description, title)
         }.also {
             fragmentManager?.run {
                 it?.show(this)
@@ -545,6 +582,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
+    override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventImageImpressionPost(
+                    FeedAnalyticTracker.Screen.FEED_SHOP,
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    trackingPostModel.recomId,
+                    positionInFeed)
+        }
+    }
+
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
@@ -561,7 +612,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                                   redirectLink: String, isSingleItem: Boolean) {
         val model = adapter.data[positionInFeed] as? DynamicPostViewModel
-        if (!isSingleItem && model != null){
+        if (!isSingleItem && model != null) {
             RouteManager.route(
                     requireContext(),
                     UriUtil.buildUriAppendParam(
@@ -753,23 +804,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
-       return EmptyFeedShopViewModel()
+        return EmptyFeedShopViewModel()
     }
 
     private fun onSuccessReportContent() {
-        ToasterNormal
-                .make(view,
-                        getString(R.string.feed_content_reported),
-                        BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { v -> }
-                .show()
+        view?.let {
+            Toaster.make(it,getString(R.string.feed_content_reported),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(R.string.label_close), View.OnClickListener {  } )
+        }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
-        ToasterError
-                .make(view, errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { v -> }
-                .show()
+        view?.let {
+            Toaster.make(it,errorMsg,
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.label_close), View.OnClickListener {  } )
+        }
     }
 
     private fun showSnackbar(s: String) {
@@ -791,9 +842,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {
-        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
-                .show()
+        listener?.let {
+            Toaster.make(view!!, message,Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), it )
+        }
     }
 
     private fun showToast(message: String) {

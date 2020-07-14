@@ -47,7 +47,7 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
 
         dateTV.text = String.format(context!!.resources.getString(com.tokopedia.saldodetails.R.string.sp_date_time_view), strDate)
         note.text = element.note
-        heading.text = element.transactionClass
+        heading.text = element.typeDescription
         ImageHandler.LoadImage(imageView, element.imageURL)
         if (element.amount > 0) {
             if (context != null) {

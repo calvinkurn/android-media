@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutFragment
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
@@ -30,7 +29,7 @@ import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntit
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.UmrahOrderDetailButtonAdapter
 import com.tokopedia.salam.umrah.orderdetail.presentation.util.UmrahOrderDetailConst.BATALKAN_LABEL
-import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -250,11 +249,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         }
     }
 
-    override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
-        when(buttonViewModel.label){
+    override fun onItemClicked(buttonModel: UmrahOrderDetailButtonModel, position: Int) {
+        when(buttonModel.label){
             BATALKAN_LABEL -> trackingUmrahUtil.umrahOrderDetailBatalkanPesanan()
         }
-        RouteManager.route(context, buttonViewModel.buttonLink)
+        RouteManager.route(context, buttonModel.buttonLink)
     }
 
     private fun getTextFromHtml(htmlText: String): CharSequence =

@@ -2,21 +2,13 @@ package com.tokopedia.core.loyaltysystem.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.util.Log;
 
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
-
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by ricoharisin on 9/29/15.
@@ -24,16 +16,6 @@ import java.net.URLEncoder;
 public class URLGenerator {
 
     private static final String SEAMLESS_LOGIN = "seamless?";
-
-    public static String generateURLSessionLogin(String url, Context context) {
-
-        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
-                + "token=" + GCMHandler.getRegistrationId(context)
-                + "&os_type=1"
-                + "&uid=" + SessionHandler.getLoginID(context)
-                + "&url=" + url;
-        return urlFinal;
-    }
 
     public static String generateURLContactUs(String url, Context context) {
         return getBaseUrl() + SEAMLESS_LOGIN

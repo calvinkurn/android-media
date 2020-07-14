@@ -155,6 +155,19 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.widget_bottomsheet_shipping;
+    }
+
+    @Override
+    public void setupDialog(android.app.Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        if (dialog != null) {
+            dialog.findViewById(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent);
+        }
+    }
+
+    @Override
     protected String title() {
         return getString(R.string.title_bottomsheet_shipment_duration);
     }
@@ -286,7 +299,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
         if (promoViewModel != null) {
             mPromoTracker.eventViewPromoLogisticTicker(promoViewModel.getPromoCode());
-            if(promoViewModel.getDisabled()){
+            if (promoViewModel.getDisabled()) {
                 mPromoTracker.eventViewPromoLogisticTickerDisable(promoViewModel.getPromoCode());
             }
         }
@@ -357,13 +370,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
             }
         }
         if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationChoosen(
-                    shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
-                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
-                    flagNeedToSetPinpoint, true, true);
             try {
+                shippingDurationBottomsheetListener.onShippingDurationChoosen(
+                        shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
+                        mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                        flagNeedToSetPinpoint, true, true);
                 dismiss();
-            } catch (IllegalStateException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -401,10 +414,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setPromoTitle(data.getTitle());
         courierData.setHideShipperName(data.getHideShipperName());
 
-        shippingDurationBottomsheetListener.onLogisticPromoChosen(
-                serviceData.getShippingCourierViewModelList(), courierData,
-                mRecipientAddress, mCartPosition,
-                serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
+        try {
+            shippingDurationBottomsheetListener.onLogisticPromoChosen(
+                    serviceData.getShippingCourierViewModelList(), courierData,
+                    mRecipientAddress, mCartPosition,
+                    serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         dismiss();
     }
 

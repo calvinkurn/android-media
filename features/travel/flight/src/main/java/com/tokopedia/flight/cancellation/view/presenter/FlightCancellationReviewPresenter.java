@@ -6,9 +6,9 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationRequestUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -41,12 +41,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
     @Override
     public void onViewCreated() {
-        FlightCancellationWrapperViewModel flightCancellationWrapperViewModel = getView().getCancellationWrapperViewModel();
+        FlightCancellationWrapperModel flightCancellationWrapperViewModel = getView().getCancellationWrapperViewModel();
 
-        Iterator<FlightCancellationViewModel> iterator = flightCancellationWrapperViewModel.getGetCancellations().iterator();
+        Iterator<FlightCancellationModel> iterator = flightCancellationWrapperViewModel.getGetCancellations().iterator();
 
         while (iterator.hasNext()) {
-            FlightCancellationViewModel item = iterator.next();
+            FlightCancellationModel item = iterator.next();
             if (item.getPassengerViewModelList() == null || item.getPassengerViewModelList().size() == 0) {
                 iterator.remove();
             }
@@ -66,13 +66,13 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     @Override
     public void requestCancellation() {
         getView().showLoading();
-        FlightCancellationWrapperViewModel viewModel = getView().getCancellationWrapperViewModel();
+        FlightCancellationWrapperModel viewModel = getView().getCancellationWrapperViewModel();
 
         String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getReason() : null;
         String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
-        List<FlightCancellationAttachmentViewModel> attachmentViewModelList = (viewModel.getCancellationReasonAndAttachment() != null) ?
+        List<FlightCancellationAttachmentModel> attachmentViewModelList = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getAttachments() : null;
 
         flightCancellationRequestUseCase.execute(
@@ -122,7 +122,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     private boolean isRefundable() {
         boolean isRefundable = false;
 
-        for (FlightCancellationViewModel item : getView().getCancellationWrapperViewModel().getGetCancellations()) {
+        for (FlightCancellationModel item : getView().getCancellationWrapperViewModel().getGetCancellations()) {
             if (item.getFlightCancellationJourney().isRefundable()) {
                 isRefundable = true;
                 break;
@@ -135,7 +135,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     private void actionFetchEstimateRefund() {
         getView().showLoading();
 
-        FlightCancellationWrapperViewModel viewModel = getView().getCancellationWrapperViewModel();
+        FlightCancellationWrapperModel viewModel = getView().getCancellationWrapperViewModel();
 
         String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getReason() : null;

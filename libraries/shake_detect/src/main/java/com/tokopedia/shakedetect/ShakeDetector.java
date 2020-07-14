@@ -8,6 +8,9 @@ import android.hardware.SensorManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
 /**
  * Detects phone shaking. If more than 75% of the samples taken in the past 0.5s are
  * accelerating, the device is a) shaking, or b) free falling 1.84m (h =
@@ -67,8 +70,15 @@ public class ShakeDetector implements SensorEventListener {
     // If this phone has an accelerometer, listen to it.
     if (accelerometer != null) {
       this.sensorManager = sensorManager;
-      sensorManager.registerListener(this, accelerometer,
-          SensorManager.SENSOR_DELAY_FASTEST);
+      Observable.just(true).map(aBoolean -> {
+        sensorManager.registerListener(ShakeDetector.this, accelerometer,
+                SensorManager.SENSOR_DELAY_FASTEST);
+        return true;
+      }).subscribeOn(Schedulers.io()).subscribe(aBoolean -> {
+        //IGNORE
+      }, throwable -> {
+        //IGNORE
+      });
     }
     return accelerometer != null;
   }

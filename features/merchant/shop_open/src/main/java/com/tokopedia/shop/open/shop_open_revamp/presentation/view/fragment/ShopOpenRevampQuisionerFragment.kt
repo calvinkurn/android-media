@@ -132,7 +132,8 @@ class ShopOpenRevampQuisionerFragment :
 
         btnNext.setOnClickListener {
             shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
-            viewModel.sendInputSurveyData(questionsAndAnswersId)
+            val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+            viewModel.sendSurveyData(dataSurveyInput)
         }
     }
 
@@ -225,7 +226,8 @@ class ShopOpenRevampQuisionerFragment :
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable) {
-                        viewModel.sendInputSurveyData(questionsAndAnswersId)
+                        val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
+                        viewModel.sendSurveyData(dataSurveyInput)
                     }
                 }
             }
@@ -318,7 +320,11 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,
                                      addrStreet: String, lat: String, long: String) {
-        viewModel.saveShippingLocation(shopId, postalCode, courierOrigin, addrStreet, lat, long)
+        viewModel.saveShippingLocation(
+                viewModel.getSaveShopShippingLocationData(
+                        shopId, postalCode, courierOrigin, addrStreet, lat, long
+                )
+        )
     }
 
     private fun closeKeyboard() {
@@ -335,30 +341,48 @@ class ShopOpenRevampQuisionerFragment :
                 showLoader()
                 data?.let {
                     val saveAddressDataModel = it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
-                    val latitudeString = saveAddressDataModel.latitude.toString()
-                    val longitudeString = saveAddressDataModel.longitude.toString()
+                    var _latitudeString: String = ""
+                    var _longitudeString: String = ""
+                    var _postalCode: String = ""
+                    var _districtId: Int = 0
+                    var _formattedAddress: String = ""
+                    
+                    saveAddressDataModel?.let {
+                        _latitudeString = if (it.latitude != null) it.latitude.toString() else ""
+                        _longitudeString = if (it.longitude != null) it.longitude.toString() else ""
+                        _postalCode = if (it.postalCode != null) it.postalCode.toString() else ""
+                        _districtId = if (it.districtId != null) it.districtId else 0
+                        _formattedAddress = if (it.formattedAddress != null) it.formattedAddress else ""
+                    }
+
                     val _shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
 
                     if (!_shopId.equals(0) &&
-                            saveAddressDataModel.postalCode.isNotEmpty() &&
-                            latitudeString.isNotEmpty() &&
-                            longitudeString.isNotEmpty() &&
-                            saveAddressDataModel.districtId != 0 &&
-                            saveAddressDataModel.formattedAddress.isNotEmpty()) {
+                            _postalCode.isNotEmpty() &&
+                            _latitudeString.isNotEmpty() &&
+                            _longitudeString.isNotEmpty() &&
+                            _districtId != 0 &&
+                            _formattedAddress.isNotEmpty()) {
 
                         shopId = _shopId
-                        postCode = saveAddressDataModel.postalCode
-                        courierOrigin = saveAddressDataModel.districtId.toInt()
-                        addrStreet = saveAddressDataModel.formattedAddress
-                        latitude = latitudeString
-                        longitude = longitudeString
+                        postCode = _postalCode
+                        courierOrigin = _districtId.toInt()
+                        addrStreet = _formattedAddress
+                        latitude = _latitudeString
+                        longitude = _longitudeString
                         saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                    } else {
+                        view?.let {
+                            Toaster.showError(it, "Please select valid address", Snackbar.LENGTH_LONG)
+                        }
+                        gotoPickLocation()
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation) {
                     activity?.finish()
                 } else {
+                    hideLoader()
                     showExitOrPickLocationDialog()
                 }
             }

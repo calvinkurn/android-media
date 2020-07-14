@@ -2,12 +2,11 @@ package com.tokopedia.topads.dashboard.data.repository;
 
 import android.content.Context;
 
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.product.manage.item.common.data.mapper.ShopInfoDataToDomainMapper;
-import com.tokopedia.product.manage.item.common.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.common.model.AddProductShopInfoDomainModel;
+import com.tokopedia.topads.common.model.shopmodel.ShopModel;
+import com.tokopedia.topads.dashboard.data.mapper.ShopInfoDataToDomainMapper;
 import com.tokopedia.topads.dashboard.data.source.ShopInfoDataSource;
+import com.tokopedia.user.session.UserSession;
 
 import rx.Observable;
 
@@ -31,7 +30,7 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
 
     @Override
     public String getShopId() {
-        return SessionHandler.getShopID(context);
+        return new UserSession(context).getShopId();
     }
 
     @Override

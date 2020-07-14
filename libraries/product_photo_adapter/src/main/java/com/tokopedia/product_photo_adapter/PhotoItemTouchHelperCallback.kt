@@ -1,5 +1,7 @@
 package com.tokopedia.product_photo_adapter
 
+import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -26,13 +28,27 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
+        hideCloseButton(recyclerView)
         reduceViewHoldersTransparency(viewHolder)
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
+        showCloseButton(recyclerView)
         restoreTransparency(viewHolder)
-        recyclerView.adapter?.notifyDataSetChanged()
+        recyclerView.post {
+            recyclerView.adapter?.notifyDataSetChanged()
+        }
+    }
+
+    private fun hideCloseButton(recyclerView: RecyclerView) {
+        recyclerView.adapter?.let {
+            for (i in 0 until it.itemCount) {
+                val childView: View? = recyclerView.getChildAt(i)
+                val closeButton: AppCompatImageView? = childView?.findViewById<AppCompatImageView?>(R.id.iv_delete_button)
+                closeButton?.visibility = View.GONE
+            }
+        }
     }
 
     private fun reduceViewHoldersTransparency(viewHolder: RecyclerView.ViewHolder?) {
@@ -43,6 +59,16 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
                     if (i == currentPosition) continue
                     recyclerView.getChildAt(i)?.alpha = 0.5f
                 }
+            }
+        }
+    }
+
+    private fun showCloseButton(recyclerView: RecyclerView) {
+        recyclerView.adapter?.let {
+            for (i in 0 until it.itemCount) {
+                val childView: View? = recyclerView.getChildAt(i)
+                val closeButton: AppCompatImageView? = childView?.findViewById(R.id.iv_delete_button)
+                closeButton?.visibility = View.VISIBLE
             }
         }
     }

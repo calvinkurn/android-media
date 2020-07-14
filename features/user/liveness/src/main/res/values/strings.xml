@@ -22,7 +22,11 @@
     <string name="liveness_auth_check">Silakan tunggu</string>
     <string name="liveness_tip_move_closer">Arahkan wajah lebih dekat ke layar</string>
     <string name="liveness_tip_move_furthre">Arahkan wajah lebih jauh ke layar</string>
-    <string name="liveness_device_not_support">The device does not support liveness detection</string>
+
+    <string name="liveness_device_not_support_title">Scan wajah gagal</string>
+    <string name="liveness_device_not_support">HP kamu belum mendukung fitur verifikasi wajah. Jangan khawatir, kamu bisa pakai cara lain.</string>
+    <string name="liveness_device_not_support_primary_button">Ganti Cara Verifikasi</string>
+    <string name="liveness_device_not_support_secondary_button">Batal</string>
 
     <string name="exit">Keluar</string>
     <string name="default_error_unknown">Terjadi kesalahan, Ulangi beberapa saat lagi.</string>

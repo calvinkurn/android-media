@@ -10,6 +10,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherShimmerViewHolder
 import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherViewHolder
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 
 /**
  * Created by hendry on 01/10/18.
@@ -19,6 +20,7 @@ class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantV
                                         horizontalLayout: Boolean = false)
     : BaseAdapterTypeFactory() {
     private var onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener? = null
+    var onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener? = null
     private var horizontalLayout: Boolean = false
 
     init {
@@ -43,7 +45,7 @@ class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantV
             MerchantVoucherShimmerViewHolder(parent)
         } else if (type == MerchantVoucherViewHolder.LAYOUT ||
                 type == MerchantVoucherViewHolder.HORIZONTAL_LAYOUT) {
-            MerchantVoucherViewHolder(parent, onMerchantVoucherViewListener)
+            MerchantVoucherViewHolder(parent, onMerchantVoucherViewListener, onMerchantVoucherListWidgetListener)
         } else {
             super.createViewHolder(parent, type)
         }

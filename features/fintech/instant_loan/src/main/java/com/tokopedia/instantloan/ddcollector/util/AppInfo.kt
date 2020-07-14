@@ -7,10 +7,6 @@ import android.content.Context
  */
 object AppInfo {
 
-    fun getPackageName(context: Context): String {
-        return context.packageName
-    }
-
     fun getDefaultAcceptLanguage(context: Context): String? =
             context.resources.configuration?.locale?.toString()?.replace('_', '-')
 }

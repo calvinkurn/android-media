@@ -1,0 +1,11 @@
+{
+    flightPopularCity{
+        countryID
+        countryName
+        cityID
+        airportCode
+        cityCode
+        cityName
+        airportName
+    }
+}

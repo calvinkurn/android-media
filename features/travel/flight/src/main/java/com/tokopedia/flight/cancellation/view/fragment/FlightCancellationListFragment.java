@@ -13,7 +13,7 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationDetailA
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationListAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationListContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationListPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 
 import java.util.List;
 
@@ -23,12 +23,12 @@ import javax.inject.Inject;
  * @author by furqan on 30/04/18.
  */
 
-public class FlightCancellationListFragment extends BaseListFragment<FlightCancellationListViewModel, FlightCancellationListAdapterTypeFactory>
+public class FlightCancellationListFragment extends BaseListFragment<FlightCancellationListModel, FlightCancellationListAdapterTypeFactory>
         implements FlightCancellationListContract.View {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
 
-    private List<FlightCancellationListViewModel> cancellationListViewModelList;
+    private List<FlightCancellationListModel> cancellationListViewModelList;
     private String invoiceId;
 
     @Inject
@@ -67,7 +67,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     }
 
     @Override
-    public void onItemClicked(FlightCancellationListViewModel flightCancellationListViewModel) {
+    public void onItemClicked(FlightCancellationListModel flightCancellationListViewModel) {
         navigateToDetailPage(flightCancellationListViewModel);
     }
 
@@ -83,7 +83,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     }
 
     @Override
-    public void navigateToDetailPage(FlightCancellationListViewModel passData) {
+    public void navigateToDetailPage(FlightCancellationListModel passData) {
         startActivity(FlightCancellationDetailActivity.createIntent(getContext(), passData));
     }
 
@@ -93,7 +93,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     }
 
     @Override
-    public List<FlightCancellationListViewModel> getFlightCancellationList() {
+    public List<FlightCancellationListModel> getFlightCancellationList() {
         return cancellationListViewModelList;
     }
 
@@ -103,7 +103,7 @@ public class FlightCancellationListFragment extends BaseListFragment<FlightCance
     }
 
     @Override
-    public void setFlightCancellationList(List<FlightCancellationListViewModel> cancellationList) {
+    public void setFlightCancellationList(List<FlightCancellationListModel> cancellationList) {
         this.cancellationListViewModelList = cancellationList;
     }
 

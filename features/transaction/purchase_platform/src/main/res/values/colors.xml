@@ -22,6 +22,7 @@
     <color name="black_text_title">#b8000000</color>
     <color name="orange_payment_summary">#ff5722</color>
     <color name="clr_7031353b">#7031353b</color>
+    <color name="ic_disable_pinpoint">#9FA6B0</color>
 
     <color name="shipping_duration_info_black">#d2000000</color>
     <color name="checkout_shadow_color_1">#00AAAAAA</color>
@@ -41,5 +42,11 @@
     <color name="bg_trade_in_address_info">#f8f8f8</color>
     <color name="grey_nonactive_text">#42000000</color>
     <color name="cashback_text_color">#42b549</color>
+    <color name="clr_a2a4a8">#a2a4a8</color>
+
+    <color name="color_e5e7e9">#e5e7e9</color>
+    <color name="color_03AC0E">#03AC0E</color>
+    <color name="color_AD31353B">#AD31353B</color>
+    <color name="color_F531353B">#F531353B</color>
 
 </resources>

@@ -17,6 +17,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.data.model.TokenResponse
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
@@ -79,7 +81,13 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         }
 
     private val userId: String
-        get() = (mContext as CMRouter).userId
+        get() {
+            val userSession: UserSessionInterface = UserSession(mContext)
+            userSession.userId?.let {
+                return it
+            }
+            return ""
+        }
 
     private val userIdAsInt: Int
         get() {

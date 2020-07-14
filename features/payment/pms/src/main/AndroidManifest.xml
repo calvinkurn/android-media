@@ -33,11 +33,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:name=".proof.view.UploadProofPaymentActivity"/>
-        <activity
-            android:label="@string/payment_title_activity_invoice"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:name=".invoice.InvoiceDetailActivity"/>
     </application>
 
 </manifest>

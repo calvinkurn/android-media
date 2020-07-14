@@ -1,13 +1,18 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.appsflyer.AFInAppEventParameterName
+import com.appsflyer.AFInAppEventType
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import org.json.JSONArray
+import org.json.JSONObject
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
@@ -35,9 +40,16 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atcFromExternalSource"
         private const val PARAM_IS_SCP = "isSCP"
 
+        private const val AF_PARAM_CATEGORY = "category"
+        private const val AF_PARAM_CONTENT_ID = "id"
+        private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
+        private const val AF_VALUE_CONTENT_TYPE = "product"
+        private const val AF_VALUE_CURRENCY = "IDR"
+
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = ""): RequestParams {
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS,
+                /*tracking data*/ productName: String = "", category: String = "", price: String = ""): RequestParams {
             return RequestParams.create()
                     .apply {
                         putObject(
@@ -46,7 +58,11 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                                         productId = productId.toLong(),
                                         shopId = shopId.toInt(),
                                         quantity = quantity,
-                                        notes = notes
+                                        notes = notes,
+                                        atcFromExternalSource = atcExternalSource,
+                                        productName = productName,
+                                        category = category,
+                                        price = price
                                 )
                         )
                     }
@@ -77,9 +93,28 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
-            addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
+            val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
+            sendAppsFlyerTracking(result, addToCartRequest)
+            result
         }
 
+    }
+
+    private fun sendAppsFlyerTracking(result: AddToCartDataModel, addToCartRequest: AddToCartRequestParams) {
+        if (!result.isDataError()) {
+            TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
+                    mutableMapOf(
+                            AFInAppEventParameterName.CONTENT_ID to addToCartRequest.productId.toString(),
+                            AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
+                            AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
+                            AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
+                            AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
+                            AFInAppEventParameterName.PRICE to addToCartRequest.price.replace("[^0-9]".toRegex(), ""),
+                            AF_PARAM_CATEGORY to addToCartRequest.category,
+                            AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, addToCartRequest.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, addToCartRequest.quantity))
+                    )
+            )
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.adapterdelegate
 
+import android.os.Bundle
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +43,10 @@ class AdapterDelegatesManager<T: Any> {
 
     fun onBindViewHolder(itemList: List<T>, position: Int, holder: RecyclerView.ViewHolder) {
         return getAdapterDelegate(itemList, position).onBindViewHolder(itemList, position, holder)
+    }
+
+    fun onBindViewHolder(itemList: List<T>, position: Int, holder: RecyclerView.ViewHolder, payloads: Bundle) {
+        return getAdapterDelegate(itemList, position).onBindViewHolder(itemList, position, payloads, holder)
     }
 
     private fun getAdapterDelegate(itemList: List<T>, position: Int): AdapterDelegate<T> {

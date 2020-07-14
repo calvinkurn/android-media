@@ -2,6 +2,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private View viewOtd;
     private ImageView imgCheck;
     private TextView tvPromoPotency;
+    private View separator;
 
     private int cartPosition;
 
@@ -45,10 +47,18 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         viewOtd = itemView.findViewById(R.id.otdelivery);
         imgCheck = itemView.findViewById(R.id.img_check);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
+        separator = itemView.findViewById(R.id.separator);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
-                         ShippingCourierAdapterListener shippingCourierAdapterListener) {
+                         ShippingCourierAdapterListener shippingCourierAdapterListener,
+                         boolean isLastItem) {
+
+        if (isLastItem) {
+            separator.setVisibility(View.GONE);
+        } else {
+            separator.setVisibility(View.VISIBLE);
+        }
 
         if (shippingCourierAdapterListener.isToogleYearEndPromotionOn() &&
                 !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getPromoCode())) {

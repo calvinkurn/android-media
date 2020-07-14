@@ -339,16 +339,8 @@ public class ProductShopInfo implements Parcelable{
         this.shopTotalFavorit = shopTotalFavorit;
     }
 
-    public String getShopStatusMessage() {
-        return MethodChecker.fromHtml(shopStatusMessage).toString();
-    }
-
     public void setShopStatusMessage(String shopStatusMessage) {
         this.shopStatusMessage = shopStatusMessage;
-    }
-
-    public String getShopStatusTitle() {
-        return MethodChecker.fromHtml(shopStatusTitle).toString();
     }
 
     public void setShopStatusTitle(String shopStatusTitle) {

@@ -19,5 +19,5 @@ public abstract class OpportunityListPresenter extends BaseDaggerPresenter<Oppor
     public abstract void unsubscribeObservable();
 
     public abstract void initOpportunityForFirstTime(@Nullable String query,
-                                     @Nullable ArrayList<FilterPass> listFilter);
+                                     @Nullable ArrayList<FilterPass> listFilter, String shopId);
 }

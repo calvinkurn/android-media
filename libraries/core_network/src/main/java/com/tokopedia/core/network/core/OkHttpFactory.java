@@ -75,15 +75,6 @@ public class OkHttpFactory {
         return this;
     }
 
-    public OkHttpClient buildClientAuth(String authKey) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
     public OkHttpClient buildClientDefaultAuth() {
         return buildClientDefaultAuthBuilder().build();
     }
@@ -353,16 +344,6 @@ public class OkHttpFactory {
                 .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
                 .addInterceptor(new TopAdsAuthInterceptor())
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientTopChatAuth(String authorizationString) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new CacheApiInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

@@ -1,0 +1,11 @@
+{
+ umrahBanners(params: {service: "UMRAHCATALOG", limit: 20, location: "homepage"}){
+    id
+    service
+    location
+    imageUrl
+    webUrl
+    applinkUrl
+    weight
+  }
+}

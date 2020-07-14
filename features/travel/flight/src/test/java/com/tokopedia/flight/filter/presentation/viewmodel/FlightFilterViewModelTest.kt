@@ -7,7 +7,7 @@ import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
@@ -91,7 +91,7 @@ class FlightFilterViewModelTest {
 
         val airlineStats = mutableListOf<AirlineStat>()
         for (i in 0 until 3) {
-            airlineStats.add(AirlineStat(FlightAirlineViewModel(i.toString(), "", "", ""), 0, ""))
+            airlineStats.add(AirlineStat(FlightAirlineModel(i.toString(), "", "", ""), 0, ""))
         }
 
         val departureStats = mutableListOf<DepartureStat>()
@@ -154,7 +154,7 @@ class FlightFilterViewModelTest {
 
         //then
         val actualSelectedTransit = flightFilterViewModel.filterModel.value?.transitTypeList
-                ?: listOf()
+                ?: mutableListOf()
         assert(actualSelectedTransit.size == selectedTransit.size)
         assert(actualSelectedTransit[0] == selectedTransit[0])
     }
@@ -170,7 +170,7 @@ class FlightFilterViewModelTest {
 
         //then
         val actualDepartureTime = flightFilterViewModel.filterModel.value?.departureTimeList
-                ?: listOf()
+                ?: mutableListOf()
         assert(actualDepartureTime.size == selectedDepartureTime.size)
         assert(actualDepartureTime[0] == selectedDepartureTime[0])
     }
@@ -185,7 +185,7 @@ class FlightFilterViewModelTest {
         flightFilterViewModel.filterArrivalTime(selectedArrivalTime)
 
         //then
-        val actualArrivalTime = flightFilterViewModel.filterModel.value?.arrivalTimeList ?: listOf()
+        val actualArrivalTime = flightFilterViewModel.filterModel.value?.arrivalTimeList ?: mutableListOf()
         assert(actualArrivalTime.size == selectedArrivalTime.size)
         assert(actualArrivalTime[0] == selectedArrivalTime[0])
     }
@@ -201,7 +201,7 @@ class FlightFilterViewModelTest {
 
         //then
         val actualSelectedAirlines = flightFilterViewModel.filterModel.value?.airlineList
-                ?: listOf()
+                ?: mutableListOf()
         assert(actualSelectedAirlines.size == selectedAirlines.size)
         assert(actualSelectedAirlines[0] == selectedAirlines[0])
     }
@@ -217,7 +217,7 @@ class FlightFilterViewModelTest {
 
         //then
         val actualSelectedFacilities = flightFilterViewModel.filterModel.value?.facilityList
-                ?: listOf()
+                ?: mutableListOf()
         assert(actualSelectedFacilities.size == selectedFacilities.size)
         assert(actualSelectedFacilities[0] == selectedFacilities[0])
     }
@@ -256,7 +256,7 @@ class FlightFilterViewModelTest {
         //given
         val filterModel = FlightFilterModel()
         filterModel.priceMin = 90000
-        filterModel.airlineList = listOf("Garuda")
+        filterModel.airlineList = mutableListOf("Garuda")
         flightFilterViewModel.init(TravelSortOption.SHORTEST_DURATION, filterModel)
 
         //when
@@ -264,7 +264,23 @@ class FlightFilterViewModelTest {
 
         //then
         val actualFilterModel = flightFilterViewModel.filterModel.value ?: FlightFilterModel()
-        assert(!actualFilterModel.hasFilter())
+        assert(!actualFilterModel.isHasFilter)
+        assert(actualFilterModel.priceMin == 0)
+        assert(actualFilterModel.airlineList.isEmpty())
+        assert(flightFilterViewModel.selectedSort.value == FlightFilterViewModel.SORT_DEFAULT_VALUE)
+    }
+
+    @Test
+    fun resetFilter_withNullFilter_shouldResetFilterModel() {
+        //given
+        val flightFilterViewModel = FlightFilterViewModel(flightSearchCountUseCase, flightSearchStatisticsUseCase, TravelTestDispatcherProvider())
+
+        //when
+        flightFilterViewModel.resetFilter()
+
+        //then
+        val actualFilterModel = flightFilterViewModel.filterModel.value ?: FlightFilterModel()
+        assert(!actualFilterModel.isHasFilter)
         assert(actualFilterModel.priceMin == 0)
         assert(actualFilterModel.airlineList.isEmpty())
         assert(flightFilterViewModel.selectedSort.value == FlightFilterViewModel.SORT_DEFAULT_VALUE)
@@ -277,7 +293,7 @@ class FlightFilterViewModelTest {
 
         //then
         val actualFilterModel = flightFilterViewModel.filterModel.value
-        assert(actualFilterModel?.hasFilter() == false)
+        assert(actualFilterModel?.isHasFilter == false)
     }
 
     @Test
@@ -326,7 +342,7 @@ class FlightFilterViewModelTest {
         //given
         val airlinesMockData = mutableListOf<AirlineStat>()
         for (i in 0 until 3) {
-            airlinesMockData.add(AirlineStat(FlightAirlineViewModel(i.toString(), "", "", ""), 0, ""))
+            airlinesMockData.add(AirlineStat(FlightAirlineModel(i.toString(), "", "", ""), 0, ""))
         }
         coEvery {
             flightSearchStatisticsUseCase.executeCoroutine(any())

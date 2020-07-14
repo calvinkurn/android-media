@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
@@ -18,7 +17,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -26,14 +24,16 @@ import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
 import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStoreAuthInterceptor
-import com.tokopedia.shop.product.di.*
+import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
+import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
+import com.tokopedia.shop.product.di.ShopProductQualifier
+import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.product.domain.interactor.*
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository
@@ -71,26 +71,169 @@ class ShopProductModule {
     @Provides
     @Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
     fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_featured_product)
+        return """
+            query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
+              shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
+                data{
+                  parent_id
+                  product_id
+                  name
+                  uri
+                  image_uri
+                  price
+                  preorder
+                  returnable
+                  wholesale
+                  cashback
+                  isWishlist
+                  is_rated
+                  original_price
+                  percentage_amount
+                  cashback_detail{
+                    cashback_status
+                    cashback_percent
+                    is_cashback_expired
+                    cashback_value
+                  }
+                  free_ongkir {
+                    is_active
+                    img_url
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                  }
+                  total_review
+                  rating
+                }
+              }
+            }
+        """.trimIndent()
     }
 
     @ShopProductScope
     @Provides
     @Named(GQLQueryConstant.SHOP_PRODUCT)
     fun getShopProductQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_product)
+        return """
+            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
+              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
+                status
+                errors
+                data {
+                  product_id
+                  name
+                  product_url
+                  stock
+                  status
+                  price{
+                    text_idr
+                  }
+                  flags{
+                    isFeatured
+                    isPreorder
+                    isFreereturn
+                    isVariant
+                    isWholesale
+                    isWishlist
+                    isSold
+                    supportFreereturn
+                    mustInsurance
+                    withStock
+                  }
+                  stats{
+                    reviewCount
+                    rating
+                  }
+                  campaign{
+                    original_price
+                    original_price_fmt
+                    discounted_price_fmt
+                    discounted_percentage
+                    discounted_price
+                  }
+                  primary_image{
+                    original
+                    thumbnail
+                    resize300
+                  }
+                  cashback{
+                    cashback
+                    cashback_amount
+                  }
+                  freeOngkir {
+                    isActive
+                    imgURL
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                  }
+                }
+                totalData
+              }
+            }
+        """.trimIndent()
     }
 
     @Provides
     @Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS)
     fun provideQueryStampProgress(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_stamp_progress)
+        return """
+            query membershipStampProgress(${'$'}shopId: Int!){
+              membershipStampProgress(shopID:${'$'}shopId) {
+                isUserRegistered
+                isShown
+                program {
+                  id
+                  cardID
+                  sectionID
+                  quests {
+                    id
+                    title
+                    iconURL
+                    questUserID
+                    status
+                    taskID
+                    currentProgress
+                    targetProgress
+                    actionButton {
+                      text
+                      isShown
+                    }
+                  }
+                }
+                infoMessage {
+                  title
+                  cta {
+                    text
+                    url
+                    appLink
+                  }
+                }
+              }
+              }
+        """.trimIndent()
     }
 
     @Provides
     @Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP)
     fun provideQueryClaimBenefit(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_membership_claim)
+        return """
+            mutation membershipClaimBenefit(${'$'}questUserId:Int!){
+              membershipClaimBenefit(questUserID:${'$'}questUserId ){
+                title
+                subTitle
+                resultStatus{
+                  code
+                  message
+                  reason
+                }
+              }
+            }
+        """.trimIndent()
     }
 
     @ShopProductScope
@@ -116,10 +259,56 @@ class ShopProductModule {
     @Provides
     @Named(GQL_PRODUCT_LIST)
     fun provideProductListQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.gql_get_product_list
-        )
+        return """
+            query GetProductList(${'$'}shopId:String!,${'$'}filter:ProductListFilter!){
+              GetProductList(shopID:${'$'}shopId, filter:${'$'}filter){
+                status
+                errors
+                totalData
+                links{
+                  self
+                  next
+                  prev
+                }
+                data{
+                  product_id
+                  condition
+                  name
+                  name_encoded
+                  position
+                  product_url
+                  status
+                  stock
+                  minimum_order
+                  cashback {
+                    cashback
+                    cashback_amount
+                  }
+                  price{
+                    currency_id
+                    currency_text
+                    value
+                    value_idr
+                    text
+                    text_idr
+                    identifier
+                  }
+                  flag{
+                    is_variant
+                    is_featured
+                    is_preorder
+                    with_stock
+                    is_freereturn
+                  }
+                  primary_image{
+                    original
+                    thumbnail
+                    resize300
+                  }
+                }
+              }
+            }
+        """.trimIndent()
     }
 
     @ShopProductScope

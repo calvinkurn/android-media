@@ -9,7 +9,6 @@ public class GetUserInfoDomainModel {
     private boolean success;
     private GetUserInfoDomainData getUserInfoDomainData;
     private String errorMessage;
-    private String statusMessage;
     private int responseCode;
 
     public boolean isSuccess() {
@@ -34,14 +33,6 @@ public class GetUserInfoDomainModel {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
-    }
-
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
     }
 
     public int getResponseCode() {

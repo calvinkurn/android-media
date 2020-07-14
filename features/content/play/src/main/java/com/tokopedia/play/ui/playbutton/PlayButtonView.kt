@@ -44,7 +44,7 @@ class PlayButtonView(
     }
 
     fun showPlayButton() {
-        ivPlay.setImageResource(R.drawable.ic_play_play_round)
+        ivPlay.setImageResource(com.tokopedia.play_common.R.drawable.ic_play_play_round)
         tvWatchAgain.gone()
         show()
     }
