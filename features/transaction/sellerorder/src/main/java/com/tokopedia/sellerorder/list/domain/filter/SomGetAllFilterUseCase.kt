@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -21,8 +22,7 @@ class SomGetAllFilterUseCase @Inject constructor(private val useCase: GraphqlUse
 
     fun getShippingListResult(): Result<MutableList<SomListAllFilter.Data.ShippingList>> {
         return try {
-//            Success(resultFilterList.orderShippingList.toMutableList())
-            throw NullPointerException()
+            Success(resultFilterList.orderShippingList.toMutableList())
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
@@ -30,8 +30,7 @@ class SomGetAllFilterUseCase @Inject constructor(private val useCase: GraphqlUse
 
     fun getStatusOrderListResult(): Result<MutableList<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>> {
         return try {
-//            Success(resultFilterList.orderFilterSomSingle.statusList.toMutableList())
-            throw NullPointerException()
+            Success(resultFilterList.orderFilterSomSingle.statusList.toMutableList())
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
@@ -39,8 +38,7 @@ class SomGetAllFilterUseCase @Inject constructor(private val useCase: GraphqlUse
 
     fun getOrderTypeListResult(): Result<MutableList<SomListAllFilter.Data.OrderType>> {
         return try {
-//            Success(resultFilterList.orderTypeList.toMutableList())
-            throw NullPointerException()
+            Success(resultFilterList.orderTypeList.toMutableList())
         } catch (throwable: Throwable) {
             Fail(throwable)
         }
