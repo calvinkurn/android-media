@@ -44,13 +44,13 @@ class PartialContentView(private val view: View,
             data.isUpcomingNplType() -> {
                 renderNplRibbon(data.ribbonCopy)
                 if (campaign.isActive) {
-                    renderCampaignActiveNlp(campaign)
+                    renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording), true)
                 } else {
-                    renderCampaignInactiveNlp(data.price.value.getCurrencyFormatted())
+                    renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
                 }
             }
             campaign.isActive -> {
-                renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+                renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording), false)
             }
             else -> {
                 renderCampaignInactive(data.price.value.getCurrencyFormatted())
@@ -78,13 +78,11 @@ class PartialContentView(private val view: View,
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNlp:Boolean = false) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNlp: Boolean = false) = with(view) {
         setTextCampaignActive(campaign)
-        renderFlashSale(campaign, stockWording)
-    }
-
-    private fun renderCampaignActiveNlp(campaign: CampaignModular) {
-        setTextCampaignActive(campaign)
+        if (!isNlp) {
+            renderFlashSale(campaign, stockWording)
+        }
     }
 
     private fun renderCampaignInactive(price: String) = with(view) {
@@ -92,21 +90,33 @@ class PartialContentView(private val view: View,
         text_slash_price.gone()
         text_discount_red.gone()
         discount_timer_holder.gone()
-        sale_text_stock_available.gone()
     }
 
-    private fun renderCampaignInactiveNlp(price:String) = with(view) {
+    private fun renderCampaignInactiveNpl(price:String) = with(view) {
         txt_main_price.text = price
+        discount_timer_holder.show()
+        text_slash_price.gone()
+        text_discount_red.gone()
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
-        txt_main_price.text = context.getString(R.string.template_price, "",
-                campaign.discountedPrice.getCurrencyFormatted())
-        text_slash_price.text = context.getString(R.string.template_price, "",
-                campaign.originalPrice.getCurrencyFormatted())
-        text_slash_price.paintFlags = text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        text_discount_red.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
+        txt_main_price?.run{
+           text = context.getString(R.string.template_price, "",
+                    campaign.discountedPrice.getCurrencyFormatted())
+            show()
+        }
 
+        text_slash_price?.run{
+            text = context.getString(R.string.template_price, "",
+                    campaign.originalPrice.getCurrencyFormatted())
+            paintFlags = text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            show()
+        }
+
+        text_discount_red?.run{
+            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
+            show()
+        }
         hideGimmick(campaign)
     }
 
@@ -191,7 +201,7 @@ class PartialContentView(private val view: View,
                     hideProductCampaign(campaign)
                     listener.showAlertCampaignEnded()
                 }
-                discount_timer_holder.visible()
+                discount_timer_holder.show()
             } else {
                 view.layout_discount_timer.gone()
             }

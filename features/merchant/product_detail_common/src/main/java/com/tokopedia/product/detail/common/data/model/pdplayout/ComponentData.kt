@@ -72,9 +72,9 @@ data class ComponentData(
         val ribbonCopy: String = ""
 ) {
 
-    fun isUpcomingDealsType(): Boolean = upcomingType.isNotEmpty() && upcomingType == ProductUpcomingTypeDef.UPCOMING_DEALS
+    fun isUpcomingDealsType(): Boolean = upcomingType.isNotEmpty() && upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_DEALS, true)
 
-    fun isUpcomingNplType(): Boolean = upcomingType.isNotEmpty() && upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
+    fun isUpcomingNplType(): Boolean = upcomingType.isNotEmpty() && upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true)
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()
