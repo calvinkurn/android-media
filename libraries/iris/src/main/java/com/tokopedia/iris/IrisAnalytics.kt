@@ -108,11 +108,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                     // convert map to json then save as string
                     val event = gson.toJson(map)
                     val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                    if(WhiteList.REALTIME_EVENT_LIST.contains(eventName)){
-                        Log.d(TAG, "Send Event in Realtime")
+                    if(WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)){
                         sendEvent(map)
                     } else {
-                        Log.d(TAG, "Save Event in DB as Is")
                         trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
                         setAlarm(true, force = false)
                     }
@@ -166,6 +164,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     companion object {
+
+        const val KEY_REMOTE_CONFIG_SEND_REALTIME = "android_customerapp_iris_realtime"
 
         private val lock = Any()
 
