@@ -46,6 +46,11 @@ class PartialSnapshotView(private val view: View,
         when {
             data.isUpcomingNplType() -> {
                 renderNplRibbon(data.ribbonCopy)
+                if (campaign.isActive) {
+                    renderCampaignActiveNlp(campaign)
+                } else {
+                    renderCampaignInactiveNlp(data.price.value.getCurrencyFormatted())
+                }
             }
             campaign.isActive -> {
                 renderCampaignActive(campaign, nearestWarehouseStockWording)
@@ -78,7 +83,28 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNlp:Boolean = false) = with(view) {
+        setTextCampaignActive(campaign)
+        renderFlashSale(campaign, stockWording)
+    }
+
+    private fun renderCampaignActiveNlp(campaign: CampaignModular) = with(view) {
+        setTextCampaignActive(campaign)
+    }
+
+    private fun renderCampaignInactive(price: String) = with(view) {
+        tv_price_pdp.text = price
+        text_original_price.gone()
+        text_discount.gone()
+        discount_timer_holder.gone()
+        sale_text_stock_available.gone()
+    }
+
+    private fun renderCampaignInactiveNlp(price:String) = with(view) {
+        tv_price_pdp.text = price
+    }
+
+    private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
         tv_price_pdp.text = context.getString(R.string.template_price, "",
                 campaign.discountedPrice.getCurrencyFormatted())
         text_original_price.text = context.getString(R.string.template_price, "",
@@ -87,15 +113,6 @@ class PartialSnapshotView(private val view: View,
         text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
 
         hideGimmick(campaign)
-        renderFlashSale(campaign, stockWording)
-    }
-
-    private fun renderCampaignInactive(price: String) = with(view) {
-        tv_price_pdp.text = context.getString(R.string.template_price, "", price)
-        text_original_price.gone()
-        text_discount.gone()
-        discount_timer_holder.gone()
-        sale_text_stock_available.gone()
     }
 
     private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String, isProductActive: Boolean) = with(view) {
@@ -140,8 +157,8 @@ class PartialSnapshotView(private val view: View,
 
     private fun renderNplRibbon(ribbonCopy: String) = with(view) {
         hideStockBarAndBackgroundColor()
-        discount_timer_holder.hide()
-        count_down.show()
+        discount_timer_holder.show()
+        count_down.hide()
         text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
     }
 
@@ -222,7 +239,7 @@ class PartialSnapshotView(private val view: View,
                     hideProductCampaign(campaign)
                     listener.showAlertCampaignEnded()
                 }
-                discount_timer_holder.visible()
+                discount_timer_holder.show()
             } else {
                 view.layout_discount_timer.gone()
             }

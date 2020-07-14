@@ -43,6 +43,11 @@ class PartialContentView(private val view: View,
         when {
             data.isUpcomingNplType() -> {
                 renderNplRibbon(data.ribbonCopy)
+                if (campaign.isActive) {
+                    renderCampaignActiveNlp(campaign)
+                } else {
+                    renderCampaignInactiveNlp(data.price.value.getCurrencyFormatted())
+                }
             }
             campaign.isActive -> {
                 renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
@@ -73,7 +78,28 @@ class PartialContentView(private val view: View,
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNlp:Boolean = false) = with(view) {
+        setTextCampaignActive(campaign)
+        renderFlashSale(campaign, stockWording)
+    }
+
+    private fun renderCampaignActiveNlp(campaign: CampaignModular) {
+        setTextCampaignActive(campaign)
+    }
+
+    private fun renderCampaignInactive(price: String) = with(view) {
+        txt_main_price.text = price
+        text_slash_price.gone()
+        text_discount_red.gone()
+        discount_timer_holder.gone()
+        sale_text_stock_available.gone()
+    }
+
+    private fun renderCampaignInactiveNlp(price:String) = with(view) {
+        txt_main_price.text = price
+    }
+
+    private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
         txt_main_price.text = context.getString(R.string.template_price, "",
                 campaign.discountedPrice.getCurrencyFormatted())
         text_slash_price.text = context.getString(R.string.template_price, "",
@@ -82,15 +108,6 @@ class PartialContentView(private val view: View,
         text_discount_red.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
 
         hideGimmick(campaign)
-        renderFlashSale(campaign, stockWording)
-    }
-
-    private fun renderCampaignInactive(price: String) = with(view) {
-        txt_main_price.text = context.getString(R.string.template_price, "", price)
-        text_slash_price.gone()
-        text_discount_red.gone()
-        discount_timer_holder.gone()
-        sale_text_stock_available.gone()
     }
 
     private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String, isProductActive: Boolean) = with(view) {
