@@ -80,7 +80,7 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
-                .header(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.Companion.getReleaseTrack().invoke(GlobalConfig.VERSION_NAME))
+                .header(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.getReleaseTrack(GlobalConfig.RAW_VERSION_NAME))
                 .method(request.method(), request.body());
     }
 

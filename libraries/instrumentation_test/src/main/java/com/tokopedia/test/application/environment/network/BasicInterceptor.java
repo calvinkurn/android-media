@@ -57,7 +57,7 @@ public class BasicInterceptor extends TkpdOldAuthInterceptor {
         authHeaders.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         authHeaders.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         authHeaders.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        authHeaders.put(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.Companion.getReleaseTrack().invoke(GlobalConfig.VERSION_NAME));
+        authHeaders.put(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.getReleaseTrack(GlobalConfig.RAW_VERSION_NAME));
 
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
         generateHeader(authHeaders, originRequest, newRequest);

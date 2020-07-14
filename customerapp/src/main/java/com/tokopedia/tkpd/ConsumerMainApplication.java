@@ -211,10 +211,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void initConfigValues(){
         setVersionCode();
-        GlobalConfig.VERSION_NAME = AuthHelper.Companion.getVersionName().invoke(BuildConfig.VERSION_NAME);
+        GlobalConfig.VERSION_NAME = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        com.tokopedia.config.GlobalConfig.VERSION_NAME = AuthHelper.Companion.getVersionName().invoke(BuildConfig.VERSION_NAME);
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
