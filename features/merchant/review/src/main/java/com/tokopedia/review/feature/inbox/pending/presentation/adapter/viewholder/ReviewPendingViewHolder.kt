@@ -74,7 +74,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             resetStars()
             setListener(object : AnimatedReputationView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
-                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position)}, 500)
+                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position)}, 200)
                 }
             })
             show()

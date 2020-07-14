@@ -116,10 +116,13 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                     hideError()
                     if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotEmpty()) {
                         showEmptySearchResult()
+                        return@Observer
                     }
                     if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty()) {
                         showNoProductEmpty()
+                        return@Observer
                     }
+
                 }
                 is LoadingView -> {
                     showPageLoading()
@@ -164,7 +167,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
-
+        renderList(reviewData, hasNextPage)
     }
 
     private fun showEmptySearchResult() {

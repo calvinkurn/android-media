@@ -21,7 +21,7 @@ class AnimatedStarsView @JvmOverloads constructor(
     fun init() {
         showingNormalAnim = true
         normalAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animate_star)
-        reverseAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_reverse)
+        reverseAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animate_star_reverse)
         setImageDrawable(normalAnimation)
     }
 

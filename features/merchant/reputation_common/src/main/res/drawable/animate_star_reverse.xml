@@ -8,15 +8,15 @@
             android:height="32dp"
             android:viewportWidth="32"
             android:viewportHeight="32">
-            <group android:name="_R_G">
-                <group
-                    android:name="_R_G_L_0_G"
-                    android:pivotX="16"
-                    android:pivotY="16"
-                    android:scaleX="0.9854600000000001"
-                    android:scaleY="0.9854600000000001">
+            <group
+                android:name="_R_G_L_1_G_N_1_T_0"
+                android:pivotX="16"
+                android:pivotY="16"
+                android:scaleX="0.9854600000000001"
+                android:scaleY="0.9854600000000001">
+                <group android:name="_R_G_L_1_G">
                     <path
-                        android:name="_R_G_L_0_G_D_0_P_0"
+                        android:name="_R_G_L_1_G_D_0_P_0"
                         android:fillAlpha="1"
                         android:fillColor="#9fa6b0"
                         android:fillType="nonZero"
@@ -26,7 +26,7 @@
             <group android:name="time_group" />
         </vector>
     </aapt:attr>
-    <target android:name="_R_G_L_0_G">
+    <target android:name="_R_G_L_1_G_N_1_T_0">
         <aapt:attr name="android:animation">
             <set android:ordering="together">
                 <objectAnimator
@@ -111,13 +111,13 @@
             </set>
         </aapt:attr>
     </target>
-    <target android:name="_R_G_L_0_G_D_0_P_0">
+    <target android:name="_R_G_L_1_G_N_1_T_0">
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:propertyName="fillColor"
                 android:duration="100"
-                android:valueFrom="#9fa6b0"
-                android:valueTo="#ffc400"
+                android:valueFrom="#ffc400"
+                android:valueTo="#9fa6b0"
                 android:valueType="colorType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
         </aapt:attr>
