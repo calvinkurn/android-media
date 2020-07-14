@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
@@ -107,8 +108,14 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                     // convert map to json then save as string
                     val event = gson.toJson(map)
                     val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                    trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-                    setAlarm(true, force = false)
+                    if(WhiteList.REALTIME_EVENT_LIST.contains(eventName)){
+                        Log.d(TAG, "Send Event in Realtime")
+                        sendEvent(map)
+                    } else {
+                        Log.d(TAG, "Save Event in DB as Is")
+                        trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+                        setAlarm(true, force = false)
+                    }
                 } catch (e: Exception) {
                     Timber.e("P1#IRIS#saveEvent %s", e.toString())
                 }
