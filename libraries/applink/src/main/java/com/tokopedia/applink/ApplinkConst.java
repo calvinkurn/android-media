@@ -192,6 +192,7 @@ public interface ApplinkConst {
     String SETTING_PROFILE = "tokopedia://setting/profile";
 
     String NOTIFICATION = "tokopedia://notification";
+    String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
