@@ -114,9 +114,6 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     private val _observableChannelId: LiveData<String> = MediatorLiveData<String>().apply {
-        addSource(_observableConfigInfo) {
-            if (it is NetworkResult.Success) setChannelId(it.data.channelId)
-        }
         addSource(_observableChannelInfo) {
             if (it is NetworkResult.Success) setChannelId(it.data.channelId)
         }
