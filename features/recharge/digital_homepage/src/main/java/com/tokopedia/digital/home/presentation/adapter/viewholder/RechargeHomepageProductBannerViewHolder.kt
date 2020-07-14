@@ -28,6 +28,7 @@ class RechargeHomepageProductBannerViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.view_recharge_home_product_banner
 
+        // TODO: Replace background color with backend data
         val PRODUCT_BANNER_BACKGROUND_GRADIENT = arrayListOf("#32AFFF", "#0066A9")
     }
 

@@ -13,7 +13,7 @@ object ReminderWidgetMapper {
                     listOf(
                             ReminderData(
                                     appLink = it.applink,
-                                    backgroundColor = it.backgroundColor,
+                                    backgroundColor = listOf(it.backgroundColor),
                                     buttonText = it.buttonText,
                                     id = it.contentID,
                                     iconURL = it.iconURL,
@@ -33,7 +33,7 @@ object ReminderWidgetMapper {
                     listOf(
                             ReminderData(
                                     appLink = it.appLink,
-                                    backgroundColor = it.backgroundColor,
+                                    backgroundColor = listOf(it.backgroundColor),
                                     buttonText = it.buttonText,
                                     id = it.id.toString(),
                                     iconURL = it.iconURL,

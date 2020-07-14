@@ -9,6 +9,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.model.ReminderState
+import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
 import com.tokopedia.kotlin.extensions.view.*
@@ -54,10 +55,7 @@ class ReminderWidgetViewHolder(
 
                 val reminder = element.data.reminders.first()
                 if(reminder.backgroundColor.isNotEmpty()){
-                    try {
-                        reminder_recommendation_widget_container.setBackgroundColor(Color.parseColor(reminder.backgroundColor))
-                    } catch (e: Exception) {
-                    }
+                    reminder_recommendation_widget_container.setGradientBackground(ArrayList(reminder.backgroundColor))
                 }
 
                 if (reminder.title.isNotEmpty()) {

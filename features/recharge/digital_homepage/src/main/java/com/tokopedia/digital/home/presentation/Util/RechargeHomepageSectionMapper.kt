@@ -23,6 +23,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
                     SECTION_TOP_ICONS -> RechargeHomepageFavoriteModel(it)
 //                    SECTION_URGENCY_WIDGET -> getReminderWidgetModel(it)
+                    // TODO: Replace background color with backend data
                     SECTION_URGENCY_WIDGET -> ReminderWidgetModel(ReminderWidget(listOf(ReminderData(
                             "test",
                             id = "99",
@@ -30,7 +31,8 @@ object RechargeHomepageSectionMapper {
                             title = "Bayar!!!",
                             mainText = "Tagihan kamu sudah waktu tenggat",
                             subText = "Ayo bayar sekarang",
-                            buttonText = "Bayar Sekarang"
+                            buttonText = "Bayar Sekarang",
+                            backgroundColor = listOf("#0153B5", "#06DD69")
                     ))), ReminderEnum.RECHARGE)
                     SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
