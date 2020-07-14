@@ -160,6 +160,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 true
             }
             R.id.menu_chat_search -> {
+                chatTabListContract?.closeSearchTooltip()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
                 true
             }

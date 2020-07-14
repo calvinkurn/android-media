@@ -96,6 +96,7 @@ class ToolTipSearchPopupWindow(
     }
 
     fun dismissOnBoarding() {
+        if (!isShowing) return
         viewModel.toolTipOnBoardingShown()
         dismiss()
     }

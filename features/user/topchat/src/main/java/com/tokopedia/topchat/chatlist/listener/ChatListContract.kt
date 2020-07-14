@@ -12,5 +12,6 @@ interface ChatListContract {
         fun decreaseUserNotificationCounter()
         fun decreaseSellerNotificationCounter()
         fun showSearchOnBoardingTooltip()
+        fun closeSearchTooltip()
     }
 }

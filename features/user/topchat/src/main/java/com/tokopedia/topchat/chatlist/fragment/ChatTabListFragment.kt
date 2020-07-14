@@ -449,6 +449,10 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         }
     }
 
+    override fun closeSearchTooltip() {
+        searchToolTip.dismissOnBoarding()
+    }
+
     private fun decreaseNotificationCounter(iconId: Int) {
         for ((tabIndex, tab) in tabList.withIndex()) {
             if (tab.icon == iconId) {
