@@ -48,8 +48,12 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     //test
-    testImplementation rootProject.ext.testDependencies.junit
+    // Test Dependencies
+    testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.assertJCore
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation project(rootProject.ext.libraries.applink)

@@ -6,6 +6,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
+            android:launchMode="singleInstance"
             android:label="@string/two_factor_title"
             android:name=".view.activity.TwoFactorActivity"
             android:theme="@style/Theme.White">

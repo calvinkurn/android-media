@@ -20,7 +20,7 @@ import javax.inject.Inject
  */
 class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
-    private var isShown = false
+//    private var isShown = false
 
     @Inject
     lateinit var viewModel: BottomSheetCheckViewModel
@@ -37,7 +37,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
-
+//        isShown = false
     }
 
     override fun onActivityPaused(activity: Activity?) {
@@ -52,19 +52,19 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 })
             }
             activity?.startActivity(i)
-            isShown = true
+//            isShown = true
         }
     }
 
 
     override fun onActivityResumed(activity: Activity?) {
-        if(!isShown) {
+//        if(!isShown) {
             viewModel.check(onSuccess = {
                 handleResponse(activity, twoFactorResult = it)
             }, onError = {
                 it.printStackTrace()
             })
-        }
+//        }
     }
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
