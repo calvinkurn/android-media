@@ -51,10 +51,10 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
         setTypeClass(ProductrevFeedbackHistoryResponseWrapper::class.java)
     }
 
-    fun setParams(searchQuery: String, page: Int, limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE){
+    fun setParams(searchQuery: String?, page: Int, limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE){
         setRequestParams(
                 RequestParams.create().apply {
-                    if(searchQuery.isNotEmpty()) {
+                    if(!searchQuery.isNullOrEmpty()) {
                         putString(PARAM_SEARCH_QUERY, searchQuery)
                     }
                     putInt(PARAM_LIMIT, limit)

@@ -26,13 +26,16 @@ import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponen
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
+import com.tokopedia.review.feature.inbox.history.presentation.util.SearchListener
+import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWatcher
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_history.*
 import kotlinx.android.synthetic.main.partial_review_empty.view.*
 import javax.inject.Inject
 
-class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(), HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickedListener {
+class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(),
+        HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickedListener, SearchListener {
 
     companion object {
         fun createNewInstance() : ReviewHistoryFragment {
@@ -62,6 +65,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSearchBar()
         observeReviewList()
     }
 
@@ -84,7 +88,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun loadData(page: Int) {
-
+        viewModel.updatePage(page)
     }
 
     override fun onDestroy() {
@@ -102,6 +106,16 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
 
     override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
         goToImagePreview(productName, attachedImages, position)
+    }
+
+    override fun onSearchTextChanged(text: String) {
+        viewModel.updateKeyWord(text)
+    }
+
+    private fun initSearchBar() {
+        reviewHistorySearchBar.searchBarTextField.apply {
+            addTextChangedListener(SearchTextWatcher(searchTextView = this, searchListener = this@ReviewHistoryFragment))
+        }
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {

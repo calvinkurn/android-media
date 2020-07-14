@@ -7,7 +7,7 @@ import android.widget.EditText
 import java.util.*
 
 
-class SearchTextWatcher(private val searchTextView: EditText, private val delayTextChanged: Long, private val searchListener: SearchListener) : TextWatcher{
+class SearchTextWatcher(private val searchTextView: EditText, private val delayTextChanged: Long = 500L, private val searchListener: SearchListener) : TextWatcher{
 
     private var timer: Timer? = Timer()
 
