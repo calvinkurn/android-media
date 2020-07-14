@@ -11,6 +11,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -32,6 +33,9 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : PlayBaseBroadcastFragment() {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel

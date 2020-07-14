@@ -14,6 +14,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
@@ -45,6 +46,9 @@ import javax.inject.Inject
 class PlayBroadcastUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ): PlayBaseBroadcastFragment() {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
