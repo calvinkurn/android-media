@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -30,7 +29,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
@@ -217,6 +215,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingStatusList()
         observingOrders()
         context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && !isUserRoleFetched()) checkUserRole()
+        else if (!isVisibleToUser) somListViewModel.clearUserRoles()
+    }
+
+    private fun isUserRoleFetched(): Boolean {
+        somListViewModel.userRoleResult.value?.run {
+            return when (this) {
+                is Success -> true
+                else -> false
+            }
+        }
+        return false
     }
 
     private fun checkUserRole() {
@@ -454,18 +468,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun observingUserRoles() {
         somListViewModel.userRoleResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    if (result.data.roles.any { allowedRoles.contains(it) }) {
-                        onUserAllowedToViewSOM()
-                    } else {
-                        onUserNotAllowedToViewSOM()
+            result?.run {
+                when (result) {
+                    is Success -> {
+                        if (result.data.roles.any { allowedRoles.contains(it) }) {
+                            onUserAllowedToViewSOM()
+                        } else {
+                            onUserNotAllowedToViewSOM()
+                        }
                     }
-                }
-                is Fail -> {
-                    SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(ERROR_GET_USER_ROLES, "seller order list page."))
-                    toggleSomLayout(false)
-                    renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
+                    is Fail -> {
+                        SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(ERROR_GET_USER_ROLES, "seller order list page."))
+                        toggleSomLayout(false)
+                        renderErrorOrderList(getString(R.string.error_list_title), getString(R.string.error_list_desc))
+                    }
                 }
             }
         })
@@ -707,6 +723,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
+        rl_search_filter.showWithCondition(isUserRoleFetched())
         refreshHandler?.finishRefresh()
         order_list_rv?.visibility = View.GONE
         quick_filter?.visibility = View.GONE
@@ -718,7 +735,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             visibility = View.VISIBLE
             text = getString(R.string.retry_load_list)
             setOnClickListener {
-                refreshHandler?.startRefresh()
+                if (isUserRoleFetched()) {
+                    refreshHandler?.startRefresh()
+                } else {
+                    checkUserRole()
+                }
             }
         }
     }

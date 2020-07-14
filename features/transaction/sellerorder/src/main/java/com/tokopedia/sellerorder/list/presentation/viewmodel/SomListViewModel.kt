@@ -82,4 +82,8 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             _userRoleResult.postValue(Fail(it))
         })
     }
+
+    fun clearUserRoles() {
+        _userRoleResult.postValue(null)
+    }
 }
