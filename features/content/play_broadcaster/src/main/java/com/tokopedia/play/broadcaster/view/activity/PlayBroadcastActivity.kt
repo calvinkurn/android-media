@@ -21,6 +21,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -59,6 +60,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -377,15 +381,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun openBroadcastSetupPage() {
+        analytic.openSetupScreen()
         navigateToFragment(PlayBroadcastPrepareFragment::class.java)
     }
 
     private fun openBroadcastActivePage() {
+        analytic.openBroadcastScreen(channelId = viewModel.channelId)
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
     }
 
     private fun showPermissionPage() {
         showActionBar(false)
+        analytic.openPermissionScreen()
         navigateToFragment(PlayPermissionFragment::class.java)
     }
 
