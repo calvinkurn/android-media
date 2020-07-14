@@ -25,7 +25,6 @@ import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalyti
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
-import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -108,7 +107,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                         }
                     }
 
-                    renderData(it.data.services)
+                    adapter.renderData(it.data.services)
                 }
 
                 is OccState.Failed -> {
@@ -120,12 +119,6 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-    }
-
-    private fun renderData(data: List<ServicesItem>) {
-        adapter.shippingDurationList.clear()
-        adapter.shippingDurationList.addAll(data)
-        adapter.notifyDataSetChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

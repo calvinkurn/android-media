@@ -113,5 +113,3 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         compositeSubscription.clear()
     }
 }
-
-
