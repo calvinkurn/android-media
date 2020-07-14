@@ -11,9 +11,15 @@ object SomErrorHandler {
     fun logMessage(throwable: Throwable, message: String) {
         try {
             if (!BuildConfig.DEBUG) {
-                val stringWriter = StringWriter()
-                throwable.printStackTrace(PrintWriter(stringWriter))
-                Crashlytics.log("$message $stringWriter")
+                val stackTrace = StringBuilder()
+                var cause: Throwable? = throwable
+                while (cause != null) {
+                    val stringWriter = StringWriter()
+                    cause.printStackTrace(PrintWriter(stringWriter))
+                    cause = cause.cause
+                    stackTrace.appendln(stringWriter)
+                }
+                Crashlytics.log("$message ${stackTrace.toString().replace(" at", "\n at")}")
             } else {
                 Timber.e(throwable, message)
             }
