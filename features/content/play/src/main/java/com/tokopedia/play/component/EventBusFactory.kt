@@ -63,7 +63,7 @@ class EventBusFactory private constructor(val owner: LifecycleOwner) {
      */
     suspend fun <T : ComponentEvent> emit(clazz: Class<T>, event: T) {
         val channel = if (map[clazz] != null) map[clazz] as SendChannel<T> else create(clazz)
-        channel.send(event)
+        try { channel.send(event) } catch (e: Throwable) { /** Fastest fix for now */}
     }
 
     /**x
