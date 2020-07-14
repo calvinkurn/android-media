@@ -88,5 +88,6 @@
     <string name="empty_title_add_template_label">Oops, judul harus diisi.</string>
     <string name="empty_desc_add_template_label">Oops, isi template harus diisi.</string>
     <string name="error_message_maximum_template_reply">Maksimum 5 template balas ulasan</string>
+    <string name="titlte_inbox_review">Inbox Review</string>
 
 </resources>

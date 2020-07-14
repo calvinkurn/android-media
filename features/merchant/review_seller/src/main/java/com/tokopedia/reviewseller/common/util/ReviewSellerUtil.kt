@@ -1,10 +1,13 @@
 package com.tokopedia.reviewseller.common.util
 
+import android.os.Build
 import android.text.Spanned
 import android.widget.ListView
+import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -52,7 +55,7 @@ fun getReviewStar(ratingCount: Int): Int {
 
 fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
-        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar )
+        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
         MethodChecker
                 .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
                         + "<font color='#42b549'>Selengkapnya</font>")
@@ -95,6 +98,7 @@ fun ChipsUnify.toggle() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
     val clickedItem = this.getItemAtPosition(position) as ListItemUnify
     when (choiceMode) {
@@ -105,6 +109,34 @@ fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int)
 
             clickedItem.listRightRadiobtn?.isChecked = true
         }
+    }
+}
+
+fun ListUnify.setSelectedFilterCheckbox(items: List<ListItemRatingWrapper>, position: Int): List<ListItemRatingWrapper> {
+    val clickedItem = this.getItemAtPosition(position) as? ListItemUnify
+    val isSelected = clickedItem?.listLeftCheckbox?.isSelected ?: false
+    return items.mapIndexed { index, item ->
+        when (choiceMode) {
+            ListView.CHOICE_MODE_MULTIPLE -> {
+                item.listItemUnify?.listLeftCheckbox?.isChecked = item.listItemUnify?.listLeftCheckbox?.isChecked != isSelected
+                item.sortValue = if (item.listItemUnify?.listLeftCheckbox?.isChecked != isSelected) (index + 1).toString() else ""
+                item.isSelected = item.listItemUnify?.listLeftCheckbox?.isChecked != isSelected
+            }
+        }
+        item
+    }
+}
+
+fun ListUnify.resetAllFilterCheckbox(items: List<ListItemRatingWrapper>): List<ListItemRatingWrapper> {
+    return items.map {
+        when (choiceMode) {
+            ListView.CHOICE_MODE_MULTIPLE -> {
+                it.listItemUnify?.listLeftCheckbox?.isChecked = false
+                it.isSelected = false
+                it.sortValue = ""
+            }
+        }
+        it
     }
 }
 

@@ -32,6 +32,14 @@ object ReviewSellerConstant {
     const val HIGHEST_RATING_VALUE = "Rating Tertinggi"
     const val LOWEST_RATING_VALUE = "Rating Terendah"
 
+    const val ANSWERED_KEY = "Sudah dibalas"
+    const val ANSWERED_VALUE = "answered"
+
+    const val UNANSWERED_KEY = "Belum dibalas"
+    const val UNANSWERED_VALUE = "unanswered"
+
+    const val ALL_RATINGS = "Semua Rating"
+
     fun mapSortReviewProduct(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[MOST_REVIEW_KEY] = MOST_REVIEW_VALUE

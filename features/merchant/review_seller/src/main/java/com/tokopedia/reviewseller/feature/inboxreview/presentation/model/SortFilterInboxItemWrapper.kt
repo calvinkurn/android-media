@@ -2,9 +2,9 @@ package com.tokopedia.reviewseller.feature.inboxreview.presentation.model
 
 import com.tokopedia.sortfilter.SortFilterItem
 
-data class SortFilterItemInboxWrapper(
+data class SortFilterInboxItemWrapper(
         val sortFilterItem: SortFilterItem? = null,
         var isSelected: Boolean = false,
-        val count: Int = 0,
-        val sortValue: String = ""
+        var count: Int = 0,
+        var sortValue: String = ""
 )

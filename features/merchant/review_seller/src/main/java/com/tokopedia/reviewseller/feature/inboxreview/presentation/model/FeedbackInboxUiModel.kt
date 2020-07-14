@@ -1,5 +1,8 @@
 package com.tokopedia.reviewseller.feature.inboxreview.presentation.model
 
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter.BaseInboxReview
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter.InboxReviewAdapterTypeFactory
+
 data class FeedbackInboxUiModel(
         var feedbackId: Int = 0,
         var rating: Int = 0,
@@ -19,9 +22,14 @@ data class FeedbackInboxUiModel(
         var isAutoReply: Boolean = false,
         var sellerUser: String = "",
         var isMoreReply: Boolean = false
-) {
+): BaseInboxReview {
+
     data class Attachment(
-            var thumbnailURL: String? = "",
-            var fullSizeURL: String? = ""
+            var thumbnailURL: String = "",
+            var fullSizeURL: String = ""
     )
+
+    override fun type(typeFactory: InboxReviewAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 }

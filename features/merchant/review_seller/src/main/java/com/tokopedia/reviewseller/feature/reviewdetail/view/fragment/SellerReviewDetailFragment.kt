@@ -2,6 +2,7 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -401,7 +402,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         filterPeriodDetailUnify?.let { it ->
             it.onLoadFinish {
-                it.setSelectedFilterOrSort(filterPeriodItemUnify, positionFilterPeriod.orZero())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(filterPeriodItemUnify, positionFilterPeriod.orZero())
+                }
 
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
@@ -429,7 +432,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
             setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
             positionFilterPeriod = position
-            filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
+            }
             viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
             endlessRecyclerViewScrollListener?.resetState()
             bottomSheetPeriodDetail?.dismiss()

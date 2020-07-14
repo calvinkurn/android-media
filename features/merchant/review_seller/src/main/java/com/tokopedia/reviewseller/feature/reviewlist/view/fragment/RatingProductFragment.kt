@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -204,7 +205,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     positionFilter = updatedPosition
                     val filterListItemUnify = populateFilterDate()
                     filterListUnify?.apply {
-                        setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                            setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
+                        }
                         onItemFilterClickedBottomSheet(updatedPosition, filterListItemUnify, this)
                     }
                 }
@@ -620,7 +623,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         filterListUnify?.let { it ->
             it.onLoadFinish {
-                it.setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(filterListItemUnify, positionFilter.orZero())
+                }
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
                 }
@@ -654,7 +659,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         sortListUnify?.let { it ->
             it.onLoadFinish {
-                it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+                }
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemSortClickedBottomSheet(position, sortListItemUnify, it)
                 }
@@ -681,7 +688,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             tracking.eventClickFilterBottomSheet(userSession.shopId.orEmpty(), chipsFilterText.orEmpty())
             reviewSellerAdapter.updateDatePeriod(ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
             chipsFilter?.chip_text?.text = chipsFilterText
-            filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
+            }
             filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
@@ -698,7 +707,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             chipsSortText = sortListItemUnify[position].listTitleText
             tracking.eventClickSortBottomSheet(userSession.shopId.orEmpty(), chipsSortText.orEmpty())
             chipsSort?.chip_text?.text = chipsSortText
-            sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
+            }
             sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
             bottomSheetSort?.dismiss()
