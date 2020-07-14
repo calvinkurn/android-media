@@ -13,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -49,8 +50,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, testDispatcher)
-
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, Dispatchers.Unconfined)
 
     @Test
     fun `get notifications then returns success result`() {
