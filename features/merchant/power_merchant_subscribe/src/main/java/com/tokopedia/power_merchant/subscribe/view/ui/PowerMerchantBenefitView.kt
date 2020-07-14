@@ -43,7 +43,7 @@ class PowerMerchantBenefitView: ConstraintLayout {
             PowerMerchantBenefit(
                     R.string.power_merchant_shop_benefit,
                     R.string.power_merchant_shop_benefit_description,
-                    com.tokopedia.gm.resource.R.drawable.ic_power_merchant
+                    com.tokopedia.gm.common.R.drawable.ic_power_merchant
             ),
             PowerMerchantBenefit(
                 R.string.power_merchant_top_ads_benefit,
