@@ -467,11 +467,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
-        list.firstOrNull { it.serviceData.serviceId == serviceId }
-                ?.let {
-                    return it
-                }
-        return null
+        return list.firstOrNull { it.serviceData.serviceId == serviceId }
     }
 
     private fun setupShippingError(selectedShippingDurationViewModel: ShippingDurationUiModel?, shippingRecommendationData: ShippingRecommendationData, shipping: OrderShipment?, curShip: Shipment): OrderShipment? {
@@ -502,7 +498,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String = "", shipping: OrderShipment) {
+    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
         val op = _orderPreference
         if (op != null) {
             orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
@@ -666,7 +662,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             var shipping1 = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
-                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else null,
+                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
                     serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
                     serviceDuration = selectedShippingDurationViewModel.serviceData.serviceName,
@@ -697,9 +693,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-                orderTotal.value = orderTotal.value.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                calculateTotal()
             }
-            calculateTotal()
         }
     }
 
@@ -905,7 +901,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
+    fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == ButtonBayarState.NORMAL) {
             globalEvent.value = OccGlobalEvent.Loading
             val product = orderProduct
@@ -933,7 +929,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
+    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (!skipCheckIneligiblePromo) {
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
@@ -1160,7 +1156,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun generatePromoRequest(shouldAddLogisticPromo: Boolean = true): PromoRequest {
+    fun generatePromoRequest(): PromoRequest {
         val promoRequest = PromoRequest()
 
         val ordersItem = Order(orderShop.shopId.toLong(), orderCart.cartString, listOf(
@@ -1193,7 +1189,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
         }
 
-        if (shouldAddLogisticPromo && shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+        if (shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
             if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
                 codes.add(shipping.logisticPromoViewModel.promoCode)
             }

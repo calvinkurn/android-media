@@ -32,7 +32,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         var isOnSuccessCalled = false
         orderSummaryPageViewModel.finalUpdate({
             isOnSuccessCalled = true
-        })
+        }, false)
 
         assertEquals(true, isOnSuccessCalled)
         verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any()) }
@@ -50,7 +50,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         orderSummaryPageViewModel.finalUpdate({
             //do nothing
-        })
+        }, false)
 
         assertEquals(OccGlobalEvent.CheckoutError(CheckoutErrorData(ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY)), orderSummaryPageViewModel.globalEvent.value)
     }
@@ -67,7 +67,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         orderSummaryPageViewModel.finalUpdate({
             //do nothing
-        })
+        }, false)
 
         assertEquals(OccGlobalEvent.PriceChangeError(PriceChangeMessage(PRICE_CHANGE_ERROR_MESSAGE, "", PRICE_CHANGE_ACTION_MESSAGE)), orderSummaryPageViewModel.globalEvent.value)
     }
@@ -85,7 +85,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         orderSummaryPageViewModel.finalUpdate({
             //do nothing
-        })
+        }, false)
 
         assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage), orderSummaryPageViewModel.globalEvent.value)
     }
@@ -102,7 +102,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         orderSummaryPageViewModel.finalUpdate({
             //do nothing
-        })
+        }, false)
 
         assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode 000"), orderSummaryPageViewModel.globalEvent.value)
     }

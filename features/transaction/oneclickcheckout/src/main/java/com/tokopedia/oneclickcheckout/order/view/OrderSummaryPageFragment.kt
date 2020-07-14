@@ -740,7 +740,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btnPay?.setOnClickListener {
-            viewModel.finalUpdate(onSuccessCheckout())
+            viewModel.finalUpdate(onSuccessCheckout(), false)
         }
     }
 

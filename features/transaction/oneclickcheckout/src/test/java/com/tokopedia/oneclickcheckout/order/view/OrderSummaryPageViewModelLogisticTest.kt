@@ -1,6 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartDataOcc
@@ -33,7 +35,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE,
                         shippingRecommendationData = null),
                 (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
-        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value!!.buttonState)
+        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -54,7 +56,27 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceErrorMessage = shippingErrorMessage,
                         shippingRecommendationData = null),
                 (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
-        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value!!.buttonState)
+        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Get Rates Without Preference Duration`() {
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        shippingDurationViewModels.removeIf { it.serviceData.serviceId == helper.shipment.serviceId }
+        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
+        setUpCartAndRatesMocks()
+
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        assertEquals(
+                OrderShipment(
+                        serviceName = helper.preference.shipment.serviceName,
+                        serviceDuration = helper.preference.shipment.serviceDuration,
+                        serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
+                        shippingRecommendationData = helper.shippingRecommendationData,
+                        logisticPromoViewModel = helper.logisticPromo),
+                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -104,6 +126,36 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         insuranceData = helper.firstCourierSecondDuration.productData.insurance),
                 (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Duration With Error`() {
+        setUpCartAndRates()
+
+        val error = "error"
+        helper.firstCourierSecondDuration.productData.error = ErrorProductData().apply {
+            errorId = "1"
+            errorMessage = error
+        }
+        orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, false)
+
+        assertEquals(
+                OrderShipment(
+                        serviceName = helper.secondDuration.serviceData.serviceName,
+                        serviceDuration = helper.secondDuration.serviceData.serviceName,
+                        serviceId = helper.secondDuration.serviceData.serviceId,
+                        shipperName = helper.firstCourierSecondDuration.productData.shipperName,
+                        shipperId = helper.firstCourierSecondDuration.productData.shipperId,
+                        shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
+                        ratesId = helper.firstCourierSecondDuration.ratesId,
+                        shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
+                        shippingRecommendationData = helper.shippingRecommendationData,
+                        serviceErrorMessage = error,
+                        isServicePickerEnable = true,
+                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
@@ -225,7 +277,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Set Insurance Check`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(isCheckInsurance = false))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData()))
 
         orderSummaryPageViewModel.setInsuranceCheck(true)
 
