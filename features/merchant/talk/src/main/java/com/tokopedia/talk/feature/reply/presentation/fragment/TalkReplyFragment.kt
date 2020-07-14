@@ -269,8 +269,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     override fun onStart() {
         super.onStart()
         activity?.run {
-            TalkReplyTracking.
-            sendScreen(screenName, productId, viewModel.userId)
+            TalkReplyTracking.sendScreen(screenName, productId, viewModel.userId)
         }
     }
 
