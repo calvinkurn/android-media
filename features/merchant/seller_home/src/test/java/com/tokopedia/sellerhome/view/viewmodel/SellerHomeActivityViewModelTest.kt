@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,8 +40,6 @@ class SellerHomeActivityViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-
-    private lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
@@ -172,7 +169,7 @@ class SellerHomeActivityViewModelTest {
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
-    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(testDispatcher) {
+    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(Dispatchers.Unconfined) {
 
         private val _mockLiveData = MutableLiveData<Result<Any>>()
         val mockLiveData: LiveData<Result<Any>>
