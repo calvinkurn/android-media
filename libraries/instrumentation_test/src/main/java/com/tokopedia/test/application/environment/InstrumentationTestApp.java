@@ -70,6 +70,11 @@ public class InstrumentationTestApp extends BaseMainApplication
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(InstrumentationTestApp.this);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
