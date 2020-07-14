@@ -125,7 +125,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_CATEGORY_NAVIGATION, eventLabel = "${categoryItem?.dynamicComponentId} - ${categoryItem?.name}")
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_CATEGORY_NAVIGATION, eventLabel = "${categoryItem?.id} - ${categoryItem?.name}")
         val list = ArrayList<Map<String, Any>>()
         categoryItem?.let {
             list.add(mapOf(
@@ -159,6 +159,16 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackShareClick() {
         val map = createGeneralEvent(eventAction = CLICK_SOCIAL_SHARE_ACTION)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun trackSearchClick() {
+        val eventCategory = "$TOP_NAV - $VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
+        val map : MutableMap<String, Any>  = mutableMapOf(
+                KEY_EVENT to CLICK_TOP_NAV,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to CLICK_SEARCH_BOX,
+                KEY_EVENT_LABEL to "")
         getTracker().sendGeneralEvent(map)
     }
 
