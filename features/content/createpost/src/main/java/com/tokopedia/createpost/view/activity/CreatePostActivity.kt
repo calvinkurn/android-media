@@ -80,6 +80,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         return R.layout.activity_create_post
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         backBtn.setOnClickListener {
