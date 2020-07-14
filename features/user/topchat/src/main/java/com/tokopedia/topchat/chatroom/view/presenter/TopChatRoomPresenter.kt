@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -100,7 +101,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var uploadImageUseCase: TopchatUploadImageUseCase,
         private var orderProgressUseCase: OrderProgressUseCase,
         private val groupStickerUseCase: ChatListGroupStickerUseCase,
-        private val chatAttachmentUseCase: ChatAttachmentUseCase
+        private val chatAttachmentUseCase: ChatAttachmentUseCase,
+        private val sharedPref: SharedPreferences
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -795,6 +797,14 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    override fun isStickerTooltipAlreadyShow(): Boolean {
+        return sharedPref.getBoolean(TOOLTIP_ONBOARDING, false)
+    }
+
+    override fun toolTipOnBoardingShown() {
+        sharedPref.edit().putBoolean(TOOLTIP_ONBOARDING, true).apply()
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)
@@ -828,4 +838,8 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
+
+    companion object {
+        const val TOOLTIP_ONBOARDING = "tooltip_onboarding"
+    }
 }

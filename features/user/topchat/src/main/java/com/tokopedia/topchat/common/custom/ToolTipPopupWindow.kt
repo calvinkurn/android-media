@@ -8,8 +8,12 @@ import android.widget.ImageView
 import android.widget.PopupWindow
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 
-class ToolTipPopupWindow(private val context: Context?) : PopupWindow(context) {
+class ToolTipPopupWindow(
+        private val context: Context?,
+        private val presenter: TopChatContract.Presenter
+) : PopupWindow(context) {
 
     private lateinit var view: View
     private var ivClose: ImageView? = null
@@ -38,7 +42,7 @@ class ToolTipPopupWindow(private val context: Context?) : PopupWindow(context) {
 
     private fun initCloseListener() {
         ivClose?.setOnClickListener {
-            dismiss()
+            dismissOnBoarding()
         }
     }
 
@@ -56,5 +60,10 @@ class ToolTipPopupWindow(private val context: Context?) : PopupWindow(context) {
             val y = (anchorView.height + view.measuredHeight - marginTop) * -1
             showAsDropDown(anchorView, x, y)
         }
+    }
+
+    fun dismissOnBoarding() {
+        presenter.toolTipOnBoardingShown()
+        dismiss()
     }
 }

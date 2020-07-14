@@ -152,7 +152,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initFireBase()
-        initToolTopPopup()
+        initTooltipPopup()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -182,8 +182,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         loadInitialData()
     }
 
-    private fun initToolTopPopup() {
-        toolTip = ToolTipPopupWindow(context)
+    private fun initTooltipPopup() {
+        toolTip = ToolTipPopupWindow(context, presenter)
     }
 
     private fun setupAnalytic() {
@@ -313,7 +313,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         loadChatRoomSettings(chatRoom)
         presenter.getStickerGroupList(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
-        toolTip.showAtTop(getViewState().chatStickerMenuButton)
+        showStickerOnBoardingTooltip()
 
         fpm.stopTrace()
     }
@@ -1124,7 +1124,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
-        toolTip.dismiss()
+        toolTip.dismissOnBoarding()
     }
 
     override fun onStickerClosed() {
