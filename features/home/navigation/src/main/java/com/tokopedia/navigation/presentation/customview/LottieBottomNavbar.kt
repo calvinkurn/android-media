@@ -57,7 +57,7 @@ class LottieBottomNavbar : LinearLayout {
 
         containerWidth = parentWidth
         resizeContainer()
-//        adjustBadgePosition()
+        adjustBadgePosition()
     }
 
     fun setBadge(badgeValue: Int = 0, iconPosition: Int, visibility: Int = View.VISIBLE) {
