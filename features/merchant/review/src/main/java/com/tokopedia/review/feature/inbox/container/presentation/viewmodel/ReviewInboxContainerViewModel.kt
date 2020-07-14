@@ -32,14 +32,15 @@ class ReviewInboxContainerViewModel @Inject constructor(
     private val isShopOwner = userSessionInterface.hasShop()
 
     fun getTabCounter() {
-        launchCatchError(block = {
-            val response = withContext(dispatchers.io()) {
-                productrevReviewTabCounterUseCase.executeOnBackground()
-            }
-            _reviewTabs.postValue(Success(response.productrevReviewTabCount))
-        }) {
-            _reviewTabs.postValue(Fail(it))
-        }
+//        launchCatchError(block = {
+//            val response = withContext(dispatchers.io()) {
+//                productrevReviewTabCounterUseCase.executeOnBackground()
+//            }
+//            _reviewTabs.postValue(Success(response.productrevReviewTabCount))
+//        }) {
+//            _reviewTabs.postValue(Fail(it))
+//        }
+        _reviewTabs.postValue(Fail(Throwable()))
     }
 
     private fun updateCounters(tabCount: Result<ProductrevReviewTabCount>): List<ReviewInboxTabs> {
