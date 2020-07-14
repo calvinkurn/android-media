@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -24,16 +25,19 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         @JvmStatic
         fun createInstance(isVariant: Boolean,
                            sellableProductUIList: ArrayList<SellableStockProductUIModel>,
-                           isActive: Boolean): CampaignMainStockFragment {
+                           isActive: Boolean,
+                           stock: Int): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
                     putBoolean(EXTRA_IS_ACTIVE, isActive)
+                    putInt(EXTRA_STOCK, stock)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                 }
             }
         }
 
+        private const val EXTRA_STOCK = "extra_stock"
         private const val EXTRA_IS_VARIANT = "extra_is_variant"
         private const val EXTRA_IS_ACTIVE = "extra_is_active"
         private const val EXTRA_SELLABLE_PRODUCT_LIST = "extra_sellable"
@@ -45,6 +49,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private val isActive by lazy {
         arguments?.getBoolean(EXTRA_IS_ACTIVE) ?: false
+    }
+
+    private val stockCount by lazy {
+        arguments?.getInt(EXTRA_STOCK)
     }
 
     private val sellableProductList by lazy {
@@ -105,7 +113,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         } else {
             renderList(listOf(
                     ActiveProductSwitchUiModel(isActive),
-                    TotalStockEditorUiModel(sellableProductList.firstOrNull()?.stock.toIntOrZero())
+                    TotalStockEditorUiModel(stockCount.orZero())
             ))
         }
 

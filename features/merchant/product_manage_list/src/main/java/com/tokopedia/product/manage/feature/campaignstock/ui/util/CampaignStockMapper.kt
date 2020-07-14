@@ -1,28 +1,35 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.CampaignStockVariantProduct
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailReserve
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailSellable
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationReservedProduct
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedStockProductModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Product
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 object CampaignStockMapper {
 
     const val ACTIVE = "ACTIVE"
 
-    fun mapToParcellableSellableProduct(sellable: GetStockAllocationDetailSellable,
-                                        variantList: List<CampaignStockVariantProduct>): SellableStockProductUIModel =
-            with(sellable) {
-                SellableStockProductUIModel(
-                        productId = productId,
-                        warehouseId = warehouseId,
-                        productName = productName,
-                        stock = stock,
-                        isActive = productId.mapToIsActive(variantList)
-                )
-            }
+    fun mapToParcellableSellableProduct(sellableList: List<GetStockAllocationDetailSellable>,
+                                        productVariantList: List<ProductVariant>): List<SellableStockProductUIModel> {
+        val sellableSequence = sellableList.asSequence()
+        val productVariantSequence = productVariantList.asSequence()
+        return sellableSequence.
+                filter { sellable ->
+                    productVariantSequence.any { product -> product.id == sellable.productId } }
+                .zip(productVariantSequence) { sellable, variant ->
+                    SellableStockProductUIModel(
+                            productId = sellable.productId,
+                            productName = sellable.productName,
+                            stock = sellable.stock,
+                            isActive = variant.status == ProductStatus.ACTIVE)
+                }.toList()
+    }
+
 
     fun mapToParcellableReserved(dataModel: GetStockAllocationDetailReserve): ReservedEventInfoUiModel =
             with(dataModel.eventInfo) {
@@ -42,7 +49,8 @@ object CampaignStockMapper {
                 ReservedStockProductModel(productId, warehouseId, productName, description, stock)
             }
 
-    private fun String.mapToIsActive(variantList: List<CampaignStockVariantProduct>): Boolean =
-            variantList.firstOrNull { it.productId == this }?.status == ACTIVE
+    private fun String.mapToIsActive(variantList: List<Product>): Boolean =
+            variantList.firstOrNull { it.productID == this }?.status == ProductStatus.ACTIVE
+
 }
 

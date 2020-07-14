@@ -6,9 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationData
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.NonVariantStockAllocationResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.StockAllocationResult
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.VariantStockAllocationResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
+import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper
+import com.tokopedia.product.manage.feature.quickedit.variant.domain.GetProductVariantUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +25,12 @@ import javax.inject.Inject
 class CampaignStockViewModel @Inject constructor(
         private val campaignStockAllocationUseCase: CampaignStockAllocationUseCase,
         private val otherCampaignStockDataUseCase: OtherCampaignStockDataUseCase,
+        private val getProductVariantUseCase: GetProductVariantUseCase,
         dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
+
+    private val mIsStockVariant = MutableLiveData<Boolean>().apply {
+        value = false
+    }
 
     private val mStockAllocationParams = MutableLiveData<Pair<List<String>, String>>()
 
@@ -32,10 +42,15 @@ class CampaignStockViewModel @Inject constructor(
                     block = {
                         value = Success(withContext(Dispatchers.IO) {
                             campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
-                            otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
-                            val stockAllocationData = async { campaignStockAllocationUseCase.executeOnBackground() }
-                            val campaignStockAllocationData = async { otherCampaignStockDataUseCase.executeOnBackground() }
-                            StockAllocationResult(campaignStockAllocationData.await(), stockAllocationData.await())
+                            val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
+                            stockAllocationData.summary.isVariant.let { isVariant ->
+                                mIsStockVariant.value = isVariant
+                                if (isVariant) {
+                                    getVariantResult(productIds, stockAllocationData)
+                                } else {
+                                    getNonVariantResult(productIds, stockAllocationData)
+                                }
+                            }
                         })
                     },
                     onError = {
@@ -50,5 +65,30 @@ class CampaignStockViewModel @Inject constructor(
     fun getStockAllocation(productIds: List<String>,
                            shopId: String) {
         mStockAllocationParams.value = Pair(productIds, shopId)
+    }
+
+    private suspend fun getNonVariantResult(productIds: List<String>,
+                                            stockAllocationData: GetStockAllocationData): NonVariantStockAllocationResult {
+        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
+
+        val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
+
+        return NonVariantStockAllocationResult(
+                stockAllocationData,
+                otherCampaignStockData
+        )
+    }
+
+    private suspend fun getVariantResult(productIds: List<String>,
+                                         stockAllocationData: GetStockAllocationData): VariantStockAllocationResult {
+        val getProductVariantUseCaseRequestParams = GetProductVariantUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
+        otherCampaignStockDataUseCase.params = OtherCampaignStockDataUseCase.createRequestParams(productIds.firstOrNull().orEmpty())
+
+        val getProductVariantData = async { getProductVariantUseCase.execute(getProductVariantUseCaseRequestParams) }
+        val otherCampaignStockData = async { otherCampaignStockDataUseCase.executeOnBackground() }
+        return VariantStockAllocationResult(
+                ProductManageVariantMapper.mapToVariantsResult(getProductVariantData.await().getProductV3),
+                stockAllocationData,
+                otherCampaignStockData.await())
     }
 }

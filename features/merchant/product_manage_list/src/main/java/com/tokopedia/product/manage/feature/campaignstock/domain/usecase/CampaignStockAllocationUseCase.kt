@@ -61,7 +61,7 @@ class CampaignStockAllocationUseCase @Inject constructor(
 
         @JvmStatic
         fun createRequestParam(productIds: List<String>,
-                               shopId: String) =
+                               shopId: String): RequestParams =
                 RequestParams.create().apply {
                     putString(PRODUCT_IDS_KEY, productIds.joinToString())
                     putString(SHOP_ID_KEY, shopId)

@@ -11,10 +11,11 @@ data class OtherCampaignStockResponse(
 data class OtherCampaignStockData(
         @SerializedName("pictures")
         val pictureList: List<CampaignStockPicture> = listOf(),
-        @SerializedName("variant")
-        val variant: CampaignStockVariant = CampaignStockVariant(),
         @SerializedName("status")
-        val status: String = "") {
+        val status: String = "",
+        @SerializedName("stock")
+        val stock: Int = 0
+){
 
         val isActive = status == CampaignStockMapper.ACTIVE
 }
@@ -22,16 +23,4 @@ data class OtherCampaignStockData(
 data class CampaignStockPicture(
         @SerializedName("urlThumbnail")
         val urlThumbnail: String = ""
-)
-
-data class CampaignStockVariant(
-        @SerializedName("products")
-        val products: List<CampaignStockVariantProduct> = listOf()
-)
-
-data class CampaignStockVariantProduct(
-        @SerializedName("productID")
-        val productId: String = "",
-        @SerializedName("status")
-        val status: String = ""
 )

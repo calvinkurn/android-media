@@ -104,18 +104,6 @@ object DummySource {
                                 urlThumbnail = "https://ecs7.tokopedia.net/microsite-production/brand-asset/assets/img-tokopedia-icon.png"
                         )
                 ),
-                variant = CampaignStockVariant(
-                        products = listOf(
-                                CampaignStockVariantProduct(
-                                        productId = "12345",
-                                        status = "ACTIVE"
-                                ),
-                                CampaignStockVariantProduct(
-                                        productId = "12346",
-                                        status = "INACTIVE"
-                                )
-                        )
-                ),
                 status = "ACTIVE"
         )
     }

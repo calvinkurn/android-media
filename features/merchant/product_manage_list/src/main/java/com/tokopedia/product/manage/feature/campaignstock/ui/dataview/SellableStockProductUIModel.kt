@@ -8,7 +8,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class SellableStockProductUIModel(
         val productId: String,
-        val warehouseId: String,
         val productName: String,
         val stock: String,
         val isActive: Boolean): Parcelable, Visitable<CampaignStockTypeFactory> {

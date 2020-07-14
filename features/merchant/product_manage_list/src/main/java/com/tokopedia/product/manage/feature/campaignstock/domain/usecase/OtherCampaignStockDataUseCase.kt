@@ -16,12 +16,6 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
                 "    pictures {\n" +
                 "      urlThumbnail\n" +
                 "    }\n" +
-                "    variant {\n" +
-                "      products {\n" +
-                "        productID\n" +
-                "        status\n" +
-                "      }\n" +
-                "    }\n" +
                 "    status\n" +
                 "  }\n" +
                 "}"
