@@ -1,8 +1,8 @@
 package com.tokopedia.editshipping.ui
 
 import android.content.Context
-import com.tokopedia.editshipping.model.editshipping.Courier
-import com.tokopedia.editshipping.model.editshipping.ShopShipping
+import com.tokopedia.editshipping.domain.model.editshipping.Courier
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
 
 /**

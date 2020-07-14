@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editshipping.R;
-import com.tokopedia.editshipping.model.editshipping.ShopShipping;
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;

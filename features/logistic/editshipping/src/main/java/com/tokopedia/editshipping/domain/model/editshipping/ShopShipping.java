@@ -1,4 +1,4 @@
-package com.tokopedia.editshipping.model.editshipping;
+package com.tokopedia.editshipping.domain.model.editshipping;
 
 
 import android.os.Parcel;

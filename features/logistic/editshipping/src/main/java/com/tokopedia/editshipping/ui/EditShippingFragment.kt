@@ -19,9 +19,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
-import com.tokopedia.editshipping.model.editshipping.Courier
-import com.tokopedia.editshipping.model.editshipping.ShopShipping
-import com.tokopedia.editshipping.model.openshopshipping.OpenShopData
+import com.tokopedia.editshipping.domain.model.editshipping.Courier
+import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
+import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData
 import com.tokopedia.editshipping.presenter.EditShippingPresenter
 import com.tokopedia.editshipping.presenter.EditShippingPresenterImpl
 import com.tokopedia.editshipping.ui.EditShippingViewListener.Companion.ADDITIONAL_OPTION_REQUEST_CODE

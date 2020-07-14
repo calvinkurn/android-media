@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.editshipping.R;
-import com.tokopedia.editshipping.model.editshipping.Courier;
+import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 
 /**
