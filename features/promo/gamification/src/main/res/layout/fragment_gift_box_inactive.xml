@@ -69,7 +69,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnInactiveFirst"
-        android:layout_width="0dp"
+        style="@style/GiftTapTapCampaignOverButton"
         android:layout_height="@dimen/dp_40"
         android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/dp_40"

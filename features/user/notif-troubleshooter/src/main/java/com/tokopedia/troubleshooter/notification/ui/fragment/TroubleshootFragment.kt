@@ -1,38 +1,57 @@
 package com.tokopedia.troubleshooter.notification.ui.fragment
 
+import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.NotificationManager.IMPORTANCE_LOW
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
+import com.tokopedia.troubleshooter.notification.ui.adapter.TroubleshooterAdapter
+import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TroubleshooterItemFactory
+import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigState.*
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
+import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
+import com.tokopedia.troubleshooter.notification.util.prefixToken
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
 
-class TroubleshootFragment : BaseDaggerFragment() {
+class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var fcmManager: FirebaseMessagingManager
+
     private lateinit var viewModel: TroubleshootViewModel
+
+    private val adapter by lazy(LazyThreadSafetyMode.NONE) {
+        TroubleshooterAdapter(TroubleshooterItemFactory(this))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders
                 .of(this, viewModelFactory)
                 .get(TroubleshootViewModel::class.java)
+
+        lifecycle.addObserver(viewModel)
     }
 
     override fun onCreateView(
@@ -47,10 +66,15 @@ class TroubleshootFragment : BaseDaggerFragment() {
         ).apply { setupToolbar() }
     }
 
+    override fun onResume() {
+        adapter.removeTicker()
+        super.onResume()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initObservable()
-        showLoading()
 
         /*
         * adding interval to request
@@ -61,41 +85,117 @@ class TroubleshootFragment : BaseDaggerFragment() {
         }, REQ_DELAY)
     }
 
+    private fun initView() {
+        lstConfig?.layoutManager = LinearLayoutManager(context)
+        lstConfig?.adapter = adapter
+        adapter.addElement(ConfigUIView.items())
+    }
+
     private fun initObservable() {
         viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            if (it.isSuccess == 1) {
-                onIconStatus(true)
-                viewModel.updateToken()
-            } else {
-                onIconStatus(false)
-            }
+            adapter.updateStatus(PushNotification, it.isTroubleshootSuccess())
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            onIconStatus(false)
+            adapter.addMessage(PushNotification, getString(R.string.notif_token_error))
+            adapter.isTroubleshootError()
+        })
+
+        viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
+            setUpdateTokenStatus(newToken)
+        })
+
+        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer { status ->
+            setNotificationSettingStatus(status)
+        })
+
+        viewModel.notificationImportance.observe(viewLifecycleOwner, Observer { status ->
+            setNotificationImportanceStatus(status)
+        })
+
+        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer { ringtone ->
+            adapter.setRingtoneStatus(ringtone, ringtone != null)
         })
     }
 
-    private fun onIconStatus(isSuccess: Boolean) {
-        imgStatus?.show()
+    private fun setUpdateTokenStatus(newToken: String) {
+        val currentToken = fcmManager.currentToken().prefixToken().trim()
+        val newTrimToken = newToken.prefixToken().trim()
 
-        activity?.let {
-            imgStatus?.setImageDrawable(if (isSuccess) {
-                drawable(it, R.drawable.ic_green_checked)
-            } else {
-                drawable(it, R.drawable.ic_red_error)
-            })
+        val message = if (fcmManager.isNewToken(newToken)) {
+            viewModel.updateToken(newToken)
+            tokenUpdateMessage(currentToken, newTrimToken)
+        } else {
+            tokenCurrentMessage(currentToken, newTrimToken)
+        }
+
+        adapter.addMessage(PushNotification, message)
+    }
+
+    private fun tokenCurrentMessage(currentToken: String, newToken: String): String {
+        return if (currentToken != newToken) {
+            getString(R.string.notif_token_current_different, currentToken, newToken)
+        } else {
+            getString(R.string.notif_token_current, newToken)
         }
     }
 
-    private fun showLoading() {
-        pgLoader?.show()
+    private fun tokenUpdateMessage(currentToken: String, newToken: String): String {
+        return if (currentToken.isNotEmpty() && currentToken != newToken) {
+            getString(R.string.notif_token_update, currentToken, newToken)
+        } else {
+            getString(R.string.notif_token_update_no_prev, newToken)
+        }
     }
 
-    private fun hideLoading() {
-        pgLoader?.hide()
+    private fun setNotificationSettingStatus(notificationEnable: Boolean) {
+        adapter.updateStatus(Notification, notificationEnable)
+
+        if (!notificationEnable){
+            val message = getString(R.string.notif_ticker_notif_disabled)
+            adapter.addTicker(message)
+        }
+    }
+
+    private fun setNotificationImportanceStatus(importance: Int) {
+        val isImportance = importantNotification(importance)
+        val hasNotCategory = importance == Int.MAX_VALUE
+
+        if (hasNotCategory) {
+            adapter.hideNotificationChannel()
+            return
+        }
+
+        when {
+            isImportance -> {
+                adapter.updateStatus(Channel, isImportance)
+            }
+            importance != IMPORTANCE_HIGH -> {
+                adapter.updateStatus(Channel, false)
+                onShowTicker(importance)
+            }
+        }
+    }
+
+    private fun onShowTicker(importance: Int) {
+        adapter.addTicker(when (importance) {
+            IMPORTANCE_LOW -> getString(
+                    R.string.notif_ticker_importance_low,
+                    importance
+            ).parseAsHtml().trim()
+            else -> getString(
+                    R.string.notif_ticker_importance_none,
+                    importance
+            ).parseAsHtml().trim()
+        })
+    }
+
+    override fun onRingtoneTest(uri: Uri) {
+        RingtoneManager.getRingtone(context, uri).play()
+    }
+
+    override fun goToNotificationSettings() {
+        context.gotoNotificationSetting()
     }
 
     private fun setupToolbar() {

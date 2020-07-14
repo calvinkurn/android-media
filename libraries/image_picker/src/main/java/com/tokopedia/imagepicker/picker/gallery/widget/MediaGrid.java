@@ -13,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.utils.image.ImageUtil;
 
 import java.util.ArrayList;
+
+import kotlin.Pair;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -69,13 +72,35 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        Glide.with(getContext())
-                .load(mMedia.getContentUri())
-                .placeholder(mPreBindInfo.mPlaceholder)
-                .error(mPreBindInfo.error)
-                .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                .centerCrop()
-                .into(mThumbnail);
+        Pair<Integer, Integer> widthHeight = ImageUtil.getWidthAndHeight(mMedia.getContentUri());
+        int width = widthHeight.getFirst();
+        int height = widthHeight.getSecond();
+        int min, max;
+        if (width > height) {
+            min = height;
+            max = width;
+        } else {
+            min = width;
+            max = height;
+        }
+        boolean loadFitCenter = min != 0 && (max / min) > 2;
+        if (loadFitCenter) {
+            Glide.with(getContext())
+                    .load(mMedia.getContentUri())
+                    .placeholder(mPreBindInfo.mPlaceholder)
+                    .error(mPreBindInfo.error)
+                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                    .fitCenter()
+                    .into(mThumbnail);
+        } else {
+            Glide.with(getContext())
+                    .load(mMedia.getContentUri())
+                    .placeholder(mPreBindInfo.mPlaceholder)
+                    .error(mPreBindInfo.error)
+                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                    .centerCrop()
+                    .into(mThumbnail);
+        }
     }
 
     private void setVideoDuration() {
