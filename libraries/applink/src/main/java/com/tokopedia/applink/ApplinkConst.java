@@ -303,6 +303,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
+    String MERCHANT_VOUCHER_LIST = "tokopedia://merchant-voucher/list";
+
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
     String OCC = "tokopedia://occ";
@@ -375,8 +377,13 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
-        String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
+        String VOUCHER_LIST = "sellerapp://voucher-list";
+        String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
+        String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
+        String VOUCHER_DETAIL = "sellerapp://voucher-detail";
+        String CREATE_VOUCHER = "sellerapp://create-voucher";
+        String SELLER_SEARCH = "sellerapp://seller-search";
     }
 
     interface Query {

@@ -42,6 +42,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
@@ -172,7 +173,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
-    private lateinit var reasonCourierProblemText: String
+    private var reasonCourierProblemText: String = ""
     private val tagConfirm = "tag_confirm"
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
@@ -180,7 +181,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
     private var secondaryBottomSheet: BottomSheetUnify? = null
-    private lateinit var progressBar: ProgressBar
+    private var progressBar: ProgressBar? = null
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -188,6 +189,14 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     companion object {
         private val TAG_COACHMARK_DETAIL = "coachmark"
+
+        private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
+        private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
+        private const val ERROR_GET_ORDER_REJECT_REASONS = "Error when get order reject reasons."
+        private const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
+        private const val ERROR_EDIT_AWB = "Error when edit AWB."
+        private const val ERROR_REJECT_ORDER = "Error when rejecting order."
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -282,9 +291,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun loadDetail() {
-        activity?.let { SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId) }
-        somDetailViewModel.loadDetailOrder(
-            GraphqlHelper.loadRawString(resources, R.raw.gql_som_detail), orderId)
+        activity?.let {
+            SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
+            it.resources?.let { r ->
+                somDetailViewModel.loadDetailOrder(GraphqlHelper.loadRawString(r, R.raw.gql_som_detail), orderId)
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -301,6 +313,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     renderDetail()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }
@@ -324,6 +337,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
                 }
             }
@@ -373,6 +387,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     fragmentManager?.let { it1 -> bottomSheetRejectReason.show(it1, getString(R.string.show_bottomsheet)) }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
                     showToasterError(getString(R.string.global_error), bottomSheetRejectReason.view)
                 }
             }
@@ -393,6 +408,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
                     view?.let { v ->
                         val msg = it.throwable.message
                         val msgProcessed = if (msg.isNullOrBlank()) "Terjadi Kesalahan" else msg
@@ -538,8 +554,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
                         mapKey[btn.key] = btn.displayName
                     }
-                    somBottomSheetRejectOrderAdapter.mapKey = mapKey
-                    somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
+                    somBottomSheetRejectOrderAdapter?.mapKey = mapKey
+                    somBottomSheetRejectOrderAdapter?.notifyDataSetChanged()
                 }
             } else {
                 btn_secondary?.visibility = View.GONE
@@ -601,9 +617,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun setLoadingIndicator(active: Boolean) {
         if (active) {
-            progressBar.visibility = View.VISIBLE
+            progressBar?.visibility = View.VISIBLE
         } else {
-            progressBar.visibility = View.GONE
+            progressBar?.visibility = View.GONE
         }
     }
 
@@ -701,6 +717,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         detailResponse.button.forEach {
             if (key.equals(it.key, true)) {
                 eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusText)
+                secondaryBottomSheet?.dismiss()
                 when {
                     key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                     key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
@@ -847,6 +864,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if(failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
@@ -1262,7 +1280,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
-        somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+        activity?.resources?.let {
+            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(it, R.raw.gql_som_reject_order), orderRejectRequest)
+        }
         SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequest.reason)
     }
 
@@ -1283,6 +1303,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }

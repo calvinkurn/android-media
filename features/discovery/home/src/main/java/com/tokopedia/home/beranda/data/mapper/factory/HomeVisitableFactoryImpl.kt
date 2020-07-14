@@ -53,6 +53,7 @@ class HomeVisitableFactoryImpl(
         private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
         private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
+        private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
         private const val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         private const val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
         private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
@@ -258,6 +259,9 @@ class HomeVisitableFactoryImpl(
                             isCombined = false
                     )
                 }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
+                    createTopAdsBannerModel(channel)
+                }
             }
         }
 
@@ -372,6 +376,9 @@ class HomeVisitableFactoryImpl(
                 channel.setPosition(position)
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET) {
                 channel.promoName = String.format(PROMO_NAME_CATEGORY_WIDGET, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS) {
+                channel.promoName = String.format(PROMO_NAME_TOPADS_BANNER, position.toString(), channel.header.name)
                 channel.setPosition(position)
             }
             else {
@@ -496,6 +503,10 @@ class HomeVisitableFactoryImpl(
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
+        visitableList.add(HomeTopAdsBannerDataModel(null, channel = channel))
     }
 
     private fun createReminderWidget(source: ReminderEnum){

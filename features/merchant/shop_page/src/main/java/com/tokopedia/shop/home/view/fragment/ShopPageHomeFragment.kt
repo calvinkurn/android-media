@@ -997,6 +997,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if (shopHomeAdapter.isLoading) {
             return
         }
+        shopPageHomeTracking.clickClearFilter(
+                isOwner,
+                customDimensionShopPage
+        )
         sortId = ""
         sortName = ""
         shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)

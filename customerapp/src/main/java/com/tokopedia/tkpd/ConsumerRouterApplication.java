@@ -58,6 +58,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.editshipping.ui.EditShippingActivity;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
@@ -400,6 +401,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getReputationHistoryFragment() {
         return SellerReputationFragment.createInstance();
+    }
+
+    @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
     }
 
     @Override

@@ -494,4 +494,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     @JvmField
     val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }
