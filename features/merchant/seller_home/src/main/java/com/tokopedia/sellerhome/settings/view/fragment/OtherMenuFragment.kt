@@ -184,8 +184,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
         if (bottomSheet is BottomSheetUnify) {
             bottomSheet.dismiss()
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
+        } else {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
-        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
     }
 
     override fun onRefreshShopInfo() {
