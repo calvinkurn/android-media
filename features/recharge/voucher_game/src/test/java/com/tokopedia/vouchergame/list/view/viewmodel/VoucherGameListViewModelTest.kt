@@ -1,27 +1,25 @@
 package com.tokopedia.vouchergame.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchergame.VoucherGameTestDispatchersProvider
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
+import java.lang.reflect.Type
 
 class VoucherGameListViewModelTest {
 
@@ -29,7 +27,6 @@ class VoucherGameListViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val mapParams = mapOf<String, String>()
-    private val errorMessage = "unable to retrieve data"
     lateinit var gqlResponseFail: GraphqlResponse
 
     @MockK
@@ -44,14 +41,17 @@ class VoucherGameListViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        val graphqlError = GraphqlError()
-        graphqlError.message = errorMessage
-        gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(MessageErrorException::class.java to listOf(graphqlError)), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+
+        gqlResponseFail = GraphqlResponse(result, errors, false)
 
         voucherGameListViewModel =
-                VoucherGameListViewModel(voucherGameListUseCase, graphqlRepository, Dispatchers.Unconfined)
+                VoucherGameListViewModel(voucherGameListUseCase, graphqlRepository, VoucherGameTestDispatchersProvider())
     }
 
     @Test
@@ -61,38 +61,23 @@ class VoucherGameListViewModelTest {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)
 
-        val observer = Observer<Result<VoucherGameListData>> {
-            assert(it is Success)
-            val response = it as Success
-            assert(response.data.operators.isNotEmpty())
-            assertEquals(response.data.operators[0].id, 1)
-        }
-
-        try {
-            voucherGameListViewModel.voucherGameList.observeForever(observer)
-            voucherGameListViewModel.getVoucherGameOperators("", mapOf(), "")
-        } finally {
-            voucherGameListViewModel.voucherGameList.removeObserver(observer)
-        }
+        voucherGameListViewModel.getVoucherGameOperators("", mapParams, "")
+        val actualData = voucherGameListViewModel.voucherGameList.value
+        assert(actualData is Success)
+        val response = actualData as Success
+        assert(response.data.operators.isNotEmpty())
+        assertEquals(response.data.operators[0].id, 1)
     }
 
     @Test
     fun getVoucherGameOperators_Fail() {
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
-        } returns Fail(MessageErrorException(errorMessage))
+        } returns Fail(MessageErrorException())
 
-        val observer = Observer<Result<VoucherGameListData>> {
-            assert(it is Fail)
-            assertEquals((it as Fail).throwable.message, errorMessage)
-        }
-
-        try {
-            voucherGameListViewModel.voucherGameList.observeForever(observer)
-            voucherGameListViewModel.getVoucherGameOperators("", mapParams, "")
-        } finally {
-            voucherGameListViewModel.voucherGameList.removeObserver(observer)
-        }
+        voucherGameListViewModel.getVoucherGameOperators("", mapParams, "")
+        val actualData = voucherGameListViewModel.voucherGameList.value
+        assert(actualData is Fail)
     }
 
     @Test
@@ -103,48 +88,36 @@ class VoucherGameListViewModelTest {
                 listOf(TopupBillsPromo(1)),
                 listOf(TopupBillsTicker(1)),
                 listOf(TopupBillsBanner(1))))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(TelcoCatalogMenuDetailData::class.java to telcoCatalogMenuDetailData),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = TelcoCatalogMenuDetailData::class.java
+        result[objectType] = telcoCatalogMenuDetailData
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        val observer = Observer<Result<TopupBillsMenuDetail>> {
-            assert(it is Success)
-            val response = (it as Success).data
-            assertEquals(response.catalog.id, 1)
-            assert(response.recommendations.isNotEmpty())
-            assertEquals(response.recommendations[0].title, "recommendation")
-            assert(response.promos.isNotEmpty())
-            assertEquals(response.promos[0].id, 1)
-            assert(response.tickers.isNotEmpty())
-            assertEquals(response.tickers[0].id, 1)
-            assert(response.banners.isNotEmpty())
-            assertEquals(response.banners[0].id, 1)
-        }
-
-        try {
-            voucherGameListViewModel.voucherGameMenuDetail.observeForever(observer)
-            voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
-        } finally {
-            voucherGameListViewModel.voucherGameMenuDetail.removeObserver(observer)
-        }
+        voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
+        val actualData = voucherGameListViewModel.voucherGameMenuDetail.value
+        assert(actualData is Success)
+        val response = (actualData as Success).data
+        assertEquals(response.catalog.id, 1)
+        assert(response.recommendations.isNotEmpty())
+        assertEquals(response.recommendations[0].title, "recommendation")
+        assert(response.promos.isNotEmpty())
+        assertEquals(response.promos[0].id, 1)
+        assert(response.tickers.isNotEmpty())
+        assertEquals(response.tickers[0].id, 1)
+        assert(response.banners.isNotEmpty())
+        assertEquals(response.banners[0].id, 1)
     }
 
     @Test
     fun getVoucherGameMenuDetail_Fail() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        val observer = Observer<Result<TopupBillsMenuDetail>> {
-            assert(it is Fail)
-            assertEquals((it as Fail).throwable.message, errorMessage)
-        }
-
-        try {
-            voucherGameListViewModel.voucherGameMenuDetail.observeForever(observer)
-            voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
-        } finally {
-            voucherGameListViewModel.voucherGameMenuDetail.removeObserver(observer)
-        }
+        voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
+        val actualData = voucherGameListViewModel.voucherGameMenuDetail.value
+        assert(actualData is Fail)
     }
 
     @Test

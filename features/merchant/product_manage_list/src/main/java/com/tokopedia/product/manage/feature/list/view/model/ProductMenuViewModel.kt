@@ -14,7 +14,7 @@ sealed class ProductMenuViewModel(
 
     data class Preview(override val product: ProductViewModel): ProductMenuViewModel(
         R.string.product_manage_preview_menu,
-        R.drawable.unify_password_show,
+        com.tokopedia.unifycomponents.R.drawable.unify_password_show,
         product
     )
 
@@ -26,7 +26,7 @@ sealed class ProductMenuViewModel(
 
     data class StockReminder(override val product: ProductViewModel): ProductMenuViewModel(
         R.string.product_manage_stock_reminder_menu,
-        R.drawable.ic_system_action_notification_normal_24,
+        com.tokopedia.resources.common.R.drawable.ic_system_action_notification_normal_24,
         product
     )
 

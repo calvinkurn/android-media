@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
+import com.tokopedia.vouchergame.common.util.VoucherGameDispatchersProvider
 import dagger.Module
 import dagger.Provides
 
@@ -17,4 +18,8 @@ class VoucherGameModule {
     @VoucherGameScope
     @Provides
     fun provideVoucherGameAnalytics(): VoucherGameAnalytics = VoucherGameAnalytics()
+
+    @VoucherGameScope
+    @Provides
+    fun provideDispatcher(): VoucherGameDispatchersProvider = VoucherGameDispatchersProvider()
 }

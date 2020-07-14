@@ -1,0 +1,9 @@
+query flightCancelVoucher {
+    status
+    flightCancelVoucher {
+      type
+      attributes {
+        success
+      }
+    }
+}

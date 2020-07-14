@@ -44,7 +44,7 @@ class IrisMapperUnitTest {
         println("raw list: $list")
         Assert.assertEquals(3, list.size)
 
-        val result: String? = trackingMapper.transformListEvent(list)
+        val result: String? = trackingMapper.transformListEvent(list).first
         Assert.assertNotNull(result)
         Assert.assertTrue(result is String)
         println(result)
@@ -74,7 +74,7 @@ class IrisMapperUnitTest {
         println("raw list: $list")
         Assert.assertEquals(5, list.size)
 
-        val result: String? = trackingMapper.transformListEvent(list)
+        val result: String? = trackingMapper.transformListEvent(list).first
         Assert.assertNotNull(result)
         Assert.assertTrue(result is String)
         println(result)
@@ -82,7 +82,7 @@ class IrisMapperUnitTest {
         val jsonResult = JSONObject(result)
         val data = jsonResult.getJSONArray("data")
         println("data.length: ${data.length()}")
-        Assert.assertEquals(3, data.length())
+        Assert.assertEquals(1, data.length())
 
         val data0 = data.getJSONObject(0)
         Assert.assertNotNull(data0)
@@ -96,32 +96,6 @@ class IrisMapperUnitTest {
         val event_data_0_0 = event_data_0.getJSONObject(0)
         Assert.assertNotNull(event_data_0_0)
         Assert.assertEquals("data0", event_data_0_0.getString("event"))
-
-        val data1 = data.getJSONObject(1)
-        Assert.assertNotNull(data1)
-        Assert.assertEquals("1234", data1.getString("user_id"))
-
-        val event_data_1 = data1.getJSONArray("event_data")
-        println("event_data_1.length: ${event_data_1.length()}")
-        Assert.assertNotNull(event_data_1)
-        Assert.assertEquals(2, event_data_1.length())
-
-        val event_data_1_0 = event_data_1.getJSONObject(0)
-        Assert.assertNotNull(event_data_1_0)
-        Assert.assertEquals("data2", event_data_1_0.getString("event"))
-
-        val data2 = data.getJSONObject(2)
-        Assert.assertNotNull(data2)
-        Assert.assertEquals("", data2.getString("user_id"))
-
-        val event_data_2 = data2.getJSONArray("event_data")
-        println("event_data_2.length: ${event_data_2.length()}")
-        Assert.assertNotNull(event_data_2)
-        Assert.assertEquals(1, event_data_2.length())
-
-        val event_data_2_0 = event_data_2.getJSONObject(0)
-        Assert.assertNotNull(event_data_2_0)
-        Assert.assertEquals("data4", event_data_2_0.getString("event"))
     }
 
     private fun singleUserData(): List<Tracking> {

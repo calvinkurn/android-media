@@ -36,6 +36,10 @@ public interface KYCConstant {
 
     int IS_FILE_IMAGE_NOT_EXIST = -7;
 
+    int NOT_SUPPORT_LIVENESS = -9;
+
+    int IS_FILE_LIVENESS_IMAGE_NOT_EXIST = -11;
+
     String PARAM_KYC_SRC = "source";
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";
@@ -47,5 +51,5 @@ public interface KYCConstant {
     int USER_EXIT = -9;
 
     String KYC_OVERLAY_COLOR = "#ae000000";
-    String KYC_AB_KEYWORD = "Liveness Detection 1";
+    String KYC_AB_KEYWORD = "Liveness Detection 2";
 }

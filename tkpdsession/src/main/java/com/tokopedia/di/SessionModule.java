@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -40,6 +40,7 @@ import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRe
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -94,11 +95,11 @@ public class SessionModule {
     @Provides
     AccountsService provideBearerAccountsService(@ApplicationContext Context context,
                                                  SessionHandler sessionHandler) {
+        UserSessionInterface userSession = new UserSession(context);
         Bundle bundle = new Bundle();
         String authKey = "";
-        if (!TextUtils.isEmpty(sessionHandler.getAccessToken(context)))
-            authKey = sessionHandler.getTokenType(context) + " " + sessionHandler
-                    .getAccessToken(context);
+        if (!TextUtils.isEmpty(userSession.getAccessToken()))
+            authKey = sessionHandler.getTokenType(context) + " " + userSession.getAccessToken();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         return new AccountsService(bundle);
     }
@@ -123,9 +124,10 @@ public class SessionModule {
     @Provides
     AccountsService provideWsAccountsService(@ApplicationContext Context context,
                                              SessionHandler sessionHandler) {
+        UserSessionInterface userSession = new UserSession(context);
         Bundle bundle = new Bundle();
         String authKey;
-        authKey = sessionHandler.getTokenType(context) + " " + sessionHandler.getAccessToken(context);
+        authKey = sessionHandler.getTokenType(context) + " " + userSession.getAccessToken();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
         return new AccountsService(bundle);
@@ -146,7 +148,9 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckerInterceptor chuckInterceptor) {
+    OkHttpClient provideRegisterOkHttpClient(
+            @ApplicationContext Context context,
+            TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckerInterceptor chuckInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(accountsAuthInterceptor)
@@ -156,7 +160,7 @@ public class SessionModule {
                     newRequest.addHeader("User-Agent", getUserAgent());
                     return chain.proceed(newRequest.build());
                 })
-                .addInterceptor(new AkamaiBotInterceptor())
+                .addInterceptor(new AkamaiBotInterceptor(context))
                 .build();
     }
 

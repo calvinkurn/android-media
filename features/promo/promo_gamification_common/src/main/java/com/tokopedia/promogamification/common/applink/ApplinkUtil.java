@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promogamification.common.R;
 
@@ -22,9 +23,7 @@ public class ApplinkUtil {
             //Do nothing
         } else if (!TextUtils.isEmpty(url) && URLUtil.isNetworkUrl(url)) {
             String defaultTitle = activity.getResources().getString(R.string.core_gami_toko_points_title);
-            Intent intent = ((GamificationRouter) activity.getApplicationContext())
-                    .getWebviewActivityWithIntent(activity, url, defaultTitle);
-            activity.startActivity(intent);
+            RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, defaultTitle, url);
         } else {
             Intent intent = new Intent(activity, defaultClassToNavigate);
             activity.startActivity(intent);

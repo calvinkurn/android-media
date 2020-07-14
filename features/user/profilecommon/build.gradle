@@ -17,7 +17,7 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
@@ -29,3 +29,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }
+
+project.ext {
+    artifactId = 'profile-common'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.2"
+    artifactName = "profilecommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

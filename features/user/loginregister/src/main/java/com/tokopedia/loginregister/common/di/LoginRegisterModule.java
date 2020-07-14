@@ -15,6 +15,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.network.interceptor.DebugInterceptor;
@@ -58,6 +59,12 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
+    SeamlessLoginAnalytics provideSeamlessAnalytics() {
+        return new SeamlessLoginAnalytics();
+    }
+
+    @LoginRegisterScope
+    @Provides
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      TkpdOldAuthInterceptor tkpdAuthInterceptor,
                                      ChuckerInterceptor chuckInterceptor,
@@ -75,7 +82,7 @@ public class LoginRegisterModule {
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
         builder.addInterceptor(new RiskAnalyticsInterceptor(context));
-        builder.addInterceptor(new AkamaiBotInterceptor());
+        builder.addInterceptor(new AkamaiBotInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);

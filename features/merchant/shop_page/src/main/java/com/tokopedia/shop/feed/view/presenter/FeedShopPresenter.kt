@@ -83,32 +83,7 @@ class FeedShopPresenter @Inject constructor(
                     }
             )
         } else {
-            getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(
-                            userId = getUserId(),
-                            cursor = cursor,
-                            source = GetDynamicFeedUseCase.FeedV2Source.Shop,
-                            sourceId = shopId),
-                    object : Subscriber<DynamicFeedDomainModel>() {
-                        override fun onNext(t: DynamicFeedDomainModel?) {
-                            t?.let {
-                                view.onSuccessGetFeed(t.postList, t.cursor)
-                            }
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            if (isViewAttached) {
-                                if (GlobalConfig.isAllowDebuggingTools()) {
-                                    e?.printStackTrace()
-                                }
-                                view.showGetListError(e)
-                            }
-                        }
-                    }
-            )
+            getFeed(shopId)
         }
     }
 
@@ -322,7 +297,7 @@ class FeedShopPresenter @Inject constructor(
     override fun addPostTagItemToCart(postTagItem: PostTagItem) {
         if (postTagItem.shop.isNotEmpty()) {
             atcUseCase.execute(
-                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId),
+                    AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text, price = postTagItem.price),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onNext(model: AddToCartDataModel?) {
                             if (model?.data?.success != 1) {

@@ -6,6 +6,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
@@ -17,7 +18,7 @@ import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterT
 /**
  * Created by hendry on 01/10/18.
  */
-class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable {
+class MerchantVoucherViewModel() : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable, ImpressHolder() {
 
     var voucherId: Int = 0
     var voucherName: String? = ""

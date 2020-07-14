@@ -41,3 +41,10 @@ fun FeatureBody.createHomeRepositoryTestInstance() {
         mockk<HomeDefaultDataSource>(relaxed = true)
     }
 }
+
+fun TestBody.areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+    first.forEach{
+        if(it.value != second[it.key]) return false
+    }
+    return true
+}

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebView
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -16,8 +17,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.uri.DeeplinkUtils.getDataUri
+import com.tokopedia.utils.uri.DeeplinkUtils.getExtraReferrer
+import com.tokopedia.utils.uri.DeeplinkUtils.getReferrerCompatible
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import timber.log.Timber
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -29,9 +34,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
-        if (!::url.isInitialized || url.isEmpty()) {
-            finish()
-        }
         super.onCreate(savedInstanceState)
         setupToolbar()
     }
@@ -53,104 +55,26 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
             title = getString(KEY_TITLE, DEFAULT_TITLE)
         }
+
         intent.data?.run {
-            url = getEncodedParameterUrl(this)
-            showTitleBar = getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
-            allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
-            needLogin = getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
-            title = getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
-        }
-    }
+            url = WebViewHelper.getEncodedUrlCheckSecondUrl(this, url)
 
-    /**
-     * This function is to get the url from the Uri
-     * Example:
-     * Input: tokopedia://webview?url=http://www.tokopedia.com/help
-     * Output:http://www.tokopedia.com/help
-     *
-     * Input: tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
-     * Output:http://www.tokopedia.com/help
-     *
-     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help
-     * Output:https://js.tokopedia.com?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
-     *
-     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
-     * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
-     */
-    private fun getEncodedParameterUrl(intentUri: Uri): String {
-        val query = intentUri.query
-        return if (query != null && query.contains("$KEY_URL=")) {
-            url = query.substringAfter("$KEY_URL=").decode()
-            url = validateSymbol(url)
-            if (!url.contains("$KEY_URL=")) {
-                return url
+            val needTitleBar = getQueryParameter(KEY_TITLEBAR)
+            needTitleBar?.let {
+                showTitleBar = it.toBoolean();
             }
-            val url2 = url.substringAfter("$KEY_URL=", "")
-            if (url2.isNotEmpty()) {
-                val url2BeforeAnd = url2.substringBefore("&")
-                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd() )
-                uriFromUrl.buildUpon()
-                    .appendQueryParameter(KEY_URL, url2.encodeOnce())
-                    .build().toString()
-            } else {
-                url
-            }
-        } else {
-            ""
-        }
-    }
 
-    /**
-     * Validate the & and ? symbol
-     * Example input/output
-     * https://www.tokopedia.com/events/hiburan
-     * https://www.tokopedia.com/events/hiburan
-     *
-     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
-     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
-     *
-     * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
-     * https://www.tokopedia.com/events/hiburan
-     */
-    private fun validateSymbol(url: String): String {
-        val indexAnd = url.indexOf("&")
-        return if (indexAnd == -1) {
-            url
-        } else {
-            val urlBeforeAnd = url.substringBefore("&", "")
-            val indexQuestion = urlBeforeAnd.indexOf("?")
-            if (indexQuestion == -1) {
-                urlBeforeAnd
-            } else {
-                url
+            val override = getQueryParameter(KEY_ALLOW_OVERRIDE)
+            override?.let {
+                allowOverride = it.toBoolean();
             }
-        }
-    }
 
-    /**
-     * trim invalid &
-     * Example:
-     * https://www.tokopedia.com/help?&a=b
-     * https://www.tokopedia.com/help?a=b
-     *
-     * https://www.tokopedia.com/help?a=b&&c=d
-     * https://www.tokopedia.com/help?a=b&c=d
-     *
-     * https://www.tokopedia.com/help?a=b?&c=d
-     * https://www.tokopedia.com/help?a=b&c=d
-     */
-    private fun String.validateAnd(): String {
-        var url = replace("&&", "&")
-        val indexQuestionAnd = url.indexOf("?&")
-        if (indexQuestionAnd > -1) {
-            val indexQuestion = url.indexOf("?")
-            if (indexQuestion == indexQuestionAnd) {
-                url = url.replaceFirst("?&", "?")
-            } else {
-                url = url.replaceFirst("?&", "&")
-            }
+            val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
+            isLoginRequire?.let { needLogin = it.toBoolean() }
+
+            val needTitle = getQueryParameter(KEY_TITLE)
+            needTitle?.let { title = it }
         }
-        return url
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -171,12 +95,26 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        if (::url.isInitialized) {
+            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        } else {
+            this.finish()
+            return Fragment()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1) {
+        reloadWebViewIfNeeded()
+    }
+
+    private fun reloadWebViewIfNeeded(){
+        val needReload = try {
+            PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
+        } catch (e:Exception) {
+            false
+        }
+        if (needReload) {
             PersistentCacheManager.instance.put(KEY_CACHE_RELOAD_WEBVIEW, 0)
             val f: Fragment? = fragment
             if (f is BaseSessionWebViewFragment) {
@@ -188,15 +126,61 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         val f = fragment
         if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
-            f.webView.goBack()
-        } else {
-            if (isTaskRoot) {
-                RouteManager.route(this, ApplinkConst.HOME)
-                finish()
+            if (checkForSameUrlInPreviousIndex(f.webView)) {
+                val historyItemsCount = f.webView.copyBackForwardList().size
+                if (historyItemsCount > 1) {
+                    goPreviousActivity()
+                } else {
+                    f.webView.goBack()
+                    onBackPressed()
+                }
             } else {
-                super.onBackPressed()
+                f.webView.goBack()
+            }
+        } else {
+            goPreviousActivity()
+        }
+    }
+
+    fun goPreviousActivity() {
+        if (isTaskRoot) {
+            RouteManager.route(this, ApplinkConst.HOME)
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
+    fun checkForSameUrlInPreviousIndex(webView: WebView): Boolean {
+        val webBackList = webView.copyBackForwardList()
+        val uidKey = "uid"
+        if (webBackList.size > 1) {
+            val currentUrl = webBackList.getItemAtIndex(0).url
+            val currentOriginalUrl = webBackList.getItemAtIndex(0).originalUrl
+            val prevUrl = webBackList.getItemAtIndex(1).url
+            val prevOriginalUrl = webBackList.getItemAtIndex(1).originalUrl
+            if (currentUrl == prevUrl) {
+                val currentUri = Uri.parse(currentOriginalUrl)
+                val previousUri = Uri.parse(prevOriginalUrl)
+
+                val currentQueryParamMap = mutableMapOf<String, String?>()
+                val previousQueryParamMap = mutableMapOf<String, String?>()
+
+                currentUri.queryParameterNames.forEach {
+                    val value = currentUri.getQueryParameter(it)
+                    if (it != uidKey)
+                        currentQueryParamMap[it] = value
+                }
+                previousUri.queryParameterNames.forEach {
+                    val value = currentUri.getQueryParameter(it)
+                    if (it != uidKey)
+                        previousQueryParamMap[it] = value
+                }
+                return currentQueryParamMap == previousQueryParamMap
             }
         }
+        return false
     }
 
     companion object {
@@ -237,7 +221,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                KEY_URL, TokopediaUrl.Companion.getInstance().WEB
+                KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean

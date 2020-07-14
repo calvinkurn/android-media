@@ -30,4 +30,8 @@ public interface NetworkRouter {
     FingerprintModel getFingerprintModel();
 
     void doRelogin(String newAccessToken);
+
+    void sendAnalyticsAnomalyResponse(String title,
+                                      String accessToken, String refreshToken,
+                                      String response, String request);
 }

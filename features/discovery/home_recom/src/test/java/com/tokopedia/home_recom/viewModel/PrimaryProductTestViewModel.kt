@@ -1,189 +1,370 @@
 package com.tokopedia.home_recom.viewModel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import android.content.Context
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
+import com.tokopedia.home_recom.model.entity.Data
+import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
+import com.tokopedia.home_recom.model.entity.ProductDetailData
+import com.tokopedia.home_recom.model.entity.ProductRecommendationProductDetail
+import com.tokopedia.home_recom.rules.InstantTaskExecutorRuleSpek
+import com.tokopedia.home_recom.util.Status
+import com.tokopedia.home_recom.util.createInstance
+import com.tokopedia.home_recom.util.createPrimaryProductViewModel
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.Dispatchers
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Matchers
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.times
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by Lukas on 2019-07-08
  */
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(PrimaryProductViewModel::class)
 @ExperimentalCoroutinesApi
-class PrimaryProductTestViewModel {
+class PrimaryProductTestViewModel : Spek({
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    InstantTaskExecutorRuleSpek(this)
 
-    @Mock
-    lateinit var context: Context
+    Feature("Test Primary"){
+        lateinit var viewModel: PrimaryProductViewModel
 
-    @Mock
-    lateinit var viewModel: PrimaryProductViewModel
+        createInstance()
+        val getPrimaryProductUseCase by memoized<GetPrimaryProductUseCase>()
+        val productId = "316960043"
 
-    @Mock
-    lateinit var mockString: String
+        Scenario("Success get product info"){
+            val data = ProductRecommendationProductDetail(
+                    data = listOf(Data(
+                            recommendation = listOf(ProductDetailData())
+                    ))
+            )
 
-    @Mock
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
+            Given("data product info"){
+                coEvery {
+                    getPrimaryProductUseCase.executeOnBackground()
+                } returns PrimaryProductEntity(data)
+            }
 
-    @Mock
-    lateinit var addWishListUseCase: AddWishListUseCase
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
 
-    @Mock
-    lateinit var addToCartUseCase: AddToCartUseCase
+            When("Get data primary"){
+                viewModel.getPrimaryProduct(productId, "")
+            }
 
-    private val productId = "316960043"
-    private val defaultErrorMessage = "ERROR_MESSAGE"
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.productInfoDataModel.value?.status == Status.SUCCESS)
+            }
+        }
 
-    @Before
-    fun setup(){
-        viewModel = PrimaryProductViewModel(mock(), mock(), addWishListUseCase, removeWishListUseCase, addToCartUseCase, Dispatchers.Unconfined)
+        Scenario("Success get product info but empty"){
+            val data = ProductRecommendationProductDetail(
+                    data = listOf(Data(
+                            recommendation = listOf()
+                    ))
+            )
+
+            Given("data product info"){
+                coEvery {
+                    getPrimaryProductUseCase.executeOnBackground()
+                } returns PrimaryProductEntity(data)
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.getPrimaryProduct(productId, "")
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.productInfoDataModel.value?.status == Status.EMPTY)
+            }
+        }
+
+        Scenario("Error get product info"){
+
+            Given("data product info"){
+                coEvery {
+                    getPrimaryProductUseCase.executeOnBackground()
+                } throws TimeoutException()
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.getPrimaryProduct(productId, "")
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.productInfoDataModel.value?.status == Status.ERROR)
+            }
+        }
     }
 
-    @Test
-    fun addWishlistSuccess(){
-        val spy = Mockito.spy(viewModel)
-        val mockInvoke = mock<(String?) -> Unit>()
-        `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertNotNull(it.arguments[0])
-            null
+    Feature("Test Atc"){
+        lateinit var viewModel: PrimaryProductViewModel
+
+        createInstance()
+        val addToCartUseCase by memoized<AddToCartUseCase>()
+
+        Scenario("Success atc"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.just(AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_OK,
+                        data = DataModel(
+                                success = 1
+                        )
+                ))
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addToCart(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.SUCCESS)
+            }
         }
-        `when`(spy.addWishList(mockString, null, mockInvoke)).thenAnswer{
-            val completion = it.arguments[2] as ((message: String?) -> Unit)
-            completion.invoke(productId)
-            null
+
+        Scenario("Error atc"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.just(AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_ERROR,
+                        data = DataModel(
+                                success = 0
+                        )
+                ))
+            }
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addToCart(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.ERROR)
+            }
         }
-        spy.addWishList(mockString, null, mockInvoke)
-        verify(spy, times(1)).addWishList(mockString, null, mockInvoke)
+
+        Scenario("Throw Error atc"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.error(TimeoutException())
+            }
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addToCart(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.ERROR)
+            }
+        }
+
+        Scenario("Success buy now"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.just(AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_OK,
+                        data = DataModel(
+                                success = 1
+                        )
+                ))
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.buyNow(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.SUCCESS)
+            }
+        }
+
+        Scenario("Error Buy now"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.just(AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_ERROR,
+                        data = DataModel(
+                                success = 0
+                        )
+                ))
+            }
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addToCart(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.ERROR)
+            }
+        }
     }
 
-    @Test
-    fun addWishlistError(){
-        val spy = Mockito.spy(viewModel)
-        val mockInvoke = mock<(String?) -> Unit>()
-        `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertEquals(it.arguments[0], defaultErrorMessage)
-            null
+    Feature("Test Wishlist"){
+        lateinit var viewModel: PrimaryProductViewModel
+
+        createInstance()
+        val addWishListUseCase by memoized<AddWishListUseCase>()
+        val removeWishListUseCase by memoized<RemoveWishListUseCase>()
+
+        val slot = slot<WishListActionListener>()
+        Scenario("Success add wishlist"){
+
+            Given("add wishlist"){
+                every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
+                    slot.captured.onSuccessAddWishlist("123")
+                }
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addWishList("123")
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.SUCCESS)
+            }
         }
-        `when`(spy.addWishList(mockString, mockInvoke, null)).thenAnswer{
-            val completion = it.arguments[1] as ((errorMessage: String?) -> Unit)
-            completion.invoke(defaultErrorMessage)
-            null
+
+        Scenario("Error add wishlist"){
+
+            Given("add wishlist"){
+                every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
+                    slot.captured.onErrorAddWishList("123", "123")
+                }
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addWishList("123")
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.ERROR)
+            }
         }
-        spy.addWishList(mockString, mockInvoke, null)
-        verify(spy, times(1)).addWishList(mockString, mockInvoke, null)
+
+        Scenario("Success remove wishlist"){
+
+            Given("add wishlist"){
+                every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
+                    slot.captured.onSuccessRemoveWishlist("123")
+                }
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.removeWishList("123")
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.SUCCESS)
+            }
+        }
+
+        Scenario("Error remove wishlist"){
+
+            Given("add wishlist"){
+                every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
+                    slot.captured.onErrorRemoveWishlist("123", "123")
+                }
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.removeWishList("123")
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.ERROR)
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.data == null)
+            }
+        }
     }
 
-    @Test
-    fun removeWishlistSuccess(){
-        val spy = Mockito.spy(viewModel)
-        val mockInvoke = mock<(String?) -> Unit>()
-        `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertEquals(it.arguments[0], productId)
-            null
-        }
-        `when`(spy.removeWishList(mockString, mockInvoke, null)).thenAnswer{
-            val completion = it.arguments[1] as ((message: String?) -> Unit)
-            completion.invoke(productId)
-            null
-        }
-        spy.removeWishList(mockString, mockInvoke, null)
-        verify(spy, times(1)).removeWishList(mockString, mockInvoke, null)
-    }
+    Feature("Test is login"){
+        lateinit var viewModel: PrimaryProductViewModel
+        createInstance()
+        val userSessionInterface by memoized<UserSessionInterface>()
+        Scenario("Is login true"){
+            Given("set data true"){
+                every { userSessionInterface.isLoggedIn } returns true
+            }
 
-    @Test
-    fun removeWishlistError(){
-        val spy = Mockito.spy(viewModel)
-        val mockInvoke = mock<(String?) -> Unit>()
-        `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertEquals(it.arguments[0], defaultErrorMessage)
-            null
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Check true"){
+                Assert.assertTrue(viewModel.isLoggedIn())
+            }
         }
-        `when`(spy.removeWishList(mockString, null, mockInvoke)).thenAnswer{
-            val completion = it.arguments[2] as ((errorMessage: String?) -> Unit)
-            completion.invoke(defaultErrorMessage)
-            null
+
+        Scenario("Is login false"){
+            Given("set data false"){
+                every { userSessionInterface.isLoggedIn } returns false
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Check true"){
+                Assert.assertTrue(!viewModel.isLoggedIn())
+            }
         }
-        spy.removeWishList(mockString, null, mockInvoke)
-        verify(spy, times(1)).removeWishList(mockString, null, mockInvoke)
     }
-
-    @Test
-    fun checkIsNotLogin(){
-        `when`(viewModel.isLoggedIn()).thenReturn(false)
-        Assert.assertFalse(viewModel.isLoggedIn())
-    }
-
-    @Test
-    fun checkIsLogin(){
-        `when`(viewModel.isLoggedIn()).thenReturn(true)
-        Assert.assertTrue(viewModel.isLoggedIn())
-    }
-
-    @Test
-    fun testOverrideUseCaseErrorRemoveWishlist(){
-        `when`(removeWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
-            val listener = it.arguments[2] as WishListActionListener
-            listener.onErrorAddWishList(defaultErrorMessage, productId)
-        }
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, defaultErrorMessage)
-        })
-    }
-
-    @Test
-    fun testOverrideUseCaseSuccessRemoveWishlist(){
-        `when`(removeWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
-            val listener = it.arguments[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-        viewModel.removeWishList(productId, {
-            Assert.assertEquals(it, productId)
-        }, null)
-    }
-
-    @Test
-    fun testOverrideUseCaseErrorAddWishlist(){
-        `when`(addWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
-            val listener = it.arguments[2] as WishListActionListener
-            listener.onErrorAddWishList(defaultErrorMessage, productId)
-        }
-        viewModel.addWishList(productId, {
-            Assert.assertEquals(it, defaultErrorMessage)
-        }, null)
-    }
-
-    @Test
-    fun testOverrideUseCaseSuccessAddWishlist(){
-        `when`(addWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
-            val listener = it.arguments[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-}
+})

@@ -1,19 +1,11 @@
 package com.tokopedia.liveness.view.fragment
 
 import ai.advance.common.entity.BaseResultEntity
-import com.tokopedia.liveness.R
-import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
-import com.tokopedia.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
-import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.view.BackgroundOverlay
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.activity.LivenessFailedActivity
-import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_CANCELED
@@ -27,23 +19,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.liveness.R
+import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
+import com.tokopedia.liveness.di.LivenessDetectionComponent
+import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.utils.LivenessErrorCodeUtil
+import com.tokopedia.liveness.view.BackgroundOverlay
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.activity.LivenessActivity
+import com.tokopedia.liveness.view.activity.LivenessFailedActivity
+import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
@@ -128,12 +129,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     activity?.finish()
                 }
                 is Fail -> {
+                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
+                    val errorCode = LivenessErrorCodeUtil.getErrorCode(it.throwable)
                     when (it.throwable) {
                         is SocketTimeoutException -> {
-                            setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
+                            setFailedResultData(Detector.DetectionFailedType.BADNETWORK, errorCode)
                         }
                         else -> {
-                            setFailedResultData(Detector.DetectionFailedType.GENERAL)
+                            setFailedResultData(Detector.DetectionFailedType.GENERAL, errorCode)
                         }
                     }
                 }
@@ -262,31 +265,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (isValid) {
             updateTipUIView(null)
         } else {
-            val errorMessage: String = if (LivenessView.NO_RESPONSE == errorCode) {
-                getString(R.string.liveness_failed_reason_auth_failed)
-            } else {
-                message
-            }
             activity?.run {
-                showAlertDialog(errorMessage, this)
+                showAlertDialog()
             }
         }
     }
 
-    private fun showAlertDialog(message: String, activity: FragmentActivity) {
-        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.setTitle(message)
-        dialog?.setDescription(getString(R.string.default_error_unknown))
-        dialog?.setOverlayClose(false)
-        dialog?.setPrimaryCTAText(getString(R.string.exit))
-
-        dialog?.setPrimaryCTAClickListener {
-            activity.setResult(RESULT_OK)
-            activity.finish()
-            dialog.dismiss()
-            Unit
-        }
-        dialog?.show()
+    private fun showAlertDialog() {
+        (activity as LivenessActivity).showNotSupportedDialog()
     }
 
     private fun getLottieFile(detectionType: Detector.DetectionType?): String {
@@ -351,7 +337,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
             override fun onGetFaceDataFailed(entity: BaseResultEntity) {
                 if (!entity.success && LivenessView.NO_RESPONSE == entity.code) {
-                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
+                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK, null)
                 }
             }
         })
@@ -361,31 +347,41 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         activity?.run {
             val mImageBitmap = LivenessResult.livenessBitmap
             facePath = saveToFile(mImageBitmap)
-            if (isFileExists(facePath) && isFileExists(ktpPath)) {
-                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
-                        ?: DEFAULT_ID)
-            } else {
-                setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
-                finish()
+            when {
+                !isFileExists(facePath) -> {
+                    setResult(LivenessConstants.KYC_LIVENESS_FILE_NOT_FOUND)
+                    finish()
+                }
+                !isFileExists(ktpPath) -> {
+                    setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
+                    finish()
+                }
+                else -> {
+                    livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
+                            ?: DEFAULT_ID)
+                }
             }
         }
     }
 
-    private fun setFailedResultData(failedType: Detector.DetectionFailedType) {
+    private fun setFailedResultData(failedType: Detector.DetectionFailedType, errorCode: Int?) {
         if (activity != null) {
             val intent = Intent(activity, LivenessFailedActivity::class.java)
             when (failedType) {
                 Detector.DetectionFailedType.GENERAL -> {
-                    intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_GENERAL)
+                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_GENERAL)
                 }
                 Detector.DetectionFailedType.BADNETWORK -> {
-                    intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
+                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
                 }
                 Detector.DetectionFailedType.TIMEOUT -> {
-                    intent.putExtra(ARG_FAILED_TYPE, LivenessConstants.FAILED_TIMEOUT)
+                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_TIMEOUT)
                 }
                 else -> {
                 }
+            }
+            errorCode?.let {
+                intent.putExtra(LivenessConstants.ARG_ERROR_CODE, errorCode)
             }
             activity?.startActivityForResult(intent, RESULT_CANCELED)
         }
@@ -393,15 +389,18 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
     private fun saveToFile(mImageBitmap: Bitmap?): String {
         try {
-            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                    .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, mImageBitmap, false)
-            if (cameraResultFile.exists()) {
-                return cameraResultFile.absolutePath
+            if(mImageBitmap != null) {
+                val cameraResultFile = writeImageToTkpdPath(mImageBitmap)
+                if (cameraResultFile.exists()) {
+                    return cameraResultFile.absolutePath
+                } else {
+                    Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
+                }
             } else {
-                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+                Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
             }
         } catch (error: Throwable) {
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
         }
         return ""
     }
@@ -409,6 +408,25 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private fun isFileExists(filePath: String): Boolean {
         val file = File(filePath)
         return file.exists()
+    }
+
+    private fun writeImageToTkpdPath(bitmap: Bitmap): File {
+        val cacheDir = File(context?.externalCacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
+        val cachePath = cacheDir.absolutePath
+        val file = File(cachePath)
+        if (file.exists()) {
+            file.delete()
+        }
+        try {
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
+        }
+        return file
     }
 
     override fun onDetectionFrameStateChanged(warnCode: Detector.WarnCode) {
@@ -427,8 +445,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     override fun onDetectionFailed(failedType: Detector.DetectionFailedType, detectionType: Detector.DetectionType) {
         if (isAdded) {
             when (failedType) {
-                Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT)
-                Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION)
+                Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT, null)
+                Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION, null)
                 else -> {
                 }
             }
@@ -476,7 +494,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         }
 
         const val FACE_RETAKE = 2
-        const val ARG_FAILED_TYPE = "failed_type"
         const val DEFAULT_ID = "1"
     }
 

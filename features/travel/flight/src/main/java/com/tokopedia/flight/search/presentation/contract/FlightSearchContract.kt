@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.presentation.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 
@@ -13,9 +13,11 @@ interface FlightSearchContract {
 
     interface View: CustomerView {
 
-        fun getSearchPassData(): FlightSearchPassDataViewModel
+        fun getSearchPassData(): FlightSearchPassDataModel
 
         fun getFilterModel(): FlightFilterModel
+
+        fun getPriceStatisticPair(): Pair<Int, Int>
 
         fun getAirportCombineModelList(): FlightAirportCombineModelList
 
@@ -29,9 +31,9 @@ interface FlightSearchContract {
 
         fun fetchSortAndFilterData(fromCombo: Boolean = false)
 
-        fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean)
+        fun renderSearchList(list: List<FlightJourneyModel>, needRefresh: Boolean)
 
-        fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
+        fun renderTickerView(travelTickerModel: TravelTickerModel)
 
         fun addToolbarElevation()
 
@@ -41,19 +43,13 @@ interface FlightSearchContract {
 
         fun setCombineStatus(isCombineDone: Boolean)
 
-        fun setUIMarkFilter()
-
-        fun setSearchPassData(passDataViewModel: FlightSearchPassDataViewModel)
-
-        fun setSelectedSortItem(sortItemId: Int)
+        fun setSearchPassData(passDataModel: FlightSearchPassDataModel)
 
         fun showDepartureDateMaxTwoYears(resId: Int)
 
         fun showDepartureDateShouldAtLeastToday(resId: Int)
 
         fun showReturnDateShouldGreatedOrEqual(resId: Int)
-
-        fun showFilterAndSortView()
 
         fun showEmptyFlightStateView()
 
@@ -63,8 +59,6 @@ interface FlightSearchContract {
 
         fun hideHorizontalProgress()
 
-        fun hideFilterAndSortView()
-
         fun removeToolbarElevation()
 
         fun removeBottomPaddingForSortAndFilterActionButton()
@@ -73,11 +67,11 @@ interface FlightSearchContract {
 
         fun finishFragment()
 
-        fun navigateToTheNextPage(selectedId: String, searchTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean)
+        fun navigateToTheNextPage(selectedId: String, searchTerm: String, fareModel: FlightPriceModel, isBestPairing: Boolean)
 
-        fun onGetSearchMeta(flightSearchMetaViewModel: FlightSearchMetaViewModel)
+        fun onGetSearchMeta(flightSearchMetaModel: FlightSearchMetaModel)
 
-        fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel)
+        fun onSuccessGetDetailFlightDeparture(flightJourneyModel: FlightJourneyModel)
 
         fun onErrorDeleteFlightCache(e: Throwable)
 
@@ -96,27 +90,31 @@ interface FlightSearchContract {
 
         fun isDoneLoadData(): Boolean
 
-        fun onSeeDetailItemClicked(journeyViewModel: FlightJourneyViewModel, adapterPosition: Int)
+        fun onSeeDetailItemClicked(journeyModel: FlightJourneyModel, adapterPosition: Int)
 
-        fun onSearchItemClicked(journeyViewModel: FlightJourneyViewModel? = null, adapterPosition: Int = -1, selectedId: String = "")
+        fun onSearchItemClicked(journeyModel: FlightJourneyModel? = null, adapterPosition: Int = -1, selectedId: String = "")
 
         fun onSuccessDateChanged(year: Int, month: Int, dayOfMonth: Int)
 
         fun getDetailDepartureFlight(journeyId: String)
 
-        fun fetchCombineData(passDataViewModel: FlightSearchPassDataViewModel)
+        fun fetchCombineData(passDataModel: FlightSearchPassDataModel)
 
-        fun fetchSearchData(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModelList: FlightAirportCombineModelList)
+        fun fetchSearchData(passDataModel: FlightSearchPassDataModel, airportCombineModelList: FlightAirportCombineModelList)
 
-        fun fetchSearchDataCloud(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int = -1)
+        fun fetchSearchDataCloud(passDataModel: FlightSearchPassDataModel, airportCombineModel: FlightAirportCombineModel, delayInSecond: Int = -1)
 
         fun fetchSortAndFilter(@TravelSortOption flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, fromCombo: Boolean = false)
 
         fun fetchTickerData()
 
-        fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel)
+        fun fireAndForgetReturnFlight(passDataModel: FlightSearchPassDataModel, airportCombineModel: FlightAirportCombineModel)
 
         fun unsubscribeAll()
+
+        fun recountFilterCounter(): Int
+
+        fun sendQuickFilterTrack(filterName: String)
 
     }
 }

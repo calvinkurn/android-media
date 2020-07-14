@@ -1,0 +1,33 @@
+query {
+  status
+  userShopInfo {
+    info {
+      shop_id
+    }
+  }
+  notifications{
+    resolutionAs {
+      buyer
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    buyerOrderStatus {
+      paymentStatus
+      confirmed
+      processed
+      shipped
+      arriveAtDestination
+    }
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
+    }
+  }
+  notifcenter_unread {
+    notif_unread
+  }
+}

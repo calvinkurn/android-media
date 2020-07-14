@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">product_detail</string>
+
+    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+
     <string name="label_flash_sale">Flash Sale</string>
     <string name="product_detail_discussion">Diskusi</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="delivery_label">Pengiriman</string>
     <string name="label_seen">Dilihat</string>
+    <string name="label_dibeli">Dibeli</string>
     <string name="label_success_transaction">Transaksi Berhasil</string>
     <string name="label_product_variant">Varian Produk</string>
     <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
@@ -25,21 +29,26 @@
     <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s)</string>
-    <string name="template_talk">%1$d Diskusi</string>
+    <string name="template_talk">%1$d Q&amp;A</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
+    <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
+    <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
     <string name="promote_topads">Iklankan</string>
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
-    <string name="action_preorder">PREORDER</string>
+    <string name="stock_habis">Stok Habis</string>
+    <string name="action_preorder">PreOrder</string>
     <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>
+    <string name="label_oke_pdp">Oke</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
@@ -48,7 +57,6 @@
     <string name="label_product_installment">Cicilan</string>
     <string name="label_format_wholesale">Mulai dari %1$s</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="label_weight">Berat</string>
     <string name="label_asuransi">Asuransi</string>
     <string name="label_category">Kategori</string>
@@ -138,7 +146,8 @@
     <string name="value_proposition_title_original">Pasti ori</string>
     <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
-    <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
+    <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
+    <string name="atc_done_add_product_success_button">Berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
@@ -184,5 +193,49 @@
     <string name="banned_product_title">Barang ini dilarang</string>
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
+    //Variant section
+    <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
+    <string name="variant_failed_load">Variannya belum muncul, refresh yuk!</string>
+    <string name="product_refresh">Refresh</string>
+    <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
+
+    //Check Imei
+    <string name="ask_phone_state_rationale">Izinkan Tokopedia mengakses panggilan telepon untuk pastikan kamu adalah pengguna baru.</string>
+    <string name="ask_phone_state_title">Aktifkan akses telepon, yuk!</string>
+    <string name="check_imei_description">Untuk membeli produk ini, Tokopedia memerlukan akses perangkat untuk memastikan kamu adalah pengguna baru.</string>
+    <string name="check_imei_title">Butuh Akses ke HP-mu</string>
+    <string name="check_imei_btn_rationale">Ke Pengaturan HP</string>
+    <string name="check_imei_btn_later">Nanti Saja</string>
+    <string name="check_imei_understand_title">Berikan Akses</string>
+
+    //NotifyMe (UpComing Teaser) section
+    <string name="notify_me_active">Pengingat Aktif</string>
+    <string name="notify_me_inactive">Ingatkan Saya</string>
+    <string name="notify_me_subtitle">Dimulai dalam %1$s</string>
+    <string name="notify_me_subtitle_main">Dimulai dalam</string>
+    <string name="notify_me_title">Kejar Diskon</string>
+    <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
+    <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
+
+    <!-- OVO -->
+    <string name="product_detail_price__goods">Harga Barang</string>
+    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
+    <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
+    <string name="product_detail_total_pay">OVO Kamu Kurang</string>
+
+    // Discussion Most Helpful
+    <string name="product_detail_discussion_title">Q&amp;A (%d)</string>
+    <string name="product_detail_discussion_see_all">Lihat Semua</string>
+    <string name="product_detail_discussion_no_answers">Belum ada jawaban</string>
+    <string name="product_detail_discussion_other_answers">Lihat %d jawaban lainnya</string>
+    <string name="product_detail_discussion_attached_products">%d produk</string>
+    <string name="product_detail_discussion_empty_subtitle">Tanya di Q&amp;A aja!</string>
+    <string name="product_detail_discussion_empty_description">Masih ragu dengan barang ini? Tanyain langsung aja di sini.</string>
+    <string name="product_detail_discussion_empty_button">Kirim Pertanyaan</string>
+    <string name="product_detail_discussion_formatted_date">• %s</string>
+    <string name="product_detail_discussion_total_answers">%d jawaban</string>
+    <string name="product_detail_discussion_seller_label">Penjual</string>
+    <string name="product_detail_discussion_local_load_title">Q&amp;A gagal ditampilkan</string>
+    <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
 
 </resources>

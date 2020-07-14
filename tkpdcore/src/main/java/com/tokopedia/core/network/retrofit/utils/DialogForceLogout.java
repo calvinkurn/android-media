@@ -17,7 +17,6 @@ import com.tokopedia.track.TrackApp;
  * @author ricoharisin
  */
 public class DialogForceLogout {
-    private static final String TAG = DialogForceLogout.class.getSimpleName();
     private static final String IS_DIALOG_SHOWN_STORAGE = "IS_DIALOG_SHOWN_STORAGE";
     private static final String IS_DIALOG_SHOWN = "IS_DIALOG_SHOWN";
 

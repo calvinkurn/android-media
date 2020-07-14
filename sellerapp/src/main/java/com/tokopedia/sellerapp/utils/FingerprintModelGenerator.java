@@ -42,7 +42,13 @@ public class FingerprintModelGenerator {
             fingerprintString = "";
         }
 
-        fingerprintModel.setAdsId(getGoogleAdId(context));
+        // temporary fix until moving this into fingerprint library, because some module do not need this ads id and only need the fingerprint.
+        // handle exception if called from main thread
+        try {
+            fingerprintModel.setAdsId(getGoogleAdId(context));
+        } catch (Exception e) {
+            fingerprintModel.setAdsId("");
+        }
         fingerprintModel.setFingerprintHash(fingerprintString);
         fingerprintModel.setRegistrarionId(FCMCacheManager.getRegistrationIdWithTemp(context));
 
@@ -73,7 +79,10 @@ public class FingerprintModelGenerator {
             AdvertisingIdClient.Info adInfo;
             try {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            } catch (IOException
+                    | GooglePlayServicesNotAvailableException
+                    | GooglePlayServicesRepairableException
+                    | IllegalStateException e) {
                 e.printStackTrace();
                 return "";
             }
@@ -106,6 +115,7 @@ public class FingerprintModelGenerator {
         String ssid         = DeviceConnectionInfo.getSSID(context);
         String carrier      = DeviceConnectionInfo.getCarrierName(context);
         String androidId = DeviceInfo.getAndroidId(context);
+        String imei = DeviceInfo.getImei(context);
         boolean isx86 = DeviceInfo.isx86();
         String packageName = DeviceInfo.getPackageName(context);
 
@@ -129,6 +139,7 @@ public class FingerprintModelGenerator {
                 .androidId(androidId)
                 .isx86(isx86)
                 .packageName(packageName)
+                .imei(imei)
                 .build();
 
         return new Gson().toJson(fp);

@@ -26,6 +26,7 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_MARKETPLACE = "${INTERNAL_PROMO}/list/marketplace"
     const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"
 
+    const val PROMO_CHECKOUT_MARKETPLACE = "${INTERNAL_PROMO}/checkout-marketplace"
 
 
     private const val HOST_TOKOPOINTS = "tokopoints"
@@ -43,4 +44,22 @@ object ApplinkConstInternalPromo {
      */
     const val PROMO_LIST_UMROH = "$INTERNAL_PROMO/list/umroh"
     const val PROMO_DETAIL_UMROH = "$INTERNAL_PROMO/detail/umroh"
+
+    /**
+     * This const used to redirect to PromoCheckoutListEventActivity
+     * This const used to redirect to PromoCheckoutDetailEventActivity
+     */
+    const val PROMO_LIST_EVENT = "$INTERNAL_PROMO/list/event"
+    const val PROMO_DETAIL_EVENT = "$INTERNAL_PROMO/detail/event"
+
+    /**
+    * Gamification
+    * */
+    private const val HOST_GLOBAL = "global"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
+    const val INTERNAL_GAMIFICATION_CRACK = "$INTERNAL_GLOBAL/gamification"
+    const val INTERNAL_GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+    const val INTERNAL_GAMIFICATION_SMC_REFERRAL = "$INTERNAL_GLOBAL/smc-referral"
+    const val INTERNAL_GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+
 }

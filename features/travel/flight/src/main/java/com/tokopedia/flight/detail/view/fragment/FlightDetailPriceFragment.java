@@ -1,16 +1,17 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
@@ -19,7 +20,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 public class FlightDetailPriceFragment extends Fragment {
 
     private static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
-    private FlightDetailViewModel flightDetailViewModel;
+    private FlightDetailModel flightDetailViewModel;
 
     private TextView labelAdultPrice;
     private TextView labelChildPrice;
@@ -77,17 +78,17 @@ public class FlightDetailPriceFragment extends Fragment {
             double infantPriceTotal = flightDetailViewModel.getInfantNumericPrice() * flightDetailViewModel.getCountInfant();
             infantPrice.setText(getString(com.tokopedia.flight.R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(infantPriceTotal, false, 0).getFormattedString()));
         }
-        totalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(calculateTotal(flightDetailViewModel)));
+        totalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(calculateTotal(flightDetailViewModel), true));
     }
 
-    private int calculateTotal(FlightDetailViewModel flightDetailViewModel) {
+    private int calculateTotal(FlightDetailModel flightDetailViewModel) {
         int total = flightDetailViewModel.getCountAdult() * flightDetailViewModel.getAdultNumericPrice();
         total += flightDetailViewModel.getCountChild() * flightDetailViewModel.getChildNumericPrice();
         total += flightDetailViewModel.getCountInfant() * flightDetailViewModel.getInfantNumericPrice();
         return total;
     }
 
-    public static FlightDetailPriceFragment createInstance(FlightDetailViewModel flightDetailViewModel) {
+    public static FlightDetailPriceFragment createInstance(FlightDetailModel flightDetailViewModel) {
         FlightDetailPriceFragment flightDetailPriceFragment = new FlightDetailPriceFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_FLIGHT_DETAIL_MODEL, flightDetailViewModel);

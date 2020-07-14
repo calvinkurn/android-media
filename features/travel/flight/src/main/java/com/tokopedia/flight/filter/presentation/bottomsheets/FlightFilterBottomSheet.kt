@@ -1,6 +1,7 @@
 package com.tokopedia.flight.filter.presentation.bottomsheets
 
 import android.app.Application
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -84,6 +85,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        bottomSheetAction.setTypeface(bottomSheetAction.typeface, Typeface.BOLD)
+    }
+
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
 
     override fun getFlightFilterModel(): FlightFilterModel? = flightFilterViewModel.filterModel.value
@@ -116,6 +123,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         isHideable = true
         setTitle(getString(R.string.flight_filter_label))
         setAction(getString(R.string.flight_reset_label)) {
+            btnFlightFilterSave.isLoading = true
             flightFilterViewModel.resetFilter()
             resetAllView()
         }
@@ -138,7 +146,14 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             rvFlightFilter.setHasFixedSize(true)
 
             btnFlightFilterSave.setOnClickListener {
-                listener?.onSaveFilter(getFlightSelectedSort(), getFlightFilterModel())
+                val filterModel = getFlightFilterModel()
+                filterModel?.apply {
+                    setHasFilter(getStatisticModel())
+                }
+                listener?.onSaveFilter(getFlightSelectedSort(),
+                        filterModel,
+                        Pair(getStatisticModel()?.minPrice ?: 0, getStatisticModel()?.maxPrice
+                                ?: Int.MAX_VALUE))
                 dismiss()
             }
         }
@@ -146,6 +161,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     private fun renderFlightCount(flightCount: Int) {
         with(mChildView) {
+            btnFlightFilterSave.isLoading = false
             btnFlightFilterSave.visibility = View.VISIBLE
             btnFlightFilterSave.text = getString(R.string.flight_there_has_x_flights, flightCount)
         }
@@ -253,7 +269,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     interface FlightFilterBottomSheetListener {
-        fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?)
+        fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?, statisticPricePair: Pair<Int, Int>)
     }
 
 }

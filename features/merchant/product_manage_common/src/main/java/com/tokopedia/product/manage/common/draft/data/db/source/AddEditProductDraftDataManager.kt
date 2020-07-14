@@ -17,7 +17,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.insertDraft(draft)
     }
 
-    fun getDraft(productId: Long): AddEditProductDraftEntity {
+    fun getDraft(productId: Long): AddEditProductDraftEntity? {
         return draftDao.getDraft(productId)
     }
 
@@ -42,19 +42,21 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
     }
 
     fun updateDraft(productId: Long, data: String): Long {
-        val draft = getDraft(productId).apply {
+        val draft = getDraft(productId) ?: AddEditProductDraftEntity()
+        draft.apply {
             this.data = data
-            version = AddEditProductDraftConstant.DB_VERSION
+            this.version = AddEditProductDraftConstant.DB_VERSION
         }
         draftDao.updateDraft(draft)
         return productId
     }
 
     fun updateDraft(productId: Long, data: String, isUploading: Boolean): Long {
-        val draft = getDraft(productId).apply {
+        val draft = getDraft(productId) ?: AddEditProductDraftEntity()
+        draft.apply {
             this.data = data
             this.isUploading = isUploading
-            version = AddEditProductDraftConstant.DB_VERSION
+            this.version = AddEditProductDraftConstant.DB_VERSION
         }
         draftDao.updateDraft(draft)
         return productId
@@ -67,9 +69,8 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
 
     fun updateLoadingStatus(productId: Long, isUploading: Boolean): Boolean {
         return if (productId > 0) {
-            val draft = getDraft(productId).apply {
-                this.isUploading = isUploading
-            }
+            val draft = getDraft(productId) ?: AddEditProductDraftEntity()
+            draft.isUploading = isUploading
             draftDao.updateDraft(draft)
             true
         } else {

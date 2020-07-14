@@ -1,0 +1,13 @@
+mutation topadsUpdateSingleAds($action: String!, $ads: [topadsUpdateSingleAdsReqData]!, $shopID: String!) {
+  topadsUpdateSingleAds(action: $action, ads: $ads, shopID: $shopID) {
+    data {
+      action
+      shopID
+    }
+    errors {
+      code
+      detail
+      title
+    }
+  }
+}

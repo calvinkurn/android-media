@@ -36,7 +36,7 @@ internal fun Shop.getType(): String {
     }
 }
 
-internal fun Product.asObjectDataLayerAddToCart(cartId: Int): Any {
+internal fun Product.asObjectDataLayerAddToCart(cartId: String): Any {
     return DataLayer.mapOf(
             "name", name,
             "id", id,

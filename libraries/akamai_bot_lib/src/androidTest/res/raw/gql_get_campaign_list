@@ -1,0 +1,45 @@
+query getCampaignList($all: Boolean!,
+                      $offset: Int!,
+                      $rows: Int!,
+                      $campaign_type: Int,
+                      $q: String,
+                      $status: String,
+                      $shop_id: Int!){
+   getCampaignList(params:{
+          all:$all
+          offset:$offset
+          rows:$rows
+          campaign_type:$campaign_type
+          q:$q
+          status:$status
+          shop_id:$shop_id
+      }){
+           data{
+           shop_id
+           total_data
+           list{
+                   campaign_id
+                   name
+                   campaign_period
+                   submission_start_date
+                   submission_end_date
+                   status
+                   campaign_type
+                   cover
+                   is_joined
+                   dashboard_url
+                   product_number
+                   seller_number
+                   seller_info{
+                       submitted_product
+                       accepted_product
+                       rejected_product
+                       max_submission
+                       total_item
+                       sold_item
+                   }
+               }
+           }
+       }
+}
+

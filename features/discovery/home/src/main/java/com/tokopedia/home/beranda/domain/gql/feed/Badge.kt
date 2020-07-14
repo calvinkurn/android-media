@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Lukas on 2019-07-01
  */
-class Badge (
+data class Badge (
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("image_url")
         @Expose
-        val imageUrl: String
+        val imageUrl: String = ""
 )

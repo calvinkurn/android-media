@@ -1,23 +1,22 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -39,7 +38,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BALANCE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CREDIT_CARD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOCASH;
@@ -122,7 +120,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
             switch (settingId) {
                 case SettingConstant.SETTING_CREDIT_CARD_ID:
                     accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
-                    router.goToManageCreditCard(getActivity());
+                    RouteManager.route(getActivity(), ApplinkConstInternalPayment.PAYMENT_SETTING);
                     break;
                 case SettingConstant.SETTING_TOKOCASH_ID:
                     accountAnalytics.eventClickPaymentSetting(TOKOCASH);

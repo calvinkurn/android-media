@@ -1,0 +1,30 @@
+{
+  luckyegg: tokopointsToken {
+    resultStatus {
+      code
+      message
+    }
+    offFlag
+    sumToken
+    sumTokenStr
+    floating {
+      tokenId
+      tokenAsset {
+        name
+        version
+        floatingImgUrl
+        smallImgUrl
+        imageUrls
+        spriteUrl
+      }
+      tokenClaimCustomText
+      tokenClaimText
+      countingMessage
+      pageUrl
+      applink
+      timeRemainingSeconds
+      unixTimestamp
+      isShowTime
+    }
+  }
+}

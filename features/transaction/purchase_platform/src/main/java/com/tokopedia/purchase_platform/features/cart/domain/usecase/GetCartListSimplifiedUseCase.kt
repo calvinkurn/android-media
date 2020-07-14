@@ -44,14 +44,18 @@ class GetCartListSimplifiedUseCase @Inject constructor(@Named("shopGroupSimplifi
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
                     val shopGroupSimplifiedGqlResponse = it.getData<ShopGroupSimplifiedGqlResponse>(ShopGroupSimplifiedGqlResponse::class.java)
-                    if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
-                        cartSimplifiedMapper.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
-                    } else {
-                        if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
-                            throw CartResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
+                    if (shopGroupSimplifiedGqlResponse != null) {
+                        if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.status == "OK") {
+                            cartSimplifiedMapper.convertToCartItemDataList(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.data)
                         } else {
-                            throw ResponseErrorException()
+                            if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
+                                throw CartResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
+                            } else {
+                                throw ResponseErrorException()
+                            }
                         }
+                    } else {
+                        throw ResponseErrorException()
                     }
                 }
                 .subscribeOn(schedulers.io)

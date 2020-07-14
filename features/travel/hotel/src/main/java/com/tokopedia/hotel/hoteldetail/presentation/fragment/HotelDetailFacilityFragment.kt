@@ -23,7 +23,7 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
 
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
-    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,7 +32,7 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
         val recyclerView = getRecyclerView(view) as VerticalRecyclerView
         recyclerView.clearItemDecoration()
         recyclerView.setPadding(0, 0, 0,
-                resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
+                resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt())
         recyclerView.clipToPadding = false
         recyclerView.isFocusable = false
     }

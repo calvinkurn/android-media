@@ -6,13 +6,22 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_info"
+        android:id="@+id/somListSellerMigrationTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
+        app:tickerType="announcement"/>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/somListSellerMigrationTicker"
         app:layout_constraintStart_toStartOf="parent"
-        app:tickerShapeType="full"/>
+        app:tickerShapeType="full"
+        app:closeButtonVisibility="visible"/>
 
     <LinearLayout
         android:id="@+id/rl_search_filter"

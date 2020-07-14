@@ -27,6 +27,7 @@ abstract class AddEditProductDraftDb : RoomDatabase(){
             return Room.databaseBuilder(context, AddEditProductDraftDb::class.java, AddEditProductDraftConstant.DB_NAME)
                     .addMigrations(migrationFromSixToSeven)
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build()
         }
 

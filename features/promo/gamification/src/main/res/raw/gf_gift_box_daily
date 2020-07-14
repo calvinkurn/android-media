@@ -1,0 +1,40 @@
+query GamiLuckyHome($campaignSlug: String!, $page: String!) {
+  gamiLuckyHome(campaignSlug: $campaignSlug, page: $page) {
+    resultStatus {
+      code
+      message
+      reason
+    }
+    liveFeedChannelID
+    tokensUser {
+      state
+      campaignSlug
+      title
+      text
+      desc
+    }
+    actionButton {
+      text
+      type
+      url
+      applink
+      backgroundColor
+    }
+    tokenAsset {
+      backgroundImgURL
+      seamlessImgURL
+      imageURL
+      imageV2URLs
+    }
+    prizeList {
+      isSpecial
+      imageURL
+      text
+    }
+    reminder {
+      text
+      enableText
+      disableText
+    }
+  }
+}

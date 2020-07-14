@@ -1,4 +1,4 @@
-package com.tokopedia.home_page_banner.presentation.widgets.circularViewPager
+package com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

@@ -37,6 +37,8 @@ data class RatesModel (
         val error: Error = Error()
 ){
 
+    fun getMinimumShippingPrice(): Int? = services.map { it.rangePrice.minPrice }.min()
+
     fun getServicesSize(): Int {
         return services.size
     }

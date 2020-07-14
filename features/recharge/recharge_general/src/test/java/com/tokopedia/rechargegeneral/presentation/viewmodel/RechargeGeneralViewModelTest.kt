@@ -1,28 +1,26 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
+import com.tokopedia.rechargegeneral.RechargeGeneralTestDispatchersProvider
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
-import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
+import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class RechargeGeneralViewModelTest {
 
@@ -30,7 +28,6 @@ class RechargeGeneralViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val mapParams = mapOf<String, String>()
-    private val errorMessage = "unable to retrieve data"
     lateinit var gqlResponseFail: GraphqlResponse
 
     @MockK
@@ -42,14 +39,16 @@ class RechargeGeneralViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        val graphqlError = GraphqlError()
-        graphqlError.message = errorMessage
-        gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(MessageErrorException::class.java to listOf(graphqlError)), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+        gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(graphqlRepository, Dispatchers.Unconfined)
+                RechargeGeneralViewModel(RechargeGeneralMapper(), graphqlRepository, RechargeGeneralTestDispatchersProvider())
     }
 
     @Test
@@ -59,99 +58,125 @@ class RechargeGeneralViewModelTest {
                         operators = listOf(CatalogOperator(1))
                 ))
         ))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeGeneralOperatorCluster.Response::class.java to operatorCluster),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralOperatorCluster.Response::class.java
+        result[objectType] = operatorCluster
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        val observer = Observer<Result<RechargeGeneralOperatorCluster>> {
-            assert(it is Success)
-            assertEquals((it as Success).data.operatorGroups.first().operators.first().id, 1)
-        }
-
-        try {
-            rechargeGeneralViewModel.operatorCluster.observeForever(observer)
-            rechargeGeneralViewModel.getOperatorCluster(mapParams)
-        } finally {
-            rechargeGeneralViewModel.operatorCluster.removeObserver(observer)
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams)
+        val actualData = rechargeGeneralViewModel.operatorCluster.value
+        assert(actualData is Success)
+        val operatorGroups = (actualData as Success).data.operatorGroups
+        assertNotNull(operatorGroups)
+        operatorGroups?.run {
+            assertEquals(operatorGroups.first().operators.first().id, 1)
         }
     }
 
+    // Field value in response is null
     @Test
-    fun getOperatorCluster_Fail() {
+    fun getOperatorCluster_Fail_NullResponse() {
+        val operatorCluster = RechargeGeneralOperatorCluster.Response(RechargeGeneralOperatorCluster(
+                operatorGroups = null
+        ))
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralOperatorCluster.Response::class.java
+        result[objectType] = operatorCluster
+        val gqlResponseNull = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
+
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams)
+        val actualData = rechargeGeneralViewModel.operatorCluster.value
+        assert(actualData is Fail)
+    }
+
+    @Test
+    fun getOperatorCluster_Fail_ErrorResponse() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        val observer = Observer<Result<RechargeGeneralOperatorCluster>> {
-            assert(it is Fail)
-            assertEquals((it as Fail).throwable.message, errorMessage)
-        }
-
-        try {
-            rechargeGeneralViewModel.operatorCluster.observeForever(observer)
-            rechargeGeneralViewModel.getOperatorCluster(mapParams)
-        } finally {
-            rechargeGeneralViewModel.operatorCluster.removeObserver(observer)
-        }
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams)
+        val actualData = rechargeGeneralViewModel.operatorCluster.value
+        assert(actualData is Fail)
     }
 
     @Test
     fun getProductList_Success() {
-        val productData = RechargeGeneralProductData.Response(RechargeGeneralProductData(
-                product = RechargeGeneralProductItemData(
-                        dataCollections = listOf(CatalogProductData.DataCollection(
+        val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
+                enquiryFields = listOf(RechargeGeneralDynamicField(
+                        name = "product_id",
+                        dataCollections = listOf(RechargeGeneralDynamicField.DataCollection(
                                 products = listOf(CatalogProduct(id = "1"))
                         ))
-                )
+                ))
         ))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeGeneralProductData.Response::class.java to productData),
-                mapOf(), false)
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralDynamicInput.Response::class.java
+        result[objectType] = productData
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        val observer = Observer<Result<RechargeGeneralProductData>> {
-            assert(it is Success)
-            assertEquals((it as Success).data.product.dataCollections.first().products.first().id, "1")
-        }
+        rechargeGeneralViewModel.getProductList("", mapParams)
+        val actualData = rechargeGeneralViewModel.productList.value
+        assert(actualData is Success)
+        val product = (actualData as Success).data.enquiryFields
+        assertNotNull(product)
+        product?.run {
+            assertEquals(actualData.data.enquiryFields[0].dataCollections[0].products[0].id, "1") }
+    }
 
-        try {
-            rechargeGeneralViewModel.productList.observeForever(observer)
-            rechargeGeneralViewModel.getProductList(mapParams)
-        } finally {
-            rechargeGeneralViewModel.productList.removeObserver(observer)
-        }
+    // Field value in response is null
+    @Test
+    fun getProductList_Fail_NullResponse() {
+        val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
+                enquiryFields = listOf(RechargeGeneralDynamicField())
+        ))
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralDynamicInput.Response::class.java
+        result[objectType] = productData
+        val gqlResponseNull = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
+
+        rechargeGeneralViewModel.getProductList("", mapParams)
+        val actualData = rechargeGeneralViewModel.productList.value
+        assert(actualData is Fail)
+        assertEquals((actualData as Fail).throwable.message, RechargeGeneralViewModel.NULL_PRODUCT_ERROR)
     }
 
     @Test
-    fun getProductList_Fail() {
-        val observer = Observer<Result<RechargeGeneralProductData>> {
-            assert(it is Fail)
-            assertEquals((it as Fail).throwable.message, errorMessage)
-        }
+    fun getProductList_Fail_ErrorResponse() {
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        try {
-            rechargeGeneralViewModel.productList.observeForever(observer)
-            rechargeGeneralViewModel.getProductList(mapParams)
-        } finally {
-            rechargeGeneralViewModel.productList.removeObserver(observer)
-        }
+        rechargeGeneralViewModel.getProductList("", mapParams)
+        val actualData = rechargeGeneralViewModel.productList.value
+        assert(actualData is Fail)
     }
 
     @Test
-    fun createParams_Partial() {
+    fun createOperatorClusterParams() {
         val menuId = 1
 
-        val actual = rechargeGeneralViewModel.createParams(menuId)
+        val actual = rechargeGeneralViewModel.createOperatorClusterParams(menuId)
         assertEquals(actual, mapOf(RechargeGeneralViewModel.PARAM_MENU_ID to menuId))
     }
 
-//    @Test
-//    fun createParams_Full() {
-//        val menuId = 1
-//        val operatorId = 1
-//
-//        val actual = rechargeGeneralViewModel.createParams(menuId, operatorId)
-//        assertEquals(actual, mapOf(
-//                RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
-//                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId))
-//    }
+    @Test
+    fun createProductListParams() {
+        val menuId = 1
+        val operatorId = 1
+
+        val actual = rechargeGeneralViewModel.createProductListParams(menuId, operatorId)
+        assertEquals(actual, mapOf(
+                RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
+                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId.toString()))
+    }
 }

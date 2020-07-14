@@ -18,8 +18,10 @@ class ChatListActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? = ChatTabListFragment.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         useLightNotificationBar()
+        initWindowBackground()
+        initTopchatToolbar()
     }
 
     private fun useLightNotificationBar() {
@@ -27,6 +29,14 @@ class ChatListActivity : BaseSimpleActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             window.statusBarColor = Color.WHITE
         }
+    }
+
+    private fun initWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
+    }
+
+    private fun initTopchatToolbar() {
+        supportActionBar?.setBackgroundDrawable(null)
     }
 
     companion object {

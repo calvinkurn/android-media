@@ -1,12 +1,13 @@
 package com.tokopedia.core;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,22 +35,23 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.widget.TouchViewPager;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -215,35 +219,28 @@ public class PreviewProductImage extends TActivity {
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-                        permissionCheck.checkPermission(
-                                PreviewProductImage.this,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                new PermissionCheckerHelper.PermissionCheckListener() {
-                                    @Override
-                                    public void onPermissionDenied(@NotNull String permissionText) {
-                                        RequestPermissionUtil.onPermissionDenied(
-                                                PreviewProductImage.this,
-                                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                                        );
-                                        finish();
-                                    }
 
-                                    @Override
-                                    public void onNeverAskAgain(@NotNull String permissionText) {
-                                        RequestPermissionUtil.onNeverAskAgain(
-                                                PreviewProductImage.this,
-                                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                                        );
-                                        finish();
-                                    }
+                        String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE};
+                        PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
 
-                                    @Override
-                                    public void onPermissionGranted() {
-                                        actionDownloadAndSavePicture();
-                                    }
-                                },
-                                ""
-                        );
+                        permissionCheckerHelper.checkPermissions(PreviewProductImage.this, listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+                            @Override
+                            public void onPermissionDenied(@NotNull String permissionText) {
+                                permissionCheckerHelper.onPermissionDenied(PreviewProductImage.this, permissionText);
+                                finish();
+                            }
+
+                            @Override
+                            public void onNeverAskAgain(@NotNull String permissionText) {
+                                permissionCheckerHelper.onNeverAskAgain(PreviewProductImage.this, permissionText);
+                                finish();
+                            }
+
+                            @Override
+                            public void onPermissionGranted() {
+                                actionDownloadAndSavePicture();
+                            }
+                        },"");
                     }
                 });
         builder.setNegativeButton(getString(R.string.title_no),
@@ -294,7 +291,7 @@ public class PreviewProductImage extends TActivity {
         CustomTarget<Bitmap> targetListener = new CustomTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImage.this,
+                final String path = SaveImageFromBitmap(PreviewProductImage.this,
                         resource, filenameParam);
                 if (path == null) {
                     notificationBuilder.setContentText(getString(R.string.download_failed))
@@ -389,5 +386,59 @@ public class PreviewProductImage extends TActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheck.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    public static String SaveImageFromBitmap(Activity context, Bitmap bitmap, String PicName) {
+        File pictureFile = getOutputMediaFile(context, PicName);
+        String path = "";
+        if (pictureFile == null) {
+            return null;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            addImageToGallery(pictureFile.getPath(), context);
+            path = pictureFile.getPath();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    private static void addImageToGallery(final String filePath, final Context context) {
+        try {
+            ContentValues values = new ContentValues();
+
+            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, filePath);
+
+            context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        } catch (Exception ex) {
+        }
+    }
+
+    private static File getOutputMediaFile(Activity context, String PicName) {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Tokopedia");
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        // Create a media file name
+        File mediaFile;
+        String mImageName = PicName + ".jpg";
+        mediaFile = new File(mediaStorageDir, mImageName);
+        return mediaFile;
     }
 }

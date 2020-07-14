@@ -1,10 +1,12 @@
 package com.tokopedia.topchat.chatlist.fragment
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -17,12 +19,14 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -43,7 +47,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
+class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     override fun getScreenName(): String = "chat-tab-list"
 
@@ -77,23 +81,32 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initInjector()
         initViewModel()
         initTabList()
-        initTabLayout()
         initViewPagerAdapter()
         initViewPager()
+        initTabLayout()
         initViewModel()
         initData()
         initOnBoarding()
+        initChatCounterObserver()
+        initBackground()
+        context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun initBackground() {
+        if (GlobalConfig.isSellerApp()) {
+            viewPager?.setBackgroundColor(Color.WHITE)
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        initObserver()
+        initWebsocketChatObserver()
         webSocketViewModel.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        stopLiveDataObserver()
+        stopWebsocketLiveDataObserver()
         clearLiveDataValue()
         webSocketViewModel.onStop()
     }
@@ -102,6 +115,22 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         super.onDestroy()
         stopLiveDataObserver()
         flushAllViewModel()
+    }
+
+    private fun initChatCounterObserver() {
+        chatNotifCounterViewModel.chatNotifCounter.observe(this,
+                Observer { result ->
+                    when (result) {
+                        is Success -> {
+                            tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
+                            if (tabList.size > 1) {
+                                tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            }
+                            setNotificationCounterOnTab()
+                        }
+                    }
+                }
+        )
     }
 
     private fun bindView(view: View) {
@@ -227,7 +256,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         context?.let {
             chatNotifCounterViewModel.getLastVisitedTab(it).apply {
                 if (this == -1) return@apply
-                viewPager?.currentItem = this
+                viewPager?.setCurrentItem(this, false)
             }
         }
     }
@@ -248,7 +277,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
             }
 
         }
-        return title
+        return MethodChecker.fromHtml(title)
     }
 
     private fun addSellerTabFragment() {
@@ -289,7 +318,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
     }
 
-    private fun initObserver() {
+    private fun initWebsocketChatObserver() {
         webSocketViewModel.itemChat.observe(this,
                 Observer { result ->
                     when (result) {
@@ -298,20 +327,6 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
                                 is IncomingChatWebSocketModel -> forwardToFragment(result.data as IncomingChatWebSocketModel)
                                 is IncomingTypingWebSocketModel -> forwardToFragment(result.data as IncomingTypingWebSocketModel)
                             }
-                        }
-                    }
-                }
-        )
-
-        chatNotifCounterViewModel.chatNotifCounter.observe(this,
-                Observer { result ->
-                    when (result) {
-                        is Success -> {
-                            tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            if (tabList.size > 1) {
-                                tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
-                            }
-                            setNotificationCounterOnTab()
                         }
                     }
                 }
@@ -439,11 +454,14 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     private fun initOnBoarding() {
         if (!userSession.hasShop()) return
-        tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener {
-            if (!isOnBoardingAlreadyShown()) {
-                showOnBoarding()
+        tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                if (!isOnBoardingAlreadyShown()) {
+                    showOnBoarding()
+                }
             }
-        }
+        })
     }
 
     private fun isOnBoardingAlreadyShown(): Boolean {
@@ -470,13 +488,17 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
                         getString(R.string.coach_tab_description_buyer)
                 )
         )
-        CoachMark().show(activity, TAG_ONBOARDING, tutorials)
+        CoachMarkBuilder().build().show(activity, TAG_ONBOARDING, tutorials)
         context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
     }
 
+
     private fun stopLiveDataObserver() {
-        webSocketViewModel.itemChat.removeObservers(this)
         chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+    }
+
+    private fun stopWebsocketLiveDataObserver() {
+        webSocketViewModel.itemChat.removeObservers(this)
     }
 
     private fun clearLiveDataValue() {
@@ -490,7 +512,6 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
-
         @JvmStatic
         fun create(): ChatTabListFragment {
             return ChatTabListFragment()

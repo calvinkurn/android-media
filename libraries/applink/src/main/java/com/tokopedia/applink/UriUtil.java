@@ -184,6 +184,21 @@ public class UriUtil {
         return stringBuilder.toString();
     }
 
+    public static String buildUriAppendParams(@NonNull String uri,
+                                              @Nullable Map<String, String> queryParameters) {
+        StringBuilder stringBuilder = new StringBuilder(uri);
+        if (queryParameters != null && queryParameters.size() > 0) {
+            stringBuilder.append("?");
+            int i = 0;
+            for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
+                if (i > 0) stringBuilder.append("&");
+                stringBuilder.append(entry.getKey()).append("=").append(entry.getValue());
+                i++;
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public static Map<String, String> uriQueryParamsToMap(@NonNull String url) {
         Map<String, String> map = new HashMap<>();
         try {

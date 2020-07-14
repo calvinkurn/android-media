@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
@@ -63,11 +62,11 @@ class AddPhoneFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setListener()
         setObserver()
-
+        buttonSubmit.isEnabled = false
     }
 
     private fun setListener() {
-        etPhone?.addTextChangedListener(object : TextWatcher {
+        etPhone?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -75,6 +74,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
                     setErrorText("")
+                }else {
+                    buttonSubmit.isEnabled = false
                 }
             }
 
@@ -92,7 +93,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
 
         buttonSubmit?.setOnClickListener {
-            val phone = etPhone?.text.toString()
+            val phone = etPhone?.textFieldInput?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
                 phoneNumberTracker.clickOnButtonNext(false, getString(R.string.wrong_phone_format))
@@ -107,7 +108,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity() {
-        val phone = etPhone?.text.toString().trim()
+        val phone = etPhone?.textFieldInput?.text.toString().trim()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
@@ -122,18 +123,13 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun setErrorText(s: String) {
         if (TextUtils.isEmpty(s)) {
-            tvMessage.visibility = View.VISIBLE
-            tvError.visibility = View.GONE
+            etPhone.setError(false)
+            etPhone.setMessage(getString(R.string.sample_phone))
             buttonSubmit?.isEnabled = true
-            buttonSubmit?.buttonCompatType = ButtonCompat.PRIMARY
-            wrapperPhone.setErrorEnabled(true)
         } else {
-            wrapperPhone.setErrorEnabled(false)
-            tvError.visibility = View.VISIBLE
-            tvError.text = s
-            tvMessage.visibility = View.GONE
+            etPhone.setError(true)
+            etPhone.setMessage(s)
             buttonSubmit?.isEnabled = false
-            buttonSubmit?.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
         }
     }
 
@@ -215,7 +211,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        val phone = etPhone.text.toString()
+        val phone = etPhone.textFieldInput.text.toString()
         viewModel.mutateAddPhone(phone.trim())
     }
 

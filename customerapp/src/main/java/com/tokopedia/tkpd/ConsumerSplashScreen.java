@@ -23,7 +23,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -127,11 +126,18 @@ public class ConsumerSplashScreen extends SplashScreen {
             return;
         }
 
-        Intent homeIntent = new Intent(this, MainParentActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent homeIntent = new Intent(this, MainParentActivity.class);
+        boolean needClearTask = getIntent()== null || !getIntent().hasExtra("branch");
+        if (needClearTask) {
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         startActivity(homeIntent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finishAffinity();
+        if (needClearTask) {
+            finishAffinity();
+        } else {
+            finish();
+        }
     }
 
     private void startWarmStart() {
@@ -155,7 +161,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override

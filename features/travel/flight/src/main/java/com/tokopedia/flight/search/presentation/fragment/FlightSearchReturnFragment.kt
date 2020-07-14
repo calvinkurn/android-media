@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
@@ -35,7 +35,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     var isBestPairing = false
     private var isViewOnlyBestPairing = false
 
-    lateinit var priceViewModel: FlightPriceViewModel
+    lateinit var priceModel: FlightPriceModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val args: Bundle? = savedInstanceState ?: arguments
@@ -44,7 +44,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
             selectedFlightDeparture = args.getString(EXTRA_DEPARTURE_ID)
             isBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING)
             isViewOnlyBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING)
-            priceViewModel = args.getParcelable(EXTRA_PRICE_VIEW_MODEL)
+            priceModel = args.getParcelable(EXTRA_PRICE_VIEW_MODEL)
             isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE)
         }
 
@@ -67,7 +67,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         outState.putParcelable(EXTRA_PASS_DATA, flightSearchPassData)
         outState.putString(EXTRA_DEPARTURE_ID, selectedFlightDeparture)
         outState.putBoolean(EXTRA_IS_BEST_PAIRING, isBestPairing)
-        outState.putParcelable(EXTRA_PRICE_VIEW_MODEL, priceViewModel)
+        outState.putParcelable(EXTRA_PRICE_VIEW_MODEL, priceModel)
         outState.putBoolean(EXTRA_IS_COMBINE_DONE, isCombineDone)
     }
 
@@ -85,9 +85,9 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun getLayout(): Int = R.layout.fragment_search_return
 
-    override fun getDepartureAirport(): FlightAirportViewModel = flightSearchPassData.arrivalAirport
+    override fun getDepartureAirport(): FlightAirportModel = flightSearchPassData.arrivalAirport
 
-    override fun getArrivalAirport(): FlightAirportViewModel = flightSearchPassData.departureAirport
+    override fun getArrivalAirport(): FlightAirportModel = flightSearchPassData.departureAirport
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.swipe_refresh_layout
@@ -99,49 +99,49 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun isReturning(): Boolean = true
 
-    override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyViewModel) {
-        if (flightJourneyViewModel.airlineDataList != null &&
-                flightJourneyViewModel.airlineDataList.size > 1) {
+    override fun onSuccessGetDetailFlightDeparture(flightJourneyModel: FlightJourneyModel) {
+        if (flightJourneyModel.airlineDataList != null &&
+                flightJourneyModel.airlineDataList.size > 1) {
             departure_trip_label.setValueName(String.format(" | %s", getString(R.string.flight_label_multi_maskapai)))
-        } else if (flightJourneyViewModel.airlineDataList != null &&
-                flightJourneyViewModel.airlineDataList.size == 1) {
-            departure_trip_label.setValueName(String.format(" | %s", flightJourneyViewModel.airlineDataList[0].shortName))
+        } else if (flightJourneyModel.airlineDataList != null &&
+                flightJourneyModel.airlineDataList.size == 1) {
+            departure_trip_label.setValueName(String.format(" | %s", flightJourneyModel.airlineDataList[0].shortName))
         }
 
-        if (flightJourneyViewModel.addDayArrival > 0) {
+        if (flightJourneyModel.addDayArrival > 0) {
             departure_trip_label.setValueTime(String.format("%s - %s (+%sh)",
-                    flightJourneyViewModel.departureTime,
-                    flightJourneyViewModel.arrivalTime,
-                    flightJourneyViewModel.addDayArrival.toString()))
+                    flightJourneyModel.departureTime,
+                    flightJourneyModel.arrivalTime,
+                    flightJourneyModel.addDayArrival.toString()))
         } else {
             departure_trip_label.setValueTime(String.format("%s - %s",
-                    flightJourneyViewModel.departureTime,
-                    flightJourneyViewModel.arrivalTime))
+                    flightJourneyModel.departureTime,
+                    flightJourneyModel.arrivalTime))
         }
 
         departure_trip_label.setValueDestination(String.format("%s - %s",
-                flightJourneyViewModel.departureAirport,
-                flightJourneyViewModel.arrivalAirport))
+                flightJourneyModel.departureAirport,
+                flightJourneyModel.arrivalAirport))
 
         resetDepartureLabelPrice()
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?) {
-        if (journeyViewModel != null) {
-            flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, journeyViewModel)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?) {
+        if (journeyModel != null) {
+            flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, journeyModel)
         }
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyViewModel?, adapterPosition: Int) {
-        if (journeyViewModel != null) {
+    override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        if (journeyModel != null) {
             flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture,
-                    journeyViewModel, adapterPosition)
+                    journeyModel, adapterPosition)
         }
     }
 
     override fun isOnlyShowBestPair(): Boolean = isViewOnlyBestPairing
 
-    override fun getFlightPriceViewModel(): FlightPriceViewModel = priceViewModel
+    override fun getFlightPriceViewModel(): FlightPriceModel = priceModel
 
     override fun showReturnTimeShouldGreaterThanArrivalDeparture() {
         if (isAdded) {
@@ -162,21 +162,25 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     }
 
     override fun showSeeAllResultView() {
-        adapter.addElement(FlightSearchSeeAllResultViewModel(priceViewModel.departurePrice.adult))
+        adapter.addElement(FlightSearchSeeAllResultModel(priceModel.departurePrice.adult))
         isViewOnlyBestPairing = true
     }
 
     override fun showSeeBestPairingResultView() {
-        adapter.addElement(FlightSearchSeeOnlyBestPairingViewModel(
-                priceViewModel.departurePrice.adultCombo))
+        adapter.addElement(FlightSearchSeeOnlyBestPairingModel(
+                priceModel.departurePrice.adultCombo))
         isViewOnlyBestPairing = false
     }
 
-    override fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel?, selectedFlightReturn: String?, flightPriceViewModel: FlightPriceViewModel, selectedFlightTerm: String?) {
-        if (returnFlightSearchViewModel != null) {
-            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id, returnFlightSearchViewModel.term, flightPriceViewModel, false, true)
+    override fun navigateToCart(returnFlightSearchModel: FlightJourneyModel?, selectedFlightReturn: String?, flightPriceModel: FlightPriceModel, selectedFlightTerm: String?) {
+        if (returnFlightSearchModel != null) {
+            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchModel.id,
+                    returnFlightSearchModel.term, flightPriceModel,
+                    isBestPairing = false, isCombineDone = true, requestId = flightSearchPassData.searchRequestId)
         } else if (selectedFlightReturn != null && selectedFlightTerm != null) {
-            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm, flightPriceViewModel,false, true)
+            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm,
+                    flightPriceModel, isBestPairing = false, isCombineDone = true,
+                    requestId = flightSearchPassData.searchRequestId)
         }
     }
 
@@ -197,7 +201,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         super.onDestroyView()
     }
 
-    override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
+    override fun renderSearchList(list: List<FlightJourneyModel>, needRefresh: Boolean) {
 
         if (isBestPairing && !isOnlyShowBestPair()) {
             showSeeBestPairingResultView()
@@ -213,13 +217,13 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     override fun onShowAllClicked() {
         super.onShowAllClicked()
 
-        showSeeAllResultDialog(priceViewModel.departurePrice.adult)
+        showSeeAllResultDialog(priceModel.departurePrice.adult)
     }
 
     override fun onShowBestPairingClicked() {
         super.onShowBestPairingClicked()
 
-        showSeeBestPairingDialog(priceViewModel.departurePrice.adultCombo)
+        showSeeBestPairingDialog(priceModel.departurePrice.adultCombo)
     }
 
     private fun showSeeAllResultDialog(normalPrice: String) {
@@ -261,23 +265,27 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     }
 
     private fun resetDepartureLabelPrice() {
-        if (priceViewModel.departurePrice.adultNumericCombo != 0) {
-            departure_trip_label.setValuePrice(priceViewModel.departurePrice.adultCombo)
+        if (isBestPairing) {
+            if (isOnlyShowBestPair() && priceModel.departurePrice.adultNumericCombo > 0) {
+                departure_trip_label.setValuePrice(priceModel.departurePrice.adultCombo)
+            } else {
+                departure_trip_label.setValuePrice(priceModel.departurePrice.adult)
+            }
         } else {
-            departure_trip_label.setValuePrice(priceViewModel.departurePrice.adult)
+            departure_trip_label.setValuePrice(priceModel.departurePrice.adult)
         }
     }
 
     companion object {
-        fun newInstance(passDataViewModel: FlightSearchPassDataViewModel,
+        fun newInstance(passDataModel: FlightSearchPassDataModel,
                         selectedDepartureID: String, bestPairing: Boolean,
-                        priceViewModel: FlightPriceViewModel,
+                        priceModel: FlightPriceModel,
                         isCombineDone: Boolean): FlightSearchReturnFragment {
             val args = Bundle()
-            args.putParcelable(EXTRA_PASS_DATA, passDataViewModel)
+            args.putParcelable(EXTRA_PASS_DATA, passDataModel)
             args.putString(EXTRA_DEPARTURE_ID, selectedDepartureID)
             args.putBoolean(EXTRA_IS_BEST_PAIRING, bestPairing)
-            args.putParcelable(EXTRA_PRICE_VIEW_MODEL, priceViewModel)
+            args.putParcelable(EXTRA_PRICE_VIEW_MODEL, priceModel)
             args.putBoolean(EXTRA_IS_COMBINE_DONE, isCombineDone)
 
             val fragment = FlightSearchReturnFragment()

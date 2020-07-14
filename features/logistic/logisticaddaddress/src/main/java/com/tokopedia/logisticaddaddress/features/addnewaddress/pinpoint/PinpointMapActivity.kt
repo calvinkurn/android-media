@@ -18,6 +18,7 @@ class PinpointMapActivity : BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
     var SCREEN_NAME = "PinpointMapActivity"
     private var isFullFLow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     companion object {
         @JvmStatic
@@ -41,6 +42,7 @@ class PinpointMapActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         intent?.extras?.let {
             isFullFLow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
         }
     }
 
@@ -79,11 +81,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
         }
 
         if (isAllowed) {
-            if(!isFullFLow) AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
-            else AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(isFullFLow, isLogisticLabel)
         } else {
-            if(!isFullFLow) AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
-            else AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(isFullFLow, isLogisticLabel)
         }
 
     }

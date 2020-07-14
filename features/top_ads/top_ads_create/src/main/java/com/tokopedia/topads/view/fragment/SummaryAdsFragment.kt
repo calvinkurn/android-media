@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -19,13 +20,15 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.param.AdsItem
 import com.tokopedia.topads.data.param.Group
 import com.tokopedia.topads.data.param.InputCreateGroup
 import com.tokopedia.topads.data.param.KeywordsItem
-import com.tokopedia.topads.data.response.*
+import com.tokopedia.topads.data.response.ResponseCreateGroup
+import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
@@ -36,9 +39,13 @@ import javax.inject.Inject
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
+private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var viewModel: SummaryViewModel
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var map = HashMap<String, Any>()
@@ -47,6 +54,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     var group = Group()
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
+    private var selectedProductIds: MutableList<String> = mutableListOf()
+    private var selectedkeywordIds: MutableList<String> = mutableListOf()
+    private var selectedkeywordTags: MutableList<String> = mutableListOf()
     var isEnoughDeposit = false
     private var dailyBudget = 0
     private var suggestion = 0
@@ -55,6 +65,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     companion object {
         private const val MORE_INFO = " Info Selengkapnya"
         private const val MULTIPLIER = 40
+        private const val UNLIMITED_BUDGET = "0"
+        private const val DEFINED_BUDGET = "1"
+        private const val INPUT = "input"
         fun createInstance(): Fragment {
 
             val fragment = SummaryAdsFragment()
@@ -119,6 +132,21 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         btn_submit.setOnClickListener {
             val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
+
+            adsItemsList.forEachIndexed { index, adsItem ->
+                selectedProductIds.add(adsItemsList[index].productID)
+            }
+
+            keywordsList.forEachIndexed { index, keywordsItem ->
+                selectedkeywordIds.add(keywordsList[index].keywordTypeID)
+            }
+
+            keywordsList.forEachIndexed { index, keywordsItem ->
+                selectedkeywordTags.add(keywordsList[index].keywordTag)
+            }
+
+            var eventLabel = PRODUCT_INFO.format(selectedProductIds.joinToString(","), selectedkeywordTags.joinToString("::"), selectedkeywordIds.joinToString(","))
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, eventLabel)
         }
         suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
@@ -146,15 +174,13 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 daily_budget.setError(false)
                 daily_budget.setMessage("")
                 btn_submit.isEnabled = true
-
             }
-
         }
         daily_budget.textFieldInput.addTextChangedListener(watcher())
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(resources.getColor(R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 RouteManager.route(context, getString(R.string.more_info))
@@ -182,7 +208,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     btn_submit.isEnabled = true
                     daily_budget.setMessage("")
                     daily_budget.setError(false)
-
                 }
             }
         }
@@ -194,11 +219,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             daily_budget.textFieldInput.setText(dailyBudget.toString())
             daily_budget.refreshDrawableState()
         }
-
     }
 
     private fun convertToParam(view: View): HashMap<String, Any> {
         val userSession = UserSession(view.context)
+        if (!toggle.isChecked)
+            input.group.groupBudget = UNLIMITED_BUDGET
+        else
+            input.group.groupBudget = DEFINED_BUDGET
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
         input.group.priceBid = stepperModel?.finalBidPerClick ?: 0
@@ -228,7 +256,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
             input.group.ads = adsItemsList
         }
-        map["input"] = input
+        map[INPUT] = input
         return map
     }
 
@@ -241,7 +269,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 throwable.message,
                 Snackbar.LENGTH_LONG)
                 .show()
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -249,12 +276,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         product_count.text = stepperModel?.selectedProductIds?.count().toString()
         keyword_count.text = stepperModel?.selectedKeywords?.count().toString()
         group_name.text = stepperModel?.groupName
-
     }
 
     override fun updateToolBar() {
         (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
-
     }
-
 }

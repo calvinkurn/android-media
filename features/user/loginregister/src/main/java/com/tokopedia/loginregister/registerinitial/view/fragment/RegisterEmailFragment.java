@@ -77,7 +77,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     private static final int REQUEST_AUTO_LOGIN = 101;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 102;
 
-    int PASSWORD_MINIMUM_LENGTH = 6;
+    int PASSWORD_MINIMUM_LENGTH = 8;
 
     String NAME = "NAME";
     String PASSWORD = "PASSWORD";
@@ -262,9 +262,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         registerInitialViewModel.getRegisterRequestResponse().observe(this, registerRequestDataResult -> {
             if(registerRequestDataResult instanceof Success){
                 RegisterRequestData data = ((Success<RegisterRequestData>) registerRequestDataResult).getData();
-                onSuccessRegister(data.getUserId(), name.getText().toString(), email.getText().toString());
                 userSession.clearToken();
                 userSession.setToken(data.getAccessToken(), data.getTokenType(), data.getRefreshToken());
+                onSuccessRegister();
                 if(getActivity() != null){
                     Intent intent = new Intent();
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_ACTION, data.getAction());
@@ -482,7 +482,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     boolean isCanRegister(String name, String email, String password) {
         boolean isValid = true;
 
-        int PASSWORD_MINIMUM_LENGTH = 6;
         if (TextUtils.isEmpty(password)) {
             isValid = false;
         } else if (password.length() < PASSWORD_MINIMUM_LENGTH) {
@@ -568,7 +567,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     public void showPasswordHint() {
-        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_6_character));
+        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_8_character));
     }
 
     public void showNameHint() {
@@ -634,14 +633,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
-    public void onSuccessRegister(int uid, String name, String email) {
+    public void onSuccessRegister() {
         if (getActivity() != null) {
             dismissLoadingProgress();
             setActionsEnabled(true);
             lostViewFocus();
             registerAnalytics.trackSuccessClickSignUpButtonEmail();
-            registerAnalytics.trackSuccessClickEmailSignUpButton();
-            analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(), uid, name, email);
         }
     }
 

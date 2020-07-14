@@ -31,7 +31,9 @@ data class NotificationUpdateItem(
         @Expose @SerializedName("data_notification") var dataNotification: DataNotification,
         @Expose @SerializedName("product_data") var productData: List<ProductData>,
         @Expose @SerializedName("total_product") var totalProducts: Int = 0,
-        @Expose @SerializedName("is_longer_content") var isLongerContent: Boolean = false
+        @Expose @SerializedName("is_longer_content") var isLongerContent: Boolean = false,
+        @Expose @SerializedName("show_bottomsheet") var isShowBottomSheet: Boolean = false,
+        @Expose @SerializedName("type_bottomsheet") var typeBottomSheet: Int = 0
 )
 
 data class ProductData(
@@ -49,9 +51,12 @@ data class ProductData(
         @Expose @SerializedName("rating") val rating: String = "0",
         @Expose @SerializedName("count_review") val countReview: String = "0",
         @Expose @SerializedName("labels") val labels: List<Label> = emptyList(),
-        @Expose @SerializedName("campaign") val campaign: Campaign?,
+        @Expose @SerializedName("campaign") val campaign: Campaign? = null,
         @Expose @SerializedName("variant") val variant: List<Variant> = emptyList(),
-        @Expose @SerializedName("shop") val shop: Shop?
+        @Expose @SerializedName("shop") val shop: Shop? = null,
+        @Expose @SerializedName("stock") var stock: Int = 0,
+        @Expose @SerializedName("type_button") var typeButton: Int = 0,
+        @Expose @SerializedName("is_show") var isShow: Boolean = false
 )
 
 data class Label (
@@ -78,8 +83,8 @@ data class Shop(
         @SerializedName("id") val id: Int = 0,
         @SerializedName("name") val name: String = "",
         @SerializedName("location") val location: String = "",
-        @SerializedName("badges") val badges: List<ShopBadge> = emptyList(),
-        @SerializedName("free_shipping_icon") val freeShippingIcon: String = ""
+        @SerializedName("badges") val badges: List<ShopBadge>? = emptyList(),
+        @SerializedName("free_shipping_icon") val freeShippingIcon: String? = ""
 )
 
 data class ShopBadge(

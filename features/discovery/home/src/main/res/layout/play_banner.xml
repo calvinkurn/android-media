@@ -26,7 +26,7 @@
             tools:targetApi="lollipop" />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
@@ -39,6 +39,27 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3"
             tools:text="Tonton Keseruannya"/>
+
+        <TextView
+            android:id="@+id/play_txt_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:focusableInTouchMode="false"
+            android:text="@string/lihat_semua"
+            android:textColor="@color/Green_G500"
+            android:textStyle="bold"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintLeft_toRightOf="@+id/title"
+            app:layout_constraintBottom_toTopOf="@+id/video_player"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
         <com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
             android:id="@+id/video_player"
             android:layout_width="match_parent"

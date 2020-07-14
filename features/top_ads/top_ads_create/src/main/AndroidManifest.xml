@@ -21,7 +21,7 @@
 
                 <data
                     android:host="@string/host_topads"
-                    android:path="/create-ads"
+                    android:path="@string/path_topads_ad_creation"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -32,11 +32,24 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name="com.tokopedia.topads.view.activity.AdCreationChooserActivity"
             android:label="@string/creat_ad"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_ad_chooser"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

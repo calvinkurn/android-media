@@ -1,8 +1,7 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.Context
+import android.content.res.Resources
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.MoneyInCheckoutMutationResponse.ResponseData
@@ -12,7 +11,6 @@ import com.tokopedia.tradein.repository.TradeInRepository
 import javax.inject.Inject
 
 class MoneyInCheckoutUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
         private val repository: TradeInRepository) {
 
     fun createRequestParams(hardwareId: String,
@@ -53,11 +51,11 @@ class MoneyInCheckoutUseCase @Inject constructor(
         return request
     }
 
-    private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_checkout_general)
+    private fun getQuery(resources: Resources?): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_checkout_general)
     }
 
-    suspend fun makeCheckoutMutation(request: Map<String, Any>): ResponseData {
-        return repository.getGQLData(getQuery(), ResponseData::class.java, request) as ResponseData
+    suspend fun makeCheckoutMutation(resources: Resources?, request: Map<String, Any>): ResponseData {
+        return repository.getGQLData(getQuery(resources), ResponseData::class.java, request)
     }
 }

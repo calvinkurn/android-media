@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="@color/Neutral_N700">
 
     <FrameLayout
         android:id="@+id/fl_play_pause"
@@ -36,9 +37,9 @@
     </FrameLayout>
 
     <com.google.android.exoplayer2.ui.DefaultTimeBar
-        android:id="@+id/exo_progress"
+        android:id="@id/exo_progress"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         app:layout_constraintBottom_toBottomOf="@id/ll_video_time"
@@ -53,11 +54,10 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/exo_position"
+            android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N0"
@@ -74,7 +74,7 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/exo_duration"
+            android:id="@id/exo_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N0"

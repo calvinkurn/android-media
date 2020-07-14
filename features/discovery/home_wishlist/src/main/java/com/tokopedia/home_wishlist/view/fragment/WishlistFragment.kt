@@ -398,6 +398,7 @@ open class WishlistFragment: Fragment(), WishlistListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
+                viewModel.sendTopAds(dataModel.recommendationItem.clickUrl)
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -406,6 +407,7 @@ open class WishlistFragment: Fragment(), WishlistListener {
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
+                viewModel.sendTopAds(dataModel.recommendationItem.clickUrl)
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -449,8 +451,14 @@ open class WishlistFragment: Fragment(), WishlistListener {
     override fun onProductImpression(dataModel: WishlistDataModel, position: Int) {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
-            is RecommendationItemDataModel -> WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
-            is RecommendationCarouselItemDataModel -> WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            is RecommendationItemDataModel -> {
+                viewModel.sendTopAds(dataModel.recommendationItem.trackerImageUrl)
+                WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            }
+            is RecommendationCarouselItemDataModel -> {
+                viewModel.sendTopAds(dataModel.recommendationItem.trackerImageUrl)
+                WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            }
         }
     }
 

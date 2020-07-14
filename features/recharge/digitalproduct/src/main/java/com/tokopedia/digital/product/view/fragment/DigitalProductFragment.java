@@ -152,7 +152,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String ACTION_OCR = "click camera icon";
 
     public static final String PATH_TRANSACTION_LIST = "order-list/";
-    public static final String PATH_PRODUCT_LIST = "products/";
     public static final String PATH_SUBSCRIPTIONS = "subscribe/";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
@@ -406,7 +405,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     additionalETollOperatorName
             ));
             Intent intent = RouteManager.getIntent(getActivity(),
-                    ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP);
+                    ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false");
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
     }
@@ -985,7 +984,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
         inflater.inflate(R.menu.menu_digital_product_detail, menu);
         if (GlobalConfig.isSellerApp()) {
             menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
-            menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
         }
         menu.findItem(R.id.action_menu_help_digital).setVisible(true);
         super.onCreateOptionsMenu(menu, inflater);
@@ -993,11 +991,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_menu_product_list_digital) {
-            RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
-                    + PATH_PRODUCT_LIST);
-            return true;
-        } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
+        if (item.getItemId() == R.id.action_menu_subscription_digital) {
             RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                     + PATH_SUBSCRIPTIONS);
             return true;

@@ -17,7 +17,7 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
     private var appendedProductList: ArrayList<BaseShowcaseProduct> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductPreviewViewHolder {
-        return ShowcaseProductPreviewViewHolder(LayoutInflater.from(context).inflate(R.layout.item_add_product_showcase_grid, parent, false), listener)
+        return ShowcaseProductPreviewViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false), listener)
     }
 
     override fun getItemCount(): Int {
@@ -28,8 +28,8 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         holder.bind(selectedProductList[position])
     }
 
-    fun updateSelectedDataSet(newSelectedProductList: ArrayList<ShowcaseProduct>?, isActionEdit: Boolean) {
-        if(!isActionEdit) selectedProductList.clear()
+    fun updateSelectedDataSet(newSelectedProductList: ArrayList<ShowcaseProduct>?) {
+        selectedProductList.clear()
         newSelectedProductList?.let {
             it.map { showcaseProduct ->
                 showcaseProduct.isCloseable = true
@@ -43,16 +43,18 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
 
     fun updateAppendedDataSet(newAppendedProductList: ArrayList<ShowcaseProduct>?) {
         newAppendedProductList?.let { newAppendedList ->
-            val filteredList = selectedProductList.filter {
-                !(it as ShowcaseProduct).isNewAppended
-            }
             appendedProductList.clear()
-            appendedProductList.addAll(newAppendedList)
-            selectedProductList.apply {
-                clear()
-                addAll(filteredList)
-                addAll(newAppendedList)
+            newAppendedList.forEach {
+                if(it.isNewAppended)
+                    appendedProductList.add(it)
             }
+        }
+    }
+
+    fun updateDeletedDataSet(newDeletedProducList: ArrayList<ShowcaseProduct>?) {
+        newDeletedProducList?.let { deletedList ->
+            deletedProductList.clear()
+            deletedProductList.addAll(deletedList)
         }
     }
 
@@ -64,9 +66,10 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         deletedProductList.add(selectedProductList[position])
         appendedProductList.remove(selectedProductList[position])
         selectedProductList.removeAt(position)
-        notifyItemRemoved(position)
+        notifyDataSetChanged()
         if(deletedProductList.size > 0) {
-            listener.showDeleteCounter(deletedProductList[0] as ShowcaseProduct)
+            listener.setupDeleteCounter(deletedProductList[0] as ShowcaseProduct)
+            listener.showDeleteCounter()
         }
     }
 
@@ -75,7 +78,7 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
             selectedProductList.add(0, it)
             if((it as ShowcaseProduct).isNewAppended)
                 appendedProductList.add(it)
-            notifyItemInserted(0)
+            notifyDataSetChanged()
         }
         deletedProductList.clear()
         if(deletedProductList.size == 0)

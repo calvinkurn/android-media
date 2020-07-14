@@ -18,12 +18,13 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.chat_common.data.SendableViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.UnifyButton;
 
@@ -56,6 +57,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView productColorVariantValue;
     private LinearLayout productSizeVariant;
     private TextView productSizeVariantValue;
+    private LinearLayout timestampContainer;
 
     private Context context;
     private ProductAttachmentListener viewListener;
@@ -81,6 +83,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         productColorVariantValue = itemView.findViewById(R.id.tv_variant_color);
         productSizeVariant = itemView.findViewById(R.id.ll_variant_size);
         productSizeVariantValue = itemView.findViewById(R.id.tv_variant_size);
+        timestampContainer = itemView.findViewById(R.id.ll_timestamp);
         this.viewListener = viewListener;
     }
 
@@ -139,7 +142,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
 
         if (element.hasSizeVariant()) {
-            productColorVariant.setVisibility(View.VISIBLE);
+            productSizeVariant.setVisibility(View.VISIBLE);
             productSizeVariantValue.setText(element.getSizeVariant());
         } else {
             productSizeVariant.setVisibility(View.GONE);
@@ -201,6 +204,16 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         );
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
         bindChatReadStatus(element);
+    }
+
+    @Override
+    protected void bindChatReadStatus(SendableViewModel element) {
+        super.bindChatReadStatus(element);
+        if (alwaysShowTime()) {
+            timestampContainer.setVisibility(View.VISIBLE);
+        } else {
+            timestampContainer.setVisibility(View.GONE);
+        }
     }
 
     protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
@@ -304,7 +317,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void addProductToWishList(ProductAttachmentViewModel element) {
-        viewListener.onClickAddToWishList(element.getStringProductId(), () -> {
+        viewListener.onClickAddToWishList(element, () -> {
                     onSuccessAddToWishList(element);
                     return null;
                 }

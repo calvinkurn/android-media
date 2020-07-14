@@ -79,7 +79,9 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
 
     fun isEtalaseCountAtMax() = etalaseCount >= ShopSettingsEtalaseAddEditFragment.MAXIMUN_ETALASE_COUNT
 
-    fun isEtalaseDuplicate(query: String): Boolean = listEtalaseModel?.any { it.name == query } ?: false
+    fun isEtalaseDuplicate(query: String): Boolean {
+        return listEtalaseModel?.any { it.name == query } ?: false
+    }
 
     companion object {
         private const val ID = "id"

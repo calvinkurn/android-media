@@ -1,8 +1,9 @@
 package com.tokopedia.flight.dashboard.view.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -11,7 +12,7 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightClassesfragment;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -22,8 +23,8 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
     public static final String EXTRA_FLIGHT_CLASS = "EXTRA_FLIGHT_CLASS";
     public static final String EXTRA_FLIGHT_SELECTED_CLASS = "EXTRA_FLIGHT_SELECTED_CLASS";
 
-    public static Intent getCallingIntent(Activity activity, int selectedId) {
-        Intent intent = new Intent(activity, FlightClassesActivity.class);
+    public static Intent getCallingIntent(Context context, int selectedId) {
+        Intent intent = new Intent(context, FlightClassesActivity.class);
         intent.putExtra(EXTRA_FLIGHT_SELECTED_CLASS, selectedId);
         return intent;
     }
@@ -47,7 +48,7 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void actionClassSelected(FlightClassViewModel flightClassViewModel) {
+    public void actionClassSelected(FlightClassModel flightClassViewModel) {
         setIntent(getIntent().putExtra(EXTRA_FLIGHT_CLASS, flightClassViewModel));
         setResult(RESULT_OK, getIntent());
         finish();

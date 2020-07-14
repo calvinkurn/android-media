@@ -13,16 +13,19 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
@@ -32,6 +35,7 @@ import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -69,20 +73,24 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         OtherMenuFragment.createInstance()
     }
 
-    private var currentSelectedMenu = 0
+    @FragmentType
+    private var currentSelectedMenu = FragmentType.NONE
     private var canExitApp = false
     private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
     private var statusBarCallback: StatusBarCallback? = null
+    private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
         initInjector()
         setupBottomNav()
-        setupDefaultPage(savedInstanceState)
+        setupDefaultPage()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
@@ -120,8 +128,20 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         statusBarCallback = callback
     }
 
-    private fun setupDefaultPage(savedInstanceState: Bundle?) {
-        if (null == savedInstanceState) {
+    fun startHomeLayoutNetworkMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.startNetworkPerformanceMonitoring()
+    }
+
+    fun startHomeLayoutRenderMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.startRenderPerformanceMonitoring()
+    }
+
+    fun stopHomeLayoutRenderMonitoring() {
+        performanceMonitoringSellerHomeLayoutPlt?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setupDefaultPage() {
+        if (intent?.data == null) {
             val homePage = PageFragment(FragmentType.HOME)
             sharedViewModel.setCurrentSelectedPage(homePage)
             showFragment(containerFragment)
@@ -164,11 +184,26 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
-                R.id.menu_sah_home -> showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
-                R.id.menu_sah_product -> showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
-                R.id.menu_sah_chat -> showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
-                R.id.menu_sah_order -> showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
-                R.id.menu_sah_other -> showOtherSettingsFragment()
+                R.id.menu_sah_home -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
+                }
+                R.id.menu_sah_product -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
+                }
+                R.id.menu_sah_chat -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
+                }
+                R.id.menu_sah_order -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
+                }
+                R.id.menu_sah_other -> {
+                    UpdateShopActiveService.startService(this)
+                    showOtherSettingsFragment()
+                }
             }
             return@setOnNavigationItemSelectedListener true
         }
@@ -272,5 +307,15 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.requestStatusBarDark()
         }
+    }
+
+    private fun initPerformanceMonitoring(){
+        performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
+        performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
+        performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()
+    }
+
+    fun stopPerformanceMonitoringSellerHomeLayout() {
+        performanceMonitoringSellerHomelayout?.stopTrace()
     }
 }

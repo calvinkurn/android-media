@@ -1,8 +1,8 @@
 package com.tokopedia.travelcalendar.data
 
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.travelcalendar.data.entity.HolidayEntity
 import com.tokopedia.travelcalendar.data.entity.HolidayResultEntity
 import com.tokopedia.travelcalendar.domain.ITravelCalendarRepository
@@ -19,7 +19,7 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 14/05/18.
  */
-class TravelCalendarRepository @Inject constructor(private val cacheManager: CacheManager) : ITravelCalendarRepository {
+class TravelCalendarRepository @Inject constructor() : ITravelCalendarRepository {
 
     override fun getHolidayResults(holidayEntityObservable: Observable<HolidayEntity>): Observable<List<HolidayResult>> {
         return holidayEntityObservable
@@ -28,7 +28,7 @@ class TravelCalendarRepository @Inject constructor(private val cacheManager: Cac
                         val jsonString = CacheUtil.convertModelToString(it,
                                 object : TypeToken<HolidayEntity>() {
                                 }.type)
-                        cacheManager.save(KEY_CALENDAR_HOLIDAY, jsonString, DURATION_SAVE_TO_CACHE)
+                        PersistentCacheManager.instance.put(KEY_CALENDAR_HOLIDAY, jsonString, DURATION_SAVE_TO_CACHE)
                     }
                 }
                 .map { it -> it.holidayResultEntities }
@@ -49,7 +49,7 @@ class TravelCalendarRepository @Inject constructor(private val cacheManager: Cac
     }
 
     private val cache: String?
-        get() = cacheManager.get(KEY_CALENDAR_HOLIDAY)
+        get() = PersistentCacheManager.instance.getString(KEY_CALENDAR_HOLIDAY)
 
     private fun convertHolidayMapper(holidayResultEntities: List<HolidayResultEntity>): List<HolidayResult> {
         return holidayResultEntities.map {

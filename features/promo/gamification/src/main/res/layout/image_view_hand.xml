@@ -2,6 +2,6 @@
 <androidx.appcompat.widget.AppCompatImageView android:id="@+id/ic_hand"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:srcCompat="@drawable/ic_hand"
+    app:srcCompat="@drawable/gami_ic_hand"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" />

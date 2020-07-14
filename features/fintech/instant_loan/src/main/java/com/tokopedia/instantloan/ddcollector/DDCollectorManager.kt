@@ -63,9 +63,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     }
 
     fun process(callback: (OnDeviceDataReady?)) {
-        if (!mIsInitialized) {
-            throw IllegalStateException("Please initialized the SDK first, by calling 'init(Context)' method")
-        }
+        check(mIsInitialized) { "Please initialized the SDK first, by calling 'init(Context)' method" }
 
         this.mCallback = callback
 
@@ -135,7 +133,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     companion object {
         private var sInstance: DDCollectorManager
         private var mIsInitialized: Boolean = false
-
 
         // The class is used as a singleton
         init {

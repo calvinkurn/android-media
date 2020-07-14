@@ -1,11 +1,8 @@
 package com.tokopedia.feedplus.view.presenter
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -13,32 +10,30 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
-import com.tokopedia.feedplus.NON_LOGIN_USER_ID
-import com.tokopedia.feedplus.R
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.interest_pick_common.data.DataItem
-import com.tokopedia.interest_pick_common.data.OnboardingData
-import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
+import com.tokopedia.feedplus.view.viewmodel.VoteViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
+import com.tokopedia.interest_pick_common.data.DataItem
 import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
+import com.tokopedia.interest_pick_common.data.OnboardingData
 import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
+import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
-import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
-import com.tokopedia.feedplus.view.viewmodel.VoteViewModel
+import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,16 +41,19 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**
  * @author by yoasfs on 2019-09-18
  */
-class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvider,
+
+private const val PARAM_SHOP_DOMAIN = "shop_domain"
+private const val PARAM_SRC = "src"
+private const val PARAM_AD_KEY = "ad_key"
+private const val DEFAULT_VALUE_SRC = "fav_shop"
+
+class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatcherProvider,
                                         private val userSession: UserSessionInterface,
                                         private val getInterestPickUseCase: GetInterestPickUseCase,
                                         private val submitInterestPickUseCase: SubmitInterestPickUseCase,
@@ -71,8 +69,8 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
     : BaseViewModel(baseDispatcher.ui()) {
 
     companion object {
-        val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
-        val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
+        const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
+        const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
     }
 
     private val userId: String
@@ -93,11 +91,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
     val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
 
     private var currentCursor = ""
-    private val pagingHandler: PagingHandler
-
-    init {
-        this.pagingHandler = PagingHandler()
-    }
+    private val pagingHandler: PagingHandler = PagingHandler()
 
     fun getOnboardingData(source: String) {
         getInterestPickUseCase.apply {
@@ -292,9 +286,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
         }
     }
 
-    private fun OnboardingData.convertToViewModel(): OnboardingViewModel = feedUserOnboardingInterests.let { result ->
-        mappingOnboardingData(result)
-    }
+    private fun OnboardingData.convertToViewModel(): OnboardingViewModel = mappingOnboardingData(feedUserOnboardingInterests)
 
     private fun mappingOnboardingData(pojo: FeedUserOnboardingInterests): OnboardingViewModel {
         return OnboardingViewModel(
@@ -324,14 +316,13 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
 
     private fun getFeedDataResult(firstPageCursor: String): DynamicFeedFirstPageDomainModel {
         try {
-            val request = getDynamicFeedFirstPageUseCase.createObservable(
+            return getDynamicFeedFirstPageUseCase.createObservable(
                     GetDynamicFeedFirstPageUseCase.createRequestParams(
                             userId,
                             "",
                             GetDynamicFeedUseCase.FeedV2Source.Feeds,
                             firstPageCursor, userSession.isLoggedIn))
                     .toBlocking().single()?: DynamicFeedFirstPageDomainModel()
-            return request
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e
@@ -340,13 +331,12 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
 
     private fun getFeedNextDataResult(): DynamicFeedDomainModel{
         try {
-            val request =  getDynamicFeedUseCase.createObservable(
+            return getDynamicFeedUseCase.createObservable(
                     GetDynamicFeedUseCase.createRequestParams(
                             userId,
                             currentCursor,
                             GetDynamicFeedUseCase.FeedV2Source.Feeds))
                     .toBlocking().single()?: DynamicFeedDomainModel()
-            return request
         } catch (e: Throwable) {
             e.printStackTrace()
             throw e
@@ -356,10 +346,6 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
     private fun doFavoriteShopResult(promotedShopViewModel: Data): FeedPromotedShopViewModel {
         try {
             val result = FeedPromotedShopViewModel()
-            val PARAM_SHOP_DOMAIN = "shop_domain"
-            val PARAM_SRC = "src"
-            val PARAM_AD_KEY = "ad_key"
-            val DEFAULT_VALUE_SRC = "fav_shop"
             val params = ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
 
             params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop.domain)
@@ -385,8 +371,8 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.getData() != null) {
-                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+            if (query.data != null) {
+                val followKolDomain = FollowKolDomain(query.data.data.status)
                 if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess = true
             }
             return data
@@ -406,8 +392,8 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.getData() != null) {
-                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+            if (query.data != null) {
+                val followKolDomain = FollowKolDomain(query.data.data.status)
                 if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) data.isSuccess = true
             }
             return data
@@ -456,8 +442,8 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.getData() != null) {
-                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+            if (query.data != null) {
+                val followKolDomain = FollowKolDomain(query.data.data.status)
                 if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
                     data.isSuccess = true
                     data.isFollow = true
@@ -481,8 +467,8 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.getData() != null) {
-                val followKolDomain = FollowKolDomain(query.getData().getData().getStatus())
+            if (query.data != null) {
+                val followKolDomain = FollowKolDomain(query.data.data.status)
                 if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
                     data.isSuccess = true
                     data.isFollow = false
@@ -526,8 +512,8 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
         try {
             val data = AtcViewModel()
             data.applink = postTagItem.applink
-            if (!postTagItem.shop.isEmpty()) {
-                val params = AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId)
+            if (postTagItem.shop.isNotEmpty()) {
+                val params = AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text, price = postTagItem.price)
                 val result = atcUseCase.createObservable(params).toBlocking().single()
                 data.isSuccess = result.data.success == 0
             }

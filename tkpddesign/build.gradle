@@ -21,13 +21,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation project(rootProject.ext.libraries.utils)
+
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
 }
 
 project.ext {
     artifactId = 'design'
     groupId = 'com.tokopedia.design'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="tkpddesign-release"
 }
 

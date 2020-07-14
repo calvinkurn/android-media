@@ -1,9 +1,9 @@
 package com.tokopedia.flight.search.domain
 
 import com.tokopedia.flight.search.data.api.single.response.Meta
-import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -13,14 +13,14 @@ import javax.inject.Inject
  * Created by Rizky on 26/09/18.
  */
 class FlightSearchV2UseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<FlightSearchMetaViewModel>() {
+        private val flightSearchRepository: FlightSearchRepository) : UseCase<FlightSearchMetaModel>() {
 
     private val PARAM_INITIAL_SEARCH = "initial_search"
     private val PARAM_IS_RETURN = "is_return"
     private val PARAM_IS_ROUND_TRIP = "is_round_trip"
     private val PARAM_ONWARD_JOURNEY_ID = "onward_journey_id"
 
-    override fun createObservable(requestParams: RequestParams): Observable<FlightSearchMetaViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<FlightSearchMetaModel> {
         val isRoundTrip = requestParams.getBoolean(PARAM_IS_ROUND_TRIP, false)
         val isReturnTrip = requestParams.getBoolean(PARAM_IS_RETURN, false)
         val onwardJourneyId = requestParams.getString(PARAM_ONWARD_JOURNEY_ID, "")
@@ -43,9 +43,9 @@ class FlightSearchV2UseCase @Inject constructor(
 
     private fun mapToFlightSearchMetaViewModel(meta: Meta,
                                                flightSearchApiRequestModel: FlightSearchApiRequestModel):
-            FlightSearchMetaViewModel {
+            FlightSearchMetaModel {
         with(meta) {
-            return FlightSearchMetaViewModel(
+            return FlightSearchMetaModel(
                     flightSearchApiRequestModel.depAirport,
                     flightSearchApiRequestModel.arrAirport,
                     flightSearchApiRequestModel.date,
@@ -54,7 +54,10 @@ class FlightSearchV2UseCase @Inject constructor(
                     maxRetry,
                     0,
                     0,
-                    airlines
+                    airlines,
+                    requestId,
+                    "",
+                    1800
             )
         }
     }
@@ -62,7 +65,7 @@ class FlightSearchV2UseCase @Inject constructor(
     fun createRequestParams(flightSearchSingleApiRequestModel: FlightSearchApiRequestModel,
                             isReturnTrip: Boolean,
                             isRoundTrip: Boolean,
-                            onwardJourneyId: String?) : RequestParams {
+                            onwardJourneyId: String?): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_INITIAL_SEARCH, flightSearchSingleApiRequestModel)
         requestParams.putBoolean(PARAM_IS_RETURN, isReturnTrip)

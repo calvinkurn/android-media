@@ -14,7 +14,7 @@ interface AddEditProductDraftDao {
     fun updateDraft(draft: AddEditProductDraftEntity)
 
     @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE id = :productId LIMIT 1")
-    fun getDraft(productId: Long): AddEditProductDraftEntity
+    fun getDraft(productId: Long): AddEditProductDraftEntity?
 
     @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity>

@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,8 +23,7 @@ import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
@@ -55,7 +55,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
 
-    lateinit var currentLocationTextView: TextViewCompat
+    lateinit var currentLocationTextView: TextView
     lateinit var currentLocationLayout: View
     lateinit var deleteSearchTextView: TextView
     lateinit var recentSearchLayout: View
@@ -105,7 +105,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
         val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
         recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp
                 ?: 0, staticDimen8dp ?: 0))
@@ -129,7 +129,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     fun initCurrentLocationTextView(view: View) {
 
         currentLocationTextView = view.findViewById(R.id.current_location_tv)
-        currentLocationTextView.setDrawableLeft(com.tokopedia.resources.common.R.drawable.ic_system_action_currentlocation_grayscale_24)
 
         currentLocationLayout = view.findViewById(R.id.current_location_layout)
         currentLocationLayout.setOnClickListener {
@@ -181,7 +180,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         })
     }
 
-    fun onClickCurrentLocation(lang: Double, lat: Double) {
+    private fun onClickCurrentLocation(lang: Double, lat: Double) {
         val intent = Intent()
         intent.putExtra(HOTEL_CURRENT_LOCATION_LANG, lang)
         intent.putExtra(HOTEL_CURRENT_LOCATION_LAT, lat)
@@ -191,7 +190,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 com.tokopedia.common.travel.R.anim.travel_slide_out_up)
     }
 
-    fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
+    private fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
         recentSearchLayout.visibility = if (recentSearches.isEmpty()) View.GONE else View.VISIBLE
         if (recentSearches.size >= 5) recentSearchAdapter.setData(recentSearches.subList(0, 5))
         else recentSearchAdapter.setData(recentSearches)
@@ -217,7 +216,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_recent_search))
     }
 
-    fun showOnlyList(showListOnly: Boolean) {
+    private fun showOnlyList(showListOnly: Boolean) {
         current_location_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
         recent_search_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
         popular_search_title.visibility = if (showListOnly) View.GONE else View.VISIBLE
@@ -236,7 +235,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     override fun onItemClicked(recentSearch: RecentSearch) {
         val intent = Intent()
         intent.putExtra(HOTEL_DESTINATION_NAME, recentSearch.property.value)
-        intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.property.id.toInt())
+        intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.property.id.toLong())
         intent.putExtra(HOTEL_DESTINATION_TYPE, recentSearch.property.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -275,16 +274,16 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     private fun showDialogEnableGPS() {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.hotel_recommendation_gps_dialog_title))
-        dialog.setDesc(getString(R.string.hotel_recommendation_gps_dialog_desc))
-        dialog.setBtnOk(getString(R.string.hotel_recommendation_gps_dialog_ok))
-        dialog.setBtnCancel(getString(R.string.hotel_recommendation_gps_dialog_cancel))
-        dialog.setOnOkClickListener {
+        dialog.setDescription(getString(R.string.hotel_recommendation_gps_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_ok))
+        dialog.setPrimaryCTAClickListener {
             startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS)
             dialog.dismiss()
         }
-        dialog.setOnCancelClickListener {
+        dialog.setSecondaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_cancel))
+        dialog.setSecondaryCTAClickListener {
             onErrorGetLocation()
             dialog.dismiss()
         }

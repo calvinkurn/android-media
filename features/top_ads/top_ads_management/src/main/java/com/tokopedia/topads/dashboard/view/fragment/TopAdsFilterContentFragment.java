@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
+
 
 /**
  * Created by Nathaniel on 1/27/2017.
@@ -43,17 +44,7 @@ public abstract class TopAdsFilterContentFragment<P> extends BasePresenterFragme
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle bundle) {
 
     }
 
@@ -63,17 +54,7 @@ public abstract class TopAdsFilterContentFragment<P> extends BasePresenterFragme
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
 
     }
 

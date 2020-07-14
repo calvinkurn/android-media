@@ -12,7 +12,7 @@ import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 data class SearchDestination(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: Long = 0,
 
         @SerializedName("type")
         @Expose
@@ -44,7 +44,15 @@ data class SearchDestination(
 
         @SerializedName("hotelCount")
         @Expose
-        val hotelCount: Int = 0
+        val hotelCount: Int = 0,
+
+        @SerializedName("searchType")
+        @Expose
+        val searchType: String = "",
+
+        @SerializedName("searchID")
+        @Expose
+        val searchId: String = ""
 ): Visitable<SearchDestinationTypeFactory> {
     override fun type(typeFactory: SearchDestinationTypeFactory) = typeFactory.type(this)
 }

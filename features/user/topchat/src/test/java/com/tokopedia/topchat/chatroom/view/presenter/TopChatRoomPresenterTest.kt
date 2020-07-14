@@ -2,13 +2,11 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
-import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -26,7 +24,6 @@ class TopChatRoomPresenterTest : Spek({
         val tkpdAuthInterceptor by memoized { mockk<TkpdAuthInterceptor>(relaxed = true) }
         val fingerprintInterceptor by memoized { mockk<FingerprintInterceptor>(relaxed = true) }
         val topChatRoomWebSocketMessageMapper by memoized { mockk<TopChatRoomWebSocketMessageMapper>(relaxed = true) }
-        val uploadImageUseCase by memoized { mockk<UploadImageUseCase<TopChatImageUploadPojo>>(relaxed = true) }
         val getTemplateChatRoomUseCase by memoized { mockk<GetTemplateChatRoomUseCase>(relaxed = true) }
         val replyChatUseCase by memoized { mockk<ReplyChatUseCase>(relaxed = true) }
         val getExistingMessageIdUseCase by memoized { mockk<GetExistingMessageIdUseCase>(relaxed = true) }

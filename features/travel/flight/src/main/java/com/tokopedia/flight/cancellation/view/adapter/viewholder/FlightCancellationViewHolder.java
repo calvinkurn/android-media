@@ -14,35 +14,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.ADULT;
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.CHILDREN;
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.INFANT;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 21/03/18.
  */
 
-public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCancellationViewModel> {
+public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCancellationModel> {
 
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation;
 
     public interface FlightCancellationListener {
-        void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        void onPassengerChecked(FlightCancellationPassengerModel passengerViewModel, int position);
 
-        void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
+        void onPassengerUnchecked(FlightCancellationPassengerModel passengerViewModel, int position);
 
-        boolean shouldCheckAll();
-
-        boolean isChecked(FlightCancellationPassengerViewModel passengerViewModel);
+        boolean isChecked(FlightCancellationPassengerModel passengerViewModel);
     }
 
     interface FlightPassengerAdapterListener {
@@ -82,7 +80,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     }
 
     @Override
-    public void bind(FlightCancellationViewModel element) {
+    public void bind(FlightCancellationModel element) {
 
         String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode() == null ||
                 element.getFlightCancellationJourney().getDepartureCityCode().length() == 0) ?
@@ -164,7 +162,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder>
             implements FlightPassengerAdapterListener {
 
-        List<FlightCancellationPassengerViewModel> passengerViewModelList;
+        List<FlightCancellationPassengerModel> passengerViewModelList;
         List<PassengerViewHolder> passengerViewHolderList = new ArrayList<>();
 
         public PassengerAdapter() {
@@ -182,10 +180,6 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public void onBindViewHolder(PassengerViewHolder passengerViewHolder, int position) {
             passengerViewHolder.bindData(passengerViewModelList.get(position), getAdapterPosition());
             passengerViewHolderList.add(passengerViewHolder);
-
-            if (listener.shouldCheckAll()) {
-                toggleCheckJourney(true);
-            }
         }
 
         @Override
@@ -193,7 +187,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             return passengerViewModelList.size();
         }
 
-        public void addData(List<FlightCancellationPassengerViewModel> passengerViewModelList) {
+        public void addData(List<FlightCancellationPassengerModel> passengerViewModelList) {
             this.passengerViewModelList.clear();
             this.passengerViewModelList.addAll(passengerViewModelList);
             notifyDataSetChanged();
@@ -218,11 +212,15 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         @Override
         public void checkIfAllPassengerIsChecked() {
             boolean allChecked = true;
-            for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                if (!passengerViewHolderList.get(index).isPassengerChecked() &&
-                        !(passengerViewHolderList.get(index).passengerViewModel.getStatusString() != null &&
-                                passengerViewHolderList.get(index).passengerViewModel.getStatusString().length() > 0)) {
-                    allChecked = false;
+            if (passengerViewHolderList.size() == 0) {
+                allChecked = false;
+            } else {
+                for (int index = 0; index < passengerViewHolderList.size(); index++) {
+                    if (!passengerViewHolderList.get(index).isPassengerChecked() &&
+                            !(passengerViewHolderList.get(index).passengerViewModel.getStatusString() != null &&
+                                    passengerViewHolderList.get(index).passengerViewModel.getStatusString().length() > 0)) {
+                        allChecked = false;
+                    }
                 }
             }
 
@@ -242,7 +240,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         private CheckBox checkBoxPassenger;
         private Typography tgPassengerStatus;
         private boolean isPassengerChecked = false;
-        private FlightCancellationPassengerViewModel passengerViewModel;
+        private FlightCancellationPassengerModel passengerViewModel;
         private int adapterPosition = -1;
         private FlightPassengerAdapterListener passengerListener;
 
@@ -271,7 +269,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             });
         }
 
-        public void bindData(FlightCancellationPassengerViewModel passengerViewModel, int adapterPosition) {
+        public void bindData(FlightCancellationPassengerModel passengerViewModel, int adapterPosition) {
             this.passengerViewModel = passengerViewModel;
             this.adapterPosition = adapterPosition;
 
@@ -329,7 +327,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             return isPassengerChecked;
         }
 
-        public FlightCancellationPassengerViewModel getPassengerViewModel() {
+        public FlightCancellationPassengerModel getPassengerViewModel() {
             return passengerViewModel;
         }
     }

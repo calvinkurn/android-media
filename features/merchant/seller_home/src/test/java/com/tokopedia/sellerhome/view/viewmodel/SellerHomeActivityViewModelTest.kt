@@ -15,7 +15,6 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
@@ -42,33 +41,36 @@ class SellerHomeActivityViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var mViewModel: SellerHomeActivityViewModel
     private lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = TestCoroutineDispatcher()
-        mViewModel = SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, testDispatcher)
     }
+
+    private fun createViewModel() =
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, testDispatcher)
+
 
     @Test
     fun `get notifications then returns success result`() {
 
         val notifications = NotificationUiModel(NotificationChatUiModel(), NotificationCenterUnreadUiModel(),
-                NotificationSellerOrderStatusUiModel())
+            NotificationSellerOrderStatusUiModel())
 
         coEvery {
             getNotificationUseCase.executeOnBackground()
         } returns notifications
 
-        mViewModel.getNotifications()
-
-        coVerify {
-            getNotificationUseCase.executeOnBackground()
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getNotifications()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            coVerify {
+                getNotificationUseCase.executeOnBackground()
+            }
+            assertEquals(Success(notifications), viewModel.notifications.value)
         }
-
-        assertEquals(Success(notifications), mViewModel.notifications.value)
     }
 
     @Test
@@ -80,15 +82,16 @@ class SellerHomeActivityViewModelTest {
             getNotificationUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getNotifications()
+        val viewModel = createViewModel()
+        viewModel.getNotifications()
 
         coVerify {
             getNotificationUseCase.executeOnBackground()
         }
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        assert(mViewModel.notifications.value is Fail)
+        assert(viewModel.notifications.value is Fail)
     }
 
     @Test
@@ -106,17 +109,19 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } returns shopInfo
 
-        mViewModel.getShopInfo()
-
-        verify {
-            userSession.userId
+        val viewModel = createViewModel()
+        runBlocking {
+            viewModel.getShopInfo()
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+            coVerify {
+                userSession.userId
+            }
+            coVerify {
+                getShopInfoUseCase.executeOnBackground()
+            }
         }
 
-        coVerify {
-            getShopInfoUseCase.executeOnBackground()
-        }
-
-        assertEquals(Success(shopInfo), mViewModel.shopInfo.value)
+        assertEquals(Success(shopInfo), viewModel.shopInfo.value)
     }
 
     @Test
@@ -134,7 +139,8 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getShopInfo()
+        val viewModel = createViewModel()
+        viewModel.getShopInfo()
 
         verify {
             userSession.userId
@@ -144,9 +150,9 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         }
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-        assert(mViewModel.shopInfo.value is Fail)
+        assert(viewModel.shopInfo.value is Fail)
     }
 
     @Test

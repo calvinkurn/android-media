@@ -48,7 +48,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            param.propertyId = it.getInt(ARG_PROPERTY_ID, 0)
+            param.propertyId = it.getLong(ARG_PROPERTY_ID, 0)
         }
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -102,7 +102,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
                 getString(R.string.hotel_review_filter_second_rank),
                 getString(R.string.hotel_review_filter_third_rank)),
-                com.tokopedia.design.R.color.snackbar_border_normal)
+                R.color.hotel_snackbar_border)
         filter_recycler_view.selectOnlyOneChip(true)
 
         //initially select recent search chip
@@ -183,10 +183,10 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         const val COUNTRY_ID = "id"
         const val COUNTRY_ALL = "all"
 
-        fun createInstance(propertyId: Int): HotelReviewFragment {
+        fun createInstance(propertyId: Long): HotelReviewFragment {
             return HotelReviewFragment().also {
                 it.arguments = Bundle().apply {
-                    putInt(ARG_PROPERTY_ID, propertyId)
+                    putLong(ARG_PROPERTY_ID, propertyId)
                 }
             }
         }

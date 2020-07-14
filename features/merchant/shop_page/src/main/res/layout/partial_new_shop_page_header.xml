@@ -175,12 +175,6 @@
         android:id="@+id/tickerShopStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_minus4"
-        android:layout_marginLeft="@dimen/dp_minus4"
-        android:layout_marginTop="@dimen/dp_minus4"
-        android:layout_marginEnd="@dimen/dp_minus4"
-        android:layout_marginRight="@dimen/dp_minus4"
-        android:layout_marginBottom="@dimen/dp_minus4"
         android:visibility="gone"
         app:tickerType="warning"
         tools:visibility="visible" />

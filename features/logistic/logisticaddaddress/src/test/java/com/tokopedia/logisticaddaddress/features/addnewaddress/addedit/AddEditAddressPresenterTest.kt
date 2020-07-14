@@ -13,7 +13,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
@@ -31,9 +31,9 @@ object AddEditAddressPresenterTest : Spek({
     val view: AddEditView = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
-    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any()) } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any()) } just Runs
 
     lateinit var presenter: AddEditAddressPresenter
 
@@ -50,14 +50,14 @@ object AddEditAddressPresenterTest : Spek({
                     Data(isSuccess = 1, addrId = 99)
             ))
             Given("success answer") {
-                every { saveUseCase.execute(any()) } returns Observable.just(successGql)
+                every { saveUseCase.execute(any(), "1") } returns Observable.just(successGql)
             }
             When("executed from positive form") {
-                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any())
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any())
                 }
             }
             Then("view show success") {
@@ -71,28 +71,30 @@ object AddEditAddressPresenterTest : Spek({
                     Data(isSuccess = 0)
             ))
             Given("not success answer") {
-                every { saveUseCase.execute(any()) } returns Observable.just(notSuccessResponse)
+                every { saveUseCase.execute(any(), any()) } returns Observable.just(notSuccessResponse)
             }
             When("executed from negative form ") {
-                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any())
                 }
             }
             Then("view show success") {
-                verify { view.showError(null) }
+                verify {
+                    view.showError(null)
+                }
             }
         }
 
         Scenario("error gql response") {
             val exception = MessageErrorException("hi")
             Given("error answer") {
-                every { saveUseCase.execute(any()) } returns Observable.error(exception)
+                every { saveUseCase.execute(any(), any()) } returns Observable.error(exception)
             }
             When("executed") {
-                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("view shows error") {
                 verify {

@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.events.EventModuleRouter;
@@ -35,10 +37,11 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import rx.Subscriber;
 
@@ -70,12 +73,12 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
     public void getProfile() {
         mView.showProgressBar();
         if (!Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
-            Intent intent = ((EventModuleRouter) mView.getActivity().getApplication()).
-                    getLoginIntent(mView.getActivity());
+            Intent intent = RouteManager.getIntent(mView.getActivity(), ApplinkConst.LOGIN);
             mView.navigateToActivityRequest(intent, 1099);
         } else {
+            UserSessionInterface userSession = new UserSession(mView.getActivity());
             email = Utils.getUserSession(mView.getActivity()).getEmail();
-            number = ((EventModuleRouter) mView.getActivity().getApplication()).getUserPhoneNumber();
+            number = userSession.getPhoneNumber();
             mView.hideProgressBar();
         }
     }
@@ -187,7 +190,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                             saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATSELECTEDMODEL,mSelectedSeatViewModel,7);
                             saveInstanceCacheManager.put("event_detail",eventsDetailsViewModel,7);
                             saveInstanceCacheManager.put(Utils.Constants.EXTRA_VERIFY_RESPONSE, cartJsonString,7);
-                            reviewTicketIntent.putExtra("review", saveInstanceCacheManager.getId());
+                            reviewTicketIntent.putExtra(Utils.Constants.REVIEW_ACTIVITY_ID, saveInstanceCacheManager.getId());
                             mView.navigateToActivityRequest(reviewTicketIntent, 100);
                             mView.hideProgressBar();
                         }
@@ -217,7 +220,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                         saveInstanceCacheManager.put(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,selectedpkgViewModel,7);
                         saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATSELECTEDMODEL,mSelectedSeatViewModel,7);
                         saveInstanceCacheManager.put(Utils.Constants.EXTRA_VERIFY_RESPONSE, gson.toJson(verifyCartResponse.getCart()),7);
-                        reviewTicketIntent.putExtra("review", saveInstanceCacheManager.getId());
+                        reviewTicketIntent.putExtra(Utils.Constants.REVIEW_ACTIVITY_ID, saveInstanceCacheManager.getId());
                         mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
                         mView.showSnackBar(verifyCartResponse.getCart().getError(), false);

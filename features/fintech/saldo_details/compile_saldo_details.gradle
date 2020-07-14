@@ -1,5 +1,6 @@
 include "features:fintech:saldo_details"
 include "features:common:resources_common"
+include "features:promo:promotions_target"
 
 
 include "libraries:common_network"
@@ -10,7 +11,6 @@ include "libraries:webview"
 include "libraries:track"
 include 'libraries:permissionchecker'
 include "libraries:play_core"
-include "libraries:promotions_target"
 include "libraries:remote_config"
 include 'libraries:iris'
 include "libraries:kotlin_extensions"

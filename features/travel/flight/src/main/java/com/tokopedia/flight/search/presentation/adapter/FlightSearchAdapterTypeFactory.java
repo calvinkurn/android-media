@@ -8,17 +8,15 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
-import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchTitleRouteViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchViewHolder;
-import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchTitleRouteViewModel;
+import com.tokopedia.flight.search.presentation.model.EmptyResultModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel;
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchShimmeringViewHolder;
 
 /**
  * @author by furqan on 02/10/18.
@@ -41,14 +39,12 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
             return new FlightSearchSeeAllViewHolder(parent, onFlightSearchListener);
         } else if (type == FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT) {
             return new FlightSearchSeeOnlyBestPairingViewHolder(parent, onFlightSearchListener);
-        } else if (type == FlightSearchTitleRouteViewHolder.Companion.getLAYOUT()) {
-            return new FlightSearchTitleRouteViewHolder(parent);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             return new ErrorNetworkViewHolder(parent);
-        } else if (type == TravelSearchShimmeringViewHolder.LAYOUT) {
-            return new TravelSearchShimmeringViewHolder(parent);
+        } else if (type == FlightSearchShimmeringViewHolder.Companion.getLAYOUT()) {
+            return new FlightSearchShimmeringViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -59,15 +55,15 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         onFlightSearchListener.onRetryClicked();
     }
 
-    public int type(FlightJourneyViewModel flightJourneyViewModel) {
+    public int type(FlightJourneyModel flightJourneyViewModel) {
         return FlightSearchViewHolder.LAYOUT;
     }
 
     public int type(LoadingModel loadingModel) {
-        return TravelSearchShimmeringViewHolder.LAYOUT;
+        return FlightSearchShimmeringViewHolder.Companion.getLAYOUT();
     }
 
-    public int type(EmptyResultViewModel viewModel) {
+    public int type(EmptyResultModel viewModel) {
         return EmptyResultViewHolder.LAYOUT;
     }
 
@@ -75,24 +71,20 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         return ErrorNetworkViewHolder.LAYOUT;
     }
 
-    public int type(FlightSearchSeeAllResultViewModel viewModel) {
+    public int type(FlightSearchSeeAllResultModel viewModel) {
         return FlightSearchSeeAllViewHolder.LAYOUT;
     }
 
-    public int type(FlightSearchSeeOnlyBestPairingViewModel viewModel) {
+    public int type(FlightSearchSeeOnlyBestPairingModel viewModel) {
         return FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT;
-    }
-
-    public int type(FlightSearchTitleRouteViewModel viewModel) {
-        return FlightSearchTitleRouteViewHolder.Companion.getLAYOUT();
     }
 
     public interface OnFlightSearchListener {
         void onRetryClicked();
 
-        void onDetailClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+        void onDetailClicked(FlightJourneyModel journeyViewModel, int adapterPosition);
 
-        void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+        void onItemClicked(FlightJourneyModel journeyViewModel, int adapterPosition);
 
         void onShowAllClicked();
 

@@ -1,0 +1,17 @@
+mutation login_social_media_phone($username: String!, $grant_type: String!, $social_type: String!, $validate_token: String!, $supported:String!) {
+  login_token(input: {username: $username, grant_type: $grant_type, social_type: $social_type, validate_token: $validate_token, supported: $supported}) {
+    acc_sid
+    access_token
+    expires_in
+    refresh_token
+    sid
+    token_type
+    sq_check
+    action
+    errors {
+      name
+      message
+    }
+    event_code
+  }
+}

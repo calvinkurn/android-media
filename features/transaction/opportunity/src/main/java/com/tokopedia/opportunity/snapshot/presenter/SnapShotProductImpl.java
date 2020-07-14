@@ -4,12 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.opportunity.snapshot.fragment.SnapShotFragment;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotProductListener;
-import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
 
@@ -19,6 +18,10 @@ import java.util.List;
 public class SnapShotProductImpl implements SnapShotProductPresenter {
     private final SnapShotProductListener viewListener;
 
+    public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
+    public static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
+    
+    
     public SnapShotProductImpl(SnapShotProductListener listener) {
         this.viewListener = listener;
     }
@@ -38,9 +41,9 @@ public class SnapShotProductImpl implements SnapShotProductPresenter {
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
         ProductPass productPass;
         if (bundleData != null) {
-            productPass = bundleData.getParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS);
+            productPass = bundleData.getParcelable(EXTRA_PRODUCT_PASS);
             ProductItem productItem = bundleData
-                    .getParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM);
+                    .getParcelable(EXTRA_PRODUCT_ITEM);
             if (productPass == null && productItem == null) {
                 productPass = ProductPass.Builder.aProductPass()
                         .setProductId(bundleData.getString("product_id", ""))

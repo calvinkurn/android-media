@@ -10,4 +10,6 @@ interface PromoNotEligibleActionListener {
 
     fun onButtonContinueClicked(checkoutType: Int);
 
+    fun onButtonChooseOtherPromo()
+
 }

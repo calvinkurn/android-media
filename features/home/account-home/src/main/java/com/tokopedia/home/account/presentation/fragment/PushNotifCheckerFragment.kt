@@ -91,7 +91,7 @@ class PushNotifCheckerFragment : BaseDaggerFragment(), PushNotifCheckerContract.
 
     }
 
-    override fun showError(e: Throwable?) {
+    override fun showError(e: Throwable, errorCode: String) {
 
     }
 

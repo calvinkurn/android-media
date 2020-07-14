@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
+<com.tokopedia.productcard.ProductCardGridView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/thematic_card"
         android:layout_width="match_parent"

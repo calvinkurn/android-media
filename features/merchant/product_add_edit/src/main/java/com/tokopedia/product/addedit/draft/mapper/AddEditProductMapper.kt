@@ -49,6 +49,7 @@ object AddEditProductMapper {
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
+        productDraft.detailInputModel.categoryName = productInputModel.detailInputModel.categoryName
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
         productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
         productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
@@ -89,11 +90,16 @@ object AddEditProductMapper {
 
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
         val productInputModel = ProductInputModel()
-        productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        if(productDraft.variantInputModel.isNotEmpty()) {
+            productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        } else {
+            productInputModel.variantInputModel = ProductVariantInputModel()
+        }
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
             categoryId = productDraft.detailInputModel.categoryId
+            categoryName = productDraft.detailInputModel.categoryName
             price = productDraft.detailInputModel.price
             stock = productDraft.detailInputModel.stock
             minOrder = productDraft.detailInputModel.minOrder

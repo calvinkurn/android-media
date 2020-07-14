@@ -1,7 +1,6 @@
 package com.tokopedia.profilecompletion.addname.fragment
 
 import android.app.Activity
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableString
@@ -14,24 +13,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
+import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
-import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
-import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_add_name_register.*
 import javax.inject.Inject
 
 /**
@@ -42,11 +42,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     private var phoneNumber: String? = ""
     private var uuid: String? = ""
 
-    lateinit var etName: EditText
     lateinit var bottomInfo: TextView
-    lateinit var message: TextView
-    lateinit var btnContinue: TextView
-    lateinit var wrapperName: TkpdHintTextInputLayout
     lateinit var progressBar: ProgressBar
     lateinit var mainContent: View
 
@@ -96,12 +92,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_name_register, container, false)
-        etName = view.findViewById(R.id.et_name)
-        btnContinue = view.findViewById(R.id.btn_continue)
+        val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
         bottomInfo = view.findViewById(R.id.bottom_info)
-        message = view.findViewById(R.id.message)
-        wrapperName = view.findViewById(R.id.wrapper_name)
         progressBar = view.findViewById(R.id.progress_bar)
         mainContent = view.findViewById(R.id.main_content)
         return view
@@ -112,21 +104,21 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         presenter.attachView(this)
         setView()
         setViewListener()
-        disableButton(btnContinue)
+        disableButton(btn_continue)
     }
 
     protected fun setViewListener() {
-        etName.addTextChangedListener(object : TextWatcher {
+        et_name.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.length != 0) {
-                    enableButton(btnContinue)
+                    enableButton(btn_continue)
 
                 } else {
-                    disableButton(btnContinue)
+                    disableButton(btn_continue)
 
                 }
                 if (isError) {
@@ -139,8 +131,8 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             }
         })
 
-        btnContinue.setOnClickListener { onContinueClick() }
-        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
+        btn_continue.setOnClickListener { onContinueClick() }
+        btn_continue.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
                 onContinueClick()
                 return@OnEditorActionListener true
@@ -152,7 +144,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     protected fun onContinueClick() {
         KeyboardHandler.DropKeyboard(activity, view)
         phoneNumber?.let{
-            registerPhoneAndName(etName.text.toString(), it)
+            registerPhoneAndName(et_name.textFieldInput.text.toString(), it)
             analytics.trackClickFinishAddNameButton()
         }
     }
@@ -166,13 +158,13 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     private fun isValidate(name: String): Boolean {
         context?.let{
             if (name.length < MIN_NAME) {
-                showValidationError(it.getResources().getString(R.string.error_name_too_short))
-                analytics.trackErrorFinishAddNameButton(it.getResources().getString(R.string.error_name_too_short))
+                showValidationError(it.resources.getString(R.string.error_name_too_short))
+                analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_short))
                 return false
             }
             if (name.length > MAX_NAME) {
-                showValidationError(it.getResources().getString(R.string.error_name_too_long))
-                analytics.trackErrorFinishAddNameButton(it.getResources().getString(R.string.error_name_too_long))
+                showValidationError(it.resources.getString(R.string.error_name_too_long))
+                analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_long))
                 return false
             }
             hideValidationError()
@@ -181,8 +173,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     private fun setView() {
-        disableButton(btnContinue)
-        btnContinue.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+        disableButton(btn_continue)
 
         val joinString = getString(R.string.detail_term_and_privacy) +
                 "<br>" + getString(R.string.link_term_condition) +
@@ -195,27 +186,21 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     private fun hideValidationError() {
         isError = false
-        wrapperName.setErrorEnabled(false)
-        wrapperName.error = ""
-        message.visibility = View.VISIBLE
+        et_name.setError(false)
+        et_name.setMessage("")
     }
 
     private fun showValidationError(errorMessage: String) {
         isError = true
-        wrapperName.setErrorEnabled(true)
-        wrapperName.error = errorMessage
-        message.visibility = View.GONE
+        et_name.setError(true)
+        et_name.setMessage(errorMessage)
     }
 
-    private fun enableButton(button: TextView) {
-        button.setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
-        button.background = MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.bg_button_green_enabled)
+    private fun enableButton(button: UnifyButton) {
         button.isEnabled = true
     }
 
     private fun disableButton(button: TextView) {
-        button.setTextColor(MethodChecker.getColor(activity, com.tokopedia.abstraction.R.color.black_12))
-        button.background = MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.bg_button_disabled)
         button.isEnabled = false
     }
 
@@ -229,7 +214,9 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             s.removeSpan(span)
             span = URLSpanNoUnderline(span.url)
             s.setSpan(span, start, end, 0)
-            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)), start, end, 0)
+            context?.run {
+                s.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500)), start, end, 0)
+            }
         }
         textView.text = s
     }

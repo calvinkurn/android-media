@@ -6,13 +6,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 
 /**
  * @author by furqan on 30/10/18.
  */
 
-public class FlightCancellationReasonViewHolder extends AbstractViewHolder<FlightCancellationReasonViewModel> {
+public class FlightCancellationReasonViewHolder extends AbstractViewHolder<FlightCancellationReasonModel> {
 
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_amenity;
@@ -32,7 +32,7 @@ public class FlightCancellationReasonViewHolder extends AbstractViewHolder<Fligh
 
 
     @Override
-    public void bind(FlightCancellationReasonViewModel element) {
+    public void bind(FlightCancellationReasonModel element) {
         boolean isItemChecked = false;
         if (listener != null) {
             isItemChecked = listener.isItemChecked(element);
@@ -47,6 +47,6 @@ public class FlightCancellationReasonViewHolder extends AbstractViewHolder<Fligh
     }
 
     public interface ReasonListener {
-        boolean isItemChecked(FlightCancellationReasonViewModel selectedItem);
+        boolean isItemChecked(FlightCancellationReasonModel selectedItem);
     }
 }

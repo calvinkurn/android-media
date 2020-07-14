@@ -4,7 +4,7 @@ package com.tokopedia.sellerorder.detail.data.model
  * Created by fwidjaja on 2019-10-03.
  */
 data class SomDetailHeader (
-        val statusId: Int = -1,
+        val statusCode: Int = -1,
         val statusText: String = "",
         val isBuyerRequestCancel: Boolean = false,
         val invoice: String = "",

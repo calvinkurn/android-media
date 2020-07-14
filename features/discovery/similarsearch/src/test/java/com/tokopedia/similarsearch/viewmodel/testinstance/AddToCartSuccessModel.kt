@@ -7,7 +7,7 @@ internal fun getAddToCartSuccessModel() = AddToCartDataModel(
         status = AddToCartDataModel.STATUS_OK,
         data = DataModel(
                 success = 1,
-                cartId = 12345,
+                cartId = "12345",
                 message = arrayListOf()
         )
 )

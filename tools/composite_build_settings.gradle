@@ -1,4 +1,3 @@
-
 //scan all folder find setting.gradle
 class compositeModel {
     String pathComposite
@@ -12,6 +11,7 @@ class compositeModel {
         this.listModuleComposite = listModuleComposite
     }
 }
+
 class tupleComposite {
     String module;
     String project;
@@ -23,6 +23,7 @@ class tupleComposite {
         this.moduleName = moduleName
     }
 }
+
 List<compositeModel> pathComposite = new ArrayList<>()
 
 def enableScanComposite = new File("$rootDir/.compositeScan-enable").exists()

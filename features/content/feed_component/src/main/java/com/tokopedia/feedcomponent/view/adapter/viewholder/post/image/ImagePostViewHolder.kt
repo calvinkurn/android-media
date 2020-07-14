@@ -40,9 +40,12 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
                 }
         )
         itemView.image.loadImage(element.image)
+        listener.userImagePostImpression(element.positionInFeed, pagerPosition)
     }
 
     interface ImagePostListener {
+        fun userImagePostImpression(positionInFeed: Int, contentPosition: Int)
+
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)

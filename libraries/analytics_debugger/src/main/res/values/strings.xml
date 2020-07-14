@@ -1,3 +1,7 @@
 <resources>
     <string name="analytics_debugger_label_search">Search</string>
+    <string name="fpm_save_failed_to_open_document">Failed to open file chooser</string>
+    <string name="fpm_file_saved">File was saved successfully!</string>
+    <string name="fpm_file_not_saved">Failed to save file</string>
+    <string name="status">status</string>
 </resources>

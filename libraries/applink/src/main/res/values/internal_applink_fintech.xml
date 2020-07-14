@@ -8,6 +8,7 @@
         Otherwise, do not put "/"
     -->
     <string name="path_intro_ovo">/introduction</string>
+    <string name="path_intro_ovo_flash_deal">/inactive</string>
     <string name="path_activation_ovo">/activation</string>
 
     <string name="path_saldo_deposit">/saldo</string>

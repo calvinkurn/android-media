@@ -1,6 +1,7 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.fragment
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,22 +19,19 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment.Companion.CATEGORY_INTENT
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_search.data.mapper.BrandlistSearchMapper
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchShimmeringViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchAllBrandLabelViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
+import com.tokopedia.brandlist.common.Constant
+import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.network.utils.ErrorHandler
@@ -46,7 +44,9 @@ import javax.inject.Inject
 class BrandlistSearchFragment : BaseDaggerFragment(),
         HasComponent<BrandlistSearchComponent>,
         BrandlistSearchTrackingListener,
-        BrandlistSearchNotFoundViewHolder.Listener {
+        BrandlistSearchNotFoundViewHolder.Listener,
+        BrandlistSearchRecommendationNotFoundViewHolder.Listener,
+        BrandlistHeaderBrandInterface {
 
     companion object {
         const val BRANDLIST_SEARCH_GRID_SPAN_COUNT = 3
@@ -74,10 +74,25 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     private var keywordSearch = ""
     private var categoryName = ""
     private var categoryData: Category? = null
+    private val INITIAL_OFFSET = 0
+    private val ALL_BRANDS_REQUEST_SIZE = 30
+    private val ALPHABETIC_ASC_SORT = 3
+
+    private var selectedChip: Int = Constant.DEFAULT_SELECTED_CHIPS
+    private var isLoadMore: Boolean = false
+    private var stateLoadBrands: String = LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
+    private var selectedBrandLetter: String = "A"
+    private val defaultBrandLetter: String = ""
+    private var totalBrandsNumber: Int = 0
+    private var recyclerViewLastState: Parcelable? = null
+
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMoreBrands()
+                val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else ""
+                viewModel.loadMoreBrands(brandFirstLetter)
+                isLoadMore = true
+
                 if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
                     adapterBrandSearch?.showLoading()
                 }
@@ -111,12 +126,11 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 }
             }
         }
-        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory(this)
+        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory(this, this)
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
         recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
-        recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapterBrandSearch as StickyHeaderInterface))
         return view
     }
 
@@ -125,7 +139,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         viewModel.getTotalBrands()
         searchView = view.findViewById(R.id.search_input_view)
         searchView?.requestFocus()
-        searchView?.setOnClickListener{
+        searchView?.setOnClickListener {
             searchView?.requestFocus()
         }
         recyclerView = view.findViewById(R.id.rv_brandlist_search)
@@ -135,7 +149,8 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         observeTotalBrands()
         observeAllBrands()
         recyclerView?.addOnScrollListener(endlessScrollListener)
-        recyclerView?.setOnTouchListener { _, _ ->  searchView?.hideKeyboard()
+        recyclerView?.setOnTouchListener { _, _ ->
+            searchView?.hideKeyboard()
             false
         }
     }
@@ -253,7 +268,8 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 is Success -> {
                     val response = it.data.shops
                     adapterBrandSearch?.updateSearchRecommendationData(
-                            BrandlistSearchMapper.mapSearchRecommendationResponseToVisitable(response, this))
+                            BrandlistSearchMapper.mapSearchRecommendationResponseToVisitable(response, this)
+                    )
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
@@ -266,7 +282,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         viewModel.brandlistAllBrandTotal.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    adapterBrandSearch?.updateAllBrandsValue(it.data)
+                    totalBrandsNumber = it.data
                     loadInitialData()
                 }
                 is Fail -> {
@@ -283,18 +299,30 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     adapterBrandSearch?.hideLoading()
                     val response = it.data
                     endlessScrollListener.updateStateAfterGetData()
-                    val currentOffset = viewModel.currentOffset
-                    val groupHeader = viewModel.currentLetter.toUpperCase()
 
-                    if (currentOffset == 0) {
-                        adapterBrandSearch?.getVisitables()?.add(BrandlistSearchAllBrandLabelViewModel(groupHeader.toString()))
-                        adapterBrandSearch?.notifyItemRangeInserted((adapterBrandSearch as BrandlistSearchResultAdapter).lastIndex, 1)
+                    val totalBrandPerCharacter = it.data.totalBrands
+                    val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
+                            stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
+
+                    val existingTotalBrands: Int = viewModel.getTotalBrandSizeForChipHeader()
+                    if (!isLoadMore && existingTotalBrands !== totalBrandsFiltered) {
+                        adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
                     }
-                    adapterBrandSearch?.updateBrands(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, "", this))
+
+                    var _brandlistSearchMapperResult: List<BrandlistSearchResultViewModel> = listOf()
+                    if (totalBrandPerCharacter == 0) {
+                        adapterBrandSearch?.mappingBrandSearchNotFound(
+                                _brandlistSearchMapperResult,
+                                isLoadMore)
+                    } else {
+                        _brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+                                response.brands, "", this)
+                        adapterBrandSearch?.updateBrands(_brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
+                    }
+
+                    viewModel.updateTotalBrandSizeForChipHeader(response.totalBrands)
                     viewModel.updateTotalBrandSize(response.totalBrands)
                     viewModel.updateCurrentOffset(response.brands.size)
-                    viewModel.updateCurrentLetter()
-                    viewModel.updateEndlessRequestParameter()
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
@@ -303,8 +331,13 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun setStateLoadBrands(stateLoadData: String) {
+        stateLoadBrands = stateLoadData
+    }
+
     private fun loadInitialData() {
         if (!isInitialDataLoaded) {
+            isLoadMore = false
             viewModel.loadInitialBrands()
             isInitialDataLoaded = true
         }
@@ -334,6 +367,34 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         brandlistTracking?.clickBrand(
                 isLogin, shopId, categoryName, shoplogoPosition, shopName,
                 imgUrl, true, keywordSearch)
+    }
+
+    override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
+        selectedChip = position
+        recyclerViewLastState = recyclerViewState
+
+        if (position > 0 && position < 2) {     // Load Semua Brand
+            isLoadMore = false
+            selectedBrandLetter = defaultBrandLetter
+            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
+            viewModel.resetParams()
+            isInitialDataLoaded = false
+            loadInitialData()
+        } else if (position >= 2) {     // Load per alphabet
+            isLoadMore = false
+            selectedBrandLetter = chipName
+            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
+            viewModel.resetParams()
+            viewModel.searchAllBrands(
+                    INITIAL_OFFSET, "",
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT, chipName)
+            adapterBrandSearch?.refreshSticky()
+        }
+    }
+
+    override fun onClickSearchButton() {
+
     }
 
 }

@@ -76,11 +76,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".hoteldetail.presentation.activity.HotelDetailMapActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".roomlist.presentation.activity.HotelRoomListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -124,7 +119,12 @@
             android:label="@string/travel_contact_data_activity_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-        <activity android:name=".globalsearch.presentation.activity.HotelGlobalSearchActivity"
+        <activity
+            android:name=".globalsearch.presentation.activity.HotelGlobalSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".globalsearch.presentation.activity.HotelChangeSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

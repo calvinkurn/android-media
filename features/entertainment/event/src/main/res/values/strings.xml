@@ -55,7 +55,7 @@
     <string name="fav">Favorit</string>
     <string name="daftar_transaksi">Daftar Transaksi</string>
     <string name="scan_qr_code">Scan QR Code</string>
-    <string name="bantuan">Bantuan</string>
+    <string name="tokopedia_care">Tokopedia Care</string>
     <string name="promo">Promo</string>
     <string name="nomor_kursi">Nomor Kursi:</string>
     <string name="ubah">Ubah</string>
@@ -133,6 +133,8 @@
     <string name="reset">Reset</string>
     <string name="error_message">Terjadi kesalahan, silahkan coba kembali</string>
     <string name="event_ended">Penjualan tiket untuk event ini telah berakhir</string>
+
+    <string name="share_link">Bagikan Produk Ini</string>
     <!-- need to changed -->
 
 </resources>

@@ -16,7 +16,7 @@ import java.util.*
  */
 class TrackingMapper {
 
-    fun transformSingleEvent(track: String, sessionId: String, userId: String, deviceId: String) : String {
+    fun transformSingleEvent(track: String, sessionId: String, userId: String, deviceId: String): String {
 
         val result = JSONObject()
         val data = JSONArray()
@@ -25,9 +25,10 @@ class TrackingMapper {
 
         event.put(reformatEvent(track, sessionId))
 
-        row.put("device_id", deviceId)
-        row.put("user_id", userId)
-        row.put("event_data", event)
+        row.put(DEVICE_ID, deviceId)
+        row.put(USER_ID, userId)
+        row.put(EVENT_DATA, event)
+        row.put(APP_VERSION, GlobalConfig.VERSION_NAME)
 
         data.put(row)
 
@@ -35,62 +36,58 @@ class TrackingMapper {
         return result.toString()
     }
 
-    fun transformListEvent(tracking: List<Tracking>) : String {
+    fun transformListEvent(tracking: List<Tracking>): Pair<String, List<Tracking>> {
         val result = JSONObject()
         val data = JSONArray()
         var event = JSONArray()
+        val outputTracking = mutableListOf<Tracking>()
+        var done = false
         for (i in tracking.indices) {
             val item = tracking[i]
-            if (!item.event.isBlank() && (item.event.contains("event"))) {
+            if (!done && !item.event.isBlank() && (item.event.contains("event"))) {
                 val eventObject = JSONObject(item.event)
-                logCertainItems(eventObject)
                 event.put(eventObject)
                 val nextItem: Tracking? = try {
-                    tracking[i+1]
+                    tracking[i + 1]
                 } catch (e: IndexOutOfBoundsException) {
                     null
                 }
-                val nextUserId : String = nextItem?.userId ?: ""
-                if (item.userId != nextUserId || i == tracking.size - 1) {
+                val nextUserId: String = nextItem?.userId ?: ""
+                val nextVersion: String = nextItem?.appVersion ?: ""
+                // this is to group iris data based on userId and appVersion
+                if (item.userId != nextUserId || item.appVersion != nextVersion || i == tracking.size - 1) {
                     val row = JSONObject()
-                    row.put("device_id", item.deviceId)
-                    row.put("user_id", item.userId)
+                    row.put(DEVICE_ID, item.deviceId)
+                    row.put(USER_ID, item.userId)
+                    if (item.appVersion.isEmpty()) {
+                        row.put(APP_VERSION, ANDROID_DASH + GlobalConfig.VERSION_NAME + " " + ANDROID_PREV_VERSION_SUFFIX)
+                    } else {
+                        row.put(APP_VERSION, ANDROID_DASH + item.appVersion)
+                    }
                     if (event.length() > 0) {
-                        row.put("event_data", event)
+                        row.put(EVENT_DATA, event)
                         data.put(row)
+                        outputTracking.addAll(tracking.subList(0, i+1))
                     }
                     event = JSONArray()
+                    done = true
                 }
             }
         }
         result.put("data", data)
-        return result.toString()
-    }
-
-    private fun logCertainItems(item:JSONObject?){
-        try {
-            if (item?.has("event_ga") == true &&
-                item.has("eventCategory") && item.has("eventAction")) {
-                val itemEvent = item.getString("event_ga")
-                val itemCat = item.getString("eventCategory")
-                val itemAct = item.getString("eventAction")
-                if ("clickTopNav" == itemEvent &&
-                    itemCat?.startsWith("top nav") == true &&
-                    "click search box" == itemAct) {
-                    Timber.w("P1#IRIS_COLLECT#IRISSEND_CLICKSEARCHBOX")
-                } else if ("clickPDP" == itemEvent && "product detail page" == itemCat &&
-                    "click - tambah ke keranjang" == itemAct) {
-                    Timber.w("P1#IRIS_COLLECT#IRISSEND_PDP_ATC")
-                }
-            }
-        }catch (e:Exception) {
-            Timber.e("P1#IRIS#logIrisAnalyticsSend %s", e.toString())
-        }
+        return (result.toString() to outputTracking)
     }
 
     companion object {
 
-        fun reformatEvent(event: String, sessionId: String) : JSONObject {
+        const val DEVICE_ID = "device_id"
+        const val USER_ID = "user_id"
+        const val EVENT_DATA = "event_data"
+        const val APP_VERSION = "app_version"
+        const val ANDROID_DASH = "android-"
+        const val ANDROID_PREV_VERSION_SUFFIX = "before"
+
+        fun reformatEvent(event: String, sessionId: String): JSONObject {
             return try {
                 var keyEvent = KEY_EVENT
                 if (GlobalConfig.isSellerApp()) {

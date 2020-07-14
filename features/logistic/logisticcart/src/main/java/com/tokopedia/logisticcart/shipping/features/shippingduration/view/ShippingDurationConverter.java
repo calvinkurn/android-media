@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
@@ -35,15 +36,17 @@ public class ShippingDurationConverter {
 
         // Check response not null
         if (ratesData != null && ratesData.getRatesDetailData() != null) {
+
+            // Check if has error
+            if (ratesData.getRatesDetailData().getError() != null &&
+                    !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
+                shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
+                shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
+            }
+
             // Check has service / duration list
             if (ratesData.getRatesDetailData().getServices() != null &&
                     ratesData.getRatesDetailData().getServices().size() > 0) {
-                // Check if has error
-                if (ratesData.getRatesDetailData().getError() != null &&
-                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
-                    shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
-                    shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
-                }
 
                 // Setting up for Logistic Promo
                 shippingRecommendationData.setLogisticPromo(
@@ -73,6 +76,7 @@ public class ShippingDurationConverter {
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationUiModel shippingDurationUiModel = new ShippingDurationUiModel();
             shippingDurationUiModel.setServiceData(serviceData);
+            shippingDurationUiModel.setShowShippingInformation(isCourierInstantOrSameday(serviceData.getServiceId()));
             List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
                             serviceData.getProducts(), ratesId, blackboxInfo);
@@ -94,6 +98,14 @@ public class ShippingDurationConverter {
         }
 
         return shippingDurationUiModels;
+    }
+
+    private boolean isCourierInstantOrSameday(int shipperId) {
+        int[] ids = CourierConstant.INSTANT_SAMEDAY_DURATION;
+        for (int id : ids) {
+            if (shipperId == id) return true;
+        }
+        return false;
     }
 
     private List<ShippingCourierUiModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,

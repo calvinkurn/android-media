@@ -2,27 +2,27 @@ package com.tokopedia.hotel.search.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.search.data.model.Filter
-import com.tokopedia.hotel.search.data.model.PropertySearch
-import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
+import com.tokopedia.hotel.search.data.model.params.ParamLocation
+import com.tokopedia.hotel.search.data.model.params.ParamSort
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+        private val dispatcher: TravelDispatcherProvider)
+    : BaseViewModel(dispatcher.io()) {
 
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
@@ -34,25 +34,35 @@ class HotelSearchResultViewModel @Inject constructor(
 
     var isFilter = false
 
-    fun initSearchParam(destinationID: Int, type: String, latitude: Float, longitude: Float,
-                        checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
-        if (type == TYPE_CITY)
-            searchParam.location.cityID = destinationID
-        else if (type == TYPE_DISTRICT) {
-            searchParam.location.districtID = destinationID
-        } else {
-            searchParam.location.regionID = destinationID
-        }
-        searchParam.location.latitude = latitude
-        searchParam.location.longitude = longitude
-        searchParam.checkIn = checkIn
-        searchParam.checkOut = checkOut
-        searchParam.room = totalRoom
-        searchParam.guest.adult = totalAdult
+    fun initSearchParam(hotelSearchModel: HotelSearchModel) {
 
-        //Default param
-        searchParam.sort.popularity = true
-        addSort(Sort("popularity"))
+        with(searchParam) {
+            location = ParamLocation()
+
+            when (hotelSearchModel.type) {
+                // temp: to support the popular search and recent search in suggestion page
+                HotelTypeEnum.CITY.value -> {
+                    location.cityID = hotelSearchModel.id
+                }
+                HotelTypeEnum.DISTRICT.value -> {
+                    location.districtID = hotelSearchModel.id
+                }
+                HotelTypeEnum.REGION.value -> {
+                    location.regionID = hotelSearchModel.id
+                }
+            }
+
+            checkIn = hotelSearchModel.checkIn
+            checkOut = hotelSearchModel.checkOut
+            room = hotelSearchModel.room
+            guest.adult = hotelSearchModel.adult
+            location.latitude = hotelSearchModel.lat
+            location.longitude = hotelSearchModel.long
+
+            //Default param
+            sort.popularity = true
+            addSort(Sort(DEFAULT_SORT))
+        }
     }
 
     fun searchProperty(page: Int, searchQuery: String) {
@@ -61,27 +71,23 @@ class HotelSearchResultViewModel @Inject constructor(
             val params = mapOf(PARAM_SEARCH_PROPERTY to searchParam)
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
-            val response = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
-            liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
+            val response = withContext(dispatcher.ui()) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            liveSearchResult.postValue(Success(response.getSuccessData<PropertySearch.Response>().response))
         }) {
-            liveSearchResult.value = Fail(it)
+            liveSearchResult.postValue(Fail(it))
         }
     }
 
     fun addSort(sort: Sort) {
         selectedSort = sort
-        with(searchParam.sort) {
-            popularity = sort.name.toLowerCase() == "popularity"
-            price = sort.name.toLowerCase() == "price"
-            ranking = sort.name.toLowerCase() == "ranking"
-            star = sort.name.toLowerCase() == "star"
-            reviewScore = sort.name.toLowerCase() == "reviewscore"
 
-            // to be edited
-            if (popularity || reviewScore || star) sortDir = "desc"
-            else if (price) sortDir = "asc"
-            else sortDir = "desc"
-
+        searchParam.sort = when (sort.name.toLowerCase()) {
+            HotelSortEnum.POPULARITY.value -> ParamSort(popularity = true, sortDir = HotelSortEnum.POPULARITY.order)
+            HotelSortEnum.PRICE.value -> ParamSort(price = true, sortDir = HotelSortEnum.PRICE.order)
+            HotelSortEnum.RANKING.value -> ParamSort(ranking = true, sortDir = HotelSortEnum.RANKING.order)
+            HotelSortEnum.STAR.value -> ParamSort(star = true, sortDir = HotelSortEnum.STAR.order)
+            HotelSortEnum.REVIEWSCORE.value -> ParamSort(reviewScore = true, sortDir = HotelSortEnum.REVIEWSCORE.order)
+            else -> ParamSort()
         }
     }
 
@@ -92,8 +98,7 @@ class HotelSearchResultViewModel @Inject constructor(
 
     companion object {
         private const val PARAM_SEARCH_PROPERTY = "data"
-        private const val TYPE_REGION = "region"
-        private const val TYPE_DISTRICT = "district"
-        private const val TYPE_CITY = "city"
+
+        private const val DEFAULT_SORT = "popularity"
     }
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.network.ErrorNetworkException;
 import com.tokopedia.vote.network.VoteErrorException;
@@ -20,6 +21,12 @@ import java.net.UnknownHostException;
 
 public class GroupChatErrorHandler {
 
+    private final static String ERR_CHANNEL_NOT_EXIST = "TOP02";
+    private final static String ERR_USER_UNAUTHORIZED = "TOP10";
+    private final static String ERR_CHANNEL_NOT_FOUND = "TOP06";
+    private final static String ERR_CHANNEL_NOT_ACTIVE = "TOP03";
+    private final static String ERR_TOO_MANY_REQUEST = "TOP12";
+
     private static String formattedString(String errorMessage, String code, boolean withCode) {
         if (withCode)
             return errorMessage + " (" + code + ")";
@@ -29,6 +36,31 @@ public class GroupChatErrorHandler {
 
     private static String formattedString(String errorMessage, int code, boolean withCode) {
         return formattedString(errorMessage, String.valueOf(code), withCode);
+    }
+
+    public static int getGlobalErrorCode(Throwable e) {
+        if (e instanceof ErrorNetworkException
+                        && !TextUtils.isEmpty(((ErrorNetworkException) e).getErrorCode())) {
+            return classifyByErrorCode(((ErrorNetworkException) e).getErrorCode());
+        } else if (e instanceof VoteErrorException
+                    && !TextUtils.isEmpty(((VoteErrorException) e).getErrorCode())){
+            return classifyByErrorCode(((VoteErrorException) e).getErrorCode());
+        }
+        return GlobalError.Companion.getSERVER_ERROR();
+    }
+
+    private static int classifyByErrorCode(String errorCode) {
+        switch (errorCode) {
+            case ERR_CHANNEL_NOT_EXIST:
+            case ERR_USER_UNAUTHORIZED:
+            case ERR_CHANNEL_NOT_FOUND:
+                return GlobalError.Companion.getPAGE_NOT_FOUND();
+            case ERR_CHANNEL_NOT_ACTIVE:
+            case ERR_TOO_MANY_REQUEST:
+                return GlobalError.Companion.getPAGE_FULL();
+            default:
+                return GlobalError.Companion.getSERVER_ERROR();
+        }
     }
 
     public static String getErrorMessage(Context context, Throwable e, boolean withCode) {

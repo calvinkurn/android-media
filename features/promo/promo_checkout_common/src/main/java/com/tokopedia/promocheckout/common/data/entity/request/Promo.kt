@@ -31,6 +31,9 @@ data class Promo(
         @SerializedName("is_trade_in")
         var isTradeIn: Int? = 0,
 
+        @SerializedName("is_trade_in_drop_off")
+        var isTradeInDropOff: Int? = 0,
+
         @SerializedName("state")
         var state: String = "",
 
@@ -49,9 +52,10 @@ data class Promo(
                 parcel.readList(this, Order::class.java.classLoader)
             },
             parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readValue(Int::class.java.classLoader) as? Int,
             parcel.readString() ?: "",
-            parcel.readParcelable(TokopediaCornerData::class.java.classLoader) ?: null
-    )
+            parcel.readParcelable(TokopediaCornerData::class.java.classLoader)) {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeList(codes)
@@ -60,7 +64,8 @@ data class Promo(
         parcel.writeValue(skipApply)
         parcel.writeValue(isSuggested)
         parcel.writeList(orders)
-        parcel.writeValue(skipApply)
+        parcel.writeValue(isTradeIn)
+        parcel.writeValue(isTradeInDropOff)
         parcel.writeString(state)
         parcel.writeParcelable(tokopediCornerData, flags)
     }

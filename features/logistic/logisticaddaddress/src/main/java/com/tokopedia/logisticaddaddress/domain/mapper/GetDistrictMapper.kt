@@ -11,19 +11,20 @@ import javax.inject.Inject
 class GetDistrictMapper @Inject constructor() {
 
     fun map(response: GetDistrictResponse): GetDistrictDataUiModel {
-        return mapData(response.keroPlacesGetDistrict.data ?: Data())
+        val msg = response.keroPlacesGetDistrict.messageError.firstOrNull()
+        with(response.keroPlacesGetDistrict.data) {
+            return GetDistrictDataUiModel(
+                    title = this.title,
+                    formattedAddress = this.formattedAddress,
+                    latitude = this.latitude,
+                    longitude = this.longitude,
+                    districtId = this.districtId,
+                    postalCode = this.postalCode,
+                    cityId = this.cityId,
+                    provinceId = this.provinceId,
+                    errMessage = msg
+            )
+        }
     }
 
-    private fun mapData(data: Data): GetDistrictDataUiModel {
-        return GetDistrictDataUiModel(
-                title = data.title,
-                formattedAddress = data.formattedAddress,
-                latitude = data.latitude,
-                longitude = data.longitude,
-                districtId = data.districtId,
-                postalCode = data.postalCode,
-                cityId = data.cityId,
-                provinceId = data.provinceId
-        )
-    }
 }

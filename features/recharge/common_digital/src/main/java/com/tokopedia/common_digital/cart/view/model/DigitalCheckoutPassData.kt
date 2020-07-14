@@ -1,6 +1,5 @@
 package com.tokopedia.common_digital.cart.view.model
 
-import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -26,8 +25,28 @@ class DigitalCheckoutPassData() : Parcelable {
     var voucherCodeCopied: String? = null
     var source: Int = 0
     var fields: HashMap<String, String>? = null
+    var needGetCart: Boolean = false
 
-    private constructor(builder: Builder): this() {
+    constructor(parcel: Parcel) : this() {
+        action = parcel.readString()
+        categoryId = parcel.readString()
+        clientNumber = parcel.readString()
+        zoneId = parcel.readString()
+        productId = parcel.readString()
+        operatorId = parcel.readString()
+        isPromo = parcel.readString()
+        instantCheckout = parcel.readString()
+        utmSource = parcel.readString()
+        utmMedium = parcel.readString()
+        utmCampaign = parcel.readString()
+        utmContent = parcel.readString()
+        idemPotencyKey = parcel.readString()
+        voucherCodeCopied = parcel.readString()
+        source = parcel.readInt()
+        needGetCart = parcel.readByte() != 0.toByte()
+    }
+
+    private constructor(builder: Builder) : this() {
         action = builder.action
         categoryId = builder.categoryId
         clientNumber = builder.clientNumber
@@ -44,73 +63,27 @@ class DigitalCheckoutPassData() : Parcelable {
         voucherCodeCopied = builder.voucherCodeCopied
         source = builder.source
         fields = builder.fields
-    }
-
-    protected constructor(`in`: Parcel): this() {
-        action = `in`.readString()
-        categoryId = `in`.readString()
-        clientNumber = `in`.readString()
-        zoneId = `in`.readString()
-        productId = `in`.readString()
-        operatorId = `in`.readString()
-        isPromo = `in`.readString()
-        instantCheckout = `in`.readString()
-        utmSource = `in`.readString()
-        utmMedium = `in`.readString()
-        utmCampaign = `in`.readString()
-        utmContent = `in`.readString()
-        idemPotencyKey = `in`.readString()
-        voucherCodeCopied = `in`.readString()
-        source = `in`.readInt()
-        val bundle = `in`.readBundle(javaClass.classLoader)
-        bundle?.run {
-            val fieldsParam = this.getSerializable(PARAM_FIELDS)
-            fieldsParam?.run { fields = this as? HashMap<String, String> }
-        }
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(parcel: Parcel, i: Int) {
-        parcel.writeString(action)
-        parcel.writeString(categoryId)
-        parcel.writeString(clientNumber)
-        parcel.writeString(zoneId)
-        parcel.writeString(productId)
-        parcel.writeString(operatorId)
-        parcel.writeString(isPromo)
-        parcel.writeString(instantCheckout)
-        parcel.writeString(utmSource)
-        parcel.writeString(utmMedium)
-        parcel.writeString(utmCampaign)
-        parcel.writeString(utmContent)
-        parcel.writeString(idemPotencyKey)
-        parcel.writeString(voucherCodeCopied)
-        parcel.writeInt(source)
-        val bundle = Bundle()
-        bundle.putSerializable(PARAM_FIELDS, fields)
-        parcel.writeBundle(bundle)
+        needGetCart = builder.needGetCart
     }
 
     class Builder {
-         var action: String? = null
-         var categoryId: String? = null
-         var clientNumber: String? = null
-         var zoneId: String? = null
-         var productId: String? = null
-         var operatorId: String? = null
-         var isPromo: String? = null
-         var instantCheckout: String? = null
-         var utmSource: String? = null
-         var utmMedium: String? = null
-         var utmCampaign: String? = null
-         var utmContent: String? = null
-         var idemPotencyKey: String? = null
-         var voucherCodeCopied: String? = null
-         var source: Int = 0
-         var fields: HashMap<String, String>? = null
+        var action: String? = null
+        var categoryId: String? = null
+        var clientNumber: String? = null
+        var zoneId: String? = null
+        var productId: String? = null
+        var operatorId: String? = null
+        var isPromo: String? = null
+        var instantCheckout: String? = null
+        var utmSource: String? = null
+        var utmMedium: String? = null
+        var utmCampaign: String? = null
+        var utmContent: String? = null
+        var idemPotencyKey: String? = null
+        var voucherCodeCopied: String? = null
+        var source: Int = 0
+        var fields: HashMap<String, String>? = null
+        var needGetCart: Boolean = false
 
         fun action(`val`: String): Builder {
             action = `val`
@@ -187,6 +160,11 @@ class DigitalCheckoutPassData() : Parcelable {
             return this
         }
 
+        fun needGetCart(`val`: Boolean): Builder {
+            needGetCart = `val`
+            return this
+        }
+
         fun fields(`val`: HashMap<String, String>): Builder {
             fields = `val`
             return this
@@ -230,4 +208,26 @@ class DigitalCheckoutPassData() : Parcelable {
         }
     }
 
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(action)
+        parcel.writeString(categoryId)
+        parcel.writeString(clientNumber)
+        parcel.writeString(zoneId)
+        parcel.writeString(productId)
+        parcel.writeString(operatorId)
+        parcel.writeString(isPromo)
+        parcel.writeString(instantCheckout)
+        parcel.writeString(utmSource)
+        parcel.writeString(utmMedium)
+        parcel.writeString(utmCampaign)
+        parcel.writeString(utmContent)
+        parcel.writeString(idemPotencyKey)
+        parcel.writeString(voucherCodeCopied)
+        parcel.writeInt(source)
+        parcel.writeByte(if (needGetCart) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
 }

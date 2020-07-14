@@ -106,10 +106,6 @@ public class TkpdDigitalResponse {
         return tkpdDigitalResponse;
     }
 
-    public JsonElement getJsonElementData() {
-        return jsonElementData;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -118,32 +114,12 @@ public class TkpdDigitalResponse {
         return strResponse;
     }
 
-    public String getStrData() {
-        return strData;
-    }
-
     private void setJsonElementData(JsonElement jsonElementData) {
         this.jsonElementData = jsonElementData;
     }
 
-    public Object getObjMeta() {
-        return objMeta;
-    }
-
-    public void setObjMeta(Object objMeta) {
-        this.objMeta = objMeta;
-    }
-
-    public String getStrMeta() {
-        return strMeta;
-    }
-
     public void setStrMeta(String strMeta) {
         this.strMeta = strMeta;
-    }
-
-    public JsonElement getJsonElementMeta() {
-        return jsonElementMeta;
     }
 
     public void setJsonElementMeta(JsonElement jsonElementMeta) {
@@ -162,24 +138,8 @@ public class TkpdDigitalResponse {
         this.strData = strData;
     }
 
-    public Object getObjIncluded() {
-        return objIncluded;
-    }
-
-    public void setObjIncluded(Object objIncluded) {
-        this.objIncluded = objIncluded;
-    }
-
-    public String getStrIncluded() {
-        return strIncluded;
-    }
-
     private void setStrIncluded(String strIncluded) {
         this.strIncluded = strIncluded;
-    }
-
-    public JsonElement getJsonElementIncluded() {
-        return jsonElementIncluded;
     }
 
     private void setJsonElementIncluded(JsonElement jsonElementIncluded) {
@@ -200,85 +160,6 @@ public class TkpdDigitalResponse {
             return (T) objData;
         }
     }
-
-    @SuppressWarnings("unchecked")
-    public <T> List<T> convertDataList(Class<T[]> clazz) {
-        if (objData == null) {
-            try {
-                this.objData = Arrays.asList((T[]) (this.objData = gson.fromJson(strData, clazz)));
-                return (List<T>) objData;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (List<T>) objData;
-        }
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public <T> T convertIncludedObj(Class<T> clazz) {
-        if (objIncluded == null) {
-            try {
-                this.objIncluded = gson.fromJson(strIncluded, clazz);
-                return (T) objIncluded;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (T) objIncluded;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> List<T> convertIncludedList(Class<T[]> clazz) {
-        if (objIncluded == null) {
-            try {
-                this.objIncluded = Arrays.asList((T[])
-                        (this.objIncluded = gson.fromJson(strIncluded, clazz)));
-                return (List<T>) objIncluded;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (List<T>) objIncluded;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T convertMetaObj(Class<T> clazz) {
-        if (objMeta == null) {
-            try {
-                this.objMeta = gson.fromJson(strMeta, clazz);
-                return (T) objMeta;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (T) objMeta;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> List<T> convertMetaList(Class<T[]> clazz) {
-        if (objMeta == null) {
-            try {
-                this.objMeta = Arrays.asList((T[])
-                        (this.objMeta = gson.fromJson(strMeta, clazz)));
-                return (List<T>) objMeta;
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return (List<T>) objMeta;
-        }
-    }
-
 
     /**
      * @author anggaprasetiyo on 3/7/17.

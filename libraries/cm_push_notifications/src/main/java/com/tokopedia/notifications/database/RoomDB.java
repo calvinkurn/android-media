@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.database;
 
+import androidx.annotation.NonNull;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Database;
 import androidx.room.Room;
@@ -9,13 +10,13 @@ import androidx.room.migration.Migration;
 
 import android.content.Context;
 
-import com.tokopedia.notifications.database.convertors.CarouselConverter;
-import com.tokopedia.notifications.database.convertors.GridConverter;
-import com.tokopedia.notifications.database.convertors.JsonObjectConverter;
-import com.tokopedia.notifications.database.convertors.NotificationModeConverter;
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter;
-import com.tokopedia.notifications.database.convertors.ProductInfoConverter;
-import com.tokopedia.notifications.database.convertors.PushActionButtonConverter;
+import com.tokopedia.notifications.data.converters.CarouselConverter;
+import com.tokopedia.notifications.data.converters.GridConverter;
+import com.tokopedia.notifications.data.converters.JsonObjectConverter;
+import com.tokopedia.notifications.data.converters.NotificationModeConverter;
+import com.tokopedia.notifications.data.converters.NotificationStatusConverter;
+import com.tokopedia.notifications.data.converters.ProductInfoConverter;
+import com.tokopedia.notifications.data.converters.PushActionButtonConverter;
 import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
@@ -24,7 +25,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 5)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 7)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
@@ -32,7 +33,8 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
         PushActionButtonConverter.class,
         CarouselConverter.class,
         GridConverter.class,
-        ProductInfoConverter.class})
+        ProductInfoConverter.class
+})
 public abstract class RoomDB extends RoomDatabase {
 
     public abstract InAppDataDao inAppDataDao();
@@ -102,7 +104,7 @@ public abstract class RoomDB extends RoomDatabase {
     };
 
     /**
-     * Below Migration added to Create BaseNotificationModel Table*
+     * Below Migration added to drop and recreate inapp_data and BaseNotificationModel Tables due to encryption implementation*
      **/
     private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override
@@ -131,13 +133,63 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    /**
+     * Below Migration added to drop and recreate inapp_data and BaseNotificationModel Tables due to encryption implementation*
+     **/
+    private static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `is_test` INTEGER NOT NULL");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `is_test` INTEGER NOT NULL");
+        }
+    };
+
+    /**
+     * Migration for adding notification attribution entities
+     * @column: transId
+     * @column: userTransId
+     * @column: userId
+     * @column: shopId
+     * @column: notifcenterBlastId
+     */
+    private static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` " +
+                    "ADD COLUMN `transId` TEXT, " +
+                    "ADD COLUMN `userTransId` TEXT, " +
+                    "ADD COLUMN `userId` TEXT, " +
+                    "ADD COLUMN `shopId` TEXT, " +
+                    "ADD COLUMN `notifcenterBlastId` TEXT");
+        }
+    };
+
+    /**
+     * Migration for adding notification center webHook entity
+     * @column: webhook_params
+     */
+    private static final Migration MIGRATION_7_8 = new Migration(7, 8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `webhook_params` TEXT");
+        }
+    };
+
     public static RoomDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomDB.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomDB.class, "inapp_database")
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                            .addMigrations(
+                                    MIGRATION_1_2,
+                                    MIGRATION_2_3,
+                                    MIGRATION_3_4,
+                                    MIGRATION_4_5,
+                                    MIGRATION_5_6,
+                                    MIGRATION_6_7,
+                                    MIGRATION_7_8
+                            )
                             .build();
                 }
             }

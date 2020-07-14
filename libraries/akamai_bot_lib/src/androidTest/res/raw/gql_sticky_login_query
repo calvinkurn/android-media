@@ -1,0 +1,8 @@
+query get_ticker($page: String!) {
+  ticker {
+    tickers(page: $page) {
+      message
+      layout
+    }
+  }
+}

@@ -50,27 +50,27 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
         }
     }
 
-    @Test
-    fun given_get_data_error__when_load_first_data__should_set_error_value() {
-        runBlocking {
-            val error = NullPointerException()
-            val prefixUrl = "prefix"
-            val slug = "slug"
-
-            val category = createCategory(prefixUrl, slug)
-            val channelType = "$prefixUrl$slug"
-
-            onGetOfficialStoreData_thenReturn(error)
-            onSetupDynamicChannelParams_thenCompleteWith(channelType)
-
-            viewModel.loadFirstData(category)
-
-            val expectedError = Fail(NullPointerException())
-
-            verifyLiveDataValueError(expectedError)
-            verifyDynamicChannelParamsEquals(channelType)
-        }
-    }
+//    @Test
+//    fun given_get_data_error__when_load_first_data__should_set_error_value() {
+//        runBlocking {
+//            val error = NullPointerException()
+//            val prefixUrl = "prefix"
+//            val slug = "slug"
+//
+//            val category = createCategory(prefixUrl, slug)
+//            val channelType = "$prefixUrl$slug"
+//
+//            onGetOfficialStoreData_thenReturn(error)
+//            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+//
+//            viewModel.loadFirstData(category)
+//
+//            val expectedError = Fail(NullPointerException())
+//
+//            verifyLiveDataValueError(expectedError)
+//            verifyDynamicChannelParamsEquals(channelType)
+//        }
+//    }
 
     @Test
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {

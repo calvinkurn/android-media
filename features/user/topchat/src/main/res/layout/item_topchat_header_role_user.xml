@@ -33,7 +33,7 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/topchat_grey_68"
+        android:textColor="@color/topchat_charcoal_grey_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Admin" />

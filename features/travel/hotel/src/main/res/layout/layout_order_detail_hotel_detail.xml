@@ -9,8 +9,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        app:cardElevation="@dimen/dp_2">
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:cardElevation="@dimen/spacing_lvl1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,47 +20,47 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16">
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingTop="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2"
+                android:paddingRight="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/detail_hotel_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_hotel_detail"
-                    app:fontSize="small"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    android:textColor="@color/Neutral_N700_96"
                     tools:textColor="@color/light_primary"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/booking_code_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/layout_lvl3"
                     android:text="@string/hotel_order_detail_booking_code"
-                    app:fontSize="micro"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_hotel_text"
-                    tools:textSize="@dimen/sp_12" />
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_hotel_text" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/booking_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    app:fontSize="micro"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:layout_marginLeft="@dimen/spacing_lvl2"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyWeight="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/booking_code_hint"
                     app:layout_constraintLeft_toRightOf="@+id/booking_code_hint"
                     app:layout_constraintStart_toEndOf="@+id/booking_code_hint"
                     app:layout_constraintTop_toTopOf="@+id/booking_code_hint"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
                     tools:text="XYZABABA110"
                     tools:textColor="@color/light_primary"
                     tools:textSize="@dimen/sp_12"
@@ -70,9 +70,9 @@
             <View
                 android:id="@+id/seperator_1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/grey_300"
+                android:layout_height="@dimen/hotel_1dp"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:background="@color/hotel_grey_300"
                 app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
@@ -83,79 +83,80 @@
             <View
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@color/grey_300"
+                android:layout_height="@dimen/hotel_1dp"
+                android:background="@color/hotel_grey_300"
                 app:layout_constraintTop_toBottomOf="@+id/checkin_checkout_date" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16">
+                android:padding="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/hotel_name_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/layout_lvl1"
                     android:text="@string/hotel_order_detail_hotel_name"
-                    app:fontSize="small"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_2"
                     tools:textSize="@dimen/sp_12" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/see_hotel_detail_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_see_hotel_detail"
-                    android:textColor="@color/tkpd_main_green"
-                    app:fontSize="micro"
+                    android:textColor="@color/Green_G500"
+                    app:typographyType="body_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/hotel_name_hint"
                     tools:textSize="@dimen/sp_12" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/hotel_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:textColor="@color/light_primary"
-                    app:fontSize="title"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_4"
                     app:layout_constraintTop_toBottomOf="@+id/hotel_name_hint"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
                     tools:text="Avissa Suites"
                     tools:textSize="@dimen/sp_17"
                     tools:textStyle="bold" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/hotel_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:fontSize="micro"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
                     app:layout_constraintTop_toBottomOf="@+id/hotel_name"
                     tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Bandung, Jawa Barat, Indonesia, 40131"
                     tools:textSize="@dimen/sp_12" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/room_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    app:fontSize="small"
+                    android:layout_marginTop="@dimen/layout_lvl2"
+                    app:typographyType="body_2"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyWeight="bold"
                     app:layout_constraintTop_toBottomOf="@+id/hotel_address"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
                     tools:text="Kamar Deluxe Double"
                     tools:textColor="@color/light_primary"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/room_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_4"
-                    app:fontSize="micro"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
                     app:layout_constraintTop_toBottomOf="@+id/room_name"
                     tools:text="2 Kamar • 2 Tamu"
                     tools:textSize="@dimen/sp_12" />
@@ -164,7 +165,7 @@
                     android:id="@+id/room_amenities"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@+id/room_info" />
 
@@ -172,7 +173,7 @@
                     android:id="@+id/refund_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/layout_lvl2"
                     app:layout_constraintTop_toBottomOf="@+id/room_amenities"
                     app:tickerShapeType="loose"
                     app:tickerType="announcement" />
@@ -181,15 +182,16 @@
                     android:id="@+id/special_request_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/layout_lvl2"
                     app:layout_constraintTop_toBottomOf="@+id/refund_ticker" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/special_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    app:fontSize="micro"
+                    android:layout_marginTop="@dimen/layout_lvl2"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/special_request_recycler_view"
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. "
@@ -197,16 +199,20 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <View android:layout_width="match_parent"
+                android:layout_height="@dimen/hotel_1dp"
+                android:background="@color/hotel_divider_color_gray" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/call_hotel_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16">
+                android:padding="@dimen/layout_lvl2">
 
                 <ImageView
                     android:id="@+id/call_icon"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/layout_lvl2"
+                    android:layout_height="@dimen/layout_lvl2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/contact_hotel"
                     app:layout_constraintHorizontal_chainStyle="packed"
@@ -215,14 +221,15 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_call_green_24" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/contact_hotel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/layout_lvl1"
+                    android:layout_marginLeft="@dimen/layout_lvl1"
                     android:text="@string/hotel_order_detail_contact_hotel"
-                    android:textColor="@color/tkpd_main_green"
+                    android:textColor="@color/Green_G500"
+                    app:typographyType="body_2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/call_icon"
@@ -234,59 +241,59 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_2">
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingLeft="@dimen/layout_lvl2"
             android:paddingTop="@dimen/dp_25"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingRight="@dimen/layout_lvl2"
             android:paddingBottom="@dimen/dp_25">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/guest_detail_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_order_detail_guest_detail"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
-                tools:textColor="@color/light_primary"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:textColor="@color/Neutral_N700_96"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/guest_detail_name_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="@dimen/layout_lvl3"
                 android:text="@string/hotel_order_detail_guest_name"
-                app:fontSize="small"
+                android:textColor="@color/Neutral_N700_68"
+                app:typographyType="body_2"
                 app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
-                app:weight="regular"
                 tools:textSize="@dimen/sp_14" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/guest_detail_name"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginStart="@dimen/hotel_20dp"
+                android:layout_marginLeft="@dimen/hotel_20dp"
+                android:layout_marginTop="@dimen/layout_lvl3"
                 android:gravity="end"
-                app:fontSize="small"
+                app:typographyType="body_2"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyWeight="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/guest_detail_name_hint"
                 app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
                 tools:text="Stevanus Kurniawan Suharyanto"
-                tools:textColor="@color/light_primary"
+                tools:textColor="@color/Neutral_N700_96"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
         </androidx.constraintlayout.widget.ConstraintLayout>

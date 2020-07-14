@@ -25,12 +25,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -39,6 +39,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealAc
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapter;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalDealCheckoutPresenter;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -417,11 +418,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void showPromoOnlyForTopUpAndBillMessage() {
-        ToasterNormal.show(
-                getActivity(),
-                getString(R.string.digital_deal_promo_restriction_message),
-                getString(R.string.digital_deal_promo_restriction_action_label)
-        );
+        Toaster.INSTANCE.make(getView(), getString(R.string.digital_deal_promo_restriction_message),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.digital_deal_promo_restriction_action_label), v->{});
     }
 
     @Override

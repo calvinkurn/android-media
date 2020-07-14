@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.draft.data.db.repository
 
+import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.mapper.AddEditProductDraftMapper
@@ -19,7 +20,9 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
     }
 
     override fun getDraft(productId: Long): ProductDraft {
-        return AddEditProductDraftMapper.mapDraftToProductInput(draftDataSource.getDraft(productId))
+        return AddEditProductDraftMapper.mapDraftToProductInput(
+                draftDataSource.getDraft(productId) ?: AddEditProductDraftEntity()
+        )
     }
 
     override fun getAllDrafts(): List<ProductDraft> {

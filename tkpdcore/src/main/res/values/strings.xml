@@ -4,8 +4,6 @@
     <item name="group_pos" type="id" />
     <item name="child_pos" type="id" />
 
-    <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
-    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
@@ -2094,7 +2092,7 @@ di Tokopedia Sekarang!</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
     <string name="webview_home_navigation_text">Home</string>
-    <string name="webview_help_menu_text">Bantuan</string>
+    <string name="webview_help_menu_text">Tokopedia Care</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>

@@ -41,10 +41,6 @@ class TravelHomepageModule {
 
     @TravelHomepageScope
     @Provides
-    fun provideGetEmptyVMsUseCase(): GetEmptyModelsUseCase = GetEmptyModelsUseCase()
-
-    @TravelHomepageScope
-    @Provides
     fun provideTravelHomepageTrackingUtil(): TravelHomepageTrackingUtil = TravelHomepageTrackingUtil()
 
 }

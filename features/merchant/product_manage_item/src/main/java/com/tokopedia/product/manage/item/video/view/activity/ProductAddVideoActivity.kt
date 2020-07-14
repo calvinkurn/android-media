@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product.manage.item.video.view.fragment.BaseTextPickerDialogFragment
+import com.tokopedia.product.manage.item.common.util.BaseTextPickerDialogFragment
 import com.tokopedia.product.manage.item.video.view.fragment.ProductAddVideoFragment
 
 class ProductAddVideoActivity : BaseSimpleActivity(), BaseTextPickerDialogFragment.Listener {

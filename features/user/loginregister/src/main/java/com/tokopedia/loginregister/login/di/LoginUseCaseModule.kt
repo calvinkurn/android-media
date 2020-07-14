@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.login.domain.StatusFingerprintpojo
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import dagger.Module
@@ -32,6 +33,11 @@ class LoginUseCaseModule {
     @Provides
     fun provideRegisterCheckGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<RegisterCheckPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    fun provideStatusFingerprintGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<StatusFingerprintpojo> = GraphqlUseCase(graphqlRepository)
+
 
     @Provides
     fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {

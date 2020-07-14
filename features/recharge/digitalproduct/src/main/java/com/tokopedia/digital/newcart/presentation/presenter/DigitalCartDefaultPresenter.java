@@ -2,6 +2,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
@@ -18,6 +19,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
 
     @Inject
     public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+                                       DigitalGetCartUseCase digitalGetCartUseCase,
                                        DigitalAnalytics digitalAnalytics,
                                        RechargeAnalytics rechargeAnalytics,
                                        ICartDigitalInteractor cartDigitalInteractor,
@@ -25,6 +27,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         super(digitalAddToCartUseCase,
+                digitalGetCartUseCase,
                 digitalAnalytics,
                 rechargeAnalytics,
                 cartDigitalInteractor,

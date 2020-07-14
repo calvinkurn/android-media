@@ -1,9 +1,11 @@
 package com.tokopedia.home.beranda.domain.gql.searchHint
 
 object KeywordSearchHintQuery {
+    private const val firstInstall = "\$firstInstall"
+
     val query = """
-        {
-            universe_placeholder(navsource:"home"){
+        query universe_placeholder($firstInstall: Boolean){
+            universe_placeholder(navsource:"home", first_install:$firstInstall){
                 data { placeholder keyword }
             }
         }

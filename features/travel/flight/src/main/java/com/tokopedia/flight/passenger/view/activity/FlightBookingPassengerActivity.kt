@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import java.util.*
 
 /**
@@ -20,7 +20,7 @@ import java.util.*
 
 class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<FlightPassengerComponent> {
 
-    var passengerModel: FlightBookingPassengerViewModel? = null
+    var passengerModel: FlightBookingPassengerModel? = null
     var selectedPassengerId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,7 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
     override fun getNewFragment(): Fragment {
         return FlightBookingPassengerFragment.newInstance(
                 depatureId = intent.getStringExtra(EXTRA_DEPATURE),
-                passengerModel = passengerModel ?: FlightBookingPassengerViewModel(),
+                passengerModel = passengerModel ?: FlightBookingPassengerModel(),
                 luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES),
                 mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS),
                 isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
@@ -77,9 +77,9 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
         fun getCallingIntent(activity: Activity,
                              depatureId: String,
                              returnId: String,
-                             bookingPassengerModel: FlightBookingPassengerViewModel,
-                             luggageModels: List<FlightBookingAmenityMetaViewModel>,
-                             mealModels: List<FlightBookingAmenityMetaViewModel>,
+                             bookingPassengerModel: FlightBookingPassengerModel,
+                             luggageModels: List<FlightBookingAmenityMetaModel>,
+                             mealModels: List<FlightBookingAmenityMetaModel>,
                              isAirAsiaAirlines: Boolean,
                              depatureDate: String,
                              requestId: String,
@@ -102,9 +102,9 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
 
         fun getCallingIntent(activity: Activity,
                              depatureId: String,
-                             bookingPassengerModel: FlightBookingPassengerViewModel,
-                             luggageModels: List<FlightBookingAmenityMetaViewModel>,
-                             mealModels: List<FlightBookingAmenityMetaViewModel>,
+                             bookingPassengerModel: FlightBookingPassengerModel,
+                             luggageModels: List<FlightBookingAmenityMetaModel>,
+                             mealModels: List<FlightBookingAmenityMetaModel>,
                              requestId: String,
                              isDomestic: Boolean,
                              autofillName: String = ""): Intent {

@@ -1,0 +1,5 @@
+mutation addtocart($param: FlightAddtoCartArgs!) {
+  flightAddToCart(input: $param) {
+    id
+  }
+}

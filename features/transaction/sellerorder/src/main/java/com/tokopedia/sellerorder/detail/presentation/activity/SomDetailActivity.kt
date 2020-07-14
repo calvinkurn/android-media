@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -56,7 +58,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
     }
 
     private fun onChatClicked() {
-        (fragment as SomDetailFragment).goToAskBuyer()
+        (fragment as? SomDetailFragment)?.doClickChat()
     }
 
     override fun getComponent(): SomDetailComponent =
@@ -68,5 +70,10 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Do not put super, avoid crash "Can not perform this action after onSaveInstanceState"
     }
 }
