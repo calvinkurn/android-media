@@ -13,10 +13,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,15 +64,16 @@ class SellerHomeViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    private lateinit var mViewModel: SellerHomeViewModel
+    private lateinit var testDispatcher: TestCoroutineDispatcher
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-    }
-
-    private val mViewModel: SellerHomeViewModel by lazy {
-        SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
                 getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
-                getPostDataUseCase, getCarouselDataUseCase, Dispatchers.Unconfined)
+                getPostDataUseCase, getCarouselDataUseCase, testDispatcher)
     }
 
     @Test
@@ -313,7 +314,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getCardWidgetData(dataKeys)
 
-        delay(100)
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = mViewModel.cardWidgetData.value
         assert(result is Fail)

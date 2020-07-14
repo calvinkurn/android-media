@@ -13,7 +13,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,13 +42,14 @@ class SellerHomeActivityViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    private lateinit var mViewModel: SellerHomeActivityViewModel
+    private lateinit var testDispatcher: TestCoroutineDispatcher
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-    }
-
-    private val mViewModel by lazy {
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, Dispatchers.Unconfined)
+        testDispatcher = TestCoroutineDispatcher()
+        mViewModel = SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, testDispatcher)
     }
 
     @Test
@@ -148,19 +153,20 @@ class SellerHomeActivityViewModelTest {
     fun `execute launch in custom base view model with custom onError block without custom context`() = runBlocking {
         val customOnErrorViewModel = CustomOnErrorViewModel(Job())
         customOnErrorViewModel.noCustomContext()
-        delay(100)
+        customOnErrorViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
     @Test
     fun `execute launch in custom base view model with custom onError block with custom context`() = runBlocking {
-        val customOnErrorViewModel = CustomOnErrorViewModel(Job())
+        val job = Job()
+        val customOnErrorViewModel = CustomOnErrorViewModel(job)
         customOnErrorViewModel.withCustomContext()
-        delay(100)
+        job.children.forEach { it.join() }
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
-    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(Dispatchers.Unconfined) {
+    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(testDispatcher) {
 
         private val _mockLiveData = MutableLiveData<Result<Any>>()
         val mockLiveData: LiveData<Result<Any>>
