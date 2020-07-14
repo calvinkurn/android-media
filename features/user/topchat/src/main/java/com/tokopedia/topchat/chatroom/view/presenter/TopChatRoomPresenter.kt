@@ -840,6 +840,6 @@ class TopChatRoomPresenter @Inject constructor(
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     companion object {
-        const val TOOLTIP_ONBOARDING = "tooltip_onboarding"
+        const val TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
     }
 }

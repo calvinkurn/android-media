@@ -123,7 +123,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     private fun initToolTip() {
-        searchToolTip = ToolTipSearchPopupWindow(context)
+        searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 
     private fun initChatCounterObserver() {
@@ -441,6 +441,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     }
 
     override fun showSearchOnBoardingTooltip() {
+        if (chatNotifCounterViewModel.isSearchOnBoardingTooltipHasShown()) return
         val toolbar = chatTabListListener?.getActivityToolbar()
         toolbar?.post {
             val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
