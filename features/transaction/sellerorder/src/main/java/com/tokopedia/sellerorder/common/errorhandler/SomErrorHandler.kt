@@ -17,9 +17,9 @@ object SomErrorHandler {
                     val stringWriter = StringWriter()
                     cause.printStackTrace(PrintWriter(stringWriter))
                     cause = cause.cause
-                    stackTrace.appendln(stringWriter)
+                    stackTrace.append(stringWriter)
                 }
-                Crashlytics.log("$message ${stackTrace.toString().replace(" at", "\n at")}")
+                Crashlytics.log("$message $stackTrace")
             } else {
                 Timber.e(throwable, message)
             }
