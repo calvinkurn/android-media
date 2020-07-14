@@ -141,6 +141,7 @@ class PartialSnapshotView(private val view: View,
     private fun renderNplRibbon(ribbonCopy: String) = with(view) {
         hideStockBarAndBackgroundColor()
         discount_timer_holder.hide()
+        count_down.show()
         text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
     }
 
@@ -216,6 +217,7 @@ class PartialSnapshotView(private val view: View,
             val delta = endDate.time - endDateTimeMs
 
             if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
+                count_down.show()
                 count_down.setup(delta, endDate) {
                     hideProductCampaign(campaign)
                     listener.showAlertCampaignEnded()
