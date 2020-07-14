@@ -45,7 +45,6 @@ class HomeTopAdsVerificationTest {
 
     @Test
     fun testTopAdsHome() {
-        login()
         waitForData()
 
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
