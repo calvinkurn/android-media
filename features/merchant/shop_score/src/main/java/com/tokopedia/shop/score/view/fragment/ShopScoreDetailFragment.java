@@ -4,12 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,17 +14,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.gm.common.constant.GMCommonConstantKt;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailStateEnum;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
-import com.tokopedia.seller.shopscore.view.presenter.ShopScoreDetailPresenterImpl;
-import com.tokopedia.seller.shopscore.view.recyclerview.ShopScoreDetailAdapter;
+import com.tokopedia.shop.score.R;
+import com.tokopedia.shop.score.di.ShopScoreDetailDependencyInjector;
+import com.tokopedia.shop.score.view.model.ShopScoreDetailItemViewModel;
+import com.tokopedia.shop.score.view.model.ShopScoreDetailStateEnum;
+import com.tokopedia.shop.score.view.model.ShopScoreDetailSummaryViewModel;
+import com.tokopedia.shop.score.view.presenter.ShopScoreDetailPresenterImpl;
+import com.tokopedia.shop.score.view.recyclerview.ShopScoreDetailAdapter;
+import com.tokopedia.unifycomponents.LoaderUnify;
 
 import java.util.List;
 
