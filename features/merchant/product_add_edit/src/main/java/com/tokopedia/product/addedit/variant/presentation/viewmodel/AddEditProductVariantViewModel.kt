@@ -242,7 +242,10 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun removeVariant() {
-        productInputModel.value?.variantInputModel = VariantInputModel()
+        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.
+                isRemoteDataHasVariant ?: false // keep isRemoteDataHasVariant old data
+        productInputModel.value?.variantInputModel = VariantInputModel(
+                isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
         mSelectedVariantUnitValuesLevel1.value = emptyList()
         mSelectedVariantUnitValuesLevel2.value = emptyList()
