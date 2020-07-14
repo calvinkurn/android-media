@@ -153,6 +153,10 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
                 } else {
                     holder.itemView.uoh_btn_action?.gone()
                 }
+
+                holder.itemView.cl_data_product?.setOnClickListener {
+                    actionListener?.onListItemClicked(uohItemList[position].verticalCategory, uohItemList[position].verticalID, uohItemList[position].metadata.upstream)
+                }
             }
         }
     }
@@ -181,5 +185,6 @@ class UohListItemAdapter : RecyclerView.Adapter<UohListItemAdapter.ViewHolder>()
 
     interface ActionListener {
         fun onKebabMenuClicked(listDotMenu: List<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>)
+        fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String)
     }
 }

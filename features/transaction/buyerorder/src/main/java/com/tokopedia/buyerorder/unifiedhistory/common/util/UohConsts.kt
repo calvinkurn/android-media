@@ -34,4 +34,9 @@ object UohConsts {
     const val BUTTON_TYPE_MAIN = "main"
     const val BUTTON_TYPE_TRANSACTION = "transaction"
     const val BUTTON_TYPE_ALTERNATE = "alternate"
+
+    const val LS_PRINT_VERTICAL_CATEGORY = "ls_print"
+    const val APPLINK_BASE = "tokopedia://"
+    const val APPLINK_PATH_ORDER = "order"
+    const val APPLINK_PATH_UPSTREAM = "upstream="
 }

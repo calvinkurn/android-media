@@ -331,7 +331,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                         // TODO : cek lagi url applink nya, make sure lagi nanti
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        RouteManager.route(context, linkUrl.toString())
                     }
                 })
                 ticker_info?.setDescriptionClickEvent(object: TickerCallback {
@@ -621,5 +621,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onKebabItemClick(appUrl: String) {
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, appUrl))
+    }
+
+    override fun onListItemClicked(verticalCategory: String, verticalId: String, upstream: String) {
+        if (verticalCategory.equals(UohConsts.LS_PRINT_VERTICAL_CATEGORY, true)) {
+            val url = "m.tokopedia.com/order-details/lsprint/$verticalId&upstream=$upstream"
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        } else {
+            val applink = "${UohConsts.APPLINK_BASE}${UohConsts.APPLINK_PATH_ORDER}/$verticalId?${UohConsts.APPLINK_PATH_UPSTREAM}$upstream"
+            RouteManager.route(context, applink)
+        }
     }
 }
