@@ -33,10 +33,10 @@ class TwoFactorActivity: BaseSimpleActivity() {
         return TwoFactorFragment.newInstance(intent?.extras)
     }
 
-    override fun onBackPressed() {
-        if(enableBackBtn == true)
-            super.onBackPressed()
-    }
+//    override fun onBackPressed() {
+//        if(enableBackBtn == true)
+//            super.onBackPressed()
+//    }
 
     fun disableBackBtn(){
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
