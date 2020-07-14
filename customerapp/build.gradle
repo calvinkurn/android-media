@@ -505,7 +505,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.firebase.crashlytics
     implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
