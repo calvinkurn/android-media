@@ -16,7 +16,7 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils.removeComma
-import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.gm.common.constant.GM_TITLE
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
@@ -195,23 +195,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
         editTextMaxOrder.setError(null)
         return true
-    }
-
-    private fun showDialogGoToGM(){
-        val builder = AlertDialog.Builder(context!!,
-                R.style.AppCompatAlertDialogStyle)
-        val gm = getString(GMConstant.getGMTitleResource(context))
-        builder.setTitle(getString(R.string.add_product_title_alert_dialog_dollar_dynamic, gm))
-        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video,
-                getString(R.string.product_add_label_alert_dialog_dollar, gm)))
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.change) { dialog, _ ->
-            dialog.cancel()
-            setResult(true)
-        }
-        builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
-        val alert = builder.create()
-        alert.show()
     }
 
     private fun showEditPriceDialog() {

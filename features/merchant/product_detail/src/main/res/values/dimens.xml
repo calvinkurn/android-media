@@ -8,6 +8,7 @@
     <dimen name="dp_114">114dp</dimen>
     <dimen name="dp_160">160dp</dimen>
     <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_204">204dp</dimen>
 
     <dimen name="design_fab_image_size" tools:override="true">32dp</dimen>
     <dimen name="viewpager_next_item_visible">78dp</dimen>
