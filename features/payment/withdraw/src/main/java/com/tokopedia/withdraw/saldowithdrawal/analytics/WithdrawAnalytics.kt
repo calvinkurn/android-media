@@ -419,10 +419,10 @@ class WithdrawAnalytics @Inject constructor(
         private const val EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL = "click kembali detail saldo"
 
 
-        val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_USER_ID = "userId"
         private const val KEY_CURRENT_SITE = "currentSite"
-        val KEY_BUSINESS_UNIT_VALUE = "payment"
+        private const val KEY_BUSINESS_UNIT_VALUE = "payment"
         private const val KEY_CURRENT_SITE_VALUE = "tokopediamarketplace"
     }
 }
