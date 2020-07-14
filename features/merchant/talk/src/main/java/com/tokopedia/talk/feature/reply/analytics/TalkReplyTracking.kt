@@ -25,6 +25,7 @@ object TalkReplyTracking {
                             TRACKING_EVENT to EVENT_OPEN_SCREEN,
                             TRACKING_SCREEN_NAME to screenName,
                             TRACKING_PRODUCT_ID to productId,
+                            TRACKING_CURRENT_SITE to CURRENT_SITE_TALK,
                             TRACKING_IS_LOGGED_IN to TalkReplyTrackingConstants.IS_LOGGED_IN,
                             TRACKING_USER_ID to userId,
                             TRACKING_BUSINESS_UNIT to BUSINESS_UNIT_TALK
