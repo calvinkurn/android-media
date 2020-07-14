@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.fragment
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
@@ -39,6 +41,7 @@ import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
+import com.tokopedia.topchat.common.custom.ToolTipSearchPopupWindow
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -63,11 +66,17 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
     lateinit var viewModelProvider: ViewModelProvider
     lateinit var webSocketViewModel: WebSocketViewModel
     lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
+    private lateinit var searchToolTip: ToolTipSearchPopupWindow
 
     private var fragmentViewCreated = false
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
+    private var chatTabListListener: Listener? = null
+
+    interface Listener {
+        fun getActivityToolbar(): Toolbar
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_tab_list, container, false)
@@ -85,6 +94,13 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         initData()
         initOnBoarding()
         initChatCounterObserver()
+        initToolTip()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is Listener) {
+            chatTabListListener = context
+        }
     }
 
     override fun onStart() {
@@ -104,6 +120,10 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         super.onDestroy()
         stopLiveDataObserver()
         flushAllViewModel()
+    }
+
+    private fun initToolTip() {
+        searchToolTip = ToolTipSearchPopupWindow(context)
     }
 
     private fun initChatCounterObserver() {
@@ -420,6 +440,14 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         decreaseNotificationCounter(R.drawable.ic_chat_icon_shop)
     }
 
+    override fun showSearchOnBoardingTooltip() {
+        val toolbar = chatTabListListener?.getActivityToolbar()
+        toolbar?.post {
+            val searchView = toolbar.findViewById<View>(R.id.menu_chat_search)
+            searchToolTip.showAtBottom(searchView)
+        }
+    }
+
     private fun decreaseNotificationCounter(iconId: Int) {
         for ((tabIndex, tab) in tabList.withIndex()) {
             if (tab.icon == iconId) {
@@ -506,6 +534,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+
         @JvmStatic
         fun create(): ChatTabListFragment {
             return ChatTabListFragment()

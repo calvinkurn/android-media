@@ -183,6 +183,11 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         setupTicker()
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        chatTabListContract?.showSearchOnBoardingTooltip()
+        super.onPrepareOptionsMenu(menu)
+    }
+
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
