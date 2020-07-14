@@ -147,11 +147,6 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    fun trackTabsClick(tabName: String) {
-        val map = createGeneralEvent(eventAction = CLICK_TAB, eventLabel = tabName)
-        getTracker().sendGeneralEvent(map)
-    }
-
     fun trackBackClick() {
         val map = createGeneralEvent(eventAction = CLICK_BACK_BUTTON_ACTION)
         getTracker().sendGeneralEvent(map)
@@ -596,6 +591,22 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             return identifier.replace("-", " ")
         }
         return EMPTY_STRING
+    }
+
+    fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int) {
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_TAB, eventLabel = dataItem.name ?: "")
+        val list = ArrayList<Map<String, Any>>()
+            list.add(mapOf(
+                    KEY_ID to id,
+                    KEY_NAME to "/$pagePath - $pageType - ${parentPosition + 1} - - $MEGA_TAB_COMPONENT",
+                    KEY_CREATIVE to (dataItem.name ?: EMPTY_STRING),
+                    KEY_POSITION to tabPosition1 + 1
+            ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
 }

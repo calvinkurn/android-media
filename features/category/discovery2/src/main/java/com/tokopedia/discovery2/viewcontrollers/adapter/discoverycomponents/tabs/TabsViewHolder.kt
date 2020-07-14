@@ -13,13 +13,18 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
+private const val DEFAULT_TAB_POSITION = 0
+
 class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
+    private var firstSelectedTab = true
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
         tabsHolder.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+                trackTabsGTMStatus(tab)
                 if (tab.customView != null && tab.customView is CustomViewCreator) {
                     ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
                 }
@@ -37,6 +42,25 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
             }
         })
     }
+
+    private fun trackTabsGTMStatus(tab: TabLayout.Tab) {
+        if (firstSelectedTab && tab.position == DEFAULT_TAB_POSITION) {
+            firstSelectedTab = false
+            sendTabTrackingData(tab)
+        } else if (tab.position > DEFAULT_TAB_POSITION) {
+            firstSelectedTab = true
+            sendTabTrackingData(tab)
+        }
+    }
+
+    private fun sendTabTrackingData(tab: TabLayout.Tab) {
+        tabsViewModel.components.data?.let {
+            if (it.size >= tab.position)
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(tabsViewModel.components.id, tabsViewModel.components.position,
+                        it[tab.position], tab.position)
+        }
+    }
+
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
