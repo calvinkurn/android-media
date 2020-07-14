@@ -987,7 +987,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             dialog.dismiss()
             phoneNumber = phone
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
+            val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
