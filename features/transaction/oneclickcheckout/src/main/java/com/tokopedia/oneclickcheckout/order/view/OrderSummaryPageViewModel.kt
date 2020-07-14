@@ -1,6 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
@@ -67,7 +69,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.json.JSONException
-import org.json.JSONObject
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -741,16 +742,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
 
                                 override fun onNext(stringResponse: String) {
-                                    var response: JSONObject? = null
+                                    var response: JsonObject? = null
                                     var messageError: String? = null
                                     var statusSuccess: Boolean
                                     try {
-                                        response = JSONObject(stringResponse)
-                                        val statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
-                                                .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS)
+                                        response = JsonParser().parse(stringResponse).asJsonObject
+                                        val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
+                                                .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
                                         statusSuccess = statusCode == 1
                                         if (!statusSuccess) {
-                                            messageError = response.getJSONArray("message_error").getString(0)
+                                            messageError = response.getAsJsonArray("message_error").get(0).asString
                                         }
                                     } catch (e: JSONException) {
                                         statusSuccess = false
