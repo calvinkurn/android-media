@@ -457,7 +457,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun share(productDetailData: ProductDetailData) {
         activity?.run {
-            EventShare(this).shareEvent(productDetailData, { showLoading() }, { hideLoading() }, this.applicationContext)
+            EventShare(this).shareEvent(productDetailData, { showShareLoading() }, { hideShareLoading() }, this.applicationContext)
         }
     }
 
@@ -487,6 +487,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
             }
         }
+    }
+
+    fun hideShareLoading() {
+        event_pdp_pb.hide()
+    }
+
+    fun showShareLoading() {
+        event_pdp_pb.show()
     }
 
     companion object {
