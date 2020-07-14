@@ -632,4 +632,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             RouteManager.route(context, applink)
         }
     }
+
+    override fun onActionButtonClicked(url: String) {
+        RouteManager.route(context, url)
+    }
 }
