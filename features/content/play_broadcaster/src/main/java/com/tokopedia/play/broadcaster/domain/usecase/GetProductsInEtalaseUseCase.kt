@@ -3,10 +3,8 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -14,7 +12,7 @@ import javax.inject.Inject
  */
 class GetProductsInEtalaseUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : UseCase<GetProductsByEtalaseResponse.GetProductListData>() {
+) : BaseUseCase<GetProductsByEtalaseResponse.GetProductListData>() {
 
     private val query = """
             query GetShopProductList(${'$'}shopId: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput) {
@@ -42,8 +40,7 @@ class GetProductsInEtalaseUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): GetProductsByEtalaseResponse.GetProductListData {
-        val gqlRequest = GraphqlRequest(query, GetProductsByEtalaseResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = configureGqlResponse(graphqlRepository, query, GetProductsByEtalaseResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetProductsByEtalaseResponse>(GetProductsByEtalaseResponse::class.java)
         val errors = response?.productList?.header?.messages.orEmpty()

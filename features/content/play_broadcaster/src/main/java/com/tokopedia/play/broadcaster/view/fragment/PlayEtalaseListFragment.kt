@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
@@ -110,7 +111,7 @@ class PlayEtalaseListFragment @Inject constructor(
                     startPostponedTransition()
                 }
                 is PageResultState.Fail -> {
-                    etalaseSetupCoordinator.showGlobalError(GlobalError.SERVER_ERROR) {
+                    etalaseSetupCoordinator.showGlobalError(if (it.state.error is DefaultNetworkThrowable) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR) {
                         viewModel.loadEtalaseList()
                     }
                     startPostponedTransition()

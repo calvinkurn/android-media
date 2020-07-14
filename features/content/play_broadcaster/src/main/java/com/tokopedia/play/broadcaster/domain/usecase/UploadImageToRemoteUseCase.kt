@@ -63,7 +63,6 @@ class UploadImageToRemoteUseCase @Inject constructor(
         private const val PARAM_ID = "id"
         private const val PARAM_WEB_SERVICE = "web_service"
         private const val PARAM_RESOLUTION = "param_resolution"
-        private const val DEFAULT_RESOLUTION = "100-square"
         private const val DEFAULT_WEB_SERVICE = "1"
         private const val DEFAULT_UPLOAD_PATH = "/upload/attachment"
         private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
