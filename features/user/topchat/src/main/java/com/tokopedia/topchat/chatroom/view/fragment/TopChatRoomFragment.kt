@@ -1124,6 +1124,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
+        toolTip.dismiss()
     }
 
     override fun onStickerClosed() {
