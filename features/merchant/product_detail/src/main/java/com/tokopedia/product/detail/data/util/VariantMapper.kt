@@ -148,13 +148,16 @@ object VariantMapper {
                 name = newData?.name ?: "",
                 media = newMedia,
                 stock = newStock,
+
                 //upcoming campaign data
                 campaignId = newData?.upcoming?.campaignId ?: "",
                 campaignType = newData?.upcoming?.campaignType ?: "",
                 campaignTypeName = newData?.upcoming?.campaignTypeName ?: "",
                 startDate = newData?.upcoming?.startDate ?: "",
                 endDate = newData?.upcoming?.endDate ?: "",
-                notifyMe = newData?.upcoming?.notifyMe ?: false
+                notifyMe = newData?.upcoming?.notifyMe ?: false,
+                upcomingType = "",
+                ribbonCopy = ""
         )
 
         return DynamicProductInfoP1(basic, data, oldData.layoutName)

@@ -113,7 +113,9 @@ object DynamicProductDetailMapper {
                 campaignTypeName = upcomingData.campaignTypeName,
                 endDate = upcomingData.endDate,
                 startDate = upcomingData.startDate,
-                notifyMe = upcomingData.notifyMe
+                notifyMe = upcomingData.notifyMe,
+                ribbonCopy = upcomingData.ribbonCopy,
+                upcomingType = upcomingData.upcomingType
         ) ?: ComponentData()
 
         val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
@@ -153,6 +155,7 @@ object DynamicProductDetailMapper {
     fun generateCartTypeParam(dynamicProductInfoP1: DynamicProductInfoP1?): List<List<CartRedirectionParamV2>> {
         val campaignId = dynamicProductInfoP1?.data?.campaign?.campaignID?.toIntOrNull() ?: 0
         val campaignTypeId = dynamicProductInfoP1?.data?.campaign?.campaignType?.toIntOrNull() ?: 0
+        val campaignStatus = dynamicProductInfoP1?.campaignStatus ?: ""
 
         val listOfFlags = mutableListOf<CartRedirectionParamV2>()
 
@@ -161,6 +164,7 @@ object DynamicProductDetailMapper {
         if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_OVO_DEALS, true.toString()))
         listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_ID, campaignId.toString()))
         listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_TYPE_ID, campaignTypeId.toString()))
+        listOfFlags.add(CartRedirectionParamV2(ProductDetailConstant.KEY_CAMPAIGN_STATUS, campaignStatus))
         listOfFlags.add(CartRedirectionParamV2("product_stock", "1")) // remove soon
 
         return listOf(listOfFlags)

@@ -27,11 +27,11 @@ data class ProductContentDataModel(
     override fun type(): String = type
 
     fun showTradeIn(): Boolean {
-        return shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false
+        return shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false && data?.data?.isUpcomingNplType() == false
     }
 
     fun showCod(): Boolean {
-        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false
+        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false && data?.data?.isUpcomingNplType() == false
     }
 
     fun getNearestWarehouse(): ProductSnapshotDataModel.NearestWarehouseDataModel = nearestWarehouseDataModel

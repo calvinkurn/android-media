@@ -138,6 +138,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 endDate = it.data.endDate
                 startDate = it.data.startDate
                 notifyMe = it.data.notifyMe
+                isUpcomingDealsType = it.data.isUpcomingDealsType()
             }
 
             miniShopInfo?.run {

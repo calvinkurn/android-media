@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.product.*
 
 data class ComponentData(
@@ -64,8 +65,16 @@ data class ComponentData(
         @SerializedName("startDate")
         val startDate: String = "",
         @SerializedName("notifyMe")
-        val notifyMe: Boolean = false
+        val notifyMe: Boolean = false,
+        @SerializedName("upcomingType")
+        val upcomingType: String = "",
+        @SerializedName("ribbonCopy")
+        val ribbonCopy: String = ""
 ) {
+
+    fun isUpcomingDealsType(): Boolean = upcomingType.isNotEmpty() && upcomingType == ProductUpcomingTypeDef.UPCOMING_DEALS
+
+    fun isUpcomingNplType(): Boolean = upcomingType.isNotEmpty() && upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()

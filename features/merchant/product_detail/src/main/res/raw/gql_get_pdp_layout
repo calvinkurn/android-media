@@ -180,6 +180,8 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
               startDate
               endDate
               notifyMe
+              upcomingType
+              ribbonCopy
             }
           }
         }

@@ -43,10 +43,16 @@ class PartialSnapshotView(private val view: View,
             text_cashback.text = context.getString(R.string.template_cashback, data.isCashback.percentage.toString())
         }
 
-        if (campaign.isActive) {
-            renderCampaignActive(campaign, nearestWarehouseStockWording)
-        } else {
-            renderCampaignInactive(data.price.value.getCurrencyFormatted())
+        when {
+            data.isUpcomingNplType() -> {
+                renderNplRibbon(data.ribbonCopy)
+            }
+            campaign.isActive -> {
+                renderCampaignActive(campaign, nearestWarehouseStockWording)
+            }
+            else -> {
+                renderCampaignInactive(data.price.value.getCurrencyFormatted())
+            }
         }
 
         renderStockAvailable(campaign, data.variant.isVariant, nearestWarehouseStockWording, basic.isActive())
@@ -128,9 +134,14 @@ class PartialSnapshotView(private val view: View,
         setProgressStockBar(campaign, stockWording)
     }
 
-    private fun renderSlashPriceFlashSale() = with(view) {
-        hideStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.white))
+    private fun renderSlashPriceFlashSale(){
+        hideStockBarAndBackgroundColor()
+    }
+
+    private fun renderNplRibbon(ribbonCopy: String) = with(view) {
+        hideStockBarAndBackgroundColor()
+        discount_timer_holder.hide()
+        text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
@@ -235,5 +246,10 @@ class PartialSnapshotView(private val view: View,
     private fun hideStockBarFlashSale() = with(view) {
         stock_bar_sold_product.hide()
         sale_text_stock_available.hide()
+    }
+
+    private fun hideStockBarAndBackgroundColor() = with(view) {
+        hideStockBarFlashSale()
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.white))
     }
 }
