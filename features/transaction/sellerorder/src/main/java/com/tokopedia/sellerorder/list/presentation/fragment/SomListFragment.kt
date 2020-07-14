@@ -67,6 +67,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
@@ -149,8 +150,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _animator: Animator? = null
     private var isFromWidget: Boolean? = false
     private var textChangedJob: Job? = null
-    private var returnToHomeDialog: DialogUnify? = null
-
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -218,11 +217,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingStatusList()
         observingOrders()
         context?.let { UpdateShopActiveService.startService(it) }
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) checkUserRole()
     }
 
     private fun checkUserRole() {
@@ -478,34 +472,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onUserNotAllowedToViewSOM() {
-        showReturnToHomeDialog()
-    }
-
-    private fun showReturnToHomeDialog() {
         context?.run {
-            if (returnToHomeDialog == null) {
-                returnToHomeDialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.dialog_title_cannot_access_page))
-                    setDescription(getString(R.string.dialog_description_cannot_access_page))
-                    setPrimaryCTAText(getString(R.string.button_understand))
-                    setPrimaryCTAClickListener{
-                        goToSellerHome()
-                        dismiss()
-                    }
-                }
-            }
-
-            returnToHomeDialog?.show()
-        }
-    }
-
-    private fun goToSellerHome() {
-        context?.run {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.SELLER_HOME).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(intent)
+            Utils.showReturnToHomeDialog(this)
         }
     }
 
