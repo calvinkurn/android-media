@@ -84,7 +84,7 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.getReleaseTrack(GlobalConfig.RAW_VERSION_NAME));
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
 
         headerMap.put(HEADER_USER_ID, userId);

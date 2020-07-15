@@ -14,6 +14,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import kotlin.Pair;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -209,14 +210,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return true;
     }
 
+    private void setVersionName(){
+        Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
+        String version = versions.getFirst();
+        String suffixVersion = versions.getSecond();
+
+        if(!version.equalsIgnoreCase(AuthHelper.ERROR)){
+            GlobalConfig.VERSION_NAME = version;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
+        }else{
+            GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        }
+        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
+    }
+
     private void initConfigValues(){
         setVersionCode();
+        setVersionName();
 
-        GlobalConfig.VERSION_NAME = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
-        com.tokopedia.config.GlobalConfig.VERSION_NAME = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;

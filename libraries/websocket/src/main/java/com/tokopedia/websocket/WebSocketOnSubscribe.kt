@@ -26,7 +26,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
                 .header("Origin", TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization", "Bearer $accessToken")
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
-                .header(HEADER_RELEASE_TRACK, AuthHelper.Companion.getReleaseTrack(GlobalConfig.VERSION_NAME))
+                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
     }
 

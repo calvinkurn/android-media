@@ -46,7 +46,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put("X-Device", "android-" + VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerAuth == null ? "" : headerAuth);
         headerMap.put("Authorization", "Bearer " + userSession.getAccessToken());
-        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.getReleaseTrack(GlobalConfig.RAW_VERSION_NAME));
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
 
         return headerMap;
     }

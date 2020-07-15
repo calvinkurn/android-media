@@ -18,25 +18,19 @@ import javax.crypto.spec.SecretKeySpec
 class AuthHelper {
     companion object {
 
-        val p = Pattern.compile("([\\d]*[^-\\w][\\d]*){1}")
+        val p = Pattern.compile("([\\d]*[^-\\w][\\d]*)-([\\D]*)")
+
+        const val ERROR = "error read version name"
 
         @JvmStatic
-        fun getReleaseTrack(versionName: String) = if (versionName.contains(RELEASE_TRACK_BETA)) {
-            RELEASE_TRACK_BETA
-        } else if (versionName.contains(RELEASE_TRACK_INTERNAL)) {
-            RELEASE_TRACK_INTERNAL
-        } else {
-            RELEASE_TRACK_DEFAULT
-        }
-
-        @JvmStatic
-        fun getVersionName(versionName: String): String {
-
+        fun getVersionName(versionName: String): Pair<String, String> {
             val m = p.matcher(versionName)
-            while (m.find()) {
-                return m.group(0)
+            if(m.groupCount()==2){
+                while(m.find()){
+                    return Pair(m.group(1), m.group(2))
+                }
             }
-            return versionName
+            return Pair(ERROR, ERROR)
         }
 
         @JvmStatic
@@ -65,7 +59,7 @@ class AuthHelper {
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
             headerMap.remove(HEADER_RELEASE_TRACK)
 
-            headerMap[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
+            headerMap[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -105,7 +99,7 @@ class AuthHelper {
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
             headerMap.remove(HEADER_RELEASE_TRACK)
 
-            headerMap[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
+            headerMap[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${session.accessToken}"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -161,7 +155,7 @@ class AuthHelper {
             }
 
             finalHeader.remove(HEADER_RELEASE_TRACK)
-            finalHeader[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
+            finalHeader[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             finalHeader[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             finalHeader[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
@@ -225,7 +219,7 @@ class AuthHelper {
             header.remove(HEADER_ACCOUNT_AUTHORIZATION)
             header.remove(HEADER_RELEASE_TRACK)
 
-            header[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
+            header[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             header[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             header[PARAM_OS_TYPE] = "1"
             header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
@@ -263,7 +257,7 @@ class AuthHelper {
             headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
             headers.remove(HEADER_RELEASE_TRACK)
-            headers[HEADER_RELEASE_TRACK] = getReleaseTrack(GlobalConfig.RAW_VERSION_NAME)
+            headers[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX
             headers[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER ${userSession.accessToken}"
             headers[PARAM_OS_TYPE] = "1"
             headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"

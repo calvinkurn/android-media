@@ -51,7 +51,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS_V1_3)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
                 .addHeader(X_DEVICE, "android-" + GlobalConfig.VERSION_NAME)
-                .addHeader(AuthConstant.HEADER_RELEASE_TRACK, AuthHelper.getReleaseTrack(GlobalConfig.RAW_VERSION_NAME))
+                .addHeader(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
                 .build();
