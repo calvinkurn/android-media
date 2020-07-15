@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
 
 class SellableStockProductViewHolder(itemView: View?): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
@@ -18,7 +19,10 @@ class SellableStockProductViewHolder(itemView: View?): AbstractViewHolder<Sellab
     override fun bind(element: SellableStockProductUIModel) {
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
-            qte_campaign_stock_variant_editor?.setValue(element.stock.toIntOrZero())
+            qte_campaign_stock_variant_editor?.run {
+                setValue(element.stock.toIntOrZero())
+                maxValue = EditProductConstant.MAXIMUM_STOCK
+            }
             switch_campaign_stock_variant_editor?.isChecked = element.isActive
         }
     }
