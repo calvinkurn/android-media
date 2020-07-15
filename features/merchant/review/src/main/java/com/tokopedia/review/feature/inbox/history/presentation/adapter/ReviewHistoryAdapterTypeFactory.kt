@@ -9,8 +9,6 @@ import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClicked
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.viewholder.ReviewHistoryLoadingViewHolder
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.viewholder.ReviewHistoryViewHolder
-import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingLoadingViewHolder
-import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingViewHolder
 
 class ReviewHistoryAdapterTypeFactory(private val imagesClickedListener: ReviewAttachedImagesClickedListener) : ReviewHistoryTypeFactory, BaseAdapterTypeFactory() {
 
@@ -24,8 +22,8 @@ class ReviewHistoryAdapterTypeFactory(private val imagesClickedListener: ReviewA
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ReviewPendingViewHolder.LAYOUT -> ReviewHistoryViewHolder(parent, imagesClickedListener)
-            ReviewPendingLoadingViewHolder.LAYOUT -> ReviewHistoryLoadingViewHolder(parent)
+            ReviewHistoryViewHolder.LAYOUT -> ReviewHistoryViewHolder(parent, imagesClickedListener)
+            ReviewHistoryLoadingViewHolder.LAYOUT -> ReviewHistoryLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }

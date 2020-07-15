@@ -56,7 +56,10 @@ class ReviewHistoryViewHolder(view: View, private val reviewAttachedImagesClicke
         if(attachedImages.isEmpty()) {
             return
         }
-        itemView.reviewHistoryAttachedImages.setImages(attachedImages, productName, reviewAttachedImagesClickedListener)
+        itemView.reviewHistoryAttachedImages.apply {
+            setImages(attachedImages, productName, reviewAttachedImagesClickedListener)
+            show()
+        }
     }
 
     private fun setupStarRatings(rating: Int) {
@@ -71,7 +74,11 @@ class ReviewHistoryViewHolder(view: View, private val reviewAttachedImagesClicke
     }
 
     private fun showDate(date: String) {
-        itemView.reviewHistoryDate.setTextAndCheckShow(date)
+        if(date.isNotEmpty()) {
+            itemView.reviewHistoryDate.text = itemView.context.resources.getString(R.string.review_date, date)
+        } else {
+            itemView.reviewHistoryDate.hide()
+        }
     }
 
     private fun showOtherReview(hasResponse: Boolean) {

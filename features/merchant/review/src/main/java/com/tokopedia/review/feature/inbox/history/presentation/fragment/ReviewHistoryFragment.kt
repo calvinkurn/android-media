@@ -136,6 +136,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                         showNoProductEmpty()
                         return@Observer
                     }
+                    renderReviewData(it.data.list.map { history -> ReviewHistoryUiModel(history) }, it.data.hasNext)
 
                 }
                 is LoadingView -> {
@@ -181,6 +182,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
+        reviewHistorySwipeRefresh.show()
         renderList(reviewData, hasNextPage)
     }
 
@@ -191,7 +193,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
             show()
         }
-
+        reviewHistorySwipeRefresh.hide()
     }
 
     private fun showNoProductEmpty() {
@@ -201,7 +203,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
             show()
         }
-
+        reviewHistorySwipeRefresh.hide()
     }
 
     private fun hideEmptyState() {
