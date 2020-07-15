@@ -157,6 +157,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     }
 
     @Override
+    public void onSearchDone(String text) {
+
+    }
+
+    @Override
     public void onItemClicked(AttachProductItemViewModel attachProductItemViewModel) {
 
     }
