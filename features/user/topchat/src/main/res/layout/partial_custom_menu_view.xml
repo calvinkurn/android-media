@@ -26,6 +26,7 @@
             android:layout_marginRight="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
+            android:includeFontPadding="false"
             android:text="@string/title_topchat_tooltip_sticker_onboarding"
             android:textColor="@color/white"
             app:typographyType="body_3" />
@@ -34,7 +35,7 @@
             android:id="@+id/tooltip_close"
             android:layout_width="@dimen/dp_topchat_33"
             android:layout_height="@dimen/dp_topchat_33"
-            android:padding="@dimen/dp_topchat_11"
+            android:padding="@dimen/dp_topchat_5"
             app:srcCompat="@drawable/ic_close_white"
             tools:ignore="ContentDescription" />
     </LinearLayout>
