@@ -1,21 +1,21 @@
-package com.tokopedia.charts.config.piechart
+package com.tokopedia.charts.config
 
 import android.graphics.Color
-import com.tokopedia.charts.config.piechart.annotation.PieChartDsl
-import com.tokopedia.charts.config.piechart.model.DonutStyleConfig
-import com.tokopedia.charts.config.piechart.model.PieChartConfig
+import com.tokopedia.charts.config.annotation.PieChartDsl
+import com.tokopedia.charts.model.DonutStyleConfigModel
+import com.tokopedia.charts.model.PieChartConfigModel
 
 /**
  * Created By @ilhamsuaib on 07/07/20
  */
 
 @PieChartDsl
-class PieChartConfigBuilder {
+class PieChartConfig {
 
     companion object {
-        fun getDefaultConfig(): PieChartConfig = create { }
+        fun getDefaultConfig(): PieChartConfigModel = create { }
 
-        fun create(lambda: PieChartConfigBuilder.() -> Unit) = PieChartConfigBuilder().apply(lambda).build()
+        fun create(lambda: PieChartConfig.() -> Unit) = PieChartConfig().apply(lambda).build()
     }
 
     var entryLabelColor: Int = Color.BLACK
@@ -44,11 +44,11 @@ class PieChartConfigBuilder {
         private set
     var legendEnabled: Boolean = true
         private set
-    var donutStyleConfig: DonutStyleConfig = DonutStyleConfigBuilder.create { }
+    var donutStyleConfig: DonutStyleConfigModel = DonutStyleConfig.getDefault()
         private set
 
-    fun build(): PieChartConfig {
-        return PieChartConfig(
+    fun build(): PieChartConfigModel {
+        return PieChartConfigModel(
                 entryLabelColor = entryLabelColor,
                 entryLabelTextSize = entryLabelTextSize,
                 xAnimationDuration = xAnimationDuration,
@@ -118,54 +118,7 @@ class PieChartConfigBuilder {
         this.legendEnabled = lambda()
     }
 
-    fun donutChart(lambda: DonutStyleConfigBuilder.() -> Unit) {
-        this.donutStyleConfig = DonutStyleConfigBuilder.create(lambda)
-    }
-}
-
-@PieChartDsl
-class DonutStyleConfigBuilder {
-
-    companion object {
-        fun create(lambda: DonutStyleConfigBuilder.() -> Unit): DonutStyleConfig {
-            return DonutStyleConfigBuilder().apply(lambda).build()
-        }
-    }
-
-    var isEnabled: Boolean = false
-        private set
-    var isCurveEnabled: Boolean = false
-        private set
-    var holeRadius: Float = 50f
-        private set
-
-    fun build(): DonutStyleConfig {
-        return DonutStyleConfig(
-                isEnabled = isEnabled,
-                isCurveEnabled = isCurveEnabled,
-                holeRadius = holeRadius
-        )
-    }
-
-    /**
-     * set this to true to draw the pie center empty. Default false
-     */
-    fun enabled(lambda: () -> Boolean) {
-        this.isEnabled = lambda()
-    }
-
-    /**
-     * sets whether to draw slices in a curved fashion. Default false
-     */
-    fun curveEnabled(lambda: () -> Boolean) {
-        this.isCurveEnabled = lambda()
-    }
-
-    /**
-     * sets the radius of the hole in the center of the piechart in percent of
-     * the maximum radius (max = the radius of the whole chart), default 50%.
-     */
-    fun holeRadiusPercent(lambda: () -> Float) {
-        this.holeRadius = lambda()
+    fun donutChart(lambda: DonutStyleConfig.() -> Unit) {
+        this.donutStyleConfig = DonutStyleConfig.create(lambda)
     }
 }

@@ -1,12 +1,13 @@
-package com.tokopedia.charts.config.piechart.model
+package com.tokopedia.charts.model
 
 import android.graphics.Color
+import com.tokopedia.charts.model.DonutStyleConfigModel
 
 /**
  * Created By @ilhamsuaib on 07/07/20
  */
 
-data class PieChartConfig(
+data class PieChartConfigModel(
         val entryLabelColor: Int = Color.BLACK,
         val entryLabelTextSize: Float,
         val xAnimationDuration: Int,
@@ -20,5 +21,5 @@ data class PieChartConfig(
         val showYValueEnabled: Boolean,
         val touchEnabled: Boolean,
         val legendEnabled: Boolean,
-        val donutStyleConfig: DonutStyleConfig
+        val donutStyleConfig: DonutStyleConfigModel
 )

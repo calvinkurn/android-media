@@ -1,4 +1,4 @@
-package com.tokopedia.charts.config.piechart.annotation
+package com.tokopedia.charts.config.annotation
 
 /**
  * Created By @ilhamsuaib on 08/07/20
