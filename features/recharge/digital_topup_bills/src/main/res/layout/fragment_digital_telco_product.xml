@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/layout_lvl2"
-    android:descendantFocusability="beforeDescendants">
+    android:layout_marginBottom="@dimen/layout_lvl2">
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/sort_filter"

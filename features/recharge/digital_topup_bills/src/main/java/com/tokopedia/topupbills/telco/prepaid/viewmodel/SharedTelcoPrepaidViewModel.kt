@@ -33,6 +33,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val productCatalogItem: LiveData<TelcoProduct>
         get() = _productCatalogItem
 
+    private val _productAutoCheckout = MutableLiveData<TelcoProduct>()
+    val productAutoCheckout: LiveData<TelcoProduct>
+        get() = _productAutoCheckout
+
     private val _favNumberSelected = MutableLiveData<TopupBillsFavNumberItem>()
     val favNumberSelected: LiveData<TopupBillsFavNumberItem>
         get() = _favNumberSelected
@@ -63,6 +67,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
+    }
+
+    fun setProductAutoCheckout(product: TelcoProduct) {
+        _productAutoCheckout.postValue(product)
     }
 
     fun setPositionScrollToItem(position: Int) {

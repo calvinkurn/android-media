@@ -128,50 +128,53 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             })
         }
 
-        telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
-                sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                telcoTelcoProductView.selectProductItem(position)
-                if (::selectedOperatorName.isInitialized) {
-                    topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
-                            userSession.userId, labelList)
-                }
+        telcoTelcoProductView.setListener(telcoProductItemCallback)
+    }
+
+    private val telcoProductItemCallback = object : DigitalTelcoProductWidget.ActionListener {
+        override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
+            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+            telcoTelcoProductView.selectProductItem(position)
+            if (::selectedOperatorName.isInitialized) {
+                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
+                        userSession.userId, labelList)
             }
+        }
 
-            override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
-                topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
+        override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
+            topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
 
-                activity?.let {
-                    val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
-                            itemProduct.attributes.desc,
-                            MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
-                            itemProduct.attributes.price)
-                    seeMoreBottomSheet.setOnDismissListener {
-                        topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
-                    }
-                    seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
-                        override fun onClickOnProduct() {
-                            activity?.run {
-                                sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                                telcoTelcoProductView.selectProductItem(position)
-                                topupAnalytics.impressionPickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
-                            }
+            activity?.let {
+                val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
+                        itemProduct.attributes.desc,
+                        MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
+                        itemProduct.attributes.price)
+                seeMoreBottomSheet.setOnDismissListener {
+                    topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
+                }
+                seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
+                    override fun onClickOnProduct() {
+                        activity?.run {
+                            telcoTelcoProductView.selectProductItem(position)
+                            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                            sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                            topupAnalytics.impressionPickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
                         }
-                    })
-                    seeMoreBottomSheet.show(it.supportFragmentManager, "")
+                    }
+                })
+                seeMoreBottomSheet.show(it.supportFragmentManager, "")
 
-                }
             }
+        }
 
-            override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
-                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, selectedOperatorName,
-                        userSession.userId)
-            }
+        override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
+            topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, selectedOperatorName,
+                    userSession.userId)
+        }
 
-            override fun onScrollToPositionItem(position: Int) {
-                sharedModelPrepaid.setPositionScrollToItem(position)
-            }
-        })
+        override fun onScrollToPositionItem(position: Int) {
+            sharedModelPrepaid.setPositionScrollToItem(position)
+        }
     }
 
     private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
