@@ -118,6 +118,16 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 }
             }
         })
+        mViewModel.productUpdateResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
+                }
+            }
+        })
     }
 
     private fun setupView() {
@@ -132,6 +142,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun setupButtonOnClick() {
         btn_campaign_stock_save?.setOnClickListener {
+            showButtonLoading()
             mViewModel.updateStockData()
         }
     }
@@ -217,6 +228,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         divider_campaign_stock?.visible()
         btn_campaign_stock_save?.visible()
         loader_campaign_stock?.gone()
+    }
+
+    private fun showButtonLoading() {
+        btn_campaign_stock_save?.isLoading = true
     }
 
     private fun changeViewPagerPage(position: Int) {
