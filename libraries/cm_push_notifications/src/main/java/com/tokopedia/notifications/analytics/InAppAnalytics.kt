@@ -23,13 +23,18 @@ object InAppAnalytics {
     private const val KEY_PROMO_ID = "promo_id"
     private const val KEY_PROMO_CODE = "promo_code"
 
+    private const val CATEGORY = "pop up banner"
+    private const val ACTION_IMPRESSION = "view on pop up banner"
+    private const val ACTION_CLICK = "click on pop up banner"
+    private const val POSITION = "1"
+
     fun impression(data: CMInApp) {
         val promotion = mapOf(
                 KEY_ID to data.getId().toString(), // name
-                KEY_NAME to data.getCmLayout().appLink, // applink
+                KEY_NAME to data.screen, // applink
                 KEY_CREATIVE to "", // campaign name
                 KEY_CREATIVE_URL to "", // optional
-                KEY_POSITION to "1",
+                KEY_POSITION to POSITION,
                 KEY_CATEGORY to "",
                 KEY_PROMO_ID to "",
                 KEY_PROMO_CODE to ""
@@ -37,9 +42,9 @@ object InAppAnalytics {
 
         sendTracker(mapOf(
                 KEY_EVENT to KEY_PROMO_VIEW,
-                KEY_EVENT_CATEGORY to "pop up banner",
-                KEY_EVENT_ACTION to "view on pop up banner",
-                KEY_EVENT_LABEL to "${data.getId()} - ${data.getCampaignUserToken()}",
+                KEY_EVENT_CATEGORY to CATEGORY,
+                KEY_EVENT_ACTION to ACTION_IMPRESSION,
+                KEY_EVENT_LABEL to "${data.getCampaignId()} - ${data.getCampaignUserToken()}",
                 KEY_ECOMMERCE to mapOf(
                         KEY_PROMO_VIEW to mapOf(
                                 KEY_PROMOTIONS to listOf(promotion)
@@ -51,10 +56,10 @@ object InAppAnalytics {
     fun click(data: CMInApp) {
         val promotion = mapOf(
                 KEY_ID to data.getId().toString(), // name
-                KEY_NAME to data.getCmLayout().appLink, // applink
+                KEY_NAME to data.screen, // applink
                 KEY_CREATIVE to "", // campaign name
                 KEY_CREATIVE_URL to "", // optional
-                KEY_POSITION to "1",
+                KEY_POSITION to POSITION,
                 KEY_CATEGORY to "",
                 KEY_PROMO_ID to "",
                 KEY_PROMO_CODE to ""
@@ -62,9 +67,9 @@ object InAppAnalytics {
 
         sendTracker(mapOf(
                 KEY_EVENT to KEY_PROMO_CLICK,
-                KEY_EVENT_CATEGORY to "pop up banner",
-                KEY_EVENT_ACTION to "click on pop up banner",
-                KEY_EVENT_LABEL to "${data.getId()} - ${data.getCampaignUserToken()}",
+                KEY_EVENT_CATEGORY to CATEGORY,
+                KEY_EVENT_ACTION to ACTION_CLICK,
+                KEY_EVENT_LABEL to "${data.getCampaignId()} - ${data.getCampaignUserToken()}",
                 KEY_ECOMMERCE to mapOf(
                         KEY_PROMO_CLICK to mapOf(
                                 KEY_PROMOTIONS to listOf(promotion)
