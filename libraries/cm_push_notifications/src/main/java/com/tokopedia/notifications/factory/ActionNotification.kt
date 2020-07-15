@@ -4,10 +4,10 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.app.NotificationCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationUtils
@@ -90,6 +90,23 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
         remoteView.setOnClickPendingIntent(if (isCollapsed) R.id.collapseMainView else R.id.status_bar_latest_event_content, createMainPendingIntent(baseNotificationModel,
                 requestCode))
+        if (baseNotificationModel.media == null || baseNotificationModel.media?.mediumQuality == null
+                || baseNotificationModel.media?.mediumQuality!!.isBlank()) {
+            if (isCollapsed) {
+                remoteView.setViewVisibility(R.id.tv_collapsed_message, View.VISIBLE)
+                remoteView.setViewVisibility(R.id.tv_expanded_message, View.GONE)
+                remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
+                remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
+            } else {
+                remoteView.setViewVisibility(R.id.tv_collapsed_message, View.GONE)
+                remoteView.setViewVisibility(R.id.tv_expanded_message, View.VISIBLE)
+                remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
+                remoteView.setTextViewText(R.id.tv_expanded_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
+            }
+        } else {
+            remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
+            remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
+        }
     }
 
     private fun addActionButton(actionButtonList: List<ActionButton>, expandedView: RemoteViews) {
