@@ -250,6 +250,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
+            if (data.addressStatus == 2) layout_utama.gone() else layout_utama.visible()
             btn_alamat_utama.setOnClickListener {
                 viewModel.setDefaultPeopleAddress(data.id)
                 bottomSheetLainnya?.dismiss()

@@ -1552,7 +1552,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCheckoutValidationResult(boolean result, Object shipmentData,
                                            int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
-            if (shipmentPresenter.isIneligbilePromoDialogEnabled()) {
+            if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
                 ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
                 ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
                 if (validateUsePromoRevampUiModel != null) {

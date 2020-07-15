@@ -13,5 +13,15 @@ data class Properties(
         val registeredMessage: String?,
 
         @SerializedName("unregistered_message")
-        val unregisteredMessage: String?
+        val unregisteredMessage: String?,
+
+        @SerializedName("background")
+        val background: String?,
+
+        @SerializedName("dynamic")
+        val dynamic: Boolean,
+
+        @SerializedName("sticky")
+        val sticky: Boolean
+
 )
