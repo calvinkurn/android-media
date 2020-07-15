@@ -8,7 +8,9 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.TotalStock
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
 import kotlinx.android.synthetic.main.item_campaign_stock_total_editor.view.*
 
-class TotalStockEditorViewHolder(itemView: View?): AbstractViewHolder<TotalStockEditorUiModel>(itemView) {
+class TotalStockEditorViewHolder(itemView: View?,
+                                 private val onTotalStockChanged: (Int) -> Unit
+): AbstractViewHolder<TotalStockEditorUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -19,6 +21,9 @@ class TotalStockEditorViewHolder(itemView: View?): AbstractViewHolder<TotalStock
         itemView.qte_campaign_stock_amount?.run {
             maxValue = EditProductConstant.MAXIMUM_STOCK
             setValue(element.totalStock)
+            setValueChangedListener { newValue, _, _ ->
+                onTotalStockChanged(newValue)
+            }
         }
     }
 }

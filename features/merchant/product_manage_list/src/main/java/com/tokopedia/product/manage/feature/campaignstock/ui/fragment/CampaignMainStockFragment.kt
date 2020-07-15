@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
@@ -26,7 +25,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         fun createInstance(isVariant: Boolean,
                            sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                            isActive: Boolean,
-                           stock: Int): CampaignMainStockFragment {
+                           stock: Int,
+                           campaignStockListener: CampaignStockListener): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
@@ -34,6 +34,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                     putInt(EXTRA_STOCK, stock)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                 }
+                this.campaignStockListener = campaignStockListener
             }
         }
 
@@ -59,6 +60,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         arguments?.getParcelableArrayList<SellableStockProductUIModel>(EXTRA_SELLABLE_PRODUCT_LIST)?.toList().orEmpty()
     }
 
+    private var campaignStockListener: CampaignStockListener? = null
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeLiveData()
@@ -73,7 +76,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         setupView(view)
     }
 
-    override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory(
+            onTotalStockChanged = ::onTotalStockChanged,
+            onActiveStockChanged = ::onActiveStockChanged
+    )
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
 
@@ -117,6 +123,14 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             ))
         }
 
+    }
+
+    private fun onTotalStockChanged(totalStock: Int) {
+        campaignStockListener?.onTotalStockChanged(totalStock)
+    }
+
+    private fun onActiveStockChanged(isActive: Boolean) {
+        campaignStockListener?.onActiveStockChanged(isActive)
     }
 
 }

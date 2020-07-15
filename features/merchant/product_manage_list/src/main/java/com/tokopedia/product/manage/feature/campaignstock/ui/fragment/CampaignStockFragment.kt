@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_campaign_stock.*
 import kotlinx.android.synthetic.main.layout_campaign_stock_product_info.view.*
 import javax.inject.Inject
 
-class CampaignStockFragment: BaseDaggerFragment() {
+class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     companion object {
         @JvmStatic
@@ -89,6 +89,14 @@ class CampaignStockFragment: BaseDaggerFragment() {
         }
     }
 
+    override fun onTotalStockChanged(totalStock: Int) {
+        mViewModel.updateNonVariantStockCount(totalStock)
+    }
+
+    override fun onActiveStockChanged(isActive: Boolean) {
+        mViewModel.updateNonVariantIsActive(isActive)
+    }
+
     private fun observeLiveData() {
         mViewModel.getStockAllocationData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
@@ -104,10 +112,18 @@ class CampaignStockFragment: BaseDaggerFragment() {
     }
 
     private fun setupView() {
+        setupButtonOnClick()
         shopId?.let { shopId ->
             productIds?.let { productIds ->
-                mViewModel.getStockAllocation(productIds.toList(), shopId)
+                mViewModel.setShopId(shopId)
+                mViewModel.getStockAllocation(productIds.toList())
             }
+        }
+    }
+
+    private fun setupButtonOnClick() {
+        btn_campaign_stock_save?.setOnClickListener {
+            mViewModel.updateStockData()
         }
     }
 
@@ -202,7 +218,7 @@ class CampaignStockFragment: BaseDaggerFragment() {
                                      sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                                      isActive: Boolean,
                                      stock: Int) =
-            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive, stock)
+            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive, stock, this)
 
     private fun getReservedStockFragment(isVariant: Boolean,
                                          reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>) =
