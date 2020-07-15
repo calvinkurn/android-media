@@ -55,6 +55,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var titleFilterResult: TextView
 
     private var titleProduct: String = ""
+    private var categoryId: Int = 0
     private var telcoFilterData: TelcoFilterData = TelcoFilterData()
     private var productType = TelcoProductType.PRODUCT_LIST
 
@@ -112,6 +113,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             titleProduct = it.getString(TITLE_PAGE)
             productType = it.getInt(PRODUCT_TYPE)
             selectedOperatorName = it.getString(OPERATOR_NAME)
+            categoryId = it.getInt(CATEGORY_ID)
 
             sharedModelPrepaid.productList.observe(this, Observer {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
@@ -179,7 +181,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             val filterData = arrayListOf<SortFilterItem>()
             telcoFilterData.getFilterTags().map { filterTag ->
                 val sortFilterItem = SortFilterItem(filterTag.text)
-                sortFilterItem.listener = { showBottomSheetFilter(filterTag, componentId, sortFilterItem)}
+                sortFilterItem.listener = { showBottomSheetFilter(filterTag, componentId, sortFilterItem) }
                 filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
@@ -191,17 +193,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             sortFilter.dismissListener = {
                 telcoFilterData.clearAllFilter()
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
+                topupAnalytics.eventClickResetFilterCluster(categoryId, userSession.userId)
             }
         }
     }
 
     private fun showBottomSheetFilter(filterTag: TelcoFilterTagComponent, componentId: Int,
                                       sortFilterItem: SortFilterItem) {
+        topupAnalytics.eventClickQuickFilter(categoryId, filterTag.text, userSession.userId)
         val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,
                 filterTag.paramName, filterTag.filterTagDataCollections as ArrayList<FilterTagDataCollection>)
         filterBottomSheet.setListener(object : DigitalTelcoFilterBottomSheet.ActionListener {
-            override fun onTelcoFilterSaved(valuesFilter: ArrayList<String>) {
-                telcoFilterData.addFilter(componentId, filterTag.paramName, valuesFilter)
+            override fun onTelcoFilterSaved(keysFilter: ArrayList<String>, valuesFilter: String) {
+                topupAnalytics.eventClickSaveFilter(categoryId, filterTag.text, valuesFilter, userSession.userId)
+
+                telcoFilterData.addFilter(componentId, filterTag.paramName, keysFilter)
                 telcoTelcoProductView.resetSelectedProductItem()
                 sharedModelPrepaid.hideTotalPrice()
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
@@ -215,6 +221,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
             override fun getFilterSelected(): ArrayList<String> {
                 return telcoFilterData.getFilterSelectedByParamName(filterTag.paramName)
+            }
+
+            override fun resetFilter() {
+                topupAnalytics.eventClickResetFilter(categoryId, filterTag.text, userSession.userId)
             }
         })
         filterBottomSheet.setShowListener { filterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
@@ -287,6 +297,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         const val PRODUCT_TYPE = "product_type"
         const val TITLE_PAGE = "title_page"
         const val OPERATOR_NAME = "operator_name"
+        const val CATEGORY_ID = "category_id"
 
         fun newInstance(bundle: Bundle): Fragment {
             val fragment = DigitalTelcoProductFragment()

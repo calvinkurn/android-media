@@ -162,6 +162,42 @@ class DigitalTopupAnalytics {
         sendGeneralEvent(mapEvent, userId)
     }
 
+    fun eventClickQuickFilter(categoryId: Int, filterCluster: String, userId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_QUICK_FILTER,
+                "${getCategoryName(categoryId)} - ${filterCluster.toLowerCase()}")
+        sendGeneralEvent(mapEvent, userId)
+    }
+
+    fun eventClickSaveFilter(categoryId: Int, filterCluster: String, valuesFilter: String, userId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_SAVE_QUICK_FILTER,
+                "${getCategoryName(categoryId)} - ${filterCluster.toLowerCase()} - $valuesFilter")
+        sendGeneralEvent(mapEvent, userId)
+    }
+
+    fun eventClickResetFilter(categoryId: Int, filterCluster: String, userId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_RESET_QUICK_FILTER,
+                "${getCategoryName(categoryId)} - ${filterCluster.toLowerCase()}")
+        sendGeneralEvent(mapEvent, userId)
+    }
+
+    fun eventClickResetFilterCluster(categoryId: Int, userId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_RESET_FILTER_CLUSTER,
+                "${getCategoryName(categoryId)}")
+        sendGeneralEvent(mapEvent, userId)
+    }
+
     private fun sendGeneralEvent(mapEvent: MutableMap<String, Any>, userId: String) {
         mapEvent[DigitalTopupEventTracking.Additional.BUSINESS_UNIT] =
                 DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE

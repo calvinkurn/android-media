@@ -458,6 +458,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         bundle.putString(DigitalTelcoProductFragment.TITLE_PAGE, titlePage)
         bundle.putInt(DigitalTelcoProductFragment.PRODUCT_TYPE, productType)
         bundle.putString(DigitalTelcoProductFragment.OPERATOR_NAME, operatorName)
+        bundle.putInt(DigitalTelcoProductFragment.CATEGORY_ID, categoryId)
         return bundle
     }
 
