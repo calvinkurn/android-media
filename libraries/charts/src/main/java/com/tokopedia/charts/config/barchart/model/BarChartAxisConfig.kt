@@ -7,5 +7,6 @@ package com.tokopedia.charts.config.barchart.model
 data class BarChartAxisConfig(
         val isEnabled: Boolean,
         val showLabelEnabled: Boolean,
-        val showGridEnabled: Boolean
+        val showGridEnabled: Boolean,
+        val spaceTop: Float
 )
