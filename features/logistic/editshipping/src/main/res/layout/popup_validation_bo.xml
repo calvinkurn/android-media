@@ -14,12 +14,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:closeButtonVisibility="gone" />
     
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_point_one"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_no_1"
         app:layout_constraintTop_toBottomOf="@id/ticker_validation_bo" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,6 +37,7 @@
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
+        app:srcCompat="@drawable/ic_no_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_one" />
 
@@ -53,6 +55,7 @@
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        app:srcCompat="@drawable/ic_no_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_two" />
 
