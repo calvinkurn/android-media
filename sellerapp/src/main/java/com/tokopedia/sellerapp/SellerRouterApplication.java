@@ -261,17 +261,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getRegisterIntent(Context context) {
-        return RegisterInitialActivity.getCallingIntent(context);
-    }
-
-    private void goToDefaultRoute(Context context) {
-        Intent intent = SellerHomeActivity.createIntent(context);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
-    }
-
-    @Override
     public boolean isSupportedDelegateDeepLink(String appLinks) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLinks);
