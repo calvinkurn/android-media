@@ -835,11 +835,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(topAdsTrackingUrl);
-    }
-
-    @Override
     public void sendTopAdsClickUrl(String topAdsClickUrl, String productId, String productName, String imageUrl) {
         if (getActivity() == null) return;
 

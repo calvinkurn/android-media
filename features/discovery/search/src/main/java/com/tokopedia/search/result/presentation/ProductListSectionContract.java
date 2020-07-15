@@ -154,8 +154,6 @@ public interface ProductListSectionContract {
 
         void sendTopAdsImpressionUrl(String topAdsImpressionUrl, String productId, String productName, String imageUrl);
 
-        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
-
         void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
