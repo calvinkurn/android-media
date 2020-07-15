@@ -89,6 +89,9 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.ProductTag.value -> {
                         data = mapProductTag(webSocketResponse)
                     }
+                    PlaySocketEnum.Chat.value -> {
+                        data = mapChat(webSocketResponse)
+                    }
                 }
 
                 if (data != null) {
@@ -160,20 +163,13 @@ class PlayBroadcastSocketImpl constructor(
         return convertToModel(response.jsonObject, ProductTagging::class.java)
     }
 
+    private fun mapChat(response: WebSocketResponse): Chat? {
+        return convertToModel(response.jsonObject, Chat::class.java)
+    }
+
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
         try {
             return gson.fromJson(jsonElement, classOfT)
-        } catch (e: Exception) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, PlayBroadcastSocket.TAG, e.localizedMessage)
-            }
-        }
-        return null
-    }
-
-    private fun <T> convertToModel(jsonElement: JsonElement?, typeOfT: Type): T? {
-        try {
-            return gson.fromJson(jsonElement, typeOfT)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {
                 Crashlytics.log(0, PlayBroadcastSocket.TAG, e.localizedMessage)
