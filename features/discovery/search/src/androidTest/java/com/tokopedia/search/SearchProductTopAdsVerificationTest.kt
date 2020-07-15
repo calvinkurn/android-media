@@ -9,32 +9,23 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.database.STATUS_MATCH
-import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
-import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
-import com.tokopedia.analyticsdebugger.debugger.data.repository.TopAdsLogLocalRepository
-import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsLogDBSource
-import com.tokopedia.analyticsdebugger.debugger.data.source.TopAdsVerificationNetworkSource
-import com.tokopedia.analyticsdebugger.debugger.domain.GetTopAdsLogDataUseCase
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
+import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
-private const val TOPADS_URL_TYPE_CLICK = "click"
-private const val TOPADS_URL_TYPE_IMPRESSION = "impression"
 
 internal class SearchProductTopAdsVerficationTest {
 
@@ -45,14 +36,11 @@ internal class SearchProductTopAdsVerficationTest {
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-    private val topAdsLogDBSource = TopAdsLogDBSource(context)
-    private val topAdsImpressionUrlList = mutableSetOf<String>()
-    private val topAdsClickUrlList = mutableSetOf<String>()
+    private var topAdsCount = 0
+    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
 
     @Before
     fun setUp() {
-        topAdsLogDBSource.deleteAll().subscribe()
-
         disableOnBoarding(context)
 
         activityRule.launchActivity(createIntent())
@@ -75,69 +63,30 @@ internal class SearchProductTopAdsVerficationTest {
 
         activityRule.activity.finish()
 
-        topAdsLogDBSource.deleteAll().subscribe()
+        topAdsAssertion.after()
     }
 
     @Test
     fun testTopAdsUrlTracking() {
         performUserJourney()
-        assertTracking()
+        topAdsAssertion.assert()
     }
 
     private fun performUserJourney() {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        productListAdapter.itemList.forEachIndexed { index, visitable ->
-            if (visitable is ProductItemViewModel && visitable.isTopAdsOrOrganicAds()) {
-                topAdsImpressionUrlList.add(visitable.topadsImpressionUrl)
-                topAdsClickUrlList.add(visitable.topadsClickUrl)
+        val visitableList = recyclerView.getProductListAdapter().itemList
+        visitableList.forEachIndexed(this::scrollAndClickTopAds)
+    }
 
-                onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(index, click()))
-            }
+    private fun scrollAndClickTopAds(index: Int, visitable: Visitable<*>) {
+        if (visitable is ProductItemViewModel && visitable.isTopAdsOrOrganicAds()) {
+            topAdsCount++
+
+            onView(withId(recyclerViewId)).perform(scrollToPosition<ProductItemViewHolder>(index))
+            onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(index, click()))
         }
     }
 
     private fun ProductItemViewModel.isTopAdsOrOrganicAds() = isTopAds || isOrganicAds
-
-    private fun assertTracking() {
-        waitForVerification()
-
-        val topAdsLogDBList = getVerifiedTopAdsLog()
-
-        topAdsImpressionUrlList.assertEachTopAdsUrl(TOPADS_URL_TYPE_IMPRESSION, topAdsLogDBList)
-        topAdsClickUrlList.assertEachTopAdsUrl(TOPADS_URL_TYPE_CLICK, topAdsLogDBList)
-    }
-
-    private fun waitForVerification() {
-        Thread.sleep((5.5 * 60 * 1000).toLong())
-    }
-
-    private fun getVerifiedTopAdsLog(): List<TopAdsLogDB> {
-        val topAdsLogDBSource = TopAdsLogDBSource(context)
-        val graphqlUseCase = GraphqlUseCase()
-        val topAdsVerificationNetworkSource = TopAdsVerificationNetworkSource(context, graphqlUseCase)
-
-        val topAdsLogLocalRepository = TopAdsLogLocalRepository(topAdsLogDBSource, topAdsVerificationNetworkSource)
-        val getTopAdsLogDataUseCase = GetTopAdsLogDataUseCase(topAdsLogLocalRepository)
-
-        val requestParams = RequestParams.create()
-        requestParams.putString(AnalyticsDebuggerConst.ENVIRONMENT, AnalyticsDebuggerConst.ENVIRONMENT_TEST)
-
-        return getTopAdsLogDataUseCase.getData(requestParams)
-    }
-
-    private fun Set<String>.assertEachTopAdsUrl(type: String, topAdsLogDBList: List<TopAdsLogDB>) {
-        forEach { url ->
-            val topAdsLog = topAdsLogDBList.findUrl(url)
-
-            assertEquals(type, topAdsLog.eventType)
-            assertEquals(STATUS_MATCH, topAdsLog.eventStatus)
-        }
-    }
-
-    private fun List<TopAdsLogDB>.findUrl(url: String): TopAdsLogDB {
-        return find { it.url == url }
-                ?: throw AssertionError("Unable to find url in the TopAdsLogDB. Url = $url")
-    }
 }
