@@ -468,7 +468,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.firebase.crashlytics
-//    implementation rootProject.ext.firebase.analytics
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
