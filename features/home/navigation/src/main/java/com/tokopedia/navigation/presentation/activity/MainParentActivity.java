@@ -250,6 +250,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
+        moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
