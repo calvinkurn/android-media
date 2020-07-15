@@ -1043,7 +1043,11 @@ open class HomeViewModel @Inject constructor(
                     }
                 }
             }){
-                it.printStackTrace()
+                    data.mapIndexed { index, homeTopAdsBannerDataModel ->
+                        updateWidget(UpdateLiveDataModel(ACTION_UPDATE,
+                                homeTopAdsBannerDataModel, index))
+                    }
+                    it.printStackTrace()
             }
         }
     }
