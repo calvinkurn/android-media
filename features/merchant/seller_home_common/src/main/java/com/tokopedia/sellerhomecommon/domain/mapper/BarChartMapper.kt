@@ -1,10 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.charts.common.ChartColor
-import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
-import com.tokopedia.sellerhomecommon.domain.model.BarChartSummaryModel
-import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
-import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
+import com.tokopedia.sellerhomecommon.domain.model.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
@@ -29,7 +26,7 @@ class BarChartMapper @Inject constructor() {
         }
     }
 
-    private fun mapBarChartSummary(summary: BarChartSummaryModel): ChartSummaryUiModel {
+    private fun mapBarChartSummary(summary: ChartSummaryModel): ChartSummaryUiModel {
         return ChartSummaryUiModel(
                 diffPercentage = summary.diffPercentage,
                 diffPercentageFmt = summary.diffPercentageFmt,
