@@ -14,8 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import io.mockk.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -57,7 +55,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, attemptedPromoCode)
+        viewModel.getPromoList("", promoRequest, attemptedPromoCode)
 
         //then
         assert(promoRequest.skipApply == 0)
@@ -74,7 +72,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, attemptedPromoCode)
+        viewModel.getPromoList("", promoRequest, attemptedPromoCode)
 
         //then
         assert(promoRequest.attemptedCodes[0] == attemptedPromoCode)
@@ -92,7 +90,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, attemptedPromoCode)
+        viewModel.getPromoList("", promoRequest, attemptedPromoCode)
 
         //then
         assert(promoRequest.attemptedCodes[0] == attemptedPromoCode)
@@ -110,7 +108,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, attemptedPromoCode)
+        viewModel.getPromoList("", promoRequest, attemptedPromoCode)
 
         //then
         assert(!promoRequest.codes.contains(attemptedPromoCode))
@@ -128,7 +126,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, attemptedPromoCode)
+        viewModel.getPromoList("", promoRequest, attemptedPromoCode)
 
         //then
         assert(!promoRequest.orders[0].codes.contains(attemptedPromoCode))
@@ -145,7 +143,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "GLOBAL PROMO")
+        viewModel.getPromoList("", promoRequest, "GLOBAL PROMO")
 
         //then
         assert(promoRequest.codes.isEmpty())
@@ -162,7 +160,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "MERCHANT PROMO")
+        viewModel.getPromoList("", promoRequest, "MERCHANT PROMO")
 
         //then
         assert(promoRequest.orders[0].codes.isEmpty())
@@ -179,7 +177,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "GLOBAL PROMO")
+        viewModel.getPromoList("", promoRequest, "GLOBAL PROMO")
 
         //then
         assert(promoRequest.codes.isEmpty())
@@ -196,7 +194,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "MERCHANT PROMO")
+        viewModel.getPromoList("", promoRequest, "MERCHANT PROMO")
 
         //then
         assert(promoRequest.orders[0].codes.isEmpty())
@@ -215,7 +213,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), attemptedPromoCode)
+        viewModel.getPromoList("", PromoRequest(), attemptedPromoCode)
 
         //then
         assert(viewModel._getCouponRecommendationResponse.value?.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA)

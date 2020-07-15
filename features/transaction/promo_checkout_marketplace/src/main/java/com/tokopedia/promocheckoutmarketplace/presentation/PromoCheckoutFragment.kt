@@ -728,7 +728,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest, "")
+            viewModel.getPromoList(mutation, promoRequest, "")
         }
     }
 
@@ -833,7 +833,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest, promoCode)
+            viewModel.getPromoList(mutation, promoRequest, promoCode)
         }
     }
 

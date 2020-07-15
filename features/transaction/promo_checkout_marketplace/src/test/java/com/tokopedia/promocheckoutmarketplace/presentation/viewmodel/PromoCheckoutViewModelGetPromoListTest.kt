@@ -56,7 +56,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -72,7 +72,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoRecommendationUiModel.value)
@@ -88,7 +88,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoInputUiModel.value)
@@ -104,7 +104,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoListUiModel.value)
@@ -120,7 +120,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -136,7 +136,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoRecommendationUiModel.value)
@@ -152,7 +152,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoInputUiModel.value)
@@ -168,7 +168,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoListUiModel.value)
@@ -184,7 +184,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasAnyPromoSelected == false)
@@ -200,7 +200,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assert(viewModel.fragmentUiModel.value?.uiState?.hasAnyPromoSelected == true)
@@ -216,7 +216,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -232,7 +232,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoInputUiModel.value)
@@ -248,7 +248,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoListUiModel.value)
@@ -264,7 +264,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoRecommendationUiModel.value)
@@ -280,7 +280,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
@@ -296,7 +296,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoInputUiModel.value)
@@ -312,7 +312,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoListUiModel.value)
@@ -328,7 +328,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", PromoRequest(), "")
+        viewModel.getPromoList("", PromoRequest(), "")
 
         //then
         assertNull(viewModel.promoRecommendationUiModel.value)
@@ -345,7 +345,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "")
+        viewModel.getPromoList("", promoRequest, "")
 
         //then
         assert(promoRequest.codes.isNotEmpty())
@@ -362,7 +362,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "")
+        viewModel.getPromoList("", promoRequest, "")
 
         //then
         assert(promoRequest.orders[0].codes.isNotEmpty() ||
@@ -381,7 +381,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "")
+        viewModel.getPromoList("", promoRequest, "")
 
         //then
         assert(promoRequest.codes.isNotEmpty())
@@ -398,7 +398,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.loadData("", promoRequest, "")
+        viewModel.getPromoList("", promoRequest, "")
 
         //then
         assert(promoRequest.orders[0].codes.isNotEmpty() ||
