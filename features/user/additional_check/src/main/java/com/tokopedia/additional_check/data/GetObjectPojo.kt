@@ -18,8 +18,11 @@ data class GetObjectPojo(
 data class TwoFactorResult(
         @SerializedName("interval")
         val interval: Int = 0,
-        @SerializedName("show_skip_button")
+        @SerializedName("show_skip")
         val showSkipButton: Boolean = false,
-        @SerializedName("isHavePin")
-        val popupType: Int = 0
+        @SerializedName("popup_2fa")
+        val popupType: Int = 0,
+        @SerializedName("error")
+        val error: String = ""
+
 ): Parcelable
