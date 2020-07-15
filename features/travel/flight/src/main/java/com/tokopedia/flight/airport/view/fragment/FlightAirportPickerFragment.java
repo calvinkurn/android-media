@@ -144,6 +144,11 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
         getAdapter().setElement(getLoadingModel());
     }
 
+    @Override
+    public void onSearchDone(String text) {
+        //do nothing
+    }
+
     @NonNull
     @Override
     protected BaseListAdapter<Visitable, FlightAirportAdapterTypeFactory> createAdapterInstance() {

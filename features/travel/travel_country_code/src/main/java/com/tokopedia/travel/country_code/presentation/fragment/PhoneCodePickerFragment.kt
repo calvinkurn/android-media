@@ -90,6 +90,10 @@ class PhoneCodePickerFragment : BaseSearchListFragment<TravelCountryPhoneCode, P
         viewModel.filterCountryList(text.trim())
     }
 
+    override fun onSearchDone(text: String?) {
+
+    }
+
     companion object {
         const val EXTRA_SELECTED_PHONE_CODE = "EXTRA_SELECTED_PHONE_CODE"
     }
