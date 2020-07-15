@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
@@ -11,8 +12,8 @@ import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
 import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -41,27 +42,35 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         get() = _orderListResult
 
     fun loadTickerList(tickerQuery: String) {
-        val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
-        launch {
+        launchCatchError(block = {
+            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
             _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams, tickerQuery))
-        }
+        }, onError = {
+            _tickerListResult.postValue(Fail(it))
+        })
     }
 
     fun loadStatusOrderList(rawQuery: String) {
-        launch {
+        launchCatchError(block = {
             _statusOrderListResult.postValue(getOrderStatusListUseCase.execute(rawQuery))
-        }
+        }, onError = {
+            _statusOrderListResult.postValue(Fail(it))
+        })
     }
 
     fun loadFilterList(filterQuery: String) {
-        launch {
+        launchCatchError(block =  {
             _filterListResult.postValue(getFilterListUseCase.execute(filterQuery))
-        }
+        }, onError = {
+            _filterListResult.postValue(Fail(it))
+        })
     }
 
     fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
-        launch {
+        launchCatchError(block =  {
             _orderListResult.postValue(getOrderListUseCase.execute(paramOrder, orderQuery))
-        }
+        }, onError = {
+            _orderListResult.postValue(Fail(it))
+        })
     }
 }
