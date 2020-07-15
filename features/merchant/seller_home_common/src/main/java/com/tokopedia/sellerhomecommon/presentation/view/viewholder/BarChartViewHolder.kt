@@ -3,8 +3,27 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.charts.common.ChartTooltip
+import com.tokopedia.charts.config.barchart.BarChartConfigBuilder
+import com.tokopedia.charts.config.barchart.model.BarChartConfig
+import com.tokopedia.charts.model.AxisLabel
+import com.tokopedia.charts.model.BarChartData
+import com.tokopedia.charts.model.BarChartMetric
+import com.tokopedia.charts.model.BarChartMetricValue
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
+import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
+import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 
 /**
  * Created By @ilhamsuaib on 09/07/20
@@ -21,8 +40,156 @@ class BarChartViewHolder(
     }
 
     override fun bind(element: BarChartWidgetUiModel) {
-        with(itemView) {
 
+        observeState(element)
+    }
+
+    private fun observeState(element: BarChartWidgetUiModel) {
+        with(itemView) {
+            tvShcBarChartTitle.text = element.title
+        }
+
+        setupTooltip(element)
+
+        val data = element.data
+
+        when {
+            data == null -> setOnLoading()
+            data.error.isNotBlank() -> {
+                setonError(element)
+                listener.setOnErrorWidget(adapterPosition, element)
+            }
+            else -> setOnSuccess(element)
+        }
+    }
+
+    private fun setOnLoading() {
+        with(itemView) {
+            shimmerWidgetCommon.visible()
+            commonWidgetErrorState.gone()
+            tvShcBarChartValue.gone()
+            tvShcBarChartSubValue.gone()
+            barChartShc.gone()
+        }
+    }
+
+    private fun setonError(element: BarChartWidgetUiModel) {
+        with(itemView) {
+            shimmerWidgetCommon.gone()
+            commonWidgetErrorState.visible()
+            tvShcBarChartValue.gone()
+            tvShcBarChartSubValue.gone()
+            barChartShc.gone()
+
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        }
+    }
+
+    private fun setOnSuccess(element: BarChartWidgetUiModel) {
+        val data = element.data
+        with(itemView) {
+            shimmerWidgetCommon.gone()
+            commonWidgetErrorState.gone()
+            tvShcBarChartValue.visible()
+            tvShcBarChartSubValue.visible()
+            barChartShc.visible()
+
+            tvShcBarChartValue.text = element.data?.chartData?.summary?.valueFmt.orEmpty()
+            tvShcBarChartSubValue.text = element.data?.chartData?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
+
+            barChartShc.init(getBarChartConfig())
+            barChartShc.setData(getBarChartData(data?.chartData))
+            barChartShc.invalidateChart()
+
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+            btnShcBarChartMore.visibility = ctaVisibility
+            btnShcBarChartNext.visibility = ctaVisibility
+            btnShcBarChartMore.text = element.ctaText
+
+            if (isCtaVisible) {
+                btnShcBarChartMore.setOnClickListener {
+                    openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
+                }
+                btnShcBarChartNext.setOnClickListener {
+                    openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
+                }
+            }
+        }
+    }
+
+    private fun getBarChartConfig(): BarChartConfig {
+        return BarChartConfigBuilder.create {
+            borderRadius { itemView.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1) }
+            yAxis {
+                showGridEnabled { true }
+            }
+            drawMarkerEnabled { true }
+            tooltip = getBarChartTooltip()
+        }
+    }
+
+    private fun getBarChartTooltip(): ChartTooltip {
+        return ChartTooltip(itemView.context, R.layout.shc_partial_chart_tooltip)
+                .setOnDisplayContent { view, data, x, y ->
+                    (data as? BarChartMetricValue)?.let {
+                        view.tvShcTooltipTitle.text = it.xLabel
+                        view.tvShcTooltipValue.text = it.yLabel
+                    }
+                }
+    }
+
+    private fun openAppLink(appLink: String, dataKey: String, value: String) {
+        if (RouteManager.route(itemView.context, appLink)) {
+            //listener.sendLineGraphCtaClickEvent(dataKey, value)
+        }
+    }
+
+    private fun getBarChartData(data: BarChartUiModel?): BarChartData {
+        return BarChartData(
+                yAxis = getAxisLabels(data?.yAxis),
+                xAxisLabels = getAxisLabels(data?.xAxis),
+                metrics = getBarChartMetric(data?.metrics, data?.xAxis.orEmpty())
+        )
+    }
+
+    private fun getBarChartMetric(metrics: List<BarChartMetricsUiModel>?, xLabels: List<BarChartAxisUiModel>): List<BarChartMetric> {
+        return metrics?.map {
+            BarChartMetric(
+                    title = it.title,
+                    barHexColor = it.barHexColor,
+                    values = it.value.mapIndexed { i, item ->
+                        val xLabel = getXLabel(xLabels, i)
+                        return@mapIndexed BarChartMetricValue(item.value, item.valueFmt, xLabel)
+                    }
+            )
+        }.orEmpty()
+    }
+
+    private fun getXLabel(xLabels: List<BarChartAxisUiModel>, index: Int): String {
+        return try {
+            xLabels[index].valueFmt
+        } catch (e: IndexOutOfBoundsException) {
+            ""
+        }
+    }
+
+    private fun getAxisLabels(axisList: List<BarChartAxisUiModel>?): List<AxisLabel> {
+        return axisList?.map { AxisLabel(it.value.toFloat(), it.valueFmt) }.orEmpty()
+    }
+
+    private fun setupTooltip(element: BarChartWidgetUiModel) = with(itemView) {
+        val tooltip = element.tooltip
+        if (!tooltip?.content.isNullOrBlank() || !tooltip?.list.isNullOrEmpty()) {
+            btnShcBarChartTooltip.visible()
+            tvShcBarChartTitle.setOnClickListener {
+                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
+            }
+            btnShcBarChartTooltip.setOnClickListener {
+                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
+            }
+        } else {
+            btnShcBarChartTooltip.gone()
         }
     }
 
