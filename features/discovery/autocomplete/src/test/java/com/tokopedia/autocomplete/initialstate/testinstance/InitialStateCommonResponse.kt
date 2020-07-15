@@ -57,7 +57,22 @@ private val initialStateCommonJSON = """
       "id": "recent_view",
       "header": "Terakhir Dilihat",
       "label_action": "",
-      "items": []
+      "items": [
+        {
+            "id": 567995183,
+            "template": "",
+            "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/24/856804/856804_c2875819-25d5-4af9-9fce-77f30c24a44f_2048_2048.jpg",
+            "applink": "tokopedia://product/567995183",
+            "url": "/ofan-store8/oppo-a5-2020-ram-3-64gb-garansi-resmi-oppo-indonesia-hitam",
+            "title": "",
+            "subtitle": "",
+            "icon_title": "",
+            "icon_subtitle": "",
+            "label": "",
+            "label_type": "",
+            "shortcut_image": ""
+        }
+      ]
     },
     {
       "id": "popular_search",

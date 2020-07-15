@@ -62,7 +62,7 @@ class ContainerFragment : Fragment() {
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
     private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf()) }
     private val chatFragment: Fragment? by lazy { sellerHomeRouter?.getChatListFragment() }
-    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER) }
+    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER) }
 
     @FragmentType
     private var currentFragmentType: Int = 0
@@ -88,7 +88,6 @@ class ContainerFragment : Fragment() {
 
         setupView()
         observeCurrentSelectedPage()
-        setupDefaultPage()
     }
 
     private fun setupView() = view?.run {
@@ -109,10 +108,6 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private fun setupDefaultPage() {
-        sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
-    }
-
     private fun observeCurrentSelectedPage() {
         sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
             currentFragmentType = page.type
@@ -121,12 +116,13 @@ class ContainerFragment : Fragment() {
                 FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
                 FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
                 FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
+                else -> updateFragmentVisibilityHint(null)
             }
         })
     }
 
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
-        if (null == fragment) {
+        if (null == fragment || !isAdded) {
             return
         }
 
@@ -168,6 +164,22 @@ class ContainerFragment : Fragment() {
                     NotificationDotBadge(it).showBadge(menuItem)
                 }
             }
+            updateFragmentVisibilityHint(fragment)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun updateFragmentVisibilityHint(visibleFragment: Fragment?) {
+        if (visibleFragment == null) {
+            homeFragment.userVisibleHint = false
+            productManageFragment?.userVisibleHint = false
+            chatFragment?.userVisibleHint = false
+            somListFragment?.userVisibleHint = false
+        } else {
+            homeFragment.userVisibleHint = visibleFragment == homeFragment
+            productManageFragment?.userVisibleHint = visibleFragment == productManageFragment
+            chatFragment?.userVisibleHint = visibleFragment == chatFragment
+            somListFragment?.userVisibleHint = visibleFragment == somListFragment
         }
     }
 

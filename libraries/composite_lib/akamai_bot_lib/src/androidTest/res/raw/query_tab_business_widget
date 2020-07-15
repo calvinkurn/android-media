@@ -1,0 +1,11 @@
+query HomeWidget() {
+  home_widget {
+    widget_tab {
+      id
+      name
+    }
+    widget_header{
+        back_color
+    }
+  }
+}

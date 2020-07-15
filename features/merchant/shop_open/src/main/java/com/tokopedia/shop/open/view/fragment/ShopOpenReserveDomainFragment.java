@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.config.GlobalConfig;
@@ -48,7 +49,6 @@ import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity;
 import com.tokopedia.shop.open.view.activity.ShopOpenPostalCodeChooserActivity;
-import com.tokopedia.shop.open.view.activity.ShopOpenWebViewActivity;
 import com.tokopedia.shop.open.view.holder.OpenShopAddressViewHolder;
 import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
@@ -254,8 +254,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     } else {
                         trackingOpenShop.eventPrivacyPolicyClick();
                     }
-                    Intent intent = ShopOpenWebViewActivity.Companion.newInstance(getActivity(), url, title);
-                    startActivity(intent);
+                    RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, url);
                 }
 
 
@@ -434,9 +433,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
             if (!GlobalConfig.isSellerApp()) {
-                List<String> listToInstall = new ArrayList<>();
-                listToInstall.add(DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP);
-                new DFInstaller().installOnBackground(getActivity().getApplication(), listToInstall, null, null, "Shop Open");
+                DFInstaller.installOnBackground(getActivity().getApplication(), DeeplinkDFMapper.DF_MERCHANT_SELLER, "Shop Open");
             }
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);

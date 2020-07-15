@@ -9,7 +9,7 @@ import java.util.List;
  * Created by User on 11/16/2017.
  */
 
-public class FlightSearchApiRequestModel implements Parcelable{
+public class FlightSearchApiRequestModel implements Parcelable {
     private String depAirport;
     private String arrAirport;
     private String date;
@@ -19,10 +19,11 @@ public class FlightSearchApiRequestModel implements Parcelable{
     private int classID;
     private List<String> airlines;
     private String ipAddress;
+    private String requestId;
 
     public FlightSearchApiRequestModel(String depAirport, String arrAirport,
                                        String date, int adult, int children, int infant, int classID,
-                                       List<String> airlines, String ipAddress) {
+                                       List<String> airlines, String ipAddress, String requestId) {
         this.depAirport = depAirport;
         this.arrAirport = arrAirport;
         this.date = date;
@@ -32,6 +33,7 @@ public class FlightSearchApiRequestModel implements Parcelable{
         this.classID = classID;
         this.airlines = airlines;
         this.ipAddress = ipAddress;
+        this.requestId = requestId;
     }
 
     protected FlightSearchApiRequestModel(Parcel in) {
@@ -44,6 +46,7 @@ public class FlightSearchApiRequestModel implements Parcelable{
         classID = in.readInt();
         airlines = in.createStringArrayList();
         ipAddress = in.readString();
+        requestId = in.readString();
     }
 
     @Override
@@ -57,6 +60,7 @@ public class FlightSearchApiRequestModel implements Parcelable{
         dest.writeInt(classID);
         dest.writeStringList(airlines);
         dest.writeString(ipAddress);
+        dest.writeString(requestId);
     }
 
     @Override
@@ -110,5 +114,9 @@ public class FlightSearchApiRequestModel implements Parcelable{
 
     public String getIpAddress() {
         return ipAddress;
+    }
+
+    public String getRequestId() {
+        return requestId;
     }
 }

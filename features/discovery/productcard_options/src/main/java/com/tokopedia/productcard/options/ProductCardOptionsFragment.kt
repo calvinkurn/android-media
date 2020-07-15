@@ -49,9 +49,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         observeOptionListLiveData()
         observeRouteToSimilarSearchEventLiveData()
         observeCloseProductCardOptionsEventLiveData()
-        observeRouteToLoginPageEventLiveData()
         observeAddWishlistEventLiveData()
-        observeTrackingWishlistEventLiveData()
         observeTrackingSeeSimilarProductsEventLiveData()
     }
 
@@ -113,20 +111,8 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         })
     }
 
-    private fun observeRouteToLoginPageEventLiveData() {
-        productCardOptionsViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            routeToLoginPage()
-        })
-    }
-
-    private fun routeToLoginPage() {
-        activity?.let { activity ->
-            RouteManager.route(activity, ApplinkConst.LOGIN)
-        }
-    }
-
     private fun observeAddWishlistEventLiveData() {
-        productCardOptionsViewModel?.getWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isSuccess ->
+        productCardOptionsViewModel?.getWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { _ ->
             setResultWishlistEvent()
         })
     }
@@ -140,15 +126,6 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         return Intent().also {
             it.putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, productCardOptionsViewModel?.productCardOptionsModel)
         }
-    }
-
-    private fun observeTrackingWishlistEventLiveData() {
-        productCardOptionsViewModel?.getTrackingWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver { wishlistTrackingModel ->
-            ProductCardOptionsTracking.eventSuccessWishlistSearchResultProduct(
-                    productCardOptionsViewModel?.productCardOptionsModel?.screenName ?: "",
-                    wishlistTrackingModel
-            )
-        })
     }
 
     private fun observeTrackingSeeSimilarProductsEventLiveData() {

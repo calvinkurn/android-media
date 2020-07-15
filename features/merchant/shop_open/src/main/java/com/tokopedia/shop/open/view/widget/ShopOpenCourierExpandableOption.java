@@ -79,12 +79,12 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
     protected void initView(View view) {
         initRootLayout(view);
 
-        ivIcon = view.findViewById(com.tokopedia.abstraction.R.id.iv_icon);
-        tvTitle = view.findViewById(com.tokopedia.design.R.id.tv_title);
+        ivIcon = view.findViewById(com.tokopedia.seller.R.id.iv_icon);
+        tvTitle = view.findViewById(com.tokopedia.seller.R.id.tv_title);
         tvDesc = view.findViewById(com.tokopedia.seller.R.id.tv_desc);
         switchCompat = view.findViewById(com.tokopedia.seller.R.id.switch_button);
 
-        final RecyclerView recyclerView = view.findViewById(com.tokopedia.abstraction.R.id.recycler_view);
+        final RecyclerView recyclerView = view.findViewById(com.tokopedia.seller.R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(shopServiceCourierAdapter);
         recyclerView.setNestedScrollingEnabled(false);

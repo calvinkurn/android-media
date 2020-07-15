@@ -10,7 +10,6 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -50,7 +49,6 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     private String deviceId = "";
     private int checkoutString = R.string.buy_now;
     private int hargeTncString = R.string.harga_tnc;
-    private int tncStringId = R.string.tradein_tnc;
     /**
      * price_valid_until
      */
@@ -150,7 +148,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             checkoutString = R.string.moneyin_sell_now;
             hargeTncString = R.string.moneyin_harga_tnc;
-            tncStringId = R.string.money_in_tnc;
+            tncUrl = MONEYIN_TNC_URL;
             tradeInStringId = R.string.money_in;
             category = TradeInGTMConstants.CATEGORY_MONEYIN_HARGA_FINAL;
         }
@@ -189,11 +187,6 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     @Override
     protected int getMenuRes() {
         return -1;
-    }
-
-    @Override
-    protected Fragment getTncFragmentInstance(int TncResId) {
-        return TnCFragment.getInstance(TncResId);
     }
 
     @Override
@@ -370,27 +363,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isTncShowing) {
-            setVisibilityGroup(View.VISIBLE);
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            if (isTncShowing) {
-                setVisibilityGroup(View.VISIBLE);
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void showtnc() {
-        showTnC(tncStringId);
-        setVisibilityGroup(View.INVISIBLE);
+        showTnC(tncUrl);
         sendGeneralEvent("clickTradeIn",
                 "harga final trade in",
                 "click syarat dan ketentuan",

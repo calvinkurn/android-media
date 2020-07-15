@@ -9,7 +9,7 @@ import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
  * @author by M on 11/11/2019
  */
 class UmrahSearchAdapter(private val onClickListener: OnClickListener, umrahSearchAdapterTypeFactory: UmrahSearchAdapterTypeFactory) :
-        BaseListAdapter<UmrahSearchProduct, UmrahSearchAdapterTypeFactory>(umrahSearchAdapterTypeFactory) {
+        BaseListAdapter<Visitable<UmrahSearchAdapterTypeFactory>, UmrahSearchAdapterTypeFactory>(umrahSearchAdapterTypeFactory) {
 
     init {
         setHasStableIds(true)

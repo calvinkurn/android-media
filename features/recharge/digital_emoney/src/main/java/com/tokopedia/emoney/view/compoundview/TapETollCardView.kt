@@ -79,7 +79,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(R.color.red_600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.design.R.color.red_600))
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
@@ -93,7 +93,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorDeviceUnsupportedState(errorMessage: String) {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(R.color.red_600))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.design.R.color.red_600))
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE

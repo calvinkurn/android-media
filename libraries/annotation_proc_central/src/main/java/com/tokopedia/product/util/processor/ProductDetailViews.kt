@@ -4,6 +4,7 @@ package com.tokopedia.product.util.processor
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.Key
+import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
 
 const val KEY_SESSION_IRIS = "sessionIris"
@@ -53,5 +54,24 @@ data class ProductDetailViews(
         @Key(ProductTrackingConstant.Tracking.KEY_COMPONENT)
         val component: String,
         @Key(KEY_SESSION_IRIS)
-        val sessionIris: String
+        val sessionIris: String,
+        @DefaultValueString("")
+        @Key("currentSite")
+        val currentSite: String?,
+        @DefaultValueString("")
+        @Key("event")
+        val event: String?,
+        @DefaultValueString("")
+        @Key("eventCategory")
+        val eventCategory: String?,
+        @DefaultValueString("")
+        @Key("eventAction")
+        val eventAction: String?,
+        @DefaultValueString("")
+        @Key("businessUnit")
+        val businessUnit: String?,
+        @DefaultValueString("")
+        @Key("screenName")
+        val screenName: String?
+
 )

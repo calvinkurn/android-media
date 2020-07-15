@@ -10,4 +10,9 @@ class HotelGlobalSearchModel(
         var checkOutDateFmt: String = "",
         var numOfGuests: Int = 0,
         var numOfRooms: Int = 0,
-        var nightCount: Long = 0)
+        var nightCount: Long = 0,
+        var destinationId: Long = 0,
+        var destinationType: String = "",
+        var destinationName: String = "",
+        var locationLong: Double = 0.0,
+        var locationLat: Double = 0.0)

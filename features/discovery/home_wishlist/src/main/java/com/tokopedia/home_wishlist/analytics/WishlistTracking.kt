@@ -43,6 +43,7 @@ object WishlistTracking {
     private const val FIELD_SHOP_ID = "shop_id"
     private const val FIELD_SHOP_TYPE = "shop_type"
     private const val FIELD_SHOP_NAME = "shop_name"
+    private const val FIELD_DIMENSION_40 = "dimension40"
     private const val FIELD_DIMENSION_45 = "dimension45"
     private const val FIELD_DIMENSION_83 = "dimension83"
 
@@ -74,7 +75,7 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_PRODUCT = "click product"
     private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
     private const val EVENT_ACTION_CLICK_SEE_CART = "click - cek keranjang on wishlist"
-    private const val EVENT_ACTION_CLICK_BUY = "click - beli - app only"
+    private const val EVENT_ACTION_CLICK_BUY = "click - beli on wishlist"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
     private fun getTracker(): ContextAnalytics {
@@ -162,8 +163,8 @@ object WishlistTracking {
                                            list: String): Any {
         return DataLayer.mapOf(
                 FIELD_ACTION_FIELD, DataLayer.mapOf(
-                FIELD_PRODUCT_LIST, list
-        ),
+                    FIELD_PRODUCT_LIST, list
+                ),
                 FIELD_PRODUCTS, DataLayer.listOf(
                 DataLayer.mapOf(
                         FIELD_PRODUCT_NAME, item.name,
@@ -178,6 +179,7 @@ object WishlistTracking {
                         FIELD_SHOP_NAME, item.shop.name,
                         FIELD_CATEGORY_ID, VALUE_NONE_OTHER,
                         FIELD_DIMENSION_45, cartId,
+                        FIELD_DIMENSION_40, list,
                         FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         )

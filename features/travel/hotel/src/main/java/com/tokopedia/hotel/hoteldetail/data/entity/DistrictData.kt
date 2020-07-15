@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName
  */
 class DistrictData(@SerializedName("id")
                    @Expose
-                   val id: Int = 0,
+                   val id: Long = 0,
                    @SerializedName("cityId")
                    @Expose
-                   val cityId: Int = 0,
+                   val cityId: Long = 0,
                    @SerializedName("latitude")
                    @Expose
                    val latitude: Double = 0.0,
@@ -25,15 +25,15 @@ class DistrictData(@SerializedName("id")
                    val name: String = "") : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readInt(),
+            parcel.readLong(),
+            parcel.readLong(),
             parcel.readDouble(),
             parcel.readDouble(),
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeInt(cityId)
+        parcel.writeLong(id)
+        parcel.writeLong(cityId)
         parcel.writeDouble(latitude)
         parcel.writeDouble(longitude)
         parcel.writeString(name)

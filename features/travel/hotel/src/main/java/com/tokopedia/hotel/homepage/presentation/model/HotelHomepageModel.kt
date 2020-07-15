@@ -16,7 +16,7 @@ class HotelHomepageModel(var checkInDate: String = "",
                          var locLat: Double = 0.0,
                          var locLong: Double = 0.0,
                          var locName: String = "Bali",
-                         var locId: Int = 4712,
+                         var locId: Long = 4712,
                          var locType: String = "region") : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -30,7 +30,7 @@ class HotelHomepageModel(var checkInDate: String = "",
             parcel.readDouble(),
             parcel.readDouble(),
             parcel.readString(),
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -44,7 +44,7 @@ class HotelHomepageModel(var checkInDate: String = "",
         parcel.writeDouble(locLat)
         parcel.writeDouble(locLong)
         parcel.writeString(locName)
-        parcel.writeInt(locId)
+        parcel.writeLong(locId)
         parcel.writeString(locType)
     }
 

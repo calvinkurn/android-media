@@ -10,6 +10,7 @@ public class AccountConstants {
     public static final String VARIABLES = "variables";
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry";
+    public static final String RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
     public static final String SHOP_LOCATION_QUERY = "query_shop_location";
@@ -47,6 +48,7 @@ public class AccountConstants {
         public static final String SHAKE_SHAKE = "shake - shake";
         public static final String SAFE_MODE = "safe mode";
         public static final String TERM_CONDITION = "terms & condition";
+        public static final String ABOUT_US = "about us";
         public static final String PRIVACY_POLICY = "privacy policy";
         public static final String APPLICATION_REVIEW = "application review";
         public static final String HELP_CENTER = "help center";
@@ -184,5 +186,9 @@ public class AccountConstants {
 
     public interface ErrorCodes{
         String ERROR_CODE_NULL_MENU = "ACC001";
+        String ERROR_CODE_ACCOUNT_SETTING_CONFIG = "ASC001";
+        String ERROR_CODE_BUYER_ACCOUNT = "ACB001";
+        String ERROR_CODE_SELLER_ACCOUNT = "ACS001";
+
     }
 }

@@ -3,5 +3,4 @@
 
     <integer name="shop_page_collapsing_toolbar_hide_time">50</integer>
     <integer name="radius_40">40</integer>
-
 </resources>

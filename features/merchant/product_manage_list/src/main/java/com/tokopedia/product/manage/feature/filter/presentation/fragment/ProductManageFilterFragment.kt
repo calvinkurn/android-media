@@ -28,13 +28,13 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_filter.*
+import kotlinx.android.synthetic.main.fragment_product_manage_filter_new.*
 import javax.inject.Inject
 
 class ProductManageFilterFragment(private val onFinishedListener: OnFinishedListener,
@@ -62,7 +62,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
 
         fun createInstance(context: Context, filterOptionWrapper: FilterOptionWrapper?, onFinishedListener: OnFinishedListener) : ProductManageFilterFragment {
             return ProductManageFilterFragment(onFinishedListener, filterOptionWrapper).apply{
-                val view = View.inflate(context, R.layout.fragment_filter,null)
+                val view = View.inflate(context, R.layout.fragment_product_manage_filter_new,null)
                 setChild(view)
                 setTitle(BOTTOMSHEET_TITLE)
             }

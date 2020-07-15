@@ -11,4 +11,10 @@ interface ProductCardListener {
     fun onWishlistButtonClicked(productItem: ProductsItem, position: Int)
 
     fun onProductImpressed(item: ProductsItem, adapterPosition: Int)
+
+    fun onThreeDotsClicked(productItem: ProductsItem, position: Int) {
+
+    }
+
+    fun hasThreeDots() = false
 }

@@ -55,7 +55,7 @@ class TokopointsHomeRepository @Inject constructor(@Named(TP_GQL_TOKOPOINT_DETAI
         val request5 = GraphqlRequest(tp_gql_sum_coupon,
                 TokoPointSumCouponOuter::class.java, false)
         mGetCouponCountUseCase.addRequest(request5)
-        mGetTokoPointDetailUseCase.executeOnBackground().getSuccessData<TokoPointSumCouponOuter>()
+        mGetCouponCountUseCase.executeOnBackground().getSuccessData<TokoPointSumCouponOuter>()
 
     }
 }

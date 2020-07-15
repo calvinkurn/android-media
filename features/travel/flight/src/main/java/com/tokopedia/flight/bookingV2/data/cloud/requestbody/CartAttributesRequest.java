@@ -20,6 +20,9 @@ public class CartAttributesRequest {
     @SerializedName("did")
     @Expose
     private int did;
+    @SerializedName("request_id")
+    @Expose
+    private String requestId;
 
     public CartAttributesRequest() {
     }
@@ -54,5 +57,13 @@ public class CartAttributesRequest {
 
     public void setDid(int did) {
         this.did = did;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

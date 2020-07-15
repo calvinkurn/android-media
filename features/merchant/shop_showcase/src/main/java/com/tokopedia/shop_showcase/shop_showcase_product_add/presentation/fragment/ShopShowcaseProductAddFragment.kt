@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragm
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -61,6 +62,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
 
         const val SHOWCASE_PRODUCT_LIST = "product_list"
+        const val SHOWCASE_DELETED_LIST = "deleted_list"
     }
 
     @Inject
@@ -114,6 +116,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
+    private var productListFirstItem: Int = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+
     private val buttonBackToTop: FloatingButtonUnify? by lazy {
         view?.findViewById<FloatingButtonUnify>(R.id.btn_back_to_top)?.apply {
             circleMainMenu.run {
@@ -165,11 +169,33 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 }
             }
 
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Handler().postDelayed({
+                        slideUpCounter()
+                    }, 1800)
+                }
+                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val currentFirstVisible = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if(currentFirstVisible > productListFirstItem)
+                        slideDownCounter()
+                    else
+                        slideDownCounter()
+
+                    productListFirstItem = currentFirstVisible
+                }
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
         }
     }
 
     private val showcaseProductAddViewModel: ShowcaseProductAddViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShowcaseProductAddViewModel::class.java)
+    }
+
+    private val productSelectedCounter: CardView? by lazy {
+        view?.findViewById<CardView>(R.id.product_choosen_counter)
     }
 
     private val emptyState: EmptyStateUnify? by lazy {
@@ -239,6 +265,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     private fun goBackToPreviewShowcase() {
         val previewShowcaseIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
         previewShowcaseIntent.putParcelableArrayListExtra(SHOWCASE_PRODUCT_LIST, showcaseProductListAdapter?.getSelectedProduct())
+        previewShowcaseIntent.putParcelableArrayListExtra(SHOWCASE_DELETED_LIST, showcaseProductListAdapter?.getDeletedProduct())
         activity?.setResult(Activity.RESULT_OK, previewShowcaseIntent)
         activity?.finish()
     }
@@ -304,12 +331,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
                     val productList: MutableList<ShowcaseProduct> = it.data.toMutableList()
                     val selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
-                    val appendedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.NEW_APPENDED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
-                    val isActionEdit = activity?.intent?.getBooleanExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, false)
+                    val excludedProduct = activity?.intent?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseAddFragment.EXCLUDED_SHOWCASE_PRODUCT)
 
                     if(productList.size == 0 && !isLoadNextPage) {
                         showEmptyViewProductSearch(true)
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, selectedProductList!!, appendedProductList!!, isActionEdit!!)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, excludedProduct!!, selectedProductList!!)
                     } else {
                         showEmptyViewProductSearch(false)
                         productList.forEach { showcaseProduct->
@@ -318,7 +344,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                                     showcaseProduct.ishighlighted = true
                             }
                         }
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, selectedProductList!!, appendedProductList!!, isActionEdit!!)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, excludedProduct!!, selectedProductList!!)
                         if (isLoadNextPage)
                             scrollListener.updateStateAfterGetData()
                     }
@@ -375,6 +401,18 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private fun hideLoadingProgress() {
         showcaseProductListAdapter?.hideLoadingProgress()
+    }
+
+    private fun slideDownCounter() {
+        productSelectedCounter?.animate()?.translationY(250f)
+        if(buttonBackToTop?.circleMainMenu?.visibility == View.VISIBLE)
+            buttonBackToTop?.circleMainMenu?.hide()
+    }
+
+    private fun slideUpCounter() {
+        productSelectedCounter?.animate()?.translationY(0f)
+        if(gridLayoutManager.findFirstCompletelyVisibleItemPosition() != 0)
+            buttonBackToTop?.circleMainMenu?.show()
     }
 
 }

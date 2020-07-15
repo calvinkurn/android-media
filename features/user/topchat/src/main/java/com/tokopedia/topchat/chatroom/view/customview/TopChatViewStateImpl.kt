@@ -85,14 +85,6 @@ class TopChatViewStateImpl(
     override fun getRootViewId() = R.id.main
     override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
 
-    override fun getInterlocutorName(headerName: CharSequence): CharSequence {
-        var name = headerName
-        if (name.length > 12) {
-            name = name.substring(0, 12) + "..."
-        }
-        return name
-    }
-
     init {
         initView()
     }
@@ -117,6 +109,11 @@ class TopChatViewStateImpl(
 
         initProductPreviewLayout()
         initHeaderLayout()
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addHeaderDateIfDifferent(visitable)
+        super.onReceiveMessageEvent(visitable)
     }
 
     private fun initHeaderLayout() {
@@ -426,7 +423,7 @@ class TopChatViewStateImpl(
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
         myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
         myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setBtnOk(view.context.getString(R.string.topchat_chat_delete_confirm))
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
@@ -435,11 +432,11 @@ class TopChatViewStateImpl(
         myAlertDialog.show()
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
         val action = notifier.findViewById<View>(R.id.action)
-        if (b) {
+        if (isWebSocketError) {
             title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 

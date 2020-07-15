@@ -56,6 +56,7 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseL
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel;
+import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -177,7 +178,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     visitables.add(new OrderListRecomTitleViewModel(recomTitle));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
-                getView().addData(visitables, true);
+                getView().addData(visitables, true, false);
             }
         });
     }
@@ -286,7 +287,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
                         orderList.addAll(getOrderListVisitables(data));
-                        getView().addData(getOrderListVisitables(data), false);
+                        getView().addData(getOrderListVisitables(data), false, typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL);
                         getView().setLastOrderId(data.orders().get(0).getOrderId());
                         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                             checkBomSurveyEligibility();
@@ -474,11 +475,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         int productId = 0;
         int shopId = 0;
         String externalSource = "";
+        String clickUrl = "";
         if (productModel instanceof OrderListRecomViewModel) {
             OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
             productId = orderListRecomViewModel.getRecommendationItem().getProductId();
             shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
             externalSource = "recommendation_list";
+            clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
+        }
+
+        if(!clickUrl.isEmpty()) {
+            getView().sendATCTrackingUrl(clickUrl);
         }
         AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
         addToCartRequestParams.setProductId(productId);

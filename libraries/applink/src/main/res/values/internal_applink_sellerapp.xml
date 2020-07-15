@@ -20,5 +20,4 @@
     <string name="path_sellerhome_other_settings" translatable="false">/sellerhome-othersettings</string>
     <string name="path_centralized_promo" translatable="false">/centralized-promo</string>
     <string name="path_menu_setting" translatable="false">/menu-setting</string>
-    <string name="path_sellerapp_onboarding" translatable="false">/seller-onboarding</string>
 </resources>

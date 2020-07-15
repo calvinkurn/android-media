@@ -3,15 +3,17 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.BaseSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.BaseSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 
 abstract class SettingViewHolder<T : BaseSetting>(
         itemView: View?,
         val settingListener: SettingListener
 ) : AbstractViewHolder<T>(itemView) {
 
-    protected val settingSwitch: Switch? = getSwitchView(itemView)
+    protected val settingSwitch: Switch? by lazy {
+        getSwitchView(itemView)
+    }
 
     abstract fun getSwitchView(itemView: View?): Switch?
 
@@ -20,11 +22,11 @@ abstract class SettingViewHolder<T : BaseSetting>(
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
         fun getNotificationType(): String
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun updateParentSettingLastState(position: Int)
     }
 
     override fun bind(element: T?) {
         if (element == null) return
-
         settingSwitch?.isChecked = element.status
         settingSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (element.status != isChecked) {
@@ -42,8 +44,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     override fun bind(element: T, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-
-        val payload = payloads[0]
+        val payload = payloads.first()
         if (payload == PAYLOAD_SWITCH) {
             settingSwitch?.isChecked = element.status
         }
@@ -55,6 +56,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         val notificationType: String = settingListener.getNotificationType()
         val updatedSettingIds: List<Map<String, Any>> = getUpdatedSettingIds(element, checked)
         settingListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
+        settingListener.updateParentSettingLastState(adapterPosition)
     }
 
     protected fun getMapSettingToChange(element: BaseSetting, checked: Boolean) : Map<String, Any> {
@@ -67,9 +69,9 @@ abstract class SettingViewHolder<T : BaseSetting>(
     abstract fun getUpdatedSettingIds(element: T, checked: Boolean): List<Map<String, Any>>
 
     companion object {
-        val PAYLOAD_SWITCH = "payload_switch"
-        val PARAM_SETTING_KEY = "name"
-        val PARAM_SETTING_VALUE = "value"
+        const val PAYLOAD_SWITCH = "payload_switch"
+        const val PARAM_SETTING_KEY = "name"
+        const val PARAM_SETTING_VALUE = "value"
     }
 
 }

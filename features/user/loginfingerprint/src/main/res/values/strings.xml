@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_main">Masuk dengan Sidik Jari</string>
+    <string name="login_fingerprint_aktivasi_title">Aktifkan Sidik Jari</string>
+    <string name="login_fingerprint_aktivasi_body">Caranya mudah! Kamu hanya perlu sidik jari untuk login lebih cepat.</string>
+    <string name="login_fingerprint_aktivasi_heading">Yuk, masuk pakai sidik jari!</string>
+    <string name="login_fingerprint_aktivasi_later">Nanti Saja</string>
+    <string name="error_too_many_attempts">Kamu sudah 3 kali gagal verifikasi sidik jari. Silakan coba lagi dalam 30 menit.</string>
+    <string name="error_not_recognized">Fingerprint tidak dikenal</string>
+    <string name="fp_verified">Sidik jari terverifikasi</string>
+    <string name="error_fp_retry">Sidik jari tidak dikenal, coba lagi?</string>
+    <string name="info_touch_fp">Sentuh sensor sidik jari</string>
+    <string name="error_no_fp_enrolled">Tidak ada fingerprint terdaftar</string>
+    <string name="error_no_fp_hardware">Device tidak memiliki fingerprint</string>
+    <string name="error_default_fp">Terjadi kesalahan, silahkan coba sesaat lagi</string>
+    <string name="title_choose_account">Silahkan pilih akun kamu</string>
+
+    <string name="error_fingerprint_invalid_mode">Must pass valid mode</string>
+    <string name="error_fingerprint_use_other_method">Terjadi Kesalahan, silahkan coba sesaat lagi atau gunakan metode lain</string>
+
+</resources>

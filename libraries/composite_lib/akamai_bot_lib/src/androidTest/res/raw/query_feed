@@ -1,0 +1,291 @@
+query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
+  feed(limit: $limit, cursor: $cursor, userID: $userID, source: $source) {
+    __typename
+    data {
+      __typename
+      id
+      create_time
+      type
+      cursor
+      allow_report
+      source {
+        __typename
+        type
+        shop {
+          __typename
+          id
+          name
+          avatar
+          isOfficial
+          isGold
+          url
+          shopLink
+          shareLinkDescription
+          shareLinkURL
+        }
+      }
+      content {
+        __typename
+        type
+        display
+        total_product
+        products {
+          __typename
+          id
+          name
+          price
+          image
+          image_single
+          wholesale {
+            __typename
+            qty_min_fmt
+          }
+          freereturns
+          preorder
+          cashback
+          url
+          productLink
+          wishlist
+          rating
+          price_int
+        }
+        redirect_url_app
+        status_activity
+        new_status_activity {
+          __typename
+          source
+          activity
+          amount
+        }
+        kolpost {
+          __typename
+          id
+          description
+          commentCount
+          likeCount
+          isLiked
+          isFollowed
+          createTime
+          showComment
+          showLike
+          userName
+          userPhoto
+          userInfo
+          userUrl
+          userId
+          headerTitle
+          content {
+            __typename
+            imageurl
+            video
+            youtube
+            type
+            tags {
+              __typename
+              id
+              type
+              url
+              link
+              price
+              caption
+            }
+          }
+        }
+        followedkolpost {
+          __typename
+          id
+          description
+          commentCount
+          likeCount
+          isLiked
+          isFollowed
+          createTime
+          showComment
+          showLike
+          userName
+          userPhoto
+          userInfo
+          userUrl
+          headerTitle
+          userId
+          content {
+            __typename
+            imageurl
+            video
+            youtube
+            type
+            tags {
+              __typename
+              id
+              type
+              url
+              link
+              price
+              caption
+            }
+          }
+        }
+        kolrecommendation {
+          __typename
+          headerTitle
+          exploreLink
+          exploreText
+          kols {
+            __typename
+            userName
+            userId
+            userPhoto
+            isFollowed
+            info
+            url
+          }
+        }
+        favorite_cta {
+          __typename
+          title_en
+          title_id
+          subtitle_en
+          subtitle_id
+        }
+        kol_cta {
+          __typename
+          img_header
+          title
+          subtitle
+          button_text
+          click_url
+          click_applink
+        }
+        topads {
+          __typename
+          id
+          ad_ref_key
+          redirect
+          sticker_id
+          sticker_image
+          product_click_url
+          shop_click_url
+          product {
+            __typename
+            id
+            name
+            image {
+              __typename
+              m_url
+              s_url
+              xs_url
+              m_ecs
+              s_ecs
+              xs_ecs
+            }
+            uri
+            relative_uri
+            price_format
+            count_talk_format
+            count_review_format
+            category {
+              __typename
+              id
+            }
+            product_preorder
+            product_wholesale
+            free_return
+            product_cashback
+            product_cashback_rate
+            product_rating
+          }
+          shop {
+            __typename
+            id
+            name
+            domain
+            tagline
+            location
+            city
+            image_product {
+              __typename
+              product_id
+              product_name
+              image_url
+            }
+            image_shop {
+              __typename
+              cover_ecs
+              s_ecs
+              xs_ecs
+              s_url
+              xs_url
+            }
+            gold_shop
+            lucky_shop
+            shop_is_official
+            owner_id
+            is_owner
+            badges {
+              __typename
+              title
+              image_url
+            }
+            uri
+            gold_shop_badge
+          }
+          applinks
+        }
+        polling {
+          poll_id
+          title
+          description
+          question
+          commentCount
+          likeCount
+          createTime
+          liked
+          followed
+          showComment
+          showLike
+          totalVoter
+          isAnswered
+          options {
+            option_id
+            option
+            weblink
+            applink
+            image_option
+            voter
+            percentage
+            is_selected
+            __typename
+          }
+          userName
+          userPhoto
+          userUrl
+          userInfo
+          relation {
+            isFollowed
+            isLiked
+          }
+          __typename
+        }
+        banner{
+            img_url
+            click_url
+            click_applink
+            width_to_height_ratio
+          __typename
+        }
+      }
+    }
+    links {
+      __typename
+      self
+      pagination {
+        __typename
+        has_next_page
+      }
+    }
+    meta {
+      __typename
+      total_data
+    }
+  }
+}

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.tokopoints.view.addPoint.AddPointViewModel
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogViewModel
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingViewModel
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
@@ -11,6 +12,7 @@ import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewMode
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryViewModel
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
+import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -64,5 +66,17 @@ abstract class ViewModelModule {
     @TokoPointScope
     @ViewModelKey(TokoPointsHomeViewModel::class)
     abstract fun getTokopointsHome(viewModel: TokoPointsHomeViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(AddPointViewModel::class)
+    abstract fun getAddPoint(viewModel: AddPointViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(ValidateMerchantPinViewModel::class)
+    abstract fun getValidatePin(viewModel: ValidateMerchantPinViewModel) : ViewModel
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.promotionstarget.presentation.subscriber
 
 import android.app.Activity
+import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -53,7 +54,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     init {
         val component = DaggerPromoTargetComponent.builder()
-                .appModule(AppModule(appContext))
+                .appModule(AppModule(appContext as Application))
                 .build()
         component.inject(this)
     }

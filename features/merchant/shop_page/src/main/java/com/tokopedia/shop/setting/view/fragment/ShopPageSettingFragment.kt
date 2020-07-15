@@ -68,7 +68,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private lateinit var dashboardView: View
     private lateinit var shopPageSettingView: RecyclerView
     private lateinit var retryMessageView: TextView
-    private lateinit var retryButton: Button
+    private lateinit var retryButton: View
     private val isOfficial: Boolean
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean

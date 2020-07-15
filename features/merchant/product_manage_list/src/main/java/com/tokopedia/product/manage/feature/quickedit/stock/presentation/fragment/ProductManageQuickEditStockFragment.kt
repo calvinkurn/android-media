@@ -16,8 +16,11 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
 import com.tokopedia.product.manage.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
@@ -31,10 +34,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         HasComponent<ProductManageQuickEditStockComponent> {
 
     companion object {
-
-        const val MAXIMUM_STOCK = 999999
-        const val MINIMUM_STOCK = 0
-        const val MAXIMUM_LENGTH = 7
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
 
@@ -81,7 +80,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         quickEditStockQuantityEditor.apply {
             maxValue = MAXIMUM_STOCK
             minValue = MINIMUM_STOCK
-            editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_LENGTH))
+            editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STOCK_LENGTH))
             editText.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     if(quickEditStockQuantityEditor.editText.text.isEmpty()) {

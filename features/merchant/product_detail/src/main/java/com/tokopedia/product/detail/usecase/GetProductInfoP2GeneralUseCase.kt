@@ -11,7 +11,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
-import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
@@ -30,6 +29,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,7 +39,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
     companion object {
         fun createParams(shopId: Int, productId: Int, productPrice: Int,
                          condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                         userId: Int, forceRefresh: Boolean, minOrder: Int): RequestParams =
+                         userId: Int, forceRefresh: Boolean, minOrder: Int, warehouseId: String?, isVariant: Boolean): RequestParams =
                 RequestParams.create().apply {
                     putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
                     putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -51,6 +51,8 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                     putInt(ProductDetailCommonConstant.PARAM_USER_ID, userId)
                     putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
                     putInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, minOrder)
+                    putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
+                    putBoolean(ProductDetailCommonConstant.PARAM_IS_VARIANT, isVariant)
                 }
     }
 
@@ -69,10 +71,18 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val userId = requestParams.getInt(ProductDetailCommonConstant.PARAM_USER_ID, 0)
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
         val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
+        val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, null)
+        val isVariant = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_VARIANT, false)
 
-        val paramsVariant = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
+        val paramsVariant = mapOf(
+                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString(),
+                ProductDetailConstant.PARAM_OPTION to mapOf(
+                        ProductDetailConstant.KEY_USER_ID to userId.toString(),
+                        ProductDetailConstant.PARAM_INCLUDE_CAMPAIGN to true,
+                        ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
+                        ProductDetailCommonConstant.PARAM_INCLUDE_WAREHOUSE to true))
         val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
-                ProductDetailVariantResponse::class.java, paramsVariant)
+                ProductDetailVariantCommonResponse::class.java, paramsVariant)
 
         val shopBadgeParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId))
         val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
@@ -135,15 +145,19 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
                 FinancingDataResponse::class.java, pdpFinancingCalculationParam)
 
-        val requests = mutableListOf(variantRequest, ratingRequest, wishlistCountRequest, voucherRequest,
+        val requests = mutableListOf(ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                 helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
+
+        if (isVariant) {
+            requests.add(variantRequest)
+        }
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
-            if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
-                productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
+            if (gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)?.isNotEmpty() != true && isVariant) {
+                productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantCommonResponse>(ProductDetailVariantCommonResponse::class.java).data
             }
 
             if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {

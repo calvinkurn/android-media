@@ -1,0 +1,16 @@
+query {
+  TravelDestination() {
+    destination{
+      attributes{
+        title
+        subtitle
+        webURL
+        appURL
+        imageURL
+        }
+    }
+    meta{
+      title
+    }
+  }
+}

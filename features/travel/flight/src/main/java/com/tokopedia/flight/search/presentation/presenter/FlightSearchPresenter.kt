@@ -257,13 +257,15 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val child = flightPassengerViewModel.children
         val infant = flightPassengerViewModel.infant
         val classID = passDataViewModel.flightClass.id
+        val searchRequestId = passDataViewModel.searchRequestId
 
         val requestModel = FlightSearchApiRequestModel(
                 airportCombineModel.depAirport,
                 airportCombineModel.arrAirport,
                 date, adult, child, infant, classID,
                 airportCombineModel.airlines,
-                FlightRequestUtil.getLocalIpAddress())
+                FlightRequestUtil.getLocalIpAddress(),
+                searchRequestId)
 
         flightSearchUseCase.execute(flightSearchUseCase.createRequestParams(
                 requestModel,
@@ -372,13 +374,15 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val child = flightPassengerViewModel.children
         val infant = flightPassengerViewModel.infant
         val classID = passDataViewModel.flightClass.id
+        val searchRequestId = passDataViewModel.searchRequestId
 
         val requestModel = FlightSearchApiRequestModel(
                 airportCombineModel.arrAirport,
                 airportCombineModel.depAirport,
                 date, adult, child, infant, classID,
                 airportCombineModel.airlines,
-                FlightRequestUtil.getLocalIpAddress())
+                FlightRequestUtil.getLocalIpAddress(),
+                searchRequestId)
 
         flightSearchUseCase.execute(flightSearchUseCase.createRequestParams(
                 requestModel,
@@ -416,6 +420,28 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         flightSearchCombinedUseCase.unsubscribe()
         flightSortAndFilterUseCase.unsubscribe()
         flightSearchUseCase.unsubscribe()
+    }
+
+    override fun recountFilterCounter(): Int {
+        var counter = 0
+
+        counter += if (view.getFilterModel().transitTypeList != null) view.getFilterModel().transitTypeList.size else 0
+        counter += if (view.getFilterModel().airlineList != null) view.getFilterModel().airlineList.size else 0
+        counter += if (view.getFilterModel().departureTimeList != null) view.getFilterModel().departureTimeList.size else 0
+        counter += if (view.getFilterModel().arrivalTimeList != null) view.getFilterModel().arrivalTimeList.size else 0
+        counter += if (view.getFilterModel().refundableTypeList != null) view.getFilterModel().refundableTypeList.size else 0
+        counter += if (view.getFilterModel().facilityList != null) view.getFilterModel().facilityList.size else 0
+
+        if (view.getFilterModel().priceMin > view.getPriceStatisticPair().first ||
+                view.getFilterModel().priceMax < view.getPriceStatisticPair().second) {
+            counter++
+        }
+
+        return counter
+    }
+
+    override fun sendQuickFilterTrack(filterName: String) {
+        flightAnalytics.eventQuickFilterClick(filterName)
     }
 
     private fun countProgress(): Int = FlightSearchFragment.MAX_PROGRESS / maxCall

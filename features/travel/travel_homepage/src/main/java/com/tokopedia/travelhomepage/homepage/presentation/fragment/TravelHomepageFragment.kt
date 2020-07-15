@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -20,15 +21,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
+import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
+import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import com.tokopedia.travelhomepage.homepage.presentation.viewmodel.TravelHomepageViewModel
 import kotlinx.android.synthetic.main.travel_homepage_fragment.*
 import javax.inject.Inject
@@ -36,7 +37,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
+class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, TravelHomepageActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,7 +52,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             travelHomepageViewModel = viewModelProvider.get(TravelHomepageViewModel::class.java)
@@ -63,6 +63,13 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.travel_homepage_fragment, container, false)
         return view
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<TravelHomepageItemModel, TravelHomepageTypeFactory> {
+        val baseListAdapter = TravelHomepageAdapter(adapterTypeFactory)
+        baseListAdapter.setOnAdapterInteractionListener(this)
+        baseListAdapter.setHasStableIds(true)
+        return baseListAdapter
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
@@ -78,6 +85,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as VerticalRecyclerView).isNestedScrollingEnabled = false
         getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -136,7 +144,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
         travelHomepageViewModel.travelItemList.observe(this, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            renderList(it)
         })
 
         travelHomepageViewModel.isAllError.observe(this, Observer {
@@ -155,14 +163,15 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun loadData(page: Int) {
-        travelHomepageViewModel.getIntialList(swipeToRefresh?.isRefreshing ?: false)
+        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), swipeToRefresh?.isRefreshing
+                ?: false)
     }
 
     fun loadDataFromCloud() {
         isLoadingInitialData = true
         adapter.clearAllElements()
         showLoading()
-        travelHomepageViewModel.getIntialList(true)
+        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), true)
     }
 
     override fun initInjector() {
@@ -171,34 +180,33 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun getScreenName(): String = ""
 
-    override fun onBannerVHItemBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), isFromCloud
-                ?: true)
+    override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepageMetaData, position, true)
     }
 
-    override fun onCategoryVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list), isFromCloud
-                ?: true)
+    override fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
-    override fun onDestinationVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination), isFromCloud
-                ?: true)
+    override fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
-    override fun onOrderListVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), isFromCloud
-                ?: true)
+    override fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
-    override fun onRecentSearchVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search), isFromCloud
-                ?: true)
+    override fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
-    override fun onRecommendationVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), isFromCloud
-                ?: true)
+    override fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    }
+
+    override fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {
@@ -207,60 +215,69 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
                 RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
                 DeeplinkMapper.getRegisteredNavigation(this, appUrl).isNotEmpty() -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
                 webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
-                else -> { /* do nothing */ }
+                else -> { /* do nothing */
+                }
             }
         }
     }
 
-    override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
-        when (type) {
-            TYPE_ALL_PROMO -> travelHomepageTrackingUtil.travelHomepageClickAllBanner()
-            TYPE_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickOrder(position, categoryName)
-            TYPE_ALL_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickAllOrder()
-            TYPE_RECENT_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickRecentSearch(position, categoryName)
-            TYPE_POPULAR_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position, categoryName)
-            TYPE_ALL_DEALS -> travelHomepageTrackingUtil.travelHomepageClickAllDeals()
-        }
-    }
-
-    override fun onTrackBannerImpression(banner: TravelCollectiveBannerModel.Banner, position: Int) {
+    override fun onViewSliderBanner(banner: TravelCollectiveBannerModel.Banner, position: Int) {
         travelHomepageTrackingUtil.travelHomepageImpressionBanner(banner, position)
     }
 
-    override fun onTrackBannerClick(banner: TravelCollectiveBannerModel.Banner, position: Int) {
+    override fun onClickSliderBannerItem(banner: TravelCollectiveBannerModel.Banner, position: Int) {
         travelHomepageTrackingUtil.travelHomepageClickBanner(banner, position)
     }
 
-    override fun onTrackCategoryClick(category: TravelHomepageCategoryListModel.Category, position: Int) {
+    override fun onClickSeeAllSliderBanner() {
+        travelHomepageTrackingUtil.travelHomepageClickAllBanner()
+    }
+
+    override fun onClickDynamicIcon(category: TravelHomepageCategoryListModel.Category, position: Int) {
         travelHomepageTrackingUtil.travelHomepageClickCategory(category, position)
     }
 
-    override fun onTrackDealsClick(deal: TravelHomepageSectionModel.Item, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickDeal(deal, position)
+    override fun onClickDynamicBannerItem(destination: TravelHomepageDestinationModel.Destination, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position, componentPosition, sectionTitle)
     }
 
-    override fun onTrackPopularDestinationClick(destination: TravelHomepageDestinationModel.Destination, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position)
+    override fun onViewDynamicBanners(destinations: List<TravelHomepageDestinationModel.Destination>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageDynamicBannerImpression(destinations, componentPosition, sectionTitle)
     }
 
-    override fun onPopularDestinationClick(appUrl: String, webUrl: String) {
-        context?.let {
-            RouteManager.route(context, appUrl)
-        }
+    override fun onViewProductCards(list: List<ProductGridCardItemModel>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelProductCardImpression(list, componentPosition, sectionTitle)
+    }
+
+    override fun onClickProductCard(item: ProductGridCardItemModel, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelProductCardClick(item, position, componentPosition, sectionTitle)
+    }
+
+    override fun onClickSeeAllProductCards(componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageClickSeeAllProductCard(componentPosition, sectionTitle)
+    }
+
+    override fun onViewLegoBanner(list: List<LegoBannerItemModel>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageLegoImpression(list, componentPosition, sectionTitle)
+    }
+
+    override fun onClickLegoBanner(item: LegoBannerItemModel, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageLegoClick(item, position, componentPosition, sectionTitle)
+    }
+
+    override fun onViewProductSlider(list: List<TravelHomepageSectionModel.Item>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelProductCardSliderImpression(list, componentPosition, sectionTitle)
+    }
+
+    override fun onClickProductSliderItem(item: TravelHomepageSectionModel.Item, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelSliderProductCardClick(item, position, componentPosition, sectionTitle)
+    }
+
+    override fun onClickSeeAllProductSlider(componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageClickSeeAllSliderProductCard(componentPosition, sectionTitle)
     }
 
     companion object {
         fun getInstance(): TravelHomepageFragment = TravelHomepageFragment()
-
-        const val TYPE_ORDER_LIST = 1
-        const val TYPE_RECENT_SEARCH = 2
-        const val TYPE_RECOMMENDATION = 3
-        const val TYPE_POPULAR_SEARCH = 4
-        const val TYPE_ALL_PROMO = 5
-        const val TYPE_ALL_ORDER_LIST = 6
-        const val TYPE_ALL_DEALS = 7
-
-        const val TYPE_POPULAR_SEARCH_CATEGORY = "popularDestination"
-
     }
 }

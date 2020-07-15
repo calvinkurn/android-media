@@ -1,0 +1,13 @@
+query {
+    balance {
+        buyer_hold
+        buyer_hold_fmt
+        buyer_usable
+        buyer_usable_fmt
+        seller_hold
+        seller_hold_fmt
+        seller_usable
+        seller_usable_fmt
+        have_error
+    }
+}

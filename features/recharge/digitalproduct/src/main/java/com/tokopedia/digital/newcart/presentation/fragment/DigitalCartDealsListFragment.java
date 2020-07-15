@@ -76,6 +76,11 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     }
 
     @Override
+    public int getRecyclerViewResourceId() {
+        return com.tokopedia.digital.R.id.recycler_view;
+    }
+
+    @Override
     protected DigitalDealsAdapterTypeFactory getAdapterTypeFactory() {
         return new DigitalDealsAdapterTypeFactory(this);
     }

@@ -138,7 +138,13 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             rvFlightFilter.setHasFixedSize(true)
 
             btnFlightFilterSave.setOnClickListener {
-                listener?.onSaveFilter(getFlightSelectedSort(), getFlightFilterModel())
+                val filterModel = getFlightFilterModel()
+                filterModel?.apply {
+                    setHasFilter(getStatisticModel())
+                }
+                listener?.onSaveFilter(getFlightSelectedSort(),
+                        filterModel,
+                        Pair(getStatisticModel()?.minPrice ?: 0, getStatisticModel()?.maxPrice ?: Int.MAX_VALUE))
                 dismiss()
             }
         }
@@ -253,7 +259,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     interface FlightFilterBottomSheetListener {
-        fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?)
+        fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?, statisticPricePair: Pair<Int, Int>)
     }
 
 }

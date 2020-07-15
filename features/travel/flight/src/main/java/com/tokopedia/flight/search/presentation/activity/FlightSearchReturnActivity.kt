@@ -26,8 +26,11 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     private lateinit var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+
+        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
+        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
+        super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment {
@@ -36,18 +39,6 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                 intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),
                 priceViewModel,
                 intent.getBooleanExtra(EXTRA_IS_COMBINE_DONE, false))
-    }
-
-    override fun initializeToolbarData() {
-        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
-        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
-
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                passDataViewModel.returnDate)
-        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
-        classString = passDataViewModel.flightClass.title
     }
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH_RETURN
@@ -69,8 +60,8 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     override fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
 
     override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                              isBestPairing: Boolean, isCombineDone: Boolean) {
-
+                              isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        passDataViewModel.searchRequestId = requestId
         if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
             startActivityForResult(FlightBookingActivity
                     .getCallingIntent(this,
@@ -92,14 +83,26 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         }
     }
 
-    companion object {
-        val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
-        val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
-        val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
-        val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
-        val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
+    override fun isReturnPage(): Boolean = true
 
-        private val REQUEST_CODE_BOOKING = 13
+    override fun initializeToolbarData() {
+
+        dateString = FlightDateUtil.formatDate(
+                FlightDateUtil.DEFAULT_FORMAT,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                passDataViewModel.returnDate)
+        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
+        classString = passDataViewModel.flightClass.title
+    }
+
+    companion object {
+        const val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
+        const val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
+        const val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
+        const val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
+        const val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
+
+        private const val REQUEST_CODE_BOOKING = 13
 
         fun getCallingIntent(context: Context,
                              passDataViewModel: FlightSearchPassDataViewModel,

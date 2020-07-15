@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="review_count_format">(%d)</string>
-    <string name="product_card_module_label_add_to_card">+ Keranjang</string>
-    <string name="product_card_module_text_add_to_card">Tambah ke Keranjang</string>
+
+    <string name="product_card_review_count_format">(%d)</string>
+    <string name="product_card_text_add_to_cart_grid">+ Keranjang</string>
+    <string name="product_card_text_add_to_cart_list">Tambah ke Keranjang</string>
+    <string name="product_card_topads">Ad</string>
     <string name="product_card_module_text_sold_out">Terjual Habis</string>
     <string name="product_card_module_text_pre_order">PO</string>
     <string name="product_card_module_text_wholesale">Grosir</string>
+    <string name="product_card_out_of_stock">Stok Habis</string>
+    <string name="home_flashsale_card_ad">Ad</string>
 
 </resources>

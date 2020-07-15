@@ -3,18 +3,21 @@ package com.tokopedia.network.refreshtoken;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.util.EncoderDecoder;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -32,7 +35,7 @@ public class AccessTokenRefresh {
     private static final String REFRESH_TOKEN = "refresh_token";
 
     public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
-            networkRouter) {
+            networkRouter, Request finalRequest) {
 
         Map<String, String> params = new HashMap<>();
 
@@ -46,10 +49,10 @@ public class AccessTokenRefresh {
         String tokenResponseError = null;
         try {
             Response<String> response = responseCall.clone().execute();
-
-            if (response.errorBody() != null) {
-                tokenResponseError = response.errorBody().string();
-                checkShowForceLogout(tokenResponseError, networkRouter);
+            okhttp3.ResponseBody responseBody = response.errorBody();
+            if (responseBody != null) {
+                tokenResponseError = responseBody.string();
+                checkShowForceLogout(tokenResponseError, networkRouter, userSession, finalRequest);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
             } else {
@@ -95,11 +98,19 @@ public class AccessTokenRefresh {
     }
 
     protected Boolean isRequestDenied(String responseString) {
-        return responseString.toLowerCase().contains(FORCE_LOGOUT);
+        Boolean isDenied = responseString.toLowerCase().contains(FORCE_LOGOUT);
+        return isDenied;
     }
 
-    protected void checkShowForceLogout(String response, NetworkRouter networkRouter) {
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter, UserSessionInterface userSession, Request finalRequest) {
         if (isRequestDenied(response)) {
+            try {
+                networkRouter.sendAnalyticsAnomalyResponse("failed_refresh_token",
+                        userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
+                        response, TkpdAuthInterceptor.requestToString(finalRequest));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             networkRouter.showForceLogoutTokenDialog(response);
         }
     }

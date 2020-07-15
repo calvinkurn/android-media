@@ -118,7 +118,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
     }
 
     private fun showtnc() {
-        showTnC(R.string.money_in_tnc)
+        showTnC(MONEYIN_TNC_URL)
     }
 
     private fun setObservers() {
@@ -411,10 +411,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
 
     override fun getMenuRes(): Int {
         return -1
-    }
-
-    override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return TnCFragment.getInstance(TncResId)
     }
 
     override fun getNewFragment(): Fragment? {

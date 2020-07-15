@@ -1,5 +1,6 @@
 package com.tokopedia.developer_options.presentation.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.content.ClipData;
@@ -18,33 +19,53 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
-import com.tokopedia.developer_options.utils.OneOnClick;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.developer_options.R;
+import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
+import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
+import com.tokopedia.developer_options.utils.OneOnClick;
+import com.tokopedia.logger.utils.DataLogConfig;
+import com.tokopedia.logger.utils.TimberReportingTree;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
+
+import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -63,6 +84,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String DEVELOPEROPTION = "developeroption";
+    public static final int DEFAULT_DELAY_UI_BLOCK = 500;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -76,16 +98,28 @@ public class DeveloperOptionActivity extends BaseActivity {
     private AppCompatTextView remoteConfigStartButton;
     private ToggleButton toggleReactDeveloperMode;
     private ToggleButton toggleReactEnableDeveloperOptions;
+    private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
+
+    private View sendTimberButton;
+    private EditText editTextTimberMessage;
+
+    private View routeManagerButton;
+    private EditText editTextRouteManager;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
+    private TextView vGoToApplinkDebugger;
+    private TextView vGoToFpm;
     private TextView vGoToAnalytics;
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
+    private CheckBox toggleApplinkNotif;
+    private CheckBox toggleFpmNotif;
+    private CheckBox toggleFpmAutoLogFile;
 
     private CheckBox toggleUiBlockDebugger;
 
@@ -94,13 +128,16 @@ public class DeveloperOptionActivity extends BaseActivity {
     private ToggleButton groupChatLogToggle;
 
     private UserSessionInterface userSession;
-    private static TkpdCoreRouter tkpdCoreRouter;
     private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView tvFakeResponse;
 
     private Button requestFcmToken;
+
+    private PermissionCheckerHelper permissionCheckerHelper;
+    private EditText etUIBlockDelay;
 
     @Override
     public String getScreenName() {
@@ -163,13 +200,19 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
 
+        vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
+        vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
         toggleAnalytics = findViewById(R.id.toggle_analytics);
+        toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
+        toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
+        toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
+        etUIBlockDelay = findViewById(R.id.et_block_canary_delay);
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
@@ -184,6 +227,15 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
         toggleReactEnableDeveloperOptions.setChecked(true);
 
+        toggleTimberDevOption = findViewById(R.id.toggle_timber_dev_options);
+        toggleTimberDevOption.setChecked(false);
+
+        editTextTimberMessage = findViewById(R.id.et_timber_send);
+        sendTimberButton = findViewById(R.id.btn_send_timber);
+
+        editTextRouteManager = findViewById(R.id.et_route_manager);
+        routeManagerButton = findViewById(R.id.btn_route_manager);
+
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
@@ -195,6 +247,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
+
+        tvFakeResponse = findViewById(R.id.tv_fake_response);
 
         validateIfSellerapp();
     }
@@ -242,6 +296,8 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+
+
         SharedPreferences rnShakeReact = getSharedPreferences(SP_REACT_ENABLE_SHAKE);
         if (rnShakeReact.contains(IS_ENABLE_SHAKE_REACT)) {
             boolean stateReleaseMode = rnShakeReact.getBoolean(IS_ENABLE_SHAKE_REACT, false);
@@ -261,6 +317,71 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+        toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+                String remoteConfigStringKey;
+                if (GlobalConfig.isSellerApp()) {
+                    remoteConfigStringKey = "android_seller_app_log_config";
+                } else {
+                    remoteConfigStringKey = "android_customer_app_log_config";
+                }
+                String logConfigString = remoteConfig.getString(remoteConfigStringKey);
+                if (!TextUtils.isEmpty(logConfigString)) {
+                    DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
+                    if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
+                        UserSession userSession = new UserSession(this);
+                        TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
+                        timberReportingTree.setUserId(userSession.getUserId());
+                        timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
+                        timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
+                        timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
+                        Timber.plant(timberReportingTree);
+                    }
+                }
+                Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
+            } else {
+                Timber.uprootAll();
+                Timber.plant(new Timber.DebugTree() {
+                    @Override
+                    protected String createStackElementTag(@NotNull StackTraceElement element) {
+                        return String.format("[%s:%s:%s]",
+                                super.createStackElementTag(element),
+                                element.getMethodName(),
+                                element.getLineNumber());
+                    }
+                });
+                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        sendTimberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String timberMessage = editTextTimberMessage.getText().toString();
+                if (TextUtils.isEmpty(timberMessage)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Timber message should not empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    Timber.w(timberMessage);
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        routeManagerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String routeManagerString = editTextRouteManager.getText().toString();
+                if (TextUtils.isEmpty(routeManagerString)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    RouteManager.route(DeveloperOptionActivity.this, routeManagerString);
+                }
+            }
+        });
 
         SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
 
@@ -283,6 +404,28 @@ public class DeveloperOptionActivity extends BaseActivity {
             notificationManagerCompat.notify(777,notifReview);
                 });
 
+        toggleApplinkNotif.setChecked(ApplinkLogger.getInstance(this).isNotificationEnabled());
+        toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance(this).enableNotification(state));
+
+        vGoToApplinkDebugger.setOnClickListener(v -> ApplinkLogger.getInstance(this).openActivity());
+
+        toggleFpmNotif.setChecked(FpmLogger.getInstance().isNotificationEnabled());
+        toggleFpmNotif.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
+
+        toggleFpmAutoLogFile.setChecked(FpmLogger.getInstance().isAutoLogFileEnabled());
+        toggleFpmAutoLogFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    requestPermissionWriteFile();
+                } else {
+                    FpmLogger.getInstance().enableAutoLogFile(false);
+                }
+            }
+        });
+
+        vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());
+
         toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
@@ -300,10 +443,19 @@ public class DeveloperOptionActivity extends BaseActivity {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
-        SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
-        toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
         toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
-            uiBlockDebuggerPref.edit().putBoolean("isEnabled", state).apply();
+            String delayStr = etUIBlockDelay.getText().toString();
+            int delay = toInt(delayStr);
+            if (delay <= 0) {
+                delay = DEFAULT_DELAY_UI_BLOCK;
+            }
+            if (state) {
+                Toast.makeText(DeveloperOptionActivity.this,
+                        "(TODO) UI Block is enabled with delay " + delay , Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(DeveloperOptionActivity.this,
+                        "(TODO) UI Block is disabled" , Toast.LENGTH_LONG).show();
+            }
         });
 
         saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
@@ -354,6 +506,49 @@ public class DeveloperOptionActivity extends BaseActivity {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
         });
+
+        tvFakeResponse.setOnClickListener(v -> {
+            new FakeResponseActivityProvider().startActivity(this);
+        });
+    }
+
+    private int toInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        }catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void requestPermissionWriteFile() {
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        toggleFpmAutoLogFile.setChecked(false);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        FpmLogger.getInstance().enableAutoLogFile(true);
+                    }
+                },
+                "Please give storage access permission to write log file"
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     private void startRemoteConfigEditor(String prefix) {
@@ -385,13 +580,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         if (GlobalConfig.isSellerApp() && vDevOptionRN != null) {
             vDevOptionRN.setVisibility(View.GONE);
         }
-    }
-
-    private static TkpdCoreRouter coreRouter(Context applicationContext) {
-        if (tkpdCoreRouter == null) {
-            tkpdCoreRouter = (TkpdCoreRouter) applicationContext;
-        }
-        return tkpdCoreRouter;
     }
 
     private SharedPreferences getSharedPreferences(String name) {

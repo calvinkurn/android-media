@@ -2,24 +2,27 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.10-sellerapp",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.12-alpha",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.35-sellerapp",
-            network                 : "com.tokopedia.network:network:1.0.19-sellerapp",
+            graphql                 : "com.tokopedia.graphql:graphql:1.1.13",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
+            network                 : "com.tokopedia.network:network:1.1.3",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.10",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.11",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.16",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.19-alpha4",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
+            betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
+            chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
+            akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2",
+            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.5",
+            fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.4",
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.1-alpha",
             analyticParam           : "com.tokopedia.analytic:param:0.0.1-alpha",
             analyticProcessor       : "com.tokopedia.analytic:processor:0.0.1-alpha",
             analyticFirebaseRules    : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha2"
-
-
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -43,6 +46,7 @@ ext {
             datePickerRange         : ":libraries:date_picker_range",
             deviceInfo              : ":libraries:device_info",
             dynamicFeatures         : ":libraries:dynamic_features",
+            encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             graphView               : ":libraries:graph_view",
             imagePicker             : ":libraries:image_picker",
@@ -51,6 +55,7 @@ ext {
             inappupdate             : ":libraries:inappupdate",
             instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
+            irisSession             : ":libraries:iris_session",
 //            iris                    : ":libraries:iris_no_op",
             kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
@@ -67,6 +72,8 @@ ext {
             remoteConfig            : ":libraries:remote_config",
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
+            preReleaseInspector     : ":libraries:pre_release_inspector",
+            preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
             sharedata               : ":libraries:sharedata",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
@@ -87,6 +94,7 @@ ext {
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
+            utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central"
     ]

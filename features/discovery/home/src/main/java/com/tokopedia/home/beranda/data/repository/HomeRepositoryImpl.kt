@@ -26,11 +26,7 @@ class HomeRepositoryImpl @Inject constructor(
         private val geolocationRemoteDataSource: GeolocationRemoteDataSource
 ): HomeRepository {
 
-    override fun getHomeData(): Flow<HomeData?> {
-        return homeCachedDataSource.getCachedHomeData().map {
-            it ?: homeDefaultDataSource.getDefaultHomeData()
-        }
-    }
+    override fun getHomeData() = homeCachedDataSource.getCachedHomeData()
 
     override fun updateHomeData(): Flow<Result<Any>> = flow{
         val response = homeRemoteDataSource.getHomeData()
@@ -42,7 +38,11 @@ class HomeRepositoryImpl @Inject constructor(
             }
         }
         val homeData = response.getSuccessData<HomeData>()
-        homeCachedDataSource.saveToDatabase(homeData)
+        if (homeData.dynamicHomeChannel.channels.isEmpty()) {
+            homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
+        } else {
+            homeCachedDataSource.saveToDatabase(homeData)
+        }
         emit(Result.success(null))
     }
 

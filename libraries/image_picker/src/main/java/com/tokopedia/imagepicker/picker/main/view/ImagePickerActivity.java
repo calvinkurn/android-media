@@ -7,20 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.tabs.TabLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -85,6 +85,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private boolean isPermissionGotDenied;
     private ImagePickerPreviewWidget imagePickerPreviewWidget;
     private boolean isFinishEditting;
+    private String imageTooLargeErrorMessage = "";
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder) {
         Intent intent = new Intent(context, ImagePickerActivity.class);
@@ -130,6 +131,12 @@ public class ImagePickerActivity extends BaseSimpleActivity
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
             selectedImagePaths = savedInstanceState.getStringArrayList(SAVED_SELECTED_IMAGES);
             imageDescriptionList = savedInstanceState.getStringArrayList(SAVED_IMAGE_DESCRIPTION);
+        }
+
+        if (imagePickerBuilder.getImageTooLargeErrorMessage() == null || imagePickerBuilder.getImageTooLargeErrorMessage().isEmpty()) {
+            imageTooLargeErrorMessage = getString(R.string.max_file_size_reached);
+        } else {
+            imageTooLargeErrorMessage = imagePickerBuilder.getImageTooLargeErrorMessage();
         }
 
         super.onCreate(savedInstanceState);
@@ -531,7 +538,10 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 imagePickerBuilder.getImageRatioTypeDef(),
                 imagePickerBuilder.isCirclePreview(),
                 imagePickerBuilder.getMaxFileSizeInKB(),
-                imagePickerBuilder.getRatioOptionList());
+                imagePickerBuilder.getRatioOptionList(),
+                imagePickerBuilder.getBelowMinResolutionErrorMessage(),
+                imagePickerBuilder.getImageTooLargeErrorMessage(),
+                imagePickerBuilder.isRecheckSizeAfterResize());
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
@@ -556,7 +566,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         showFinishProgressDialog();
         initImagePickerPresenter();
         if (imagePickerBuilder.getGalleryType() == GalleryType.IMAGE_ONLY) {
-            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
+            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB, imagePickerBuilder.isRecheckSizeAfterResize());
         } else {
             onSuccessResizeImage(imagePathList);
         }
@@ -597,7 +607,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public void onErrorResizeImage(Throwable e) {
         hideDownloadProgressDialog();
         if (e instanceof FileSizeAboveMaximumException) {
-            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
+            NetworkErrorHelper.showRedCloseSnackbar(this, imageTooLargeErrorMessage);
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
         }

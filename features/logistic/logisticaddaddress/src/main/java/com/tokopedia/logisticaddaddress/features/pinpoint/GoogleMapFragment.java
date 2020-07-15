@@ -151,6 +151,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         fab = view.findViewById(R.id.fab);
 
         submitPointer.setOnClickListener(view1 -> {
+            locationPass = presenter.getUpdateLocation();
             Bundle bundle = new Bundle();
             bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
             Intent intent = new Intent();

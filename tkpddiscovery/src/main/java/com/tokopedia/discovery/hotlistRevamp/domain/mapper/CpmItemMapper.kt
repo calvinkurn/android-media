@@ -25,6 +25,7 @@ class CpmItemMapper {
                         false,
                         applink,
                         adClickUrl,
+                        headline.image?.fullUrl,
                         badge))
 
                 headline.shop?.product?.let {
@@ -38,6 +39,7 @@ class CpmItemMapper {
                                     true,
                                     element.applinks,
                                     element.imageProduct?.imageClickUrl,
+                                    "",
                                     ""))
                         }
                     }

@@ -15,7 +15,7 @@
 
     <string name="flight_title_promo">Promo</string>
     <string name="flight_title_transaction_list">Daftar Transaksi</string>
-    <string name="flight_title_help">Bantuan</string>
+    <string name="flight_title_help">Tokopedia Care</string>
     <string name="search_flight">Search Flight</string>
     <string name="flight_label_city">%1$s, %2$s</string>
     <string name="flight_label_airport">%1$s - %2$s</string>
@@ -51,6 +51,8 @@
     <string name="flight_search_filter_arrival_time">Waktu Tiba</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
+    <string name="flight_search_filter_baggage_label">Gratis Bagasi</string>
+    <string name="flight_search_filter_meal_label">In-flight Meal</string>
     <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
     <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
@@ -501,4 +503,13 @@
     <string name="flight_rupiah_label">Rp</string>
     <string name="flight_filter_lowest_price_label">Terendah</string>
     <string name="flight_filter_highest_price_label">Tertinggi</string>
+
+    <string name="flight_search_origin_label">Asal</string>
+    <string name="flight_search_departure_label">Berangkat</string>
+    <string name="flight_search_return_label">Pulang</string>
+    <string name="flight_search_passenger_label">Jumlah Penumpang</string>
+
+    <string name="flight_change_search_label">Ubah pencarian</string>
+    <string name="flight_search_coach_mark_change_title">Ganti Pencarian</string>
+    <string name="flight_search_coach_mark_change_description">Tidak menemukan penerbangan yang sesuai? Klik disini untuk mengganti pencarian yang sesuai.</string>
 </resources>

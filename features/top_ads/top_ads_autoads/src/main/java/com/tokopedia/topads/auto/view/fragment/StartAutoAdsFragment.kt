@@ -10,8 +10,7 @@ import android.widget.Button
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
-import com.tokopedia.topads.auto.view.activity.EmptyProductActivity
-import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity
+
 
 /**
  * Author errysuprayogi on 07,May,2019

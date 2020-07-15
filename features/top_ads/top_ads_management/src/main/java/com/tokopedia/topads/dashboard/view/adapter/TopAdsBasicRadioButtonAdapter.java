@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
 

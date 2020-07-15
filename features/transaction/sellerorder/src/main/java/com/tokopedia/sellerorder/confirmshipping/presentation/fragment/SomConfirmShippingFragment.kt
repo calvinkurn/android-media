@@ -15,6 +15,7 @@ import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_AGENCY_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
@@ -188,6 +189,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         somConfirmShippingViewModel.confirmShippingResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    SomAnalytics.eventClickKonfirmasi(true)
                     confirmShippingResponseMsg = it.data.mpLogisticConfirmShipping.listMessage.first()
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_CONFIRM_SHIPPING, confirmShippingResponseMsg)
@@ -195,6 +197,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     activity?.finish()
                 }
                 is Fail -> {
+                    SomAnalytics.eventClickKonfirmasi(false)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }

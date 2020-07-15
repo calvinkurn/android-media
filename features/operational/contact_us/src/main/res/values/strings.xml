@@ -15,7 +15,8 @@
     <string name="penjualan">Penjualan</string>
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="error_msg_wrong_height_width">Ups! Ukuran gambar yang Anda pilih terlalu kecil. Minimal 300 x 300 piksel.</string>
-    <string name="hubungi_kami">Hubungi Kami</string>
+    <string name="masih_butuh_bantuan">Masih butuh bantuan?</string>
+    <string name="hubungi_kami">Hubungi Tokopedia Care</string>
     <string name="attachment_required">Mohon lampirkan data yang diminta</string>
     <string name="chat_dengan_toped">Chat dengan Toped</string>
     <string name="tim_customer_service">Tim Customer Service kami selalu siap untuk melayani Anda selama 24/7</string>

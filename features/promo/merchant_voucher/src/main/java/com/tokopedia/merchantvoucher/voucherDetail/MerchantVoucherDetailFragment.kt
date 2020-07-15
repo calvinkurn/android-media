@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
@@ -126,6 +127,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 snackbar.show()
             }
         }
+        btnUseVoucher.hide()
     }
 
     private fun copyVoucherCodeToClipboard() {

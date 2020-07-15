@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.domain
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -10,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
+import com.tokopedia.notifcenter.di.scope.NotificationContext
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -17,9 +17,9 @@ import javax.inject.Inject
  * @author : Steven 11/04/19
  */
 class GetNotificationUpdateUnreadUseCase @Inject constructor(
-        @ApplicationContext val context: Context,
+        @NotificationContext val context: Context,
         private val graphqlUseCase: GraphqlUseCase
-){
+) {
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources
                 , R.raw.query_notification_update_unread)
@@ -34,7 +34,7 @@ class GetNotificationUpdateUnreadUseCase @Inject constructor(
         graphqlUseCase.execute(subscriber)
     }
 
-    fun unsubsribe(){
+    fun unsubsribe() {
         graphqlUseCase.unsubscribe()
     }
 }

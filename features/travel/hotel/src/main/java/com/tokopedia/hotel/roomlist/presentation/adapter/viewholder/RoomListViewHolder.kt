@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
+import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -9,6 +10,9 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
 import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
@@ -40,41 +44,46 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
                 room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
                 cc_not_required_text_view.text = roomListModel.creditCardHeader
-                initRoomFacility(roomListModel.breakfastIncluded, roomListModel.isRefundable, roomListModel.roomFacility)
+                initRoomFacility(roomListModel.breakfastInfo, roomListModel.refundInfo, roomListModel.roomFacility)
 
                 choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
                 choose_room_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
+
+                if (roomListModel.slashPrice.isNotEmpty()) {
+                    room_list_slash_price_tv.show()
+                    room_list_slash_price_tv.paintFlags = room_list_slash_price_tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    room_list_slash_price_tv.text = roomListModel.slashPrice
+                } else room_list_slash_price_tv.hide()
+
+                if (roomListModel.tagging.isNotEmpty()) {
+                    room_list_tagging_tv.show()
+                    room_list_tagging_tv.text = roomListModel.tagging
+                } else room_list_tagging_tv.hide()
+
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                if (roomListModel.images.isNotEmpty()) room_image_view_pager.setImages(listOf(roomListModel.images.first()))
-                room_image_view_pager.buildView()
+                if (roomListModel.images.isNotEmpty()) room_list_room_full_image_view.loadImage(roomListModel.images.first())
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
         }
     }
 
-    fun initRoomFacility(breakfastIncluded: Boolean, refundable: Boolean, roomFacility: List<HotelRoomInfo.Facility>) {
+    private fun initRoomFacility(breakfastInfo: HotelRoom.RoomBreakfastInfo, refundInfo: HotelRoom.RefundInfo, roomFacility: List<HotelRoomInfo.Facility>) {
         with(itemView) {
             room_facility_recycler_view.removeAllViews()
 
-            var breakfastTextView = FacilityTextView(context)
-
-            if (breakfastIncluded) {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
-            } else {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
+            if (breakfastInfo.breakFast.isNotEmpty()) {
+                val breakfastTextView = FacilityTextView(context)
+                breakfastTextView.setIconAndText(breakfastInfo.iconUrl, breakfastInfo.breakFast)
+                room_facility_recycler_view.addView(breakfastTextView)
             }
-            room_facility_recycler_view.addView(breakfastTextView)
 
-
-            var refundableTextView = FacilityTextView(context)
-            if (refundable) {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-            } else {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            if (refundInfo.refundStatus.isNotEmpty()) {
+                val refundableTextView = FacilityTextView(context)
+                refundableTextView.setIconAndText(refundInfo.iconUrl, refundInfo.refundStatus)
+                room_facility_recycler_view.addView(refundableTextView)
             }
-            room_facility_recycler_view.addView(refundableTextView)
 
             for (i in 0 until min(roomFacility.size, 2)) {
                 var textView = FacilityTextView(context)
@@ -84,7 +93,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         }
     }
 
-    fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
+    private fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(itemView) {
             if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0, 5))
             else room_image_view_pager.setImages(imageUrls)
@@ -102,31 +111,32 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         val LAYOUT = R.layout.item_hotel_room_list
     }
 
-    fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
+    private fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
         var roomListModel = RoomListModel()
-        if (hotelRoom != null) {
-            roomListModel.roomName = hotelRoom.roomInfo.name
-            roomListModel.roomSize = hotelRoom.roomInfo.size.toString()
-            roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
-            roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
-            roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
-            roomListModel.bedInfo = hotelRoom.bedInfo
-            roomListModel.roomFacility = hotelRoom.roomInfo.facility
-            roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
-            roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
-            roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
-            roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
-            roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
-            roomListModel.price = hotelRoom.roomPrice.roomPrice
-            roomListModel.roomLeft = hotelRoom.numberRoomLeft
-            roomListModel.available = hotelRoom.available
+        roomListModel.roomName = hotelRoom.roomInfo.name
+        roomListModel.roomSize = hotelRoom.roomInfo.size.toString()
+        roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
+        roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
+        roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
+        roomListModel.bedInfo = hotelRoom.bedInfo
+        roomListModel.roomFacility = hotelRoom.roomInfo.facility
+        roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
+        roomListModel.breakfastInfo = hotelRoom.breakfastInfo
+        roomListModel.refundInfo = hotelRoom.refundInfo
+        roomListModel.refundStatus = hotelRoom.refundInfo.refundStatus
+        roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
+        roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
+        roomListModel.price = hotelRoom.roomPrice.roomPrice
+        roomListModel.roomLeft = hotelRoom.numberRoomLeft
+        roomListModel.available = hotelRoom.available
+        roomListModel.slashPrice = hotelRoom.roomPrice.deals.price
+        roomListModel.tagging = hotelRoom.roomPrice.deals.tagging
 
-            val images: MutableList<String> = arrayListOf()
-            for (item in hotelRoom.roomInfo.roomImages) {
-                images.add(item.urlOriginal)
-            }
-            roomListModel.images = images
+        val images: MutableList<String> = arrayListOf()
+        for (item in hotelRoom.roomInfo.roomImages) {
+            images.add(item.urlOriginal)
         }
+        roomListModel.images = images
         return roomListModel
     }
 

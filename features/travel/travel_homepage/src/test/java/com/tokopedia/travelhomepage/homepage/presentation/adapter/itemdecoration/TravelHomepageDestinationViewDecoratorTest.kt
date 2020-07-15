@@ -2,67 +2,68 @@ package com.tokopedia.travelhomepage.homepage.presentation.adapter.itemdecoratio
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.travelhomepage.shouldBeEquals
+import com.tokopedia.travelhomepage.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Before
+import org.junit.Test
 
 /**
  * @author by furqan on 04/02/2020
  */
 
-class TravelHomepageDestinationViewDecoratorTest : Spek({
-    Feature("Get View Decoration Between Destination Item") {
-        val viewDecorator = TravelHomepageDestinationViewDecorator()
+class TravelHomepageDestinationViewDecoratorTest {
 
-        Scenario("The First Item") {
-            val recyclerView = mockk<RecyclerView>()
-            val outRect = Rect()
+    private lateinit var viewDecorator: TravelHomepageDestinationViewDecorator
 
-            every { recyclerView.layoutManager!!.getPosition(any()) } returns 0
+    private val recyclerView = mockk<RecyclerView>()
 
-            When("get item offset") {
-                viewDecorator.getItemOffsets(outRect, mockk(), recyclerView, mockk())
-            }
-
-            Then("left side should have 0 offset") {
-                outRect.left shouldBeEquals 0
-            }
-
-            Then("right side should have 0 offset") {
-                outRect.right shouldBeEquals 0
-            }
-        }
-
-        Scenario("Item Position is Odd") {
-            val recyclerView = mockk<RecyclerView>()
-            val outRect = Rect()
-
-            every { recyclerView.layoutManager!!.getPosition(any()) } returns 1
-
-            When("get item offset") {
-                viewDecorator.getItemOffsets(outRect, mockk(), recyclerView, mockk())
-            }
-
-            Then("right side should have 16 offset") {
-                outRect.right shouldBeEquals 16
-            }
-        }
-
-        Scenario("Item Position is Even") {
-            val recyclerView = mockk<RecyclerView>()
-            val outRect = Rect()
-
-            every { recyclerView.layoutManager!!.getPosition(any()) } returns 2
-
-            When("get item offset") {
-                viewDecorator.getItemOffsets(outRect, mockk(), recyclerView, mockk())
-            }
-
-            Then("left side should have 16 offset") {
-                outRect.left shouldBeEquals 16
-            }
-        }
+    @Before
+    fun setup() {
+        viewDecorator = TravelHomepageDestinationViewDecorator()
     }
-})
+
+    @Test
+    fun onGetItemOffsets_FirstItem_ShouldBeZero() {
+        //given
+        val outRect = Rect()
+
+        every { recyclerView.layoutManager!!.getPosition(any()) } returns 0
+
+        //when
+        viewDecorator.getItemOffsets(outRect, mockk(), recyclerView, mockk())
+
+        //then
+        outRect.left shouldBe 0
+        outRect.right shouldBe 0
+    }
+
+    @Test
+    fun onGetItemOffsets_OddItem_RightOffsetShouldBe16() {
+        //given
+        val outRect = Rect()
+
+        every { recyclerView.layoutManager!!.getPosition(any()) } returns 1
+
+        //when
+        viewDecorator.getItemOffsets(outRect, mockk(), recyclerView, mockk())
+
+        //then
+        outRect.right shouldBe 16
+    }
+
+    @Test
+    fun onGetItemOffsets_EvenItem_LeftOffsetShouldBe16() {
+        //given
+        val outRect = Rect()
+
+        every { recyclerView.layoutManager!!.getPosition(any()) } returns 2
+
+        //when
+        viewDecorator.getItemOffsets(outRect, mockk(), recyclerView, mockk())
+
+        //then
+        outRect.left shouldBe 16
+    }
+
+}

@@ -38,9 +38,5 @@ public interface TkpdInboxRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    Intent getWebviewActivityWithIntent(Context context, String url, String title);
-
-    Intent getWebviewActivityWithIntent(Context context, String url);
-
     boolean isSupportedDelegateDeepLink(String url);
 }

@@ -10,12 +10,20 @@ import com.google.gson.annotations.SerializedName
 data class FlightAddToCartData(
         @SerializedName("id")
         @Expose
-        val id: String = ""
+        val id: String = "",
+        @SerializedName("meta")
+        @Expose
+        val meta: Meta = Meta()
 ) {
     data class Response(
             @SerializedName("flightAddToCart")
             @Expose
             val addToCartData: FlightAddToCartData = FlightAddToCartData()
     )
-
 }
+
+data class Meta(
+        @SerializedName("requestID")
+        @Expose
+        val requestId: String = ""
+)

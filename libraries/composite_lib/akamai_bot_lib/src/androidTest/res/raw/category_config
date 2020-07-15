@@ -1,0 +1,6 @@
+query{
+  homeFlag{
+    isOSBottomNav
+    isRevampBelanja
+  }
+}

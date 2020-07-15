@@ -22,6 +22,8 @@ object WishlistQuery {
                 rating
                 review_count
                 minimum_order
+                slash_price
+                discount_percentage
                 wholesale_price {
                   minimum
                   maximum

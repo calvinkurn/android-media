@@ -658,6 +658,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addToCartParam.flight.flightClass = flightBookingParam.searchParam.flightClass.id
         addToCartParam.idempotencyKey = idempotencyKey
         addToCartParam.did = 4
+        addToCartParam.requestId = flightBookingParam.searchParam.searchRequestId
         addToCartParam.ipAddress = FlightRequestUtil.getLocalIpAddress()
         addToCartParam.userAgent = FlightRequestUtil.getUserAgentForApiCall()
         addToCartParam.flight.combo = flightBookingParam.flightPriceViewModel.comboKey ?: ""

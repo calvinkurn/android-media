@@ -20,11 +20,12 @@ public class FlightSearchPassDataViewModel implements Parcelable{
     private FlightAirportViewModel arrivalAirport;
     private FlightClassViewModel flightClass;
     private String linkUrl;
+    private String searchRequestId;
 
     public FlightSearchPassDataViewModel(String departureDate, String returnDate, boolean isOneWay,
                                          FlightPassengerViewModel flightPassengerViewModel,
                                          FlightAirportViewModel departureAirport, FlightAirportViewModel arrivalAirport,
-                                         FlightClassViewModel flightClass, String linkUrl) {
+                                         FlightClassViewModel flightClass, String linkUrl, String searchRequestId) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.isOneWay = isOneWay;
@@ -33,6 +34,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         this.arrivalAirport = arrivalAirport;
         this.flightClass = flightClass;
         this.linkUrl = linkUrl;
+        this.searchRequestId = searchRequestId;
     }
 
     public FlightSearchPassDataViewModel() {
@@ -47,6 +49,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         arrivalAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
         flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
         linkUrl = in.readString();
+        searchRequestId = in.readString();
     }
 
     public static final Creator<FlightSearchPassDataViewModel> CREATOR = new Creator<FlightSearchPassDataViewModel>() {
@@ -129,6 +132,14 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         this.flightClass = flightClass;
     }
 
+    public String getSearchRequestId() {
+        return searchRequestId;
+    }
+
+    public void setSearchRequestId(String searchRequestId) {
+        this.searchRequestId = searchRequestId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -144,6 +155,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         parcel.writeParcelable(arrivalAirport, i);
         parcel.writeParcelable(flightClass, i);
         parcel.writeString(linkUrl);
+        parcel.writeString(searchRequestId);
     }
 
     public static class Builder {
@@ -155,6 +167,7 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         private FlightAirportViewModel arrivalAirport;
         private FlightClassViewModel flightClass;
         private String linkUrl;
+        private String searchRequestId;
 
         public Builder() {
         }
@@ -199,10 +212,15 @@ public class FlightSearchPassDataViewModel implements Parcelable{
             return this;
         }
 
+        public Builder setSearchRequestId(String requestId) {
+            this.searchRequestId = requestId;
+            return this;
+        }
+
         public FlightSearchPassDataViewModel build() {
             return new FlightSearchPassDataViewModel(departureDate, returnDate, isOneWay,
                     flightPassengerViewModel, departureAirport, arrivalAirport, flightClass,
-                    linkUrl);
+                    linkUrl, searchRequestId);
         }
     }
 }

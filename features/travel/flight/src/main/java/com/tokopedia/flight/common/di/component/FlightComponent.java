@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.flight.bookingV2.presentation.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
@@ -48,8 +46,6 @@ public interface FlightComponent {
 
     UserSessionInterface userSessionInterface();
 
-    CacheManager cacheManager();
-
     FlightDateUtil flightdateutlil();
 
     FlightSearchRoomDb flightSearchRoomDb();
@@ -67,8 +63,6 @@ public interface FlightComponent {
     void inject(BaseFlightActivity baseFlightActivity);
 
     void inject(FlightDetailActivity flightDetailActivity);
-
-    void inject(FlightInsuranceWebViewFragment flightInsuranceWebViewFragment);
 
     void inject(FlightDetailOrderFragment flightDetailOrderFragment);
 

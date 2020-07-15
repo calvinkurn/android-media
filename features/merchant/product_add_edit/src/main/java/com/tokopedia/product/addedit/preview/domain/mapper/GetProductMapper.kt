@@ -92,10 +92,19 @@ class GetProductMapper @Inject constructor() {
             ProductVariantOptionChild(
                     hex = it.hexCode,
                     value = it.value,
-                    vuv = it.unitValueID.toIntOrZero(),
+                    vuv = correctUnitValueId(it.unitValueID, it.hexCode),
                     pvo = pvo,
                     productPictureViewModelList = mapProductVariantPicture(products, pvo - 1)
             )
+        }
+    }
+
+    // server still return invalid unitValueID for custom color, so we must correct the ID
+    private fun correctUnitValueId(unitValueID: String, hexCode: String): Int {
+        return if (unitValueID == INCORRECT_UNIT_VALUE_ID && hexCode == INCORRECT_UNIT_HEXCODE) {
+            CORRECTED_UNIT_VALUE_ID
+        } else {
+            unitValueID.toIntOrZero()
         }
     }
 
@@ -238,6 +247,9 @@ class GetProductMapper @Inject constructor() {
         const val UNIT_MONTH_STRING = "MONTH"
         const val UNIT_GRAM_SRING = "GR"
         const val UNIT_KILOGRAM_SRING = "KG"
+        const val INCORRECT_UNIT_VALUE_ID = "1"
+        const val CORRECTED_UNIT_VALUE_ID = 0
+        const val INCORRECT_UNIT_HEXCODE = "#ffffff"
         const val YOUTUBE_URL_DELIMITER = "/watch?v="
         const val YOUTUBE_URL_DELIMITER_SHORT = "/"
         const val YOUTUBE_URL = "www.youtube.com"

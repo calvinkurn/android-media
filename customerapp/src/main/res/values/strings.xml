@@ -92,18 +92,12 @@
     <string name="drawer_title_deals_transaction_list">Daftar Deals</string>
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
     <string name="sedang_dalam_proses_shake">Sedang dalam Proses Shake</string>
-    <string name="cancel_shake_shake">Memuat Shake-Shake</string>
-    <string name="shake_shake_terus">Ayo Shake Terus</string>
     <string name="ok">OK</string>
     <string name="disable_shake_shake">“Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk main Shake Shake-nya.” OK
 </string>
     <string name="yes">Ya</string>
     <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
-    <string name="oops">Oops!</string>
-    <string name="shake_lagi">Shake Lagi</string>
-    <string name="sepertinya_sistem_shake">Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk!</string>
-    <string name="matikan_shake">Matikan Shake</string>
     <string name="video_not_play_error">Video can not be played.</string>
     <string name="cta_here">CTA Here</string>
     <string name="video_title_bar_lable">Tokopedia</string>
@@ -148,6 +142,7 @@
     <!-- Home Recommendation Extras -->
     <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
     <string name="home_recommendation_extra_ref">REF</string>
+    <string name="home_recommendation_extra_internal_ref">INTERNAL_REF</string>
     <string name="title_homepage_digital">Digital</string>
     <string name="title_saldo_deposit">Saldo Deposit</string>
     <string name="df_ovo_pay_with_qr_title">Ovo Pay By Qr DF</string>

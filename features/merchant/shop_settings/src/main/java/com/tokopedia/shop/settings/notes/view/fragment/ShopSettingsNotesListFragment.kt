@@ -38,7 +38,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
     }
 
-    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
 
     override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 

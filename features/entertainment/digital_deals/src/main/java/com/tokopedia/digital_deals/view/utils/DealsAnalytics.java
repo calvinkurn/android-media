@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -39,6 +41,7 @@ public class DealsAnalytics {
     private static final String PROMO_ID = "promo_id";
     private static final String PROMO_CODE = "promo_code";
     private static final String KEY_PRODUCTS = "products";
+    private static final String KEY_PRODUCT = "product";
     private static final String KEY_IMPRESSIONS = "impressions";
     private static final String LIST = "list";
     public static final String LIST_DEALS_TRENDING = "/deals - trending";
@@ -150,6 +153,13 @@ public class DealsAnalytics {
     public static String EVENT_CLICK_RECOMMENDED_DEALS = "click on deals recommendation";
     public static String EVENT_CLICK_CATEGORY_DEALS = "click deals products on category page";
 
+    public static String EVENT = "event";
+    public static String EVENT_CATEGORY = "eventCategory";
+    public static String EVENT_ACTION = "eventAction";
+    public static String EVENT_LABEL = "eventLabel";
+    public static String ECOMMERCE = "ecommerce";
+
+    public static String LABEL_FORMAT = "%s - %s";
 
     @Inject
     public DealsAnalytics() {
@@ -168,23 +178,23 @@ public class DealsAnalytics {
     public void sendEventEcommerce(String event, String action, String label,
                                    HashMap<String, Object> ecommerce) {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("event", event);
-        map.put("eventCategory", DIGITAL_DEALS);
-        map.put("eventAction", action);
-        map.put("eventLabel", label == null ? "" : label.toLowerCase());
-        map.put("ecommerce", ecommerce);
+        map.put(EVENT, event);
+        map.put(EVENT_CATEGORY, DIGITAL_DEALS);
+        map.put(EVENT_ACTION, action);
+        map.put(EVENT_LABEL, label == null ? "" : label.toLowerCase());
+        map.put(ECOMMERCE, ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
     public void sendEventEcommerceCurrentSite(String event, String action, String label,
                                               HashMap<String, Object> ecommerce) {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("event", event);
-        map.put("eventCategory", DIGITAL_DEALS);
-        map.put("eventAction", action);
-        map.put("eventLabel", label == null ? "" : label.toLowerCase());
+        map.put(EVENT, event);
+        map.put(EVENT_CATEGORY, DIGITAL_DEALS);
+        map.put(EVENT_ACTION, action);
+        map.put(EVENT_LABEL, label == null ? "" : label.toLowerCase());
         map.put("currentSite", "tokopediadigital");
-        map.put("ecommerce", ecommerce);
+        map.put(ECOMMERCE, ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
@@ -545,29 +555,30 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendPromoClickEvent(ProductItem productItem, int position, String creative, String event, String action, String name) {
-        try {
-            HashMap<String, Object> bannerMap = new HashMap<>();
-            HashMap<String, Object> promotions = new HashMap<>();
-            HashMap<String, Object> ecommerce = new HashMap<>();
+    public void sendOnClickBannerPromoEvent(ProductItem item, int position){
+        try{
+            Map promotion = DataLayer.mapOf(
+                    ID, String.valueOf(item.getId()),
+                    NAME, LIST_SUGGESTED_DEALS,
+                    CREATIVE, item.getDisplayName(),
+                    POSITION, String.valueOf(position),
+                    CATEGORY, DEALS
+            );
+            ArrayList promotions = new ArrayList();
+            promotions.add(promotion);
 
-            bannerMap.put(ID, String.valueOf(productItem.getId()));
-            bannerMap.put(NAME, name);
-            bannerMap.put(POSITION, String.valueOf(position));
-            bannerMap.put(CATEGORY, DEALS);
-            bannerMap.put(PROMO_CODE, "none");
-            bannerMap.put(PROMO_ID, "0");
-            bannerMap.put(CREATIVE, creative);
-
-            promotions.put(KEY_PROMOTIONS, Collections.singletonList(bannerMap));
-
-            ecommerce.put(EVENT_PROMO_CLICK, promotions);
-            sendEventEcommerce(event, action,
-                    String.format("%s - %s", creative
-                            , position).toLowerCase(), ecommerce);
-
-        } catch (Exception e) {
-
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                    EVENT, EVENT_PROMO_CLICK,
+                    EVENT_CATEGORY, DIGITAL_DEALS,
+                    EVENT_ACTION, EVENT_CLICK_PROMO_BANNER,
+                    EVENT_LABEL, String.format(LABEL_FORMAT, item.getDisplayName(), position).toLowerCase(),
+                    ECOMMERCE, DataLayer.mapOf(
+                            EVENT_PROMO_CLICK, DataLayer.mapOf(
+                                    KEY_PROMOTIONS, promotions)
+                    )
+            ));
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -694,28 +705,31 @@ public class DealsAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_SEE_ALL_TRENDING_DEALS, "");
     }
 
-    public void sendPromoImpressionEvent(List<ProductItem> items, int index) {
-        HashMap<String, Object> promo = new HashMap<>();
-        HashMap<String, Object> promoViews = new HashMap<>();
-        HashMap<String, Object> ecommerce = new HashMap<>();
+    public void sendPromoImpressionEvent(ProductItem item, int index) {
+        try{
+            Map promotion = DataLayer.mapOf(
+                    ID, String.valueOf(item.getId()),
+                    NAME, DEALS_HOME_PAGE,
+                    CREATIVE, item.getDisplayName(),
+                    POSITION, String.valueOf(index),
+                    CATEGORY, DEALS
+            );
+            ArrayList promotions = new ArrayList();
+            promotions.add(promotion);
 
-        List<HashMap<String, Object>> products = new ArrayList<>();
-
-        for (ProductItem item : items) {
-            promo.put(ID, String.valueOf(item.getId()));
-            promo.put(NAME, DEALS_HOME_PAGE);
-            promo.put(CREATIVE, item.getBrand().getTitle());
-            promo.put(POSITION, String.valueOf(index));
-            promo.put(CATEGORY, DEALS);
-            promo.put(PROMO_ID, String.valueOf(0));
-            promo.put(PROMO_CODE, "none");
-            products.add(promo);
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                    EVENT, EVENT_PROMO_VIEW,
+                    EVENT_CATEGORY, DIGITAL_DEALS,
+                    EVENT_ACTION, EVENT_IMPRESSION_PROMO_BANNER,
+                    EVENT_LABEL, String.format(LABEL_FORMAT, item.getDisplayName(), String.valueOf(index)).toLowerCase(),
+                    ECOMMERCE, DataLayer.mapOf(
+                            EVENT_PROMO_VIEW, DataLayer.mapOf(
+                                    KEY_PROMOTIONS, promotions)
+                    )
+            ));
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
-        promoViews.put(KEY_PROMOTIONS, products);
-        ecommerce.put(KEY_PROMOVIEW, promoViews);
-        sendEventEcommerce(EVENT_PROMO_VIEW, EVENT_IMPRESSION_PROMO_BANNER,
-                String.format("%s - %s", "Product", String.valueOf(index)), ecommerce);
     }
 
     public void sendRecommendedDealImpressionEvent(List<ProductItem> items, int index, String categoryName) {

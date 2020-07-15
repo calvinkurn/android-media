@@ -1,7 +1,8 @@
-package com.tokopedia.home_page_banner.presentation.widgets.pageIndicator
+package com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator
 
 import android.content.Context
 import android.util.AttributeSet
+import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.BaseIndicator
 
 class CircularPageIndicator : BaseIndicator {
     constructor(context: Context) : super(context)

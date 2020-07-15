@@ -101,7 +101,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        presenter.getShopInfo()
+        presenter.getShopInfo(addEditPageType)
 
         savedInstanceState?.run {
             if (containsKey(EXTRA_IS_OFFICIAL_STORE)) {

@@ -45,11 +45,6 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".view.activity.ShopOpenWebViewActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".view.activity.ShopOpenMandatoryActivity"
             android:exported="true"
             android:label="@string/title_shop_setting"

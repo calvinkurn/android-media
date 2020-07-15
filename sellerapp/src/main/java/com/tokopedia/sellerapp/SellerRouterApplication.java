@@ -16,6 +16,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -41,7 +42,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -77,9 +77,6 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
-import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -121,9 +118,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
 import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
@@ -137,7 +134,6 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -160,10 +156,10 @@ import java.util.Map;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -173,9 +169,12 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
-        MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
+        AbstractionRouter,
+        ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopAdsWebViewRouter, ContactUsModuleRouter, WithdrawRouter,
+        NetworkRouter,
+        ContactUsModuleRouter,
+        WithdrawRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -184,8 +183,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter,
-        MLPRouter,
+        ResolutionRouter ,
         SellerHomeRouter,
         LoginRouter {
 
@@ -197,6 +195,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
+    private TetraDebugger tetraDebugger;
 
     @Override
     public void onCreate() {
@@ -205,6 +204,7 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
+        initTetraDebugger();
     }
 
     private void initResourceDownloadManager() {
@@ -224,6 +224,19 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+    private void initTetraDebugger() {
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(this);
+            tetraDebugger.init();
+        }
+    }
+
+    private void setTetraUserId(String userId) {
+        if(tetraDebugger != null) {
+            tetraDebugger.setUserId(userId);
+        }
     }
 
     public GMComponent getGMComponent() {
@@ -252,11 +265,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
-
-        if(remoteConfig.getBoolean(ENABLE_OLD_PRODUCT_MANAGE)) {
-            intent = new Intent(context, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity.class);
-        }
-
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -270,10 +278,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
-    }
-
-    public Intent getMitraToppersActivityIntent(Context context) {
-        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
     @Override
@@ -349,7 +353,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
-        Intent intent = new Intent(context, WelcomeActivity.class);
+        Intent intent = new Intent(context, SellerOnboardingActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
                 return SellerHomeActivity.createIntent(context);
@@ -371,7 +375,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (SessionHandler.isV4Login(context)) {
             return SellerHomeActivity.class;
         } else {
-            return WelcomeActivity.class;
+            return SellerOnboardingActivity.class;
         }
     }
 
@@ -388,6 +392,7 @@ public abstract class SellerRouterApplication extends MainApplication
         new CacheApiClearAllUseCase(this).executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent, this);
+        setTetraUserId("");
     }
 
     @Override
@@ -652,6 +657,15 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
+    }
+
+    @Override
     public void showServerError(Response response) {
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
     }
@@ -700,8 +714,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
-            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
-            context.startActivity(intent);
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
         }
     }
 
@@ -749,11 +762,6 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.setData(Uri.parse(applink));
 
         return intent;
-    }
-
-    @Override
-    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, webviewUrl);
     }
 
     @Override
@@ -846,17 +854,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return SimpleWebViewWithFilePickerActivity.getIntent(context,
-                url);
     }
 
     @Override

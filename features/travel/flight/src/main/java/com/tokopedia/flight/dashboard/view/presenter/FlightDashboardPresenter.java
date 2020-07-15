@@ -149,6 +149,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
     }
 
+    @Override
+    public void initializeOnResume() {
+        actionLoadFromCache();
+    }
+
     private void actionLoadFromCache() {
         FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
         flightDashboardPassDataViewModel.setDepartureAirportId(flightDashboardCache.getDepartureAirport());
@@ -519,6 +524,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             flightDashboardPassDataViewModel.setFlightClass(classId);
 
             getView().setDashboardPassData(flightDashboardPassDataViewModel);
+            saveSearchParamsToCache(flightDashboardPassDataViewModel, isPassengerValid);
             actionRenderFromPassData(isPassengerValid);
         } catch (Exception e) {
             e.printStackTrace();
@@ -657,32 +663,32 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void getBannerData(String query) {
         getTravelCollectiveBannerUseCase.executeRx(query, getTravelCollectiveBannerUseCase.createRequestParams(TravelType.FLIGHT),
                 new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                if (isViewAttached()) {
-                    getView().hideBannerView();
-                    getView().stopTrace();
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                if (isViewAttached()) {
-                    TravelCollectiveBannerModel.Response bannerResponse = response.getData(TravelCollectiveBannerModel.Response.class);
-                    if (bannerResponse.getResponse().getBanners().size() > 0) {
-                        getView().renderBannerView(bannerResponse.getResponse().getBanners());
-                    } else {
-                        getView().hideBannerView();
                     }
-                    getView().stopTrace();
-                }
-            }
-        });
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isViewAttached()) {
+                            getView().hideBannerView();
+                            getView().stopTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse response) {
+                        if (isViewAttached()) {
+                            TravelCollectiveBannerModel.Response bannerResponse = response.getData(TravelCollectiveBannerModel.Response.class);
+                            if (bannerResponse.getResponse().getBanners().size() > 0) {
+                                getView().renderBannerView(bannerResponse.getResponse().getBanners());
+                            } else {
+                                getView().hideBannerView();
+                            }
+                            getView().stopTrace();
+                        }
+                    }
+                });
     }
 
     private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {
@@ -775,5 +781,28 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             airports = Arrays.asList(airportArray);
         }
         return airports;
+    }
+
+    private void saveSearchParamsToCache(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel, boolean isPassengerValid) {
+        flightDashboardCache.putRoundTrip(flightDashboardPassDataViewModel.isRoundTrip());
+        flightDashboardCache.putDepartureDate(flightDashboardPassDataViewModel.getDepartureDate());
+        if (flightDashboardPassDataViewModel.isRoundTrip()) {
+            flightDashboardCache.putReturnDate(flightDashboardPassDataViewModel.getReturnDate());
+        }
+        flightDashboardCache.putDepartureAirport(flightDashboardPassDataViewModel.getDepartureAirportId());
+        flightDashboardCache.putDepartureCityCode("");
+        flightDashboardCache.putDepartureCityName(flightDashboardPassDataViewModel.getDepartureCityName());
+        flightDashboardCache.putArrivalAirport(flightDashboardPassDataViewModel.getArrivalAirportId());
+        flightDashboardCache.putArrivalCityCode("");
+        flightDashboardCache.putArrivalCityName(flightDashboardPassDataViewModel.getArrivalCityName());
+        flightDashboardCache.putClassCache(flightDashboardPassDataViewModel.getFlightClass());
+        if (isPassengerValid) {
+            flightDashboardCache.putPassengerCount(flightDashboardPassDataViewModel.getAdultPassengerCount(),
+                    flightDashboardPassDataViewModel.getChildPassengerCount(),
+                    flightDashboardPassDataViewModel.getInfantPassengerCount());
+        } else {
+            flightDashboardCache.putPassengerCount(DEFAULT_ADULT_PASSENGER,
+                    DEFAULT_CHILD_PASSENGER, DEFAULT_INFANT_PASSENGER);
+        }
     }
 }

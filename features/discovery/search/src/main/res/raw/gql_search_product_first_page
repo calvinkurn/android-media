@@ -64,6 +64,7 @@ query SearchProduct(
             category_breadcrumb
             department_id
             department_name
+            booster_list
           	free_ongkir {
               is_active
               img_url
@@ -84,6 +85,7 @@ query SearchProduct(
             }
             is_featured
             rating
+            rating_average
             count_review
             original_price
             discount_expired_time
@@ -191,6 +193,7 @@ query SearchProduct(
                 product_new_label
                 product_cashback_rate
                 product_rating
+                product_rating_format
               	free_ongkir {
                   is_active
                   img_url
@@ -307,7 +310,7 @@ query SearchProduct(
         }
     }
 
-    global_search_navigation(keyword:$query, device:"android", size:5) {
+    global_search_navigation(keyword:$query, device:"android", size:5, params:$params) {
         data {
             source
             title

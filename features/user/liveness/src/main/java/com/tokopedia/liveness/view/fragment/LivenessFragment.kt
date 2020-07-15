@@ -1,19 +1,11 @@
 package com.tokopedia.liveness.view.fragment
 
 import ai.advance.common.entity.BaseResultEntity
-import com.tokopedia.liveness.R
-import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
-import com.tokopedia.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
-import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.view.BackgroundOverlay
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.activity.LivenessFailedActivity
-import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_CANCELED
@@ -27,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -37,14 +28,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.liveness.R
+import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
+import com.tokopedia.liveness.di.LivenessDetectionComponent
+import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.view.BackgroundOverlay
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.activity.LivenessActivity
+import com.tokopedia.liveness.view.activity.LivenessFailedActivity
+import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
+import java.io.FileOutputStream
 import java.net.SocketTimeoutException
+import java.util.*
 import javax.inject.Inject
 
 class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, LivenessCallback, OnBackListener {
@@ -262,31 +263,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (isValid) {
             updateTipUIView(null)
         } else {
-            val errorMessage: String = if (LivenessView.NO_RESPONSE == errorCode) {
-                getString(R.string.liveness_failed_reason_auth_failed)
-            } else {
-                message
-            }
             activity?.run {
-                showAlertDialog(errorMessage, this)
+                showAlertDialog()
             }
         }
     }
 
-    private fun showAlertDialog(message: String, activity: FragmentActivity) {
-        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.setTitle(message)
-        dialog?.setDescription(getString(R.string.default_error_unknown))
-        dialog?.setOverlayClose(false)
-        dialog?.setPrimaryCTAText(getString(R.string.exit))
-
-        dialog?.setPrimaryCTAClickListener {
-            activity.setResult(RESULT_OK)
-            activity.finish()
-            dialog.dismiss()
-            Unit
-        }
-        dialog?.show()
+    private fun showAlertDialog() {
+        (activity as LivenessActivity).showNotSupportedDialog()
     }
 
     private fun getLottieFile(detectionType: Detector.DetectionType?): String {
@@ -393,15 +377,18 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
     private fun saveToFile(mImageBitmap: Bitmap?): String {
         try {
-            val cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                    .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, mImageBitmap, false)
-            if (cameraResultFile.exists()) {
-                return cameraResultFile.absolutePath
+            if(mImageBitmap != null) {
+                val cameraResultFile = writeImageToTkpdPath(mImageBitmap)
+                if (cameraResultFile.exists()) {
+                    return cameraResultFile.absolutePath
+                } else {
+                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+                }
             } else {
-                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_image_null))
             }
         } catch (error: Throwable) {
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_set_file))
         }
         return ""
     }
@@ -409,6 +396,24 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private fun isFileExists(filePath: String): Boolean {
         val file = File(filePath)
         return file.exists()
+    }
+
+    private fun writeImageToTkpdPath(bitmap: Bitmap): File {
+        val cacheDir = File(context?.cacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
+        val cachePath = cacheDir.absolutePath
+        val file = File(cachePath)
+        if (file.exists()) {
+            file.delete()
+        }
+        try {
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return file
     }
 
     override fun onDetectionFrameStateChanged(warnCode: Detector.WarnCode) {

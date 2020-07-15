@@ -26,3 +26,7 @@ const val ERR_CHANNEL_NOT_EXIST = "TOP02"
 const val ERR_USER_UNAUTHORIZED = "TOP10"
 const val ERR_CHANNEL_NOT_ACTIVE = "TOP03"
 const val ERR_TOO_MANY_REQUEST = "TOP12"
+
+const val ERR_STATE_SOCKET = "Socket Connection"
+const val ERR_STATE_VIDEO = "Video Player"
+const val ERR_STATE_GLOBAL = "Global Error"

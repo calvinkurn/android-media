@@ -4,7 +4,6 @@ import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter
@@ -57,7 +56,7 @@ class PlayPresenter @Inject constructor(
     }
 
     override fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
-                             onErrorGetInfo: (String) -> Unit,
+                             onErrorGetInfo: (Int) -> Unit,
                              onNoInternetConnection: () -> Unit) {
         getPlayInfoUseCase.execute(
                 GetPlayInfoUseCase.createParams(channelId),
@@ -74,21 +73,12 @@ class PlayPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
-                        val defaultMessage = view.context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                        val internalServerErrorMessage = "Internal Server Error"
                         if(e is UnknownHostException){
                             onNoInternetConnection()
-                        } else if (GlobalConfig.isAllowDebuggingTools()) {
-                            onErrorGetInfo(e.toString())
-                        } else if (errorMessage == defaultMessage || errorMessage.equals
-                                (internalServerErrorMessage, ignoreCase = true)) {
-                            onErrorGetInfo(view.context.getString(R.string.try_channel_later, "channelName"))
                         } else {
-                            onErrorGetInfo(errorMessage)
+                            onErrorGetInfo(GroupChatErrorHandler.getGlobalErrorCode(e))
                         }
                     }
-
                 })
     }
 

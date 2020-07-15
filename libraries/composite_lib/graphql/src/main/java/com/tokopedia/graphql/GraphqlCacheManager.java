@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 public class GraphqlCacheManager {
 
     private String Key;
@@ -18,6 +20,7 @@ public class GraphqlCacheManager {
     public static long lastDeleteExpired = 0L;
     public final static long periodOfExpirationDeletion = TimeUnit.MINUTES.toMillis(5);
 
+    @Inject
     public GraphqlCacheManager() {
         databaseDao = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao();
     }

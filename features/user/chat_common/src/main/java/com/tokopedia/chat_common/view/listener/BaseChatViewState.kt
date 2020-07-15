@@ -33,4 +33,6 @@ interface BaseChatViewState {
 
     fun hideAttachmentMenu()
 
+    fun showErrorWebSocket(isWebSocketError: Boolean)
+
 }

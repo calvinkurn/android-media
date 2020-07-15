@@ -1,70 +1,67 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.feature.list.extension.findIndex
+import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
+import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl
-) : BaseListAdapter<ProductViewModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory) {
+) : BaseProductManageAdapter<ProductViewModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
 
     fun updatePrice(productId: String, price: String) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data[index] = it.copy(price = price, priceFormatted = price.toInt().getCurrencyFormatted())
-                notifyItemChanged(index)
-                return
-            }
+        submitList(productId) {
+            val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
+            it.copy(price = price, priceFormatted = formattedPrice)
         }
     }
 
     fun updateStock(productId: String, stock: Int, status: ProductStatus) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data[index] = it.copy(stock = stock, status = status)
-                notifyItemChanged(index)
-                return
-            }
-        }
+        submitList(productId) { it.copy(stock = stock, status = status) }
     }
 
-    fun updateCashback(productId: String, cashback: Int) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data[index] = it.copy(cashBack = cashback)
-                notifyItemChanged(index)
-                return
-            }
-        }
+    fun updateCashBack(productId: String, cashback: Int) {
+        submitList(productId) { it.copy(cashBack = cashback) }
     }
 
     fun deleteProduct(productId: String) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data.removeAt(index)
-                notifyItemRemoved(index)
-                return
-            }
+        val items = data.toMutableList()
+        items.findIndex(productId)?.let { index ->
+            items.removeAt(index)
+            submitList(items)
         }
     }
 
     fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
-        data.forEachIndexed { index, product ->
-            if (product.id.equals(productId, ignoreCase = true)) {
-                data[index] = product.copy(isFeatured = isFeaturedProduct)
-                notifyItemChanged(index)
-            }
-        }
+        submitList(productId) { it.copy(isFeatured = isFeaturedProduct) }
     }
 
     fun setProductStatus(productId: String, productStatus: ProductStatus) {
-        data.forEachIndexed { index, product ->
-            if (product.id.equals(productId, ignoreCase = true)) {
-                data[index] = product.copy(status = productStatus)
-                return
-            }
+        submitList(productId) { it.copy(status = productStatus) }
+    }
+
+    fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
+        val items = data.map {
+            it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
+        }
+        submitList(items)
+    }
+
+    fun filterProductList(predicate: (ProductViewModel) -> Boolean) {
+        val productList = data.filter { predicate.invoke(it) }
+        submitList(productList)
+    }
+
+    private fun submitList(productId: String, update: (ProductViewModel) -> ProductViewModel) {
+        val items = data.toMutableList()
+        val index = items.findIndex(productId)
+        index?.let {
+            items[it] = update.invoke(items[it])
+            submitList(items)
         }
     }
 }

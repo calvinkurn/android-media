@@ -140,4 +140,12 @@ class UmrahSearchViewModelTest{
         val actual = umrahSearchViewModel.searchResult.value
         assertTrue(actual is Fail)
     }
+
+    @Test
+    fun searchResetParam_shouldResetParam(){
+        umrahSearchViewModel.resetSearchParam()
+
+        val actual = UmrahSearchProductDataParam()
+        assert(actual==umrahSearchViewModel.getSearchParam())
+    }
 }

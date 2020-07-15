@@ -22,14 +22,12 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     private val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
-    private val imageIcon: AppCompatImageView = itemView.findViewById(R.id.icon)
     private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
     private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
 
     fun setData(data: GetCouponDetail) {
         tvTitle.text = data.minimumUsageLabel
         tvSubTitle.text = data.minimumUsage
-        imageIcon.loadImageGlide(data.icon)
         imageView.loadImageGlide(data.imageUrl)
     }
 }

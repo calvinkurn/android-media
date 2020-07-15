@@ -1,27 +1,14 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionViewModel
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter
-import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
-import com.tokopedia.tokopoints.view.subscriber.Tokopoint2020Subscriber
 import com.tokopedia.tokopoints.view.util.*
-import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
 
 @TokoPointScope

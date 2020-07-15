@@ -2,6 +2,8 @@ package com.tokopedia.shop.analytic;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
@@ -16,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
@@ -478,5 +479,14 @@ public class ShopPageTracking {
                 String.format(CLICK_SORT_BY, sortName),
                 customDimensionShopPage
         );
+    }
+
+    protected String formatPrice(String displayedPrice) {
+        if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice = displayedPrice.replaceAll("[^\\d]", "");
+            return displayedPrice;
+        } else {
+            return "";
+        }
     }
 }

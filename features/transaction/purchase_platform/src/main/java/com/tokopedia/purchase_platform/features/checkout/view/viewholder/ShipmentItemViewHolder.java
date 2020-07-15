@@ -200,6 +200,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
     private Ticker tickerOtd;
+    private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
     private Typography tvTradeInShippingPriceTitle;
     private Typography tvTradeInShippingPriceDetail;
@@ -365,6 +366,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTradeInShippingPriceDetail = itemView.findViewById(R.id.tv_trade_in_shipping_price_detail);
         labelChooseDurationTradeIn = itemView.findViewById(R.id.label_choose_duration_trade_in);
         tvChooseDurationTradeIn = itemView.findViewById(R.id.tv_choose_duration_trade_in);
+        productTicker = itemView.findViewById(R.id.product_ticker);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
@@ -432,7 +434,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             this.shipmentDataList = shipmentDataList;
         }
         renderShop(shipmentCartItemModel);
-        renderPromoMerchant(shipmentCartItemModel);
+        // renderPromoMerchant(shipmentCartItemModel);
         renderFulfillment(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
@@ -519,70 +521,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             imgShopBadge.setVisibility(View.GONE);
         }
 
-        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
-        int startLabelShop = labelShop.length();
+        /*String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();*/
         String shopName = shipmentCartItemModel.getShopName();
 
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+        /*SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(labelShop);
         builder.append(shopName);
-        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
 
-        tvShopName.setText(builder, TextView.BufferType.SPANNABLE);
-    }
-
-    private void renderPromoMerchant(ShipmentCartItemModel shipmentCartItemModel) {
-        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-            if (shipmentCartItemModel.isError()) {
-                tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
-                tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                tickerPromoStackingCheckoutView.disableView();
-                if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                    mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), true);
-                    shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-                }
-            } else {
-                if (shipmentCartItemModel.getHasPromoList()) {
-                    tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
-                    tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                    if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                        tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getState()));
-                        tickerPromoStackingCheckoutView.setDesc(shipmentCartItemModel.getVoucherOrdersItemUiModel().getInvoiceDescription());
-                        tickerPromoStackingCheckoutView.setTitle(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getText());
-                    } else {
-                        tickerPromoStackingCheckoutView.enableView();
-                        tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                    }
-                    tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-                        @Override
-                        public void onClickUsePromo() {
-                            mActionListener.onVoucherMerchantPromoClicked(shipmentCartItemModel);
-                        }
-
-                        @Override
-                        public void onResetPromoDiscount() {
-                            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                                mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), false);
-                            }
-                        }
-
-                        @Override
-                        public void onClickDetailPromo() {
-
-                        }
-
-                        @Override
-                        public void onDisablePromoDiscount() {
-                            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                                mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), false);
-                            }
-                        }
-                    });
-                } else {
-                    tickerPromoStackingCheckoutView.setVisibility(View.GONE);
-                }
-            }
-        }
+        // tvShopName.setText(builder, TextView.BufferType.SPANNABLE);
+        tvShopName.setText(shopName);
     }
 
     private void renderFirstCartItem(CartItemModel cartItemModel) {
@@ -604,6 +553,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderProductPropertiesPreOrder(cartItemModel);
         renderProductPropertiesCashback(cartItemModel);
         renderProductPropertiesFreeShipping(cartItemModel);
+        renderProductTicker(cartItemModel);
         renderProductPropertiesLayout(cartItemModel);
     }
 
@@ -689,6 +639,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             imgFreeShipping.setVisibility(View.GONE);
         }
+    }
+
+    private void renderProductTicker(CartItemModel cartItemModel) {
+        if (cartItemModel.isShowTicker() && !TextUtils.isEmpty(cartItemModel.getTickerMessage())) {
+            productTicker.setVisibility(View.VISIBLE);
+            productTicker.setTextDescription(cartItemModel.getTickerMessage());
+        } else productTicker.setVisibility(View.GONE);
     }
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {

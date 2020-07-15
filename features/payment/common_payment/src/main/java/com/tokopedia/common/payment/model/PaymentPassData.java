@@ -15,6 +15,7 @@ public class PaymentPassData implements Parcelable {
     private String callbackSuccessUrl;
     private String callbackFailedUrl;
     private String transactionId;
+    private String method;
 
     public String getPaymentId() {
         return paymentId;
@@ -64,6 +65,14 @@ public class PaymentPassData implements Parcelable {
         this.callbackFailedUrl = callbackFailedUrl;
     }
 
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     public void convertToPaymenPassData(TopPayBaseModel data) {
         queryString = data.getQueryStringToPass();
         redirectUrl = data.getRedirectUrlToPass();
@@ -88,6 +97,7 @@ public class PaymentPassData implements Parcelable {
         dest.writeString(this.callbackSuccessUrl);
         dest.writeString(this.callbackFailedUrl);
         dest.writeString(this.transactionId);
+        dest.writeString(this.method);
     }
 
     protected PaymentPassData(Parcel in) {
@@ -97,6 +107,7 @@ public class PaymentPassData implements Parcelable {
         this.callbackSuccessUrl = in.readString();
         this.callbackFailedUrl = in.readString();
         this.transactionId = in.readString();
+        this.method = in.readString();
     }
 
     public static final Creator<PaymentPassData> CREATOR =
@@ -116,4 +127,8 @@ public class PaymentPassData implements Parcelable {
     public String toString() {
         return "Payment ID = " + paymentId + " | " + "Redirect URL = " + redirectUrl;
     }
+
+    public static final String METHOD_GET = "GET";
+    public static final String METHOD_POST = "POST";
+
 }

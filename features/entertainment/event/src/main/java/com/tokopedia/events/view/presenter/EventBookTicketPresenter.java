@@ -105,7 +105,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         String id = mView.getActivity().getIntent().getStringExtra(EventsDetailsPresenter.EVENT_BOOK_TICKET_ID);
         saveInstanceCacheManager = new SaveInstanceCacheManager(mView.getActivity(), id);
         dataModel = saveInstanceCacheManager.get(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL, EventsDetailsViewModel.class);
-        hasSeatLayout = saveInstanceCacheManager.get(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, Integer.class);
+        hasSeatLayout = saveInstanceCacheManager.get(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, Integer.class, 0);
         generateLocationDateModels();
         if (dataModel != null) {
             mView.renderFromDetails(dataModel);

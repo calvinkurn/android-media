@@ -8,14 +8,27 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.R
+import com.tokopedia.onboarding.analytics.OnboardingAnalytics
+import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
+import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.di.OnboardingComponent
+import com.tokopedia.onboarding.domain.model.ConfigDataModel
+import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
+import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
+import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel.Companion.JOB_WAS_CANCELED
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 2020-02-08.
@@ -24,12 +37,20 @@ import com.tokopedia.onboarding.view.fragment.OnboardingFragment
 
 class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponent> {
 
+    @Inject
+    lateinit var onboardingAnalytics: OnboardingAnalytics
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider.get(DynamicOnboardingViewModel::class.java) }
+
+    private lateinit var remoteConfig: RemoteConfig
+
+    private var loadTime = 0L
+
     override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return OnboardingFragment.createInstance(bundle)
+        return null
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_onboarding
@@ -57,8 +78,19 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         }
     }
 
-    override fun getComponent(): OnboardingComponent = DaggerOnboardingComponent
-            .builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): OnboardingComponent = DaggerOnboardingComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .dynamicOnboardingQueryModule(DynamicOnboardingQueryModule(this))
+            .build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        component.inject(this)
+
+        initObserver()
+        loadTime = System.currentTimeMillis()
+        viewModel.getData()
+    }
 
     override fun onBackPressed() {
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
@@ -78,4 +110,53 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         window.attributes = winParams
     }
 
+    private fun initObserver() {
+        viewModel.configData.observe(this, Observer { result ->
+            when(result) {
+                is Success -> { onGetDynamicOnboardingSuccess(result.data) }
+                is Fail -> { onGetDynamicOnboardingFailed(result.throwable) }
+            }
+        })
+    }
+
+    private fun onGetDynamicOnboardingSuccess(data: ConfigDataModel) {
+        loadTime = System.currentTimeMillis() - loadTime
+        onboardingAnalytics.trackDynamicOnboardingPage(true, loadTime, "")
+
+        val bundle = Bundle()
+        intent.extras?.let { bundle.putAll(it) }
+        bundle.putParcelable(DynamicOnboardingFragment.ARG_DYNAMIC_ONBAORDING_DATA, data)
+
+        val dynamicOnboardingFragment = DynamicOnboardingFragment.createInstance(bundle)
+        directPageTo(dynamicOnboardingFragment)
+    }
+
+    private fun onGetDynamicOnboardingFailed(throwable: Throwable) {
+        loadTime = System.currentTimeMillis() - loadTime
+
+        if (throwable.message == JOB_WAS_CANCELED) {
+            onboardingAnalytics.trackDynamicOnboardingPage(false, loadTime, JOB_WAS_CANCELED)
+        } else {
+            onboardingAnalytics.trackDynamicOnboardingPage(false, loadTime, throwable.message ?: "")
+        }
+
+        showStaticOnboarding()
+    }
+
+    private fun showStaticOnboarding() {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+
+        val onboardingFragment = OnboardingFragment.createInstance(bundle)
+        directPageTo(onboardingFragment)
+    }
+
+    private fun directPageTo(fragment: Fragment) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(parentViewResourceID, fragment, tagFragment)
+                .commit()
+    }
 }

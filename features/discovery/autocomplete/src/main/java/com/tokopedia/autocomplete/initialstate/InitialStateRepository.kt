@@ -7,5 +7,5 @@ import java.util.*
 interface InitialStateRepository {
     fun getInitialStateData(parameters: HashMap<String, Any>): Observable<List<InitialStateData>>
 
-    fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Response<Void>>
+    fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Boolean>
 }

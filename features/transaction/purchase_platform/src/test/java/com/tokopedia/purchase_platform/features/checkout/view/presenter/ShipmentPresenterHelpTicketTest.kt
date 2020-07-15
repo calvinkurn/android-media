@@ -2,16 +2,14 @@ package com.tokopedia.purchase_platform.features.checkout.view.presenter
 
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter
@@ -25,6 +23,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -41,9 +40,7 @@ import rx.subscriptions.CompositeSubscription
 
 object ShipmentPresenterHelpTicketTest : Spek({
 
-    val checkPromoStackingCodeFinalUseCase: CheckPromoStackingCodeFinalUseCase = mockk()
-    val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
-    val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper = mockk()
+    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     val checkoutUseCase: CheckoutUseCase = mockk()
     val checkoutRepository: ICheckoutRepository = mockk()
@@ -66,6 +63,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener = mockk()
     val shipmentDataConverter = ShipmentDataConverter()
+    val releaseBookingUseCase: ReleaseBookingUseCase = mockk()
 
     RxAndroidPlugins.getInstance().reset()
     RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
@@ -78,8 +76,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     Feature("Submit Help Ticket") {
 
         val presenter by memoized {
-            ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
-                    checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+            ShipmentPresenter(compositeSubscription,
                     checkoutUseCase, getShipmentAddressFormUseCase,
                     getShipmentAddressFormOneClickShipementUseCase,
                     editAddressUseCase, changeShippingAddressUseCase,
@@ -87,7 +84,8 @@ object ShipmentPresenterHelpTicketTest : Spek({
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
                     userSessionInterface, analyticsPurchaseProtection, codAnalytics,
-                    checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter)
+                    checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter,
+                    releaseBookingUseCase, validateUsePromoRevampUseCase)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }
@@ -109,11 +107,11 @@ object ShipmentPresenterHelpTicketTest : Spek({
 
             Given("mock cart") {
                 presenter.shipmentCartItemModelList = emptyList()
-                presenter.setDataCheckoutRequestList(emptyList())
+                presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
             }
 
             When("process checkout") {
-                presenter.processCheckout(CheckPromoParam(), false, false, false, false, "", "", "")
+                presenter.processCheckout(false, false, false, false, "", "", "")
             }
 
             Then("should render error reporter dialog") {

@@ -5,11 +5,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -18,6 +18,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -35,13 +37,12 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
-import com.tokopedia.topads.sdk.domain.model.Category;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
@@ -51,6 +52,8 @@ import java.util.List;
 import javax.inject.Inject;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifycomponents.Toaster;
+
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
@@ -119,6 +122,75 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 adapter.notifyItemChanged(position);
             }
         }
+
+        ProductCardOptionsManager
+                .handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+    }
+
+    private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if(productCardOptionsModel.getWishlistResult().isUserLoggedIn()){
+            handleWishlistActionForLoggedInUser(productCardOptionsModel);
+        } else {
+            RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        }
+    }
+
+    private void handleWishlistActionForLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        if(productCardOptionsModel.getWishlistResult().isSuccess()){
+            handleWishlistActionSuccess(productCardOptionsModel);
+        } else {
+            handleWishlistActionFailed();
+        }
+    }
+
+    private void handleWishlistActionSuccess(ProductCardOptionsModel productCardOptionsModel) {
+        if (getContext() == null) return;
+
+        boolean isAddWishlist = productCardOptionsModel.getWishlistResult().isAddWishlist();
+
+        InboxGtmTracker.getInstance().eventClickRecommendationWishlist(getContext(), isAddWishlist);
+        adapter.notifyItemChanged(productCardOptionsModel.getProductPosition(), isAddWishlist);
+
+        if (isAddWishlist) {
+            showSuccessAddWishlist();
+        }
+        else {
+            showSuccessRemoveWishlist();
+        }
+    }
+
+    private void showSuccessAddWishlist() {
+        if (getActivity() == null) return;
+
+        View view = getActivity().findViewById(android.R.id.content);
+        String message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist);
+
+        if (view == null) return;
+
+        Toaster.INSTANCE.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
+                getString(R.string.recom_go_to_wishlist),
+                v -> RouteManager.route(getActivity(), ApplinkConst.WISHLIST)
+        );
+    }
+
+    private void showSuccessRemoveWishlist() {
+        if (getActivity() == null) return;
+
+        View view = getActivity().findViewById(android.R.id.content);
+        String message = getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist);
+
+        if (view == null) return;
+
+        Toaster.INSTANCE.showNormal(view, message, Snackbar.LENGTH_LONG);
+    }
+
+    private void handleWishlistActionFailed() {
+        if (getView() == null) return;
+
+        View rootView = getView().getRootView();
+
+        Toaster.INSTANCE.showError(rootView,
+                ErrorHandler.getErrorMessage(rootView.getContext(), null), Snackbar.LENGTH_LONG);
     }
 
     @Override
@@ -198,7 +270,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
         if (item.isTopAds()) {
-            new ImpresionTask().execute(item.getClickUrl());
             onClickTopAds(item);
         }else {
             onClickOrganic(item);
@@ -209,9 +280,29 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
+    public void onThreeDotsClick(@NotNull RecommendationItem item, @NotNull int... position) {
+        if (position.length == 0) return;
+
+        ProductCardOptionsManager
+                .showProductCardOptions(this, createProductCardOptionsModel(item, position[0]));
+    }
+
+    private ProductCardOptionsModel createProductCardOptionsModel(RecommendationItem recommendationItem, int productPosition) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+
+        productCardOptionsModel.setHasWishlist(true);
+        productCardOptionsModel.setWishlisted(recommendationItem.isWishlist());
+        productCardOptionsModel.setProductId(String.valueOf(recommendationItem.getProductId()));
+        productCardOptionsModel.setTopAds(recommendationItem.isTopAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(recommendationItem.getWishlistUrl());
+        productCardOptionsModel.setProductPosition(productPosition);
+
+        return productCardOptionsModel;
+    }
+
+    @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
         if(item.isTopAds()){
-            new ImpresionTask().execute(item.getTrackerImageUrl());
             onImpressionTopAds(item);
         }else {
             onImpressionOrganic(item);
@@ -260,10 +351,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-                if (getActivity().getApplication() instanceof GlobalNavRouter) {
-                    startActivity(((GlobalNavRouter) getActivity().getApplication())
-                            .getInboxTicketCallingIntent(getActivity()));
-                }
+                RouteManager.route(getActivity(),ApplinkConst.INBOX_TICKET);
                 break;
         }
     }

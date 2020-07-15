@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
@@ -17,13 +18,15 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 /**
  * Created by jegul on 31/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VideoComponentTest {
 
     private lateinit var component: VideoComponent
@@ -32,7 +35,9 @@ class VideoComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -40,13 +45,13 @@ class VideoComponentTest {
         component = VideoComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
     @Test
-    fun `test when should set video`() = runBlockingTest(testDispatcher) {
+    fun `when new video is set, then video should update video`() = runBlockingTest(testDispatcher) {
         val mockExoPlayer = mockk<ExoPlayer>()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockExoPlayer))
@@ -56,11 +61,23 @@ class VideoComponentTest {
     }
 
     @Test
-    fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
-        val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
+    fun `when channel is frozen, then video should be hidden and released`() = runBlockingTest(testDispatcher) {
+        val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
 
-        verifyAll {
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
+        verify {
+            component.uiView.hide()
+            component.uiView.setPlayer(null)
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `when user is banned, then video should be hidden and released`() = runBlockingTest(testDispatcher) {
+        val mockFreeze = modelBuilder.buildPlayRoomBannedEvent()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
+        verify {
             component.uiView.hide()
             component.uiView.setPlayer(null)
         }

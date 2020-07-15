@@ -290,16 +290,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
-    public boolean shouldCheckAll() {
-        if (flightCancellationViewModelList.size() == 1 &&
-                flightCancellationViewModelList.get(0).getPassengerViewModelList().size() == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public boolean isChecked(FlightCancellationPassengerViewModel passengerViewModel) {
         return flightCancellationPresenter.isPassengerChecked(passengerViewModel);
     }

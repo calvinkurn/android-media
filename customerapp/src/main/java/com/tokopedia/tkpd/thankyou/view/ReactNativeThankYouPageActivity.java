@@ -50,8 +50,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
     private static final String PAGE_TITLE = "Thank You";
 
-    private static final String CACHE_THANK_YOU_PAGE = "CACHE_THANK_YOU_PAGE";
-    private static final String CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE = "CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE";
+    public static final String CACHE_THANK_YOU_PAGE = "CACHE_THANK_YOU_PAGE";
+    public static final String CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE = "CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE";
 
     private ReactInstanceManager reactInstanceManager;
     private static final String SAVED_VERSION = "SAVED_VERSION";

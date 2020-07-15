@@ -3,11 +3,10 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.TextWatcher
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -26,6 +25,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -68,6 +68,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         const val SUCCESS_EDIT_SHOWCASE = 1
         const val MAX_SHOWCASE_NAME_LENGTH = 128
         const val SELECTED_SHOWCASE_PRODUCT = "selected_product_list"
+        const val EXCLUDED_SHOWCASE_PRODUCT = "excluded_product_list"
         const val NEW_APPENDED_SHOWCASE_PRODUCT = "appended_product_list"
         const val DEFAULT_SHOWCASE_ID = "0"
         const val ERROR_TOASTER = Toaster.TYPE_ERROR
@@ -89,6 +90,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private var selectedProductListFilter = GetProductListFilter()
     private var viewVisible = View.VISIBLE
     private var viewGone = View.GONE
+    private var excludedProduct: List<ShowcaseProduct> = listOf()
     private var isActionEdit: Boolean = false
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
     private var showcaseName: String? = ""
@@ -171,17 +173,22 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 showcaseId = it.getString(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)
                 showcaseName = it.getString(ShopShowcaseEditParam.EXTRA_SHOWCASE_NAME)
                 selectedProductListFilter.fmenu = showcaseId
+                selectedProductListFilter.perPage = 0
                 getSelectedProductList(selectedProductListFilter)
             }
         }
     }
 
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == START_PRODUCT_SHOWCASE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             val newSelectedProductList = data?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseProductAddFragment.SHOWCASE_PRODUCT_LIST)
+            val newDeletedProductList = data?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseProductAddFragment.SHOWCASE_DELETED_LIST)
             updateSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             updateAppendedSelectedProduct(showcaseAddAdapter, newSelectedProductList)
+            updateDeletedProduct(showcaseAddAdapter, newDeletedProductList)
             showSelectedProductList()
         }
     }
@@ -215,18 +222,16 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun showDeleteCounter(firstDeletedItem: ShowcaseProduct) {
-        if(isActionEdit) {
-            ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
-            productCounterText?.text = context?.resources?.getString(
-                    R.string.deleted_product_counter_text,
-                    showcaseAddAdapter?.getDeletedProductList()?.size.toString()
-            )
-            undoDeleteProductButton?.setOnClickListener {
-                showcaseAddAdapter?.undoDeleteSelectedProduct()
-                showSelectedProductList()
-            }
-            productCounter?.visibility = View.VISIBLE
+        ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
+        productCounterText?.text = context?.getString(
+                R.string.deleted_product_counter_text,
+                showcaseAddAdapter?.getDeletedProductList()?.size.toString()
+        )
+        undoDeleteProductButton?.setOnClickListener {
+            showcaseAddAdapter?.undoDeleteSelectedProduct()
+            showSelectedProductList()
         }
+        productCounter?.visibility = View.VISIBLE
     }
 
     override fun hideDeleteCounter() {
@@ -248,21 +253,16 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        loadData()
-//    }
-//
-//    override fun onDestroy() {
-//        viewModel.reoderShopShowcaseResponse.removeObservers(this)
-//        viewModel.getListBuyerShopShowcaseResponse.removeObservers(this)
-//        viewModel.getListSellerShopShowcaseResponse.removeObservers(this)
-//        viewModel.deleteShopShowcaseResponse.removeObservers(this)
-//        viewModel.getShopProductResponse.removeObservers(this)
-//        super.onDestroy()
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        removeObservers(shopShowcaseAddViewModel.createShopShowcase)
+        removeObservers(shopShowcaseAddViewModel.selectedProductList)
+        removeObservers(shopShowcaseAddViewModel.loaderState)
+        removeObservers(shopShowcaseAddViewModel.listOfResponse)
+    }
 
     private fun initView() {
+        showSoftKeyboard()
         observeCreateShopShowcase()
         observeLoaderState()
         observeGetSelectedProductList()
@@ -284,24 +284,41 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
          * Listener for action text "Selesai" on toolbar is clicked
          */
         headerUnify?.actionTextView?.setOnClickListener {
-            tracking.addShowcaseClickFinishButton(shopId, shopType, isActionEdit)
             val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
             validateShowcaseName(showcaseName, true)
         }
 
         /**
-         * Listener for user click action done on their keyboard
+         * Listener for showcase name textfield
          */
-        textFieldShowcaseName?.textFieldInput?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
-                    validateShowcaseName(showcaseName, false)
-                    return true
+        textFieldShowcaseName?.textFieldInput?.run {
+            setOnEditorActionListener(object : TextView.OnEditorActionListener {
+                override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+                    if(actionId == EditorInfo.IME_ACTION_DONE) {
+                        val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
+                        validateShowcaseName(showcaseName, false)
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        })
+            })
+
+            addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+                    // no op
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    // no op
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    if(s.isNotEmpty()) {
+                        textFieldShowcaseName?.setError(false)
+                    }
+                }
+            })
+        }
 
         /**
          * Send tracker if textfield get focus after clicked,
@@ -365,6 +382,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun goToChooseProduct() {
         val intent = Intent(activity, ShopShowcaseProductAddActivity::class.java)
         intent.putParcelableArrayListExtra(SELECTED_SHOWCASE_PRODUCT, showcaseAddAdapter?.getSelectedProductList())
+        intent.putParcelableArrayListExtra(EXCLUDED_SHOWCASE_PRODUCT, ArrayList(excludedProduct))
         intent.putParcelableArrayListExtra(NEW_APPENDED_SHOWCASE_PRODUCT, showcaseAddAdapter?.getAppendedProductList())
         intent.putExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, isActionEdit)
         intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID, showcaseId)
@@ -375,7 +393,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         activity?.also {
             val deletedProductSize = showcaseAddAdapter?.getDeletedProductList()?.size
             deletedProductSize?.let { size ->
-                if(size > 0 && isActionEdit) {
+                if(size > 0 && productCounter?.visibility == viewVisible) {
                     val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     confirmDialog.apply {
                         setTitle(getString(R.string.text_confirm_dialog_title))
@@ -461,10 +479,12 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     val responseData = it.data
                     if(responseData.success) {
                         // navigate back to origin create showcase entry point
+                        tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType, true)
                         activity?.setResult(Activity.RESULT_OK)
                         activity?.finish()
                     }
                     else {
+                        tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType)
                         showUnifyToaster(responseData.message)
                     }
                 }
@@ -528,6 +548,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         observe(shopShowcaseAddViewModel.selectedProductList) {
             when(it) {
                 is Success -> {
+                    excludedProduct = it.data
                     setCurrentlyShowcaseData(showcaseName)
                     updateSelectedProduct(showcaseAddAdapter, ArrayList(it.data))
                     showSelectedProductList()
@@ -574,6 +595,17 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
         showcaseAddAdapter?.updateAppendedDataSet(newSelectedProductList)
+    }
+
+    private fun updateDeletedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newDeletedProduct: ArrayList<ShowcaseProduct>?) {
+        showcaseAddAdapter?.updateDeletedDataSet(newDeletedProduct)
+    }
+
+    private fun showSoftKeyboard() {
+        activity?.window?.run {
+            textFieldShowcaseName?.textFieldInput?.requestFocus()
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        }
     }
 
     private fun hideSoftKeyboard() {

@@ -8,7 +8,7 @@ import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactor
 data class Property(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: Long = 0,
 
         @SerializedName("name")
         @Expose

@@ -75,7 +75,7 @@ public class LoginRegisterModule {
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
         builder.addInterceptor(new RiskAnalyticsInterceptor(context));
-        builder.addInterceptor(new AkamaiBotInterceptor());
+        builder.addInterceptor(new AkamaiBotInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);

@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomlist.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.util.HotelUtil
@@ -31,7 +32,7 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
             val errors = graphqlResponse.getError(HOTEL_ADD_TO_CART_RESPONSE_TYPE)
 
             if (errors != null && errors.isNotEmpty() && errors[0].extensions != null) {
-                Fail(Throwable(errors[0].extensions.code.toString()))
+                Fail(HotelErrorException(errors[0].extensions.code, errors[0].message))
             } else {
                 val hotelAddToCartData = graphqlResponse.getData<HotelAddCartData.Response>(HOTEL_ADD_TO_CART_RESPONSE_TYPE)
                 Success(hotelAddToCartData)

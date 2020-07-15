@@ -72,7 +72,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         return when (viewType) {
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
-            else -> ShippingDurationViewHolder(view, this, cartPosition)
+            else -> ShippingDurationViewHolder(view, cartPosition)
         }
     }
 

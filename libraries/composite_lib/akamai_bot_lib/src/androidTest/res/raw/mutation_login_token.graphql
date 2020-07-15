@@ -1,0 +1,17 @@
+mutation login_token($grant_type: String!, $refresh_token: String!, $access_token: String!) {
+  login_token(input: {grant_type: $grant_type, refresh_token: $refresh_token, access_token: $access_token}) {
+    acc_sid
+    access_token
+    expires_in
+    refresh_token
+    sid
+    token_type
+    sq_check
+    cotp_url
+    errors {
+      name
+      message
+    }
+    event_code
+  }
+}

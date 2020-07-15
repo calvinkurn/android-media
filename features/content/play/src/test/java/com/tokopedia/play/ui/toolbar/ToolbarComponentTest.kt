@@ -3,15 +3,11 @@ package com.tokopedia.play.ui.toolbar
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
-import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -22,13 +18,12 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.*
 
 /**
  * Created by jegul on 29/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ToolbarComponentTest {
 
     private lateinit var component: ToolbarComponent
@@ -37,7 +32,9 @@ class ToolbarComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -45,94 +42,165 @@ class ToolbarComponentTest {
         component = ToolbarComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
     @Test
-    fun `test when video property changed`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Buffering
-        )
+    fun `when partner info is retrieved, then toolbar should update partner info`() = runBlockingTest(testDispatcher) {
+        val mockPartnerInfo = modelBuilder.buildPartnerInfoUiModel()
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.setLiveBadgeVisibility(mockVideoProp.type.isLive) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test set channel title`() = runBlockingTest(testDispatcher) {
-        val channelTitle = "Channel Title"
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetChannelTitle(channelTitle))
-        verify { component.uiView.setTitle(channelTitle) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test set partner info`() = runBlockingTest(testDispatcher) {
-        val mockPartnerInfo = PartnerInfoUiModel(
-                id = 1,
-                name = "Toko",
-                type = PartnerType.SHOP,
-                isFollowed = true,
-                isFollowable = true
-        )
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPartnerInfo(mockPartnerInfo))
         verify { component.uiView.setPartnerInfo(mockPartnerInfo) }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `test on video stream changed`() = runBlockingTest(testDispatcher) {
-        val mockVideoStream = VideoStreamUiModel(
-                uriString = "https://www.google.com/video.mp4",
-                channelType = PlayChannelType.VOD,
-                isActive = false
-        )
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
-        verify { component.uiView.setLiveBadgeVisibility(mockVideoStream.channelType.isLive) }
+    fun `when new follow status is retrieved, then toolbar should update follow status`() = runBlockingTest(testDispatcher) {
+        val shouldFollow = true
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.FollowPartner(shouldFollow))
+        verify { component.uiView.setFollowStatus(shouldFollow) }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
-        val keyboardState = true
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(keyboardState))
-        verify { component.uiView.hide() }
+    fun `when new total item in cart is retrieved, then toolbar should update cart info`() = runBlockingTest(testDispatcher) {
+        val mockCartUiModel = modelBuilder.buildCartUiModel()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalCart(mockCartUiModel))
+        verify { component.uiView.setCartInfo(mockCartUiModel) }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
-        val keyboardState = false
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(keyboardState))
+    fun `when channel is frozen, then toolbar should be shown`() = runBlockingTest(testDispatcher) {
+        val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
         verify { component.uiView.show() }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `test when channel freeze`() = runBlockingTest(testDispatcher) {
-        val mockEvent = PlayRoomEvent.Freeze("", "", "", "")
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockEvent))
+    fun `when user is banned, then toolbar should be shown`() = runBlockingTest(testDispatcher) {
+        val mockFreeze = modelBuilder.buildPlayRoomBannedEvent()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
         verify { component.uiView.show() }
         confirmVerified(component.uiView)
     }
 
-    @Test
-    fun `test when no more action`() = runBlockingTest(testDispatcher) {
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
-        verify { component.uiView.hideActionMore() }
-        confirmVerified(component.uiView)
+    @Nested
+    @DisplayName("Keyboard state is changing")
+    inner class KeyboardStateChanged{
+
+        @Test
+        fun `when keyboard is shown, then toolbar should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when keyboard is hidden, then toolbar should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
     }
 
-    @Test
-    fun `test follow and unfollow partner`() = runBlockingTest(testDispatcher) {
-        val shouldFollowPartner = true
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.FollowPartner(shouldFollowPartner))
-        verify { component.uiView.setFollowStatus(shouldFollowPartner) }
-        confirmVerified(component.uiView)
+    @Nested
+    @DisplayName("Product Sheet state is changing")
+    inner class ProductSheetStateChanged{
+
+        @Test
+        fun `when product sheet is shown, then toolbar should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    productSheetState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when product sheet is hidden, then toolbar should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    productSheetState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+    }
+
+    @Nested
+    @DisplayName("Variant Sheet state is changing")
+    inner class VariantSheetStateChanged{
+
+        @Test
+        fun `when variant sheet is shown, then toolbar should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    variantSheetState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when variant sheet is hidden, then toolbar should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    variantSheetState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
     }
 
     class ToolbarComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ToolbarComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {

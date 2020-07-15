@@ -3,18 +3,14 @@ package com.tokopedia.shop.info.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Navigate to ShopInfoActivity
@@ -67,5 +63,6 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
         }
 
         const val EXTRA_SHOP_INFO = "extra_shop_info"
+        const val SHOP_ID = "EXTRA_SHOP_ID"
     }
 }

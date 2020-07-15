@@ -38,6 +38,7 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
         attributesRequest.did = DEFAULT_DEVICE_ID
         attributesRequest.ipAddress = FlightRequestUtil.getLocalIpAddress()
         attributesRequest.userAgent = FlightRequestUtil.getUserAgentForApiCall()
+        attributesRequest.requestId = requestParams.getString(PARAM_REQUEST_ID, "")
 
         val flightRequest = FlightRequest()
         flightRequest.adult = requestParams.getInt(PARAM_ADULT, 0)
@@ -102,7 +103,8 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
                            flightClass: Int,
                            departureId: String,
                            idEmpotencyKey: String,
-                           price: Int): RequestParams {
+                           price: Int,
+                           requestId: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putInt(PARAM_ADULT, adult)
         requestParams.putInt(PARAM_CHILD, child)
@@ -111,6 +113,7 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
         requestParams.putString(PARAM_FLIGHT_DEPARTURE, departureId)
         requestParams.putString(PARAM_ID_EMPOTENCY_KEY, idEmpotencyKey)
         requestParams.putInt(PARAM_PRICE, price)
+        requestParams.putString(PARAM_REQUEST_ID, requestId)
         return requestParams
     }
 
@@ -122,7 +125,8 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
                            returnId: String,
                            idEmpotencyKey: String,
                            price: Int,
-                           comboKey: String): RequestParams {
+                           comboKey: String,
+                           requestId: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putInt(PARAM_ADULT, adult)
         requestParams.putInt(PARAM_CHILD, child)
@@ -133,24 +137,27 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
         requestParams.putString(PARAM_ID_EMPOTENCY_KEY, idEmpotencyKey)
         requestParams.putInt(PARAM_PRICE, price)
         requestParams.putString(PARAM_COMBO_KEY, comboKey)
+        requestParams.putString(PARAM_REQUEST_ID, requestId)
         return requestParams
     }
 
     companion object {
-        val PARAM_ADULT = "adult"
-        val PARAM_CHILD = "child"
-        val PARAM_INFANT = "infant"
-        val PARAM_CLASS = "class"
-        val PARAM_COMBO_KEY = "combo_key"
-        val PARAM_FLIGHT_DEPARTURE = "departure"
-        val PARAM_FLIGHT_RETURN = "return"
-        val PARAM_ID_EMPOTENCY_KEY = "id_empotency_key"
-        private val PARAM_DEFAULT_VALUE = ""
-        private val PARAM_DEFAULT_VALUE_INT = 0
-        private val PARAM_CART_TYPE = "add_cart"
-        private val PARAM_PRICE = "price"
-        private val PARAM_CURRENCY = "price_currency"
-        private val DEFAULT_CURRENCY_ID = 1
-        private val DEFAULT_DEVICE_ID = 5
+        const val PARAM_ADULT = "adult"
+        const val PARAM_CHILD = "child"
+        const val PARAM_INFANT = "infant"
+        const val PARAM_CLASS = "class"
+        const val PARAM_COMBO_KEY = "combo_key"
+        const val PARAM_FLIGHT_DEPARTURE = "departure"
+        const val PARAM_FLIGHT_RETURN = "return"
+        const val PARAM_ID_EMPOTENCY_KEY = "id_empotency_key"
+        private const val PARAM_REQUEST_ID = "request_id"
+
+        private const val PARAM_DEFAULT_VALUE = ""
+        private const val PARAM_DEFAULT_VALUE_INT = 0
+        private const val PARAM_CART_TYPE = "add_cart"
+        private const val PARAM_PRICE = "price"
+        private const val PARAM_CURRENCY = "price_currency"
+        private const val DEFAULT_CURRENCY_ID = 1
+        private const val DEFAULT_DEVICE_ID = 5
     }
 }

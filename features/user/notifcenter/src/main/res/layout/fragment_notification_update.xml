@@ -14,7 +14,7 @@
         android:background="@color/white">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/filter_list"
+            android:id="@+id/lstFilter"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/filter_list"
+            app:layout_constraintTop_toBottomOf="@+id/lstFilter"
             app:reverseLayout="false"
             tools:listitem="@layout/item_notification_update_text" />
 

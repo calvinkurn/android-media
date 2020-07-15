@@ -20,7 +20,7 @@ class TetraService(private val context: Context) {
     fun makeRetrofitService(): TetraApi {
         if (tetraApi == null)
             tetraApi = Retrofit.Builder()
-                .baseUrl("http://172.21.38.209/")
+                .baseUrl("http://172.31.2.144/")
                 .addConverterFactory(StringResponseConverter())
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(createClient())

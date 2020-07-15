@@ -223,6 +223,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
 
+    // RegisterFingerprintOnboardingActivity
+    // tokopedia-android-internal://global/add-fingerprint-onboarding
+    @JvmField
+    val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
+
     // PinCompleteActivity
     // tokopedia-android-internal://global/add-pin-complete
     @JvmField
@@ -261,7 +266,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -383,8 +388,7 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}"
+        "dffallbackurl={fallbackUrl}"
 
     /**
      * LogoutActivity
@@ -396,7 +400,6 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
-
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
@@ -433,6 +436,7 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/gamification2
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+    val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
 
     //ManageGeneral Activity
     @JvmField

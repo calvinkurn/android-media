@@ -867,7 +867,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
-                              url: String, iamgeUrl: String) {
+                              url: String, imageUrl: String) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
@@ -954,6 +954,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
+    }
+
+    override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
+
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {

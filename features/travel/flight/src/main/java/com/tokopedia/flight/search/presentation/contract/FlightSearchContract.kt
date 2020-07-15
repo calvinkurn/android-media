@@ -17,6 +17,8 @@ interface FlightSearchContract {
 
         fun getFilterModel(): FlightFilterModel
 
+        fun getPriceStatisticPair(): Pair<Int, Int>
+
         fun getAirportCombineModelList(): FlightAirportCombineModelList
 
         fun isStatusCombineDone(): Boolean
@@ -41,19 +43,13 @@ interface FlightSearchContract {
 
         fun setCombineStatus(isCombineDone: Boolean)
 
-        fun setUIMarkFilter()
-
         fun setSearchPassData(passDataViewModel: FlightSearchPassDataViewModel)
-
-        fun setSelectedSortItem(sortItemId: Int)
 
         fun showDepartureDateMaxTwoYears(resId: Int)
 
         fun showDepartureDateShouldAtLeastToday(resId: Int)
 
         fun showReturnDateShouldGreatedOrEqual(resId: Int)
-
-        fun showFilterAndSortView()
 
         fun showEmptyFlightStateView()
 
@@ -62,8 +58,6 @@ interface FlightSearchContract {
         fun showGetSearchListError(e: Throwable)
 
         fun hideHorizontalProgress()
-
-        fun hideFilterAndSortView()
 
         fun removeToolbarElevation()
 
@@ -117,6 +111,10 @@ interface FlightSearchContract {
         fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel)
 
         fun unsubscribeAll()
+
+        fun recountFilterCounter(): Int
+
+        fun sendQuickFilterTrack(filterName: String)
 
     }
 }

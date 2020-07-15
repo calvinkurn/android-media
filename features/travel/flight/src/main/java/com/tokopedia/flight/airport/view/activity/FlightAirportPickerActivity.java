@@ -1,8 +1,9 @@
 package com.tokopedia.flight.airport.view.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -18,8 +19,8 @@ import com.tokopedia.flight.common.di.component.FlightComponent;
 public class FlightAirportPickerActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {
     public static final String EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE";
 
-    public static Intent createInstance(Activity activity, String title) {
-        Intent intent = new Intent(activity, FlightAirportPickerActivity.class);
+    public static Intent createInstance(Context context, String title) {
+        Intent intent = new Intent(context, FlightAirportPickerActivity.class);
         intent.putExtra(EXTRA_TOOLBAR_TITLE, title);
         return intent;
     }

@@ -13,7 +13,6 @@ buildscript {
 }
 
 
-
 dependencies {
 
 }
@@ -21,8 +20,8 @@ dependencies {
 project.ext {
     artifactId = 'analytics-debugger-noop'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
-    artifactName = "analytics-noop-release"
+    versionName = "0.0.2"
+    artifactName = "analytics_debugger_noop-release"
 }
 
 apply from: '../../publish_local.gradle'

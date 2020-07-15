@@ -30,7 +30,7 @@ class GetApprovalStatusSubscriberTest : Spek({
     given("on getting response from server") {
         val context: Context = mock()
         val listener: GetApprovalStatusSubscriber.GetApprovalStatusListener = mock()
-        val subscriber = GetApprovalStatusSubscriber(context, listener)
+        val subscriber = GetApprovalStatusSubscriber(listener)
 
 
         `when`(ErrorHandler.getErrorMessage(context, RuntimeException("500")))
@@ -44,7 +44,7 @@ class GetApprovalStatusSubscriberTest : Spek({
             }
 
             it("should show error") {
-                verify(listener).onErrorGetShopVerificationStatus(DEFAULT_REQUEST_ERROR_UNKNOWN)
+                verify(listener).onErrorGetShopVerificationStatus(Exception("DEFAULT_REQUEST_ERROR_UNKNOWN"))
             }
 
         }

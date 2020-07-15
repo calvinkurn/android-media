@@ -6,12 +6,13 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RelatedSearchViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
 
-    private String relatedKeyword;
-    private List<OtherRelated> otherRelated;
+    private String relatedKeyword = "";
+    private List<OtherRelated> otherRelated = new ArrayList<>();
 
     public String getRelatedKeyword() {
         return relatedKeyword;

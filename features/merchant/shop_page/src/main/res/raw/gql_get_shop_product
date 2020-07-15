@@ -47,6 +47,11 @@ query getShopProduct($shopId: String!, $filter: ProductListFilter!){
                 isActive
                 imgURL
             }
+            label_groups {
+                position
+                type
+                title
+            }
         }
         totalData
     }

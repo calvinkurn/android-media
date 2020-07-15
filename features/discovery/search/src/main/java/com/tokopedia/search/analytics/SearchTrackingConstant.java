@@ -15,4 +15,6 @@ public class SearchTrackingConstant {
     static String IS_RESULT_FOUND = "isResultFound";
     static String CATEGORY_NAME_MAPPING = "categoryNameMapping";
     static String CATEGORY_ID_MAPPING = "categoryIdMapping";
+
+    static String RELATED_KEYWORD = "relatedKeyword";
 }

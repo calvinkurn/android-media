@@ -1,0 +1,9 @@
+package com.tokopedia.navigation_common.listener;
+
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
+
+public interface OfficialStorePerformanceMonitoringListener {
+    void stopOfficialStorePerformanceMonitoring();
+    void startOfficialStorePerformanceMonitoring();
+    PageLoadTimePerformanceInterface getOfficialStorePageLoadTimePerformanceInterface();
+}

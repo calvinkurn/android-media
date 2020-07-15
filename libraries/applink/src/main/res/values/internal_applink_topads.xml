@@ -14,5 +14,7 @@
     <string name="path_topads_add_promo_option" translatable="false">/add-promo-option</string>
     <string name="path_topads_autoads" translatable="false">/autoads</string>
     <string name="path_topads_autoads_create" translatable="false">/creat-autoads</string>
+    <string name="path_topads_ad_chooser" translatable="false">/ad-picker</string>
+    <string name="path_topads_ad_creation" translatable="false">/create-ads</string>
 
 </resources>

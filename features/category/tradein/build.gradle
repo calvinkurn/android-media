@@ -37,6 +37,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -61,11 +62,11 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
-
-
     implementation project(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
@@ -78,7 +79,7 @@ dependencies {
 project.ext {
     artifactId = 'tradein'
     groupId = 'com.tokopedia.category'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "tradein-release"
 }
 

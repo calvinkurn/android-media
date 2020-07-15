@@ -24,8 +24,6 @@ import com.tokopedia.autocomplete.searchbar.SearchBarView;
 import com.tokopedia.autocomplete.suggestion.SuggestionFragment;
 import com.tokopedia.autocomplete.suggestion.SuggestionViewUpdateListener;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
@@ -41,9 +39,6 @@ public class AutoCompleteActivity extends BaseActivity
         implements SearchBarView.OnQueryTextListener,
         SuggestionViewUpdateListener,
         InitialStateViewUpdateListener {
-
-    public static final int PAGER_POSITION_PRODUCT = 0;
-    public static final int PAGER_POSITION_SHOP = 1;
 
     AutocompleteTracking autocompleteTracking;
 
@@ -101,7 +96,6 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntent(Intent intent) {
-
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
 
         handleIntentAutoComplete(searchParameter);
@@ -121,13 +115,14 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        SearchParameter param = searchBarView.showSearch(searchParameter);
+        searchBarView.showSearch(searchParameter);
+
         if (suggestionFragment != null) {
-            suggestionFragment.setSearchParameter(param);
+            suggestionFragment.setSearchParameter(searchParameter);
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if (initialStateFragment != null) {
-            initialStateFragment.setSearchParameter(param);
+            initialStateFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
             initialStateFragment.setInitialStateViewUpdateListener(this);
         }
     }
@@ -142,6 +137,7 @@ public class AutoCompleteActivity extends BaseActivity
         return false;
     }
 
+    @Override
     public void dropKeyboard() {
         KeyboardHandler.DropKeyboard(this, searchBarView);
     }
@@ -159,7 +155,7 @@ public class AutoCompleteActivity extends BaseActivity
         AutocompleteTracking.eventClickSubmit(query);
 
         clearFocusSearchView();
-        handleQueryTextSubmitBasedOnCurrentTab();
+        moveToSearchPage();
         return true;
     }
 
@@ -169,34 +165,7 @@ public class AutoCompleteActivity extends BaseActivity
         }
     }
 
-    private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
-        switch (suggestionFragment.getCurrentTab()) {
-            case PAGER_POSITION_PRODUCT:
-                onProductQuerySubmit();
-                break;
-            case PAGER_POSITION_SHOP:
-                onShopQuerySubmit();
-                break;
-            default:
-                throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
-        }
-    }
-
-    protected void onProductQuerySubmit() {
-        setActiveTabForSearchPage(SearchConstant.ActiveTab.PRODUCT);
-        moveToSearchPage();
-    }
-
-    private void onShopQuerySubmit() {
-        setActiveTabForSearchPage(SearchConstant.ActiveTab.SHOP);
-        moveToSearchPage();
-    }
-
-    private void setActiveTabForSearchPage(String activeTab) {
-        searchParameter.getSearchParameterHashMap().put(SearchApiConst.ACTIVE_TAB, activeTab);
-    }
-
-    private void moveToSearchPage() {
+    private void moveToSearchPage() throws RuntimeException{
         RouteManager.route(this, createSearchResultApplink());
         finish();
     }
@@ -226,7 +195,7 @@ public class AutoCompleteActivity extends BaseActivity
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
         if (searchParameter.getSearchQuery().isEmpty()) {
             if (initialStateFragment != null) {
-                initialStateFragment.getInitialStateData(searchParameter);
+                initialStateFragment.getInitialStateData(searchParameter.getSearchParameterHashMap());
             }
         } else {
             if (suggestionFragment != null) {
@@ -266,7 +235,8 @@ public class AutoCompleteActivity extends BaseActivity
         }
     }
 
-    public void setSearchQuery(String keyword) {
+    @Override
+    public void setSearchQuery(@NotNull String keyword) {
         searchBarView.setQuery(keyword, false, true);
     }
 }

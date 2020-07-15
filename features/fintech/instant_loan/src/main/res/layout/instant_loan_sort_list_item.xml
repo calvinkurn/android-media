@@ -15,8 +15,8 @@
         android:paddingRight="@dimen/dp_15"
         android:paddingEnd="@dimen/dp_15"
         android:clickable="true"
-        app:drawableRightCompat="@drawable/sort_selector_drawable"
-        android:textColor="@color/filter_selector"
+        app:drawableRightCompat="@drawable/il_sort_selector_drawable"
+        android:textColor="@color/il_filter_selector"
         android:background="?attr/selectableItemBackground"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

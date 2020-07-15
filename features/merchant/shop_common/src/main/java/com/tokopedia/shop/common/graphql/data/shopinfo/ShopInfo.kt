@@ -64,7 +64,11 @@ data class ShopInfo(
 
         @SerializedName("addressData")
         @Expose
-        val addressData: AddressData = AddressData()
+        val addressData: AddressData = AddressData(),
+
+        @SerializedName("shopHomeType")
+        @Expose
+        val shopHomeType: String = ""
 
 ) {
     fun mapToShopInfoData(): ShopInfoData {

@@ -11,6 +11,13 @@ data class NotificationCenterDetail(
         @SerializedName("notifcenter_detail")
         var pojo: NotificationUpdatePojo = NotificationUpdatePojo()
 )
+
+data class NotificationCenterSingleDetail(
+        @Expose
+        @SerializedName("notifcenter_singleList")
+        var pojo: NotificationUpdatePojo = NotificationUpdatePojo()
+)
+
 data class NotificationUpdatePojo(
         @Expose @SerializedName("paging") var paging: Paging = Paging(),
         @Expose @SerializedName("list") var list: List<NotificationUpdateItem> = arrayListOf(),

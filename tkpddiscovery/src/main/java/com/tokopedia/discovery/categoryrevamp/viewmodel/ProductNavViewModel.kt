@@ -19,7 +19,8 @@ import javax.inject.Inject
 class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
-                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
+                                              var getProductListUseCase: GetProductListUseCase,
+                                              var sendTopAdsUseCase: SendTopAdsUseCase) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -114,6 +115,10 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
 
     fun getDynamicFilterData(): MutableLiveData<Result<DynamicFilterModel>> {
         return mDynamicFilterModel
+    }
+
+    fun sendTopAds(url: String) {
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     override fun onCleared() {

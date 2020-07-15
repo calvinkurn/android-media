@@ -25,10 +25,14 @@
     <dimen name="translate_image_distance">-80dp</dimen>
     <dimen name="translate_image_again_distance">-160dp</dimen>
 
-<!--    <dimen name="gamification_pdp_peek_height">80dp</dimen>-->
-<!--    <dimen name="gamification_pdp_peek_height_xml">73dp</dimen>-->
+    <!--    <dimen name="gamification_pdp_peek_height">80dp</dimen>-->
+    <!--    <dimen name="gamification_pdp_peek_height_xml">73dp</dimen>-->
 
     <dimen name="gamification_pdp_peek_height">0dp</dimen>
     <dimen name="gamification_pdp_peek_height_xml">0dp</dimen>
     <dimen name="gamification_shimmer_w">150dp</dimen>
+    <bool name="gami_is_tablet">false</bool>
+    <dimen name="gami_rv_coupons_height">148dp</dimen>
+    <dimen name="gami_rv_coupons_width">0dp</dimen>
+    <dimen name="gami_dp_68">68dp</dimen>
 </resources>

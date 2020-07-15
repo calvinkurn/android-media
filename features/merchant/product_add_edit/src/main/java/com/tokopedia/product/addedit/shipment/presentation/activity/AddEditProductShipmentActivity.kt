@@ -6,24 +6,24 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 
 class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEditProductShipmentComponent> {
 
+    companion object {
+        fun createInstance(context: Context?, cacheManagerId: String?): Intent =
+                Intent(context, AddEditProductShipmentActivity::class.java)
+                        .putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+
+    }
+
     override fun getNewFragment(): Fragment {
-        val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
-        val productInputModel: ProductInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
-        val isAddMode: Boolean = intent.getBooleanExtra(PARAM_IS_ADD_MODE, false)
-        shipmentInputModel?.run {
-            return AddEditProductShipmentFragment.createInstanceEditMode(this, isAddMode)
-        }
-        return AddEditProductShipmentFragment.createInstance(productInputModel)
+        val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+        return AddEditProductShipmentFragment.createInstance(cacheManagerId)
     }
 
     override fun getComponent(): AddEditProductShipmentComponent {
@@ -32,17 +32,6 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .addEditProductShipmentModule(AddEditProductShipmentModule())
                 .build()
-    }
-
-    companion object {
-        private const val PARAM_SHIPMENT_INPUT_MODEL = "param_shipment_input_model"
-        private const val PARAM_IS_ADD_MODE = "param_shipment_is_add_mode"
-        fun createInstance(context: Context?) = Intent(context, AddEditProductShipmentActivity::class.java)
-        fun createInstanceEditMode(context: Context?, shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Intent =
-                Intent(context, AddEditProductShipmentActivity::class.java)
-                        .putExtra(PARAM_SHIPMENT_INPUT_MODEL, shipmentInputModel)
-                        .putExtra(PARAM_IS_ADD_MODE, isAddMode)
-
     }
 
     override fun onBackPressed() {

@@ -3,6 +3,7 @@ package com.tokopedia.salam.umrah.travel.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -83,5 +84,10 @@ YouTubePlayer.PlayerStateChangeListener{
         if(::youtubePlayerScreen.isInitialized)
             youtubePlayerScreen.release()
         super.onDestroy()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 }

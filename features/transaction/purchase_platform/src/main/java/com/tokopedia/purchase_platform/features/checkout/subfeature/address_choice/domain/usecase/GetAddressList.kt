@@ -25,15 +25,18 @@ class GetAddressCornerUseCase
 @Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCase, val mapper: AddressCornerMapper) {
 
     fun execute(query: String): Observable<AddressListModel> =
-            this.getObservable(query = query, page = 1, isAddress = true, isCorner = false)
+            this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 10)
+
+    fun getAll(query: String): Observable<AddressListModel> =
+            this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 0)
 
     fun loadMore(query: String, page: Int): Observable<AddressListModel> =
-            this.getObservable(query = query, page = page, isAddress = true, isCorner = false)
+            this.getObservable(query = query, page = page, isAddress = true, isCorner = false, limit = 10)
 
-    private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean):
+    private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean, limit: Int):
             Observable<AddressListModel> {
         val request = AddressRequest(searchKey = query, page = page, showAddress = isAddress,
-                showCorner = isCorner)
+                showCorner = isCorner, limit = limit)
         val param = mapOf<String, Any>(PARAM_ADDRESS_USECASE to request)
         val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.address_corner)
         val gqlRequest = GraphqlRequest(gqlQuery, NewAddressCornerResponse::class.java, param)

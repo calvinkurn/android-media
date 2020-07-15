@@ -1,0 +1,8 @@
+mutation clearNotifCounter{
+  notifcenter_clearNotifCounter {
+    data {
+      is_success
+    }
+    message_error
+  }
+}

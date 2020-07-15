@@ -6,6 +6,7 @@
     <string name="product_detail_courier">Pengiriman</string>
     <string name="delivery_label">Pengiriman</string>
     <string name="label_seen">Dilihat</string>
+    <string name="label_dibeli">Dibeli</string>
     <string name="label_success_transaction">Transaksi Berhasil</string>
     <string name="label_product_variant">Varian Produk</string>
     <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
@@ -30,16 +31,19 @@
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
     <string name="promote_topads">Iklankan</string>
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
-    <string name="action_preorder">PREORDER</string>
+    <string name="stock_habis">Stok Habis</string>
+    <string name="action_preorder">PreOrder</string>
     <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>
+    <string name="label_oke_pdp">Oke</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
@@ -184,5 +188,34 @@
     <string name="banned_product_title">Barang ini dilarang</string>
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
+    //Variant section
+    <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
+    <string name="variant_failed_load">Variannya belum muncul, refresh yuk!</string>
+    <string name="product_refresh">Refresh</string>
+    <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
+
+    //Check Imei
+    <string name="ask_phone_state_rationale">Izinkan Tokopedia mengakses panggilan telepon untuk pastikan kamu adalah pengguna baru.</string>
+    <string name="ask_phone_state_title">Aktifkan akses telepon, yuk!</string>
+    <string name="check_imei_description">Untuk membeli produk ini, Tokopedia memerlukan akses perangkat untuk memastikan kamu adalah pengguna baru.</string>
+    <string name="check_imei_title">Butuh Akses ke HP-mu</string>
+    <string name="check_imei_btn_rationale">Ke Pengaturan HP</string>
+    <string name="check_imei_btn_later">Nanti Saja</string>
+    <string name="check_imei_understand_title">Berikan Akses</string>
+
+    //NotifyMe (UpComing Teaser) section
+    <string name="notify_me_active">Pengingat Aktif</string>
+    <string name="notify_me_inactive">Ingatkan Saya</string>
+    <string name="notify_me_subtitle">Dimulai dalam %1$s</string>
+    <string name="notify_me_subtitle_main">Dimulai dalam</string>
+    <string name="notify_me_title">Kejar Diskon</string>
+    <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
+    <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
+
+    <!-- OVO -->
+    <string name="product_detail_price__goods">Harga Barang</string>
+    <string name="product_detail_estimation_price_min">Estimasi Ongkir Minimum</string>
+    <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
+    <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
 </resources>

@@ -89,17 +89,27 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         onBackPressedHitTracking()
         DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.label_title_on_dialog))
-            setDescription(getString(R.string.label_description_on_dialog))
             setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
             setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            setSecondaryCTAClickListener {
-                saveProductToDraft()
-                moveToManageProduct()
-                onCtaYesPressedHitTracking()
-            }
-            setPrimaryCTAClickListener {
-                this.dismiss()
-                onCtaNoPressedHitTracking()
+            if(isEditing()  || dataBackPressedLoss()) {
+                setDescription(getString(R.string.label_description_on_dialog_edit))
+                setSecondaryCTAClickListener {
+                    super.onBackPressed()
+                }
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                }
+            } else {
+                setDescription(getString(R.string.label_description_on_dialog))
+                setSecondaryCTAClickListener {
+                    saveProductToDraft()
+                    moveToManageProduct()
+                    onCtaYesPressedHitTracking()
+                }
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                    onCtaNoPressedHitTracking()
+                }
             }
         }.show()
     }
@@ -110,11 +120,27 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         finish()
     }
 
+    private fun isEditing(): Boolean {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            return f.isEditing()
+        }
+        return false
+    }
+
     private fun saveProductToDraft() {
         val f = fragment
         if (f != null && f is AddEditProductPreviewFragment) {
             f.saveProductDraft()
         }
+    }
+
+    private fun dataBackPressedLoss(): Boolean {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            return f.dataBackPressedLoss()
+        }
+        return false
     }
 
     private fun onCtaYesPressedHitTracking() {

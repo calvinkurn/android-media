@@ -26,7 +26,7 @@ interface PromoCheckoutDetailContract {
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?)
+        fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean/*, promo: Promo?*/)
         fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean)
         fun cancelPromo(codeCoupon: String)
     }

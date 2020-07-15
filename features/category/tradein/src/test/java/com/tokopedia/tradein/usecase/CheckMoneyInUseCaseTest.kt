@@ -8,6 +8,8 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.tradein.repository.TradeInRepository
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
@@ -30,14 +32,16 @@ class CheckMoneyInUseCaseTest {
     val tradeInRepository: TradeInRepository = mockk(relaxed = true)
     val context: Context = mockk()
     val resources: Resources = mockk()
+    val userSession: UserSessionInterface = mockk(relaxed = true)
 
-    var checkMoneyInUseCase = spyk(CheckMoneyInUseCase(context, tradeInRepository))
+    var checkMoneyInUseCase = spyk(CheckMoneyInUseCase(context, tradeInRepository, userSession))
 
     var tradeInParams = TradeInParams()
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
+        coEvery { userSession.deviceId } returns "mockk()"
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
@@ -93,10 +97,9 @@ class CheckMoneyInUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { tradeInRepository.getGQLData(any(), ValidateTradePDP::class.java, any())} returns validateTradePDP
 
-            checkMoneyInUseCase.checkMoneyIn(1,tradeInParams, "2")
+            checkMoneyInUseCase.checkMoneyIn(resources,1,tradeInParams, "2")
 
             coVerify { tradeInRepository.getGQLData(any(), ValidateTradePDP::class.java, any()) }
         }

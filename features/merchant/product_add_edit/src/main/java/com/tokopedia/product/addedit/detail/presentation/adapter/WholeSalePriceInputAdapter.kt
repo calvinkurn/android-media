@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
@@ -28,11 +29,11 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     override fun onBindViewHolder(holder: WholeSaleInputViewHolder, position: Int) {
+
         val wholeSaleInputModel = wholeSaleInputModelList[position]
 
+        // wholesale quantity
         val isWholeSaleQuantityEmpty = wholeSaleInputModel.quantity.isBlank()
-        val isWholeSalePriceEmpty = wholeSaleInputModel.price.isBlank()
-
         // set wholesale quantity recommendation when the wholesale quantity is empty
         if (isWholeSaleQuantityEmpty) {
             if (position == 0) wholeSaleInputModel.quantity = (position + 1).toString()
@@ -43,13 +44,16 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
             }
         }
 
+        // wholesale price
+        val isWholeSalePriceEmpty = wholeSaleInputModel.price.isBlank()
         // set wholesale price recommendation when the wholesale price is empty
         if (isWholeSalePriceEmpty && productPrice > 0.toBigInteger()) {
-            var priceRecommendation = (productPrice - (position + 1).toBigInteger())
-            if (priceRecommendation < 0.toBigInteger()) {
-                priceRecommendation = 0.toBigInteger()
+            if (position == 0) wholeSaleInputModel.price = (productPrice - 1.toBigInteger()).toString()
+            else {
+                val previousInputModel = wholeSaleInputModelList[position - 1]
+                val priceRecommendation = previousInputModel.price.toBigInteger() - 1.toBigInteger()
+                wholeSaleInputModel.price = priceRecommendation.toString()
             }
-            wholeSaleInputModel.price = priceRecommendation.toString()
         }
 
         holder.bindData(wholeSaleInputModel)
@@ -68,8 +72,7 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     fun setProductPrice(productPriceInput: String) {
-        if (productPriceInput.isBlank()) this.productPrice = 0.toBigInteger()
-        else this.productPrice = productPriceInput.toBigInteger()
+        this.productPrice = productPriceInput.toBigIntegerOrNull().orZero()
     }
 
     fun updateWholeSaleQuantityInputModel(position: Int, newQuantity: String) {

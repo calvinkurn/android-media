@@ -14,6 +14,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -26,6 +27,7 @@ import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SellerHomeConst.NOTIF_TRAY_CONFIG
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
@@ -70,20 +72,23 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         OtherMenuFragment.createInstance()
     }
 
-    private var currentSelectedMenu = 0
+    @FragmentType
+    private var currentSelectedMenu = FragmentType.NONE
     private var canExitApp = false
     private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
     private var statusBarCallback: StatusBarCallback? = null
+    private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
         initInjector()
         setupBottomNav()
-        setupDefaultPage(savedInstanceState)
+        setupDefaultPage()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
@@ -122,8 +127,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         statusBarCallback = callback
     }
 
-    private fun setupDefaultPage(savedInstanceState: Bundle?) {
-        if (null == savedInstanceState) {
+    private fun setupDefaultPage() {
+        if (intent?.data == null) {
             val homePage = PageFragment(FragmentType.HOME)
             sharedViewModel.setCurrentSelectedPage(homePage)
             showFragment(containerFragment)
@@ -280,5 +285,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.requestStatusBarDark()
         }
+    }
+
+    private fun initPerformanceMonitoring(){
+        performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
+    }
+
+    fun stopPerformanceMonitoringSellerHomeLayout() {
+        performanceMonitoringSellerHomelayout?.stopTrace()
     }
 }

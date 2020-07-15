@@ -4,7 +4,6 @@ import com.tokopedia.autocomplete.initialstate.InitialStateData
 import com.tokopedia.autocomplete.initialstate.InitialStateMapper
 import com.tokopedia.autocomplete.network.AutocompleteCache
 import com.tokopedia.cachemanager.CacheManager
-import retrofit2.Response
 import rx.Observable
 import java.util.concurrent.TimeUnit
 
@@ -23,7 +22,9 @@ class InitialStateDataSource(
                 .map(initialStateMapper)
     }
 
-    fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Response<Void>> {
-        return initialStateApi.deleteRecentSearch(parameters)
+    fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Boolean> {
+        return initialStateApi.deleteRecentSearch(parameters).map {
+            it.isSuccessful
+        }
     }
 }

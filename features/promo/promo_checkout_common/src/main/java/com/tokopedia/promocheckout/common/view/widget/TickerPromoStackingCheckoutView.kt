@@ -48,6 +48,12 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             field = value
             initView()
         }
+    var isLoading: Boolean = false
+        set(value) {
+            field = value
+            if (value) loading_view.visibility = View.VISIBLE
+            else loading_view.visibility = View.GONE
+        }
     var actionListener: ActionListener? = null
 
     init {
@@ -101,13 +107,13 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
 
     private fun setActionListener() {
         imageCloseGlobal?.setOnClickListener {
-            actionListener?.onResetPromoDiscount()
+            if (!isLoading) actionListener?.onResetPromoDiscount()
         }
         relativeLayoutUsePromoGlobal?.setOnClickListener {
-            if (state != State.DISABLED) actionListener?.onClickUsePromo()
+            if (state != State.DISABLED && !isLoading) actionListener?.onClickUsePromo()
         }
         layoutTickerFrameGlobal?.setOnClickListener {
-            if (state != State.DISABLED) actionListener?.onClickDetailPromo()
+            if (state != State.DISABLED && !isLoading) actionListener?.onClickDetailPromo()
         }
     }
 
@@ -230,6 +236,10 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         ic_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
         bg_button_coupon.colorFilter = null
         bg_button_coupon.imageAlpha = IMAGE_ALPHA_ENABLED
+    }
+
+    fun toggleLoading(state: Boolean) {
+        isLoading = state
     }
 
     override fun onFinishInflate() {

@@ -1,0 +1,5 @@
+mutation saveApplyCouponMutation($promoCode: String!) {
+  apply_coupon : save_cache_auto_apply(promoCode: $promoCode) {
+    Success
+  }
+}

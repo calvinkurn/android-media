@@ -23,8 +23,11 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.utils.ShowCaseDialogFactory
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.fragment.HiddenTrialFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by hadi.putra on 23/04/2018.
@@ -33,12 +36,50 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     internal lateinit var showCaseDialog: ShowCaseDialog
     internal var tracker: TopAdsDashboardTracking? = null
+    @Inject
+    lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         super.onCreate(savedInstanceState)
         tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
+        topAdsDashboardPresenter.getShopListHiddenTrial(resources)
+        topAdsDashboardPresenter.getExpiryDate(resources)
+        setFragment()
     }
+
+    private fun setFragment() {
+        topAdsDashboardPresenter.isShopWhiteListed.observe(this, androidx.lifecycle.Observer {
+
+            if (it) {
+                val fragment = HiddenTrialFragment.newInstance()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.parent_view, fragment, HiddenTrialFragment::class.java.name)
+                transaction.commit()
+
+            } else {
+
+                val fragment = TopAdsDashboardFragment.createInstance()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.parent_view, fragment, TopAdsDashboardFragment::class.java.name)
+                transaction.commit()
+
+            }
+
+        })
+        topAdsDashboardPresenter.expiryDateHiddenTrial.observe(this, androidx.lifecycle.Observer {
+            if (supportFragmentManager.findFragmentById(R.id.parent_view) is HiddenTrialFragment)
+                (supportFragmentManager.findFragmentById(R.id.parent_view) as HiddenTrialFragment)
+                        .getData(it.substring(0, it.length - 8))
+        })
+    }
+
+    private fun initInjector() {
+        DaggerTopAdsDashboardComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
+    }
+
 
     private fun actionSendAnalyticsIfFromPushNotif() {
         val intent = intent
@@ -154,8 +195,8 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     }
 
-    override fun getNewFragment(): Fragment {
-        return TopAdsDashboardFragment.createInstance()
+    override fun getNewFragment(): Fragment? {
+        return null
     }
 
     companion object {

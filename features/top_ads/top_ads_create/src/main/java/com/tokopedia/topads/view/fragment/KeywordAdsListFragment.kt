@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -84,20 +83,16 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var s = list.toString()
         var productId = s.substring(1, s.length - 1)
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
-        keywordListAdapter.notifyDataSetChanged()
     }
 
     private fun onKeywordSelected(pos: Int) {
         coachitem_title.visibility = View.GONE
         showSelectMessage()
         if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
-            if ((keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch == "Tidak diketahui") {
-
-            } else
+            if ((keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch != "Tidak diketahui") {
                 keywordListAdapter.setSelectedKeywords(getFavouredData())
-
+            }
         }
-
     }
 
     private fun showSelectMessage() {

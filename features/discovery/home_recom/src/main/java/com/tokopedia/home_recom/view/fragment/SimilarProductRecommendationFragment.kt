@@ -34,6 +34,7 @@ import javax.inject.Inject
  * Created by Lukas on 26/08/19
  */
 open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl() }
@@ -41,10 +42,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
     private val staggeredGrid by lazy { StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
-    private lateinit var trackingQueue: TrackingQueue
-    private lateinit var ref: String
-    private lateinit var source: String
-    private lateinit var productId: String
+    private var trackingQueue: TrackingQueue? = null
+    private var ref: String = ""
+    private var source: String = ""
+    private var productId: String = ""
+    private var internalRef: String = ""
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -55,10 +57,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         private const val SAVED_SOURCE = "saved_source"
         private const val REQUEST_FROM_PDP = 399
 
-        fun newInstance(productId: String = "", ref: String = "", source: String = "") = SimilarProductRecommendationFragment().apply {
+        fun newInstance(productId: String = "", ref: String = "", source: String = "", internalRef: String = "") = SimilarProductRecommendationFragment().apply {
             this.ref = ref
             this.source = source
             this.productId = productId
+            this.internalRef = internalRef
         }
     }
 
@@ -131,7 +134,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      */
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory
@@ -180,8 +183,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      * @param position list of position of the item at Adapter, can be [1] or [1,2] for dynamic nested item
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref)
-        else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref)
+        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
+        else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
             startActivityForResult(this, REQUEST_FROM_PDP)
@@ -194,8 +197,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      * @param item the item clicked
      */
     override fun onProductImpression(item: RecommendationItem) {
-        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventImpression(trackingQueue, item, item.position.toString(), ref)
-        else SimilarProductRecommendationTracking.eventImpressionNonLogin(trackingQueue, item, item.position.toString(), ref)
+        trackingQueue?.let { trackingQueue ->
+            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventImpression(trackingQueue, item, item.position.toString(), ref, internalRef)
+            else SimilarProductRecommendationTracking.eventImpressionNonLogin(trackingQueue, item, item.position.toString(), ref, internalRef)
+        }
     }
 
     /**

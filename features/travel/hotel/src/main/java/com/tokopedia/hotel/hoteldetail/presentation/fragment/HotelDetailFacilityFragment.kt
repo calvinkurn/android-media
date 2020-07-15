@@ -23,7 +23,7 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
 
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
-    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -11,22 +11,20 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.glide.loadImageNoRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
 import com.tokopedia.home.beranda.presentation.view.helper.setValue
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class PlayCardViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<PlayCardViewModel>(view), ExoPlayerListener, CoroutineScope {
+): AbstractViewHolder<PlayCardDataModel>(view), ExoPlayerListener, CoroutineScope {
 
     private val frameLayout = view.findViewById<FrameLayout>(R.id.play_frame_layout)
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
@@ -36,11 +34,12 @@ class PlayCardViewHolder(
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
+    private val seeAll = view.findViewById<TextView>(R.id.play_txt_see_all)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private var isClickable = false
     private val masterJob = Job()
-    private var playCardViewModel: PlayCardViewModel? = null
+    private var playCardDataModel: PlayCardDataModel? = null
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
@@ -60,29 +59,30 @@ class PlayCardViewHolder(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.IO
 
-    override fun bind(element: PlayCardViewModel?) {
+    override fun bind(element: PlayCardDataModel?) {
         if(element?.playCardHome == null){
             container.hide()
+            listener.getPlayChannel(adapterPosition)
         } else {
             onBind(element)
         }
     }
 
-    override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: PlayCardDataModel?, payloads: MutableList<Any>) {
         onBind(element)
     }
 
-    private fun onBind(element: PlayCardViewModel?) {
-        playCardViewModel = element
-        playCardViewModel?.let { playCardViewModel ->
+    private fun onBind(element: PlayCardDataModel?) {
+        playCardDataModel = element
+        playCardDataModel?.let { playCardViewModel ->
             if (container.visibility == View.GONE) container.show()
             initView(playCardViewModel)
             initAutoPlayVideo(playCardViewModel)
         }
     }
 
-    private fun initAutoPlayVideo(playCardViewModel: PlayCardViewModel) {
-        val videoStream = playCardViewModel.playCardHome?.videoStream
+    private fun initAutoPlayVideo(playCardDataModel: PlayCardDataModel) {
+        val videoStream = playCardDataModel.playCardHome?.videoStream
         if (videoStream != null) {
             helper?.isAutoPlay = videoStream.config.isAutoPlay
             if (helper?.isAutoPlay == true && videoStream.config.streamUrl.isNotEmpty()) {
@@ -91,10 +91,16 @@ class PlayCardViewHolder(
         }
     }
 
-    private fun initView(model: PlayCardViewModel){
+    private fun initView(model: PlayCardDataModel){
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
             title.setValue(model.channel.name)
+
+            if (model.channel.header.applink.isNotEmpty()) {
+                seeAll.visible()
+            } else {
+                seeAll.gone()
+            }
 
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
@@ -102,7 +108,7 @@ class PlayCardViewHolder(
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
 
-            if(playChannel.totalView.isNotEmpty()){
+            if(playChannel.totalView.isNotEmpty() && playChannel.isShowTotalView){
                 viewer.text = playChannel.totalView
                 viewer.show()
                 imageViewer.show()
@@ -125,12 +131,17 @@ class PlayCardViewHolder(
             play.setSafeOnClickListener {
                 goToPlayChannel(model)
             }
+
+            seeAll.setOnClickListener {
+                goToChannelList(model.channel.header.applink)
+            }
         }
     }
 
-    private fun handlingTracker(model: PlayCardViewModel){
+    private fun handlingTracker(model: PlayCardDataModel){
         container.addOnImpressionListener(model){
             HomePageTracking.eventEnhanceImpressionPlayBanner(listener.trackingQueue, model)
+            listener.sendIrisTrackerHashMap(HomePageTracking.eventEnhanceImpressionIrisPlayBanner(model))
         }
     }
 
@@ -138,12 +149,16 @@ class PlayCardViewHolder(
         helper?.play(url)
     }
 
-    private fun goToPlayChannel(model: PlayCardViewModel){
+    private fun goToPlayChannel(model: PlayCardDataModel){
         if(isClickable){
             videoPlayer?.applyZoom()
             listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
+    }
+
+    private fun goToChannelList(appLink: String) {
+        listener.onOpenPlayChannelList(appLink)
     }
 
     fun resume(){
@@ -165,7 +180,7 @@ class PlayCardViewHolder(
             delay(DELAY_CLICKABLE)
             isClickable = true
         }
-        if(playCardViewModel != null && playCardViewModel?.playCardHome != null) {
+        if(playCardDataModel != null && playCardDataModel?.playCardHome != null) {
             helper?.onViewAttach()
         }
     }

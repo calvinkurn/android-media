@@ -47,7 +47,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_customerapp"
         android:label="@string/app_name"
         android:logo="@drawable/ic_new_logo"
         android:resizeableActivity="false"
@@ -86,7 +86,7 @@
 
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:label="com.tokopedia.tkpd:string/app_name" />
+            android:label="@string/app_name" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -156,10 +156,6 @@
             android:label="@string/title_activity_loyalty_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.home.TopPicksWebView"
-            android:label="@string/title_activity_top_picks"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/choose_location"
@@ -167,12 +163,6 @@
         <activity
             android:name="com.tokopedia.core.share.ShareActivity"
             android:label="@string/title_activity_share"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Toolbar.White"
-            android:configChanges="uiMode"
             android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->

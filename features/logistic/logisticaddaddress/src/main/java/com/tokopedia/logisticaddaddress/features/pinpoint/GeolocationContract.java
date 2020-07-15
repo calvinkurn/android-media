@@ -1,18 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
@@ -86,6 +81,8 @@ public interface GeolocationContract {
                 DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
         void setUpVariables(LocationPass locationPass, boolean hasLocation);
+
+        LocationPass getUpdateLocation();
 
         void onResult(LocationSettingsResult locationSettingsResult);
 

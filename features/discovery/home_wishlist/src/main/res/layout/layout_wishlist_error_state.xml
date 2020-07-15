@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="5.5"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_global_error_totopolis"
+                android:src="@drawable/unify_globalerrors_500"
                 android:scaleType="fitXY" />
 
             <LinearLayout

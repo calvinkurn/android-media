@@ -8,9 +8,8 @@ import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
@@ -35,7 +34,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                        .subscribe(object : Subscriber<ClearCacheAutoApplyStackResponse>() {
+                        .subscribe(object : Subscriber<ClearPromoUiModel>() {
                             override fun onCompleted() {
 
                             }
@@ -47,10 +46,10 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                                 }
                             }
 
-                            override fun onNext(response: ClearCacheAutoApplyStackResponse) {
+                            override fun onNext(response: ClearPromoUiModel) {
                                 if (isViewAttached) {
                                     view.hideProgressLoading()
-                                    if (response.successData.success) {
+                                    if (response.successDataModel.success) {
                                         view.onSuccessCancelPromo()
                                     } else {
                                         view.onErrorCancelPromo(RuntimeException())
@@ -135,7 +134,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         )
     }
 
-    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?) {
+    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean) {
         view.showLoading()
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
                 object : Subscriber<GraphqlResponse>() {
@@ -156,8 +155,6 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                         val dataDetailCheckoutPromo = response?.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
                         view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
                                 ?: throw RuntimeException())
-
-                        validatePromoStackingUse(codeCoupon, promo, true)
                     }
                 })
     }

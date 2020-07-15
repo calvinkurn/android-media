@@ -11,6 +11,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         isAdult
         detail{
           id
+          name
         }
       }
       menu{
@@ -22,6 +23,8 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         transactionSuccess
         transactionReject
         countSold
+        paymentVerified
+        itemSoldPaymentVerified
        }
       stats{
         countView
@@ -29,6 +32,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         countTalk
         rating
       }
+      defaultOngkirEstimation
       shopID
       alias
       minOrder
@@ -104,6 +108,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             originalPrice
             discountedPrice
             stock
+            stockSoldPercentage
             startDate
             endDate
             endDateUnix
@@ -111,6 +116,8 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             isAppsOnly
             isActive
             hideGimmick
+            isCheckImei
+            isUsingOvo
           }
           stock {
             useStock
@@ -169,6 +176,14 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             icon
             text
           }
+        }
+        ...on pdpDataUpcomingCampaign {
+          campaignID
+          campaignType
+          campaignTypeName
+          endDate
+          startDate
+		  notifyMe
         }
       }
     }

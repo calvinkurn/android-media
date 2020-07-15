@@ -149,11 +149,6 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             if (visitables.get(i) is ProductsItem) {
                 val model = visitables.get(i) as ProductsItem
                 if (productId == model.id) {
-                    if (isEnabled && model.isTopAds) {
-                        model.productWishlistTrackingUrl?.let {
-                            onItemChangeView.wishListEnabledTracker(it)
-                        }
-                    }
                     model.isWishListEnabled = isEnabled
                     notifyItemChanged(i)
                     break

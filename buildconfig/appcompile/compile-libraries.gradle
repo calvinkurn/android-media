@@ -8,6 +8,7 @@ include "libraries:banner_dynamic"
 include "libraries:base_adapter"
 include "libraries:base_list"
 include "libraries:base_list_seller"
+include "libraries:blockcanary"
 include "libraries:bottom_sheet_builder"
 include "libraries:circular_view_pager"
 include "libraries:cm_push_notifications"
@@ -18,6 +19,7 @@ include "libraries:core_network"
 include 'libraries:date_picker_range'
 include 'libraries:device_info'
 include 'libraries:dynamic_features'
+include 'libraries:encryption'
 include "libraries:fingerprint"
 include "libraries:image_picker"
 include "libraries:image_preview"
@@ -30,6 +32,7 @@ include 'libraries:locationmanager'
 include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
+include 'libraries:iris_session'
 //include 'libraries:iris_no_op'
 include "libraries:mediauploader"
 include "libraries:oms"
@@ -59,3 +62,7 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:imagepreviewslider"
 include "libraries:weaver"
+include "libraries:utils"
+include "libraries:pre_release_inspector"
+include "libraries:pre_release_inspector_no_op"
+include ':libraries:annotation_proc_central'

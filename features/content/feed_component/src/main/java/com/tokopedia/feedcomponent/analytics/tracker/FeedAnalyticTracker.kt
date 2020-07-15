@@ -121,6 +121,7 @@ class FeedAnalyticTracker
 
     object Screen {
         const val FEED = "/feed"
+        const val FEED_SHOP = "/shop-feed"
         const val MEDIA_PREVIEW = "$FEED/media-preview"
         const val TRENDING = "$FEED/trending-tab"
         const val HASHTAG = "$FEED/hashtag"
@@ -693,6 +694,48 @@ class FeedAnalyticTracker
                 activityId,
                 activityName,
                 mediaType
+        )
+    }
+
+    /**
+     * row 5 for feed page
+     * row 26 for shop feed page
+     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
+     * Screenshot xx (not included)
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventImageImpressionPost(screenName: String, activityId: String, activityName: String, mediaType: String,
+                                 imageUrl: String, recomId: Int, rowNumber: Int ) {
+        var eventCategory = ""
+        var promotionsNameInitial = ""
+        var eventLabel = ""
+        when(screenName) {
+            Screen.FEED -> {
+                eventCategory = Category.CONTENT_FEED_TIMELINE
+                promotionsNameInitial = "/content feed"
+                eventLabel = "$activityId - $recomId"
+            }
+            Screen.FEED_SHOP -> {
+                eventCategory = Category.CONTENT_FEED_SHOP_PAGE
+                promotionsNameInitial = "/feed shop page"
+                eventLabel = activityId
+            }
+        }
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_VIEW,
+                eventCategory,
+                "${Action.IMPRESSION_POST} - $activityName - $mediaType",
+                eventLabel,
+                getPromoViewData(getPromotionsData(
+                        listOf(getPromotionData(
+                                activityId,
+                                "$promotionsNameInitial - $activityName - $mediaType",
+                                imageUrl,
+                                rowNumber))
+                ))
         )
     }
 

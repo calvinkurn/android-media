@@ -81,4 +81,7 @@
 
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+
+    <!-- Dynamic features Shop Showcase -->
+    <string name="title_shop_showcase">Shop Showcase</string>
 </resources>

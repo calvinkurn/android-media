@@ -66,15 +66,13 @@ class ProductViewHolder(
     private fun showProductButton(product: ProductViewModel) {
         if(product.multiSelectActive) {
             itemView.btnContactCS.hide()
-            itemView.btnEditVariant.hide()
             itemView.btnEditPrice.hide()
             itemView.btnEditStock.hide()
             itemView.btnMoreOptions.hide()
         } else {
             itemView.btnContactCS.showWithCondition(product.isViolation())
-            itemView.btnEditVariant.showWithCondition(product.isVariant() && product.isNotViolation())
-            itemView.btnEditPrice.showWithCondition(product.isNotVariant() && product.isNotViolation())
-            itemView.btnEditStock.showWithCondition(product.isNotVariant() && product.isNotViolation())
+            itemView.btnEditPrice.showWithCondition(product.isNotViolation())
+            itemView.btnEditStock.showWithCondition(product.isNotViolation())
             itemView.btnMoreOptions.showWithCondition(product.isNotViolation())
         }
     }
@@ -90,13 +88,22 @@ class ProductViewHolder(
 
     private fun setOnClickListeners(product: ProductViewModel) {
         setOnItemClickListener(product)
+        setQuickEditBtnListeners(product)
+
         itemView.checkBoxSelect.setOnClickListener { onClickCheckBox() }
         itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
-        itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
-        itemView.btnEditStock.setOnClickListener { listener.onClickEditStockButton(product) }
-        itemView.btnEditVariant.setOnClickListener { listener.onClickEditVariantButton(product) }
         itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
+    }
+
+    private fun setQuickEditBtnListeners(product: ProductViewModel) {
+        if(product.isVariant()) {
+            itemView.btnEditPrice.setOnClickListener { listener.onClickEditVariantPriceButton(product) }
+            itemView.btnEditStock.setOnClickListener { listener.onClickEditVariantStockButton(product) }
+        } else {
+            itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
+            itemView.btnEditStock.setOnClickListener { listener.onClickEditStockButton(product) }
+        }
     }
 
     private fun setOnItemClickListener(product: ProductViewModel) {
@@ -137,7 +144,8 @@ class ProductViewHolder(
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)
         fun onClickEditPriceButton(product: ProductViewModel)
         fun onClickEditStockButton(product: ProductViewModel)
-        fun onClickEditVariantButton(product: ProductViewModel)
+        fun onClickEditVariantPriceButton(product: ProductViewModel)
+        fun onClickEditVariantStockButton(product: ProductViewModel)
         fun onClickContactCsButton(product: ProductViewModel)
     }
 }

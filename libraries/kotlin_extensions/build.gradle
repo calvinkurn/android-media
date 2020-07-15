@@ -3,15 +3,12 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
     implementation rootProject.ext.networkDependencies.glide
-    implementation(rootProject.ext.debugToolsDependencies.timber) {
-        exclude group: 'org.jetbrains', module: 'annotations'
-    }
 }
 
 project.ext {
     artifactId = 'kotlin-extensions'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "kotlin_extensions-release"
 }
 

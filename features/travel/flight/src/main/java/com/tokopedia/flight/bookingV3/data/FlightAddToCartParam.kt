@@ -26,7 +26,11 @@ data class FlightAddToCartParam (
 
         @SerializedName("idempotencyKey")
         @Expose
-        var idempotencyKey: String = ""
+        var idempotencyKey: String = "",
+
+        @SerializedName("requestID")
+        @Expose
+        var requestId: String = ""
 ) {
     data class FlightData(
             @SerializedName("destination")

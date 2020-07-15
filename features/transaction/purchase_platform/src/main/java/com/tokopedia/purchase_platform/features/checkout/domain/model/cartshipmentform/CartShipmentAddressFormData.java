@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PotentialGainedPointsData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
@@ -42,6 +45,10 @@ public class CartShipmentAddressFormData implements Parcelable {
     private TickerData tickerData;
     private AddressesData addressesData;
     private DisabledFeaturesDetailData disabledFeaturesDetailData;
+    private CampaignTimerUi campaignTimerUi;
+    private LastApplyUiModel lastApplyData;
+    private PotentialGainedPointsData potentialGainedPointsData;
+    private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
 
     public boolean isHasError() {
         return hasError;
@@ -243,6 +250,32 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.disabledFeaturesDetailData = disabledFeaturesDetailData;
     }
 
+    public CampaignTimerUi getCampaignTimerUi() {
+        return campaignTimerUi;
+    }
+
+    public void setCampaignTimerUi(CampaignTimerUi campaignTimerUi) {
+        this.campaignTimerUi = campaignTimerUi;
+    }
+
+    public LastApplyUiModel getLastApplyData() { return lastApplyData; }
+
+    public void setLastApplyData(LastApplyUiModel lastApplyUIModel) { this.lastApplyData = lastApplyUIModel; }
+
+    public PotentialGainedPointsData getPotentialGainedPointsData() { return potentialGainedPointsData; }
+
+    public void setPotentialGainedPointsData(PotentialGainedPointsData potentialGainedPointsData) {
+        this.potentialGainedPointsData = potentialGainedPointsData;
+    }
+
+    public PromoCheckoutErrorDefault getPromoCheckoutErrorDefault() {
+        return promoCheckoutErrorDefault;
+    }
+
+    public void setPromoCheckoutErrorDefault(PromoCheckoutErrorDefault promoCheckoutErrorDefault) {
+        this.promoCheckoutErrorDefault = promoCheckoutErrorDefault;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -269,6 +302,10 @@ public class CartShipmentAddressFormData implements Parcelable {
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
         addressesData = in.readParcelable(AddressesData.class.getClassLoader());
         disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
+        campaignTimerUi = in.readParcelable(CampaignTimerUi.class.getClassLoader());
+        lastApplyData = in.readParcelable(LastApplyUiModel.class.getClassLoader());
+        potentialGainedPointsData = in.readParcelable(PotentialGainedPointsData.class.getClassLoader());
+        promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
     }
 
     @Override
@@ -295,6 +332,10 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(tickerData, flags);
         dest.writeParcelable(addressesData, flags);
         dest.writeParcelable(disabledFeaturesDetailData, flags);
+        dest.writeParcelable(campaignTimerUi, flags);
+        dest.writeParcelable(lastApplyData, flags);
+        dest.writeParcelable(potentialGainedPointsData, flags);
+        dest.writeParcelable(promoCheckoutErrorDefault, flags);
     }
 
     @Override

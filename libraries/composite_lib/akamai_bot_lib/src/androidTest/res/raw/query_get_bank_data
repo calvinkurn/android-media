@@ -1,0 +1,21 @@
+query {
+    GetBankListWD{
+        status
+        message
+        data {
+            bankID
+            accountNo
+            bankName
+            bankAccountID
+            minAmount
+            maxAmount
+            adminFee
+            status
+            isVerifiedAccount
+            bankImageUrl
+            bankName
+            isDefaultBank
+            accountName
+        }
+    }
+}

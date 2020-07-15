@@ -2,7 +2,8 @@ package com.tokopedia.emoney.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.emoney.EmoneyAnalytics
+import com.tokopedia.emoney.util.EmoneyAnalytics
+import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -30,7 +31,7 @@ class DigitalEmoneyModule {
 
     @DigitalEmoneyScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @DigitalEmoneyScope
     @Provides
@@ -48,5 +49,11 @@ class DigitalEmoneyModule {
     @Provides
     fun provideBrizziInstance(): Brizzi {
         return Brizzi.getInstance()
+    }
+
+    @DigitalEmoneyScope
+    @Provides
+    fun provideBrizziMapper(): BrizziCardObjectMapper {
+        return BrizziCardObjectMapper()
     }
 }

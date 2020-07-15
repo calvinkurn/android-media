@@ -6,13 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.fragment.app.FragmentActivity
-import androidx.core.content.ContextCompat
 import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig

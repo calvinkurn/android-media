@@ -23,18 +23,16 @@ import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.data.entity.BidInfoData
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsInfo
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
-import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
+import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
-import com.tokopedia.topads.common.constant.TopAdsReasonOption
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -49,6 +47,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     lateinit var budgetInputLayout: TextInputLayout
     lateinit var progressBar: ProgressBar
     lateinit var cardView: CardView
+    var topAdsDeposit:Int = 0
 
     val requestType = "auto_ads"
     val source = "update_auto_ads"
@@ -83,7 +82,11 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         showLoading()
+        budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
+        budgetViewModel.topAdsDeposit.observe(this, Observer {
+            topAdsDeposit = it
+        })
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
             var budget = data.minDailyBudget
@@ -196,26 +199,20 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     fun eligible() {
         activity!!.finish()
         startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
+
     }
 
-    fun notEligible() {
-        activity!!.finish()
-    }
-
-    fun insufficientCredit(url: String) {
-        activity!!.finish()
-        val intent = Intent(activity, InsufficientBalanceActivity::class.java)
-        intent.putExtra(InsufficientBalanceActivity.KEY_URL, url)
+    fun insufficientCredit() {
+        val intent = Intent(context, NoCreditActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 
-    fun inProgressActive(adsInfo: TopAdsAutoAdsInfo) {
-        when(adsInfo.reason){
-            TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(adsInfo.message)
-            TopAdsReasonOption.ELIGIBLE -> eligible()
-            TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
-            else -> activity!!.finish()
-        }
+    fun inProgressActive() {
+            if (topAdsDeposit <= 0) {
+                insufficientCredit()
+            } else
+                eligible()
     }
 
     fun inProgressInactive() {

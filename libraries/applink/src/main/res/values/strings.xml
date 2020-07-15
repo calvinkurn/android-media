@@ -48,4 +48,7 @@
 
     <string name="title_topchat">Chat</string>
 
+
+    <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+
 </resources>

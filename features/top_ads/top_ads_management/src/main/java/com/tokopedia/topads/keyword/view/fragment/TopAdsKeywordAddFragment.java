@@ -14,19 +14,20 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
-import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.TextErrorObject;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.data.exception.ResponseErrorException;
+import com.tokopedia.topads.common.data.response.Error;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
+import com.tokopedia.topads.common.view.widget.TkpdProgressDialog;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
@@ -248,8 +249,7 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
     @Override
     public void onSuccessSaveKeyword() {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(),
-                getString(R.string.top_ads_keyword_has_been_added));
+        Toast.makeText(getContext(), MethodChecker.fromHtml(getString(R.string.top_ads_keyword_has_been_added)), Toast.LENGTH_LONG).show();
         if (onSuccessSaveListener != null) {
             onSuccessSaveListener.onSuccessSave(keywordRecyclerView.getKeywordList());
         }

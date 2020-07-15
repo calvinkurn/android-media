@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.dashboard.data.model.*
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 
 /**

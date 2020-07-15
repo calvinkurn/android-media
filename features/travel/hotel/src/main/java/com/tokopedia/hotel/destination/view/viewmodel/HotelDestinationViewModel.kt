@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -22,8 +23,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -32,16 +31,16 @@ import javax.inject.Inject
  */
 
 class HotelDestinationViewModel @Inject constructor(
-        val userSessionInterface: UserSessionInterface,
+        private val userSessionInterface: UserSessionInterface,
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
     val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
-    private val deleteSuccess = MutableLiveData<Boolean>()
+    val deleteSuccess = MutableLiveData<Boolean>()
 
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
@@ -60,7 +59,7 @@ class HotelDestinationViewModel @Inject constructor(
 
                 if (gqlResponse.getError(RecentSearch.Response::class.java)?.isNotEmpty() != true) {
                     val result = (gqlResponse.getData(RecentSearch.Response::class.java) as RecentSearch.Response).recentSearch
-                    if (result.isNotEmpty()) recentSearch.value = Success(result)
+                    if (result.isNotEmpty()) recentSearch.postValue(Success(result))
                 }
             } else {
                 gqlResponse = graphqlRepository.getReseponse(listOf(popularSearchRequest))
@@ -68,12 +67,12 @@ class HotelDestinationViewModel @Inject constructor(
 
             if (gqlResponse.getError(PopularSearch.Response::class.java)?.isNotEmpty() != true) {
                 val result = (gqlResponse.getData(PopularSearch.Response::class.java) as PopularSearch.Response).popularSearchList
-                if (result.isNotEmpty()) popularSearch.value = Success(result)
+                if (result.isNotEmpty()) popularSearch.postValue(Success(result))
             }
 
         }) {
-            popularSearch.value = Fail(it)
-            recentSearch.value = Fail(it)
+            popularSearch.postValue(Fail(it))
+            recentSearch.postValue(Fail(it))
         }
     }
 
@@ -81,27 +80,27 @@ class HotelDestinationViewModel @Inject constructor(
         val params = mapOf(PARAM_SEARCH_KEY to keyword)
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
-            searchDestination.value = Shimmering
-            val data = withContext(Dispatchers.Default) {
+            searchDestination.postValue(Shimmering)
+            val data = withContext(dispatcher.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
-            searchDestination.value = Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList()))
+            searchDestination.postValue(Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList())))
         }) {
-            searchDestination.value = Loaded(Fail(it))
+            searchDestination.postValue(Loaded(Fail(it)))
         }
     }
 
     fun deleteRecentSearch(query: String, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.ui()) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RecentSearch.DeleteResponse>()
-            deleteSuccess.value = data.travelRecentSearchDelete.result
+            deleteSuccess.postValue(data.travelRecentSearchDelete.result)
         }) {
-            deleteSuccess.value = false
+            deleteSuccess.postValue(false)
         }
     }
 
@@ -129,8 +128,8 @@ class HotelDestinationViewModel @Inject constructor(
                 if (locationResult == null) return
                 locationResult.locations.forEach {
                     if (it != null) {
-                        if (it.latitude == 0.0 && it.longitude == 0.0) longLat.value = Fail(Throwable())
-                        else longLat.value = Success(Pair(it.longitude, it.latitude))
+                        if (it.latitude == 0.0 && it.longitude == 0.0) longLat.postValue(Fail(Throwable()))
+                        else longLat.postValue(Success(Pair(it.longitude, it.latitude)))
                         try {
                             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                         } catch (e: Throwable) {
@@ -141,7 +140,7 @@ class HotelDestinationViewModel @Inject constructor(
             }
 
             override fun onLocationAvailability(locationAvailability: LocationAvailability) {
-                if (!locationAvailability.isLocationAvailable) longLat.value = Fail(Throwable(HotelRecommendationFragment.GPS_FAILED_SHOW_ERROR))
+                if (!locationAvailability.isLocationAvailable) longLat.postValue(Fail(Throwable(HotelRecommendationFragment.GPS_FAILED_SHOW_ERROR)))
             }
         }
 
@@ -150,13 +149,13 @@ class HotelDestinationViewModel @Inject constructor(
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            if (latitude == 0.0 && longitude == 0.0) longLat.value = Fail(Throwable())
-            else longLat.value = Success(Pair(longitude, latitude))
+            if (latitude == 0.0 && longitude == 0.0) longLat.postValue(Fail(Throwable()))
+            else longLat.postValue(Success(Pair(longitude, latitude)))
         }
     }
 
     companion object {
-        private const val LOCATION_REQUEST_INTERVAL : Long = 10 * 1000
+        private const val LOCATION_REQUEST_INTERVAL: Long = 10 * 1000
 
         private val TYPE_POPULAR_RESPONSE = PopularSearch.Response::class.java
         private val TYPE_SEARCH_RESPONSE = HotelSuggestion.Response::class.java

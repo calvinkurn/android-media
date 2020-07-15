@@ -2,8 +2,10 @@ package com.tokopedia.notifcenter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,7 +18,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
@@ -24,7 +25,10 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
-import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.NotificationComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
@@ -41,7 +45,9 @@ import javax.inject.Inject
 
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         NotificationActivityContract.View,
-        NotificationUpdateFragment.NotificationUpdateListener {
+        NotificationUpdateListener {
+
+    val notificationComponent by lazy { initInjector() }
 
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
@@ -49,6 +55,18 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationTabItem>()
+
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * notification id will be consuming on updateFragment
+    * */
+    var notificationId = ""
+
+    /*
+     * track mark all as read counter
+     * counting notification item to as read
+     * */
     private var updateCounter = 0L
 
     private val notificationLayout by lazy {
@@ -61,10 +79,21 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initTabLayoutItem()
-
         super.onCreate(savedInstanceState)
-        initInjector()
-        initView(savedInstanceState)
+        notificationComponent.inject(this)
+        presenter.attachView(this)
+
+        intent?.data?.path?.let {
+            when {
+                it.contains(PATH_BUYER_INFO) -> {
+                    initViewTabLayout(INDEX_NOTIFICATION_UPDATE)
+                    getNotificationId()
+                }
+                else -> {
+                    initView(savedInstanceState)
+                }
+            }
+        }?: initView(savedInstanceState)
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
@@ -73,6 +102,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
             if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
                 cacheManager.isDisplayedGimmick = true
                 presenter.sendNotif(onSuccessSendNotification(), onErrorSendNotification())
+            }
+        }
+    }
+
+    private fun getNotificationId() {
+        intent?.data?.lastPathSegment?.let {
+            if (it != PATH_BUYER_INFO) {
+                notificationId = it
             }
         }
     }
@@ -103,12 +140,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         }
     }
 
-    private fun initInjector() {
-        DaggerNotificationUpdateComponent.builder()
-                .baseAppComponent(component).build().inject(this)
-        presenter.attachView(this)
-    }
-
     private fun initView(savedInstanceState: Bundle?) {
         val initialIndexPage = if (cacheManager.isExist(KEY_TAB_POSITION)) {
             cacheManager.read(KEY_TAB_POSITION)
@@ -118,7 +149,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
                     savedInstanceState,
                     INDEX_NOTIFICATION_ACTIVITY)
         }
-        initTabLayout(initialIndexPage)
+        initViewTabLayout(initialIndexPage)
+    }
+
+    private fun initViewTabLayout(page: Int) {
+        initTabLayout(page)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         presenter.getIsTabUpdate(this)
     }
@@ -133,7 +168,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         }
     }
 
-    override fun onSuccessLoadNotifUpdate() {
+    override fun onSuccessLoadNotificationUpdate() {
         clearTabCounter(INDEX_NOTIFICATION_UPDATE)
     }
 
@@ -258,16 +293,26 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         presenter.detachView()
     }
 
+    private fun initInjector(): NotificationComponent {
+        return DaggerNotificationComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(this))
+                .build()
+    }
+
     override fun getPageLimit(): Int = tabList.size + 1
 
     override fun getViewPagerResourceId(): Int = R.id.pager
+
     override fun getTabLayoutResourceId(): Int = R.id.indicator
+
     override fun getToolbarResourceID(): Int = R.id.toolbar
 
     override fun getLayoutRes(): Int = R.layout.activity_notification_page
 
     companion object {
         private const val KEY_TAB_POSITION = "tab_position"
+        private const val PATH_BUYER_INFO = "notif-center"
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1

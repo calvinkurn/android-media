@@ -408,5 +408,10 @@ Anda di sini.</string>
     <string name="month_10">Okt</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Des</string>
+    <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="lihat_order_detail">Lihat Order Detail</string>
+    <string name="label_shop_title">Toko: </string>
+    <string name="invoice_label">invoice</string>
+    <string name="invoice_copied">Kode invoice telah tersalin</string>
 
 </resources>

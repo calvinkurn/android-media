@@ -19,7 +19,7 @@ public @interface TelcoComponentType {
     int TELCO_PREPAID = 2;
     int TELCO_POSTPAID = 3;
     int CLIENT_NUMBER_PREPAID = 5;
-    int CLIENT_NUMBER_PROSTPAID = 19;
+    int CLIENT_NUMBER_POSTPAID = 19;
     int PRODUCT_PULSA = 6;
     int PRODUCT_ROAMING = 7;
     int PRODUCT_PAKET_DATA = 8;

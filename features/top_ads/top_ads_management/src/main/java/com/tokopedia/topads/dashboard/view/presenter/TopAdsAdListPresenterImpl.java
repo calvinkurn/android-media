@@ -2,10 +2,10 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 11/24/16.
@@ -23,7 +23,7 @@ public abstract class TopAdsAdListPresenterImpl<T extends Ad> implements TopAdsA
     }
 
     protected String getShopId() {
-        SessionHandler session = new SessionHandler(context);
-        return session.getShopID();
+        UserSession session = new UserSession(context);
+        return session.getShopId();
     }
 }

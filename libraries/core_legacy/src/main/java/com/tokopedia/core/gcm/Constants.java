@@ -106,8 +106,6 @@ public interface Constants {
         String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
         String WISHLIST = "tokopedia://wishlist";
         String RECENT_VIEW = "tokopedia://recentlyviewed";
-        String TOPPICKS = "tokopedia://toppicks";
-        String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";

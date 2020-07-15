@@ -1,13 +1,7 @@
 package com.tokopedia.liveness.view.activity
 
 import ai.advance.common.utils.ScreenUtil
-import com.tokopedia.liveness.R
-import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
-import com.tokopedia.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK
-import ai.advance.liveness.lib.LivenessResult
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.fragment.LivenessFragment
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -23,6 +17,13 @@ import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.liveness.R
+import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
+import com.tokopedia.liveness.di.LivenessDetectionComponent
+import com.tokopedia.liveness.utils.LivenessConstants.NOT_SUPPORT_LIVENESS
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.fragment.LivenessFragment
 
 class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComponent> {
 
@@ -76,18 +77,30 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
                     }
                 }
             } else {
-                val errorMsg = getString(R.string.liveness_device_not_support)
-                errorDialog = AlertDialog.Builder(this)
-                        .setCancelable(false)
-                        .setMessage(errorMsg)
-                        .setPositiveButton(R.string.liveness_perform) { dialog, which ->
-                            LivenessResult.errorMsg = errorMsg
-                            setResult(Activity.RESULT_OK)
-                            finish()
-                        }.create()
-                errorDialog?.show()
+                showNotSupportedDialog()
             }
         }
+    }
+
+    fun showNotSupportedDialog(){
+        val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(getString(R.string.liveness_device_not_support_title))
+        dialog.setDescription(getString(R.string.liveness_device_not_support))
+        dialog.setPrimaryCTAText(getString(R.string.liveness_device_not_support_primary_button))
+        dialog.setSecondaryCTAText(getString(R.string.liveness_device_not_support_secondary_button))
+
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            setResult(NOT_SUPPORT_LIVENESS)
+            finish()
+        }
+
+        dialog.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            setResult(RESULT_OK)
+            finish()
+        }
+        dialog.show()
     }
 
     override fun onPause() {

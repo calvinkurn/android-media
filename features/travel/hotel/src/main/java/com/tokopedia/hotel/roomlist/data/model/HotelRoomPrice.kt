@@ -9,39 +9,43 @@ import com.google.gson.annotations.SerializedName
 
 data class HotelRoomPrice(
 
-    @SerializedName("price")
-    @Expose
-    val roomPrice: String = "",
+        @SerializedName("price")
+        @Expose
+        val roomPrice: String = "",
 
-    @SerializedName("priceAmount")
-    @Expose
-    val priceAmount: Double = 0.0,
+        @SerializedName("priceAmount")
+        @Expose
+        val priceAmount: Double = 0.0,
 
-    @SerializedName("totalPrice")
-    @Expose
-    val totalPrice: String = "",
+        @SerializedName("totalPrice")
+        @Expose
+        val totalPrice: String = "",
 
-    @SerializedName("totalPriceAmount")
-    @Expose
-    val totalPriceAmount: Double = 0.0,
+        @SerializedName("totalPriceAmount")
+        @Expose
+        val totalPriceAmount: Double = 0.0,
 
-    @SerializedName("extraCharges")
-    @Expose
-    val extraCharges: ExtraCharges = ExtraCharges()
+        @SerializedName("extraCharges")
+        @Expose
+        val extraCharges: ExtraCharges = ExtraCharges(),
+
+        @SerializedName("deals")
+        @Expose
+        var deals: PriceDeals = PriceDeals()
 
 ) {
-    data class ExtraCharges (
-        @SerializedName("netPrice")
-        @Expose
-        val netPrice: String = "",
+    data class ExtraCharges(
+            @SerializedName("netPrice")
+            @Expose
+            val netPrice: String = "",
 
-        @SerializedName("netPriceAmount")
-        @Expose
-        val netPriceAmount: Double = 0.0,
+            @SerializedName("netPriceAmount")
+            @Expose
+            val netPriceAmount: Double = 0.0,
 
-        @SerializedName("extraChargeInfo")
-        @Expose
-        val extraChargeInfo: List<ExtraChargeInfo> = listOf()
+            @SerializedName("extraChargeInfo")
+            @Expose
+            val extraChargeInfo: List<ExtraChargeInfo> = listOf()
 
     ) {
         data class ExtraChargeInfo(
@@ -67,4 +71,18 @@ data class HotelRoomPrice(
 
         )
     }
+
+    data class PriceDeals(
+            @SerializedName("tagging")
+            @Expose
+            val tagging: String = "",
+
+            @SerializedName("price")
+            @Expose
+            val price: String = "",
+
+            @SerializedName("priceAmount")
+            @Expose
+            val priceAmount: Int = 0
+    )
 }

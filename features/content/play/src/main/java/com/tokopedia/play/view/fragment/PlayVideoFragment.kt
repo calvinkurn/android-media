@@ -16,6 +16,9 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
@@ -81,13 +84,14 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
@@ -105,7 +109,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVOD()
         observeVideoProperty()
         observeOneTapOnboarding()
-        observeKeyboardState()
+        observeBottomInsetsState()
         observeEventUserInfo()
     }
 
@@ -135,16 +139,19 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
     }
 
-    private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
+    private fun observeBottomInsetsState() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             if (::containerVideo.isInitialized) {
-                if (it.isShown) containerVideo.setCornerRadius(cornerRadius)
+                if (it.isAnyShown) containerVideo.setCornerRadius(cornerRadius)
                 else containerVideo.setCornerRadius(0f)
             }
 
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                        )
             }
         })
     }
@@ -196,7 +203,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     //endregion
 
     private fun sendInitState() {
-        launch {
+        launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init
@@ -284,7 +291,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoPropertyChanged(prop)
+                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.stateHelper)
                     )
         }
     }

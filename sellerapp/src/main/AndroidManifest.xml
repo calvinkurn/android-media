@@ -51,19 +51,7 @@
 
         <activity
             android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_sellerapp"
-                    android:path="@string/path_welcome"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
