@@ -16,11 +16,10 @@ import kotlinx.android.synthetic.main.swd_fragment_awd_settings.*
 import javax.inject.Inject
 
 class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
-    private var param1: String? = null
-    private var param2: String? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
     private val autoWDSettingsViewModel: AutoWDSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(AutoWDSettingsViewModel::class.java)

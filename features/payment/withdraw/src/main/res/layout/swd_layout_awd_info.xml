@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/Neutral_N0">
 
+    <!--        android:text="@string/saldo_pengh"-->
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/info_cta"
         android:layout_width="0dp"
@@ -12,7 +13,6 @@
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl5"
-        android:text="@string/saldo_pengh"
         android:textColor="#03AC0E"
         app:typographyType="body_2"
         app:layout_constraintBottom_toBottomOf="parent"

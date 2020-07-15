@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.withdraw.auto_withdrawal.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.AutoWDStatusData
 import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.AutoWDStatusUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 class AutoWDSettingsViewModel @Inject constructor(
         private val autoWDStatusUseCase: AutoWDStatusUseCase,
-        @CoroutineMainDispatcher dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<AutoWDStatusData>>()
 
