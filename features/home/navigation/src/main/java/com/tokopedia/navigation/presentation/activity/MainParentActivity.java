@@ -244,6 +244,7 @@ public class MainParentActivity extends BaseActivity implements
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_GAMIFICATION);
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_LOGIN);
         }
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);

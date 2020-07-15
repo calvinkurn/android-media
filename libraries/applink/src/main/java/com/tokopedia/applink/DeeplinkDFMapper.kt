@@ -165,6 +165,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
+    const val DF_MERCHANT_LOGIN = "df_merchant_login"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -246,7 +247,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
-            add(DFP({ it.startsWith(FAVORITE) }, DF_BASE, R.string.favorite_shop))
+
+            add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
+            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({ it.startsWith(PRODUCT_MANAGE)
@@ -319,7 +322,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
-            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title, ::getDefaultFallbackUrl))
+
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_USER_SETTINGS, R.string.applink_setting_bank_title, { DFWebviewFallbackUrl.USER_SETTING_BANK }))

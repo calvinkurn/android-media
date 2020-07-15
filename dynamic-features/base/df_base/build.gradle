@@ -99,7 +99,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
-    implementation project(rootProject.ext.features.favorite)
     implementation project(rootProject.ext.features.brandlist)
     //Operational
 
