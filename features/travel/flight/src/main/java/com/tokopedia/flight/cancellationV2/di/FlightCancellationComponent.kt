@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellationV2.di
 
+import com.tokopedia.flight.cancellationV2.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.common.di.component.FlightComponent
 import dagger.Component
 
@@ -10,5 +11,5 @@ import dagger.Component
 @Component(modules = [FlightCancellationModule::class, FlightCancellationViewModelModule::class],
         dependencies = [FlightComponent::class])
 interface FlightCancellationComponent {
-
+    fun inject(flightCancellationPassengerFragment: FlightCancellationPassengerFragment)
 }
