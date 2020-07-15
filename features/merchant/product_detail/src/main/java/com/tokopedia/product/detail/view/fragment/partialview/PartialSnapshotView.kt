@@ -142,7 +142,9 @@ class PartialSnapshotView(private val view: View,
     }
 
     private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
-        if (campaign.shouldShowRibbonCampaign) {
+        if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
+            renderFlashSaleNewUserAbove24H(campaign, stockWording)
+        } else if (campaign.shouldShowRibbonCampaign) {
             if (campaign.campaignID.toInt() > 0) {
                 renderStockBarFlashSale(campaign, stockWording)
             } else {
@@ -154,6 +156,12 @@ class PartialSnapshotView(private val view: View,
         } else {
             discount_timer_holder.gone()
         }
+    }
+
+    private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
+        renderStockBarFlashSale(campaign, stockWording)
+        count_down.hide()
+        discount_timer_holder.show()
     }
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {

@@ -92,7 +92,7 @@ class PartialContentView(private val view: View,
         discount_timer_holder.gone()
     }
 
-    private fun renderCampaignInactiveNpl(price:String) = with(view) {
+    private fun renderCampaignInactiveNpl(price: String) = with(view) {
         txt_main_price.text = price
         discount_timer_holder.show()
         text_slash_price.gone()
@@ -100,20 +100,20 @@ class PartialContentView(private val view: View,
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(view) {
-        txt_main_price?.run{
-           text = context.getString(R.string.template_price, "",
+        txt_main_price?.run {
+            text = context.getString(R.string.template_price, "",
                     campaign.discountedPrice.getCurrencyFormatted())
             show()
         }
 
-        text_slash_price?.run{
+        text_slash_price?.run {
             text = context.getString(R.string.template_price, "",
                     campaign.originalPrice.getCurrencyFormatted())
             paintFlags = text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             show()
         }
 
-        text_discount_red?.run{
+        text_discount_red?.run {
             text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
             show()
         }
@@ -136,7 +136,9 @@ class PartialContentView(private val view: View,
     }
 
     private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
-        if (campaign.shouldShowRibbonCampaign) {
+        if (campaign.isCampaignNewUser && !campaign.shouldShowRibbonCampaign) {
+            renderFlashSaleNewUserAbove24H(campaign, stockWording)
+        } else if (campaign.shouldShowRibbonCampaign) {
             if (campaign.campaignID.toInt() > 0) {
                 renderStockBarFlashSale(campaign, stockWording)
             } else {
@@ -148,6 +150,12 @@ class PartialContentView(private val view: View,
         } else {
             discount_timer_holder.gone()
         }
+    }
+
+    private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
+        renderStockBarFlashSale(campaign, stockWording)
+        count_down.hide()
+        discount_timer_holder.show()
     }
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
