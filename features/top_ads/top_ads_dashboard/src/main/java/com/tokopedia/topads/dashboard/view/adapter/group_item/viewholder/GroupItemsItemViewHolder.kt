@@ -11,6 +11,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.groupitem.DataItem
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
  */
 
 private const val CLICK_ATUR_IKLAN = "click - atur iklan"
+
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
@@ -60,9 +62,6 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.group_title.text = it.data.groupName
             view.label.text = it.data.groupStatusDesc
-//            view.tampil_count.text = it.data.statTotalImpression
-//            view.klik_count.text = it.data.statTotalClick
-
             if (countList.isNotEmpty() && adapterPosition < countList.size) {
                 view.total_item.text = countList[adapterPosition].totalAds.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
@@ -122,7 +121,11 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         if (data.groupPriceDailyBar.isNotEmpty()) {
             view.progress_layout.visibility = View.VISIBLE
             view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
-            view.progress_bar.setValue(data.groupPriceDailySpentFmt.replace("Rp", "").trim().toInt(), true)
+            try {
+                view.progress_bar.setValue(Utils.convertMoneyToValue(data.groupPriceDailySpentFmt), true)
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
+            }
             view.progress_status1.text = data.groupPriceDailySpentFmt
             view.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), data.groupPriceDaily)
         } else {
