@@ -2,8 +2,8 @@ package com.tokopedia.home_wishlist.topads
 
 import android.util.Log
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions.click
@@ -23,7 +23,7 @@ import com.tokopedia.home_wishlist.activity.InstrumentationWishlistTestActivity
 import com.tokopedia.home_wishlist.topads.TopAdsVerificationTestReportUtil.deleteTopAdsVerificatorReportData
 import com.tokopedia.home_wishlist.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
 import com.tokopedia.home_wishlist.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorReportData
-import com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselViewHolder
+import com.tokopedia.home_wishlist.view.viewholder.DynamicCarouselRecommendationViewHolder
 import com.tokopedia.home_wishlist.view.viewholder.RecommendationItemViewHolder
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -150,11 +150,11 @@ class WishlistTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
-        val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
+        val layoutManager = homeRecyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
@@ -163,7 +163,7 @@ class WishlistTopAdsVerificationTest {
             is RecommendationItemViewHolder -> {
                 clickOnEachItemInRecommendationProduct(2)
             }
-            is RecommendationCarouselViewHolder -> {
+            is DynamicCarouselRecommendationViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView)
             }
         }
