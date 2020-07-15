@@ -68,7 +68,13 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }))
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
-            recyclerView.layoutManager = GridLayoutManager(context, 2)
+            val layoutManager = GridLayoutManager(context, 2)
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    
+                }
+            }
+            recyclerView.layoutManager = layoutManager
             if (recyclerView.itemDecorationCount == 0) {
                 recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
             }
@@ -173,7 +179,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     companion object {
-        const val CELL_MARGIN_DP: Int = 5
+        const val CELL_MARGIN_DP: Int = 2
     }
 
 }

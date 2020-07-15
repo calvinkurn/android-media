@@ -12,7 +12,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.item_digital_product_list.view.*
+import kotlinx.android.synthetic.main.item_telco_product.view.*
 
 class TelcoProductViewHolder(itemView: View, private val productType: Int,
                              val listener: OnClickListener)
@@ -24,12 +24,26 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             title_product.text = element.attributes.desc
 
+            renderDescProduct(element)
             renderSeeMoreBtn(element)
             renderTextColor(element.attributes.status)
             renderPrice(element)
-            renderLabel(element)
+            renderCornerLabel(element)
             setItemSelected(element)
             renderOutOfStockProduct(element.attributes.status)
+        }
+    }
+
+    private fun renderDescProduct(element: TelcoProduct) {
+        with(itemView) {
+            if (productType == TelcoProductType.PRODUCT_LIST) {
+                empty_view.hide()
+                desc_product.show()
+                desc_product.text = element.attributes.detail
+            } else {
+                empty_view.show()
+                desc_product.hide()
+            }
         }
     }
 
@@ -73,7 +87,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         }
     }
 
-    private fun renderLabel(element: TelcoProduct) {
+    private fun renderCornerLabel(element: TelcoProduct) {
         with(itemView) {
             if (element.attributes.productLabels.isEmpty()) {
                 label_product.visibility = View.GONE
@@ -115,7 +129,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_digital_product_list
+        val LAYOUT = R.layout.item_telco_product
 
         const val PRODUCT_STATUS_OUT_OF_STOCK = 3
     }

@@ -39,18 +39,26 @@
             app:typographyType="heading_5"
             tools:text="Pulsa 40.000" />
 
+        <View
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@id/title_product"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:visibility="gone"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title_product"
+            android:layout_below="@+id/empty_view"
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:lines="1"
             android:textColor="@color/light_N700_68"
             app:typographyType="body_3"
-            tools:text="Masa aktif 30 hari" />
+            tools:text="Masa aktif 30 hari"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_price"
