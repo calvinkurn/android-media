@@ -3,13 +3,12 @@ package com.tokopedia.installreferral
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.TextUtils
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.android.installreferrer.api.ReferrerDetails
-import com.google.android.gms.analytics.CampaignTrackingReceiver
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.track.TrackApp
-import java.lang.Exception
 
 const val KEY_INSTALL_REF_SHARED_PREF_FILE_NAME = "install_ref"
 const val KEY_INSTALL_REF_INITIALISED = "install_ref_initialised"
@@ -39,7 +38,6 @@ class InstallReferral {
                                 if (response != null) {
                                     response.installReferrer?.let { installReferrer ->
                                         trackIfFromCampaignUrl(installReferrer)
-                                        sendToGA(context, installReferrer)
                                     }
                                 }
                                 InstallUtils.sendIrisInstallEvent(context)
@@ -68,8 +66,10 @@ class InstallReferral {
                 val localCacheHandler = LocalCacheHandler(applicationContext, KEY_INSTALL_REF_SHARED_PREF_FILE_NAME)
                 val installRefInitialised = localCacheHandler.getBoolean(KEY_INSTALL_REF_INITIALISED)
 
-                if (!installRefInitialised)
+                if (!installRefInitialised) {
                     localCacheHandler.putBoolean(KEY_INSTALL_REF_INITIALISED, true)
+                    localCacheHandler.applyEditor()
+                }
             }
 
             override fun onInstallReferrerServiceDisconnected() {
@@ -77,19 +77,16 @@ class InstallReferral {
         })
     }
 
-    fun sendToGA(context: Context, referral: String) {
-        val intent = Intent()
-        Intent.ACTION_INSTALL_PACKAGE
-        intent.action = InstallUtils.INSTALL_REFERRAL_ACTION
-        intent.putExtra("referrer", referral)
-        CampaignTrackingReceiver().onReceive(context, intent)
-
-    }
-
     private fun trackIfFromCampaignUrl(referrer: String) {
-        val uri = Uri.parse(referrer)
+        var uri = Uri.parse(referrer)
+        val updatedReferrer: String
+        if (!referrer.contains("?") && TextUtils.isEmpty(uri.host) && TextUtils.isEmpty(uri.scheme)) {
+            updatedReferrer = "https://www.tokopedia.com/?$referrer"
+            uri = Uri.parse(updatedReferrer)
+        }
+
         if (uri != null && InstallUtils.isValidCampaignUrl(uri)) {
-            var campaign: MutableMap<String, Any> = InstallUtils.splitquery(uri).toMutableMap()
+            val campaign: MutableMap<String, Any> = InstallUtils.splitquery(uri).toMutableMap()
             campaign[KEY_SCREEN_NAME] = SCREEN_NAME
             TrackApp.getInstance().gtm.sendCampaign(campaign)
         }
