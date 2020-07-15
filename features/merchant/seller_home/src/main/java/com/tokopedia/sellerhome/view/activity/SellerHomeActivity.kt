@@ -89,6 +89,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         if(startOldSellerHomeIfEnabled()) {
+            super.onCreate(savedInstanceState)
             return
         }
         initPerformanceMonitoring()
@@ -145,6 +146,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             oldSellerHome.data = intent.data
             startActivity(oldSellerHome)
             finish()
+
             return true
         }
         return false
