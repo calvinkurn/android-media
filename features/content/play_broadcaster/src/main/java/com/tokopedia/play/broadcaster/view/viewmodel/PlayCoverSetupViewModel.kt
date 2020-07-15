@@ -6,12 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteUseCase
 import com.tokopedia.play.broadcaster.error.CoverChangeForbiddenException
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
@@ -27,9 +26,6 @@ import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -39,7 +35,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
-        private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
+        private val uploadImageUseCase: UploadImageToRemoteUseCase,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
         private val userSession: UserSessionInterface,
         private val coverImageUtil: PlayCoverImageUtil,
@@ -204,23 +200,10 @@ class PlayCoverSetupViewModel @Inject constructor(
     }
 
     private suspend fun uploadImageToRemoteStore(imagePath: String): String = withContext(dispatcher.io) {
-        val params = hashMapOf<String, RequestBody>()
-        params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
-        params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
-        params[PARAM_ID] = RequestBody.create(MediaType.parse(TEXT_PLAIN),
-                "${userSession.userId}${UUID.randomUUID()}${System.currentTimeMillis()}")
+        uploadImageUseCase.setImagePath(imagePath)
+        val uploadedImage = uploadImageUseCase.executeOnBackground()
 
-        val dataUploadedImage = uploadImageUseCase
-                .createObservable(uploadImageUseCase.createRequestParam(
-                        imagePath,
-                        DEFAULT_UPLOAD_PATH,
-                        DEFAULT_UPLOAD_TYPE,
-                        params))
-                .toBlocking()
-                .first()
-                .dataResultImageUpload
-
-        dataUploadedImage.data.picSrc.let {
+        uploadedImage.data.picSrc.let {
             if (it.contains(DEFAULT_RESOLUTION)) it.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
             else it
         }
