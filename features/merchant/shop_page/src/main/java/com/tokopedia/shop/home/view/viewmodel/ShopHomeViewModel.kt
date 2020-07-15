@@ -1,11 +1,13 @@
 package com.tokopedia.shop.home.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -26,9 +28,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,11 +46,16 @@ class ShopHomeViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
+        const val KEY_YOUTUBE_VIDEO_ID = "v"
+        const val WEB_PREFIX_HTTP = "http://"
+        const val WEB_PREFIX_HTTPS = "https://"
+        const val WEB_YOUTUBE_PREFIX = "https://"
     }
 
     val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
@@ -62,6 +73,10 @@ class ShopHomeViewModel @Inject constructor(
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
+
+    val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
+        get() = _videoYoutube
+    private val _videoYoutube = MutableLiveData<Pair<String, Result<YoutubeVideoDetailModel>>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -186,6 +201,46 @@ class ShopHomeViewModel @Inject constructor(
                     )
                 }
         )
+    }
+
+    fun getVideoYoutube(videoUrl: String) {
+        launchCatchError( block = {
+            getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
+                getYoutubeVideoUseCase.setVideoId(youtubeId)
+                val result = withContext(Dispatchers.IO) {
+                    convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+                }
+                _videoYoutube.value = Pair(videoUrl, Success(result))
+            }
+        }, onError = {
+            _videoYoutube.value = Pair(videoUrl, Fail(it))
+        })
+    }
+
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
+    }
+
+    private fun getIdYoutubeUrl(videoUrl: String): String? {
+        return try {
+            // add https:// prefix to videoUrl
+            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                videoUrl
+            } else {
+                WEB_YOUTUBE_PREFIX + videoUrl
+            }
+            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
+
+            val uri = Uri.parse(webVideoUrl)
+            when {
+                uri.host == "youtu.be" -> uri.lastPathSegment
+                uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                else -> throw MessageErrorException("")
+            }
+        } catch (e: NullPointerException) {
+            throw MessageErrorException(e.message)
+        }
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
