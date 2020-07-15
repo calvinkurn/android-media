@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.campaignstock.domain.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class OtherCampaignStockResponse(
         @SerializedName("getProductV3")
@@ -17,7 +17,7 @@ data class OtherCampaignStockData(
         val stock: Int = 0
 ){
 
-        val isActive = status == CampaignStockMapper.ACTIVE
+        val isActive = status == ProductStatus.ACTIVE.name
 }
 
 data class CampaignStockPicture(

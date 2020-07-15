@@ -44,7 +44,7 @@ class CampaignStockViewModel @Inject constructor(
                             campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
                             val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
                             stockAllocationData.summary.isVariant.let { isVariant ->
-                                mIsStockVariant.value = isVariant
+                                mIsStockVariant.postValue(isVariant)
                                 if (isVariant) {
                                     getVariantResult(productIds, stockAllocationData)
                                 } else {
