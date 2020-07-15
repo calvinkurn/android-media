@@ -36,7 +36,7 @@
             android:layout_height="@dimen/layout_lvl3"
             android:background="@android:color/transparent"
             android:focusable="true"
-            android:padding="7dp"
+            android:padding="@dimen/shc_dimen_7dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvLineGraphTitle"
             app:layout_constraintEnd_toEndOf="parent"

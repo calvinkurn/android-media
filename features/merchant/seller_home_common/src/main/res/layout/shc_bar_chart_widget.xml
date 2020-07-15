@@ -36,7 +36,7 @@
             android:layout_height="@dimen/layout_lvl3"
             android:background="@android:color/transparent"
             android:focusable="true"
-            android:padding="7dp"
+            android:padding="@dimen/shc_dimen_7dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvShcBarChartTitle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,15 +89,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvShcBarChartSubValue"
-            app:layout_constraintVertical_bias="0.0"
-            app:lcvFillColor="@color/shc_line_chart_fill_color"
-            app:lcvLineColor="@color/shc_line_chart_line_color"
-            app:lcvLineWidth="1.8"
-            app:lcvShowChartDot="false"
-            app:lcvShowChartValue="false"
-            app:lcvShowVerticalGrid="false"
-            app:lcvXAxisTextColor="@color/Neutral_N700_96"
-            app:lcvYAxisTextColor="@color/Neutral_N700_96" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnShcBarChartMore"
