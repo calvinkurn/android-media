@@ -39,6 +39,8 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     private var flightCancellationWrapperModel: FlightCancellationWrapperModel = FlightCancellationWrapperModel()
     private lateinit var passengerRelationMap: Map<String, FlightCancellationPassengerModel>
 
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
