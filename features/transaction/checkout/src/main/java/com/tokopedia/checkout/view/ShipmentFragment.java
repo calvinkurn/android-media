@@ -1577,7 +1577,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel = voucherOrdersItemUiModels.get(i);
                             if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                                 NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
-                                voucherOrdersItemUiModel.getTitleDescription();
                                 notEligiblePromoHolderdata.setPromoTitle(voucherOrdersItemUiModel.getTitleDescription());
                                 notEligiblePromoHolderdata.setPromoCode(voucherOrdersItemUiModel.getCode());
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
