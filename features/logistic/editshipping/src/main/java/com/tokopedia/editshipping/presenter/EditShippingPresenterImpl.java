@@ -801,4 +801,9 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             shippingUpdateParams.putAll(courierList.get(i).getAdditionalOptionDatas());
         }
     }
+
+    @Override
+    public void validateBo() {
+        //ToDo:: validate Bo here
+    }
 }

@@ -32,6 +32,8 @@ interface EditShippingPresenter {
 
     fun refreshData()
 
+    fun validateBo()
+
     fun editShippingParamsValid(): Boolean
 
     val provinceCityDistrictList: List<ProvinceCitiesDistrict?>?

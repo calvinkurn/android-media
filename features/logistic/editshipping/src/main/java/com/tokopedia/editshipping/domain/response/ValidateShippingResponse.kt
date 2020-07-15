@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ValidateShippingResponse(
         @SerializedName("kero_shipping_editor_mobile_popup")
-        var keroShippingEditorPopUp: KeroShippingEditorPopUp = KeroShippingEditorPopUp()
+        var response: KeroShippingEditorPopUp = KeroShippingEditorPopUp()
 )
 
 data class KeroShippingEditorPopUp(
