@@ -1,11 +1,13 @@
 package com.tokopedia.charts.model
 
+import com.tokopedia.charts.common.ChartColor
+
 /**
  * Created By @ilhamsuaib on 13/07/20
  */
 
 data class BarChartMetric(
         val title: String = "",
-        val barHexColor: String = "#6DB770",
+        val barHexColor: String = ChartColor.DEFAULT_COLOR,
         val values: List<BarChartMetricValue> = emptyList()
 )
