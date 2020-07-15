@@ -195,8 +195,6 @@ public interface ProductListSectionContract {
 
         void onBannedProductsGoToBrowserClick(String url);
 
-        boolean isUsingBottomSheetFilter();
-
         String getUserId();
 
         boolean isUserLoggedIn();
@@ -224,8 +222,6 @@ public interface ProductListSectionContract {
         void onProductImpressed(ProductItemViewModel item);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
-
-        boolean isTrackingViewPortEnabled();
 
         List<Option> getQuickFilterOptionList();
 
