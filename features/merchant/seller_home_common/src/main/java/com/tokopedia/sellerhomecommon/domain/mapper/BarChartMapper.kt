@@ -1,12 +1,11 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.sellerhomecommon.domain.model.BarChartMetricModel
+import com.tokopedia.sellerhomecommon.domain.model.BarChartSummaryModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartValueModel
 import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
-import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
 /**
@@ -23,17 +22,28 @@ class BarChartMapper @Inject constructor() {
                     chartData = BarChartUiModel(
                             metrics = getBarChartMetrics(it.data.metrics),
                             xAxis = getAxis(it.data.axes.xLabel),
-                            yAxis = getAxis(it.data.axes.yLabel)
+                            yAxis = getAxis(it.data.axes.yLabel).distinctBy { axis -> axis.value },
+                            summary = mapBarChartSummary(it.data.summary)
                     )
             )
         }
     }
 
+    private fun mapBarChartSummary(summary: BarChartSummaryModel): ChartSummaryUiModel {
+        return ChartSummaryUiModel(
+                diffPercentage = summary.diffPercentage,
+                diffPercentageFmt = summary.diffPercentageFmt,
+                value = summary.value,
+                valueFmt = summary.valueFmt
+        )
+    }
+
     private fun getBarChartMetrics(metrics: List<BarChartMetricModel>): List<BarChartMetricsUiModel> {
-        return metrics.map {
+        return metrics.mapIndexed { i, metric ->
             BarChartMetricsUiModel(
-                    value = getAxis(it.value),
-                    title = it.name
+                    value = getAxis(metric.value),
+                    title = metric.name,
+                    barHexColor = ChartColor.getHexColorByIndex(i)
             )
         }
     }
