@@ -33,6 +33,8 @@ object Utils {
                     dismiss()
                 }
 
+                setCancelable(false)
+                setCanceledOnTouchOutside(false)
                 show()
             }
         }
