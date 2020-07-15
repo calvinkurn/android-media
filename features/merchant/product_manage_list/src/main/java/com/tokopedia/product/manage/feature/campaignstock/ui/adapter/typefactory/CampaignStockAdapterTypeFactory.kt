@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder.*
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.*
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) -> Unit = {},
                                       private val onTotalStockChanged: (Int) -> Unit = {},
                                       private val onActiveStockChanged: (Boolean) -> Unit = {},
-                                      private val onVariantStockChanged: () -> Unit = {}): BaseAdapterTypeFactory(), CampaignStockTypeFactory {
+                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit = { _,_ -> },
+                                      private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit = { _,_ -> }): BaseAdapterTypeFactory(), CampaignStockTypeFactory {
 
     override fun type(model: ActiveProductSwitchUiModel): Int = ActiveProductSwitchViewHolder.LAYOUT_RES
 
@@ -26,7 +28,7 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
         return when(type) {
             ActiveProductSwitchViewHolder.LAYOUT_RES -> ActiveProductSwitchViewHolder(parent, onActiveStockChanged)
             TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent, onTotalStockChanged)
-            SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(parent)
+            SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(parent, onVariantStockChanged, onVariantStatusChanged)
             StockTickerInfoViewHolder.LAYOUT_RES -> StockTickerInfoViewHolder(parent)
             ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent, onAccordionStateChange)
             else -> super.createViewHolder(parent, type)

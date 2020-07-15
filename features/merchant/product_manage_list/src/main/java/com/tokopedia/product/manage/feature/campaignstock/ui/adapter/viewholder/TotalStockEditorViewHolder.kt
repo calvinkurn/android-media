@@ -21,8 +21,8 @@ class TotalStockEditorViewHolder(itemView: View?,
         itemView.qte_campaign_stock_amount?.run {
             maxValue = EditProductConstant.MAXIMUM_STOCK
             setValue(element.totalStock)
-            setValueChangedListener { newValue, _, _ ->
-                onTotalStockChanged(newValue)
+            setValueChangedListener { stock, _, _ ->
+                onTotalStockChanged(stock)
             }
         }
     }

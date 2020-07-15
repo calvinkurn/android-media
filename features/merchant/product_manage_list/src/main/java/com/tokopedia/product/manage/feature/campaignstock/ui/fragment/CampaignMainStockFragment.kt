@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ActiveProd
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.TotalStockEditorUiModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
@@ -78,7 +79,9 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     override fun getAdapterTypeFactory(): CampaignStockAdapterTypeFactory = CampaignStockAdapterTypeFactory(
             onTotalStockChanged = ::onTotalStockChanged,
-            onActiveStockChanged = ::onActiveStockChanged
+            onActiveStockChanged = ::onActiveStockChanged,
+            onVariantStockChanged = ::onVariantStockChanged,
+            onVariantStatusChanged = ::onVariantStatusChanged
     )
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
@@ -131,6 +134,14 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun onActiveStockChanged(isActive: Boolean) {
         campaignStockListener?.onActiveStockChanged(isActive)
+    }
+
+    private fun onVariantStockChanged(productId: String, stock: Int) {
+        campaignStockListener?.onVariantStockChanged(productId, stock)
+    }
+
+    private fun onVariantStatusChanged(productId: String, status: ProductStatus) {
+        campaignStockListener?.onVariantStatusChanged(productId, status)
     }
 
 }

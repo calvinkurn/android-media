@@ -7,9 +7,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
 
-class SellableStockProductViewHolder(itemView: View?): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
+class SellableStockProductViewHolder(itemView: View?,
+                                     private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
+                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,8 +25,22 @@ class SellableStockProductViewHolder(itemView: View?): AbstractViewHolder<Sellab
             qte_campaign_stock_variant_editor?.run {
                 maxValue = EditProductConstant.MAXIMUM_STOCK
                 setValue(element.stock.toIntOrZero())
+                setValueChangedListener { stock, _, _ ->
+                    onVariantStockChanged(element.productId, stock)
+                }
             }
-            switch_campaign_stock_variant_editor?.isChecked = element.isActive
+            switch_campaign_stock_variant_editor?.run {
+                isChecked = element.isActive
+                setOnCheckedChangeListener { _, isChecked ->
+                    val status =
+                            if (isChecked) {
+                                ProductStatus.ACTIVE
+                            } else {
+                                ProductStatus.INACTIVE
+                            }
+                    onVariantStatusChanged(element.productId, status)
+                }
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableSt
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_campaign_stock.*
@@ -95,6 +96,14 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     override fun onActiveStockChanged(isActive: Boolean) {
         mViewModel.updateNonVariantIsActive(isActive)
+    }
+
+    override fun onVariantStockChanged(productId: String, stock: Int) {
+        mViewModel.updateVariantStockCount(productId, stock)
+    }
+
+    override fun onVariantStatusChanged(productId: String, status: ProductStatus) {
+        mViewModel.updateVariantIsActive(productId, status)
     }
 
     private fun observeLiveData() {
