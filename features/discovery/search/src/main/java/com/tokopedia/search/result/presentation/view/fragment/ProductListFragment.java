@@ -835,28 +835,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsClickUrl(String topAdsClickUrl, String productId, String productName, String imageUrl) {
-        if (getActivity() == null) return;
-
-        String className = getActivity().getClass().getName();
-
-        new TopAdsUrlHitter(className).hitClickUrl(
-                getActivity(), topAdsClickUrl, productId, productName, imageUrl
-        );
-    }
-
-    @Override
-    public void sendTopAdsImpressionUrl(String topAdsImpressionUrl, String productId, String productName, String imageUrl) {
-        if (getActivity() == null) return;
-
-        String className = getActivity().getClass().getName();
-
-        new TopAdsUrlHitter(className).hitImpressionUrl(
-                getActivity(), topAdsImpressionUrl, productId, productName, imageUrl
-        );
-    }
-
-    @Override
     public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item) {
         Product product = createTopAdsProductForTracking(item);
 
