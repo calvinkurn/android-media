@@ -40,10 +40,10 @@ class BuyerAccountViewModel @Inject constructor (
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
-                _buyerAccountData.value = Success(accountModel)
+                _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {
-            _buyerAccountData.value = Fail(it)
+            _buyerAccountData.postValue(Fail(it))
         })
     }
 
