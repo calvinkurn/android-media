@@ -1,16 +1,16 @@
-package com.tokopedia.home.account.presentation.viewmodel
+package com.tokopedia.home.account.revamp.viewmodel
 
-import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.TestDispatcherProvider
 import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
-import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -21,14 +21,16 @@ import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+
+@RunWith(JUnit4::class)
 @ExperimentalCoroutinesApi
 class BuyerAccountViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    private val context: Context = mockk(relaxed = true)
 
     private val getBuyerAccountDataUseCase: GetBuyerAccountDataUseCase = mockk(relaxed = true)
     private val checkAffiliateUseCase: CheckAffiliateUseCase = mockk(relaxed = true)
@@ -38,6 +40,7 @@ class BuyerAccountViewModelTest {
 
     private lateinit var viewModel: BuyerAccountViewModel
     private val dispatcherProvider = TestDispatcherProvider()
+    var shared: SharedPreferences = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -75,6 +78,83 @@ class BuyerAccountViewModelTest {
             expectedReturn.data.isAffiliate = true
             true
         }
+
+        viewModel.getBuyerData()
+
+        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+    }
+
+    @Test
+    fun `it failed to get buyer account data` () = runBlockingTest {
+        val expectedReturn = Fail(Throwable("Oops"))
+        val expectedWallet = WalletModel()
+
+        coEvery {
+            getBuyerAccountDataUseCase.executeOnBackground()
+        } throws expectedReturn.throwable
+
+        coEvery {
+            getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+        } answers {
+            expectedWallet
+        }
+
+        coEvery {
+            checkAffiliateUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+        } answers {
+            true
+        }
+
+        viewModel.getBuyerData()
+
+        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+    }
+
+    @Test
+    fun `it failed to get buyer wallet` () = runBlockingTest {
+        val expectedReturn = Fail(Throwable("Oops"))
+
+        coEvery {
+            getBuyerAccountDataUseCase.executeOnBackground()
+        } answers {
+            AccountModel()
+        }
+
+        coEvery {
+            getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+        } throws expectedReturn.throwable
+
+        coEvery {
+            checkAffiliateUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+        } answers {
+            true
+        }
+
+        viewModel.getBuyerData()
+
+        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+    }
+
+    @Test
+    fun `it failed to check is affiliate` () = runBlockingTest {
+        val expectedReturn = Fail(Throwable("Oops"))
+        val expectedWallet = WalletModel()
+
+        coEvery {
+            getBuyerAccountDataUseCase.executeOnBackground()
+        } answers {
+            AccountModel()
+        }
+
+        coEvery {
+            getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+        } answers {
+            expectedWallet
+        }
+
+        coEvery {
+            checkAffiliateUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
+        } throws expectedReturn.throwable
 
         viewModel.getBuyerData()
 
