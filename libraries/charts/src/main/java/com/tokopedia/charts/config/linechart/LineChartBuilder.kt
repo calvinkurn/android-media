@@ -1,6 +1,7 @@
 package com.tokopedia.charts.config.linechart
 
 import android.graphics.Typeface
+import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.linechart.annotation.LineChartDsl
 import com.tokopedia.charts.config.linechart.model.*
 
@@ -30,7 +31,7 @@ class LineChartConfigBuilder {
     private var leftAxisConfig: LeftAxisConfig = LeftAxisConfig()
     private var rightAxisConfig: RightAxisConfig = RightAxisConfig()
     private var legendConfig: LegendConfig = LegendConfig()
-    private var tooltip: LineChartTooltip? = null
+    private var tooltip: ChartTooltip? = null
 
     fun showTooltipEnabled(lambda: () -> Boolean) {
         isShowTooltipEnabled = lambda()
@@ -76,7 +77,7 @@ class LineChartConfigBuilder {
         legendConfig = LegendBuilder().apply(lambda).build()
     }
 
-    fun setTooltip(tooltip: LineChartTooltip) {
+    fun setTooltip(tooltip: ChartTooltip) {
         this.tooltip = tooltip
     }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.charts.config.linechart.model
 
-import com.tokopedia.charts.config.linechart.LineChartTooltip
+import com.tokopedia.charts.common.ChartTooltip
 
 /**
  * Created By @ilhamsuaib on 25/06/20
@@ -17,5 +17,5 @@ data class LineChartConfig(
         val leftAxisConfig: LeftAxisConfig = LeftAxisConfig(),
         val rightAxisConfig: RightAxisConfig = RightAxisConfig(),
         val legendConfig: LegendConfig = LegendConfig(),
-        val tooltip: LineChartTooltip? = null
+        val tooltip: ChartTooltip? = null
 )
