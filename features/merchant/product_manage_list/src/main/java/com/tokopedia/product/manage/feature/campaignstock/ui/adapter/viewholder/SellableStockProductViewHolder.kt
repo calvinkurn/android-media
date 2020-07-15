@@ -20,8 +20,8 @@ class SellableStockProductViewHolder(itemView: View?): AbstractViewHolder<Sellab
         with(itemView) {
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.run {
-                setValue(element.stock.toIntOrZero())
                 maxValue = EditProductConstant.MAXIMUM_STOCK
+                setValue(element.stock.toIntOrZero())
             }
             switch_campaign_stock_variant_editor?.isChecked = element.isActive
         }

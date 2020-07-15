@@ -8,13 +8,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.decoration.CampaignStockEventInfoDividerDecoration
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
 import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
-import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.view.*
 
 class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
@@ -39,10 +37,6 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
 
     private val reservedEventInfoList by lazy {
         arguments?.getParcelableArrayList<ReservedEventInfoUiModel>(EXTRA_RESERVED_EVENT_INFO_LIST)?.toList().orEmpty()
-    }
-
-    private val itemDecoration by lazy {
-        context?.let { CampaignStockEventInfoDividerDecoration(it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,9 +66,6 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
         view.setBackgroundColor(Color.TRANSPARENT)
         if(reservedEventInfoList.isNotEmpty()) {
             setupAdapterModels(isVariant)
-        }
-        itemDecoration?.run {
-            view.rv_campaign_stock?.addItemDecoration(this)
         }
     }
 

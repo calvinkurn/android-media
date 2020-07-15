@@ -17,8 +17,8 @@ class TotalStockEditorViewHolder(itemView: View?): AbstractViewHolder<TotalStock
 
     override fun bind(element: TotalStockEditorUiModel) {
         itemView.qte_campaign_stock_amount?.run {
-            setValue(element.totalStock)
             maxValue = EditProductConstant.MAXIMUM_STOCK
+            setValue(element.totalStock)
         }
     }
 }
