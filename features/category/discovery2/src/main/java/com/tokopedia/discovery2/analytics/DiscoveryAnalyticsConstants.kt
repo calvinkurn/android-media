@@ -115,4 +115,6 @@ const val CLICK_TOP_NAV  = "clickTopNav"
 const val CLICK_SEARCH_BOX  = "click search box"
 const val TOP_NAV  = "top nav"
 const val MEGA_TAB_COMPONENT  = "mega_tab_component"
+const val NOTIFY_ON  = "ON"
+const val NOTIFY_OFF  = "OFF"
 

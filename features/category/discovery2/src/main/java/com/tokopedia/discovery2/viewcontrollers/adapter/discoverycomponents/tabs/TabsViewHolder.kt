@@ -6,6 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -13,57 +15,19 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
-private const val DEFAULT_TAB_POSITION = 0
 
-class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TabLayout.OnTabSelectedListener {
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
-    private var firstSelectedTab = true
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
-        tabsHolder.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                trackTabsGTMStatus(tab)
-                if (tab.customView != null && tab.customView is CustomViewCreator) {
-                    ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
-                }
-                tabsViewModel.setSelectedState(tab.position, true)
-                tabsViewModel.onTabClick()
-            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                tabsViewModel.setSelectedState(tab.position, false)
-                if (tab.customView == null || !(tab.customView is CustomViewCreator)) return
-                ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(false)
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-            }
-        })
     }
-
-    private fun trackTabsGTMStatus(tab: TabLayout.Tab) {
-        if (firstSelectedTab && tab.position == DEFAULT_TAB_POSITION) {
-            firstSelectedTab = false
-            sendTabTrackingData(tab)
-        } else if (tab.position > DEFAULT_TAB_POSITION) {
-            firstSelectedTab = true
-            sendTabTrackingData(tab)
-        }
-    }
-
-    private fun sendTabTrackingData(tab: TabLayout.Tab) {
-        tabsViewModel.components.data?.let {
-            if (it.size >= tab.position)
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(tabsViewModel.components.id, tabsViewModel.components.position,
-                        it[tab.position], tab.position)
-        }
-    }
-
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        tabsHolder.tabLayout.addOnTabSelectedListener(this)
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
@@ -81,7 +45,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
             it.forEach {
-                var tab = tabsHolder.tabLayout.newTab()
+                val tab = tabsHolder.tabLayout.newTab()
                 tab.customView = CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.TabsItem, it, fragment)
                 tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
             }
@@ -90,6 +54,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun onViewDetachedToWindow() {
         super.onViewDetachedToWindow()
+        tabsHolder.tabLayout.removeOnTabSelectedListener(this)
         tabsViewModel.getColorTabComponentLiveData().removeObservers(fragment.viewLifecycleOwner)
     }
 
@@ -100,5 +65,38 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
                 (fragment as DiscoveryFragment).reSync()
             }
         })
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        trackTabsGTMStatus(tab)
+        if (tab.customView != null && tab.customView is CustomViewCreator) {
+            ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
+        }
+        tabsViewModel.setSelectedState(tab.position, true)
+        tabsViewModel.onTabClick()
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+        tabsViewModel.setSelectedState(tab.position, false)
+        if (tab.customView == null || !(tab.customView is CustomViewCreator)) return
+        ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(false)
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {
+    }
+
+    private fun trackTabsGTMStatus(tab: TabLayout.Tab) {
+        if(preSelectedTab !=  tab.position){
+            preSelectedTab = tab.position
+            sendTabTrackingData(tab)
+        }
+    }
+
+    private fun sendTabTrackingData(tab: TabLayout.Tab) {
+        tabsViewModel.components.data?.let {
+            if (it.size >= tab.position)
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(tabsViewModel.components.id, tabsViewModel.components.position,
+                        it[tab.position], tab.position)
+        }
     }
 }

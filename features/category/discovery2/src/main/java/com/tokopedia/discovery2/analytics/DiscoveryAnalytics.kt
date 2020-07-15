@@ -357,12 +357,12 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
 
-    fun getNotificationStatus(componentsItems: ComponentsItem): Boolean {
+    private fun getNotificationStatus(componentsItems: ComponentsItem): String {
         val parentProductContainer = getComponent(componentsItems.parentComponentId, pageIdentifier)
         parentProductContainer?.let {
-            return it.properties?.buttonNotification ?: false
+            return if(it.properties?.buttonNotification == true) NOTIFY_ON else NOTIFY_OFF
         }
-        return false
+        return NOTIFY_ON
     }
 
     fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
