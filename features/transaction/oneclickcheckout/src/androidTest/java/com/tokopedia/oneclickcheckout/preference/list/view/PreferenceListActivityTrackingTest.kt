@@ -5,10 +5,14 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -86,10 +90,10 @@ class PreferenceListActivityTrackingTest {
         setup()
 
         // perform click add button
-        Espresso.onView(ViewMatchers.withId(R.id.btn_preference_list_action)).perform(click())
+        onView(withId(R.id.btn_preference_list_action)).perform(click())
 
         // perform click gear
-        Espresso.onView(ViewMatchers.withId(R.id.rv_preference_list)).perform(RecyclerViewActions.actionOnItemAtPosition<PreferenceListViewHolder>(0, object : ViewAction {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, object : ViewAction {
             override fun getDescription(): String = "perform click on first profile checkbox"
 
             override fun getConstraints(): Matcher<View>? = null
@@ -102,7 +106,7 @@ class PreferenceListActivityTrackingTest {
         // perform change default profile
         val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.rv_preference_list).adapter!!.itemCount
         for (i in 0 until itemCount) {
-            Espresso.onView(ViewMatchers.withId(R.id.rv_preference_list)).perform(RecyclerViewActions.actionOnItemAtPosition<PreferenceListViewHolder>(i, object : ViewAction {
+            onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(i, object : ViewAction {
                 override fun getDescription(): String = "perform click on first profile checkbox"
 
                 override fun getConstraints(): Matcher<View>? = null

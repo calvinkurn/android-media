@@ -18,75 +18,75 @@ val GET_PREFERENCE_LIST_DEFAULT_RESPONSE = """
                               "max_profile": 5,
                               "profiles": [
                                 {
-                                  "profile_id": 583940,
+                                  "profile_id": 1,
                                   "status": 1,
                                   "address": {
-                                    "address_id": 97361993,
-                                    "receiver_name": "Jk Seller",
-                                    "address_name": "Rumah",
-                                    "address_street": "Tokopedia Tower, Jl. Prof. DR. Satrio, Setia Budi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta, 12950 [Tokopedia Note: lantai]",
-                                    "district_id": 2270,
-                                    "district_name": "Setiabudi",
-                                    "city_id": 175,
-                                    "city_name": "Jakarta Selatan",
-                                    "province_id": 13,
-                                    "province_name": "DKI Jakarta",
-                                    "phone": "6281280969197",
-                                    "longitude": "106.819417",
-                                    "latitude": "-6.221197900000001",
-                                    "geolocation": "-6.221197900000001,106.819417",
-                                    "postal_code": "12950"
+                                    "address_id": 1,
+                                    "receiver_name": "User 1",
+                                    "address_name": "Address 1",
+                                    "address_street": "Address Street 1",
+                                    "district_id": 1,
+                                    "district_name": "District 1",
+                                    "city_id": 1,
+                                    "city_name": "City 1",
+                                    "province_id": 1,
+                                    "province_name": "Province 1",
+                                    "phone": "1",
+                                    "longitude": "1",
+                                    "latitude": "1",
+                                    "geolocation": "1,1",
+                                    "postal_code": "1"
                                   },
                                   "payment": {
                                     "enable": 1,
                                     "active": 1,
-                                    "gateway_code": "BCAVA",
-                                    "gateway_name": "BCA Virtual Account",
+                                    "gateway_code": "PAYMENT1",
+                                    "gateway_name": "Payment 1",
                                     "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
-                                    "description": "",
+                                    "description": "Payment Desc 1",
                                     "url": "",
-                                    "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"BCAVA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/BCAVA\",\"high_risk_flag\":\"\",\"description\":\"BCA Virtual Account\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png\",\"signature\":\"92e851f007bd7c3d0f1793ebae14a6c764be9edd\",\"customer_name\":\"Jk Seller\",\"customer_email\":\"jean.karunadewi jks@tokopedia.com\",\"user_id\":7977957}"
+                                    "metadata": "{}"
                                   },
                                   "shipment": {
-                                    "service_id": 1104,
-                                    "service_duration": "Reguler (2-4 hari)",
-                                    "service_name": "Reguler"
+                                    "service_id": 1,
+                                    "service_duration": "Durasi 1",
+                                    "service_name": "Service 1"
                                   }
                                 },
                                 {
-                                  "profile_id": 1886195,
+                                  "profile_id": 2,
                                   "status": 2,
                                   "address": {
-                                    "address_id": 96722965,
-                                    "receiver_name": "Jk Seller",
-                                    "address_name": "Rumah",
-                                    "address_street": "no 21, Malendeng, Tikala, Manado City, North Sulawesi",
-                                    "district_id": 5166,
-                                    "district_name": "Tikala",
-                                    "city_id": 410,
-                                    "city_name": "Kota Manado",
-                                    "province_id": 28,
-                                    "province_name": "Sulawesi Utara",
-                                    "phone": "6281280969197",
-                                    "longitude": "124.8901752",
-                                    "latitude": "1.4694799",
-                                    "geolocation": "1.4694799,124.8901752",
-                                    "postal_code": "95129"
+                                    "address_id": 2,
+                                    "receiver_name": "User 1",
+                                    "address_name": "Address 2",
+                                    "address_street": "Address Street 2",
+                                    "district_id": 2,
+                                    "district_name": "District 2",
+                                    "city_id": 2,
+                                    "city_name": "City 2",
+                                    "province_id": 2,
+                                    "province_name": "Province 2",
+                                    "phone": "2",
+                                    "longitude": "2",
+                                    "latitude": "2",
+                                    "geolocation": "2,2",
+                                    "postal_code": "2"
                                   },
                                   "payment": {
                                     "enable": 1,
                                     "active": 1,
-                                    "gateway_code": "ALFAMART",
-                                    "gateway_name": "Alfamart / Alfamidi / Lawson / Dan+Dan",
+                                    "gateway_code": "PAYMENT2",
+                                    "gateway_name": "Payment 2",
                                     "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png",
                                     "description": "",
                                     "url": "",
                                     "metadata": ""
                                   },
                                   "shipment": {
-                                    "service_id": 1104,
-                                    "service_duration": "Reguler (2-4 hari)",
-                                    "service_name": "Reguler"
+                                    "service_id": 2,
+                                    "service_duration": "Durasi (2)",
+                                    "service_name": "Service 2"
                                   }
                                 }
                               ]
@@ -96,94 +96,94 @@ val GET_PREFERENCE_LIST_DEFAULT_RESPONSE = """
                     }]
     """.trimIndent()
 val GET_PREFERENCE_LIST_CHANGED_RESPONSE = """
-            [{
-                "data" : {
-                  "get_all_profiles_occ": {
-                    "error_message": [],
-                    "status": "OK",
-                    "data": {
-                      "messages": [],
-                      "success": 1,
-                      "max_profile": 5,
-                      "profiles": [
-                        {
-                          "profile_id": 583940,
-                          "status": 2,
-                          "address": {
-                            "address_id": 97361993,
-                            "receiver_name": "Jk Seller",
-                            "address_name": "Rumah",
-                            "address_street": "Tokopedia Tower, Jl. Prof. DR. Satrio, Setia Budi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta, 12950 [Tokopedia Note: lantai]",
-                            "district_id": 2270,
-                            "district_name": "Setiabudi",
-                            "city_id": 175,
-                            "city_name": "Jakarta Selatan",
-                            "province_id": 13,
-                            "province_name": "DKI Jakarta",
-                            "phone": "6281280969197",
-                            "longitude": "106.819417",
-                            "latitude": "-6.221197900000001",
-                            "geolocation": "-6.221197900000001,106.819417",
-                            "postal_code": "12950"
-                          },
-                          "payment": {
-                            "enable": 1,
-                            "active": 1,
-                            "gateway_code": "BCAVA",
-                            "gateway_name": "BCA Virtual Account",
-                            "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
-                            "description": "",
-                            "url": "",
-                            "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"BCAVA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/BCAVA\",\"high_risk_flag\":\"\",\"description\":\"BCA Virtual Account\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png\",\"signature\":\"92e851f007bd7c3d0f1793ebae14a6c764be9edd\",\"customer_name\":\"Jk Seller\",\"customer_email\":\"jean.karunadewi jks@tokopedia.com\",\"user_id\":7977957}"
-                          },
-                          "shipment": {
-                            "service_id": 1104,
-                            "service_duration": "Reguler (2-4 hari)",
-                            "service_name": "Reguler"
-                          }
-                        },
-                        {
-                          "profile_id": 1886195,
-                          "status": 1,
-                          "address": {
-                            "address_id": 96722965,
-                            "receiver_name": "Jk Seller",
-                            "address_name": "Rumah",
-                            "address_street": "no 21, Malendeng, Tikala, Manado City, North Sulawesi",
-                            "district_id": 5166,
-                            "district_name": "Tikala",
-                            "city_id": 410,
-                            "city_name": "Kota Manado",
-                            "province_id": 28,
-                            "province_name": "Sulawesi Utara",
-                            "phone": "6281280969197",
-                            "longitude": "124.8901752",
-                            "latitude": "1.4694799",
-                            "geolocation": "1.4694799,124.8901752",
-                            "postal_code": "95129"
-                          },
-                          "payment": {
-                            "enable": 1,
-                            "active": 1,
-                            "gateway_code": "ALFAMART",
-                            "gateway_name": "Alfamart / Alfamidi / Lawson / Dan+Dan",
-                            "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png",
-                            "description": "",
-                            "url": "",
-                            "metadata": ""
-                          },
-                          "shipment": {
-                            "service_id": 1104,
-                            "service_duration": "Reguler (2-4 hari)",
-                            "service_name": "Reguler"
+                    [{
+                        "data": {
+                          "get_all_profiles_occ": {
+                            "error_message": [],
+                            "status": "OK",
+                            "data": {
+                              "messages": [],
+                              "success": 1,
+                              "max_profile": 5,
+                              "profiles": [
+                                {
+                                  "profile_id": 1,
+                                  "status": 2,
+                                  "address": {
+                                    "address_id": 1,
+                                    "receiver_name": "User 1",
+                                    "address_name": "Address 1",
+                                    "address_street": "Address Street 1",
+                                    "district_id": 1,
+                                    "district_name": "District 1",
+                                    "city_id": 1,
+                                    "city_name": "City 1",
+                                    "province_id": 1,
+                                    "province_name": "Province 1",
+                                    "phone": "1",
+                                    "longitude": "1",
+                                    "latitude": "1",
+                                    "geolocation": "1,1",
+                                    "postal_code": "1"
+                                  },
+                                  "payment": {
+                                    "enable": 1,
+                                    "active": 1,
+                                    "gateway_code": "PAYMENT1",
+                                    "gateway_name": "Payment 1",
+                                    "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+                                    "description": "",
+                                    "url": "",
+                                    "metadata": "{}"
+                                  },
+                                  "shipment": {
+                                    "service_id": 1,
+                                    "service_duration": "Durasi 1",
+                                    "service_name": "Service 1"
+                                  }
+                                },
+                                {
+                                  "profile_id": 2,
+                                  "status": 1,
+                                  "address": {
+                                    "address_id": 2,
+                                    "receiver_name": "User 1",
+                                    "address_name": "Address 2",
+                                    "address_street": "Address Street 2",
+                                    "district_id": 2,
+                                    "district_name": "District 2",
+                                    "city_id": 2,
+                                    "city_name": "City 2",
+                                    "province_id": 2,
+                                    "province_name": "Province 2",
+                                    "phone": "2",
+                                    "longitude": "2",
+                                    "latitude": "2",
+                                    "geolocation": "2,2",
+                                    "postal_code": "2"
+                                  },
+                                  "payment": {
+                                    "enable": 1,
+                                    "active": 1,
+                                    "gateway_code": "PAYMENT2",
+                                    "gateway_name": "Payment 2",
+                                    "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png",
+                                    "description": "",
+                                    "url": "",
+                                    "metadata": ""
+                                  },
+                                  "shipment": {
+                                    "service_id": 2,
+                                    "service_duration": "Durasi 2",
+                                    "service_name": "Service 2"
+                                  }
+                                }
+                              ]
+                            }
                           }
                         }
-                      ]
-                    }
-                  }
-                }
-            }]
-        """.trimIndent()
+                    }]
+    """.trimIndent()
 val SET_DEFAULT_PROFILE_DEFAULT_RESPONSE = """
             [{
                 "data": {
