@@ -25,9 +25,6 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
             if (section.items.isNotEmpty()) {
                 view_recharge_home_trust_mark_container.show()
 
-                val layoutManager = GridLayoutManager(context, TRUST_MARK_SPAN_COUNT)
-                rv_recharge_home_trust_mark.layoutManager = layoutManager
-
                 while (rv_recharge_home_trust_mark.itemDecorationCount > 0) {
                     rv_recharge_home_trust_mark.removeItemDecorationAt(0)
                 }
@@ -38,8 +35,13 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
                     in 1..3 -> section.items
                     else -> section.items.subList(0, 3)
                 }
+
+                val layoutManager = GridLayoutManager(context, trustMarkItems.size)
+                rv_recharge_home_trust_mark.layoutManager = layoutManager
+
                 rv_recharge_home_trust_mark.adapter =
                         RechargeItemTrustMarkAdapter(trustMarkItems)
+
             } else {
                 listener.onRechargeSectionEmpty(adapterPosition)
             }
