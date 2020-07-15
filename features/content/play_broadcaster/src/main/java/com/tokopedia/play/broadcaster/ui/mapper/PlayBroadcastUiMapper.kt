@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 /**
@@ -210,5 +211,13 @@ object PlayBroadcastUiMapper {
             duration = duration.duration,
             remaining = duration.remaining * 1000,
             maxDuration = duration.maxDuration
+    )
+
+    fun mapIncomingChat(chat: Chat): PlayChatUiModel =  PlayChatUiModel(
+            messageId = chat.messageId,
+            message = chat.message,
+            userId = chat.user.id,
+            name = chat.user.name,
+            isSelfMessage = false
     )
 }
