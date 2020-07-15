@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.cleanBackstack
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -33,6 +35,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import java.util.*
 import javax.inject.Inject
+
 
 /**
  * Created by jegul on 26/05/20
@@ -79,6 +82,18 @@ class PlayBroadcastSetupBottomSheet(
                     mListener?.onSetupCanceled()
                 }
             }
+        }.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                updateNavigationBarColors(
+                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                )
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                updateNavigationBarColors(
+                        intArrayOf(
+                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
+                        )
+                )
         }
     }
 
