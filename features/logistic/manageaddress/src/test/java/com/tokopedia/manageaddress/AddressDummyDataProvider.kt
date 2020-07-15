@@ -1,15 +1,15 @@
 package com.tokopedia.manageaddress
 
 import com.google.gson.Gson
-import com.tokopedia.purchase_platform.common.feature.addresslist.AddressCornerMapper
-import com.tokopedia.purchase_platform.common.feature.addresslist.NewAddressCornerResponse
-import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticdata.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
 
 object AddressDummyDataProvider {
 
     fun getCornerList(): AddressListModel {
         val mapper = AddressCornerMapper()
-        val response: NewAddressCornerResponse = Gson().fromJson(cornerListResponse, NewAddressCornerResponse::class.java)
+        val response: GetPeopleAddressResponse = Gson().fromJson(cornerListResponse, GetPeopleAddressResponse::class.java)
         return mapper.call(response)
     }
 

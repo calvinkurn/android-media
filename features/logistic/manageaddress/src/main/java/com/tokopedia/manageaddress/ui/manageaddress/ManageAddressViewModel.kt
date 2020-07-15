@@ -4,20 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.GetPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
-import com.tokopedia.manageaddress.domain.mapper.AddressCornerMapper
-import com.tokopedia.manageaddress.domain.model.AddressListModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
+import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 class ManageAddressViewModel @Inject constructor(
-        private val getPeopleAddressUseCase: GetPeopleAddressUseCase,
+        private val getPeopleAddressUseCase: GetAddressCornerUseCase,
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
-        private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase,
-        private val mapper: AddressCornerMapper) : ViewModel() {
+        private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
 
     private val token: Token = Token()
     var savedQuery: String = ""
@@ -31,21 +29,31 @@ class ManageAddressViewModel @Inject constructor(
     val result: LiveData<ManageAddressState<String>>
         get() = _result
 
+    private val compositeSubscription = CompositeSubscription()
+
     fun searchAddress(query: String) {
         _addressList.value = ManageAddressState.Loading
-        getPeopleAddressUseCase.execute(query,
-                {
-                    savedQuery = query
-                    _addressList.value = ManageAddressState.Success(mapToModel(it))
+        compositeSubscription.add(
+                getPeopleAddressUseCase.getAll(query)
+                        .subscribe(object: rx.Observer<AddressListModel> {
+                            override fun onError(it: Throwable?) {
+                                _addressList.value = ManageAddressState.Fail(it, "")
+                            }
 
-                },
-                {
-                    _addressList.value = ManageAddressState.Fail(it, "")
-                })
+                            override fun onNext(addressModel: AddressListModel) {
+                                savedQuery = query
+                                mapToModel(addressModel)
+                            }
+
+                            override fun onCompleted() {
+                                //no-op
+                            }
+                        })
+        )
     }
 
-    private fun mapToModel(responses: GetPeopleAddressResponse): AddressListModel {
-        return mapper.call(responses)
+    fun mapToModel(addressListModel: AddressListModel) {
+        _addressList.value = ManageAddressState.Success(addressListModel)
     }
 
     fun getToken(): Token {
@@ -76,5 +84,10 @@ class ManageAddressViewModel @Inject constructor(
                 _addressList.value  = ManageAddressState.Fail(it, "")
             })
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeSubscription.clear()
     }
 }

@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
+import com.tokopedia.manageaddress.di.manageaddress.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
+import com.tokopedia.manageaddress.di.manageaddress.ManageAddressModule
 import kotlinx.android.synthetic.main.activity_manage_address.*
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
@@ -15,6 +16,7 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     override fun getComponent(): ManageAddressComponent {
         return DaggerManageAddressComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .manageAddressModule(ManageAddressModule(this))
                 .build()
     }
 

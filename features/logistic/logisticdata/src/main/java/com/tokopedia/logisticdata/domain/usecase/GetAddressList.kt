@@ -1,16 +1,16 @@
-package com.tokopedia.manageaddress.domain
+package com.tokopedia.logisticdata.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.domain.mapper.AddressCornerMapper
-import com.tokopedia.manageaddress.domain.model.AddressListModel
-import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
+import com.tokopedia.logisticdata.R
+import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticdata.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.request.AddressRequest
+import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.feature.addresslist.request.AddressRequest
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers

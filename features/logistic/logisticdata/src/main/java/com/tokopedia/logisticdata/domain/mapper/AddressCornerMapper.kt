@@ -1,19 +1,21 @@
-package com.tokopedia.purchase_platform.common.feature.addresslist
+package com.tokopedia.logisticdata.domain.mapper
 
-import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
-import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
+import com.tokopedia.logisticdata.domain.response.ManageAddressData
 import rx.functions.Func1
 import javax.inject.Inject
 
 /**
  * Created by fajarnuha on 2019-05-27.
  */
-class AddressCornerMapper @Inject constructor() : Func1<NewAddressCornerResponse, AddressListModel> {
+class AddressCornerMapper @Inject constructor() : Func1<GetPeopleAddressResponse, AddressListModel> {
 
-    override fun call(it: NewAddressCornerResponse): AddressListModel {
+    override fun call(it: GetPeopleAddressResponse): AddressListModel {
         val token = Token()
-        token.districtRecommendation = it.keroAddressCorner.token.districtRecommendation
+        token.districtRecommendation = it.keroAddressCorner.token.districtReccomendation
         token.ut = it.keroAddressCorner.token.ut.toInt()
 
         return AddressListModel().apply {
@@ -23,7 +25,7 @@ class AddressCornerMapper @Inject constructor() : Func1<NewAddressCornerResponse
         }
     }
 
-    private val recipientModelMapper: (Data) -> RecipientAddressModel = {
+    private val recipientModelMapper: (ManageAddressData) -> RecipientAddressModel = {
         RecipientAddressModel().apply {
             this.id = it.addrId.toString()
             this.recipientName = it.receiverName

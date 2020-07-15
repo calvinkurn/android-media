@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.addresslist.request
+package com.tokopedia.logisticdata.domain.request
 import com.google.gson.annotations.SerializedName
 
 

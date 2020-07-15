@@ -5,11 +5,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticdata.domain.model.AddressListModel
+import com.tokopedia.logisticdata.domain.request.AddressRequest
+import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.feature.addresslist.AddressCornerMapper
-import com.tokopedia.purchase_platform.common.feature.addresslist.NewAddressCornerResponse
-import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
-import com.tokopedia.purchase_platform.common.feature.addresslist.request.AddressRequest
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -32,16 +32,16 @@ open class GetCornerList
                 showCorner = isCorner)
         val param = mapOf<String, Any>(PARAM_CORNER_USECASE to request)
         val gqlQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.address_corner)
-        val gqlRequest = GraphqlRequest(gqlQuery, NewAddressCornerResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(gqlQuery, GetPeopleAddressResponse::class.java, param)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         return graphqlUseCase.getExecuteObservable(null)
                 .map { graphqlResponse ->
-                    val response: NewAddressCornerResponse? =
-                            graphqlResponse.getData(NewAddressCornerResponse::class.java)
+                    val response: GetPeopleAddressResponse? =
+                            graphqlResponse.getData(GetPeopleAddressResponse::class.java)
                     response ?: throw MessageErrorException(
-                            graphqlResponse.getError(NewAddressCornerResponse::class.java)[0].message)
+                            graphqlResponse.getError(GetPeopleAddressResponse::class.java)[0].message)
                 }
                 .map(mapper)
                 .subscribeOn(Schedulers.io())

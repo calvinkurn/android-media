@@ -68,7 +68,6 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     address_detail.text = if (addressStreet.contains(postalCode)) newAddress else newAddress + ", " + data.postalCode
                 } else {
                     tokopedia_note.gone()
-                    address_detail.text = data.addressStreet + ", " + data.postalCode
                     address_detail.text = data.street + ", " + data.postalCode
                 }
                 setListener(data)

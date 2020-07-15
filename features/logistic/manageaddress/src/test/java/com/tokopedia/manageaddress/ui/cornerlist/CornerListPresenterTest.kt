@@ -1,8 +1,8 @@
 package com.tokopedia.manageaddress.ui.cornerlist
 
+import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.manageaddress.AddressDummyDataProvider
 import com.tokopedia.manageaddress.domain.GetCornerList
-import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

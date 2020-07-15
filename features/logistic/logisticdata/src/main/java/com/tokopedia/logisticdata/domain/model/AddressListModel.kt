@@ -1,7 +1,7 @@
-package com.tokopedia.purchase_platform.common.feature.addresslist.domain.model
+package com.tokopedia.logisticdata.domain.model
 
-import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 
 /**
  * Created by fajarnuha on 2019-05-24.
