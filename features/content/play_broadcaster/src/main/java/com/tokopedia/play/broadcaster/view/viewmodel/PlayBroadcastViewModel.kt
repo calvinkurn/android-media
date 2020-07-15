@@ -337,6 +337,7 @@ class PlayBroadcastViewModel @Inject constructor(
                         is TotalLike -> _observableTotalLike.value = PlayBroadcastUiMapper.mapTotalLike(data)
                         is LiveDuration -> restartLiveDuration(data)
                         is ProductTagging -> setSelectedProduct(PlayBroadcastUiMapper.mapProductTag(data))
+                        is Chat -> retrieveNewChat(PlayBroadcastUiMapper.mapIncomingChat(data))
                     }
                 }
 
@@ -394,6 +395,12 @@ class PlayBroadcastViewModel @Inject constructor(
             metricList.forEach {
                 metricsChannel.send(it)
             }
+        }
+    }
+
+    private fun retrieveNewChat(newChat: PlayChatUiModel) {
+        scope.launch(dispatcher.io) {
+            onRetrievedNewChat(newChat)
         }
     }
 
