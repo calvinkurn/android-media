@@ -1506,12 +1506,23 @@ final class ProductListPresenter
     }
 
     private void getViewToTrackImpressedTopAdsProduct(ProductItemViewModel item) {
-        getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+        getView().sendTopAdsImpressionUrl(
+                item.getTopadsImpressionUrl(),
+                item.getProductID(),
+                item.getProductName(),
+                item.getImageUrl()
+        );
         getView().sendTopAdsGTMTrackingProductImpression(item);
     }
 
     private void getViewToTrackImpressedOrganicProduct(ProductItemViewModel item) {
-        if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+        if (item.isOrganicAds())
+            getView().sendTopAdsImpressionUrl(
+                    item.getTopadsImpressionUrl(),
+                    item.getProductID(),
+                    item.getProductName(),
+                    item.getImageUrl()
+            );
 
         getView().sendProductImpressionTrackingEvent(item);
     }
@@ -1529,12 +1540,23 @@ final class ProductListPresenter
     }
 
     private void getViewToTrackOnClickTopAdsProduct(ProductItemViewModel item) {
-        getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+        getView().sendTopAdsClickUrl(
+                item.getTopadsClickUrl(),
+                item.getProductID(),
+                item.getProductName(),
+                item.getImageUrl()
+        );
         getView().sendTopAdsGTMTrackingProductClick(item);
     }
 
     private void getViewToTrackOnClickOrganicProduct(ProductItemViewModel item) {
-        if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+        if (item.isOrganicAds())
+            getView().sendTopAdsClickUrl(
+                    item.getTopadsClickUrl(),
+                    item.getProductID(),
+                    item.getProductName(),
+                    item.getImageUrl()
+            );
 
         getView().sendGTMTrackingProductClick(item, getUserId());
     }

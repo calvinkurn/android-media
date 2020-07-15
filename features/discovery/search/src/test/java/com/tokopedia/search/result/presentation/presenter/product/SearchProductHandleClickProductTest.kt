@@ -34,6 +34,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.productID = "12345"
             it.productName = "Pixel 4"
             it.price = "Rp100.000.000"
+            it.imageUrl = imageUrl
             it.categoryID = 13
             it.isTopAds = true
             it.topadsImpressionUrl = topAdsImpressionUrl
@@ -49,7 +50,12 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
+            productListView.sendTopAdsClickUrl(
+                    productItemViewModel.topadsClickUrl,
+                    productItemViewModel.productID,
+                    productItemViewModel.productName,
+                    productItemViewModel.imageUrl
+            )
             productListView.sendTopAdsGTMTrackingProductClick(capture(capturedProductItemViewModel))
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
@@ -98,6 +104,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         val productItemViewModel = ProductItemViewModel().also {
             it.productID = "12345"
             it.productName = "Pixel 4"
+            it.imageUrl = imageUrl
             it.price = "Rp100.000.000"
             it.categoryID = 13
             it.isTopAds = false
@@ -115,7 +122,12 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private fun `Then verify view interaction is correct for organic Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
+            productListView.sendTopAdsClickUrl(
+                    productItemViewModel.topadsClickUrl,
+                    productItemViewModel.productID,
+                    productItemViewModel.productName,
+                    productItemViewModel.imageUrl
+            )
             productListView.sendGTMTrackingProductClick(productItemViewModel, userId)
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }

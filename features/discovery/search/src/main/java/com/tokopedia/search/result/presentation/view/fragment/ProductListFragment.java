@@ -111,6 +111,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.ChipsUnify;
 
@@ -836,6 +837,28 @@ public class ProductListFragment
     @Override
     public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
         new ImpresionTask(getActivity().getClass().getName()).execute(topAdsTrackingUrl);
+    }
+
+    @Override
+    public void sendTopAdsClickUrl(String topAdsClickUrl, String productId, String productName, String imageUrl) {
+        if (getActivity() == null) return;
+
+        String className = getActivity().getClass().getName();
+
+        new TopAdsUrlHitter(className).hitClickUrl(
+                getActivity(), topAdsClickUrl, productId, productName, imageUrl
+        );
+    }
+
+    @Override
+    public void sendTopAdsImpressionUrl(String topAdsImpressionUrl, String productId, String productName, String imageUrl) {
+        if (getActivity() == null) return;
+
+        String className = getActivity().getClass().getName();
+
+        new TopAdsUrlHitter(className).hitImpressionUrl(
+                getActivity(), topAdsImpressionUrl, productId, productName, imageUrl
+        );
     }
 
     @Override

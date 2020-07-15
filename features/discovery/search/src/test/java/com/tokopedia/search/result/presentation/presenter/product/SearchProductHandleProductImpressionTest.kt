@@ -30,6 +30,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         val productItemViewModel = ProductItemViewModel().also {
             it.productID = "12345"
             it.productName = "Hp Samsung"
+            it.imageUrl = imageUrl
             it.price = "Rp100.000"
             it.categoryID = 13
             it.isTopAds = true
@@ -45,7 +46,12 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for Top Ads product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsImpressionUrl)
+            productListView.sendTopAdsImpressionUrl(
+                    productItemViewModel.topadsImpressionUrl,
+                    productItemViewModel.productID,
+                    productItemViewModel.productName,
+                    productItemViewModel.imageUrl
+            )
             productListView.sendTopAdsGTMTrackingProductImpression(capture(capturedProductItemViewModel))
         }
 
@@ -80,6 +86,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         val productItemViewModel = ProductItemViewModel().also {
             it.productID = "12345"
             it.productName = "Hp Samsung"
+            it.imageUrl = imageUrl
             it.price = "Rp100.000"
             it.categoryID = 13
             it.isTopAds = false
@@ -95,7 +102,12 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for Organic Ads product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsImpressionUrl)
+            productListView.sendTopAdsImpressionUrl(
+                    productItemViewModel.topadsImpressionUrl,
+                    productItemViewModel.productID,
+                    productItemViewModel.productName,
+                    productItemViewModel.imageUrl
+            )
             productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel))
         }
 

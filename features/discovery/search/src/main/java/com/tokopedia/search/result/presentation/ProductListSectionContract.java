@@ -150,6 +150,10 @@ public interface ProductListSectionContract {
 
         void logWarning(String message, @Nullable Throwable throwable);
 
+        void sendTopAdsClickUrl(String topAdsClickUrl, String productId, String productName, String imageUrl);
+
+        void sendTopAdsImpressionUrl(String topAdsImpressionUrl, String productId, String productName, String imageUrl);
+
         void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
 
         void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
