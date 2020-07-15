@@ -8,6 +8,7 @@ interface PlayEtalaseSetupCoordinator {
 
     fun openEtalaseDetail(
             etalaseId: String,
+            etalaseName: String,
             sharedElements: List<View>
     )
 

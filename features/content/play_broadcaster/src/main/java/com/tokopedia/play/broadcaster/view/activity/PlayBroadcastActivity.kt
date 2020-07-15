@@ -37,6 +37,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
+import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
@@ -239,6 +240,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener {
             override fun onCameraIconClicked() {
                 viewModel.switchCamera()
+                sendClickCameraAnalytic()
             }
 
             override fun onCloseIconClicked() {
@@ -381,18 +383,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun openBroadcastSetupPage() {
-        analytic.openSetupScreen()
         navigateToFragment(PlayBroadcastPrepareFragment::class.java)
     }
 
     private fun openBroadcastActivePage() {
-        analytic.openBroadcastScreen(channelId = viewModel.channelId)
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
     }
 
     private fun showPermissionPage() {
         showActionBar(false)
-        analytic.openPermissionScreen()
         navigateToFragment(PlayPermissionFragment::class.java)
     }
 
@@ -457,6 +456,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 actionListener = actionListener,
                 bottomMargin = toasterBottomMargin
         )
+    }
+
+    private fun sendClickCameraAnalytic() {
+        val currentVisibleFragment = getCurrentFragment()
+        if (currentVisibleFragment != null) {
+            when(currentVisibleFragment) {
+                is PlayBroadcastPrepareFragment -> analytic.clickSwitchCameraOnSetupPage()
+                is PlayBeforeLiveFragment -> analytic.clickSwitchCameraOnFinalSetupPage()
+                is PlayBroadcastUserInteractionFragment -> analytic.clickSwitchCameraOnLivePage(viewModel.channelId, viewModel.title)
+            }
+        }
     }
 
     companion object {

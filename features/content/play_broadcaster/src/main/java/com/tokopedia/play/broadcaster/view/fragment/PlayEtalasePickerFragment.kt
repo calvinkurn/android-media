@@ -19,6 +19,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
@@ -44,6 +45,9 @@ class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         dispatcher: CoroutineDispatcherProvider
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -80,6 +84,11 @@ class PlayEtalasePickerFragment @Inject constructor(
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
+    override fun onStart() {
+        super.onStart()
+        analytic.viewProductBottomSheet()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         postponeEnterTransition()
         return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
@@ -109,8 +118,9 @@ class PlayEtalasePickerFragment @Inject constructor(
         return false
     }
 
-    override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {
+    override fun openEtalaseDetail(etalaseId: String, etalaseName: String, sharedElements: List<View>) {
         mListener?.onEtalaseClicked(etalaseId, sharedElements)
+        analytic.clickEtalase(etalaseName)
     }
 
     override fun openSearchPage(keyword: String) {
@@ -178,7 +188,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         psbSearch.setListener(object : PlaySearchBar.Listener {
 
             override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
-                if (isEditing) openSearchPage(view.text)
+                if (isEditing) {
+                    openSearchPage(view.text)
+                    analytic.clickSearchBar(view.text)
+                }
             }
 
             override fun onCanceled(view: PlaySearchBar) {
@@ -258,6 +271,8 @@ class PlayEtalasePickerFragment @Inject constructor(
         tvInfo.hide()
         psbSearch.hide()
         flEtalaseFlow.hide()
+
+        analytic.viewEtalaseError(errorEtalase.errorTitle.text.toString())
     }
 
     override fun hideGlobalError() {

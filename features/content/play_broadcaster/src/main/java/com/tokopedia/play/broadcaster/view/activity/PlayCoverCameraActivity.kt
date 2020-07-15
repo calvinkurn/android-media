@@ -23,6 +23,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
@@ -31,12 +32,15 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.user.session.UserSession
 import java.io.File
 
 class PlayCoverCameraActivity : AppCompatActivity() {
 
     private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.Immediate
     private var isTimerRunning = false
+
+    private lateinit var analytic: PlayBroadcastAnalytic
 
     private val cvCamera by lazy { findViewById<CameraView>(R.id.cv_camera) }
     private val tvCancel by lazy { findViewById<TextView>(R.id.tv_cancel) }
@@ -67,9 +71,14 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_cover_camera)
+        initAnalytic()
         initView()
         setupView()
         setupInsets()
+    }
+
+    private fun initAnalytic() {
+        analytic = PlayBroadcastAnalytic(UserSession(this))
     }
 
     override fun onResume() {
@@ -82,6 +91,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         super.onStart()
         tvCancel.requestApplyInsetsWhenAttached()
         ivFlash.requestApplyInsetsWhenAttached()
+        analytic.openCameraScreenToAddCover()
     }
 
     override fun onPause() {
@@ -102,6 +112,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun initView() {
         tvCancel.setOnClickListener {
+            analytic.clickCancelOnCameraPage()
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
@@ -109,21 +120,26 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         cvCamera.addCameraListener(cameraListener)
         ivShutter.setOnClickListener {
             takePicture()
+            analytic.clickCaptureFromCameraPage()
         }
         ivFlash.setOnClickListener {
             toggleFlash()
         }
         ivReverse.setOnClickListener {
             reverseCamera()
+            analytic.clickSwitchCameraOnCameraPage()
         }
         tvTimer0.setOnClickListener {
             setImmediateCapture()
+            analytic.clickTimerCameraOnCameraPage(CameraTimerEnum.Immediate.seconds)
         }
         tvTimer5.setOnClickListener {
             setTimerFiveSecondsCapture()
+            analytic.clickTimerCameraOnCameraPage(CameraTimerEnum.Five.seconds)
         }
         tvTimer10.setOnClickListener {
             setTimerTenSecondsCapture()
+            analytic.clickTimerCameraOnCameraPage(CameraTimerEnum.Ten.seconds)
         }
         cvCamera.mapGesture(Gesture.PINCH, GestureAction.ZOOM)
         cvCamera.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)

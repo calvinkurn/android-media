@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
@@ -28,6 +29,9 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : BottomSheetUnify() {
 
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
+
     var mListener: Listener? = null
 
     private lateinit var viewModel: PlayCoverSetupViewModel
@@ -39,11 +43,13 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
             coverProductListener = object : PlayCoverProductViewHolder.Listener {
                 override fun onProductCoverClicked(productId: Long, imageUrl: String) {
                     mListener?.onChooseProductCover(this@PlayCoverImageChooserBottomSheet, productId, imageUrl)
+                    analytic.clickAddCoverFromPdpSource()
                 }
             },
             coverCameraListener = object : PlayCoverCameraViewHolder.Listener {
                 override fun onCameraButtonClicked() {
                     getCoverFromCamera()
+                    analytic.clickAddCoverFromCameraSource()
                 }
             }
     )
@@ -106,6 +112,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
         llOpenGallery.setOnClickListener {
             if (isGalleryPermissionGranted()) chooseCoverFromGallery()
             else requestGalleryPermission()
+            analytic.clickAddCoverFromGallerySource()
         }
 
         rvProductCover.adapter = pdpCoverAdapter

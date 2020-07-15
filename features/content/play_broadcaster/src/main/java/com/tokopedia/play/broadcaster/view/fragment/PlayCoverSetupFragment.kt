@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -58,6 +59,9 @@ class PlayCoverSetupFragment @Inject constructor(
         private val dispatcher: CoroutineDispatcherProvider,
         private val permissionPref: PermissionSharedPreferences
 ) : PlayBaseSetupFragment() {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -144,6 +148,11 @@ class PlayCoverSetupFragment @Inject constructor(
         dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(DataStoreViewModel::class.java)
         permissionHelper = PermissionHelperImpl(this, permissionPref)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytic.viewAddCoverTitleBottomSheet()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -233,6 +242,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
                         viewModel.saveCover(coverSetupView.coverTitle)
                         requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
+                        analytic.clickAddCover()
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {

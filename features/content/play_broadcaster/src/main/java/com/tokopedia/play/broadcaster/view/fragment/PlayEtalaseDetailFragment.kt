@@ -16,6 +16,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -46,6 +47,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatcherProvider
 ) : PlayBaseSetupFragment() {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -133,10 +137,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
         bottomActionView = BottomActionPartialView(view, object : BottomActionPartialView.Listener {
             override fun onInventoryIconClicked() {
                 showSelectedProductPage()
+                analytic.clickSelectedProductIcon()
             }
 
             override fun onNextButtonClicked() {
                 uploadProduct()
+                analytic.clickContinueOnProductBottomSheet()
             }
         })
     }
@@ -154,6 +160,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
             override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
+                analytic.clickProductCard(productId.toString(), isSelected)
             }
 
             override fun onProductSelectError(reason: Throwable) {
@@ -234,6 +241,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
             tvInfo.hide()
             rvProduct.hide()
+            analytic.viewErrorProduct(errorEmptyProduct.errorTitle.text.toString())
         } else {
             errorEmptyProduct.hide()
 

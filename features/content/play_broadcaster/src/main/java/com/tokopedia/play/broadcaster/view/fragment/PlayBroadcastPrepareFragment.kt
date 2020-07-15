@@ -98,6 +98,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         requireView().requestApplyInsetsWhenAttached()
+        analytic.openSetupScreen()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -106,6 +107,11 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         if (childFragment is PlayBroadcastSetupBottomSheet) {
             childFragment.setListener(setupListener)
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        analytic.clickCloseOnSetupPage()
+        return false
     }
 
     private fun initView(view: View) {
@@ -179,10 +185,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         broadcastCoordinator.navigateToFragment(
                 fragmentClass = PlayBeforeLiveFragment::class.java
         )
-    }
-
-    private fun showBeforeLiveCountDown() {
-
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity.Companion.RESULT_PERMISSION_CODE
@@ -25,6 +26,9 @@ import javax.inject.Inject
  */
 class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment() {
 
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
+
     private lateinit var ivClose: AppCompatImageView
     private var tvCheckCamera: AppCompatTextView? = null
     private var tvCheckMic: AppCompatTextView? = null
@@ -32,6 +36,11 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
     private lateinit var permissionHelper: PermissionHelper
 
     override fun getScreenName(): String = "Play Permission page"
+
+    override fun onStart() {
+        super.onStart()
+        analytic.openPermissionScreen()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
@@ -29,6 +30,9 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
+
     private lateinit var simpleEditProductBottomSheet: SimpleEditProductBottomSheet
     private lateinit var productSetupBottomSheet: ProductSetupBottomSheet
 
@@ -41,9 +45,11 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
         override fun onChooseOver() {
             openProductSetupBottomSheet()
             getSimpleEditProductBottomSheet().dismiss()
+            analytic.clickChooseOverOnEditProductBottomSheet()
         }
 
         override suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+            analytic.clickSubmitOnEditProductBottomSheet()
             return mListener?.onSetupCompletedWithData(simpleEditProductBottomSheet, dataStore)
         }
     }

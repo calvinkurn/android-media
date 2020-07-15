@@ -18,6 +18,7 @@ import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
@@ -47,6 +48,9 @@ import javax.inject.Inject
 class PlayBeforeLiveFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : PlayBaseBroadcastFragment() {
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var ivImagePreview: ImageView
     private lateinit var tvCoverTitle: TextView
@@ -107,6 +111,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         requireView().requestApplyInsetsWhenAttached()
+        analytic.openFinalSetupPage()
     }
 
     override fun onBackPressed(): Boolean {
@@ -143,13 +148,28 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
-        btnStartLive.setOnClickListener { startStreaming() }
-        llSelectedProduct.setOnClickListener { openEditProductPage() }
-        tvCoverTitle.setOnClickListener { openEditCoverTitlePage() }
-        ivImagePreview.setOnClickListener { openEditCoverImagePage() }
+        btnStartLive.setOnClickListener {
+            startStreaming()
+            analytic.clickStartStreamingOnFinalSetupPage()
+        }
+        llSelectedProduct.setOnClickListener {
+            openEditProductPage()
+            analytic.clickEditProductTaggingOnFinalSetupPage()
+        }
+        tvCoverTitle.setOnClickListener {
+            openEditCoverTitlePage()
+            analytic.clickEditTitleOnFinalSetupPage()
+        }
+        ivImagePreview.setOnClickListener {
+            openEditCoverImagePage()
+            analytic.clickEditCoverOnFinalSetupPage()
+        }
 
         btnStartLive.setMaxStreamingDuration(30)
-        ivShareLink.setOnClickListener { doCopyShareLink() }
+        ivShareLink.setOnClickListener {
+            doCopyShareLink()
+            analytic.clickShareIconOnFinalSetupPage()
+        }
     }
 
     private fun setupInsets(view: View) {
@@ -201,6 +221,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                     )
                     btnStartLive.setLoading(false)
+                    analytic.viewErrorOnFinalSetupPage(it.error.localizedMessage)
                 }
             }
         })
@@ -263,7 +284,10 @@ class PlayBeforeLiveFragment @Inject constructor(
                     primaryCta = getString(R.string.play_prepare_broadcast_dialog_end_primary),
                     primaryListener = { dialog -> dialog.dismiss() },
                     secondaryCta = getString(R.string.play_broadcast_exit),
-                    secondaryListener = { _ -> activity?.finish() }
+                    secondaryListener = { _ ->
+                        analytic.clickExitOnDialogFinalSetupPage()
+                        activity?.finish()
+                    }
             )
         }
         return exitDialog
@@ -271,6 +295,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun showDialogWhenActionClose() {
         getExitDialog().show()
+        analytic.viewExitDialogOnFinalSetupPage()
     }
 
     private fun showToaster(

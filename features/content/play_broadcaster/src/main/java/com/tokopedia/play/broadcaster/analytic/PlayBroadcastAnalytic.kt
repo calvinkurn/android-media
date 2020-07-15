@@ -11,65 +11,98 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
 
+    /**
+     * View Camera and Microphone Permission Page
+     */
     fun openPermissionScreen() {
         sendScreen("/$KEY_TRACK_CATEGORY - permission page - ${userSession.shopId}")
     }
 
+    /**
+     * View On Boarding Page
+     */
     fun openSetupScreen() {
         sendScreen("/$KEY_TRACK_CATEGORY - onboarding page - ${userSession.shopId}")
     }
 
-    fun clickSwitchCamera() {
+    /**
+     * Click Camera Switch on On Boarding Page
+     */
+    fun clickSwitchCameraOnSetupPage() {
         clickGeneralEvent(
                 action = "camera onboarding"
         )
     }
 
+    /**
+     * Click Terms and Condition Ticker
+     */
     fun clickTnC() {
         clickGeneralEvent(
                 action = "syarat dan ketentuan"
         )
     }
 
+    /**
+     * View Terms and Condition Ticker
+     */
     fun viewTnC() {
         viewGeneralEvent(
                 action = "syarat dan ketentuan"
         )
     }
 
+    /**
+     * Click `Mulai persiapannya` on Onboarding Page
+     */
     fun clickPrepareBroadcast() {
         clickGeneralEvent(
                 action = "mulai persiapannya"
         )
     }
 
-    fun clickClosePrepareBroadcast() {
+    /**
+     * Click `X` (exit from On Boarding Page)
+     */
+    fun clickCloseOnSetupPage() {
         clickGeneralEvent(
                 action = "close onboarding"
         )
     }
 
+    /**
+     * View Product Tagging Bottomsheet
+     */
     fun viewProductBottomSheet() {
         viewGeneralEvent(
                 action = "product tagging bottomsheet"
         )
     }
 
-    fun clickSearchBarBottomSheet(query: String) {
+    /**
+     * Click Search Bar
+     */
+    fun clickSearchBar(query: String) {
         clickGeneralEvent(
                 action = "search bar",
                 label = "- $query"
         )
     }
 
-    fun clickEtalaseBottomSheet(etalaseName: String) {
+    /**
+     * Click Etalase Card
+     */
+    fun clickEtalase(etalaseName: String) {
         clickGeneralEvent(
                 action = "etalase card",
                 label = "- $etalaseName"
         )
     }
 
-    fun clickProductBottomSheet(productId: String, selected: Boolean) {
+    /**
+     * Click Product Card (Check - Uncheck) - (Etalase - Search - Selected)
+     */
+    fun clickProductCard(productId: String, selected: Boolean) {
         val checkOrUncheck = if (selected) "check" else "uncheck"
         clickGeneralEvent(
                 action = "product card",
@@ -77,211 +110,316 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
-    fun clickSelectedProductBottomSheet() {
+    /**
+     * Click Selected Product Icon (Etalase - Search)
+     */
+    fun clickSelectedProductIcon() {
         clickGeneralEvent(
                 action = "selected product icon"
         )
     }
 
-    fun clickContinueProductBottomSheet() {
+    /**
+     * Click `Lanjutkan` on Product Tagging
+     */
+    fun clickContinueOnProductBottomSheet() {
         clickGeneralEvent(
                 action = "lanjutkan on product tag"
         )
     }
 
-    fun viewProductSearchBottomSheet() {
+    /**
+     * View Search Page
+     */
+    fun viewSearchProductResult() {
         viewGeneralEvent(
                 action = "search bar"
         )
     }
 
-    fun clickSearchBarResultBottomSheet(query: String, productId: String) {
+    /**
+     * Click Product Name Suggestion
+     */
+    fun clickProductNameSuggestion(query: String, productId: String) {
         clickGeneralEvent(
                 action = "product name suggested",
                 label = "- $query - $productId"
         )
     }
 
-    fun viewErrorEtalaseBottomSheet(errorMessage: String) {
+    /**
+     * View Error Message (Fail to fetch data) - Etalase
+     */
+    fun viewEtalaseError(errorMessage: String) {
         viewCustomGeneralEvent(
                 action = "error state on etalase",
                 label = "- $errorMessage"
         )
     }
 
-    fun viewErrorProductBottomSheet(errorMessage: String) {
+    /**
+     * View Error Message (Fail to fetch data) - Products
+     */
+    fun viewErrorProduct(errorMessage: String) {
         viewCustomGeneralEvent(
                 action = "error state on product",
                 label = "- $errorMessage"
         )
     }
 
-    fun viewCoverTitleBottomSheet() {
+    /**
+     * View Add Cover and Title Bottomsheet
+     */
+    fun viewAddCoverTitleBottomSheet() {
         viewGeneralEvent(
                 action = "add cover and title"
         )
     }
 
-    fun clickAddCoverBottomSheet() {
+    /**
+     * Click Add Cover
+     */
+    fun clickAddCover() {
         clickGeneralEvent(
                 action = "add cover"
         )
     }
 
-    fun clickAddTitleBottomSheet() {
+    /**
+     * Click Add Title
+     */
+    fun clickAddTitle() {
         clickGeneralEvent(
                 action = "add title"
         )
     }
 
+    /**
+     * View Add Cover Source Bottomsheet
+     */
     fun viewAddCoverSourceBottomSheet() {
         viewGeneralEvent(
                 action = "add cover source bottom sheet"
         )
     }
 
-    fun clickAddCoverFromCameraSourceBottomSheet() {
+    /**
+     * Click Camera Source
+     */
+    fun clickAddCoverFromCameraSource() {
         clickGeneralEvent(
                 action = "camera source"
         )
     }
 
-    fun clickAddCoverFromPdpSourceBottomSheet() {
+    /**
+     * Click PDP Image Source
+     */
+    fun clickAddCoverFromPdpSource() {
         clickGeneralEvent(
                 action = "pdp photo source"
         )
     }
 
-    fun clickAddCoverFromGalleryBottomSheet() {
+    /**
+     * Click Internal Gallery Source
+     */
+    fun clickAddCoverFromGallerySource() {
         clickGeneralEvent(
                 action = "internal gallery source"
         )
     }
 
+    /**
+     * View Camera Page
+     */
     fun openCameraScreenToAddCover() {
         sendScreen("/$KEY_TRACK_CATEGORY - camera - ${userSession.shopId}")
     }
 
-    fun clickCaptureFromCameraToAddCover() {
+    /**
+     * Click Capture
+     */
+    fun clickCaptureFromCameraPage() {
         clickGeneralEvent(
                 action = "capture"
         )
     }
 
-    fun clickSwitchCameraOnAddCover() {
+    /**
+     * Click Switch Camera
+     */
+    fun clickSwitchCameraOnCameraPage() {
         clickGeneralEvent(
                 action = "switch camera on add cover"
         )
     }
 
-    fun clickTimerCameraOnAddCover(second: Long) {
+    /**
+     * Click Timer
+     */
+    fun clickTimerCameraOnCameraPage(second: Int) {
         clickGeneralEvent(
                 action = "timer",
                 label = "- $second"
         )
     }
 
-    fun clickCancelCameraOnAddCover() {
+    /**
+     * Click Cancel
+     */
+    fun clickCancelOnCameraPage() {
         clickGeneralEvent(
                 action = "cancel"
         )
     }
 
-    fun viewAddCoverCroppingBottomSheet() {
+    /**
+     * View Cropping Page
+     */
+    fun viewCroppingPage() {
         viewGeneralEvent(
                 action = "cropping page"
         )
     }
 
-    fun clickChangeCoverBottomSheet() {
+    /**
+     * Click `Ganti` on Cropping Page
+     */
+    fun clickChangeCoverOnCroppingPage() {
         clickGeneralEvent(
                 action = "ganti"
         )
     }
 
-    fun clickContinueOnCroppingCoverBottomSheet() {
+    /**
+     * Click `Lanjutkan` on Cropping Page
+     */
+    fun clickContinueOnCroppingPage() {
         clickGeneralEvent(
                 action = "lanjutkan on cropping page"
         )
     }
 
-    fun clickContinueOnCoverBottomSheet() {
+    /**
+     * Click `Lanjutkan` on Add Cover and Title
+     */
+    fun clickContinueOnAddCoverAndTitlePage() {
         clickGeneralEvent(
                 action = "lanjutkan on add cover"
         )
     }
 
-    fun openFinalSetupScreen() {
+    /**
+     * View Preparation Page
+     */
+    fun openFinalSetupPage() {
         sendScreen("") // it is empty, from the doc row 41
     }
 
-    fun clickEditTitleOnFinalSetup() {
+    /**
+     * Click Channel Title on Preparation Page
+     */
+    fun clickEditTitleOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "title live streaming"
         )
     }
 
-    fun clickEditProductTaggingOnFinalSetup() {
+    /**
+     * Click Edit Product Tag/Pencil Icon on Preparation Page
+     */
+    fun clickEditProductTaggingOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "edit product tagging"
         )
     }
 
-    fun clickEditCoverOnFinalSetup() {
+    /**
+     * Click Edit Cover on Preparation Page Cover Edit
+     */
+    fun clickEditCoverOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "edit cover"
         )
     }
 
-    fun clickShareIconOnFinalSetup() {
+    /**
+     * Click Share Link on Preparation Page
+     */
+    fun clickShareIconOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "share link on preparation"
         )
     }
 
-    fun clickSwitchCameraOnFinalSetup() {
+    /**
+     * Click Camera Switch on Preparation Page
+     */
+    fun clickSwitchCameraOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "switch camera on preparation page"
         )
     }
 
-    fun clickStartStreamingOnFinalSetup() {
+    /**
+     * Click `Mulai Live Streaming` on Preparation Page
+     */
+    fun clickStartStreamingOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "mulai live streaming"
         )
     }
 
-    fun clickSubmitEditTitleOnFinalSetup() {
+    /**
+     * Click `Simpan` on Preparation Page Title Edit
+     */
+    fun clickSubmitOnEditTitleBottomSheet() {
         clickGeneralEvent(
                 action = "simpan"
         )
     }
 
-    fun clickChooseOverProductOnFinalSetup() {
+    /**
+     * Click `Pilih ulang` on Preparation Page Product Tagging Edit Bottomsheet
+     */
+    fun clickChooseOverOnEditProductBottomSheet() {
         clickGeneralEvent(
                 action = "pilih ulang product"
         )
     }
 
-    fun clickSubmitProductOnFinalSetup() {
+    /**
+     * Click `Simpan` on Preparation Page Product Tagging Edit Bottomsheet
+     */
+    fun clickSubmitOnEditProductBottomSheet() {
         clickGeneralEvent(
                 action = "simpan on product tag"
         )
     }
 
-    fun viewDialogExitOnFinalSetup() {
+    /**
+     * View Exit Modal on Preparation Page
+     */
+    fun viewExitDialogOnFinalSetupPage() {
         viewGeneralEvent(
                 action = "popup message exit on preparation page"
         )
     }
 
-    fun clickDialogExitOnFinalSetup() {
+    /**
+     * Click `Keluar` on Exit Modal Preparation Page
+     */
+    fun clickExitOnDialogFinalSetupPage() {
         clickGeneralEvent(
                 action = "keluar on preparation page"
         )
     }
 
-    fun viewErrorOnFinalSetup(errorMessage: String) {
+    /**
+     * View Error Message (:Param) on Preparation Page
+     */
+    fun viewErrorOnFinalSetupPage(errorMessage: String) {
         viewGeneralEvent(
                 action = "error state on preparation page",
                 label = " - $errorMessage"

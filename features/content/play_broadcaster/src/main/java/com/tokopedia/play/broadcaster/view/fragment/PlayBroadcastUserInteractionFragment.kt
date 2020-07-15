@@ -99,6 +99,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
+        analytic.openBroadcastScreen(parentViewModel.channelId)
         ivShareLink.requestApplyInsetsWhenAttached()
         viewTimer.requestApplyInsetsWhenAttached()
     }

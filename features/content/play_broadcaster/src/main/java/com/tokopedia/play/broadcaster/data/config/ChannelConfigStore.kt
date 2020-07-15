@@ -12,4 +12,8 @@ interface ChannelConfigStore {
     fun setIngestUrl(ingestUrl: String)
 
     fun getIngestUrl(): String
+
+    fun setTitle(title: String)
+
+    fun getTitle(): String
 }
