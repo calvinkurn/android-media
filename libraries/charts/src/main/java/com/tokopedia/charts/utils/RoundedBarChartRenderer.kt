@@ -1,7 +1,6 @@
 package com.tokopedia.charts.utils
 
 import android.graphics.*
-import android.os.Build
 import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
@@ -15,7 +14,9 @@ import com.github.mikephil.charting.utils.ViewPortHandler
  */
 
 internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvider?, animator: ChartAnimator?, viewPortHandler: ViewPortHandler?, private val mRadius: Int) : BarChartRenderer(chart, animator, viewPortHandler) {
+
     private val mBarShadowRectBuffer = RectF()
+
     override fun drawHighlighted(c: Canvas, indices: Array<Highlight>) {
         val barData = mChart.barData
         for (high in indices) {
@@ -44,7 +45,8 @@ internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvid
             }
             prepareBarHighlight(e.x, y1, y2, barData.barWidth / 2f, trans)
             setHighlightDrawPos(high, mBarRect)
-            c.drawRoundRect(mBarRect, mRadius.toFloat(), mRadius.toFloat(), mHighlightPaint)
+            val path = roundRect(mBarRect, mRadius.toFloat(), mRadius.toFloat())
+            c.drawPath(path, mHighlightPaint)
         }
     }
 
@@ -128,23 +130,66 @@ internal class RoundedBarChartRenderer internal constructor(chart: BarDataProvid
                         dataSet.getGradientColor(j / 4).endColor,
                         Shader.TileMode.MIRROR)
             }
-            drawRoundRect(c, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], mRadius.toFloat(), mRadius.toFloat(), mRenderPaint)
+
             if (drawBorder) {
-                drawRoundRect(c, buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], mRadius.toFloat(), mRadius.toFloat(), mBarBorderPaint)
+                val rect = RectF(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3])
+                val path: Path = roundRect(rect, mRadius.toFloat(), mRadius.toFloat())
+                c.drawPath(path, mBarBorderPaint)
+            } else {
+                val rect = RectF(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2], buffer.buffer[j + 3])
+                val path: Path = roundRect(rect, mRadius.toFloat(), mRadius.toFloat())
+                c.drawPath(path, mRenderPaint)
             }
             j += 4
         }
     }
 
-    private fun drawRoundRect(c: Canvas, left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            c.drawRoundRect(left, top, right,
-                    bottom, rx, ry, paint)
+    private fun roundRect(rect: RectF, mRx: Float, mRy: Float, tl: Boolean = true, tr: Boolean = true, br: Boolean = false, bl: Boolean = false): Path {
+        var rx = mRx
+        var ry = mRy
+        val top = rect.top
+        val left = rect.left
+        val right = rect.right
+        val bottom = rect.bottom
+        val path = Path()
+        if (rx < 0) rx = 0f
+        if (ry < 0) ry = 0f
+        val width = right - left
+        val height = bottom - top
+        if (rx > width / 2) rx = width / 2
+        if (ry > height / 2) ry = height / 2
+        val widthMinusCorners = width - 2 * rx
+        val heightMinusCorners = height - 2 * ry
+        path.moveTo(right, top + ry)
+        if (tr) { //top-right corner
+            path.rQuadTo(0f, -ry, -rx, -ry)
         } else {
-            val rectf = RectF(left, top, right, bottom)
-            c.drawRoundRect(rectf, rx, ry, paint)
+            path.rLineTo(0f, -ry)
+            path.rLineTo(-rx, 0f)
         }
+        path.rLineTo(-widthMinusCorners, 0f)
+        if (tl) { //top-left corner
+            path.rQuadTo(-rx, 0f, -rx, ry)
+        } else {
+            path.rLineTo(-rx, 0f)
+            path.rLineTo(0f, ry)
+        }
+        path.rLineTo(0f, heightMinusCorners)
+        if (bl) { //bottom-left corner
+            path.rQuadTo(0f, ry, rx, ry)
+        } else {
+            path.rLineTo(0f, ry)
+            path.rLineTo(rx, 0f)
+        }
+        path.rLineTo(widthMinusCorners, 0f)
+        if (br) { //bottom-right corner
+            path.rQuadTo(rx, 0f, rx, -ry)
+        } else {
+            path.rLineTo(rx, 0f)
+            path.rLineTo(0f, -ry)
+        }
+        path.rLineTo(0f, -heightMinusCorners)
+        path.close() //Given close, last lineto can be removed.
+        return path
     }
 }
