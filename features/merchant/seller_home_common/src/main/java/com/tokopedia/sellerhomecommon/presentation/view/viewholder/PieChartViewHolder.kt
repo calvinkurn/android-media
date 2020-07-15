@@ -70,7 +70,7 @@ class PieChartViewHolder(
 
         val data = element.data?.data
         tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
-        tvPieChartSubValue.text = data?.summary?.diffPercentageFmt?.parseAsHtml()
+        tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
 
         pieChartShc.init(PieChartConfigBuilder.getDefaultConfig())
         pieChartShc.setData(getPieChartData(element))
