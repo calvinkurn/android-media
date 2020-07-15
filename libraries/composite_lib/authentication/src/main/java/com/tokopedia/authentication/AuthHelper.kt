@@ -31,8 +31,6 @@ class AuthHelper {
 
         @JvmStatic
         fun getVersionName(versionName: String): String {
-            // save raw version name
-            GlobalConfig.RAW_VERSION_NAME = versionName
 
             val m = p.matcher(versionName)
             while (m.find()) {
