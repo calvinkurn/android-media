@@ -61,60 +61,76 @@
                 app:layout_constraintTop_toTopOf="@+id/img_review"
                 android:layout_marginRight="@dimen/dp_15" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/img_animation_review"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_120"
-                android:layout_marginTop="@dimen/dp_28"
-                app:lottie_loop="false"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_review" />
-
-            <ImageView
-                android:id="@+id/review_bg"
-                android:layout_width="0dp"
+            <com.tokopedia.unifycomponents.ContainerUnify
+                android:id="@+id/createReviewContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/animatedReview"
-                app:layout_constraintBottom_toBottomOf="@+id/animatedReview" />
+                android:paddingBottom="@dimen/layout_lvl2"
+                app:layout_constraintTop_toBottomOf="@id/img_review">
 
-            <com.tokopedia.reputation.common.view.AnimatedReputationView
-                android:id="@+id/animatedReview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:padding="@dimen/dp_15"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_animation_review"
-                app:show_desc="true" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/img_animation_review"
+                        android:layout_width="@dimen/dp_120"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_marginTop="@dimen/dp_28"
+                        app:lottie_loop="false"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.tokopedia.reputation.common.view.AnimatedReputationView
+                        android:id="@+id/animatedReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/img_animation_review"
+                        app:show_desc="true" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/txt_review_desc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/layout_lvl3"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:layout_marginEnd="@dimen/layout_lvl3"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/animatedReview" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.tokopedia.unifycomponents.ContainerUnify>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_review_desc"
-                android:layout_width="0dp"
+                android:id="@+id/createReviewTextAreaTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_16"
-                app:typographyType="body_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/animatedReview" />
+                app:layout_constraintTop_toBottomOf="@id/createReviewContainer"/>
 
             <com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextArea
                 android:id="@+id/createReviewExpandableTextArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc"/>
+                app:layout_constraintTop_toBottomOf="@id/createReviewTextAreaTitle"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_img_review"

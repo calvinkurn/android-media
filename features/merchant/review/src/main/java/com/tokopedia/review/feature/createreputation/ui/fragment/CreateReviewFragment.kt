@@ -46,6 +46,7 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.review.feature.ovoincentive.data.mapper.IncentiveOvoMapper
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
@@ -193,12 +194,12 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
                         playAnimation()
                     }
                 }
-                generateReviewBackground(position)
+                updateViewBasedOnSelectedRating(position)
                 clearFocusAndHideSoftInput(view)
             }
         })
         animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
-        generateReviewBackground(if (reviewClickAt != 0) reviewClickAt else 5)
+        updateViewBasedOnSelectedRating(if (reviewClickAt != 0) reviewClickAt else 5)
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
@@ -352,19 +353,22 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
         ovoPointsTicker.visibility = View.GONE
     }
 
-    private fun generateReviewBackground(position: Int) {
-        when (position) {
-            1 -> {
+    private fun updateViewBasedOnSelectedRating(position: Int) {
+        when {
+            position < 3 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_1, reviewUserName))
+                createReviewContainer.setContainerColor(ContainerUnify.RED)
+                createReviewTextAreaTitle.text = resources.getString(R.string.review_create_negative_title)
             }
-            2 -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_2, reviewUserName))
-            }
-            3 -> {
+            position == 3 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_3, reviewUserName))
+                createReviewContainer.setContainerColor(ContainerUnify.YELLOW)
+                createReviewTextAreaTitle.text = resources.getString(R.string.review_create_neutral_title)
             }
             else -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_5, reviewUserName))
+                createReviewContainer.setContainerColor(ContainerUnify.GREEN)
+                createReviewTextAreaTitle.text = resources.getString(R.string.review_create_positive_title)
             }
         }
     }

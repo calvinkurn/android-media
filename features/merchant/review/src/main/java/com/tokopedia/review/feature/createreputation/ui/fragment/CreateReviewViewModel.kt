@@ -78,20 +78,18 @@ class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcherP
             val data = withContext(Dispatchers.IO) {
                 getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(reptutationId, productId))
             }
-            reputationDataForm.value = CoroutineSuccess(data)
-
+            reputationDataForm.postValue(CoroutineSuccess(data))
         }) {
-            reputationDataForm.value = CoroutineFail(it)
-
+            reputationDataForm.postValue(CoroutineFail(it))
         }
     }
 
     fun getProductIncentiveOvo() {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
-            _incentiveOvo.value = CoroutineSuccess(data)
+            _incentiveOvo.postValue(CoroutineSuccess(data))
         }) {
-            _incentiveOvo.value = CoroutineFail(it)
+            _incentiveOvo.postValue(CoroutineFail(it))
         }
     }
 
