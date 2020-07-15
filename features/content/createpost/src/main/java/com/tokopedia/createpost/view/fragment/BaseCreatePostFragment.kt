@@ -11,7 +11,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -358,8 +357,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onErrorNoQuota() {
         activity?.let {
-            Toast.makeText(it, R.string.cp_text_full_affiliate_title, Toast.LENGTH_LONG)
-                    .show()
+            showUnifyErrorToaster(getString(R.string.cp_text_full_affiliate_title))
             it.finish()
             affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
@@ -815,7 +813,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         context?.let {
             Timber.d(t)
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
-            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            showUnifyErrorToaster(errorMessage)
             hideProductSuggestionLoading()
         }
     }
