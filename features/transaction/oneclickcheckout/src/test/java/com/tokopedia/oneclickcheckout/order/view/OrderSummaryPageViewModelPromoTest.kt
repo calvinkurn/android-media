@@ -1,20 +1,25 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
+import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartDataOcc
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccResponse
+import com.tokopedia.oneclickcheckout.order.view.model.ButtonBayarState
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
@@ -77,16 +82,125 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Validate Use Promo Success`() {
+        setUpCartAndRates()
+        val promoCode = "abc"
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
 
+        orderSummaryPageViewModel.validateUsePromo()
+        verify(inverse = true) {
+            orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(ButtonBayarState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
     fun `Validate Use Promo Error`() {
+        setUpCartAndRates()
+        val promoCode = "abc"
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
+        orderSummaryPageViewModel.validateUsePromo()
+        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderPromo.value.state)
+        assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
-    fun `Validate Use Promo Red State`() {
+    fun `Validate Use Promo Red State Released`() {
+        setUpCartAndRates()
+        val promoCode = "abc"
+        val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
 
+        orderSummaryPageViewModel.validateUsePromo()
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(ButtonBayarState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Validate Use Promo Benefit Decreased`() {
+        setUpCartAndRates()
+        val promoCode = "abc"
+        val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green"), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 10),
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = PromoUiModel(messageUiModel = MessageUiModel(state = "green"), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 1000),
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
+
+        orderSummaryPageViewModel.validateUsePromo()
+        verify(exactly = 1) {
+            orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+        }
+        assertEquals(response, orderSummaryPageViewModel.validateUsePromoRevampUiModel)
+        assertEquals(ButtonBayarState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Final Validate Use Promo Red State`() {
+        setUpCartAndRates()
+        val promoCode = "abc"
+        val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+
+        orderSummaryPageViewModel.finalUpdate({ }, false)
+        assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(NotEligiblePromoHolderdata(
+                promoCode = promoCode, shopName = "Kode promo", iconType = 1, showShopSection = true
+        ))), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Cancel Ineligible Promo Checkout Success`() {
+        setUpCartAndRates()
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
+        }
+
+        var isSuccess = false
+        orderSummaryPageViewModel.cancelIneligiblePromoCheckout(arrayListOf()) {
+            isSuccess = true
+        }
+
+        assertEquals(true, isSuccess)
+    }
+
+    @Test
+    fun `Cancel Ineligible Promo Checkout Error`() {
+        setUpCartAndRates()
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
+        val response = Throwable()
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(response)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
+        }
+
+        var isSuccess = false
+        orderSummaryPageViewModel.cancelIneligiblePromoCheckout(arrayListOf()) {
+            isSuccess = true
+        }
+
+        assertEquals(false, isSuccess)
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
     }
 }

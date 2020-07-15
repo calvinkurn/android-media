@@ -143,7 +143,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         handleError(failure.throwable)
                     }
                 }
-                else -> {
+                is OccState.Loading -> {
                     swipeRefreshLayout?.isRefreshing = true
                     buttonSavePreference?.isEnabled = false
                 }
@@ -170,7 +170,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         }
                     }
                 }
-                else -> {
+                is OccState.Loading -> {
                     if (progressDialog == null) {
                         progressDialog = AlertDialog.Builder(context!!)
                                 .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)

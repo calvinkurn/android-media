@@ -126,7 +126,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     }
                 }
 
-                else -> swipeRefreshLayout?.isRefreshing = true
+                is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }

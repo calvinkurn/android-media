@@ -116,7 +116,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                         handleError(failure.throwable)
                     }
                 }
-                else -> swipeRefreshLayout?.isRefreshing = true
+
+                is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }

@@ -72,19 +72,6 @@ class ShippingDurationViewModelTest {
     }
 
     @Test
-    fun `Consume Shipping Duration Failed`() {
-        val response = Throwable()
-        every { useCase.execute(any(), any()) } answers { (secondArg() as ((Throwable) -> Unit)).invoke(response) }
-
-        shippingDurationViewModel.getShippingDuration()
-
-        //consume failure
-        (shippingDurationViewModel.shippingDuration.value as OccState.Failed).getFailure()
-
-        assertEquals(null, (shippingDurationViewModel.shippingDuration.value as OccState.Failed).getFailure())
-    }
-
-    @Test
     fun `Get Rates Success`() {
         val response = ShippingRecommendationData().apply {
             shippingDurationViewModels = emptyList()

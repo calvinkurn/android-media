@@ -9,11 +9,14 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartDataOcc
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccResponse
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -324,5 +327,20 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.savePinpoint("", "")
 
         assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Clear Bbo If Exist`() {
+        setUpCartAndRates()
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK"))
+
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+        orderSummaryPageViewModel.clearBboIfExist()
+
+        assertEquals(true, orderSummaryPageViewModel.lastValidateUsePromoRequest?.orders?.get(0)?.codes?.isEmpty())
     }
 }

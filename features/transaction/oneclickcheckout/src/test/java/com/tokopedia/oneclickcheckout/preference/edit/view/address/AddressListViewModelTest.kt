@@ -69,17 +69,4 @@ class AddressListViewModelTest {
 
         assertEquals(OccState.Failed(Failure(response)), addressListViewModel.addressList.value)
     }
-
-    @Test
-    fun `Consume Search Address Failed`() {
-        val response = Throwable()
-        every { getAddressCornerUseCase.getAll(any()) } returns Observable.error(response)
-
-        addressListViewModel.searchAddress("")
-
-        //consume failure
-        (addressListViewModel.addressList.value as OccState.Failed).getFailure()
-
-        assertEquals(null, (addressListViewModel.addressList.value as OccState.Failed).getFailure())
-    }
 }

@@ -169,6 +169,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
         }, { throwable: Throwable ->
             _orderPreference = null
+            orderCart = OrderCart()
+            validateUsePromoRevampUiModel = null
+            lastValidateUsePromoRequest = null
             orderPreference.value = OccState.Failed(Failure(throwable))
         }, getOccCartUseCase.createRequestParams(source))
     }
@@ -484,8 +487,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
-                        .subscribeOn(executorSchedulers.io)
-                        .observeOn(executorSchedulers.main)
                         .subscribe({
                             // no op
                         }, {
@@ -1278,12 +1279,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return ArrayList()
     }
 
-    fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest? = null) {
+    fun validateUsePromo() {
         orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
         orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest
-                ?: generateValidateUsePromoRequest())
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
                         .subscribeOn(executorSchedulers.io)
