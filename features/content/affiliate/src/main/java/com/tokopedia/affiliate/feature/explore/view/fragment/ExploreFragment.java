@@ -406,6 +406,10 @@ public class ExploreFragment
         onSearchTextModified(text, false);
     }
 
+    override fun onSearchDone(text: String?) {
+        //do nothing
+    }
+
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
         if (TextUtils.isEmpty(text)) {
             onSearchReset();

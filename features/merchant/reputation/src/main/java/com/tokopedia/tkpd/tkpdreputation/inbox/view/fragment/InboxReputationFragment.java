@@ -595,11 +595,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSearchDone(String text) {
-
-    }
-
-    @Override
     public void onFocusChanged(boolean hasFocus) {
         if(hasFocus) {
             reputationTracking.onClickSearchViewTracker(getTab());

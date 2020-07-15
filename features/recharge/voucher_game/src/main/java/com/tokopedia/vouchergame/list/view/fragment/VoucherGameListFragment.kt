@@ -393,10 +393,6 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         voucherGameAnalytics.eventClickBackButton()
     }
 
-    override fun onSearchDone(text: String?) {
-        //do nothing
-    }
-
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
     }

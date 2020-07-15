@@ -149,10 +149,6 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         text?.let { filterData(it) }
     }
 
-    override fun onSearchDone(text: String?) {
-
-    }
-
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
     }

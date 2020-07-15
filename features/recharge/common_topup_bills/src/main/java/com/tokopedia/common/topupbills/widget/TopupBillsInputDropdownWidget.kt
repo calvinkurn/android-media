@@ -70,10 +70,6 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
         }
     }
 
-    override fun onSearchDone(text: String?) {
-
-    }
-
     fun setOnClickListener(listener: OnClickListener) {
         this.listener = listener
     }

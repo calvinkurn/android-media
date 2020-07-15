@@ -38,9 +38,6 @@ public class SearchInputView extends BaseCustomView {
         void onSearchSubmitted(String text);
 
         void onSearchTextChanged(String text);
-
-        void onSearchDone(String text);
-
     }
 
     public interface FocusChangeListener {
@@ -129,10 +126,6 @@ public class SearchInputView extends BaseCustomView {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
                     hideKeyboard();
                     listener.onSearchSubmitted(textView.getText().toString());
-                    return true;
-                } else if (actionId == EditorInfo.IME_ACTION_DONE && listener != null) {
-                    hideKeyboard();
-                    listener.onSearchDone(textView.getText().toString());
                     return true;
                 }
                 return false;
