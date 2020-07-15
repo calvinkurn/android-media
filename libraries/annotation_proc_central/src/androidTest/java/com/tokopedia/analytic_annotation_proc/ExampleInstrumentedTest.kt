@@ -24,6 +24,7 @@ class ExampleInstrumentedTest {
         assertEquals("com.tokopedia.analytic_annotation_proc.test", appContext.packageName)
     }
 
+    @Test
     fun demoProductListImpression(){
 
         val products = ArrayList<ProductListImpressionProduct>()
@@ -52,6 +53,10 @@ class ExampleInstrumentedTest {
                 null,
                 null
         )
+
+        assert(bundle.getString("eventCategory").equals("view on product thumbnail")){
+            "wrong eventCategory checker"
+        }
 
         assert(bundle.getString("eventCategory").equals("view on product thumbnail")){
             "wrong eventCategory checker"
