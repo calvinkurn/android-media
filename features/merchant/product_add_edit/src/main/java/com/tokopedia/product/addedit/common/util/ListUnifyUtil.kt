@@ -44,3 +44,7 @@ internal fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, on
 internal fun ListItemUnify.getCategoryId() = run {
     listActionText?.toLong().orZero()
 }
+
+internal fun ListItemUnify.getCategoryName() = run {
+    listTitleText.replace(" / ", "/")
+}

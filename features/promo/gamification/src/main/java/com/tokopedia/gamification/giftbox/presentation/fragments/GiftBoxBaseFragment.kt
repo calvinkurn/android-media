@@ -17,7 +17,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
@@ -25,6 +24,7 @@ import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
+import com.tokopedia.gamification.giftbox.presentation.helpers.GiftBoxTapTapAudio
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
@@ -61,6 +61,7 @@ open class GiftBoxBaseFragment : Fragment() {
 
     val FADE_IN_DURATION = 500L
 
+    val giftBoxTapTapAudio = GiftBoxTapTapAudio()
     var bgSoundManager: AudioManager? = null
     var rewardSoundManager: AudioManager? = null
     var mAudiosManager: AudioManager? = null
@@ -287,7 +288,11 @@ open class GiftBoxBaseFragment : Fragment() {
         if (isSoundEnabled()) {
             context?.let { it ->
                 bgSoundManager = AudioFactory.createAudio(it)
-                bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg_tap_60, true)
+                if (giftBoxTapTapAudio.bgSoundPath.isNullOrEmpty()) {
+                    bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg_tap_60, true)
+                } else {
+                    bgSoundManager?.playAudio(giftBoxTapTapAudio.bgSoundPath!!, true)
+                }
             }
         }
     }
@@ -313,7 +318,12 @@ open class GiftBoxBaseFragment : Fragment() {
                 if (timeoutAudioManager == null) {
                     timeoutAudioManager = AudioFactory.createAudio(soundIt)
                 }
-                timeoutAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_timeout)
+                if (giftBoxTapTapAudio.timeUpSoundPath.isNullOrEmpty()) {
+                    timeoutAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_timeout)
+                } else {
+                    timeoutAudioManager?.playAudio(giftBoxTapTapAudio.timeUpSoundPath!!)
+                }
+
             }
         }
     }
@@ -324,7 +334,11 @@ open class GiftBoxBaseFragment : Fragment() {
                 if (countDownAudioManager == null) {
                     countDownAudioManager = AudioFactory.createAudio(soundIt)
                 }
-                countDownAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_count_down)
+                if (giftBoxTapTapAudio.countDownSoundPath.isNullOrEmpty()) {
+                    countDownAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_count_down)
+                } else {
+                    countDownAudioManager?.playAudio(giftBoxTapTapAudio.countDownSoundPath!!)
+                }
             }
         }
     }

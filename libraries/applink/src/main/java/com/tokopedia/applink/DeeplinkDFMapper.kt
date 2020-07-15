@@ -6,6 +6,7 @@ import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
@@ -94,6 +95,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTI
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
@@ -108,6 +111,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_S
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
@@ -144,6 +151,7 @@ import kotlin.coroutines.CoroutineContext
 object DeeplinkDFMapper : CoroutineScope {
     // it should have the same name with the folder of dynamic feature
     private const val DF_BASE = "df_base"
+    private const val DF_BASE_SELLER_APP = "df_base_sellerapp"
     private const val DF_RECHARGE_BRIZZI = "df_recharge_brizzi"
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
@@ -154,6 +162,8 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
+    const val DF_GAMIFICATION = "df_gamification"
+    const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
@@ -239,7 +249,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(FAVORITE) }, DF_BASE, R.string.favorite_shop))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.MANAGE_PRODUCT }))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE)
+                    || it.startsWith(PRODUCT_MANAGE_LIST)
+                    || it.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.MANAGE_PRODUCT }))
             add(DFP({
                 it.startsWith(POWER_MERCHANT_SUBSCRIBE) || it.startsWith(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
@@ -350,15 +362,24 @@ object DeeplinkDFMapper : CoroutineScope {
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_BASE, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_BASE, R.string.title_applink_product_manage))
-            add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_BASE_SELLER_APP, R.string.shop_settings_title))
+            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_settings_title))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
+            add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
-            }, DF_BASE, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
+            }, DF_BASE_SELLER_APP, R.string.applink_topads_dashboard_title))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
+                        || it.startsWith(SHOP_SCORE_DETAIL)
+                        || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+            }, DF_SHOP_SCORE, R.string.title_shop_score_sellerapp))
+            add(DFP({ it.startsWith(CREATE_VOUCHER) ||
+                    it.startsWith(VOUCHER_LIST) ||
+                    it.startsWith(VOUCHER_DETAIL)}, DF_BASE_SELLER_APP, R.string.title_voucher_creation))
+            add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_BASE_SELLER_APP, R.string.title_product_add_edit))
+            add(DFP({ it.startsWith(SELLER_SEARCH)}, DF_BASE_SELLER_APP, R.string.title_global_search_seller))
         }
     }
 
