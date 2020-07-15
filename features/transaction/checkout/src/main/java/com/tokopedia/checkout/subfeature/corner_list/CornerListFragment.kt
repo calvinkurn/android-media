@@ -93,10 +93,6 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
             override fun onSearchTextChanged(text: String) {
 
             }
-
-            override fun onSearchDone(text: String?) {
-
-            }
         })
 
         mPresenter.attachView(this)
