@@ -12,10 +12,8 @@ class WithdrawAnalytics @Inject constructor(
         val userSession: dagger.Lazy<UserSession>
 ) {
 
-    val gtmTracker = TrackApp.getInstance().gtm
-
     fun sendScreen(screenName: String?) {
-       gtmTracker.sendScreenAuthenticated(screenName)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
     fun eventClickWithdrawal() {
@@ -24,8 +22,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_WITHDRAWAL,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun eventClickWithdrawalAll() {
@@ -34,8 +31,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_WITHDRAWAL_ALL,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun eventClickTANDC() {
@@ -44,8 +40,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_TANDC,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -55,8 +50,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_TARIK_SALDO,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -68,8 +62,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_VIEW_BANNER,
                 label
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -79,8 +72,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_ACCOUNT_ADD,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onClickManageAccount() {
@@ -89,8 +81,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_MANAGE_ACCOUNT,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onRekeningPremiumLogoClick() {
@@ -99,8 +90,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_REKENING_PREMIUM_LOGO,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onRekeningPremiumAccountInfoClosed() {
@@ -109,8 +99,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLOSE_REKENING_PREMIUM_ACCOUNT_INFO,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onRekeningPremiumAccountMoreInfo() {
@@ -119,8 +108,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_REKENING_PREMIUM_ACCOUNT_MORE_INFO,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -130,8 +118,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_JOIN_REKENING_PROGRAM,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
 
     }
 
@@ -141,8 +128,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_BACK_FROM_WITHDEAWAL_OPTION,
                 bankNameStr ?: ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onWithdrawalByJoiningOfferOpen(bankNameStr: String?) {
@@ -151,8 +137,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_ON_WITHDRAWAL_BY_RP_OFFER_VISIBLE,
                 bankNameStr ?: ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -162,8 +147,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_WITHDRAWAL_AND_JOIN_RP,
                 bankName ?: ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -173,8 +157,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_ONLY_WITHDRAWAL_SALDO,
                 bankName ?: ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -183,8 +166,7 @@ class WithdrawAnalytics @Inject constructor(
                EVENT_CATEGORY_WITHDRAWAL_PAGE,
                EVENT_ACTION_ON_CLICK_RP_LINK,
                label)
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -194,8 +176,7 @@ class WithdrawAnalytics @Inject constructor(
                EVENT_ACTION_ON_BACK_FROM_SALDO_PROCESSING,
                label
        )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -205,8 +186,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_BACK_TO_SALDO_DETAIL,
                 label
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -216,8 +196,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_RP_APPLICATION_IS_PROGRESS,
                 bankName ?: ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onViewRekeningPremiumApplicationFailed(label: String) {
@@ -225,8 +204,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_RP_APPLICATION_FAILED,
                 label)
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -235,8 +213,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_CLICK_UPGRADE_POWER_MERCHANT,
                 label)
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -245,8 +222,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_VIEW_JOIN_RP_WIDGET,
                 bankName ?: "")
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -255,8 +231,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_VIEW_RP_POINT_WIDGET,
                 label)
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -265,8 +240,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_CLICK_DISABLE_ACCOUNT,
                 bankName ?: "")
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -275,8 +249,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_CLOSE_DISABLE_ACCOUNT_INFO,
                 bankName ?: "")
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -285,8 +258,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_OPEN_DISABLE_ACCOUNT_INFO,
                 bankName ?: "")
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onClickOpenRekPreInfoFromDisableAccount(label: String) {
@@ -294,8 +266,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_CATEGORY_WITHDRAWAL_PAGE,
                 EVENT_ACTION_CLICK_CHECK_RP,
                 label)
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
 
@@ -305,8 +276,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_CONTINUE,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun eventClickAccountBank() {
@@ -315,8 +285,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_ACCOUNT_BANK,
                 ""
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onNoTickerDisplayedOnSuccessPage(label: String) {
@@ -325,8 +294,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_WITHDRAWAL_VIEW_PROCESSED,
                 label
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onBannerItemClick(bannerId: Int, isBanner: Boolean) {
@@ -337,8 +305,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_BANNER,
                 label
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onRekeningBannerClick(label: String) {
@@ -347,8 +314,7 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_CLICK_REKENING_BANNER,
                 label
         )
-        addCommonTrackingData(map)
-        gtmTracker.sendGeneralEvent(map)
+        sendTrackingData(map)
     }
 
     fun onBackPressFromWithdrawalPage() {
@@ -357,14 +323,14 @@ class WithdrawAnalytics @Inject constructor(
                 EVENT_ACTION_BACK_FROM_WITHDRAWAL,
                 ""
         )
-       addCommonTrackingData(map)
-       gtmTracker.sendGeneralEvent(map)
+       sendTrackingData(map)
     }
 
-    private fun addCommonTrackingData(map: MutableMap<String, Any>) {
+    private fun sendTrackingData(map: MutableMap<String, Any>) {
         map[KEY_USER_ID] = userSession.get().userId
         map[KEY_BUSINESS_UNIT] = KEY_BUSINESS_UNIT_VALUE
         map[KEY_CURRENT_SITE]= KEY_CURRENT_SITE_VALUE
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
 
