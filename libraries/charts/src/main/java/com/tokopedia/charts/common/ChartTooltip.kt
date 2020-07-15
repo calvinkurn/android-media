@@ -1,4 +1,4 @@
-package com.tokopedia.charts.config.linechart
+package com.tokopedia.charts.common
 
 import android.content.Context
 import android.view.View
@@ -11,12 +11,12 @@ import com.github.mikephil.charting.utils.MPPointF
  * Created By @ilhamsuaib on 28/06/20
  */
 
-open class LineChartTooltip(
+open class ChartTooltip(
         private val context: Context?,
         private val layoutResource: Int
 ) {
 
-    val markerView: MarkerView
+    internal val markerView: MarkerView
     private var refreshContent: ((view: View, data: Any, x: Float, y: Float) -> Unit)? = null
 
     init {
@@ -34,7 +34,7 @@ open class LineChartTooltip(
         }
     }
 
-    fun setOnDisplayContent(callback: (view: View, data: Any, x: Float, y: Float) -> Unit): LineChartTooltip {
+    fun setOnDisplayContent(callback: (view: View, data: Any, x: Float, y: Float) -> Unit): ChartTooltip {
         this.refreshContent = callback
         return this
     }
