@@ -464,6 +464,7 @@ dependencies {
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.firebase.crashlytics
