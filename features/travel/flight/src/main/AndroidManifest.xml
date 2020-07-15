@@ -3,7 +3,6 @@
     package="com.tokopedia.flight">
 
     <application android:supportsRtl="true">
-        <activity android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"></activity>
         <activity
             android:name=".homepage.presentation.activity.FlightHomepageActivity"
             android:label="@string/flight_dashboard_toolbar_title"
@@ -92,6 +91,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight"></activity>
         <activity
             android:name=".cancellation.view.activity.FlightCancellationReasonAndProofActivity"
             android:label="@string/activity_label_flight_cancellation"

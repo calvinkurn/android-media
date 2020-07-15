@@ -46,7 +46,7 @@ class FlightCancellationPassengerAdapter(private val cancellationListener: Fligh
             }
         }
 
-        cancellationJourneyListener.setJourneyCheck(!allChecked)
+        cancellationJourneyListener.setJourneyCheck(allChecked)
         if (allChecked) {
             cancellationJourneyListener.toggleCheckJourney(true)
         } else {

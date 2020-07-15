@@ -27,18 +27,14 @@ class FlightCancellationViewHolder(itemView: View,
     private var checkBoxJourney: CheckBox = itemView.findViewById(R.id.checkbox)
     private var verticalRecyclerView: VerticalRecyclerView = itemView.findViewById(R.id.recycler_view_passenger)
 
-    private var flightCancellationPassengerAdapter: FlightCancellationPassengerAdapter = FlightCancellationPassengerAdapter(listener, this, adapterPosition)
+    private lateinit var flightCancellationPassengerAdapter: FlightCancellationPassengerAdapter
     private var isJourneyChecked = false
     private var uncheckAllData = true
 
-    init {
-
+    override fun bind(element: FlightCancellationModel) {
+        flightCancellationPassengerAdapter = FlightCancellationPassengerAdapter(listener, this, adapterPosition)
         verticalRecyclerView.layoutManager = LinearLayoutManager(itemView.context)
         verticalRecyclerView.adapter = flightCancellationPassengerAdapter
-    }
-
-    override fun bind(element: FlightCancellationModel) {
-
 
         val departureCityAirportCode: String = if (element.flightCancellationJourney.departureCityCode == null ||
                 element.flightCancellationJourney.departureCityCode.isEmpty()) element.flightCancellationJourney.departureAirportId

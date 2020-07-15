@@ -13,7 +13,7 @@ import kotlinx.android.parcel.Parcelize
 data class FlightCancellationModel(
         var invoiceId: String = "",
         var flightCancellationJourney: FlightCancellationJourney = FlightCancellationJourney(),
-        var passengerModelList: List<FlightCancellationPassengerModel> = arrayListOf()
+        var passengerModelList: MutableList<FlightCancellationPassengerModel> = arrayListOf()
 ) : Visitable<FlightCancellationTypeFactory>, Parcelable {
 
     override fun type(typeFactory: FlightCancellationTypeFactory): Int =

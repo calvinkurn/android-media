@@ -24,7 +24,7 @@ class FlightCancellationPassengerViewHolder(itemView: View,
 
     private lateinit var passengerModel: FlightCancellationPassengerModel
     private var isPassengerChecked: Boolean = false
-    private var passengerAdapterPosition: Int = -1
+    private var passengerAdapterPosition: Int = 0
 
     init {
         checkBoxPassenger.setOnClickListener {

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel
@@ -63,6 +64,15 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        flightCancellationPassengerViewModel.cancellationPassengerList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            renderCancellationList(it)
+            setupNextButton()
+        })
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
@@ -90,25 +100,27 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     override fun loadData(page: Int) {
         adapter.clearAllElements()
         showLoading()
-        flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId)
+        flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId, flightCancellationJourneyList)
     }
 
     override fun onPassengerChecked(passengerModel: FlightCancellationPassengerModel, position: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (flightCancellationPassengerViewModel.checkPassenger(passengerModel, position) && isFirstRelationCheck) {
+            showAutoCheckDialog()
+        }
+        setupNextButton()
     }
 
     override fun onPassengerUnchecked(passengerModel: FlightCancellationPassengerModel, position: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        flightCancellationPassengerViewModel.uncheckPassenger(passengerModel, position)
+        setupNextButton()
     }
 
-    override fun isChecked(passengerModel: FlightCancellationPassengerModel): Boolean {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return false
-    }
+    override fun isChecked(passengerModel: FlightCancellationPassengerModel): Boolean =
+            flightCancellationPassengerViewModel.isPassengerChecked(passengerModel)
 
     override fun onRetryClicked() {
         showLoading()
-        flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId)
+        flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId, flightCancellationJourneyList)
     }
 
     private fun initVariable() {
@@ -120,12 +132,52 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         passengerRelationMap = hashMapOf()
     }
 
+    private fun renderCancellationList(cancellationModelList: List<FlightCancellationModel>) {
+        hideLoading()
+        hideFullLoading()
+        renderList(cancellationModelList)
+
+        if (cancellationModelList.isNotEmpty()) {
+            btn_container.visibility = View.VISIBLE
+        } else {
+            btn_container.visibility = View.GONE
+        }
+    }
+
+    private fun showAutoCheckDialog() {
+        isFirstRelationCheck = false
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(R.string.flight_cancellation_auto_check_dialog_title)
+        dialog.setDescription(getString(R.string.flight_cancellation_auto_check_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.flight_cancellation_auto_check_dialog_button))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
     private fun showFullLoading() {
         btn_container.visibility = View.GONE
     }
 
     private fun hideFullLoading() {
         btn_container.visibility = View.VISIBLE
+    }
+
+    private fun setupNextButton() {
+        if (flightCancellationPassengerViewModel.canGoNext()) {
+            enableNextButton()
+        } else {
+            disableNextButton()
+        }
+    }
+
+    private fun enableNextButton() {
+        button_submit.isEnabled = true
+    }
+
+    private fun disableNextButton() {
+        button_submit.isEnabled = false
     }
 
     companion object {
