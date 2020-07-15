@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.activity
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -17,12 +18,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.SellerHomeConst.NOTIF_TRAY_CONFIG
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
@@ -48,11 +51,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
     }
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var userSession: UserSessionInterface
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var remoteConfig: RemoteConfig
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -92,6 +93,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onResume() {
         super.onResume()
+        clearNotification()
         homeViewModel.getNotifications()
 
         if (!userSession.isLoggedIn) {
@@ -190,6 +192,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         when(page.type) {
             FragmentType.PRODUCT -> lastProductMangePage = PageFragment(FragmentType.PRODUCT)
             FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
+        }
+    }
+
+    private fun clearNotification() {
+        if (remoteConfig.getBoolean(NOTIF_TRAY_CONFIG, false)) {
+            (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)?.cancelAll()
         }
     }
 
