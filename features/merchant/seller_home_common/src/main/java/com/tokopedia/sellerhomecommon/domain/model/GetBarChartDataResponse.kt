@@ -37,7 +37,7 @@ data class BarChartDataModel(
         val metrics: List<BarChartMetricModel>,
         @Expose
         @SerializedName("summary")
-        val summary: BarChartSummary
+        val summary: BarChartSummaryModel
 )
 
 data class BarChartAxesModel(
@@ -67,7 +67,7 @@ data class BarChartValueModel(
         val valueFmt: String
 )
 
-data class BarChartSummary(
+data class BarChartSummaryModel(
         @Expose
         @SerializedName("diffPercentage")
         val diffPercentage: Int,
