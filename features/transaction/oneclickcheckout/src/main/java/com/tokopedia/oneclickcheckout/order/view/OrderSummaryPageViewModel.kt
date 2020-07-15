@@ -487,10 +487,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
-                        .subscribe({
-                            // no op
-                        }, {
-                            // no op
+                        .subscribeOn(executorSchedulers.io)
+                        .observeOn(executorSchedulers.main)
+                        .subscribe(object : Observer<ClearPromoUiModel?> {
+                            override fun onError(e: Throwable?) {
+                                // do nothing, promocode directly removed
+                            }
+
+                            override fun onNext(t: ClearPromoUiModel?) {
+                                // do nothing, promocode directly removed
+                            }
+
+                            override fun onCompleted() {
+                                // do nothing, promocode directly removed
+                            }
                         })
         )
         val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
@@ -1119,6 +1129,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList, true)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
+                        .subscribeOn(executorSchedulers.io)
+                        .observeOn(executorSchedulers.main)
                         .subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
                                 globalEvent.value = OccGlobalEvent.Error(e)
