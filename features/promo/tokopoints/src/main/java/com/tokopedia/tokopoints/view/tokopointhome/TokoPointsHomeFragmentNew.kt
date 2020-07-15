@@ -291,6 +291,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             val bundle = Bundle()
             bundle.putParcelable(RewardIntroFragment.INTRO_KEY, data)
             startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
+            activity?.finish()
         } else
             return
     }

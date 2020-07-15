@@ -54,11 +54,13 @@ class RewardIntroFragment : Fragment() {
                 btn_learn.text = data.cTA?.get(0)?.text
                 btn_learn.setOnClickListener {
                     RouteManager.route(context, data.cTA?.get(0)?.appLink)
+                    activity?.finish()
                 }
                 if (data.cTA?.size == 2) {
                     btn_check.text = data.cTA[1]?.text
                     btn_check.setOnClickListener {
                         RouteManager.route(context, data.cTA[1]?.appLink)
+                        activity?.finish()
                     }
                 }
             }
