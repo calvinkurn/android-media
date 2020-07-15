@@ -240,10 +240,12 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
+        if (selectedProductPage.isShown) {
+            selectedProductPage.hide()
+        } else {
+            selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+            selectedProductPage.show()
+        }
     }
 
     override fun showBottomAction(shouldShow: Boolean) {

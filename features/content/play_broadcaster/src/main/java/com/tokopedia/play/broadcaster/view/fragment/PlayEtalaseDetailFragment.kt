@@ -207,10 +207,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
+        if (selectedProductPage.isShown) {
+            selectedProductPage.hide()
+        } else {
+            selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+            selectedProductPage.show()
+        }
     }
 
     private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "") {
