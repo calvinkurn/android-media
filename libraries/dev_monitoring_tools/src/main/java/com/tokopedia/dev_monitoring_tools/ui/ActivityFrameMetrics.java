@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.dev_monitoring_tools.ui;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
