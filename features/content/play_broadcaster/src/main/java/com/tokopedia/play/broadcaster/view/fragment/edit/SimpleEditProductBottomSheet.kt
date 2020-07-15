@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.fragment.edit
 
 import android.app.Dialog
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.util.showToaster
+import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -69,6 +71,22 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
         }
     })
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                updateNavigationBarColors(
+                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                )
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                updateNavigationBarColors(
+                        intArrayOf(
+                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
+                        )
+                )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
