@@ -28,10 +28,6 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -81,8 +77,8 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
-    val observableNewMetric: LiveData<Event<PlayMetricUiModel>>
-        get() = _observableNewMetric
+    val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
+        get() = _observableNewMetrics
     val observableProductList = Transformations.map(getCurrentSetupDataStore().getObservableSelectedProducts()) { dataList ->
         dataList.map { ProductContentUiModel.createFromData(it) }
     }
@@ -106,7 +102,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
-    private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
+    private val _observableNewMetrics = MutableLiveData<Event<List<PlayMetricUiModel>>>()
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
@@ -120,11 +116,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
 
-    private val metricsChannel = BroadcastChannel<PlayMetricUiModel>(Channel.BUFFERED)
-
     init {
-        scope.launch { initMetricsChannel() }
-
         _observableChatList.value = mutableListOf()
     }
 
@@ -385,22 +377,9 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(dispatcher.main) {
-        _observableNewMetric.value = Event(newMetric)
-    }
-
     private fun queueNewMetrics(metricList: List<PlayMetricUiModel>) {
-        scope.launch(dispatcher.computation) {
-            metricList.forEach {
-                metricsChannel.send(it)
-            }
-        }
-    }
-
-    private suspend fun initMetricsChannel() = withContext(dispatcher.computation) {
-        metricsChannel.asFlow().collect {
-            onRetrievedNewMetric(it)
-            delay(it.interval)
+        scope.launch(dispatcher.main) {
+            _observableNewMetrics.value = Event(metricList)
         }
     }
 
@@ -420,14 +399,11 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun mockMetrics() {
         scope.launch(dispatcher.io) {
-            while(isActive) {
-                delay(15000)
-                queueNewMetrics(
-                        List(3) {
-                            PlayBroadcastMocker.getMockMetric()
-                        }
-                )
-            }
+            queueNewMetrics(
+                    List(3) {
+                        PlayBroadcastMocker.getMockMetric()
+                    }
+            )
         }
     }
 }
