@@ -82,7 +82,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
         val params = pHolder.itemView.getLayoutParams() as ViewGroup.MarginLayoutParams
         if (position == 0) {
-            params.setMargins(convertDpToPixel(16, pHolder.itemView.getContext()), 0, 0, 0)
+            params.setMargins(convertDpToPixel(16, pHolder.itemView.getContext()), convertDpToPixel(8, pHolder.itemView.getContext()), 0, 0)
         } else {
             params.setMargins(0, 0, 0, 0)
         }

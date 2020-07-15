@@ -321,7 +321,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         alertDialog.show()
     }
 
-    override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    private fun showErrorDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int){
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -330,10 +330,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
                 labelPositive = getString(R.string.tp_label_complete_profile)
                 labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                labelPositive = getString(R.string.tp_label_exchange)
-                labelNegative = getString(R.string.tp_label_betal)
             }
             CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
             else -> labelPositive = getString(R.string.tp_label_ok)
@@ -389,20 +385,25 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
                             "")
                 }
-                CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    mViewModel.startSaveCoupon(item)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                            title)
-                }
                 else -> dialogInterface.cancel()
             }
         }
         val dialog = adb.create()
         dialog.show()
         decorateDialog(dialog)
+    }
+
+    override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+       if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS){
+           mViewModel.startSaveCoupon(item)
+           AnalyticsTrackerUtil.sendEvent(context,
+                   AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                   AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                   AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                   title)
+       } else {
+           showErrorDialog(item,title,message,resCode)
+       }
     }
 
     override fun onRealCodeReFresh(realCode: String) {
