@@ -21,7 +21,7 @@ class ToolTipSearchPopupWindow(
     private lateinit var view: View
     private var topArrow: ImageView? = null
     private var ivClose: ImageView? = null
-    private val defaultWidth = 237f.toPx().toInt()
+    private val defaultWidth = 269f.toPx().toInt()
     private val marginRight = 16f.toPx().toInt()
     private val marginTop = 4f.toPx().toInt() * -1
 

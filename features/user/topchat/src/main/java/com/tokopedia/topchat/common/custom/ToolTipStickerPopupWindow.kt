@@ -17,7 +17,7 @@ class ToolTipStickerPopupWindow(
 
     private lateinit var view: View
     private var ivClose: ImageView? = null
-    private val defaultWidth = 193f.toPx().toInt()
+    private val defaultWidth = 225f.toPx().toInt()
     private val marginTop = 4f.toPx().toInt()
 
     init {
