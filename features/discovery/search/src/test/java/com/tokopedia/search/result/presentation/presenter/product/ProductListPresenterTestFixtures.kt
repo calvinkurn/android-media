@@ -13,6 +13,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.shouldBe
 import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
@@ -39,6 +40,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchLocalCacheHandler = mockk<SearchLocalCacheHandler>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val seamlessLoginUseCase = mockk<SeamlessLoginUsecase>(relaxed = true)
+    protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>().also {
         // Test this toggle as false until old quick filter is not needed anymore
@@ -60,6 +62,7 @@ internal open class ProductListPresenterTestFixtures {
                 searchOnBoardingLocalCache,
                 getDynamicFilterUseCase,
                 getProductCountUseCase,
+                topAdsUrlHitter,
                 searchLocalCacheHandler,
                 remoteConfig
         )

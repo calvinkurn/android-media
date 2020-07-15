@@ -108,8 +108,6 @@ public interface ProductListSectionContract {
 
         void setTotalSearchResultCount(String formattedResultCount);
 
-        BaseAppComponent getBaseAppComponent();
-
         // Please remove when new bottom sheet filter is already stable
         @Deprecated
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
@@ -150,10 +148,6 @@ public interface ProductListSectionContract {
 
         void logWarning(String message, @Nullable Throwable throwable);
 
-        void sendTopAdsClickUrl(String topAdsClickUrl, String productId, String productName, String imageUrl);
-
-        void sendTopAdsImpressionUrl(String topAdsImpressionUrl, String productId, String productName, String imageUrl);
-
         void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
@@ -185,6 +179,8 @@ public interface ProductListSectionContract {
         boolean isQuickFilterSelected(Option option);
 
         void setProductCount(String productCountText);
+
+        String getClassName();
     }
 
     interface Presenter extends CustomerPresenter<View> {

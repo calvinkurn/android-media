@@ -2034,4 +2034,11 @@ public class ProductListFragment
 
         sortFilterBottomSheet.setResultCountText(String.format(getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text), productCountText));
     }
+
+    @Override
+    public String getClassName() {
+        if (getActivity() == null) return "";
+
+        return getActivity().getClass().getName();
+    }
 }

@@ -2,12 +2,14 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 
 internal class SearchProductHandleProductImpressionTest: ProductListPresenterTestFixtures() {
 
+    private val className = "SearchClassName"
     private val capturedProductItemViewModel = slot<ProductItemViewModel>()
 
     @Test
@@ -39,19 +41,29 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
             it.position = 1
         }
 
+        `Given className from view`()
+
         `When handle product impressed`(productItemViewModel)
 
         `Then verify interaction for Top Ads product impression`(productItemViewModel)
     }
 
+    private fun `Given className from view`() {
+        every { productListView.className } returns className
+    }
+
     private fun `Then verify interaction for Top Ads product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsImpressionUrl(
+            productListView.className
+
+            topAdsUrlHitter.hitImpressionUrl(
+                    className,
                     productItemViewModel.topadsImpressionUrl,
                     productItemViewModel.productID,
                     productItemViewModel.productName,
                     productItemViewModel.imageUrl
             )
+
             productListView.sendTopAdsGTMTrackingProductImpression(capture(capturedProductItemViewModel))
         }
 
@@ -67,6 +79,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
             it.categoryID = 13
             it.isTopAds = false
         }
+
+        `Given className from view`()
 
         `When handle product impressed`(productItemViewModel)
 
@@ -95,6 +109,8 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
             it.topadsImpressionUrl = topAdsImpressionUrl
         }
 
+        `Given className from view`()
+
         `When handle product impressed`(productItemViewModel)
 
         `Then verify interaction for Organic Ads product impression`(productItemViewModel)
@@ -102,12 +118,16 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for Organic Ads product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsImpressionUrl(
+            productListView.className
+
+            topAdsUrlHitter.hitImpressionUrl(
+                    className,
                     productItemViewModel.topadsImpressionUrl,
                     productItemViewModel.productID,
                     productItemViewModel.productName,
                     productItemViewModel.imageUrl
             )
+
             productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel))
         }
 
