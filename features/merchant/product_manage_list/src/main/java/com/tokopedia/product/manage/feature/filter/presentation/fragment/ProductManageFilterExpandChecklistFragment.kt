@@ -29,10 +29,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
-import kotlinx.android.synthetic.main.product_manage_etalase_picker.*
-import java.util.*
 import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :

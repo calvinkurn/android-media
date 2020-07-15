@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.features.topAdsAutoAds)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.tkpdseller)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.unifyDependencies.dialog
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+project.ext {
+    artifactId = 'ads-edit'
+    groupId = 'com.tokopedia.topads'
+    versionName = "0.0.1"
+    artifactName = "top_ads_edit-release"
+}
+
+apply from: '../../../publish_local.gradle'

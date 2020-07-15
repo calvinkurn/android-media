@@ -11,10 +11,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchersProvider
-import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
-import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
-import com.tokopedia.power_merchant.subscribe.view.presenter.PmSubscribePresenter
-import com.tokopedia.power_merchant.subscribe.view.presenter.PmTermsPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -28,20 +24,6 @@ import javax.inject.Named
 @PowerMerchantSubscribeScope
 @Module(includes = [GmCommonModule::class])
 class PowerMerchantSubscribeModule {
-
-    @PowerMerchantSubscribeScope
-    @Provides
-    fun providePmSubscribePresenter(pmSubscribePresenter: PmSubscribePresenter):
-            PmSubscribeContract.Presenter {
-        return pmSubscribePresenter
-    }
-
-    @PowerMerchantSubscribeScope
-    @Provides
-    fun providePmTermsPresenter(pmTermsPresenter: PmTermsPresenter):
-            PmTermsContract.Presenter {
-        return pmTermsPresenter
-    }
 
     @PowerMerchantSubscribeScope
     @Provides

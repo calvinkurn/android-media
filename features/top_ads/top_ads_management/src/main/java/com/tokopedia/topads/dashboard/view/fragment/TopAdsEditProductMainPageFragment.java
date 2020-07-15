@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -18,6 +17,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostProductActivit
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -41,7 +41,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductPresenterImpl<ProductAd>(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity())),
+                new TopAdsManagementService(new UserSession(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 
