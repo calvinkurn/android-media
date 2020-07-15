@@ -1,16 +1,15 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.app.Activity
-import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.observe
@@ -20,6 +19,8 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.*
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult.*
@@ -31,8 +32,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
-import kotlinx.android.synthetic.main.dialog_kyc_verification.*
-import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*
 import javax.inject.Inject
 
@@ -103,8 +102,8 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     private fun onSuccessActivate(result: PowerMerchantActivationResult) {
         when(result)  {
             is ActivationSuccess -> resultOkAndFinish()
-            is KycNotVerified -> setupDialogKyc()?.show()
-            is ShopScoreNotEligible -> setupDialogScore()?.show()
+            is KycNotVerified -> showDialogKyc()
+            is ShopScoreNotEligible -> showShopScoreBottomSheet()
             is GeneralError -> showErrorToast(result.message)
         }
     }
@@ -186,43 +185,44 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         activity?.finish()
     }
 
-    private fun setupDialogScore(): Dialog? {
-        context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_score_verification)
+    private fun showShopScoreBottomSheet() {
+        val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
+            getString(R.string.power_merchant_bottom_sheet_score_title),
+            getString(R.string.power_merchant_bottom_sheet_score_description),
+            R.drawable.ic_pm_score,
+            CTAMode.DOUBLE
+        )
 
-            dialog.btn_submit_score.setOnClickListener {
-                powerMerchantTracking.eventIncreaseScorePopUp()
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-            }
-            dialog.btn_close_score.setOnClickListener {
-                dialog.hide()
-            }
-            return dialog
+        bottomSheet.setPrimaryButtonText(getString(R.string.power_merchant_see_tips))
+        bottomSheet.setSecondaryButtonText(getString(R.string.pm_label_button_close))
+        bottomSheet.setPrimaryButtonClickListener {
+            powerMerchantTracking.eventIncreaseScorePopUp()
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
+            bottomSheet.dismiss()
         }
-        return null
+        bottomSheet.setSecondaryButtonClickListener {
+            activity?.finish()
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
-    private fun setupDialogKyc(): Dialog? {
+    private fun showDialogKyc() {
         context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_kyc_verification)
-            dialog.btn_submit_kyc.setOnClickListener {
-                openKycPage()
-                dialog.hide()
-            }
-            dialog.btn_close_kyc.setOnClickListener {
-                dialog.hide()
-            }
-
-            return dialog
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.pm_label_kyc_verification_header))
+                setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
+                setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
+                setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
+                setPrimaryCTAClickListener {
+                    openKycPage()
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    activity?.finish()
+                    dismiss()
+                }
+            }.show()
         }
-        return null
     }
 }

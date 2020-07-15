@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout5"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/topads_bg_top_round"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
+            android:padding="@dimen/dp_2"
+            app:srcCompat="@drawable/topads_create_ic_group_close" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:text="@string/topads_label_top_ads_choose_group"
+            android:textColor="@color/black"
+            app:typographyType="heading_3" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/search"
+        layout="@layout/topads_dash_layout_common_searchbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_weight="1"
+        tools:itemCount="8"
+        tools:listitem="@layout/topads_dash_item_moveto_group" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/submit_butt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:text="@string/topads_dash_moveto_group_butt" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

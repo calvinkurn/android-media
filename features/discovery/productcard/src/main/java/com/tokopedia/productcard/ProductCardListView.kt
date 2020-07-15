@@ -43,6 +43,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
+        buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
+
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
@@ -65,6 +67,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
         imageThreeDots?.setOnClickListener(threeDotsClickListener)
+    }
+
+    fun setDeleteProductOnClickListener(deleteProductClickListener: (View) -> Unit) {
+        buttonDeleteProduct?.setOnClickListener(deleteProductClickListener)
     }
 
     fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) {

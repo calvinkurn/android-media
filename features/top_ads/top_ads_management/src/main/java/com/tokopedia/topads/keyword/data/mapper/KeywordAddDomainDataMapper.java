@@ -48,7 +48,7 @@ public class KeywordAddDomainDataMapper
                     datum.getKeywordTag(),
                     Integer.parseInt(datum.getKeywordTypeId()),
                     datum.getGroupId(),
-                    datum.getShopId()));
+                    datum.getShopId(), 0));
         }
         return new AddKeywordDomainModel(addKeywordDomainModelDatumList);
     }
@@ -77,6 +77,7 @@ public class KeywordAddDomainDataMapper
             datum.setShopId(domainModel.getShopId());
             datum.setToggle(DEFAULT_TOGGLE);
             datum.setStatus(DEFAULT_STATUS);
+            datum.setPriceBid(domainModel.getPriceBid());
             datum.setSource(domainModel.getSource());
             datumList.add(datum);
         }
