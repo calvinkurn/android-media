@@ -31,6 +31,7 @@ import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWa
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_history.*
+import kotlinx.android.synthetic.main.partial_review_connection_error.*
 import kotlinx.android.synthetic.main.partial_review_empty.view.*
 import javax.inject.Inject
 
@@ -67,6 +68,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         super.onViewCreated(view, savedInstanceState)
         initSearchBar()
         observeReviewList()
+        setupErrorPage()
     }
 
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
@@ -128,7 +130,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                 is Success -> {
                     hidePageLoading()
                     hideError()
-                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotEmpty()) {
+                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && it.data.list.isEmpty() && it.search.isNotBlank()) {
                         showEmptySearchResult()
                         return@Observer
                     }
@@ -137,10 +139,10 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                         return@Observer
                     }
                     renderReviewData(it.data.list.map { history -> ReviewHistoryUiModel(history) }, it.data.hasNext)
-
                 }
                 is LoadingView -> {
                     showPageLoading()
+                    hideList()
                     hideEmptyState()
                     hideError()
                 }
@@ -148,6 +150,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
                     if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         hidePageLoading()
                         hideEmptyState()
+                        hideList()
                         showError()
                     } else {
                         showErrorToaster(getString(R.string.review_toaster_page_error), getString(R.string.review_refresh)) {}
@@ -181,15 +184,26 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         reviewHistoryLoading.hide()
     }
 
-    private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
+    private fun showList() {
+        reviewHistorySearchBar.show()
         reviewHistorySwipeRefresh.show()
+    }
+
+    private fun hideList() {
+        reviewHistorySearchBar.hide()
+        reviewHistorySwipeRefresh.hide()
+    }
+
+    private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
+        showList()
         renderList(reviewData, hasNextPage)
     }
 
     private fun showEmptySearchResult() {
+        reviewHistorySearchBar.show()
         reviewHistoryEmpty.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE)
-            reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
+            reviewEmptyTitle.text = getString(R.string.review_history_no_product_search_result_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
             show()
         }
@@ -199,10 +213,11 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     private fun showNoProductEmpty() {
         reviewHistoryEmpty.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
-            reviewEmptyTitle.text = getString(R.string.review_history_no_product_search_result_title)
-            reviewEmptySubtitle.text = getString(R.string.review_history_no_product_search_content)
+            reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
+            reviewEmptySubtitle.text = getString(R.string.review_history_no_review_history_content)
             show()
         }
+        reviewHistorySearchBar.hide()
         reviewHistorySwipeRefresh.hide()
     }
 
@@ -210,5 +225,9 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         reviewHistoryEmpty.hide()
     }
 
-
+    private fun setupErrorPage() {
+        reviewConnectionErrorRetryButton.setOnClickListener {
+            loadInitialData()
+        }
+    }
 }

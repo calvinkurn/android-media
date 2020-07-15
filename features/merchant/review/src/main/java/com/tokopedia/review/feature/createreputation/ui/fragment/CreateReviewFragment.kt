@@ -4,10 +4,6 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,11 +16,6 @@ import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -49,6 +40,8 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.ui.listener.OnAddImageClickListener
+import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListener
+import com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.mapper.IncentiveOvoMapper
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
@@ -60,7 +53,7 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
+class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, TextAreaListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -72,16 +65,11 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         const val REVIEW_ORDER_ID = "REVIEW_ORDER_ID"
         const val UTM_SOURCE = "UTM_SOURCE"
 
-        private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
-        private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
-        private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
-        private const val IMAGE_BG_TRANSITION = 250
         private const val LOTTIE_ANIM_1 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
         private const val LOTTIE_ANIM_2 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
         private const val LOTTIE_ANIM_3 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_3.json"
         private const val LOTTIE_ANIM_4 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_4.json"
         private const val LOTTIE_ANIM_5 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
-
 
         private const val IMAGE_PEDIE_1 = "https://ecs7.tokopedia.net/android/pedie/1star.png"
         private const val IMAGE_PEDIE_2 = "https://ecs7.tokopedia.net/android/pedie/2star.png"
@@ -111,11 +99,9 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
 
     private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
-    private var shouldIncreaseProgressBar = true
     private var reviewClickAt: Int = 0
     private var reviewId: Int = 0
     private var productId: Int = 0
-    private var currentBackground: Drawable? = null
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
     private var productRevIncentiveOvo: ProductRevIncentiveOvoDomain = ProductRevIncentiveOvoDomain()
     private var shopId: String = ""
@@ -182,10 +168,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
         isLowDevice = DevicePerformanceInfo.isLow(context)
-
+        initCreateReviewTextArea()
         getReviewData()
         getIncentiveOvoData()
-        anonymous_text.text = generateAnonymousText()
+        anonymous_text.text = resources.getString(R.string.review_create_hide_name)
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
         animatedReviewPicker.resetStars()
@@ -213,7 +199,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         })
         animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
         generateReviewBackground(if (reviewClickAt != 0) reviewClickAt else 5)
-        stepper_review.progress = 1
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
@@ -238,26 +223,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             clearFocusAndHideSoftInput(view)
         }
 
-        edit_text_review.setOnFocusChangeListener { _, _ ->
-            if(!edit_text_review.isFocused) {
-                ReviewTracking.reviewOnMessageChangedTracker(
-                        orderId,
-                        productId.toString(10),
-                        edit_text_review.text.toString().isEmpty(),
-                        false
-                )
-
-                val editTextReview = edit_text_review.text.toString()
-                if (editTextReview.isEmpty() && !shouldIncreaseProgressBar) {
-                    shouldIncreaseProgressBar = true
-                    stepper_review.progress = stepper_review.progress - 1
-                } else if (editTextReview.isNotEmpty() && shouldIncreaseProgressBar) {
-                    stepper_review.progress = stepper_review.progress + 1
-                    shouldIncreaseProgressBar = false
-                }
-            }
-        }
-
         review_container.setOnTouchListener { _, _ ->
             clearFocusAndHideSoftInput(view)
             return@setOnTouchListener false
@@ -271,10 +236,9 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         rv_img_review?.adapter = imageAdapter
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
 
-        btn_submit_review.setOnClickListener {
+        createReviewSubmitButton.setOnClickListener {
             submitReview()
         }
-
     }
 
     override fun onDestroy() {
@@ -302,6 +266,11 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         }
     }
 
+    override fun onExpandButtonClicked() {
+        val createReviewTextAreaBottomSheet = context?.let { CreateReviewTextAreaBottomSheet.createNewInstance(it) }
+        fragmentManager?.let { createReviewTextAreaBottomSheet?.show(it,"") }
+    }
+
     private fun getReviewData() {
         showShimmering()
         createReviewViewModel.getProductReputation(productId, reviewId)
@@ -312,7 +281,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     }
 
     private fun submitReview() {
-        val reviewMessage = edit_text_review.text.toString()
+        val reviewMessage = ""
 
         ReviewTracking.reviewOnSubmitTracker(
                 orderId,
@@ -387,23 +356,15 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         when (position) {
             1 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_1, reviewUserName))
-                renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
             }
             2 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_2, reviewUserName))
-                renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
             }
             3 -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_3, reviewUserName))
-                renderBackgroundTransition(IMAGE_REVIEW_GREEN_BG)
             }
-            4 -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_4, reviewUserName))
-                renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
-            }
-            5 -> {
+            else -> {
                 txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_5, reviewUserName))
-                renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
             }
         }
     }
@@ -434,27 +395,12 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                     if (selectedImage.isNotEmpty()) {
                         if (!isImageAdded) {
                             isImageAdded = true
-                            stepper_review.progress = stepper_review.progress + 1
                         }
                         imageAdapter.setImageReviewData(imageListData)
                     }
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
-    // For transition background drawable *grey,green,yellow
-    private fun transitionDrawable(drawable: Drawable) {
-        if (currentBackground == null) {
-            currentBackground = drawable
-            review_bg.setImageDrawable(drawable)
-        } else {
-            val transitionDrawable = TransitionDrawable(arrayOf(currentBackground, drawable))
-            transitionDrawable.isCrossFadeEnabled = true
-            review_bg.setImageDrawable(transitionDrawable)
-            transitionDrawable.startTransition(IMAGE_BG_TRANSITION)
-            currentBackground = drawable
         }
     }
 
@@ -514,30 +460,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         }
     }
 
-    private fun renderBackgroundTransition(url: String) {
-        context?.run {
-            val customTarget = BackgroundCustomTarget(this)
-            customTarget.callback = ::transitionDrawable
-            Glide.with(this)
-                    .asBitmap()
-                    .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .into(customTarget)
-        }
-    }
-
-    private fun generateAnonymousText(): String {
-        if (reviewUserName.isNotEmpty()) {
-            val firstChar = reviewUserName.firstOrNull() ?: ""
-            val lastChar = reviewUserName.lastOrNull() ?: ""
-            return getString(
-                    R.string.anonymous_review_prefix,
-                    "$firstChar***$lastChar")
-        }
-
-        return ""
-    }
-
     private fun onSuccessSubmitReview() {
         stopLoading()
         showLayout()
@@ -564,12 +486,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     }
 
     private fun hideLayout() {
-        btn_submit_container.hide()
         create_review_container.hide()
     }
 
     private fun showLayout() {
-        btn_submit_container.show()
         create_review_container.show()
     }
 
@@ -620,17 +540,11 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     }
 
     private fun clearFocusAndHideSoftInput(view: View?) {
-        edit_text_review.clearFocus()
         val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    class BackgroundCustomTarget(private val context: Context) : CustomTarget<Bitmap>() {
-        var callback: ((Drawable) -> Unit)? = null
-        override fun onLoadCleared(placeholder: Drawable?) {}
-
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            callback?.invoke(BitmapDrawable(context.resources, resource))
-        }
+    private fun initCreateReviewTextArea() {
+        createReviewExpandableTextArea.setListener(this)
     }
 }

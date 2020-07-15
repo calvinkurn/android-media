@@ -61,7 +61,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBott
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.fragment_create_review.*
+import kotlinx.android.synthetic.main.fragment_create_review_old.*
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
@@ -151,7 +151,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_create_review, container, false)
+        return inflater.inflate(R.layout.fragment_create_review_old, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

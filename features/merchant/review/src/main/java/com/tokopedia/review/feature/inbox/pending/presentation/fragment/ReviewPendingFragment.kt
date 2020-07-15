@@ -119,7 +119,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        showLoading()
+        showFullPageLoading()
         getIncentiveOvoData()
     }
 
@@ -161,9 +161,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private fun setupErrorPage() {
         reviewConnectionErrorRetryButton.setOnClickListener {
             getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
-        }
-        reviewConnectionErrorGoToSettingsButton.setOnClickListener {
-            goToSettings()
         }
     }
 
@@ -304,10 +301,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
                         .build()
                         .toString())
-    }
-
-    private fun goToSettings() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
     }
 
 }

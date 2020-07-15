@@ -15,8 +15,8 @@
         android:id="@+id/create_review_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintBottom_toTopOf="@+id/btn_submit_container"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -70,8 +70,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_review"
-                tools:src="@drawable/com_facebook_profile_picture_blank_portrait" />
+                app:layout_constraintTop_toBottomOf="@id/img_review" />
 
             <ImageView
                 android:id="@+id/review_bg"
@@ -81,8 +80,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/animatedReview"
-                app:layout_constraintBottom_toBottomOf="@+id/animatedReview"
-                tools:src="@drawable/green_rating_bg" />
+                app:layout_constraintBottom_toBottomOf="@+id/animatedReview" />
 
             <com.tokopedia.reputation.common.view.AnimatedReputationView
                 android:id="@+id/animatedReview"
@@ -108,30 +106,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/animatedReview" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txt_input_review"
-                style="@style/TextInputLayout"
+            <com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextArea
+                android:id="@+id/createReviewExpandableTextArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_14"
-                android:layout_marginTop="@dimen/dp_26"
-                android:layout_marginEnd="@dimen/dp_14"
-                android:hint="@string/review_msg_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_review"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|start"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:maxLines="10" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toBottomOf="@+id/txt_review_desc"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_img_review"
@@ -142,7 +125,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txt_input_review"
+                app:layout_constraintTop_toBottomOf="@id/createReviewExpandableTextArea"
                 tools:listitem="@layout/item_image_chooser_review" />
 
             <View
@@ -174,40 +157,21 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
+            
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/createReviewSubmitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:text="@string/txt_btn_submit_review"
+                app:unifyButtonSize="large"
+                app:layout_constraintTop_toBottomOf="@id/container_anonymous"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/btn_submit_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ProgressBar
-            android:id="@+id/stepper_review"
-            android:layout_height="@dimen/dp_2"
-            android:layout_width="match_parent"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:progressDrawable="@drawable/gradient_progress_bar"
-            android:max="3"/>
-
-        <com.tokopedia.design.component.ButtonCompat
-            style="@style/Button.Submit.Green.Full"
-            android:id="@+id/btn_submit_review"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/txt_btn_submit_review" />
-    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

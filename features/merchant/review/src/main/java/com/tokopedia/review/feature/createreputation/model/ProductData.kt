@@ -12,6 +12,6 @@ data class ProductData(
     val productName: String = "",
     @SerializedName("productPageURL")
     val productPageURL: String = "",
-    @SerializedName("productStatus")
-    val productStatus: Int = 0
+    @SerializedName("productVariant")
+    val productVariant: ProductVariant = ProductVariant()
 )

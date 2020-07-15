@@ -11,6 +11,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:visibility="gone"
         app:search_bar_show_icon="false"
         app:search_bar_placeholder="@string/review_history_search_bar_hint"
         app:layout_constraintTop_toTopOf="parent"/>

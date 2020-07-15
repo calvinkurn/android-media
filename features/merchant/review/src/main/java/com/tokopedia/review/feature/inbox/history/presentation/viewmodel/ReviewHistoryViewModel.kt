@@ -48,9 +48,9 @@ class ReviewHistoryViewModel @Inject constructor(
                 productrevFeedbackHistoryUseCase.setParams(searchQuery.value, page)
                 productrevFeedbackHistoryUseCase.executeOnBackground()
             }
-            _reviewList.postValue(Success(response.productrevFeedbackHistoryResponse, page))
+            _reviewList.postValue(Success(response.productrevFeedbackHistoryResponse, page, searchQuery.value ?: ""))
         }) {
-            _reviewList.postValue(Fail(it, page))
+            _reviewList.postValue(Fail(it, page, searchQuery.value ?: ""))
         }
     }
 

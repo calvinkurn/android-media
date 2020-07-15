@@ -8,4 +8,6 @@ data class ShopData(
     val shopID: Int = 0,
     @SerializedName("shopOpen")
     val shopOpen: Boolean = false
+//    @SerializedName("shopName")
+//    val shopName: String = ""
 )

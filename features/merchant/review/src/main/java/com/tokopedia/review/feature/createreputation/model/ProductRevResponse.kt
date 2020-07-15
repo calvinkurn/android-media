@@ -14,5 +14,7 @@ data class ProductRevResponse(
         @SerializedName("shopData")
         val shopData: ShopData = ShopData(),
         @SerializedName("userData")
-        val userData: UserData = UserData()
+        val userData: UserData = UserData(),
+        @SerializedName("reputationData")
+        val reputation: Reputation = Reputation()
 )
