@@ -1,16 +1,21 @@
 package com.tokopedia.play.broadcaster.util
 
+import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.Window
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.ColorRes
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -187,4 +192,50 @@ internal fun Fragment.cleanBackstack() {
 
 internal fun Uri.isLocal(): Boolean {
     return scheme in arrayOf(ContentResolver.SCHEME_CONTENT, ContentResolver.SCHEME_FILE)
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+internal fun Dialog.setNavigationBarColors(colorResArray: IntArray) {
+    val theWindow: Window? = window
+    if (theWindow != null) {
+        val metrics = android.util.DisplayMetrics()
+        theWindow.windowManager.defaultDisplay.getMetrics(metrics)
+        val dimDrawable = GradientDrawable()
+
+        val drawableList = colorResArray.map {
+            val drawable = GradientDrawable()
+            drawable.shape = GradientDrawable.RECTANGLE
+            drawable.setColor(MethodChecker.getColor(context, it))
+            return@map drawable
+        }
+
+        val layers = arrayOf<Drawable>(dimDrawable) + drawableList
+        val windowBackground = LayerDrawable(layers)
+        windowBackground.setLayerInsetTop(1, metrics.heightPixels)
+        theWindow.setBackgroundDrawable(windowBackground)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+internal fun Dialog.setNavigationBarColor(@ColorRes colorRes: Int) {
+    setNavigationBarColors(intArrayOf(colorRes))
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+internal fun Dialog.setDarkNavigationIcon() {
+    val decorView = window?.decorView
+    if (decorView != null) {
+        decorView.systemUiVisibility = decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+internal fun Dialog.updateNavigationBarColors(colorResArray: IntArray, useDarkIcon: Boolean = true) {
+    setNavigationBarColors(colorResArray)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && useDarkIcon) setDarkNavigationIcon()
+}
+
+@RequiresApi(Build.VERSION_CODES.M)
+internal fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIcon: Boolean = true) {
+    updateNavigationBarColors(intArrayOf(colorRes), useDarkIcon)
 }
