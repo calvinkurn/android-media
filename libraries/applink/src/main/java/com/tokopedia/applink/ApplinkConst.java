@@ -369,7 +369,13 @@ public interface ApplinkConst {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
+        String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
+        String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
+        String TOPADS_CREATE_AUTO_ADS = "sellerapp://topads/create-autoads";
+        String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
+        String TOPADS_CREDIT_HISTORY = "sellerapp://topads/history-credit";
+        String TOPADS_CREATE_CHOOSER = "sellerapp://topads/ad-picker";
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
