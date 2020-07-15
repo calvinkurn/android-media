@@ -4,7 +4,7 @@ package com.tokopedia.charts.model
  * Created By @ilhamsuaib on 25/06/20
  */
 
-data class YAxisLabel(
-        val yValue: Float,
-        val yLabel: String
+data class AxisLabel(
+        val value: Float,
+        val valueFmt: String
 )

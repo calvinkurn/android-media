@@ -20,7 +20,7 @@ import com.tokopedia.charts.config.linechart.model.LegendConfig
 import com.tokopedia.charts.config.linechart.model.LineChartConfig
 import com.tokopedia.charts.config.linechart.model.XAxisConfig
 import com.tokopedia.charts.model.LineChartEntry
-import com.tokopedia.charts.model.YAxisLabel
+import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.utils.XAxisLabelFormatter
 import com.tokopedia.charts.utils.YAxisLabelFormatter
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -155,8 +155,8 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         lineChart.axisRight.axisMinimum = minY
     }
 
-    fun setCustomYAxisLabel(labels: List<YAxisLabel>) {
-        val minY = labels.minBy { it.yValue }?.yValue ?: 0f
+    fun setCustomYAxisLabel(labels: List<AxisLabel>) {
+        val minY = labels.minBy { it.value }?.value ?: 0f
         lineChart.axisLeft.axisMinimum = minY
         lineChart.axisRight.axisMinimum = minY
 
