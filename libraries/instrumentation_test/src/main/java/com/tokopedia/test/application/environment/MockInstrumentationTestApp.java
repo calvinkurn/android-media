@@ -86,17 +86,19 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     public void reInitMockResponse(HashMap<String, String> mapMockResponse) {
         if (GlobalConfig.DEBUG) {
             List<Interceptor> testInterceptors = new ArrayList<>();
-            testInterceptors.add(new MockInterceptor(
-                    new MockModelConfig() {
-                        @NotNull
-                        @Override
-                        public MockModelConfig createMockModel(@NotNull Context context) {
-                            for (Map.Entry<String,String> entry : mapMockResponse.entrySet())
-                                addMockResponse(entry.getKey(), entry.getValue(), FIND_BY_CONTAINS);
-                            return this;
-                        }
-                    }
-            ));
+            MockModelConfig mockModelConfig = new MockModelConfig() {
+                @NotNull
+                @Override
+                public MockModelConfig createMockModel(@NotNull Context context) {
+                    for (Map.Entry<String,String> entry : mapMockResponse.entrySet())
+                        addMockResponse(entry.getKey(), entry.getValue(), FIND_BY_CONTAINS);
+                    return this;
+                }
+            };
+
+            mockModelConfig.createMockModel(this);
+
+            testInterceptors.add(new MockInterceptor(mockModelConfig));
 
             GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
         }

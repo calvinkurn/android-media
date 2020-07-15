@@ -16,24 +16,6 @@ buildscript {
 }
 
 android {
-    flavorDimensions "tier", "client"
-    productFlavors {
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
-        }
-    }
-
     defaultConfig {
         multiDexEnabled true
     }
@@ -134,3 +116,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: "../../../compile-instrument-test.gradle"

@@ -28,33 +28,9 @@ android {
         jvmTarget = "1.8"
     }
 
-    flavorDimensions "tier", "client"
-    productFlavors {
-        benchmark {
-            dimension "client"
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
-        }
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-        }
-    }
-
     defaultConfig {
-        defaultConfig {
-            multiDexEnabled true
-            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
-        }
+        multiDexEnabled true
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['targetModuleName': 'TkpdHome']
@@ -230,5 +206,6 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 //apply from: '../../../jacoco_task.gradle'
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
