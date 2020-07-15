@@ -106,7 +106,17 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun onInterceptBackPressed(): Boolean {
-        return false
+        return when {
+            selectedProductPage.isShown -> {
+                selectedProductPage.hide()
+                true
+            }
+            currentFragment !is PlayEtalaseListFragment -> {
+                psbSearch.cancel()
+                true
+            }
+            else -> false
+        }
     }
 
     override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {

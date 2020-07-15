@@ -108,7 +108,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     override fun onInterceptBackPressed(): Boolean {
-        return false
+        return if (selectedProductPage.isShown) {
+            selectedProductPage.hide()
+            true
+        } else false
     }
 
     fun setListener(listener: ProductSetupListener) {
