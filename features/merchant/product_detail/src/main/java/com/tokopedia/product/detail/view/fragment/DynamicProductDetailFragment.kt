@@ -1683,7 +1683,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToTradein() {
-        tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
+        if (tradeinDialog?.isAdded == false) {
+            tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
+        }
     }
 
     override fun onVariantGuideLineClicked(url: String) {
@@ -2789,8 +2791,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
         val accessDialog = ProductAccessRequestDialogFragment()
-        accessDialog.setBodyText(getString(com.tokopedia.common_tradein.R.string.tradein_text_permission_description))
-        accessDialog.setTitle(getString(com.tokopedia.common_tradein.R.string.tradein_text_request_access))
+        accessDialog.setBodyText(getString(R.string.pdp_tradein_text_permission_description))
+        accessDialog.setTitle(getString(R.string.pdp_tradein_text_request_access))
         accessDialog.setNegativeButton("")
         accessDialog.setListener(this)
         return accessDialog

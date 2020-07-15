@@ -12,6 +12,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
@@ -67,7 +68,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                             discoveryResponseList.postValue(Success(it.components))
 
                         }
-                        setPageInfo(it.pageInfo)
+                        setPageInfo(it)
                     }
                 },
                 onError = {
@@ -93,11 +94,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoveryUIConfig.postValue(Success(config ?: REACT_NATIVE))
     }
 
-    private fun setPageInfo(pageInfo: PageInfo?) {
-        if (pageInfo != null) {
-            pageType = pageInfo.type ?: ""
-            pagePath = pageInfo.path ?: ""
-            discoveryPageInfo.value = Success(pageInfo)
+    private fun setPageInfo(discoPageData: DiscoveryPageData?) {
+        discoPageData?.pageInfo?.let {pageInfoData ->
+            pageType = pageInfoData.type ?: ""
+            pagePath = pageInfoData.path ?: ""
+            pageInfoData.additionalInfo = discoPageData.additionalInfo
+            discoveryPageInfo.value = Success(pageInfoData)
         }
     }
 

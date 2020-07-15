@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
+import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -173,15 +174,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     fun reSync() {
         discoveryViewModel.getDiscoveryData()
-    }
-
-    private fun sendOpenScreenAnalytics(identifier: String?) {
-        if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, isUserLoggedIn())
-        } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, isUserLoggedIn())
-        }
-        openScreenStatus = true
     }
 
     private fun setUpObserver() {
@@ -387,27 +379,23 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
-                        sendOpenScreenAnalytics(it.data.identifier)
+                        sendOpenScreenAnalytics(it.data.identifier, it.data.additionalInfo)
                     }
-
-                    is Fail -> {
-                        sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
-                    }
+                    else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
             }
         })
-
-        if (!openScreenStatus) {
-            when (val discoPageInfo = discoveryViewModel.getDiscoveryPageInfo().value) {
-                is Success -> {
-                    sendOpenScreenAnalytics(discoPageInfo.data.identifier)
-                }
-                is Fail -> {
-                    sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
-                }
-            }
-        }
     }
+
+    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+        if (identifier.isNullOrEmpty()) {
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn())
+        } else {
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn())
+        }
+        openScreenStatus = true
+    }
+
 
     override fun onStop() {
         super.onStop()
