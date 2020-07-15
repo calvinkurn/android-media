@@ -21,6 +21,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
+import com.tokopedia.common_digital.common.widget.DigitalSearchInputView
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.design.text.SearchInputView
 import java.util.*
@@ -28,6 +29,7 @@ import java.util.*
 open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         NumberListAdapter.OnClientNumberClickListener,
         SearchInputView.Listener,
+        DigitalSearchInputView.DigitalSearchInputListener,
         SearchInputView.FocusChangeListener,
         SearchInputView.ResetListener {
 
@@ -35,7 +37,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
     private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
     private lateinit var clientNumberType: String
 
-    protected lateinit var searchInputNumber: SearchInputView
+    protected lateinit var searchInputNumber: DigitalSearchInputView
     protected lateinit var favNumberRecyclerView: RecyclerView
 
     private var number: String = ""
@@ -84,6 +86,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
             searchInputNumber.searchTextView.setSelection(number.length)
         }
         searchInputNumber.setListener(this)
+        searchInputNumber.setDigitalSearchInputListener(this)
         searchInputNumber.setFocusChangeListener(this)
         searchInputNumber.setResetListener(this)
         searchInputNumber.searchTextView.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -147,6 +150,10 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
 
     override fun onSearchTextChanged(text: String?) {
         text?.let { filterData(it) }
+    }
+
+    override fun onSearchDone(text: String) {
+
     }
 
     override fun onFocusChanged(hasFocus: Boolean) {
