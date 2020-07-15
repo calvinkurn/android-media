@@ -26,8 +26,6 @@ include "features:recharge:digitalproduct"
 
 include "features:discovery:discovery_common"
 include "features:discovery:category_common"
-include "features:discovery:flashsale_management"
-include 'features:discovery:flashsale_management_common'
 include 'features:discovery:productcard'
 include 'features:discovery:carousel_productcard'
 include 'features:discovery:recommendation_widget_common'
@@ -54,7 +52,6 @@ include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
-include "features:merchant:gold_merchant_resource"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:product_detail"
 include "features:merchant:product_detail_common"

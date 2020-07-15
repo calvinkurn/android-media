@@ -30,6 +30,7 @@ abstract class BaseTracking {
     protected object Category{
         const val KEY = "eventCategory"
         const val HOMEPAGE = "homepage"
+        const val HOMEPAGE_TOPADS = "homepage-topads"
     }
 
     protected object Action{

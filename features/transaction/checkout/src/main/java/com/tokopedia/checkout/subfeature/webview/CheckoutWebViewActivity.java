@@ -28,7 +28,7 @@ public class CheckoutWebViewActivity extends BaseSimpleWebViewActivity {
     private int mCallerCode = -1;
 
     public static Intent newInstance(Context context, String url, String title) {
-        return newInstance(context, url, null, -1);
+        return newInstance(context, url, title, -1);
     }
 
     /**

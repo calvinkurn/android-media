@@ -49,4 +49,6 @@ interface HomeTypeFactory {
     fun type(homeRetryModel: HomeRetryModel): Int
 
     fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int
+
+    fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int
 }
