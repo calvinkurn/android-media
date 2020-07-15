@@ -1,21 +1,24 @@
 package com.tokopedia.sellerorder.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
+import com.tokopedia.sellerorder.common.domain.mapper.SomUserRoleMapper
 import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleResponse
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class SomGetUserRoleUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomGetUserRoleResponse>) {
+class SomGetUserRoleUseCase @Inject constructor(
+        private val useCase: GraphqlUseCase<SomGetUserRoleResponse>,
+        private val mapper: SomUserRoleMapper) {
 
-    suspend fun execute(): Result<SomGetUserRoleDataModel> {
+    suspend fun execute(): Result<SomGetUserRoleUiModel> {
         useCase.setGraphqlQuery(QUERY)
         useCase.setTypeClass(SomGetUserRoleResponse::class.java)
 
         return try {
-            val result = useCase.executeOnBackground().goldGetUserShopInfo?.data ?: SomGetUserRoleDataModel()
+            val result = mapper.mapDomainToUiModel(useCase.executeOnBackground().goldGetUserShopInfo?.data)
             Success(result)
         } catch (throwable: Throwable) {
             Fail(throwable)

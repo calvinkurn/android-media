@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.list.data.model.*
@@ -46,8 +46,8 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val orderListResult: LiveData<Result<SomListOrder.Data.OrderList>>
         get() = _orderListResult
 
-    private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleDataModel>>()
-    val userRoleResult: LiveData<Result<SomGetUserRoleDataModel>>
+    private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
+    val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
         get() = _userRoleResult
 
     private var getUserRolesJob: Job? = null

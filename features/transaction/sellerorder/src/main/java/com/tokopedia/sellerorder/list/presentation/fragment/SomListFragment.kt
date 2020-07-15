@@ -40,9 +40,8 @@ import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
-import com.tokopedia.sellerorder.common.domain.model.Roles
-import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -868,10 +867,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onListItemClicked(orderId: String) {
         eventClickOrder(tabActive)
         val userRolesResult = somListViewModel.userRoleResult.value
-        val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else SomGetUserRoleDataModel()
+        val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else null
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
-            putExtra(PARAM_USER_ROLES, userRoles)
+            userRoles?.let {
+                putExtra(PARAM_USER_ROLES, it)
+            }
             startActivityForResult(this, FLAG_DETAIL)
         }
     }

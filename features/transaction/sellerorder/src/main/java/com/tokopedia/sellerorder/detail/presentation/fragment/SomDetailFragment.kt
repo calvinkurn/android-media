@@ -43,9 +43,9 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
-import com.tokopedia.sellerorder.common.domain.model.Roles
-import com.tokopedia.sellerorder.common.domain.model.SomGetUserRoleDataModel
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.model.Roles
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
@@ -254,7 +254,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
-            val userRoles = arguments?.getParcelable<SomGetUserRoleDataModel?>(PARAM_USER_ROLES)
+            val userRoles = arguments?.getParcelable<SomGetUserRoleUiModel?>(PARAM_USER_ROLES)
             if (userRoles != null) {
                 somDetailViewModel.setUserRoles(userRoles)
             } else {
@@ -1454,7 +1454,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 
-    private fun isUserRoleFetched(value: Result<SomGetUserRoleDataModel>?): Boolean {
+    private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean {
         return when (value) {
             is Success -> true
             else -> false
