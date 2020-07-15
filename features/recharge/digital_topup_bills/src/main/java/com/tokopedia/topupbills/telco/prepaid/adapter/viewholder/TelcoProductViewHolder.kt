@@ -102,7 +102,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun setItemSelected(element: TelcoProduct) {
         with(itemView) {
             if (::adapter.isInitialized) {
-                isSelected = adapterPosition == adapter.selectedPosition
+                isSelected = adapterPosition == adapter.selectedPosition && !isProductOutOfStock(element.attributes.status)
 
                 layout_product.setOnClickListener {
                     listener.onClickItemProduct(element, adapterPosition)
