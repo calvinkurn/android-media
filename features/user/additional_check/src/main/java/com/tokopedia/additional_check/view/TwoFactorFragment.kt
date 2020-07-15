@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.data.TwoFactorResult
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
 import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -43,10 +45,9 @@ class TwoFactorFragment: BaseDaggerFragment() {
     }
 
     private fun renderViewByType(mView: View?){
-        if(model?.isHavePhone == false){
-            renderPhoneView(mView)
-        }else if(model?.isHavePin == false){
-            renderPinView(mView)
+        when(model?.popupType){
+            POPUP_TYPE_PIN -> renderPinView(mView)
+            POPUP_TYPE_PHONE -> renderPhoneView(mView)
         }
     }
 

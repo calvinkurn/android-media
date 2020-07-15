@@ -21,13 +21,15 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
                 Context.MODE_PRIVATE)
     }
 
-    fun setInterval(interval: Long){
-        sharedPrefs?.edit()?.putLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, interval)?.apply()
+    fun setInterval(interval: Int){
+        val days = interval * 24 * 60 * 60 * 1000
+        val nextCheck = days + System.currentTimeMillis()
+        sharedPrefs?.edit()?.putLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, nextCheck)?.apply()
     }
 
     fun isNeedCheck(): Boolean {
-        val interval = sharedPrefs?.getLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, 0L)
-        return System.currentTimeMillis() > interval ?: 0L
+        val interval = sharedPrefs?.getLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, 0)
+        return System.currentTimeMillis() > interval ?: 0
     }
 
 }

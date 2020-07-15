@@ -15,6 +15,7 @@ import dagger.Component
 @Component(modules = [AdditionalCheckModules::class,
     AdditionalCheckUseCaseModules::class,
     AdditionalCheckViewmodelModules::class,
+    AdditionalCheckQueryModules::class,
     SessionModule::class], dependencies = [BaseAppComponent::class])
 interface AdditionalCheckComponents {
     fun inject(view: BottomSheetCheck?)

@@ -26,8 +26,8 @@ class BottomSheetCheckViewModel @Inject constructor (@Named(SessionModule.SESSIO
 
     fun check(onSuccess: (TwoFactorResult) -> Unit, onError: (Throwable) -> Unit) {
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
-            additionalCheckUseCase.getMockBottomSheetSuccess(onSuccess = {
-                additionalCheckPreference.setInterval(it.twoFactorResult?.interval ?: 0L)
+            additionalCheckUseCase.getBottomSheetData(onSuccess = {
+                additionalCheckPreference.setInterval(it.twoFactorResult?.interval ?: 0)
                 onSuccess(it.twoFactorResult!!)
             }, onError = {
                 onError(it)

@@ -1,7 +1,0 @@
-query generateKey($module: String!) {
-    generate_key(module: $module) {
-        key
-        server_timestamp
-        error
-    }
-}

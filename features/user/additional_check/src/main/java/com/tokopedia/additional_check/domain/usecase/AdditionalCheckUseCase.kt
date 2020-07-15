@@ -16,18 +16,18 @@ import javax.inject.Inject
  */
 
 class AdditionalCheckUseCase @Inject constructor(
-//        private val rawQueries: Map<String, String>,
+        private val rawQueries: Map<String, String>,
         graphqlRepository: GraphqlRepository)
         : GraphqlUseCase<GetObjectPojo>(graphqlRepository) {
 
     fun getBottomSheetData(onSuccess: (GetObjectPojo) -> Unit, onError: (Throwable) -> Unit){
-//        rawQueries[AdditionalCheckConstants.QUERY_CHECK_BOTTOM_SHEET]?.let { query ->
-//            setTypeClass(GetObjectPojo::class.java)
-//            setGraphqlQuery(query)
-//            execute({
-//                onSuccess(it)
-//            }, onError)
-//        }
+        rawQueries[AdditionalCheckConstants.QUERY_CHECK_BOTTOM_SHEET]?.let { query ->
+            setTypeClass(GetObjectPojo::class.java)
+            setGraphqlQuery(query)
+            execute({
+                onSuccess(it)
+            }, onError)
+        }
     }
 
     fun getMockBottomSheetSuccess(onSuccess: (GetObjectPojo) -> Unit, onError: (Throwable) -> Unit){

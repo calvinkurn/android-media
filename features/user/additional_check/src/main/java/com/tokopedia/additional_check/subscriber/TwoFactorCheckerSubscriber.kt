@@ -8,6 +8,7 @@ import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.di.AdditionalCheckModules
 import com.tokopedia.additional_check.di.AdditionalCheckUseCaseModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.additional_check.view.BottomSheetCheckViewModel
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.applink.RouteManager
@@ -34,6 +35,11 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 .build()
                 .inject(this)
 
+        viewModel.check(onSuccess = {
+            handleResponse(activity, twoFactorResult = it)
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
@@ -45,7 +51,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun handleResponse(activity: Activity?, twoFactorResult: TwoFactorResult){
-        if(!twoFactorResult.isHavePin || !twoFactorResult.isHavePhone){
+        if(twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN){
             val i = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER).apply {
                 putExtras(Bundle().apply {
                     putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
@@ -59,11 +65,11 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     override fun onActivityResumed(activity: Activity?) {
 //        if(!isShown) {
-            viewModel.check(onSuccess = {
-                handleResponse(activity, twoFactorResult = it)
-            }, onError = {
-                it.printStackTrace()
-            })
+//            viewModel.check(onSuccess = {
+//                handleResponse(activity, twoFactorResult = it)
+//            }, onError = {
+//                it.printStackTrace()
+//            })
 //        }
     }
 

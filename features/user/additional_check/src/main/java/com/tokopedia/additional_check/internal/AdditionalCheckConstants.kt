@@ -27,5 +27,11 @@ object AdditionalCheckConstants {
 
     const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
 
-    const val QUERY_CHECK_BOTTOM_SHEET = "query_check_bottomsheet"
+    const val QUERY_CHECK_BOTTOM_SHEET = "showInterrupt"
+
+    const val POPUP_TYPE_NONE = 0
+    const val POPUP_TYPE_PIN = 1
+    const val POPUP_TYPE_PHONE = 2
+    const val POPUP_TYPE_BOTH = 3
+
 }

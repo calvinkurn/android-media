@@ -10,21 +10,16 @@ import kotlinx.android.parcel.Parcelize
  */
 
 data class GetObjectPojo(
-        @SerializedName("status")
-        val status: Boolean = false,
-
-        @SerializedName("data")
+        @SerializedName("show_interrupt")
         val twoFactorResult: TwoFactorResult? = null
 )
 
 @Parcelize
 data class TwoFactorResult(
         @SerializedName("interval")
-        val interval: Long = 0L,
-        @SerializedName("isSkipable")
-        val isSkipable: Boolean = false,
+        val interval: Int = 0,
+        @SerializedName("show_skip_button")
+        val showSkipButton: Boolean = false,
         @SerializedName("isHavePin")
-        val isHavePin: Boolean = false,
-        @SerializedName("isHavePhone")
-        val isHavePhone: Boolean = false
+        val popupType: Int = 0
 ): Parcelable
