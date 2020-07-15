@@ -81,7 +81,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private var statusBarCallback: StatusBarCallback? = null
     private var performanceMonitoringSellerHomelayout: PerformanceMonitoring? = null
-    private var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
+
+    var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -126,18 +127,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
-    }
-
-    fun startHomeLayoutNetworkMonitoring() {
-        performanceMonitoringSellerHomeLayoutPlt?.startNetworkPerformanceMonitoring()
-    }
-
-    fun startHomeLayoutRenderMonitoring() {
-        performanceMonitoringSellerHomeLayoutPlt?.startRenderPerformanceMonitoring()
-    }
-
-    fun stopHomeLayoutRenderMonitoring() {
-        performanceMonitoringSellerHomeLayoutPlt?.stopRenderPerformanceMonitoring()
     }
 
     private fun setupDefaultPage() {
