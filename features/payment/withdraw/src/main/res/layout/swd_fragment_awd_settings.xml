@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/layout_lvl2" />
+
+    <ImageView
+        android:id="@+id/rekening_premium_ticker_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/swd_fg_awd_ticker"
+        android:contentDescription="Tokopedia"
+        app:layout_constraintBottom_toBottomOf="@id/rekening_premium_link_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/cross_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:contentDescription="Tokopedia"
+        android:tint="#6C727C"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_system_close_default" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rekening_premium_ticker_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:text="@string/swd_withdrawal_your_balance_according_schedule"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintEnd_toStartOf="@id/cross_img"
+        app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rekening_premium_link_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/layout_lvl3"
+        android:text="@string/swd_exclusive_for_premium_acc"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintEnd_toStartOf="@id/cross_img"
+        app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/rekening_premium_ticker_title"
+        app:typographyType="body_2" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/terms_and_condition_divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rekening_premium_ticker_bg">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Neutral_N0"
+            android:orientation="vertical">
+
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/left_inner_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/layout_lvl2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_inner_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/layout_lvl2" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/auto_wd_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/swd_automatic_withdrawal"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toStartOf="@id/left_inner_guideline"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_1"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/auto_wd_subheading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_with_all_balance_according_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toStartOf="@id/left_inner_guideline"
+                app:layout_constraintTop_toBottomOf="@id/auto_wd_heading"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@id/auto_wd_heading"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/jadwal_penarikan_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:contentDescription="Tokopedia"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toStartOf="@id/left_inner_guideline"
+                app:layout_constraintTop_toBottomOf="@id/auto_wd_subheading"
+                app:srcCompat="@drawable/swd_ic_time" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/jadwal_penarikan_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#F531353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/auto_wd_subheading"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/ubah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:text="Ubah"
+                android:textColor="#03AC0E"
+                app:layout_constraintEnd_toEndOf="@id/right_inner_guideline"
+                app:layout_constraintTop_toBottomOf="@id/auto_wd_subheading"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/schedule_type_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/jadwal_penarikan_title"
+                app:typographyType="body_2"
+                tools:text="Hairan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/schedule_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/schedule_type_title"
+                app:typographyType="body_2"
+                tools:text="Tiap jam 17:00" />
+
+            <ImageView
+                android:id="@+id/rekening_tujuan_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:contentDescription="Tokopedia"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toStartOf="@id/left_inner_guideline"
+                app:layout_constraintTop_toBottomOf="@id/schedule_type"
+                app:srcCompat="@drawable/ic_transaction" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/rekening_tujuan_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#F531353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/schedule_type"
+                app:typographyType="body_2"
+                tools:text="Rekening Tujuan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bank_acc_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/rekening_tujuan_img"
+                app:layout_constraintTop_toBottomOf="@id/rekening_tujuan_title"
+                app:typographyType="body_2"
+                tools:text="Hairan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bank_acc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/bank_acc_title"
+                app:typographyType="body_2"
+                tools:text="Tiap jam 17:00" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bank_acc_line_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/bank_acc"
+                app:typographyType="body_2"
+                tools:text="Tiap jam 17:00" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/bank_acc_line_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:text="@string/swd_withdrawal_schedule"
+                android:textColor="#AD31353B"
+                app:layout_constraintLeft_toLeftOf="@id/left_inner_guideline"
+                app:layout_constraintStart_toEndOf="@id/jadwal_penarikan_img"
+                app:layout_constraintTop_toBottomOf="@id/bank_acc_line_2"
+                app:typographyType="body_2"
+                tools:text="Tiap jam 17:00" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/cta_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:text="Simpan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/terms_and_condition_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:text="@string/swd_awd_terms_and_condition_title"
+        android:textColor="#AD31353B"
+        app:layout_constraintBottom_toTopOf="@id/cta_button"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline"
+        app:layout_constraintLeft_toLeftOf="@id/left_guideline"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:typographyType="body_3" />
+
+    <View
+        android:id="@+id/terms_and_condition_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:background="@drawable/swd_top_shadow"
+        app:layout_constraintBottom_toTopOf="@id/terms_and_condition_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

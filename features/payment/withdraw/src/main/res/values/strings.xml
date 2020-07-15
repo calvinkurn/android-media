@@ -89,5 +89,12 @@
     <string name="swd_label_no_ticker">%s -  ticker : tidak ada ticker rekening premium</string>
 
 
+    <string name="swd_automatic_withdrawal">Penarikan otomatis</string>
+    <string name="swd_with_all_balance_according_schedule">Cairkan seluruh saldo sesuai jadwal</string>
+    <string name="swd_withdrawal_schedule">Jadwal Penarikan</string>
+    <string name="swd_awd_terms_and_condition_title">Dengan klik \"Simpan\", kamu menyetujui Syarat dan Ketentuan tarik saldo otomatis.</string>
+    <string name="swd_withdrawal_your_balance_according_schedule">Cairkan Saldo Penghasilan ke rekeningmu sesuai jadwal</string>
+    <string name="swd_exclusive_for_premium_acc">Eksklusif khusus Rekening Premium</string>
+
 
 </resources>

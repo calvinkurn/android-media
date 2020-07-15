@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/spacing_lvl6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/spacing_lvl4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/spacing_lvl4" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/right_guideline"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/top_guideline"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Harian" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="#AD31353B"
+        app:layout_constraintEnd_toStartOf="@id/right_guideline"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/info_title"
+        app:typographyType="body_2"
+        tools:text="Tiap jam 17:00" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline"
+        app:layout_constraintTop_toTopOf="@id/top_guideline"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
