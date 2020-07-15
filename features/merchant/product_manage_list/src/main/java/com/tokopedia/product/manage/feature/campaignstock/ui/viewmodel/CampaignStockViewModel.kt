@@ -189,8 +189,8 @@ class CampaignStockViewModel @Inject constructor(
 
         val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
 
-        mNonVariantStockLiveData.value = otherCampaignStockData.stock
-        mNonVariantIsActiveLiveData.value = otherCampaignStockData.isActive
+        mNonVariantStockLiveData.postValue(otherCampaignStockData.stock)
+        mNonVariantIsActiveLiveData.postValue(otherCampaignStockData.isActive)
 
         return NonVariantStockAllocationResult(
                 stockAllocationData,
@@ -206,10 +206,14 @@ class CampaignStockViewModel @Inject constructor(
         val getProductVariantData = async { getProductVariantUseCase.execute(getProductVariantUseCaseRequestParams) }
         val otherCampaignStockData = async { otherCampaignStockDataUseCase.executeOnBackground() }
         val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(getProductVariantData.await().getProductV3).also {
-            mEditVariantCampaignParamLiveData.value = it.variants.map { variant ->
-                EditVariantCampaignProductParam(variant.id, variant.status, variant.stock)
-            }
-            mEditVariantResultLiveData.value = ProductManageVariantMapper.mapVariantsToEditResult(productIds.firstOrNull().orEmpty(), it)
+            mEditVariantCampaignParamLiveData.postValue(
+                    it.variants.map { variant ->
+                        EditVariantCampaignProductParam(variant.id, variant.status, variant.stock)
+                    }
+            )
+            mEditVariantResultLiveData.postValue(
+                    ProductManageVariantMapper.mapVariantsToEditResult(productIds.firstOrNull().orEmpty(), it)
+            )
         }
 
         return VariantStockAllocationResult(

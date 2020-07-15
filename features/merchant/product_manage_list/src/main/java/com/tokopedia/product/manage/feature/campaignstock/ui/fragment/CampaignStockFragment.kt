@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +25,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEv
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
@@ -64,6 +67,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             }
         }
     }
+
+    private var productName = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_campaign_stock, container, false)
@@ -114,17 +119,29 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                     showResult()
                 }
                 is Fail -> {
-                    //Todo: finish activity with cancelled result
+                    activity?.run {
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
+                    }
                 }
             }
         })
         mViewModel.productUpdateResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is Success -> {
-
+                    val resultIntent = Intent().apply {
+                        putExtra(ProductManageListConstant.EXTRA_PRODUCT_NAME, productName)
+                    }
+                    activity?.run {
+                        setResult(Activity.RESULT_OK, resultIntent)
+                        finish()
+                    }
                 }
                 is Fail -> {
-
+                    activity?.run {
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
+                    }
                 }
             }
         })
@@ -170,6 +187,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 productImageUrl.let { url ->
                     img_campaign_stock_product?.loadImageRounded(url)
                 }
+                this@CampaignStockFragment.productName = productName
                 tv_campaign_stock_product_name?.text = productName
                 tv_campaign_stock_product_total_stock_count?.text = totalStock
             }

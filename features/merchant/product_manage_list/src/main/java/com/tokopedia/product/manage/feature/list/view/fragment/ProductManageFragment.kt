@@ -61,6 +61,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
@@ -955,7 +956,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onClickEditStockButton(product: ProductViewModel) {
         if (product.hasStockReserved) {
             context?.run {
-                startActivity(CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)))
+                startActivityForResult(
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
             val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(product, this) }
@@ -975,7 +978,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
         if (product.hasStockReserved) {
             context?.run {
-                startActivity(CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)))
+                startActivityForResult(
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
             val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
@@ -1326,6 +1331,28 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         }
                     }
                 }
+                REQUEST_CODE_CAMPAIGN_STOCK ->
+                    when(resultCode) {
+                        Activity.RESULT_OK -> {
+                            val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
+                            Toaster.build(
+                                    coordinatorLayout,
+                                    successMessage,
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_NORMAL)
+                                    .show()
+                        }
+                        Activity.RESULT_CANCELED -> {
+                            Toaster.build(
+                                    coordinatorLayout,
+                                    getString(R.string.product_manage_campaign_stock_error_toast),
+                                    Snackbar.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                                    .show()
+                        }
+                        else -> {}
+                    }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
         }
