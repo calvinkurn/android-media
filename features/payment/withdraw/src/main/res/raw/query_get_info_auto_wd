@@ -1,0 +1,11 @@
+query GetInfoAutoWD {
+  GetInfoAutoWD {
+    code
+    message
+    data{
+      title
+      desc
+      icon
+    }
+  }
+}

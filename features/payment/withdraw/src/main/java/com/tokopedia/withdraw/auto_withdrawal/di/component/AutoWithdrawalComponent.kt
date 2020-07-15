@@ -1,0 +1,24 @@
+package com.tokopedia.withdraw.auto_withdrawal.di.component
+
+import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.withdraw.auto_withdrawal.di.module.GQLQueryModule
+import com.tokopedia.withdraw.auto_withdrawal.di.module.ViewModelModule
+import com.tokopedia.withdraw.auto_withdrawal.di.scope.AutoWithdrawalScope
+import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
+import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
+import dagger.Component
+
+
+@AutoWithdrawalScope
+@Component(dependencies = [ViewModelModule::class,
+    GQLQueryModule::class,
+    BaseAppComponent::class])
+interface AutoWithdrawalComponent {
+    @ApplicationContext
+    fun getContext(): Context
+
+    fun inject(activity: AutoWithdrawalActivity)
+    fun inject(autoWithdrawalSettingsFragment: AutoWithdrawalSettingsFragment)
+}

@@ -1,0 +1,45 @@
+package com.tokopedia.withdraw.auto_withdrawal.presentation.activity
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
+import com.tokopedia.withdraw.auto_withdrawal.di.component.DaggerAutoWithdrawalComponent
+import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
+import com.tokopedia.withdraw.R
+import kotlinx.android.synthetic.main.swd_activity_auto_withdrawal.*
+
+class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawalComponent> {
+
+    private lateinit var autoWithdrawalComponent: AutoWithdrawalComponent
+
+    override fun getNewFragment(): Fragment? {
+        val bundle = Bundle()
+        auto_wd_header.isShowBackButton = true
+        return AutoWithdrawalSettingsFragment.getInstance(bundle)
+    }
+
+    override fun getScreenName(): String = SCREEN_NAME
+
+    companion object {
+        const val SCREEN_NAME = "Auto Withdrawal Settings"
+    }
+
+
+    override fun getLayoutRes() = R.layout.swd_activity_auto_withdrawal
+
+    override fun getToolbarResourceID() = R.id.auto_wd_header
+
+    override fun getParentViewResourceID(): Int = R.id.auto_wd_view
+
+
+    override fun getComponent(): AutoWithdrawalComponent {
+        if (!::autoWithdrawalComponent.isInitialized)
+            autoWithdrawalComponent = DaggerAutoWithdrawalComponent.builder()
+                    .baseAppComponent((applicationContext as BaseMainApplication)
+                            .baseAppComponent).build()
+        return autoWithdrawalComponent
+    }
+}
