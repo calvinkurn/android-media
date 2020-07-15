@@ -7,77 +7,62 @@ import com.google.gson.annotations.SerializedName
 data class GetBarChartDataResponse(
         @Expose
         @SerializedName("fetchBarChartWidgetData")
-        val fetchBarChartWidgetData: FetchBarChartWidgetDataModel
+        val fetchBarChartWidgetData: FetchBarChartWidgetDataModel = FetchBarChartWidgetDataModel()
 )
 
 data class FetchBarChartWidgetDataModel(
         @Expose
         @SerializedName("data")
-        val `data`: List<BarChartWidgetDataModel>
+        val `data`: List<BarChartWidgetDataModel> = emptyList()
 )
 
 data class BarChartWidgetDataModel(
         @Expose
         @SerializedName("data")
-        val `data`: BarChartDataModel,
+        val `data`: BarChartDataModel = BarChartDataModel(),
         @Expose
         @SerializedName("dataKey")
-        val dataKey: String,
+        val dataKey: String = "",
         @Expose
         @SerializedName("errorMsg")
-        val errorMsg: String
+        val errorMsg: String = ""
 )
 
 data class BarChartDataModel(
         @Expose
         @SerializedName("axes")
-        val axes: BarChartAxesModel,
+        val axes: BarChartAxesModel = BarChartAxesModel(),
         @Expose
         @SerializedName("metrics")
-        val metrics: List<BarChartMetricModel>,
+        val metrics: List<BarChartMetricModel> = emptyList(),
         @Expose
         @SerializedName("summary")
-        val summary: BarChartSummaryModel
+        val summary: ChartSummaryModel = ChartSummaryModel()
 )
 
 data class BarChartAxesModel(
         @Expose
         @SerializedName("xLabel")
-        val xLabel: List<BarChartValueModel>,
+        val xLabel: List<BarChartValueModel> = emptyList(),
         @Expose
         @SerializedName("yLabel")
-        val yLabel: List<BarChartValueModel>
+        val yLabel: List<BarChartValueModel> = emptyList()
 )
 
 data class BarChartMetricModel(
         @Expose
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
         @Expose
         @SerializedName("value")
-        val value: List<BarChartValueModel>
+        val value: List<BarChartValueModel> = emptyList()
 )
 
 data class BarChartValueModel(
         @Expose
         @SerializedName("value")
-        val value: Int,
+        val value: Int = 0,
         @Expose
         @SerializedName("valueFmt")
-        val valueFmt: String
-)
-
-data class BarChartSummaryModel(
-        @Expose
-        @SerializedName("diffPercentage")
-        val diffPercentage: Int,
-        @Expose
-        @SerializedName("diffPercentageFmt")
-        val diffPercentageFmt: String,
-        @Expose
-        @SerializedName("value")
-        val value: Int,
-        @Expose
-        @SerializedName("valueFmt")
-        val valueFmt: String
+        val valueFmt: String = ""
 )

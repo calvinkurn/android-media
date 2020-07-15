@@ -7,68 +7,53 @@ import com.google.gson.annotations.SerializedName
 data class GetPieChartDataResponse(
         @Expose
         @SerializedName("fetchPieChartWidgetData")
-        val fetchPieChartWidgetData: FetchPieChartWidgetDataModel
+        val fetchPieChartWidgetData: FetchPieChartWidgetDataModel = FetchPieChartWidgetDataModel()
 )
 
 data class FetchPieChartWidgetDataModel(
         @Expose
         @SerializedName("data")
-        val `data`: List<PieChartWidgetDataModel>
+        val `data`: List<PieChartWidgetDataModel> = emptyList()
 )
 
 data class PieChartWidgetDataModel(
         @Expose
         @SerializedName("data")
-        val `data`: PieChartDataModel,
+        val `data`: PieChartDataModel = PieChartDataModel(),
         @Expose
         @SerializedName("dataKey")
-        val dataKey: String,
+        val dataKey: String = "",
         @Expose
         @SerializedName("errorMsg")
-        val errorMsg: String
+        val errorMsg: String = ""
 )
 
 data class PieChartDataModel(
         @Expose
         @SerializedName("item")
-        val item: List<PieChartItemModel>,
+        val item: List<PieChartItemModel> = emptyList(),
         @Expose
         @SerializedName("summary")
-        val summary: PieChartSummary
+        val summary: ChartSummaryModel = ChartSummaryModel()
 )
 
 data class PieChartItemModel(
         @Expose
         @SerializedName("color")
-        val color: String,
+        val color: String = "",
         @Expose
         @SerializedName("legend")
-        val legend: String,
+        val legend: String = "",
         @Expose
         @SerializedName("percentage")
-        val percentage: Int,
+        val percentage: Int = 0,
         @Expose
         @SerializedName("percentageFmt")
-        val percentageFmt: String,
+        val percentageFmt: String = "",
         @Expose
         @SerializedName("value")
-        val value: Int,
+        val value: Int = 0,
         @Expose
         @SerializedName("valueFmt")
-        val valueFmt: String
-)
-
-data class PieChartSummary(
-        @Expose
-        @SerializedName("diffPercentage")
-        val diffPercentage: Int,
-        @Expose
-        @SerializedName("diffPercentageFmt")
-        val diffPercentageFmt: String,
-        @Expose
-        @SerializedName("value")
-        val value: Int,
-        @Expose
-        @SerializedName("valueFmt")
-        val valueFmt: String
+        val valueFmt: String = ""
 )
