@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
@@ -16,7 +17,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditGroupMainPageFragm
  * Created by zulfikarrahman on 8/9/17.
  */
 
-public class TopAdsEditGroupMainPageActivity extends BaseSimpleActivity {
+public class TopAdsEditGroupMainPageActivity extends TopAdsBaseActivity {
 
     public static Intent createIntent(Context context, GroupAd groupAd, String adId, boolean isForceRefresh){
         Intent intent = new Intent(context, TopAdsEditGroupMainPageActivity.class);
@@ -24,11 +25,6 @@ public class TopAdsEditGroupMainPageActivity extends BaseSimpleActivity {
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, groupAd);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, isForceRefresh);
         return intent;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 
     @Override
