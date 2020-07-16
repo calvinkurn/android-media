@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.di.broadcast
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
@@ -37,6 +38,8 @@ interface PlayBroadcastComponent {
     fun inject(broadcastActivity: PlayBroadcastActivity)
 
     fun inject(activity: PlayCoverCameraActivity)
+
+    fun analytic(): PlayBroadcastAnalytic
 
     /**
      * Config
