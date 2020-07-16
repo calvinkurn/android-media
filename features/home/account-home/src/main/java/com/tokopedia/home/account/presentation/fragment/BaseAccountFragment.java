@@ -84,6 +84,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int OPEN_SHOP_SUCCESS = 100;
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
+    private static final String TOKOPEDIA_TITLE = "Tokopedia";
     private boolean mShowTokopointNative = false;
 
     private AccountAnalytics accountAnalytics;
@@ -197,7 +198,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         if (mShowTokopointNative) {
             RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
         } else {
-            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+            RouteManager.route(getContext(), String.format("%s?title=%s&url=%s", ApplinkConst.WEBVIEW, TOKOPEDIA_TITLE,
                     ApplinkConst.RewardFallback.RewardWebview.REWARD_WEBVIEW));
         }
         accountAnalytics.eventAccountPromoRewardClick();

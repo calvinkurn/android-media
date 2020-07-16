@@ -43,20 +43,17 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/notif_tokopoint"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignTop="@id/image_tokopoint"
                 android:layout_alignEnd="@id/image_tokopoint"
                 android:layout_alignRight="@id/image_tokopoint"
                 android:gravity="center"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
                 android:textSize="@dimen/tp_text_size_xxsmall"
                 android:visibility="gone"
                 app:notificationColor="color_primary"
                 app:notificationTitle="3"
-                app:notificationType="counter_type" />
+                app:notificationType="text_type" />
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -111,20 +108,17 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/notif_voucher"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignTop="@id/image_voucher"
                 android:layout_alignEnd="@id/image_voucher"
                 android:layout_alignRight="@id/image_voucher"
                 android:gravity="center"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
                 android:textSize="@dimen/tp_text_size_xxsmall"
                 android:visibility="gone"
                 app:notificationColor="color_primary"
                 app:notificationTitle="3"
-                app:notificationType="counter_type" />
+                app:notificationType="text_type" />
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -179,20 +173,17 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/notif_tokomember"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignTop="@id/image_tokomember"
                 android:layout_alignEnd="@id/image_tokomember"
                 android:layout_alignRight="@id/image_tokomember"
                 android:gravity="center"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
                 android:textSize="@dimen/tp_text_size_xxsmall"
                 android:visibility="gone"
                 app:notificationColor="color_primary"
                 app:notificationTitle="3"
-                app:notificationType="counter_type" />
+                app:notificationType="text_type" />
         </RelativeLayout>
 
 

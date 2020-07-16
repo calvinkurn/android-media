@@ -67,7 +67,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setFirstLayoutNotification(notif: String) {
         notifFirstLayout.show()
-        notifFirstLayout.setNotification(notif, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+        notifFirstLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
     }
 
     fun setFirstLayoutVisibility(visibility: Int) {
@@ -97,7 +97,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setCenterLayoutNotification(notif: String) {
         notifCenterLayout.show()
-        notifCenterLayout.setNotification(notif, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+        notifCenterLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
 
     }
 
@@ -127,7 +127,7 @@ class DynamicItemActionView @JvmOverloads constructor(
 
     fun setRightLayoutNotification(notif: String) {
         notifRightLayout.show()
-        notifRightLayout.setNotification(notif, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+        notifRightLayout.setNotification(notif, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
 
     }
 
