@@ -5,19 +5,19 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoRequestData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseApplyManualFailed
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStateCouponListEmpty
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStateEmpty
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseSuccessDataAllExpanded
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideNoCurrentSelectedCollapsedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideNoCurrentSelectedCollapsedMerchantPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideNoCurrentSelectedExpandedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideNoCurrentSelectedExpandedMerchantPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.providePromoRequestWithSelectedCollapsedGlobalPromo
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.providePromoRequestWithSelectedCollapsedMerchantPromo
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.providePromoRequestWithSelectedExpandedGlobalPromo
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.providePromoRequestWithSelectedExpandedMerchantPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideBasePromoRequestData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseApplyManualFailed
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateCouponListEmpty
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateEmpty
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllExpanded
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedCollapsedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedCollapsedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedExpandedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedExpandedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedCollapsedGlobalPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedCollapsedMerchantPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedGlobalPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedMerchantPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
@@ -217,7 +217,7 @@ object PromoCheckoutViewModelApplyPromoManualInputTest {
         //given
         val attemptedPromoCode = "PROMO_CODE"
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         val promoRequest = provideBasePromoRequestData()
         promoRequest.codes.add(attemptedPromoCode)
@@ -235,7 +235,7 @@ object PromoCheckoutViewModelApplyPromoManualInputTest {
     fun `WHEN apply manual input promo THEN get error`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseApplyManualFailed()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseApplyManualFailed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -251,7 +251,7 @@ object PromoCheckoutViewModelApplyPromoManualInputTest {
     fun `WHEN apply manual input promo THEN get exception`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseApplyManualFailed()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseApplyManualFailed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -267,7 +267,7 @@ object PromoCheckoutViewModelApplyPromoManualInputTest {
     fun `WHEN apply manual input promo and get empty data THEN promo list state should be show toast error`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateEmpty()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -283,7 +283,7 @@ object PromoCheckoutViewModelApplyPromoManualInputTest {
     fun `WHEN apply manual input promo and get empty data THEN promo input state should be error`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateCouponListEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.initPromoInput()
 

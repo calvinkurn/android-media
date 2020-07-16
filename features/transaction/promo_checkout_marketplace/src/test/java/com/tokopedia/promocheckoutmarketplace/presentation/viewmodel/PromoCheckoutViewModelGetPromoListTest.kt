@@ -5,22 +5,22 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoRequestData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStateBlacklisted
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStateCouponListEmpty
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStateEmpty
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStatePhoneVerification
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseEmptyStateUnknown
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseError
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseSuccessDataAllCollapsed
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseSuccessDataAllEligible
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseSuccessDataAllExpanded
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseSuccessDataAllIneligible
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideBasePromoResponseSuccessDataWithPreSelectedPromo
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.UnitTestGetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideBasePromoRequestData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateBlacklisted
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateCouponListEmpty
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateEmpty
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStatePhoneVerification
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateUnknown
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseError
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllCollapsed
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllExpanded
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllIneligible
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithPreSelectedPromo
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
@@ -65,7 +65,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete expanded data THEN fragment ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -81,7 +81,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete expanded data THEN promoRecommendation ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -97,7 +97,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete expanded data THEN promo input ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -113,7 +113,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete expanded data THEN promo list ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -129,7 +129,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete collapsed data THEN fragment ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -145,7 +145,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete collapsed data THEN promo recommendation ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -161,7 +161,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete collapsed data THEN promo input ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -177,7 +177,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get complete collapsed data THEN promo list ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllCollapsed()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -193,7 +193,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get no selected promo THEN fragment ui model state should be has no promo`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllExpanded()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -209,7 +209,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get selected promo THEN fragment ui model state should be has promo`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataWithPreSelectedPromo()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessWithPreSelectedPromo()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -225,7 +225,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all eligible THEN fragment ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllEligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -241,7 +241,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all eligible THEN promo input ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllEligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -257,7 +257,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all eligible THEN promo list ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllEligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -273,7 +273,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all eligible THEN promo recommendation ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllEligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -289,7 +289,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all ineligible THEN fragment ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllIneligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -305,7 +305,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all ineligible THEN promo input ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllIneligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -321,7 +321,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all ineligible THEN promo list ui model should not be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllIneligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -337,7 +337,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and all ineligible THEN promo recommendation ui model should be null`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseSuccessDataAllIneligible()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -425,7 +425,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and get response error THEN fragment state should be failed to load`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseError()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseError()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -441,7 +441,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list empty and empty state also empty THEN fragment state should be failed to load`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateEmpty()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -457,7 +457,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is coupon list is empty THEN should show empty state`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateCouponListEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
@@ -474,7 +474,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is coupon list is empty THEN should not show button action`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateCouponListEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
@@ -491,7 +491,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is coupon list is empty THEN should show promo input`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateCouponListEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -507,7 +507,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is phone not verified THEN should show empty state`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStatePhoneVerification()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStatePhoneVerification()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
@@ -524,7 +524,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is phone not verified THEN should show button action`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStatePhoneVerification()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStatePhoneVerification()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
@@ -541,7 +541,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is blacklisted THEN should show empty state`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateBlacklisted()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateBlacklisted()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
@@ -558,7 +558,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is blacklisted THEN should not show button action`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateBlacklisted()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateBlacklisted()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
@@ -575,7 +575,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is unknown THEN should show empty state`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateUnknown()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateUnknown()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -591,7 +591,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     fun `WHEN get promo list and status is unknown THEN should show button action`() {
         //given
         val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateUnknown()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateUnknown()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse

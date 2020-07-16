@@ -7,67 +7,67 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 
-object UnitTestGetPromoListDataProvider {
+object GetPromoListDataProvider {
 
     private val gson = Gson()
     private val uiModelmapper = PromoCheckoutUiModelMapper()
     private val fileUtil = UnitTestFileUtils()
 
-    fun provideBasePromoResponseSuccessDataAllExpanded(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
-    }
-
-    fun provideBasePromoResponseSuccessDataAllCollapsed(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_collapsed.json"), CouponListRecommendationResponse::class.java)
-    }
-
-    fun provideBasePromoResponseSuccessDataWithPreSelectedPromo(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_pre_selected_promo.json"), CouponListRecommendationResponse::class.java)
-    }
-
     fun provideBasePromoRequestData(): PromoRequest {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_request.json"), PromoRequest::class.java)
     }
 
-    fun provideBasePromoResponseSuccessDataAllEligible(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseSuccessAllExpanded(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideGetPromoListResponseSuccessAllCollapsed(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_collapsed.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideGetPromoListResponseSuccessWithPreSelectedPromo(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_pre_selected_promo.json"), CouponListRecommendationResponse::class.java)
+    }
+
+    fun provideGetPromoListResponseSuccessAllEligible(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_eligible.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseSuccessDataAllIneligible(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseSuccessAllIneligible(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_ineligible.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseApplyManualFailed(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseApplyManualFailed(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_apply_manual_failed.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseError(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseError(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_error.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseEmptyStateEmpty(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseEmptyStateEmpty(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_empty.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseEmptyStateCouponListEmpty(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseEmptyStateCouponListEmpty(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_coupon_list_empty.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseEmptyStatePhoneVerification(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseEmptyStatePhoneVerification(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_phone_verification.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseEmptyStateBlacklisted(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseEmptyStateBlacklisted(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_blacklisted.json"), CouponListRecommendationResponse::class.java)
     }
 
-    fun provideBasePromoResponseEmptyStateUnknown(): CouponListRecommendationResponse {
+    fun provideGetPromoListResponseEmptyStateUnknown(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_unknown.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
-        val selectedPromo = provideBasePromoResponseSuccessDataAllExpanded().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
+        val selectedPromo = provideGetPromoListResponseSuccessAllExpanded().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
         selectedPromoUiModel.uiState.isSelected = false
         promoListUiModelList.add(selectedPromoUiModel)
@@ -76,7 +76,7 @@ object UnitTestGetPromoListDataProvider {
     }
 
     fun provideNoCurrentSelectedCollapsedGlobalPromoData(): ArrayList<Visitable<*>> {
-        val response = provideBasePromoResponseSuccessDataAllCollapsed()
+        val response = provideGetPromoListResponseSuccessAllCollapsed()
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
@@ -91,7 +91,7 @@ object UnitTestGetPromoListDataProvider {
     }
 
     fun providePromoRequestWithSelectedExpandedGlobalPromo(): PromoRequest {
-        val response = provideBasePromoResponseSuccessDataAllExpanded()
+        val response = provideGetPromoListResponseSuccessAllExpanded()
         val promoRequest = provideBasePromoRequestData()
         promoRequest.codes.add(response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].code)
 
@@ -99,7 +99,7 @@ object UnitTestGetPromoListDataProvider {
     }
 
     fun providePromoRequestWithSelectedCollapsedGlobalPromo(): PromoRequest {
-        val response = provideBasePromoResponseSuccessDataAllCollapsed()
+        val response = provideGetPromoListResponseSuccessAllCollapsed()
         val promoRequest = provideBasePromoRequestData()
         promoRequest.codes.add(response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].code)
 
@@ -108,7 +108,7 @@ object UnitTestGetPromoListDataProvider {
 
     fun provideNoCurrentSelectedExpandedMerchantPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
-        val response = provideBasePromoResponseSuccessDataAllExpanded()
+        val response = provideGetPromoListResponseSuccessAllExpanded()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
         selectedPromoUiModel.uiState.isSelected = false
@@ -119,7 +119,7 @@ object UnitTestGetPromoListDataProvider {
 
     fun provideNoCurrentSelectedCollapsedMerchantPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
-        val response = provideBasePromoResponseSuccessDataAllCollapsed()
+        val response = provideGetPromoListResponseSuccessAllCollapsed()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
         selectedPromoUiModel.uiState.isSelected = false
@@ -133,7 +133,7 @@ object UnitTestGetPromoListDataProvider {
     }
 
     fun providePromoRequestWithSelectedExpandedMerchantPromo(): PromoRequest {
-        val response = provideBasePromoResponseSuccessDataAllExpanded()
+        val response = provideGetPromoListResponseSuccessAllExpanded()
         val promoRequest = provideBasePromoRequestData()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         promoRequest.orders.forEach {
@@ -146,7 +146,7 @@ object UnitTestGetPromoListDataProvider {
     }
 
     fun providePromoRequestWithSelectedCollapsedMerchantPromo(): PromoRequest {
-        val response = provideBasePromoResponseSuccessDataAllExpanded()
+        val response = provideGetPromoListResponseSuccessAllExpanded()
         val promoRequest = provideBasePromoRequestData()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         promoRequest.orders.forEach {
@@ -160,7 +160,7 @@ object UnitTestGetPromoListDataProvider {
 
     fun provideCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
-        val selectedPromo = provideBasePromoResponseSuccessDataAllExpanded().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
+        val selectedPromo = provideGetPromoListResponseSuccessAllExpanded().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
         selectedPromoUiModel.uiState.isSelected = true
         promoListUiModelList.add(selectedPromoUiModel)
@@ -170,7 +170,7 @@ object UnitTestGetPromoListDataProvider {
 
     fun provideCurrentSelectedExpandedMerchantPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
-        val selectedPromo = provideBasePromoResponseSuccessDataAllExpanded().couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
+        val selectedPromo = provideGetPromoListResponseSuccessAllExpanded().couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
         selectedPromoUiModel.uiState.isSelected = true
         promoListUiModelList.add(selectedPromoUiModel)
@@ -179,7 +179,7 @@ object UnitTestGetPromoListDataProvider {
     }
 
     fun provideCurrentSelectedCollapsedGlobalPromoData(): ArrayList<Visitable<*>> {
-        val response = provideBasePromoResponseSuccessDataAllCollapsed()
+        val response = provideGetPromoListResponseSuccessAllCollapsed()
         val promoListUiModelList = ArrayList<Visitable<*>>()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
@@ -195,7 +195,7 @@ object UnitTestGetPromoListDataProvider {
 
     fun provideCurrentSelectedCollapsedMerchantPromoData(): ArrayList<Visitable<*>> {
         val promoListUiModelList = ArrayList<Visitable<*>>()
-        val response = provideBasePromoResponseSuccessDataAllCollapsed()
+        val response = provideGetPromoListResponseSuccessAllCollapsed()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
         selectedPromoUiModel.uiState.isSelected = true
