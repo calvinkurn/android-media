@@ -280,6 +280,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         view?.findViewById<View>(R.id.img_egg)?.setOnClickListener(this)
         view?.findViewById<View>(R.id.text_membership_value)?.setOnClickListener(this)
+        serverErrorView?.setErrorButtonClickListener { mPresenter.getTokoPointDetail() }
     }
 
     override fun openWebView(url: String) {
