@@ -256,7 +256,6 @@ class TopChatRoomPresenter @Inject constructor(
         if (messageId.isNotEmpty()) {
             getChatUseCase.getTopChat(
                     messageId = messageId,
-                    beforeReplyTime = paramBeforeReplyTime,
                     onSuccess = onSuccessGetPreviousChat,
                     onErrorGetChat = onError
             )

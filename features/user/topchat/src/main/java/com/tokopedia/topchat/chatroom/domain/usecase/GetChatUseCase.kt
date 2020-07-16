@@ -42,12 +42,11 @@ class GetChatUseCase @Inject constructor(
 
     fun getTopChat(
             messageId: String,
-            beforeReplyTime: String,
             onSuccess: (ChatroomViewModel) -> Unit,
             onErrorGetChat: (Throwable) -> Unit
     ) {
         val topQuery = generateTopQuery()
-        val params = generateTopParam(messageId, beforeReplyTime)
+        val params = generateTopParam(messageId)
         getChat(topQuery, params, onSuccess, onErrorGetChat) { chat, _ ->
             updateMinReplyTime(chat)
         }
@@ -55,12 +54,11 @@ class GetChatUseCase @Inject constructor(
 
     fun getBottomChat(
             messageId: String,
-            afterReplyTime: String,
             onSuccess: (ChatroomViewModel) -> Unit,
             onErrorGetChat: (Throwable) -> Unit
     ) {
         val topQuery = generateBottomQuery()
-        val params = generateBottomParam(messageId, afterReplyTime)
+        val params = generateBottomParam(messageId)
         getChat(topQuery, params, onSuccess, onErrorGetChat) { chat, _ ->
             updateMaxReplyTime(chat)
         }
@@ -101,10 +99,10 @@ class GetChatUseCase @Inject constructor(
         )
     }
 
-    private fun generateBottomParam(messageId: String, afterReplyTime: String): Map<String, Any> {
+    private fun generateBottomParam(messageId: String): Map<String, Any> {
         return mapOf(
                 PARAM_MESSAGE_ID to messageId.toInt(),
-                PARAM_AFTER_REPLY_TIME to afterReplyTime
+                PARAM_AFTER_REPLY_TIME to maxReplyTime
         )
     }
 
@@ -136,10 +134,10 @@ class GetChatUseCase @Inject constructor(
         hasNextAfter = chat.chatReplies.hasNextAfter
     }
 
-    fun generateTopParam(messageId: String, beforeReplyTime: String): Map<String, Any> {
+    private fun generateTopParam(messageId: String): Map<String, Any> {
         return mapOf(
                 PARAM_MESSAGE_ID to messageId.toInt(),
-                PARAM_BEFORE_REPLY_TIME to beforeReplyTime
+                PARAM_BEFORE_REPLY_TIME to minReplyTime
         )
     }
 
