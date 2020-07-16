@@ -59,11 +59,11 @@ class GetLineGraphDataUseCase(
                   description
                   header
                   yLabels {
-                    yVal
+                    yValPrecise
                     yLabel
                   }
-                    list {
-                    yVal
+                  list {
+                    yValPrecise
                     yLabel
                     xLabel
                   }
