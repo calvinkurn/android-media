@@ -1,13 +1,10 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.util.Log
-import androidx.fragment.app.FragmentActivity
-import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
-
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -40,10 +37,11 @@ class QuickReplyViewHolder(itemView: View,
     }
 
     private fun setMessage(element: QuickReplyListViewModel) {
-        if (!element.message.isEmpty()) {
+        if (element.message.isNotEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
             message.post {
                 if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
+                    message.maxLines = ChatBotMessageViewHolder.MESSAGE_LINE_COUNT
                     MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {

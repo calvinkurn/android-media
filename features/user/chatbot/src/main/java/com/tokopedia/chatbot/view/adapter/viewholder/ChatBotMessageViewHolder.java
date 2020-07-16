@@ -16,7 +16,7 @@ import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet;
 
 public class ChatBotMessageViewHolder extends MessageViewHolder {
 
-    public static final int MESSAGE_LINE_COUNT = 5;
+    public static final int MESSAGE_LINE_COUNT = 10;
     private TextView mesageBottom;
     private String htmlMessage;
 
@@ -38,6 +38,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
         super.setChatLeft(chatBalloon);
         message.post(() -> {
             if (message.getLineCount() >= MESSAGE_LINE_COUNT) {
+                message.setMaxLines(MESSAGE_LINE_COUNT);
                 MethodChecker.setBackground(chatBalloon, ContextCompat.getDrawable(itemView.getContext(),R.drawable.left_bubble_with_stroke));
                 mesageBottom.setVisibility(View.VISIBLE);
                 message.scrollTo(0, 0);
@@ -57,6 +58,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
     @Override
     protected void setChatRight(View chatBalloon) {
         super.setChatRight(chatBalloon);
+        message.setMaxLines(Integer.MAX_VALUE);
         mesageBottom.setVisibility(View.GONE);
 
     }

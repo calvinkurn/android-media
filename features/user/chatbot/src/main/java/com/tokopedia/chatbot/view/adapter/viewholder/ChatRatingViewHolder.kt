@@ -112,10 +112,11 @@ class ChatRatingViewHolder(itemView: View,
     }
 
     private fun setMessage(element: ChatRatingViewModel) {
-        if (!element.message.isEmpty()) {
+        if (element.message.isNotEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
             message.post {
                 if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
+                    message.maxLines = ChatBotMessageViewHolder.MESSAGE_LINE_COUNT
                     MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {

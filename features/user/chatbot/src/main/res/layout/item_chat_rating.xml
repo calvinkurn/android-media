@@ -94,7 +94,6 @@
                         android:ellipsize="end"
                         android:linksClickable="true"
                         android:maxWidth="@dimen/max_width_chat_bubble"
-                        android:maxLines="5"
                         android:paddingStart="@dimen/dp_16"
                         android:paddingLeft="@dimen/dp_16"
                         android:paddingTop="@dimen/dp_8"

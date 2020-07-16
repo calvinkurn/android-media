@@ -44,7 +44,6 @@
             android:textIsSelectable="true"
             android:textSize="@dimen/sp_14"
             android:visibility="visible"
-            android:maxLines="5"
             android:ellipsize="end"
             android:maxWidth="@dimen/max_width_chat_bubble"
             tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj"/>

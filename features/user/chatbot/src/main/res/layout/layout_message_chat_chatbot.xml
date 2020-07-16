@@ -84,7 +84,6 @@
             android:textColorLink="@color/white"
             android:textIsSelectable="true"
             android:textSize="@dimen/sp_14"
-            android:maxLines="5"
             android:ellipsize="end"
             tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
