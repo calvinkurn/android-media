@@ -107,6 +107,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onResume() {
         super.onResume()
         if (!isFirstLoad) {
+            view?.appBarStc?.gone()
             reloadPage()
         }
     }
@@ -354,6 +355,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         } else {
             requestVisibleWidgetsData()
         }
+
+        showTabLayout()
     }
 
     private fun setupTabItems() = view?.run {
