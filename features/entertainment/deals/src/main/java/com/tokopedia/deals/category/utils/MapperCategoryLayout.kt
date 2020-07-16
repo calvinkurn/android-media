@@ -57,7 +57,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                 brand.id,
                 brand.title,
                 brand.featuredThumbnailImage,
-                brand.seoUrl
+                    "tokopedia://deals/brand/${brand.seoUrl}"
             )
         }
         val brandsDataView = DealsBrandsDataView(
@@ -80,7 +80,8 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                     price = DealsUtils.convertToCurrencyString(it.salesPrice.toLong()),
                     appUrl = it.appUrl,
                     discount = it.savingPercentage,
-                    shop = it.brand.title
+                    shop = it.brand.title,
+                    productCategory = ProductCategoryDataView(it.displayTags, com.tokopedia.unifyprinciples.R.color.Yellow_Y500)
                     )
         }
 

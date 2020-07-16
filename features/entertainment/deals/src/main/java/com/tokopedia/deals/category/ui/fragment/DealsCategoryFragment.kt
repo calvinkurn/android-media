@@ -32,6 +32,7 @@ import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
+import okhttp3.Route
 import javax.inject.Inject
 
 
@@ -125,7 +126,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-
+        RouteManager.route(requireContext(), brand.brandUrl)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {

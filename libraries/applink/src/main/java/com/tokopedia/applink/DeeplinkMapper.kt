@@ -3,7 +3,7 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
-import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
+import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
@@ -224,7 +224,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.CART) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.CHECKOUT) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
             DLP.startWith(ApplinkConst.OCC) { _, _, deeplink -> getRegisteredNavigationMarketplace(deeplink) },
-            DLP.startWithPattern(ApplinkConst.DEALS_HOME) { _, _, deeplink -> getRegisteredNavigationDeals(deeplink) },
+            DLP.startWithPattern(ApplinkConst.DEALS_HOME) { ctx, _, deeplink -> getRegisteredNavigationDeals(ctx, deeplink) },
             DLP.startWithPattern(ApplinkConst.FIND) { _, _, deeplink -> getRegisteredFind(deeplink) },
             DLP.startWith(ApplinkConst.AMP_FIND) { _, _, deeplink -> getRegisteredFind(deeplink) },
             DLP.startWithPattern(ApplinkConst.Digital.DIGITAL_BROWSE) { _, _, deeplink -> getRegisteredNavigationExploreCategory(deeplink) },

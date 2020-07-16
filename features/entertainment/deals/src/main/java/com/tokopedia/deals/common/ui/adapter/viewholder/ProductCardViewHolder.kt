@@ -19,9 +19,11 @@ class ProductCardViewHolder(itemView: View, private val productCardListener: Pro
         itemView.run {
             img_product_card.loadImage(productCardDataView.imageUrl)
             productCardDataView.productCategory?.let {
-                txt_product_card_category.visible()
-                txt_product_card_category.text = it.name
-                txt_product_card_category.setTextColor(ContextCompat.getColor(context, it.color))
+                if(it.name.isNotEmpty()) {
+                    txt_product_card_category.visible()
+                    txt_product_card_category.text = it.name
+                    txt_product_card_category.setTextColor(ContextCompat.getColor(context, it.color))
+                }
             }
             txt_product_card_title.text = productCardDataView.title
 

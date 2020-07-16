@@ -191,8 +191,14 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            DEALS_SEARCH_REQUEST_CODE -> (activity as DealsBaseActivity).changeLocationBasedOnCache()
+            DEALS_SEARCH_REQUEST_CODE, DEALS_CATEGORY_REQUEST_CODE -> {
+                changeLocationAndLoadData()
+            }
         }
+    }
+
+    private fun changeLocationAndLoadData() {
+        if ((activity as DealsBaseActivity).changeLocationBasedOnCache()) loadData(0)
     }
 
     /* BASE DEALS ACTIVITY ACTION */
@@ -219,7 +225,8 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* CATEGORY SECTION ACTION */
     override fun onDealsCategoryClicked(dealsCategory: DealsCategoryDataView, position: Int) {
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext(), dealsCategory.id))
+        val intent = RouteManager.getIntent(requireContext(), dealsCategory.appUrl)
+        startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
     }
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
@@ -268,6 +275,8 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     companion object {
         const val DEALS_SEARCH_REQUEST_CODE = 27
+        const val DEALS_CATEGORY_REQUEST_CODE = 33
+
         fun getInstance(): DealsHomeFragment = DealsHomeFragment()
         private const val PREFERENCES_NAME = "deals_home_preferences"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key"

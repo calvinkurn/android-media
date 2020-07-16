@@ -90,7 +90,8 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         }
 
         val brandLayout = brands.map { brand ->
-            DealsBrandsDataView.Brand(brand.id.toString(), brand.title, brand.featuredThumbnailImage, brand.seoUrl)
+            DealsBrandsDataView.Brand(brand.id, brand.title, brand.featuredThumbnailImage,
+                    "tokopedia://deals/brand/${brand.seoUrl}")
         }
         brandsDataView = DealsBrandsDataView(title = getString(BRAND_POPULAR_SECTION_TITLE),
                 seeAllText = getString(DEALS_SEE_ALL), brands = brandLayout)
