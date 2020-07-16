@@ -354,6 +354,23 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+    fun eventClickCancelMembershipPopUp() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_CANCEL_MEMBERSHIP_POP_UP,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
     fun eventClickPerformanceTipsBtn() {
         val category = getCategory()
 

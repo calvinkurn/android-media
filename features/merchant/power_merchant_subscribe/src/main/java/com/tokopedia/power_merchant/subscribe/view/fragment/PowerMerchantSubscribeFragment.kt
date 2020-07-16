@@ -244,10 +244,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         )
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
-                cancelMembership()
+                onClickCancelMembership()
                 bottomSheetCancel?.dismiss()
             }
         })
+    }
+
+    private fun onClickCancelMembership() {
+        trackClickCancelMembershipPopUp()
+        cancelMembership()
     }
 
     private fun redirectToPMCancellationQuestionnairePage() {
@@ -412,6 +417,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun trackClickCancelMembership() {
         powerMerchantTracking.eventClickCancelMembership()
+    }
+
+    private fun trackClickCancelMembershipPopUp() {
+        powerMerchantTracking.eventClickCancelMembershipPopUp()
     }
 
     private fun onClickRegister(shopScore: Int) {
