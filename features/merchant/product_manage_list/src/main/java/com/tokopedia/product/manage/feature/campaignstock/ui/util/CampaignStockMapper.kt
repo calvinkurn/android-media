@@ -1,12 +1,12 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailReserve
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationDetailSellable
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationReservedProduct
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedStockProductModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailReserve
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationReservedProduct
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
@@ -31,7 +31,8 @@ object CampaignStockMapper {
                             productId = sellable.productId,
                             productName = sellable.productName,
                             stock = sellable.stock,
-                            isActive = variant.status == ProductStatus.ACTIVE) }
+                            isActive = variant.status == ProductStatus.ACTIVE)
+                }
                 .toList()
     }
 

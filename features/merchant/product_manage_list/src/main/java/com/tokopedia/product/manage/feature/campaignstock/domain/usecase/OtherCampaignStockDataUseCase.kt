@@ -4,9 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.OtherCampaignStockData
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.OtherCampaignStockParam
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.OtherCampaignStockResponse
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.param.OtherCampaignStockParam
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.OtherCampaignStockData
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.OtherCampaignStockResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -36,7 +36,6 @@ class OtherCampaignStockDataUseCase @Inject constructor(private val gqlRepositor
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): OtherCampaignStockData {
-//        return DummySource.getOtherCampaignStockData()
         val gqlRequest = GraphqlRequest(QUERY, OtherCampaignStockResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val errors = gqlResponse.getError(OtherCampaignStockResponse::class.java)

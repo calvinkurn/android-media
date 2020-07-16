@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_name.view.*
 
 class VariantProductStockAccordionAdapter(private val variantProductList: List<ReservedStockProductModel>): RecyclerView.Adapter<VariantProductStockAccordionAdapter.VariantProductStockAccordionViewHolder>() {

@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.decoration.CampaignStockVariantDividerDecoration
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedStockProductModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_action.view.*
 import kotlinx.android.synthetic.main.layout_campaign_stock_variant_accordion.view.*
 

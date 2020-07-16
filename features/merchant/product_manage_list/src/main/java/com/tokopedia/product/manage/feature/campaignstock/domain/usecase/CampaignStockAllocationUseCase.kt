@@ -6,8 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationData
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.GetStockAllocationResponse
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -75,8 +75,6 @@ class CampaignStockAllocationUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): GetStockAllocationData {
-//        return DummySource.getCampaignStockVariant()
-
         val gqlRequest = GraphqlRequest(QUERY, GetStockAllocationResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 

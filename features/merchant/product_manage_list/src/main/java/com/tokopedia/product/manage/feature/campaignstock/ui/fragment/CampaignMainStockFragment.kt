@@ -13,10 +13,10 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ActiveProductSwitchUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.SellableStockProductUIModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.TotalStockEditorUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {

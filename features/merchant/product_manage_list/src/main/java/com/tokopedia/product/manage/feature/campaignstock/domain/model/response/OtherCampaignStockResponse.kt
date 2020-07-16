@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.campaignstock.domain.model
+package com.tokopedia.product.manage.feature.campaignstock.domain.model.response
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus

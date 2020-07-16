@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.item_campaign_stock_ticker_info.view.*
 

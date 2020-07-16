@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory
 
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.*
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.*
 
 interface CampaignStockTypeFactory {
     fun type(model: ActiveProductSwitchUiModel): Int

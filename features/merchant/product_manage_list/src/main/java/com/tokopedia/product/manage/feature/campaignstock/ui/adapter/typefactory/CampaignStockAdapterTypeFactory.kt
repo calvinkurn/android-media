@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder.*
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.*
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) -> Unit = {},

@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.campaignstock.ui.dataview
+package com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory

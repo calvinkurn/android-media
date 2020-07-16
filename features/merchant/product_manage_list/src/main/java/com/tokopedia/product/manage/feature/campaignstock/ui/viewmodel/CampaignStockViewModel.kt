@@ -6,9 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
-import com.tokopedia.product.manage.feature.campaignstock.domain.model.*
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.param.EditVariantCampaignProductParam
+import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.NonVariantStockAllocationResult
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.UpdateVariantParam

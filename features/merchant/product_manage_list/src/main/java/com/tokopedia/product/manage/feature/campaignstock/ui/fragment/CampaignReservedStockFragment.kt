@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.ReservedEventInfoUiModel
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.StockTickerInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
 
 class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {

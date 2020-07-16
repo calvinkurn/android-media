@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.campaignstock.ui.dataview
+package com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
