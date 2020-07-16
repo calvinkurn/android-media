@@ -514,12 +514,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (op != null) {
             orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
             val validateUsePromoRequest = generateValidateUsePromoRequest(false)
-            validateUsePromoRequest.orders[0]?.shippingId = logisticPromoUiModel.shipperId
-            validateUsePromoRequest.orders[0]?.spId = logisticPromoUiModel.shipperProductId
-            if (oldCode.isNotEmpty()) {
-                validateUsePromoRequest.orders[0]?.codes?.remove(oldCode)
+            validateUsePromoRequest.orders[0]?.apply {
+                shippingId = logisticPromoUiModel.shipperId
+                spId = logisticPromoUiModel.shipperProductId
+                if (oldCode.isNotEmpty()) {
+                    codes.remove(oldCode)
+                }
+                codes.add(logisticPromoUiModel.promoCode)
             }
-            validateUsePromoRequest.orders[0]?.codes?.add(logisticPromoUiModel.promoCode)
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
             compositeSubscription.add(
@@ -671,7 +673,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             clearBboIfExist()
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
-            var shipping1 = shipping.copy(
+            var newShipping = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
                     serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
@@ -692,16 +694,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     logisticPromoShipping = null,
                     isApplyLogisticPromo = false)
 
-            if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
+            if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
-                    shipping1 = shipping1.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                    newShipping = newShipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
                 }
             }
-            _orderPreference = _orderPreference?.copy(shipping = shipping1)
+            _orderPreference = _orderPreference?.copy(shipping = newShipping)
             orderPreference.value = OccState.Success(_orderPreference!!)
             orderSummaryAnalytics.eventViewPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSessionInterface.userId)
-            if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
+            if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
@@ -786,9 +788,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val shipping = _orderPreference?.shipping
         if (shipping != null) {
             val validateUsePromoRequest = generateValidateUsePromoRequest(false)
-            validateUsePromoRequest.orders[0]?.shippingId = logisticPromoUiModel.shipperId
-            validateUsePromoRequest.orders[0]?.spId = logisticPromoUiModel.shipperProductId
-            validateUsePromoRequest.orders[0]?.codes?.add(logisticPromoUiModel.promoCode)
+            validateUsePromoRequest.orders[0]?.apply {
+                shippingId = logisticPromoUiModel.shipperId
+                spId = logisticPromoUiModel.shipperProductId
+                codes.add(logisticPromoUiModel.promoCode)
+            }
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
             compositeSubscription.add(

@@ -163,6 +163,27 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Final Validate Use Promo Red State Voucher`() {
+        setUpCartAndRates()
+        val promoCode = "abc"
+        val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode),
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
+                        messageUiModel = MessageUiModel(state = "red")
+                )), messageUiModel = MessageUiModel(state = "red")))
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(response)
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+
+        orderSummaryPageViewModel.finalUpdate({ }, false)
+        assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(NotEligiblePromoHolderdata(
+                promoCode = promoCode, shopName = "Kode promo", iconType = 1, showShopSection = true
+        ), NotEligiblePromoHolderdata(showShopSection = true))), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Cancel Ineligible Promo Checkout Success`() {
         setUpCartAndRates()
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
