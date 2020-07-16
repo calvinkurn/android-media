@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -45,6 +46,7 @@ class SellableStockProductViewHolder(itemView: View?,
                                 ProductStatus.INACTIVE
                             }
                     onVariantStatusChanged(element.productId, status)
+                    ProductManageTracking.eventClickAllocationProductStatus(isVariant = true, isOn = isChecked)
                 }
             }
         }
@@ -67,6 +69,18 @@ class SellableStockProductViewHolder(itemView: View?,
             }
             toggleQuantityEditorBtn(stock)
             onVariantStockChanged(element.productId, stock)
+        }
+
+        editText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                ProductManageTracking.eventClickAllocationInputStock(isVariant = true)
+            }
+        }
+        addButton.setOnClickListener {
+            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = true)
+        }
+        subtractButton.setOnClickListener {
+            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true)
         }
     }
 

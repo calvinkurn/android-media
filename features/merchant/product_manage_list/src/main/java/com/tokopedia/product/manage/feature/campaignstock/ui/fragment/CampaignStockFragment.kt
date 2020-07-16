@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -62,6 +63,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         activity?.intent?.getStringArrayExtra(CampaignStockActivity.PRODUCT_ID)
     }
 
+    private var isVariant: Boolean? = null
+
     private val onTabSelectedListener by lazy {
         object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab) {}
@@ -69,6 +72,13 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             override fun onTabUnselected(p0: TabLayout.Tab) {}
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                isVariant?.run {
+                    if (tab.position == 0) {
+                        ProductManageTracking.eventClickAllocationMainStock(this)
+                    } else {
+                        ProductManageTracking.eventClickAllocationOnStockCampaign(this)
+                    }
+                }
                 changeViewPagerPage(tab.position)
             }
         }
@@ -102,6 +112,15 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                     .build()
                     .inject(this@CampaignStockFragment)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            isVariant?.run {
+                ProductManageTracking.eventClickCloseStockAllocation(this)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onTotalStockChanged(totalStock: Int) {
@@ -173,12 +192,21 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         btn_campaign_stock_save?.setOnClickListener {
             showButtonLoading()
             mViewModel.updateStockData()
+            this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
+                val isMainStock = tabPosition == 0
+                isVariant?.run {
+                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock)
+                }
+            }
         }
     }
 
     private fun applyLayout(stockAllocationResult: StockAllocationResult) {
         with(stockAllocationResult) {
-            sendOpenScreenTracking(getStockAllocationData.summary.isVariant)
+            isVariant = getStockAllocationData.summary.isVariant
+            isVariant?.run {
+                sendOpenScreenTracking(this)
+            }
             setupProductSummary(getStockAllocationData.summary, otherCampaignStockData.pictureList.firstOrNull()?.urlThumbnail.orEmpty())
             setupFragmentTabs(getStockAllocationData)
             when(this) {

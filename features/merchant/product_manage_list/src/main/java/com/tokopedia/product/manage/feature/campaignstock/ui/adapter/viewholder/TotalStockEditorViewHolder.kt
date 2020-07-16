@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import kotlinx.android.synthetic.main.item_campaign_stock_total_editor.view.*
@@ -44,6 +45,18 @@ class TotalStockEditorViewHolder(itemView: View?,
             }
             toggleQuantityEditorBtn(stock)
             onTotalStockChanged(stock)
+        }
+
+        editText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                ProductManageTracking.eventClickAllocationInputStock(isVariant = false)
+            }
+        }
+        addButton.setOnClickListener {
+            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = false)
+        }
+        subtractButton.setOnClickListener {
+            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
         }
     }
 

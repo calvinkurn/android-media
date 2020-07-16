@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.item_campaign_stock_reserved_event_info.view.*
 
 class ReservedEventInfoViewHolder(itemView: View?,
@@ -31,6 +32,7 @@ class ReservedEventInfoViewHolder(itemView: View?,
                     setOnActionClickListener {
                         element.isAccordionOpened = it
                         onAccordionStateChange(adapterPosition)
+                        ProductManageTracking.eventClickPreviewVariantProduct()
                     }
                 }
             }
