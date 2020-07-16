@@ -63,7 +63,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
 
-            if (statsData.isNotEmpty()) {
+            if (statsData.isNotEmpty() && adapterPosition < statsData.size) {
                 view.tampil_count.text = statsData[adapterPosition].statTotalImpression
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
