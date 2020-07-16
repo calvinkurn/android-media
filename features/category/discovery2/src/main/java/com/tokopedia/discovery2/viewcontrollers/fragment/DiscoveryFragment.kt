@@ -185,7 +185,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        if (mSwipeRefreshLayout.isRefreshing) discoveryAdapter.notifyDataSetChanged()
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
