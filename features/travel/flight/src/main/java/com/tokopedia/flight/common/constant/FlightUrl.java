@@ -22,6 +22,10 @@ public class FlightUrl {
     public static String CONTACT_US_FLIGHT = WEB_DOMAIN + CONTACT_US_FLIGHT_HOME_PREFIX;
     public static String AIRLINES_CONTACT_URL = WEB_DOMAIN + "bantuan/kontak-maskapai-penerbangan/";
 
+    public static String FLIGHT_HOMEPAGE_HELP_URL = "https://www.tokopedia.com/help/article/pertanyaan-seputar-tiket-pesawat";
+    public static String FLIGHT_PASSENGER_HELP_URL = "https://www.tokopedia.com/help/article/saya-tidak-dapat-mengisi-nama-lengkap-penumpang-sesuai-dengan-kartu-identitas-pada-kolom-nama-penumpang-apa-yang-harus-saya-lakukan";
+    public static String FLIGHT_PROMO_APPLINK = "tokopedia://promoNative?menuID=4&categoryID=615";
+
     public static String getUrlPdf(String orderId, String filename, String userId) {
         return WEB_DOMAIN + "pesawat/pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;
     }

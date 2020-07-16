@@ -18,25 +18,26 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/su_product_status"
-        android:layout_width="@dimen/dp_48"
+        android:layout_width="@dimen/spacing_lvl8"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_status_description"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_3"
-        android:layout_marginEnd="@dimen/dp_32"
-        android:layout_marginRight="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:layout_marginRight="@dimen/spacing_lvl5"
         android:text="@string/label_product_status_description"
         android:textColor="@color/Neutral_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintEnd_toStartOf="@+id/su_product_status"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_description" />
+        app:layout_constraintTop_toBottomOf="@id/tv_product_description"
+        app:typographyType="body_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

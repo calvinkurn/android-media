@@ -3,9 +3,11 @@ package com.tokopedia.discovery2.viewcontrollers.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
@@ -30,12 +33,13 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
+import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
+import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -43,6 +47,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -56,12 +61,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: StickyHeadRecyclerView
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var ivToTop: ImageView
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
@@ -74,6 +78,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private var componentPosition: Int? = null
     private var openScreenStatus = false
 
+    @JvmField
+    @Inject
+    var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -111,7 +118,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun initView(view: View) {
-        permissionCheckerHelper = PermissionCheckerHelper()
         mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
@@ -148,15 +154,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         })
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        discoveryAdapter = DiscoveryRecycleAdapter(this)
-        recyclerView.adapter = discoveryAdapter
-
+        recyclerView.setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+        recyclerView.apply {
+            discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
+                setAdapter(it)
+            }
+        }
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
         discoveryViewModel.getDiscoveryData()
@@ -175,6 +184,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                         discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
+                    stopDiscoveryPagePerformanceMonitoring()
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -213,6 +223,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                         globalError.setType(GlobalError.NO_CONNECTION)
                     } else {
                         globalError.setType(GlobalError.SERVER_ERROR)
+                        Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
                     }
                     globalError.show()
                     globalError.setOnClickListener {
@@ -237,9 +248,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             ivShare.show()
             ivShare.setOnClickListener {
                 getDiscoveryAnalytics().trackShareClick()
-                permissionHelper {
-                    Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
-                }
+                Utils.shareData(activity, data.share.description, data.share.url)
             }
         } else {
             ivShare.hide()
@@ -266,36 +275,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (appLinks.isNotEmpty() && shopId != 0) {
                 activity?.let { it1 -> discoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
-        }
-    }
-
-    private fun permissionHelper(grantedPermission: () -> Unit) {
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                context?.let {
-                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                }
-            }
-
-            override fun onNeverAskAgain(permissionText: String) {
-                context?.let {
-                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                }
-            }
-
-            override fun onPermissionGranted() {
-                grantedPermission()
-            }
-
-        })
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(context!!,
-                    requestCode, permissions,
-                    grantResults)
         }
     }
 
@@ -373,7 +352,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     override fun onClick(view: View?) {
         when (view) {
             ivToTop -> {
-                recyclerView.smoothScrollToPosition(0)
+                recyclerView.smoothScrollToTop()
                 ivToTop.hide()
             }
         }
@@ -381,6 +360,17 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun isUserLoggedIn(): Boolean {
         return UserSession(activity).isLoggedIn
+    }
+
+    private fun stopDiscoveryPagePerformanceMonitoring() {
+        recyclerView.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
+                        pageLoadTimePerformanceInterface?.stopMonitoring()
+                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 
     override fun onResume() {

@@ -5,7 +5,7 @@ import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.BearerService;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
 
@@ -15,7 +15,7 @@ import retrofit2.Retrofit;
 
 public class TopAdsManagementService extends BearerService<TopAdsOldManagementApi> {
 
-    public TopAdsManagementService(UserSessionInterface userSession) {
+    public TopAdsManagementService(UserSession userSession) {
         super(userSession.getAccessToken());
     }
 

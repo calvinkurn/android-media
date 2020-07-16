@@ -21,7 +21,8 @@ public abstract class TopAdsDetailPresenterImpl<V extends Ad> implements TopAdsD
     }
 
     protected String getShopId() {
-        return new UserSession(context).getShopId();
+        UserSession session = new UserSession(context);
+        return session.getShopId();
     }
 
     protected void unsubscribe(){

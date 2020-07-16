@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -14,8 +13,6 @@ import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGrou
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +30,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     public static final String REQ_GROUP_NAME = "grp_nm";
     public static final String REQ_GROUP_VIEW_MODEL = "grp_mdl";
     public static final String REQ_PRODUCT_LIST = "prod_ls";
+    public static final String SHOP_ID = "shop_id";
 
     public static final String DEFAULT_GROUP_ID = "0";
 
@@ -70,8 +68,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     private CreateGroupRequest getCreateGroupRequest(RequestParams requestParams) {
         CreateGroupRequest createGroupRequest = new CreateGroupRequest();
         createGroupRequest.setGroupName(requestParams.getString(REQ_GROUP_NAME, ""));
-        UserSessionInterface userSession = new UserSession(MainApplication.getAppContext());
-        createGroupRequest.setShopId(userSession.getShopId());
+        createGroupRequest.setShopId(requestParams.getString(SHOP_ID, ""));
 
         TopAdsDetailGroupViewModel viewModel = (TopAdsDetailGroupViewModel) requestParams.getObject(REQ_GROUP_VIEW_MODEL);
         List<TopAdsProductViewModel> productList = (List<TopAdsProductViewModel>) requestParams.getObject(REQ_PRODUCT_LIST);
@@ -115,12 +112,13 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     public static RequestParams createRequestParams(String groupName,
                                                     TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
                                                     List<TopAdsProductViewModel> topAdsProductViewModelList,
-                                                    String source) {
+                                                    String source, String shopId) {
         RequestParams params = RequestParams.create();
         params.putString(REQ_GROUP_NAME, groupName);
         params.putObject(REQ_GROUP_VIEW_MODEL, topAdsDetailProductViewModel);
         params.putObject(REQ_PRODUCT_LIST, topAdsProductViewModelList);
         params.putString(TopAdsExtraConstant.EXTRA_SOURCE, source);
+        params.putString(SHOP_ID, shopId);
         return params;
     }
 }

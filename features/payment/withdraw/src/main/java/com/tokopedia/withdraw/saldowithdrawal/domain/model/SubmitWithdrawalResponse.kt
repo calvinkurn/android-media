@@ -19,7 +19,7 @@ data class SubmitWithdrawalResponse(
         @SerializedName("errorCode")
         val errorCode: String?,
         @SerializedName("joinPromptMessageResponse")
-        val joinPromptMessageResponse: JoinPromptMessageResponse) : Parcelable {
+        val joinPromptMessageResponse: JoinPromptMessageResponse?) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readValue(Float::class.java.classLoader) as? Float,
             parcel.createStringArrayList(),
@@ -68,10 +68,10 @@ data class JoinPromptMessageResponse(
         val statusCode: Int
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString()?:"",
+            parcel.readString()?:"",
+            parcel.readString()?:"",
+            parcel.readString()?:"",
             parcel.readByte() != 0.toByte(),
             parcel.readInt()) {
     }

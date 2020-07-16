@@ -21,7 +21,6 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsCheckProductPromoView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsCheckProductPromoPresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -144,8 +143,7 @@ public class TopAdsCheckProductPromoFragment extends BaseDaggerFragment
 
     private void reloadData() {
         showLoadingProgress();
-        UserSessionInterface userSession = new UserSession(getActivity());
-        presenter.checkPromoAds(shopId, itemId, userSession.getUserId());
+        presenter.checkPromoAds(shopId, itemId, new UserSession(getActivity()).getUserId());
     }
 
     @Override

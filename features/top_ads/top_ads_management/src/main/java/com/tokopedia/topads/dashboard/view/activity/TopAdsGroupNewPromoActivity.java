@@ -12,13 +12,12 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.TopAdsManagementRouter;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.utils.ApplinkUtils;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import static com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
@@ -26,7 +25,7 @@ import static com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFr
  * Created by Nathaniel on 11/22/2016.
  */
 
-public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
+public class TopAdsGroupNewPromoActivity extends TopAdsBaseActivity {
 
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String PARAM_USER_ID = "user_id";
@@ -35,8 +34,7 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString(PARAM_USER_ID, "");
             if (!TextUtils.isEmpty(userId)) {
-                UserSessionInterface userSession = new UserSession(context);
-                if (userSession.getUserId().equalsIgnoreCase(userId)) {
+                if (new UserSession(context).getUserId().equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context)
                             .setData(uri.build())
@@ -133,11 +131,6 @@ public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
     @Override
     protected String getTagFragment() {
         return TopAdsGroupNewPromoFragment.class.getSimpleName();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 
 }

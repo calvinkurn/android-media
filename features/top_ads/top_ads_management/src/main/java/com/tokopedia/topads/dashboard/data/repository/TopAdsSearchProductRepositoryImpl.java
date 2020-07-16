@@ -7,7 +7,6 @@ import com.tokopedia.topads.dashboard.data.source.cloud.CloudTopAdsSearchProduct
 import com.tokopedia.topads.dashboard.domain.TopAdsSearchProductRepository;
 import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -30,8 +29,7 @@ public class TopAdsSearchProductRepositoryImpl implements TopAdsSearchProductRep
 
     @Override
     public Observable<ProductListDomain> searchProduct(Map<String, String> param) {
-        UserSessionInterface userSession = new UserSession(context);
-        param.put(TopAdsNetworkConstant.PARAM_SHOP_ID, userSession.getShopId());
+        param.put(TopAdsNetworkConstant.PARAM_SHOP_ID, new UserSession(context).getShopId());
         return cloudTopAdsSearchProductDataSource.searchProduct(param);
     }
 }

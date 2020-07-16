@@ -22,7 +22,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

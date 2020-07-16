@@ -42,9 +42,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
@@ -79,9 +82,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
+
+    private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
+    private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
+
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
+    private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -108,6 +116,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private RemoteConfig remoteConfig;
 
     /**
      * return the url to load in the webview
@@ -147,6 +156,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private String getUrlFromArguments(Bundle args) {
@@ -318,6 +328,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 webView.loadAuthUrl(historyUrl, userSession);
             }
+        }
+
+        if (requestCode == REQUEST_CODE_LOGOUT && resultCode == RESULT_OK) {
+            hasMoveToNativePage = true;
+            startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
         }
     }
 
@@ -573,6 +588,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (goToLoginGoogle(uri)) return true;
+
         String queryParam = null;
         String headerText = null;
 
@@ -582,6 +598,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
@@ -610,10 +627,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
             return true;
-        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
-            Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
-            if (intent != null) {
-                startActivity(intent);
+        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+            //Avoid crash in app that doesn't support branch IO
+            try {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+                if (intent != null) {
+                    startActivity(intent);
+                }
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
             }
         }
         if (url.contains(PARAM_EXTERNAL)) {
@@ -628,7 +650,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
         if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
-            startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+            boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
+            if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
+                startActivityForResult(intent, REQUEST_CODE_LOGOUT);
+            } else {
+                startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
+            }
             return true;
         }
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);

@@ -5,8 +5,6 @@ import android.view.View
 import com.db.williamchart.Tools
 import com.db.williamchart.base.BaseWilliamChartConfig
 import com.db.williamchart.base.BaseWilliamChartModel
-import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeDataSetConfig
-import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeLineGraphConfig
 import com.db.williamchart.renderer.StringFormatRenderer
 import com.db.williamchart.tooltip.Tooltip
 import com.db.williamchart.util.GMStatisticUtil
@@ -20,6 +18,8 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeDataSetConfig
+import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeLineGraphConfig
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_line_graph_widget_loading.view.*
@@ -38,8 +38,8 @@ class LineGraphViewHolder(
     }
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+        setIsRecyclable(false)
         observeState(element)
-        listener.getLineGraphData()
 
         val data = element.data
 
