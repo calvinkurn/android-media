@@ -3,8 +3,7 @@ package com.tokopedia.sellerorder.common.util
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
 import com.tokopedia.unifycomponents.Toaster
@@ -29,7 +28,7 @@ object Utils {
                 setDescription(getString(R.string.dialog_description_cannot_access_page))
                 setPrimaryCTAText(getString(R.string.button_understand))
                 setPrimaryCTAClickListener {
-                    goToSellerHome(this@run)
+                    goToHome(this@run)
                     dismiss()
                 }
 
@@ -40,9 +39,10 @@ object Utils {
         }
     }
 
-    private fun goToSellerHome(context: Context) {
+    private fun goToHome(context: Context) {
         context.run {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.SELLER_HOME).apply {
+            val intent = Intent().apply {
+                setClassName(context.packageName, GlobalConfig.HOME_ACTIVITY_CLASS_NAME)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
