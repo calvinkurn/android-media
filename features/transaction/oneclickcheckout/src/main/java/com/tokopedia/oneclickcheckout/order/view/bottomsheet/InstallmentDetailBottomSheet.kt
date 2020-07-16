@@ -1,16 +1,9 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
-import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -66,24 +59,13 @@ class InstallmentDetailBottomSheet {
 
     private fun setupTerms(child: View, fragment: OrderSummaryPageFragment) {
         val body1 = child.findViewById<Typography>(R.id.body1)
-        body1.text = SpannableStringBuilder().apply {
-            val text = "Transaksi Anda akan langsung terkonversi menjadi cicilan. Syarat dan Ketentuan berlaku."
-            append(text)
-            val cs = object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    RouteManager.route(fragment.context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.linkColor = Color.parseColor("#03AC0E")
-                    ds.isUnderlineText = false
-                    super.updateDrawState(ds)
-                }
-            }
-            val start = text.indexOf("Syarat dan Ketentuan")
-            setSpan(cs, start, start + "Syarat dan Ketentuan".length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        }
-        body1.movementMethod = LinkMovementMethod.getInstance()
+        val htmlText = """
+            <ol>
+            <li> Pihak bank butuh 7-14 hari kerja untuk mengubah tagihanmu dari pembayaran penuh (full payment) jadi cicilan</li>
+            <li> Jika tagihan kartu kreditmu terbit dan ditagih secara penuh, kamu bisa lakukan pembayaran minimum dulu.</li>
+            </ol>
+        """.trimIndent()
+        body1.text = MethodChecker.fromHtml(htmlText)
         val ivExpandTerms = child.findViewById<ImageView>(R.id.iv_expand_terms)
         ivExpandTerms.setOnClickListener {
             val newRotation = if (ivExpandTerms.rotation == 0f) 180f else 0f
