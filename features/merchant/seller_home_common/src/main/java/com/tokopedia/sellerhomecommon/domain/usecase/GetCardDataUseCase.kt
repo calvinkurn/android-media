@@ -40,16 +40,12 @@ class GetCardDataUseCase(
 
         fun getRequestParams(
                 dataKey: List<String>,
-                startDate: String,
-                endDate: String
+                dynamicParameter: WidgetDataParameterModel
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = WidgetDataParameterModel(
-                                startDate = startDate,
-                                endDate = endDate
-                        ).toJsonString()
+                        jsonParams = dynamicParameter.toJsonString()
                 )
             }
             putObject(DATA_KEYS, dataKeys)

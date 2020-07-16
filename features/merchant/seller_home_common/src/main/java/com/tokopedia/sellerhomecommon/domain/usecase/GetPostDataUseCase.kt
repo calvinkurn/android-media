@@ -41,18 +41,13 @@ class GetPostDataUseCase(
 
         fun getRequestParams(
                 dataKey: List<String>,
-                startDate: String,
-                endDate: String,
+                dynamicParameter: WidgetDataParameterModel,
                 limit: Int = DEFAULT_POST_LIMIT
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = WidgetDataParameterModel(
-                                startDate = startDate,
-                                endDate = endDate,
-                                limit = limit
-                        ).toJsonString()
+                        jsonParams = dynamicParameter.copy(limit = limit).toJsonString()
                 )
             }
             putObject(DATA_KEYS, dataKeys)
