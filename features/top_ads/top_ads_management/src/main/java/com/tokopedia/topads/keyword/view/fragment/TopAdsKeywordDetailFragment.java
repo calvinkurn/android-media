@@ -3,6 +3,7 @@ package com.tokopedia.topads.keyword.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -180,11 +181,12 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     private String shopId = "";
 
     private String getShopId() {
-        if(shopId != null && !shopId.isEmpty()) {
+        if(!TextUtils.isEmpty(shopId)) {
             return shopId;
         } else {
             UserSessionInterface userSession = new UserSession(getActivity());
-            return userSession.getShopId();
+            shopId = userSession.getShopId();
+            return shopId;
         }
     }
 }

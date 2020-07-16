@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -48,11 +49,12 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
     }
 
     private String getShopId() {
-        if(shopId != null && !shopId.isEmpty()) {
+        if(!TextUtils.isEmpty(shopId)) {
             return shopId;
         } else {
             UserSessionInterface userSession = new UserSession(getActivity());
-            return userSession.getShopId();
+            shopId = userSession.getShopId();
+            return shopId;
         }
     }
 }

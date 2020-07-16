@@ -36,7 +36,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
             return shopId;
         } else {
             UserSessionInterface userSession = new UserSession(context);
-            return userSession.getShopId();
+            shopId = userSession.getShopId();
+            return shopId;
         }
     }
 
