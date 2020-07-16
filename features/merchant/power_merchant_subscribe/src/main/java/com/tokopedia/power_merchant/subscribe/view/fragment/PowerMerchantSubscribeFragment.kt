@@ -342,8 +342,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
+        val shopScore = powerMerchantStatus.shopScore.data.value
+
         membershipLayout.show(powerMerchantStatus) {
-            onClickRegister()
+            onClickRegister(shopScore)
         }
         featureLayout.show(powerMerchantStatus, powerMerchantTracking)
         freeShippingLayout.show()
@@ -361,20 +363,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showCTAButton(powerMerchantStatus: PowerMerchantStatus) {
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
+        val shopScore = powerMerchantStatus.shopScore.data.value
 
         when {
-            shopStatus.isPowerMerchantInactive() -> showRegisterBtn()
+            shopStatus.isPowerMerchantInactive() -> showRegisterBtn(shopScore)
             shopStatus.isPowerMerchantRegistered() -> showCancelMembershipBtn()
             else -> btnCallToAction.hide()
         }
     }
 
-    private fun showRegisterBtn() {
+    private fun showRegisterBtn(shopScore: Int) {
         btnRegister.text = getString(R.string.power_merchant_register_now)
 
         btnCallToAction.setOnClickListener {
             trackClickRegister()
-            onClickRegister()
+            onClickRegister(shopScore)
         }
 
         btnRegister.show()
@@ -400,13 +403,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         textCancelMembership.show()
     }
 
-    private fun onClickRegister() {
-        goToTermsAndConditionPage()
+    private fun onClickRegister(shopScore: Int) {
+        goToTermsAndConditionPage(shopScore)
     }
 
-    private fun goToTermsAndConditionPage() {
+    private fun goToTermsAndConditionPage(shopScore: Int) {
         context?.let {
-            val intent = PowerMerchantTermsActivity.createIntent(it)
+            val intent = PowerMerchantTermsActivity.createIntent(it, shopScore)
             startActivityForResult(intent, ACTIVATE_INTENT_CODE)
         }
     }

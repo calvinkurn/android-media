@@ -37,14 +37,6 @@ class PowerMerchantTracking @Inject constructor(
                 GMParamTracker.LABEL_POP_UP_LEARN)
     }
 
-    fun eventIncreaseScorePopUp() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-                GMParamTracker.CATEGORY_SELLER_APP,
-                GMParamTracker.ACTION_POWER_MERCHANT_INCREASE_PERFORMANCE,
-                "")
-    }
-
     fun eventUpgradeShopSetting() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_SHOP_SETTING,
@@ -293,6 +285,40 @@ class PowerMerchantTracking @Inject constructor(
             category,
             GMParamTracker.Action.CLICK_DISMISS_KYC_VERIFICATION,
             ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickSeeShopScoreTips(shopScore: Int) {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_SEE_SHOP_SCORE_TIPS,
+            shopScore.toString()
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickDismissShopScorePopUp(shopScore: Int) {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_DISMISS_SHOP_SCORE,
+            shopScore.toString()
         )
 
         event[CustomDimension.USER_ID] = user.userId

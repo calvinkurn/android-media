@@ -19,6 +19,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity.Companion.EXTRA_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.*
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
@@ -196,6 +197,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun showShopScoreBottomSheet() {
+        val shopScore = arguments?.getInt(EXTRA_SHOP_SCORE) ?: 0
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
             getString(R.string.power_merchant_bottom_sheet_score_title),
             getString(R.string.power_merchant_bottom_sheet_score_description),
@@ -206,15 +208,24 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         bottomSheet.setPrimaryButtonText(getString(R.string.power_merchant_see_tips))
         bottomSheet.setSecondaryButtonText(getString(R.string.pm_label_button_close))
         bottomSheet.setPrimaryButtonClickListener {
-            powerMerchantTracking.eventIncreaseScorePopUp()
+            trackClickSeeShopScoreTips(shopScore)
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             bottomSheet.dismiss()
         }
         bottomSheet.setSecondaryButtonClickListener {
+            trackClickDismissShopScorePopUp(shopScore)
             activity?.finish()
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun trackClickSeeShopScoreTips(shopScore: Int) {
+        powerMerchantTracking.eventClickSeeShopScoreTips(shopScore)
+    }
+
+    private fun trackClickDismissShopScorePopUp(shopScore: Int) {
+        powerMerchantTracking.eventClickDismissShopScorePopUp(shopScore)
     }
 
     private fun showDialogKyc() {
