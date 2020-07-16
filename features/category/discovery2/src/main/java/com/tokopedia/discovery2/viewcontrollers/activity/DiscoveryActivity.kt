@@ -44,7 +44,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val END_POINT = "end_point"
 
         @JvmField
-        var config: String = NATIVE
+        var config: String = ""
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -65,12 +65,20 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        if (config != NATIVE) {
-            routeToReactNativeDiscovery()
-        }
+        moveToRnIfRequired()
         toolbar?.hide()
         setObserver()
         discoveryViewModel.getDiscoveryUIConfig()
+    }
+
+    private fun moveToRnIfRequired() {
+        if (config.isNotEmpty()) {
+            if (config != NATIVE) {
+                routeToReactNativeDiscovery()
+            } else {
+                inflateFragment()
+            }
+        }
     }
 
     private fun setObserver() {
@@ -78,12 +86,13 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             when (it) {
                 is Success -> {
                     config = it.data
-                    if (it.data != NATIVE) {
-                        routeToReactNativeDiscovery()
-                    }
+                    moveToRnIfRequired()
                 }
             }
         })
+    }
+
+    override fun setupFragment(savedInstance: Bundle?) {
     }
 
     private fun routeToReactNativeDiscovery() {
