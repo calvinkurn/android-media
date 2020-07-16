@@ -296,10 +296,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             if(showFreeShipping) {
                 openFreeShippingPage()
                 trackSuccessBottomSheetClickLearnMore(freeShipping)
+            } else {
+                trackClickStartSuccessBottomSheet()
             }
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun trackClickStartSuccessBottomSheet() {
+        powerMerchantTracking.eventClickStartSuccessBottomSheet()
     }
 
     private fun openFreeShippingPage() {
