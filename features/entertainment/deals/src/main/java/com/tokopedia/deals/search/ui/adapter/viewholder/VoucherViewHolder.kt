@@ -42,7 +42,7 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
         if (element.discountText.isNotEmpty()) {
             discount.visibility = View.VISIBLE
             discount.text = element.discountText
-            discount.background = ContextCompat.getDrawable(itemView.context, R.drawable.background_softpink_box)
+            discount.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_deals_softpink_box)
         } else {
             discount.visibility = View.GONE
             discount.background = null
