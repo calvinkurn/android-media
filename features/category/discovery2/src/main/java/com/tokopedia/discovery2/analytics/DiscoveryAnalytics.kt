@@ -441,7 +441,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                     KEY_ID to it.shopId.toString(),
                     KEY_NAME to "/discovery/${pagePath} - topads - headline shop",
                     KEY_CREATIVE to (it.shopName ?: EMPTY_STRING),
-                    KEY_POSITION to shop.positionForParentItem + 1
+                    KEY_POSITION to it.positionForParentItem + 1
             ))
         }
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CpmTopAdsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -21,16 +22,9 @@ import kotlin.coroutines.CoroutineContext
 
 class CpmTopAdsViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val cpmTopAdsList = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
-    private val promotedText = MutableLiveData<Result<String>>()
-    private val brandName = MutableLiveData<Result<String>>()
-    private val imageUrl = MutableLiveData<Result<String>>()
-
-    private val cpmData = MutableLiveData<Result<CpmModel>>()
-
     @Inject
     lateinit var cpmTopAdsUseCase: CpmTopAdsUseCase
-
+    private val cpmData = MutableLiveData<Result<CpmModel>>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -51,13 +45,6 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
                 if (data != null) {
                     cpmData.postValue(Success(components.cpmData as CpmModel))
                 }
-
-//                if (data != null) {
-//                    cpmTopAdsList.postValue(Success(components.cpmData?.componentList as ArrayList<ComponentsItem>))
-//                    promotedText.postValue(Success(components.cpmData?.promotedText as String))
-//                    brandName.postValue(Success(components.cpmData?.brandName as String))
-//                    imageUrl.postValue(Success(components.cpmData?.imageUrl as String))
-//                }
             }
 
 
@@ -74,13 +61,16 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
                 .inject(this)
     }
 
-    fun getCpmTopAdsList(): LiveData<Result<ArrayList<ComponentsItem>>> = cpmTopAdsList
-    fun getPromotedText(): LiveData<Result<String>> = promotedText
-    fun getBrandName(): LiveData<Result<String>> = brandName
-    fun getImageUrl(): LiveData<Result<String>> = imageUrl
-
     fun getCpmData(): LiveData<Result<CpmModel>> = cpmData
 
+    fun getComponentData(): DataItem? {
+        components.data?.let {
+            if (it.isNotEmpty()) {
+                return it[0]
+            }
+        }
+        return null
+    }
 
 }
 
