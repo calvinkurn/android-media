@@ -12,7 +12,7 @@ class ProductNotifyMeDataModel(
         var endDate: String = "",
         var startDate: String = "",
         var notifyMe: Boolean = false,
-        var isUpcomingDealsType:Boolean = false
+        var isUpcomingNplType:Boolean = false
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 

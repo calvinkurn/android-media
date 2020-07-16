@@ -11,6 +11,15 @@ data class DynamicProductInfoP1(
 
     fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
 
+    val isPreOrder: Boolean
+        get() = data.preOrder.isActive
+
+    val isUsingOvo: Boolean
+        get() = data.campaign.isUsingOvo
+
+    val isLeasing: Boolean
+        get() = basic.isLeasing
+
     val shopTypeString: String
         get() {
             return if (data.isOS)
