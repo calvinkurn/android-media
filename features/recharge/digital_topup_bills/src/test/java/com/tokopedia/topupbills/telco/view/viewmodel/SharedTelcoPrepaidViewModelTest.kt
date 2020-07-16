@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -46,6 +47,39 @@ class SharedTelcoPrepaidViewModelTest {
         //then
         val actualData = sharedTelcoPrepaidViewModel.productCatalogItem.value
         assertEquals(productCatalogItem.id, actualData?.id)
+    }
+
+    @Test
+    fun setProductAutoCheckout_validData() {
+        //given
+        val telcoProduct = TelcoProduct(id = "3")
+        //when
+        sharedTelcoPrepaidViewModel.setProductAutoCheckout(telcoProduct)
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.productAutoCheckout.value
+        assertEquals(telcoProduct.id, actualData?.id)
+    }
+
+    @Test
+    fun setPositionScrollToItem_validData() {
+        //given
+        val position = 123
+        //when
+        sharedTelcoPrepaidViewModel.setPositionScrollToItem(position)
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.positionScrollItem.value
+        assertEquals(position, actualData)
+    }
+
+    @Test
+    fun setFavNumberSelected_validData() {
+        //given
+        val favNumber = TopupBillsFavNumberItem(clientNumber = "08123232323")
+        //when
+        sharedTelcoPrepaidViewModel.setFavNumberSelected(favNumber)
+        //then
+        val actualData = sharedTelcoPrepaidViewModel.favNumberSelected.value
+        assertEquals(favNumber.clientNumber, actualData?.clientNumber)
     }
 
     @Test
