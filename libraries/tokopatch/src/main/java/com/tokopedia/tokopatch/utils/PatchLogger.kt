@@ -18,15 +18,22 @@ class PatchLogger : PatchCallBack {
             context: Context,
             result: Boolean,
             isNet: Boolean,
-            patches: MutableList<Patch>
+            patches: List<Patch>
     ) {
         for (patch in patches) {
-            Timber.w("P1#ROBUST#onPatchListFetched patch: %s", patch.name)
+            if(Utils.isDebuggable(context)){
+                Log.d(TAG, "onPatchListFetched patch: ${patch.name}")
+            } else {
+                Timber.w("P1#ROBUST#onPatchListFetched patch: %s", patch.name)
+            }
         }
     }
 
     override fun onPatchFetched(context: Context, result: Boolean, isNet: Boolean) {
-        Timber.w("P1#ROBUST#onPatchFetched isNet: $isNet result: $result")
+        if (Utils.isDebuggable(context))
+            Log.w(TAG, "onPatchFetched isNet: $isNet result: $result")
+        else
+            Timber.w("P1#ROBUST#onPatchFetched isNet: $isNet result: $result")
     }
 
     override fun onPatchApplied(context: Context, result: Boolean, patch: Patch) {
@@ -34,20 +41,31 @@ class PatchLogger : PatchCallBack {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, "Applied patch" + patch.name, Toast.LENGTH_LONG).show()
             }
+        } else {
+            Timber.w("P1#ROBUST#onPatchApplied patch name: ${patch.name} result: $result")
         }
     }
 
     override fun logNotify(context: Context, log: String, where: String) {
-        Timber.w("P1#ROBUST#logNotify log: $log where: $where")
+        if (Utils.isDebuggable(context))
+            Log.w(TAG, log)
+        else
+            Timber.w("P1#ROBUST#logNotify log: $log where: $where")
     }
 
     override fun logMessage(context: Context, log: String) {
-        Timber.i("P1#ROBUST#$log")
+        if (Utils.isDebuggable(context))
+            Log.i(TAG, log)
+        else
+            Timber.i("P1#ROBUST#$log")
 
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {
-        Timber.e(throwable, "P1#ROBUST#exceptionNotify where: $where")
+        if (Utils.isDebuggable(context))
+            Log.e(TAG, where, throwable)
+        else
+            Timber.e(throwable, "P1#ROBUST#exceptionNotify where: $where")
 
     }
 
