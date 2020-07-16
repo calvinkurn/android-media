@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -36,10 +37,11 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
+import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.ui.adapter.ImageReviewAdapter
-import com.tokopedia.review.feature.createreputation.ui.listener.OnAddImageClickListener
+import com.tokopedia.review.feature.createreputation.ui.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -54,7 +56,7 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, TextAreaListener {
+class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -169,9 +171,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
         super.onViewCreated(view, savedInstanceState)
         isLowDevice = DevicePerformanceInfo.isLow(context)
         initCreateReviewTextArea()
+        initEmptyPhoto()
+        initAnonymousText()
         getReviewData()
         getIncentiveOvoData()
-        anonymous_text.text = resources.getString(R.string.review_create_hide_name)
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
         animatedReviewPicker.resetStars()
@@ -216,8 +219,8 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
             }
         })
 
-        anonymous_cb.setOnClickListener {
-            if (anonymous_cb.isChecked) {
+        createReviewAnonymousCheckbox.setOnClickListener {
+            if (createReviewAnonymousCheckbox.isChecked) {
                 ReviewTracking.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
             }
             clearFocusAndHideSoftInput(view)
@@ -266,6 +269,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
         }
     }
 
+    override fun onRemoveImageClick(item: BaseImageReviewViewModel) {
+        imageAdapter.removeItem(item)
+    }
+
     override fun onExpandButtonClicked(text: String) {
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
         fragmentManager?.let { textAreaBottomSheet?.show(it,"") }
@@ -294,12 +301,12 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
                 reviewClickAt.toString(10),
                 reviewMessage.isEmpty(),
                 selectedImage.size.toString(10),
-                anonymous_cb.isChecked,
+                createReviewAnonymousCheckbox.isChecked,
                 false
         )
 
         createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
-                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked, utmSource)
+                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, createReviewAnonymousCheckbox.isChecked, utmSource)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
@@ -405,6 +412,8 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
                             isImageAdded = true
                         }
                         imageAdapter.setImageReviewData(imageListData)
+                        rv_img_review.show()
+                        createReviewAddPhotoEmpty.hide()
                     }
                 }
             }
@@ -548,5 +557,22 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
 
     private fun initCreateReviewTextArea() {
         createReviewExpandableTextArea.setListener(this)
+    }
+
+    private fun initEmptyPhoto() {
+        createReviewAddPhotoEmpty.setOnClickListener {
+            onAddImageClick()
+        }
+    }
+
+    private fun initAnonymousText() {
+        createReviewAnonymousText.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                createReviewAnonymousCheckbox.isChecked = !createReviewAnonymousCheckbox.isChecked
+            }
+            if (createReviewAnonymousCheckbox.isChecked) {
+                ReviewTracking.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
+            }
+        }
     }
 }

@@ -7,12 +7,12 @@ import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewModel
 import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
-import com.tokopedia.review.feature.createreputation.ui.listener.OnAddImageClickListener
+import com.tokopedia.review.feature.createreputation.ui.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.ui.viewholder.BaseImageReviewViewHolder
 import com.tokopedia.review.feature.createreputation.ui.viewholder.DefaultImageReviewViewHolder
 import com.tokopedia.review.feature.createreputation.ui.viewholder.ImageReviewViewHolder
 
-class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickListener) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
+class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 
     companion object {
         const val TYPE_DEFAULT = 1
@@ -26,13 +26,19 @@ class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickLis
         notifyDataSetChanged()
     }
 
+    fun removeItem(item: BaseImageReviewViewModel) {
+        val index = imageReviewData.indexOf(item)
+        imageReviewData.remove(item)
+        notifyItemRemoved(index)
+    }
+
     override fun onCreateViewHolder(view: ViewGroup, position: Int): BaseImageReviewViewHolder<*> {
         return when (position) {
             TYPE_DEFAULT -> {
-                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false), onAddImageClickListener)
+                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false), imageClickListener)
             }
             TYPE_IMAGE -> {
-                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false), onAddImageClickListener)
+                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false), imageClickListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

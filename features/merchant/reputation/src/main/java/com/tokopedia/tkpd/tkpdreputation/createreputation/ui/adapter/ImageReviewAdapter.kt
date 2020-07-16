@@ -29,7 +29,7 @@ class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickLis
     override fun onCreateViewHolder(view: ViewGroup, position: Int): BaseImageReviewViewHolder<*> {
         return when (position) {
             TYPE_DEFAULT -> {
-                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false), onAddImageClickListener)
+                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review_old, view, false), onAddImageClickListener)
             }
             TYPE_IMAGE -> {
                 return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false), onAddImageClickListener)

@@ -4,13 +4,13 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
-import com.tokopedia.review.feature.createreputation.ui.listener.OnAddImageClickListener
+import com.tokopedia.review.feature.createreputation.ui.listener.ImageClickListener
 import kotlinx.android.synthetic.main.item_image_chooser_review.view.*
 
-class ImageReviewViewHolder(val view: View, private val onAddImageClickListener: OnAddImageClickListener?) : BaseImageReviewViewHolder<ImageReviewViewModel>(view) {
+class ImageReviewViewHolder(val view: View, private val imageClickListener: ImageClickListener?) : BaseImageReviewViewHolder<ImageReviewViewModel>(view) {
     override fun bind(element: ImageReviewViewModel) {
         view.setOnClickListener {
-            onAddImageClickListener?.onAddImageClick()
+            imageClickListener?.onAddImageClick()
         }
         if (adapterPosition == 3 && element.shouldDisplayOverlay) {
             view.review_container_overlay.visibility = View.VISIBLE

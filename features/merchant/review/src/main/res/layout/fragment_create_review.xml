@@ -100,6 +100,7 @@
                         android:layout_marginTop="@dimen/spacing_lvl2"
                         android:layout_marginEnd="@dimen/layout_lvl3"
                         android:textColor="@color/Neutral_N700_68"
+                        android:gravity="center"
                         app:typographyType="body_2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -122,28 +123,84 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createReviewContainer"/>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/createReviewAddPhotoEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_56"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:padding="@dimen/layout_lvl2"
+                android:background="@drawable/bg_create_review_add_photo"
+                app:layout_constraintTop_toBottomOf="@id/createReviewAddPhotoTitle">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/layout_lvl0"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/create_review_add_photo_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:srcCompat="@drawable/ic_create_review_add_photo"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/review_create_empty_photo"
+                        android:textColor="@color/Green_G500"
+                        android:layout_marginStart="@dimen/layout_lvl1"
+                        android:layout_marginLeft="@dimen/layout_lvl1"
+                        app:typographyWeight="bold"
+                        app:typographyType="body_2"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/create_review_add_photo_icon" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_img_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/dp_16"
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createReviewAddPhotoTitle"
+                android:visibility="gone"
                 tools:listitem="@layout/item_image_chooser_review" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/create_review_add_photo_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="createReviewAddPhotoEmpty, rv_img_review"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/createReviewTextAreaTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_img_review"/>
+                app:layout_constraintTop_toBottomOf="@id/create_review_add_photo_barrier"/>
 
             <com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextArea
                 android:id="@+id/createReviewExpandableTextArea"
@@ -175,12 +232,15 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-                    android:id="@+id/anonymous_cb"
+                    android:id="@+id/createReviewAnonymousCheckbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <TextView
-                    android:id="@+id/anonymous_text"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/createReviewAnonymousText"
+                    android:text="@string/review_create_hide_name"
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="body_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
