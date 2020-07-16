@@ -165,7 +165,12 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun onClickActivateButton() {
+        trackClickTermsAndConditionUpgradeBtn()
         viewModel.activatePowerMerchant()
+    }
+
+    private fun trackClickTermsAndConditionUpgradeBtn() {
+        powerMerchantTracking.eventClickTermsAndConditionUpgradeBtn()
     }
 
     private fun openKycPage() {

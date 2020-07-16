@@ -50,6 +50,7 @@ object GMParamTracker {
         const val REGULAR_MERCHANT = "RM"
         const val UPGRADE_SHOP = "upgrade shop"
         const val NO_DATA = "no data"
+        const val TERMS_AND_CONDITION_UPGRADE_SHOP = "terms condition - upgrade shop"
     }
 
     object CustomDimension {
