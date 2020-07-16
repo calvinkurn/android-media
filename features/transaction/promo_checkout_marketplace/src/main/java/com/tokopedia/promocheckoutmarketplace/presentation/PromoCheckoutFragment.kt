@@ -457,12 +457,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeGetCouponRecommendationResult() {
-        viewModel.getCouponRecommendationResponse.observe(this, Observer {
+        viewModel.getPromoListResponseAction.observe(this, Observer {
             when {
-                it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
+                it.state == GetPromoListResponseAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
                 }
-                it.state == GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR -> {
+                it.state == GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     it.exception?.let {
                         showToastMessage(it)
                     }

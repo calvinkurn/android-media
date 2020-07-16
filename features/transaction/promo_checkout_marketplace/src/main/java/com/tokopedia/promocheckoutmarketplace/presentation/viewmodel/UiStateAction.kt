@@ -30,7 +30,7 @@ data class ApplyPromoResponseAction(
     }
 }
 
-data class GetCouponRecommendationAction(
+data class GetPromoListResponseAction(
         var state: Int = 0,
         var exception: Throwable? = null
 ) {

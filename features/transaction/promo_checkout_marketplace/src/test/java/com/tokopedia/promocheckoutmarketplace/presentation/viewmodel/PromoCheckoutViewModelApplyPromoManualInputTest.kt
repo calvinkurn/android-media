@@ -216,7 +216,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         viewModel.getPromoList("", PromoRequest(), attemptedPromoCode)
 
         //then
-        assert(viewModel._getCouponRecommendationResponse.value?.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA)
+        assert(viewModel._getPromoListResponseAction.value?.state == GetPromoListResponseAction.ACTION_CLEAR_DATA)
     }
 
 }
