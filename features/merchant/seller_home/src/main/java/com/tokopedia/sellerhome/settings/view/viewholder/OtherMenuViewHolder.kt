@@ -129,8 +129,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun hideFreeShippingLayout() {
-        val freeShippingLayout = itemView.shopInfoLayout.freeShippingLayout
-        freeShippingLayout.hide()
+        itemView.shopInfoLayout.freeShippingLayout?.hide()
     }
 
     private fun setShopName(shopName: String) {
