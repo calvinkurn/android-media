@@ -472,7 +472,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeApplyPromoResult() {
-        viewModel.applyPromoResponse.observe(this, Observer {
+        viewModel.applyPromoResponseAction.observe(this, Observer {
             when {
                 it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
                     val intent = Intent()
