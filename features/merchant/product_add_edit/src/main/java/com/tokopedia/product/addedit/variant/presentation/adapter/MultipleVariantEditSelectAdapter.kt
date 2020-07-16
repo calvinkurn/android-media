@@ -15,9 +15,14 @@ import com.tokopedia.product.addedit.variant.presentation.viewholder.MultipleVar
 class MultipleVariantEditSelectAdapter: RecyclerView.Adapter<MultipleVariantEditSelectViewHolder>(),
         MultipleVariantEditSelectViewHolder.OnFieldClickListener {
 
+    interface OnSelectionsDataListener {
+        fun onSelectionsDataChanged(selectedCount: Int)
+    }
+
     private var productVariants: List<ProductVariantInputModel> = listOf()
     private var selections: List<SelectionInputModel> = listOf()
     private var selectionIndex: MutableList<MutableList<Boolean>> = mutableListOf()
+    private var onSelectionsDataListener: OnSelectionsDataListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultipleVariantEditSelectViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_variant_edit_select, parent, false)
@@ -34,6 +39,12 @@ class MultipleVariantEditSelectAdapter: RecyclerView.Adapter<MultipleVariantEdit
 
     override fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean) {
         selectionIndex[selectionPosition][optionPosition] = value
+        // add selection listener
+        onSelectionsDataListener?.onSelectionsDataChanged(getSelectedData().size)
+    }
+
+    fun setOnSelectionsDataListener(listener: OnSelectionsDataListener) {
+        onSelectionsDataListener = listener
     }
 
     fun setData(variantInputModel: VariantInputModel) {
@@ -46,6 +57,8 @@ class MultipleVariantEditSelectAdapter: RecyclerView.Adapter<MultipleVariantEdit
     fun setAllDataSelected(isSelected: Boolean) {
         selectionIndex = initializeSelectedIndex(productVariants, isSelected)
         notifyDataSetChanged()
+        // add selection listener
+        onSelectionsDataListener?.onSelectionsDataChanged(getSelectedData().size)
     }
 
     fun getSelectedData(): MutableList<MutableList<Int>> {

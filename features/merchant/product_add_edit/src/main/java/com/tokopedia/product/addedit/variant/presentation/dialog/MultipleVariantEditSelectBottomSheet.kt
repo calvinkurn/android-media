@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,8 @@ import java.math.BigInteger
 
 class MultipleVariantEditSelectBottomSheet(
         private val multipleVariantEditListener: MultipleVariantEditListener
-): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener {
+): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener,
+        MultipleVariantEditSelectAdapter.OnSelectionsDataListener {
 
     companion object {
         const val TAG = "Tag Multiple Variant Edit Select"
@@ -41,6 +43,7 @@ class MultipleVariantEditSelectBottomSheet(
 
     init {
         selectAdapter = MultipleVariantEditSelectAdapter()
+        selectAdapter?.setOnSelectionsDataListener(this)
         setBehaviorAsKnob()
     }
 
@@ -69,6 +72,22 @@ class MultipleVariantEditSelectBottomSheet(
 
     override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
         return multipleVariantEditListener.onMultipleEditInputValidateStock(stock)
+    }
+
+    override fun onSelectionsDataChanged(selectedCount: Int) {
+        val buttonNextText = getString(R.string.action_variant_next)
+        contentView?.apply {
+            if (selectedCount > 0) {
+                val numberedText = "$buttonNextText ($selectedCount)"
+                buttonNext?.text = numberedText
+                buttonNext?.isEnabled = true
+            } else {
+                buttonNext?.text = buttonNextText
+                buttonNext?.isEnabled = false
+                checkboxSelectAll?.isSelected = false
+            }
+        }
+
     }
 
     fun setData(items: VariantInputModel?) {
