@@ -42,11 +42,6 @@ class PieChartView(
 
     init {
         View.inflate(context, R.layout.view_pie_chart, this)
-
-        val defaultPieChartWidth: Int = context.resources.getDimensionPixelSize(R.dimen.charts_140dp)
-        val defaultPieChartHeight: Int = context.resources.getDimensionPixelSize(R.dimen.charts_140dp)
-        pieChart.layoutParams.width = defaultPieChartWidth
-        pieChart.layoutParams.height = defaultPieChartHeight
     }
 
     fun init(config: PieChartConfigModel? = null) {
