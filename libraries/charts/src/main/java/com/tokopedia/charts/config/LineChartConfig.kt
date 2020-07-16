@@ -43,7 +43,7 @@ class LineChartConfig : BaseChartConfig() {
     }
 
     /**
-     * Can be set to LineChartView.
+     * chartLineMode can be set to LineChartView.LINE_MODE_LINEAR or LineChartView.LINE_MODE_CURVE
      * */
     fun chartLineMode(lambda: () -> Int) {
         chartLineMode = lambda()
