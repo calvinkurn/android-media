@@ -350,7 +350,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
         val shopScore = powerMerchantStatus.shopScore.data.value
 
-        membershipLayout.show(powerMerchantStatus) {
+        membershipLayout.show(powerMerchantStatus, powerMerchantTracking) {
             onClickRegister(shopScore)
         }
         featureLayout.show(powerMerchantStatus, powerMerchantTracking)
