@@ -194,7 +194,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onClickMemberDetail() {
         //Fallback strategy for new Rewards Page
-        mShowTokopointNative = remoteConfig.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, true);
+        mShowTokopointNative = remoteConfig.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false);
         if (mShowTokopointNative) {
             RouteManager.route(getContext(), ApplinkConst.TokoPoints.HOMEPAGE);
         } else {
