@@ -5,7 +5,9 @@ import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 
-class PowerMerchantTracking @Inject constructor() {
+class PowerMerchantTracking @Inject constructor(
+    private val user: UserSessionInterface
+) {
 
     fun eventUpgradeShopHome() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
