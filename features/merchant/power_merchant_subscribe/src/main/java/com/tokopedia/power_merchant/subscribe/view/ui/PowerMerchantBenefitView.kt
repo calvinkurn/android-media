@@ -99,7 +99,7 @@ class PowerMerchantBenefitView: ConstraintLayout {
     }
 
     private fun trackClickLearnMore() {
-        powerMerchantTracking?.eventLearnMorePm()
+        powerMerchantTracking?.eventClickLearnMoreUpgradeShop()
     }
 
     private fun goToLearnMorePage() {

@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.utils
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.GMParamTracker.CustomDimension
 import com.tokopedia.track.TrackApp
@@ -11,14 +12,6 @@ import javax.inject.Inject
 class PowerMerchantTracking @Inject constructor(
     private val user: UserSessionInterface
 ) {
-
-    fun eventUpgradeShopHome() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_HOME_PAGE,
-                GMParamTracker.CATEGORY_HOME_PAGE,
-                GMParamTracker.ACTION_CLICK_UPGRADE_SHOP,
-                "")
-    }
 
     fun eventLearnMorePm() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
@@ -213,6 +206,23 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+    fun eventClickLearnMoreUpgradeShop() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_LEARN_MORE_UPGRADE_SHOP,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
     fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
@@ -227,18 +237,11 @@ class PowerMerchantTracking @Inject constructor(
         }
     }
 
-    fun eventClickBroadcastTnC() {
-        val event = TrackAppUtils.gtmData(
-            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-            GMParamTracker.CATEGORY_SELLER_APP,
-            GMParamTracker.Action.CLICK_TNC_BROADCAST_CHAT,
-            ""
-        )
-
-        event[CustomDimension.USER_ID] = user.userId
-        event[CustomDimension.SHOP_ID] = user.shopId
-        event[CustomDimension.SHOP_TYPE] = getShopType()
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    private fun getCategory(): String {
+        return if (GlobalConfig.isSellerApp()) {
+            GMParamTracker.CATEGORY_SELLER_APP
+        } else {
+            GMParamTracker.CATEGORY_MAIN_APP
+        }
     }
 }

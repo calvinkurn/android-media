@@ -7,6 +7,7 @@ object GMParamTracker {
     const val EVENT_CLICK_SHOP_SETTING = "clickShopSetting"
 
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
+    const val CATEGORY_MAIN_APP = "tokopedia main app"
     const val CATEGORY_HOME_PAGE = "tokopedia seller app - homepage"
 
     const val ACTION_CLICK_POWER_MERCHANT = "click power merchant"
@@ -37,6 +38,7 @@ object GMParamTracker {
         const val CLICK_CANCELLATION_REASON = "click cancellation reason"
         const val CLICK_TNC_FREE_SHIPPING = "click t&c free ongkir"
         const val CLICK_TNC_BROADCAST_CHAT = "click t&c broadcast chat"
+        const val CLICK_LEARN_MORE_UPGRADE_SHOP = "click pelajari selengkapnya upgrade tokomu"
     }
 
     object Label {
