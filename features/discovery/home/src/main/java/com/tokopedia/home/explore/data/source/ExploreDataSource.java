@@ -216,7 +216,7 @@ public class ExploreDataSource {
 
                     SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(context);
                     String shopDomainPreference = mSettings.getString("shopDomain","");
-                    if (shopDomainPreference.equals(cachedShopDomain)) {
+                    if (!shopDomainPreference.equals(cachedShopDomain)) {
                         throw new RuntimeException("Cached data shopInfo mismatch!!");
                     }
                     GraphqlResponse<DataResponseModel> graphqlResponse = new GraphqlResponse<>();
