@@ -41,6 +41,8 @@ object GMParamTracker {
         const val CLICK_LEARN_MORE_UPGRADE_SHOP = "click pelajari selengkapnya upgrade tokomu"
         const val CLICK_POWER_MERCHANT = "click power merchant"
         const val CLICK_TICK_BOX_TNC = "click tickbox term & condition"
+        const val CLICK_KYC_VERIFICATION = "click data verification - kyc"
+        const val CLICK_DISMISS_KYC_VERIFICATION = "click close pop up - kyc"
     }
 
     object Label {

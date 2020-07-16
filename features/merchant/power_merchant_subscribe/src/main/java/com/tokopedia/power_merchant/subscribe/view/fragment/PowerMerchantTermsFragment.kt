@@ -225,14 +225,24 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
                 setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
                 setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
                 setPrimaryCTAClickListener {
+                    trackClickKycVerification()
                     openKycPage()
                     dismiss()
                 }
                 setSecondaryCTAClickListener {
+                    trackClickDismissKycPopUp()
                     activity?.finish()
                     dismiss()
                 }
             }.show()
         }
+    }
+
+    private fun trackClickDismissKycPopUp() {
+        powerMerchantTracking.eventClickDismissKycPopUp()
+    }
+
+    private fun trackClickKycVerification() {
+        powerMerchantTracking.eventClickKycVerification()
     }
 }
