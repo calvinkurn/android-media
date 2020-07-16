@@ -29,6 +29,9 @@ interface TopAdsDashboardComponent {
     fun inject(productTabFragment: ProductTabFragment)
     fun inject(keywordTabFragment: KeywordTabFragment)
     fun inject(negKeywordTabFragment: NegKeywordTabFragment)
+    fun inject(topAdsRecommendationFragment: TopAdsRecommendationFragment)
+    fun inject(topadsKeywordInsightBase: TopadsKeywordInsightBase)
     fun inject(topAdsDashboardActivity: TopAdsDashboardActivity)
     fun inject(topAdsGroupDetailViewActivity: TopAdsGroupDetailViewActivity)
+
 }

@@ -30,6 +30,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
@@ -131,6 +132,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         val list: MutableList<FragmentTabItem> = mutableListOf()
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance()))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         pagerAdapter.setList(list)
         return pagerAdapter

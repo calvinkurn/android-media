@@ -24,6 +24,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
+import com.tokopedia.topads.dashboard.data.model.insight.InsightResponse
+import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyResponse
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.domain.interactor.*
@@ -57,6 +59,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
             private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
             private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
+            private val topAdsInsightUseCase: TopAdsInsightUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
@@ -211,6 +214,20 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 },
                 {
                     it.printStackTrace()
+
+                })
+    }
+
+    fun getInsight(resources: Resources,onSuccess:((InsightKeyResponse)->Unit)){
+        topAdsInsightUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,R.raw.gql_query_insights_keyword))
+        topAdsInsightUseCase.setParams()
+        topAdsInsightUseCase.executeQuerySafeMode(
+                {
+                    if (it.data.isNotEmpty()){
+                        onSuccess(it)
+                    }
+
+                },{
 
                 })
     }
@@ -382,5 +399,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         topAdsGetGroupStatisticsUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()
+        topAdsInsightUseCase.cancelJobs()
     }
 }

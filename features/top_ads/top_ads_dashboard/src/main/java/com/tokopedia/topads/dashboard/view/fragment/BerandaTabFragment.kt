@@ -27,6 +27,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.insight.InsightResponse
+import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -40,6 +42,7 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 
@@ -131,6 +134,12 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
         }
+        topAdsDashboardPresenter.getInsight(resources,::onSuccessGetInsightData)
+
+    }
+
+    private fun onSuccessGetInsightData(response: InsightKeyResponse) {
+
     }
 
     private fun showBottomSheet() {
