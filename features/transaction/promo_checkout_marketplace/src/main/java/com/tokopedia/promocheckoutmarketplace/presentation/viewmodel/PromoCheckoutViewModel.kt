@@ -284,6 +284,18 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         setPromoInputErrorIfAny(response)
     }
 
+    private fun handleEmptyStateDataNotAvailable(tmpPromoCode: String, response: CouponListRecommendationResponse) {
+        if (tmpPromoCode.isNotBlank()) {
+            getPromoListResponseAction.value?.let {
+                it.state = GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR
+                it.exception = PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " })
+                _getPromoListResponseAction.value = it
+            }
+        } else {
+            throw PromoErrorException()
+        }
+    }
+
     private fun handleEmptyStateDataAvailable(tmpPromoCode: String, response: CouponListRecommendationResponse) {
         if (tmpPromoCode.isNotBlank()) {
             promoInputUiModel.value?.let {
@@ -296,18 +308,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             }
         } else {
             handleEmptyStateData(response)
-        }
-    }
-
-    private fun handleEmptyStateDataNotAvailable(tmpPromoCode: String, response: CouponListRecommendationResponse) {
-        if (tmpPromoCode.isNotBlank()) {
-            getPromoListResponseAction.value?.let {
-                it.state = GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR
-                it.exception = PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " })
-                _getPromoListResponseAction.value = it
-            }
-        } else {
-            throw PromoErrorException()
         }
     }
 
@@ -490,7 +490,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         return selectedPromoList
     }
 
-    private fun initPromoInput() {
+    fun initPromoInput() {
         // Initialize promo input model
         val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
         _promoInputUiModel.value = promoInputUiModel
