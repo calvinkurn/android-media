@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.ui
 
 import android.app.Activity
-import android.app.Fragment
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -12,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -41,6 +42,7 @@ import com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
 import com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
 import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
 import com.tokopedia.editshipping.util.ARGUMENT_DATA_TOKEN
+import com.tokopedia.editshipping.util.LABEL_VALIDATION_BO
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -49,6 +51,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
@@ -71,6 +74,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private var progressDialog: ProgressDialog? = null
     private var inputMethodManager: InputMethodManager? = null
     private var userSession: UserSessionInterface? = null
+    private var bottomSheetValidation: BottomSheetUnify? = null
     private var mapMode = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,7 +91,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         addressLayout?.setViewListener(this)
         fragmentShippingHeader?.setListener(editShippingPresenter)
         addressLayout?.setListener(editShippingPresenter)
-        if (arguments.containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
+        if (arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             editShippingPresenter?.setSavedInstance(arguments)
         } else {
             editShippingPresenter?.setSavedInstance(savedInstanceState)
@@ -114,7 +118,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private val data: Unit
         private get() {
-            if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
+            if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
                 shippingDataCreateShop
             } else {
                 shippingData
@@ -122,12 +126,12 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         }
 
     private fun initiateVariables(mainView: View) {
-        mapMode = arguments.getInt(MAP_MODE)
+        mapMode = arguments?.getInt(MAP_MODE) ?: 0
         mainProgressDialog = ProgressDialog(activity)
         mainProgressDialog?.cancel()
         progressDialog = ProgressDialog(activity)
         editShippingPresenter = EditShippingPresenterImpl(this)
-        inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         userSession = UserSession(activity)
         chargeBoTicker = mainView.findViewById(R.id.ticker_charge_bo)
         fragmentShipingMainLayout = mainView.findViewById<View>(R.id.fragment_shipping_main_layout) as LinearLayout
@@ -138,7 +142,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private val isEditShipping: Boolean
-        private get() = arguments.getInt(MAP_MODE) == SETTING_PAGE
+        private get() = arguments?.getInt(MAP_MODE) == SETTING_PAGE
 
     private val shippingData: Unit
         private get() {
@@ -158,7 +162,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         editShippingPresenter?.onViewDestroyed()
     }
 
-    override val mainContext: Context
+    override val mainContext: FragmentActivity?
         get() = activity
 
     override fun addCourier(courier: Courier?, courierIndex: Int) {
@@ -194,12 +198,12 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         get() = addressLayout?.addressData
 
     override fun zipCodeEmpty() {
-        fragmentShippingHeader?.setZipCodeError(activity.getString(R.string.error_field_required))
+        fragmentShippingHeader?.setZipCodeError(activity?.getString(R.string.error_field_required))
     }
 
     override fun noServiceChosen() {
         NetworkErrorHelper.showSnackbar(activity, activity
-                .getString(R.string.error_shipping_must_choose))
+                ?.getString(R.string.error_shipping_must_choose))
     }
 
     override fun finishLoading() {
@@ -228,17 +232,16 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     override fun dismissFragment(messageStatus: String?) {
         Toast.makeText(activity, messageStatus, Toast.LENGTH_LONG).show()
-        activity.finish()
+        activity?.finish()
     }
 
     override fun openWebView(webResources: String?, courierIndex: Int) {
         progressDialog?.dismiss()
-        val fm = activity.fragmentManager
         val dialog: EditShippingWebViewDialog = EditShippingWebViewDialog
                 .openAdditionalOptionDialog(webResources, courierIndex)
-        if (fragmentManager.findFragmentByTag("web_view_dialog") == null) {
-            dialog.setTargetFragment(this@EditShippingFragment, ADDITIONAL_OPTION_REQUEST_CODE)
-            dialog.show(fm, "web_view_dialog")
+        if (fragmentManager?.findFragmentByTag("web_view_dialog") == null) {
+            dialog.setTargetFragment(this, ADDITIONAL_OPTION_REQUEST_CODE)
+            fragmentManager?.let { dialog.show(it, "web_view_dialog") }
         }
     }
 
@@ -264,15 +267,15 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                         if (mapMode == CREATE_SHOP_PAGE) editShippingPresenter?.fetchDataOpenShop() else editShippingPresenter?.fetchData()
                     }
                 })
-        activity.invalidateOptionsMenu()
+        activity?.invalidateOptionsMenu()
     }
 
     override fun onShowViewAfterLoading() {
-        activity.invalidateOptionsMenu()
+        activity?.invalidateOptionsMenu()
         fragmentShippingHeader?.visibility = View.VISIBLE
         addressLayout?.visibility = View.VISIBLE
         fragmentShipingMainLayout?.visibility = View.VISIBLE
-        if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE) submitButtonCreateShop?.visibility = View.VISIBLE else if (arguments.containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
+        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) submitButtonCreateShop?.visibility = View.VISIBLE else if (arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             submitButtonCreateShop?.visibility = View.VISIBLE
         } else submitButtonCreateShop?.visibility = View.GONE
         renderTickerChargeBo()
@@ -292,7 +295,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     override fun editAddress() {
-        val intent = editShippingPresenter?.token?.let { getDistrictRecommendationIntent(activity, it) }
+        val token = editShippingPresenter?.token
+        val intent = activity?.let { getDistrictRecommendationIntent(it, token) }
         startActivityForResult(intent, GET_DISTRICT_RECCOMENDATION_REQUEST_CODE)
     }
 
@@ -329,7 +333,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private fun changeLocationRequest(originId: Int?) {
         progressDialog?.show()
-        if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments.containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
+        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             editShippingPresenter?.fetchDataByLocationOpenShop(originId.toString())
         } else {
             editShippingPresenter?.fetchDataByLocation(originId.toString())
@@ -349,7 +353,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         if (isAdded && activity != null) {
-            activity.menuInflater.inflate(R.menu.save_btn_black, menu)
+            activity?.menuInflater?.inflate(R.menu.save_btn_black, menu)
             val item = menu.findItem(R.id.action_send)
             item.title = getString(R.string.title_action_save_shipping)
         }
@@ -367,7 +371,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val fragmentHeader = fragmentShippingHeader?.isShown
         if (item.itemId == R.id.home) {
-            activity.finish()
+            activity?.finish()
             return true
         } else if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
@@ -390,10 +394,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         if (fragmentShipingMainLayout?.childCount == 0 && this.editShippingValid()) {
             val intent = Intent()
             intent.putExtra(EDIT_SHIPPING_DATA, currentShippingConfiguration)
-            activity.setResult(OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE, intent)
-            activity.finish()
+            activity?.setResult(OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE, intent)
+            activity?.finish()
         } else if (fragmentShipingMainLayout?.childCount == 0) {
-            showErrorToast(activity.getString(R.string.title_select_shop_location))
+            showErrorToast(activity?.getString(R.string.title_select_shop_location))
             EditShippingAnalytics.eventCreateShopFillLogisticError()
         }
     }
@@ -412,7 +416,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                 locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
                 locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
             }
-            val intent = getGeoLocationActivityIntent(activity, locationPass)
+            val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
             startActivityForResult(intent, OPEN_MAP_CODE)
         } else {
             Timber.d("Google play services unavailable")
@@ -437,9 +441,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
+        if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) {
             editShippingPresenter?.saveOpenShopModel()
             outState?.putParcelable(CURRENT_OPEN_SHOP_MODEL,
                     editShippingPresenter?.openShopModel)
@@ -450,7 +454,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun renderTickerChargeBo() {
-        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity.applicationContext)
+        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity?.applicationContext)
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, false)) {
             chargeBoTicker?.visibility = View.VISIBLE
             chargeBoTicker?.tickerTitle = getString(R.string.charge_bo_ticker_title)
@@ -471,15 +475,33 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private fun goToChargeBoWebview() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, EditShippingUrl.APPLINK_BEBAS_ONGKIR)
-            activity.startActivity(intent)
+            this.startActivity(intent)
         }
     }
 
-    private fun getDistrictRecommendationIntent(activity: Activity, token: Token): Intent? {
+    private fun getDistrictRecommendationIntent(activity: Activity, token: Token?): Intent? {
         //ToDo::
         val  intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
         intent.putExtra(ARGUMENT_DATA_TOKEN, token)
         return intent
+    }
+
+    private fun openPopupValidation() {
+        bottomSheetValidation = BottomSheetUnify()
+        val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
+            //ToDo:: contains view from popup
+        }
+
+        bottomSheetValidation?.apply {
+            setTitle(LABEL_VALIDATION_BO)
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetValidation)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetValidation?.show(it, "show")
+        }
     }
 
     private fun getGeoLocationActivityIntent(activity: Activity, locationPass: LocationPass): Intent? {
