@@ -17,7 +17,7 @@ data class FlightCancellationPassengerModel(
         var relationId: String = "",
         var relations: List<String> = arrayListOf(),
         var status: Int = 0,
-        var statusString: String? = ""
+        var statusString: String = ""
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         var isEquals: Boolean = false

@@ -1,5 +1,7 @@
 package com.tokopedia.flight.cancellationV2.domain
 
+import android.content.Context
+import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationReasonDataCacheSource
@@ -18,6 +20,7 @@ import javax.inject.Inject
  * @author by furqan on 15/07/2020
  */
 class FlightCancellationGetPassengerUseCase @Inject constructor(
+        private val context: Context,
         private val useCase: MultiRequestGraphqlUseCase,
         private val cancellationReasonsCache: FlightCancellationReasonDataCacheSource) {
 
@@ -121,10 +124,10 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
 
     private fun getTitleString(typeId: Int): String {
         return when (typeId) {
-            FlightPassengerTitleType.TUAN -> "Tuan"
-            FlightPassengerTitleType.NYONYA -> "Nyonya"
-            FlightPassengerTitleType.NONA -> "Nona"
-            else -> "Tuan"
+            FlightPassengerTitleType.TUAN -> context.getString(R.string.mister)
+            FlightPassengerTitleType.NYONYA -> context.getString(R.string.misiz)
+            FlightPassengerTitleType.NONA -> context.getString(R.string.miss)
+            else -> context.getString(R.string.mister)
         }
     }
 

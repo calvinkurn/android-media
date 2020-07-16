@@ -160,7 +160,4 @@ class FlightCancellationPassengerViewModel @Inject constructor(
         return passengerRelations
     }
 
-    companion object {
-    }
-
 }

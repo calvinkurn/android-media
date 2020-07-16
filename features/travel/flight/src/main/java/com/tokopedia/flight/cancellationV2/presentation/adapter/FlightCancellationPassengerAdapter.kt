@@ -34,13 +34,11 @@ class FlightCancellationPassengerAdapter(private val cancellationListener: Fligh
 
     override fun checkIfAllPassengerIsChecked() {
         var allChecked = true
-        if (passengerViewHolderList.size == 0) {
+        if (passengerViewHolderList.isEmpty()) {
             allChecked = false
         } else {
             for (item in passengerViewHolderList) {
-                if (!item.isPassengerChecked() &&
-                        item.getPassengerModel().statusString != null &&
-                        item.getPassengerModel().statusString?.isNotEmpty() == true) {
+                if (!item.isPassengerChecked() && item.getPassengerModel().statusString.isNotEmpty()) {
                     allChecked = false
                 }
             }
@@ -62,7 +60,7 @@ class FlightCancellationPassengerAdapter(private val cancellationListener: Fligh
 
     fun checkAllData() {
         for (item in passengerViewHolderList) {
-            if (item.getPassengerModel().statusString == null || item.getPassengerModel().statusString?.isEmpty() != false) {
+            if (item.getPassengerModel().statusString.isEmpty()) {
                 item.onCheck(true)
             }
         }
@@ -70,7 +68,7 @@ class FlightCancellationPassengerAdapter(private val cancellationListener: Fligh
 
     fun uncheckAllData() {
         for (item in passengerViewHolderList) {
-            if (item.getPassengerModel().statusString == null || item.getPassengerModel().statusString?.isEmpty() != false) {
+            if (item.getPassengerModel().statusString.isEmpty()) {
                 item.onCheck(false)
             }
         }
