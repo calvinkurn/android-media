@@ -14,9 +14,9 @@ import com.tokopedia.charts.config.BarChartConfig
 import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
-import com.tokopedia.charts.utils.RoundedBarChartRenderer
-import com.tokopedia.charts.utils.XAxisLabelFormatter
-import com.tokopedia.charts.utils.YAxisLabelFormatter
+import com.tokopedia.charts.common.utils.RoundedBarChartRenderer
+import com.tokopedia.charts.common.utils.XAxisLabelFormatter
+import com.tokopedia.charts.common.utils.YAxisLabelFormatter
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.synthetic.main.view_bar_chart.view.*
 

@@ -1,4 +1,4 @@
-package com.tokopedia.charts.utils
+package com.tokopedia.charts.common.utils
 
 import android.graphics.*
 import com.github.mikephil.charting.animation.ChartAnimator

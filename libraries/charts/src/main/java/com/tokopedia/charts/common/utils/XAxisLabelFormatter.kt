@@ -1,4 +1,4 @@
-package com.tokopedia.charts.utils
+package com.tokopedia.charts.common.utils
 
 import com.github.mikephil.charting.formatter.ValueFormatter
 

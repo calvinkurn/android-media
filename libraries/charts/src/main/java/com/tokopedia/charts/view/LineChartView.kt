@@ -15,8 +15,8 @@ import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.LineChartConfigModel
 import com.tokopedia.charts.model.LineChartData
 import com.tokopedia.charts.model.LineChartEntry
-import com.tokopedia.charts.utils.XAxisLabelFormatter
-import com.tokopedia.charts.utils.YAxisLabelFormatter
+import com.tokopedia.charts.common.utils.XAxisLabelFormatter
+import com.tokopedia.charts.common.utils.YAxisLabelFormatter
 import kotlinx.android.synthetic.main.view_line_chart.view.*
 
 /**
