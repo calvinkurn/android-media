@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
-import com.tokopedia.transaction.common.data.order.CourierServiceModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierServiceModel;
 
 import java.util.List;
 

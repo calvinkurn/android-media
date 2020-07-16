@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.description.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -37,6 +39,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
@@ -45,7 +48,7 @@ import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionMod
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductPicture
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
@@ -127,6 +130,7 @@ class AddEditProductDescriptionFragment:
         }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -191,13 +195,17 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
         super.onResume()
         btnNext.isLoading = false
         btnSave.isLoading = false
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.product.addedit.R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -270,12 +278,20 @@ class AddEditProductDescriptionFragment:
 
         descriptionViewModel.getVariants(descriptionViewModel.categoryId)
 
+        hideKeyboardWhenTouchOutside()
         observeProductVariant()
         observeProductVideo()
     }
 
     private fun addEmptyVideoUrl() {
-        loadData(adapter.dataSize + 1)
+        val lastData = adapter.data.lastOrNull()
+        if (lastData == null) {
+            loadData(adapter.dataSize + 1)
+        } else {
+            if (lastData.inputUrl.isNotEmpty()) {
+                loadData(adapter.dataSize + 1)
+            }
+        }
     }
 
     override fun loadInitialData() {
@@ -334,7 +350,10 @@ class AddEditProductDescriptionFragment:
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> tvAddVariant.isEnabled = true
-                is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
+                is Fail -> {
+                    showVariantErrorToast(getString(com.tokopedia.abstraction.R.string.default_request_error_timeout))
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
+                }
             }
         })
     }
@@ -354,6 +373,7 @@ class AddEditProductDescriptionFragment:
                     }
                 }
                 is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
                     displayErrorOnSelectedVideo(position)
                 }
             }
@@ -362,6 +382,7 @@ class AddEditProductDescriptionFragment:
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
+            updateSaveButtonStatus()
         })
     }
 
@@ -425,7 +446,7 @@ class AddEditProductDescriptionFragment:
         view?.let {
             Toaster.make(it, errorMessage,
                     type =  Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     clickListener =  View.OnClickListener {
                         descriptionViewModel.getVariants(descriptionViewModel.categoryId)
                     })
@@ -450,7 +471,7 @@ class AddEditProductDescriptionFragment:
                     val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
                     val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                                object : TypeToken<ProductPicture>() {}.type, ProductPicture())
                     } else null
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
@@ -550,6 +571,16 @@ class AddEditProductDescriptionFragment:
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
+    }
+
     private fun moveToShipmentActivity() {
         // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
@@ -616,5 +647,12 @@ class AddEditProductDescriptionFragment:
 
     private fun getFilteredValidVideoLink() = adapter.data.filter {
         it.inputUrl.isNotBlank() && it.errorMessage.isBlank()
+    }
+
+    private fun updateSaveButtonStatus() {
+        with (descriptionViewModel.validateInputVideo(adapter.data)) {
+            btnSave.isEnabled = this
+            btnNext.isEnabled = this
+        }
     }
 }

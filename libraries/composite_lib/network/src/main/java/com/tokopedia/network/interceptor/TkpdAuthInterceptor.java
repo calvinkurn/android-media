@@ -9,7 +9,6 @@ import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.user.session.util.EncoderDecoder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +32,6 @@ import okio.Buffer;
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
-    private static final int ERROR_UNAUTHORIZED_REQUEST = 401;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
 
     private static final String REQUEST_METHOD_GET = "GET";
@@ -118,7 +116,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throwChainProcessCauseHttpError(response);
         }
 
-        checkForceLogout(chain, response, finalRequest);
+        response = checkForceLogout(chain, response, finalRequest);
         checkResponse(response);
 
         return response;
@@ -130,14 +128,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             // Improvement for response, only check maintenance, server error and timezone by only peeking the body
             // instead of getting all string and create the new response.
             bodyResponse = response.peekBody(BYTE_COUNT).string();
-            int code = response.code();
             if (isMaintenance(bodyResponse)) {
                 showMaintenancePage();
-            } else if (code == ERROR_UNAUTHORIZED_REQUEST) {
-                sendAnalyticsAnomalyResponse("401_after_refresh_token", response, response.request());
-                networkRouter.showForceLogoutTokenDialog(bodyResponse);
-            }
-            else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
+            } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
                 showServerError(response);
             } else if (isForbiddenRequest(bodyResponse, response.code())
                     && isTimezoneNotAutomatic()) {
@@ -265,7 +258,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             json = new JSONObject(response);
             JSONArray errorMessage = json.optJSONArray(RESPONSE_PARAM_MESSAGE_ERROR);
             return errorMessage.length() > 0;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -360,7 +353,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
+            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             networkRouter.doRelogin(newAccessToken);
 
             Request newestRequest;
@@ -376,44 +369,30 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
             return chain.proceed(newestRequest);
         } catch (IOException e) {
-            sendAnalyticsAnomalyResponse("refresh_token_update_gcm_failed", response, finalRequest);
             e.printStackTrace();
             return response;
         }
     }
 
-    protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
+    protected Response refreshToken(Chain chain, Response response)  {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
+            accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             Request newest = recreateRequestWithNewAccessToken(chain);
             return chain.proceed(newest);
         } catch (IOException e) {
-            sendAnalyticsAnomalyResponse("refresh_token_failed", response, finalRequest);
             e.printStackTrace();
             return response;
         }
-    }
-
-    private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getAccessToken();
-        return chain.request().newBuilder()
-                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
-                .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
-                .build();
     }
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
-        int code = response.code();
         try {
-            if (code == ERROR_UNAUTHORIZED_REQUEST) {
-                sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST), response, finalRequest);
-                return refreshToken(chain, response, finalRequest);
-            } else if (isNeedGcmUpdate(response)) {
+            if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
-                return refreshToken(chain, response, finalRequest);
+                return refreshToken(chain, response);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;
@@ -426,31 +405,31 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private void sendAnalyticsAnomalyResponse(String errorCase, Response response, Request finalRequest){
-        try {
-            networkRouter.sendAnalyticsAnomalyResponse(errorCase,
-                    userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
-                    response.peekBody(BYTE_COUNT).string(), requestToString(finalRequest));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private Request recreateRequestWithNewAccessToken(Chain chain) {
+        String freshAccessToken = userSession.getAccessToken();
+        Request.Builder newRequest = chain.request().newBuilder();
 
-    public static String requestToString(final Request request){
         try {
-            final Request copy = request.newBuilder().build();
-            final Buffer buffer = new Buffer();
-            copy.body().writeTo(buffer);
-            return buffer.readUtf8();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
+            generateHmacAuthRequest(chain.request(), newRequest);
+        }catch (IOException ex){
+            ex.printStackTrace();
         }
+
+        return newRequest
+                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
+                .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
+                .build();
     }
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
         String freshAccessToken = userSession.getAccessToken();
-        return chain.request().newBuilder()
+        Request.Builder newRequest = chain.request().newBuilder();
+        try {
+            generateHmacAuthRequest(chain.request(), newRequest);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+        return newRequest
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
     }

@@ -15,12 +15,16 @@ class FlightCurrencyFormatUtil {
 
     companion object {
 
-        fun convertToIdrPrice(price: Int): String {
+        fun convertToIdrPrice(price: Int, withSpace: Boolean = true): String {
             val kursIndonesia = DecimalFormat.getCurrencyInstance(Locale("in", "ID")) as DecimalFormat
             kursIndonesia.maximumFractionDigits = 0
             val formatRp = DecimalFormatSymbols()
 
-            formatRp.currencySymbol = "Rp "
+            if (withSpace) {
+                formatRp.currencySymbol = "Rp "
+            } else {
+                formatRp.currencySymbol = "Rp"
+            }
             formatRp.groupingSeparator = '.'
             formatRp.monetaryDecimalSeparator = '.'
             formatRp.decimalSeparator = '.'

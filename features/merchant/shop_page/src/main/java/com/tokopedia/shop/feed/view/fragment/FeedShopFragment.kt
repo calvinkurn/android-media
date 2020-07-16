@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -21,10 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -679,12 +677,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectLink)
     }
 
-    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConstInternalContent.VIDEO_DETAIL,
-                postId
-        )
+    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String, redirectUrl: String) {
+        onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
@@ -810,19 +804,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun onSuccessReportContent() {
-        ToasterNormal
-                .make(view,
-                        getString(R.string.feed_content_reported),
-                        BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { v -> }
-                .show()
+        view?.let {
+            Toaster.make(it,getString(R.string.feed_content_reported),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(R.string.label_close), View.OnClickListener {  } )
+        }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
-        ToasterError
-                .make(view, errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { v -> }
-                .show()
+        view?.let {
+            Toaster.make(it,errorMsg,
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.label_close), View.OnClickListener {  } )
+        }
     }
 
     private fun showSnackbar(s: String) {
@@ -844,9 +838,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {
-        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
-                .show()
+        listener?.let {
+            Toaster.make(view!!, message,Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), it )
+        }
     }
 
     private fun showToast(message: String) {

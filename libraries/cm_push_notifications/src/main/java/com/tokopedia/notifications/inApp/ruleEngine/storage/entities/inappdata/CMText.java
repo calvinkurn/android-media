@@ -9,22 +9,22 @@ import com.google.gson.annotations.SerializedName;
  * @author lalit.singh
  */
 public class CMText {
+    @Expose
     @ColumnInfo(name = "txt")
     @SerializedName("txt")
+    public String txt = "";
+
     @Expose
-    public String txt;
     @ColumnInfo(name = "clr")
     @SerializedName("clr")
+    public String color = "";
+
     @Expose
-    public String color;
     @ColumnInfo(name = "sz")
     @SerializedName("sz")
-    @Expose
-    public String size;
+    public String size = "";
 
-    public CMText(){
-
-    }
+    public CMText(){}
 
     public String getTxt() {
         return txt;

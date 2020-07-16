@@ -23,7 +23,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -59,13 +58,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createAndCallChkApk();
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
-
-
-        checkInstallReferrerInitialised();
-        syncFcmToken();
+        executeInBackground();
     }
 
     private void checkInstallReferrerInitialised() {
@@ -77,12 +70,17 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void createAndCallChkApk(){
+    private void executeInBackground(){
         WeaveInterface chkTmprApkWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Boolean execute() {
                 trackIrisEventForAppOpen();
+                CMPushNotificationManager.getInstance()
+                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
+
+                checkInstallReferrerInitialised();
+                syncFcmToken();
                 return checkApkTempered();
             }
         };
@@ -162,7 +160,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override

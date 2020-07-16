@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -28,12 +27,15 @@ import com.tokopedia.play.ui.productsheet.ProductSheetComponent
 import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -43,17 +45,15 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 06/03/20
  */
-class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
+class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -69,10 +69,11 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
-    private val job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = job + dispatchers.main
+    }
+    private val job: Job = SupervisorJob()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -101,6 +102,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private val generalErrorMessage: String
         get() = getString(R.string.play_general_err_message)
+
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
@@ -159,12 +163,20 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        job.cancel()
+        job.cancelChildren()
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return ::loadingDialog.isInitialized && loadingDialog.isVisible
+    }
+
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
     }
 
     private fun observeProductSheetContent() {
-        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
-            launch {
+        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -178,7 +190,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     private fun sendTrackerImpression(playResult: PlayResult<ProductSheetUiModel>) {
         if (playResult is PlayResult.Success) {
             if (playResult.data.productList.isNotEmpty()
-                    && playResult.data.productList[0] is ProductLineUiModel) {
+                    && playResult.data.productList.first() is ProductLineUiModel) {
                 with(PlayAnalytics) { impressionProductList(
                         trackingQueue,
                         channelId,
@@ -190,8 +202,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeVariantSheetContent() {
-        viewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
-            launch {
+        viewModel.observableProductVariant.observe(viewLifecycleOwner, DistinctObserver {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -202,10 +214,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
-            launch {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation)))
 
                 val productSheetState = it[BottomInsetsType.ProductSheet]
 
@@ -220,7 +232,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze || it.isBanned) {
                 viewModel.onFreezeBan()
                 hideLoadingView()
@@ -233,32 +245,41 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
-            hideLoadingView()
-            if (it.isSuccess) {
-                playViewModel.updateBadgeCart()
-                when (it.action) {
-                    ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                    ProductAction.AddToCart -> sendVariantToaster(
-                            toasterType = Toaster.TYPE_NORMAL,
-                            message = getString(R.string.play_add_to_cart_message_success),
-                            actionText = getString(R.string.play_action_view),
-                            actionClickListener = View.OnClickListener {
-                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                                PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
-                            }
-                    )
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> showLoadingView()
+                is PlayResult.Success -> {
+                    hideLoadingView()
+                    val data = it.data.getContentIfNotHandled() ?: return@DistinctObserver
+
+                    if (data.isSuccess) {
+                        playViewModel.updateBadgeCart()
+                        when (data.action) {
+                            ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                            ProductAction.AddToCart -> doShowToaster(
+                                    bottomSheetType = data.bottomInsetsType,
+                                    toasterType = Toaster.TYPE_NORMAL,
+                                    message = getString(R.string.play_add_to_cart_message_success),
+                                    actionText = getString(R.string.play_action_view),
+                                    actionClickListener = View.OnClickListener {
+                                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                        PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
+                                    }
+                            )
+                        }
+                        if (data.bottomInsetsType == BottomInsetsType.VariantSheet) {
+                            closeVariantSheet()
+                        }
+                        PlayAnalytics.clickProductAction(trackingQueue, channelId, data.product, data.cartId, playViewModel.channelType, data.action, data.bottomInsetsType)
+                    }
+                    else {
+                        doShowToaster(
+                                bottomSheetType = data.bottomInsetsType,
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = if (data.errorMessage.isNotEmpty() && data.errorMessage.isNotBlank()) data.errorMessage else generalErrorMessage
+                        )
+                    }
                 }
-                if (it.bottomInsetsType == BottomInsetsType.VariantSheet) {
-                    closeVariantSheet()
-                }
-                PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
-            }
-            else {
-                sendVariantToaster(
-                        toasterType = Toaster.TYPE_ERROR,
-                        message = if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage
-                )
             }
         })
     }
@@ -273,26 +294,27 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun sendInitState() {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
 
     private fun initProductSheetComponent(container: ViewGroup): UIComponent<ProductSheetInteractionEvent> {
-        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             productSheetComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
                             is ProductSheetInteractionEvent.OnBuyProduct -> shouldCheckProductVariant(it.product, ProductAction.Buy)
                             is ProductSheetInteractionEvent.OnAtcProduct -> shouldCheckProductVariant(it.product, ProductAction.AddToCart)
-                            is ProductSheetInteractionEvent.OnProductCardClicked -> onProductCardClicked(it.product)
+                            is ProductSheetInteractionEvent.OnProductCardClicked -> shouldOpenProductDetail(it.product, it.position)
                             is ProductSheetInteractionEvent.OnVoucherScrolled -> onVoucherScrolled(it.lastPositionViewed)
+                            is ProductSheetInteractionEvent.OnEmptyButtonClicked -> openShopPage(it.partnerId)
                         }
                     }
         }
@@ -304,17 +326,14 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         PlayAnalytics.scrollMerchantVoucher(channelId, lastPositionViewed)
     }
 
-    private fun onProductCardClicked(product: ProductLineUiModel) {
-        if (product.applink != null && product.applink.isNotEmpty()) {
-            PlayAnalytics.clickProduct(trackingQueue, channelId, product, playViewModel.channelType)
-            openPageByApplink(product.applink)
-        }
+    private fun openShopPage(partnerId: Long) {
+        openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
     }
 
     private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
-        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             variantSheetComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -365,8 +384,41 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
     }
 
-    private fun sendVariantToaster(toasterType: Int, message: String, actionText: String? = null, actionClickListener: View.OnClickListener? = null) {
-        launch {
+    private fun shouldOpenProductDetail(product: ProductLineUiModel, position: Int) {
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+    }
+
+    private fun doShowToaster(
+            bottomSheetType: BottomInsetsType,
+            toasterType: Int,
+            message: String,
+            actionText: String = "",
+            actionClickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        when (bottomSheetType) {
+            BottomInsetsType.ProductSheet ->
+                Toaster.make(
+                        view = requireView(),
+                        text = message,
+                        type = toasterType,
+                        actionText = actionText,
+                        clickListener = actionClickListener
+                )
+            BottomInsetsType.VariantSheet ->
+                sendVariantToaster(toasterType, message, actionText, actionClickListener)
+            else -> {
+                // nothing
+            }
+        }
+    }
+
+    private fun sendVariantToaster(
+            toasterType: Int,
+            message: String,
+            actionText: String = "",
+            actionClickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -394,13 +446,20 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun handleInteractionEvent(event: InteractionEvent) {
-        if(event is InteractionEvent.DoActionProduct) {
-            doActionProduct(event.product, event.action, event.type)
+        when (event) {
+            is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.action, event.type)
+            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
+        }
+    }
+
+    private fun doOpenProductDetail(product: ProductLineUiModel, position: Int) {
+        if (product.applink != null && product.applink.isNotEmpty()) {
+            PlayAnalytics.clickProduct(trackingQueue, channelId, product, position, playViewModel.channelType)
+            openPageByApplink(product.applink)
         }
     }
 
     private fun doActionProduct(product: ProductLineUiModel, productAction: ProductAction, type: BottomInsetsType) {
-        showLoadingView()
         viewModel.addToCart(product, action = productAction, type = type)
     }
 

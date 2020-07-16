@@ -92,7 +92,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_name_register, container, false)
+        val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
         bottomInfo = view.findViewById(R.id.bottom_info)
         progressBar = view.findViewById(R.id.progress_bar)
         mainContent = view.findViewById(R.id.main_content)

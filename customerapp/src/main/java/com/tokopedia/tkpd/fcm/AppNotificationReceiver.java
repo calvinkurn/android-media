@@ -6,19 +6,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.push.PushManager;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.ConsumerMainApplication;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Created by alvarisi on 1/17/17.
@@ -28,6 +37,9 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private Context mContext;
     private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
+    private UserSession userSession;
+
+    String ARG_NOTIFICATION_ISPROMO = "ispromo";
 
     public AppNotificationReceiver() {
 
@@ -39,6 +51,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
         mContext = application.getApplicationContext();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
+        userSession = new UserSession(mContext);
     }
 
     @Override
@@ -57,18 +70,67 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {
-        if (bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
+        if (bundle.containsKey(ARG_NOTIFICATION_ISPROMO)) {
             bundle.putString(Constants.KEY_ORIGIN, Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
         }
 
         if (isApplinkNotification(bundle)) {
+            logEvent(bundle, "isApplinkNotification(bundle) == true");
             if (!isInExcludedActivity(bundle)) {
+                logEvent(bundle, "!isInExcludedActivity(bundle) == true");
                 PushNotification.notify(mContext, bundle);
+            } else {
+                logEvent(bundle, "!isInExcludedActivity(bundle) == false");
             }
             extraAction(bundle);
         } else {
+            logEvent(bundle, "isApplinkNotification(bundle) == false");
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(bundle);
         }
+    }
+
+
+    private void logEvent(Bundle data, String message) {
+        try {
+            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
+            String userId = userSession.getUserId();
+            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
+                executeCrashlyticLog(data,  message);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private void executeCrashlyticLog(Bundle data, String message) {
+        if (!BuildConfig.DEBUG) {
+            String logMessage = generateLogMessage(data, message);
+            Crashlytics.logException(new Exception(logMessage));
+            Timber.w(
+                    "P2#LOG_PUSH_NOTIF#'%s';data='%s'",
+                    "AppNotificationReceiver::onNotificationReceived(String from, Bundle bundle)",
+                    logMessage
+            );
+        }
+    }
+
+    private String generateLogMessage(Bundle data, String message) {
+        StringBuilder logMessage = new StringBuilder(message + " \n");
+        String fcmToken = FirebaseMessagingManagerImpl.getFcmTokenFromPref(mContext);
+        addLogLine(logMessage, "fcmToken", fcmToken);
+        addLogLine(logMessage, "userId", userSession.getUserId());
+        addLogLine(logMessage, "isSellerApp", GlobalConfig.isSellerApp());
+        for (String key : data.keySet()) {
+            addLogLine(logMessage, key, data.get(key));
+        }
+        return logMessage.toString();
+    }
+
+    private void addLogLine(StringBuilder stringBuilder, String key, Object value) {
+        stringBuilder.append(key);
+        stringBuilder.append(": ");
+        stringBuilder.append(value);
+        stringBuilder.append(", \n");
     }
 
     private boolean isInExcludedActivity(Bundle data) {

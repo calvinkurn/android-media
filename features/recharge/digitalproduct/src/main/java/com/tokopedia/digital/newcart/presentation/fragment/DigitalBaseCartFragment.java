@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -35,7 +36,6 @@ import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -53,6 +53,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.HashMap;
 import java.util.List;
@@ -252,11 +253,13 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private PromoDigitalModel getPromoDigitalModel() {
         Long price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0;
-        if(inputPriceHolderView.getVisibility() == View.VISIBLE){
+        if(inputPriceContainer.getVisibility() == View.VISIBLE){
             price = inputPriceHolderView.getPriceInput();
         }
         return new PromoDigitalModel(
                 Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
+                getCategoryName(),
+                getOperatorName(),
                 getProductId(),
                 cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
                 price
@@ -267,10 +270,15 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
+        disableVoucherCheckoutDiscount();
     }
 
     private String getCategoryName() {
         return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getCategoryName());
+    }
+
+    private String getOperatorName() {
+        return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getOperatorName());
     }
 
     @Override
@@ -319,6 +327,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if ((requestCode == ConstantKt.getREQUEST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                disableVoucherCheckoutDiscount();
                 // Check between apply promo code or cancel promo from promo detail
                 switch (promoData.getState()) {
                     case EMPTY: {
@@ -388,7 +397,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) ToasterError.showClose(getActivity(), message);
+        if (view != null) Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v->{});
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 

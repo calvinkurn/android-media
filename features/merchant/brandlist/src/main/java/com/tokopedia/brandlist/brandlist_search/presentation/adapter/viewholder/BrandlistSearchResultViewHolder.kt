@@ -10,13 +10,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultUiModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import kotlinx.android.synthetic.main.item_search_result.view.*
 import java.util.*
 
 
-class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistSearchResultViewModel>(view) {
+class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistSearchResultUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_search_result
@@ -27,7 +27,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     private val imgBrandImage = itemView.iv_brand_image
     private val txtBrandName = itemView.tv_brand_name
 
-    override fun bind(element: BrandlistSearchResultViewModel) {
+    override fun bind(element: BrandlistSearchResultUiModel) {
         processString(element.name, element.searchQuery)
         bindData(element.defaultUrl, element.logoUrl)
         setupApplink(element.appsUrl, element.listener, element.id)

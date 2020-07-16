@@ -111,12 +111,17 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private fun getIdYoutubeUrl(videoUrl: String): String? {
         return try {
             // add https:// prefix to videoUrl
-            val webVideoUrl =
-                    if (videoUrl.startsWith(WEB_PREFIX_HTTP) ||
-                            videoUrl.startsWith(WEB_PREFIX_HTTPS)) videoUrl else WEB_YOUTUBE_PREFIX + videoUrl
+            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                videoUrl
+            } else {
+                WEB_YOUTUBE_PREFIX + videoUrl
+            }
+            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
+
             val uri = Uri.parse(webVideoUrl)
             when {
                 uri.host == "youtu.be" -> uri.lastPathSegment
+                uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("")
             }
@@ -141,9 +146,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return videoLinks.isEmpty()
     }
 
-    fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    fun setVariantInput(productVariant: ArrayList<ProductVariantCombination>,
                         variantOptionParent: ArrayList<ProductVariantOptionParent>,
-                        productPictureViewModel: PictureViewModel?) {
+                        productPictureViewModel: ProductPicture?) {
         productInputModel.variantInputModel.let {
             if (productVariant.isNotEmpty()) {
                 it.variantOptionParent = mapVariantOption(variantOptionParent)
@@ -160,9 +165,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombination>,
                                   variantOptionParent: ArrayList<ProductVariantOptionParent>
-    ): ArrayList<ProductVariantCombinationViewModel> {
+    ): ArrayList<ProductVariantCombination> {
         productVariant.forEach { variant ->
             val options: ArrayList<Int> = ArrayList()
             val level1Id = getVariantOptionIndex(variant.level1String,
@@ -196,7 +201,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         it
     } as ArrayList<ProductVariantOptionParent>
 
-    private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombination>,
                                         variantOptionParent: ArrayList<ProductVariantOptionParent>) {
         productVariant.firstOrNull().let { variant ->
             // process level 1
@@ -230,14 +235,14 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
+    private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombination>) {
         val distictOptionList = productVariant.distinctBy {
             it.level1String
         }
         variantCountList[0] = distictOptionList.size
     }
 
-    private fun setVariantCountLevel2(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
+    private fun setVariantCountLevel2(productVariant: ArrayList<ProductVariantCombination>) {
         val distictOptionList = productVariant.distinctBy {
             it.level2String
         }

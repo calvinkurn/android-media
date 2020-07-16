@@ -52,25 +52,19 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
+    protected var amISeller = false
     protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
     abstract fun onCreateViewState(view: View): BaseChatViewState
     abstract fun onSendButtonClicked()
     abstract fun getUserSession(): UserSessionInterface
 
-    private var rvAttachmentMenu: AttachmentMenuRecyclerView? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindViewId(view)
         setupViewState(view)
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
-    }
-
-    private fun bindViewId(view: View) {
-        rvAttachmentMenu = view.findViewById(rvAttachmentMenuId())
     }
 
     private fun setupViewState(view: View?) {
@@ -243,6 +237,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.opponentName = it.headerModel.name
         this.opponentRole = it.headerModel.role
         this.shopId = it.headerModel.shopId
+        this.amISeller = it.isSeller()
     }
 
     override fun onDestroy() {
@@ -256,10 +251,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             return true
         }
         return false
-    }
-
-    fun addVoucherAttachmentMenu() {
-        rvAttachmentMenu?.addVoucherAttachmentMenu()
     }
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {

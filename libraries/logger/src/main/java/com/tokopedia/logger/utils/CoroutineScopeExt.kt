@@ -3,7 +3,7 @@ package com.tokopedia.logger.utils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-fun globalScopeLaunch(block: suspend (()->Unit), onError: suspend (Throwable)-> Unit, onFinish: ()->Unit) =
+fun globalScopeLaunch(block: suspend (()->Unit), onError: suspend (Throwable)-> Unit = {}, onFinish: ()->Unit = {}) =
     GlobalScope.launch {
         try{
             block()

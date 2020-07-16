@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
-import androidx.lifecycle.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -9,24 +8,24 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 
 @ExperimentalCoroutinesApi
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
     @Test
-    fun `When SuccessGetProductVariant Expect ExpectedBehaviour`() {
+    fun `When SuccessGetProductVariant Expect ExpectedBehaviour`() = runBlocking {
         val productVariant = ProductVariantByCatModel().apply {
             this.name = "hello"
             this.variantId = 3
@@ -35,12 +34,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProductVariant_thenReturn(productVariant)
         viewModel.getVariantList("")
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { getProductVariantUseCase.executeOnBackground() }
         verifyGetProductVariantResult(Success(listOf(productVariant)))
     }
 
     @Test
-    fun `When SuccessSaveAndGetProductDraft Expect ExpectedBehaviour`() {
+    fun `When SuccessSaveAndGetProductDraft Expect ExpectedBehaviour`() = runBlocking {
         val productDraft = ProductDraft().apply {
             draftId = 1112
             productId = 220
@@ -53,6 +54,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProductDraft_thenReturn(productDraft)
         viewModel.getProductDraft(productDraft.draftId)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { getProductDraftUseCase.executeOnBackground() }
 
@@ -61,7 +64,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When SuccessGetProduct Expect ExpectedBehaviour`() {
+    fun  `When SuccessGetProduct Expect ExpectedBehaviour`() = runBlocking {
         val product: Product = Product().copy(
                 productID = "01919",
                 productName = "mainan",
@@ -70,26 +73,32 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProduct_thenReturn(product)
         viewModel.getProductData(product.productID)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductResult(Success(product))
     }
 
     @Test
-    fun  `When FailedGetProductVariant Expect ExpectedBehaviour`() {
+    fun  `When FailedGetProductVariant Expect ExpectedBehaviour`() = runBlocking {
         onGetProductVariant_thenFailed()
         viewModel.getVariantList("")
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { getProductVariantUseCase.executeOnBackground() }
         verifyGetProductVariantFailed()
     }
 
     @Test
-    fun `When FailedSaveAndGetProductDraft Expect ExpectedBehaviour`() {
+    fun `When FailedSaveAndGetProductDraft Expect ExpectedBehaviour`() = runBlocking {
         onSaveProductDraft_thenFailed()
         viewModel.saveProductDraft(ProductDraft(), 3, false)
 
         onGetProductDraft_thenFailed()
         viewModel.getProductDraft(3)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { getProductDraftUseCase.executeOnBackground() }
@@ -99,9 +108,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When FailedGetProduct Expect ExpectedBehaviour`() {
+    fun  `When FailedGetProduct Expect ExpectedBehaviour`() = runBlocking {
         onGetProduct_thenFailed()
         viewModel.getProductData("4")
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductFailed()
@@ -133,7 +144,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         assertTrue(viewModel.productInputModel.value?.detailInputModel != null)
 
-        viewModel.updateSizeChart(PictureViewModel())
+        viewModel.updateSizeChart(ProductPicture())
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.productInputModel.value?.variantInputModel?.productSizeChart != null)
@@ -147,7 +158,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         val productVariantOptionParent = ProductVariantOptionParent().apply {
             productVariantOptionChild = listOf(ProductVariantOptionChild(pvo = 10))
         }
-        viewModel.updateVariantAndOption(arrayListOf(ProductVariantCombinationViewModel()), arrayListOf(productVariantOptionParent))
+        viewModel.updateVariantAndOption(arrayListOf(ProductVariantCombination()), arrayListOf(productVariantOptionParent))
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.productInputModel.value?.variantInputModel?.productVariant?.isNotEmpty() ?: false)
@@ -203,7 +214,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When UpdateProductStatus Expect ExpectedBehaviour`() {
-        val productVariantCombinationViewModel = ProductVariantCombinationViewModel().apply { st = 0 }
+        val productVariantCombinationViewModel = ProductVariantCombination().apply { st = 0 }
         val product = ProductInputModel().apply {
             draftId = 109
             productId = 211
@@ -241,7 +252,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     fun `When CheckOriginalVariantLevel Expect ExpectedBehaviour`() {
         val product = ProductInputModel().apply {
             variantInputModel = ProductVariantInputModel().apply {
-                productVariant = arrayListOf(ProductVariantCombinationViewModel())
+                productVariant = arrayListOf(ProductVariantCombination())
                 variantOptionParent = arrayListOf(ProductVariantOptionParent())
             }
         }
@@ -331,30 +342,5 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
-    }
-
-    private fun <T> LiveData<T>.getOrAwaitValue(
-            time: Long = 2,
-            timeUnit: TimeUnit = TimeUnit.SECONDS
-    ): T {
-        var data: T? = null
-        val latch = CountDownLatch(1)
-        val observer = object : Observer<T> {
-            override fun onChanged(o: T?) {
-                data = o
-                latch.countDown()
-                this@getOrAwaitValue.removeObserver(this)
-            }
-        }
-
-        this.observeForever(observer)
-
-        // Don't wait indefinitely if the LiveData is not set.
-        if (!latch.await(time, timeUnit)) {
-            throw TimeoutException("LiveData value was never set.")
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        return data as T
     }
 }

@@ -46,10 +46,6 @@ public class GetUserInfoDomainData {
         this.fullName = fullName;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -102,16 +98,8 @@ public class GetUserInfoDomainData {
         this.phone = phone;
     }
 
-    public String getPhoneMasked() {
-        return phoneMasked;
-    }
-
     public void setPhoneMasked(String phoneMasked) {
         this.phoneMasked = phoneMasked;
-    }
-
-    public String getRegisterDate() {
-        return registerDate;
     }
 
     public void setRegisterDate(String registerDate) {

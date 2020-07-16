@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/btn_plain"
+    android:background="@drawable/btn_plain_logistic"
     android:orientation="vertical">
 
     <View

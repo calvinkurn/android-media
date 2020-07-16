@@ -9,16 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.TextViewCompat
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
 import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
@@ -57,7 +57,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         setupAccomodationType(filter.accomodation)
         setupRating(filter.filterReview)
         setupPayAtHotel()
-        save_filter.button.setOnClickListener {
+        save_filter.setOnClickListener {
             selectedFilter.star = starAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
             selectedFilter.propertyType = propertyTypeAdapter.selectedItems.mapNotNull { it.toIntOrNull() }
             selectedFilter.paymentType = if (switch_pay_at_hotel.isChecked) PAYMENT_TYPE_PAY_AT_HOTEL else 0
@@ -92,7 +92,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val filterAccomodation = accomodation.map {
             HotelSearchResultFilterAdapter.HotelFilterItem(it.id.toString(), it.displayName, false) }
         filter_accomodation_type.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+        filter_accomodation_type.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                 LinearLayoutManager.HORIZONTAL))
         filter_accomodation_type.adapter = propertyTypeAdapter
         propertyTypeAdapter.updateItems(filterAccomodation, selectedFilter.propertyType.map { it.toString() }.toSet())
@@ -126,14 +126,14 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
 
             when {
-                item > 0 -> stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
-                else -> stepView.findViewById<TextViewCompat>(R.id.title_step).text = getString(R.string.hotel_search_filter_rating_all)
+                item > 0 -> stepView.findViewById<TextView>(R.id.title_step).text = String.format("  %.1f   ", item.toFloat())
+                else -> stepView.findViewById<TextView>(R.id.title_step).text = getString(R.string.hotel_search_filter_rating_all)
             }
 
             base_rating_step.addView(stepView)
             if (index < ratingStep.size - 1){
                 val separator = View(context)
-                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_0),
+                val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
                         ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                 separator.layoutParams = lp
                 base_rating_step.addView(separator)
@@ -157,8 +157,8 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val filterStars
                 = filterStar.stars.map { HotelSearchResultFilterAdapter.HotelFilterItem(it.toString(), it.toString(), true) }
         filter_star.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8))
-        filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
+        filter_star.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter
         starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())

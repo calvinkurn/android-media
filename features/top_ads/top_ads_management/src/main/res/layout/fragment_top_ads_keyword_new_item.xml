@@ -187,8 +187,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/dp_8"
-                app:ael_duration="400"
-                app:ael_expanded="true">
+                app:el_duration="400"
+                app:el_expanded="true">
 
                 <TextView
                     android:id="@+id/keywordTypeDesc"

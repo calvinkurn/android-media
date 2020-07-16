@@ -143,24 +143,28 @@ class SendChatComponentTest {
     }
 
     @Test
-    fun `when channel is frozen, then send chat should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when channel is frozen, then send chat should be hidden and focus removed`() = runBlockingTest(testDispatcher) {
         val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
+        verifySequence {
+            component.uiView.focusChatForm(false)
+            component.uiView.hide()
+        }
     }
 
     @Test
-    fun `when user is banned, then send chat should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then send chat should be hidden and focus removed`() = runBlockingTest(testDispatcher) {
         val mockFreeze = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
+        verifySequence {
+            component.uiView.focusChatForm(false)
+            component.uiView.hide()
+        }
     }
 
-    class SendChatComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : SendChatComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class SendChatComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : SendChatComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): SendChatView {
             return mockk(relaxed = true)
         }

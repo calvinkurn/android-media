@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import android.content.Context;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 
@@ -24,6 +26,8 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
     private List<Visitable> list;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
+    private ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain;
+    private FragmentManager fragmentManager;
     private final InboxReputationDetailTypeFactory typeFactory;
 
     public InboxReputationDetailAdapter(InboxReputationDetailTypeFactory typeFactory) {
@@ -37,7 +41,7 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
+        return typeFactory.createViewHolder(view, viewType, productRevIncentiveOvoDomain, fragmentManager);
     }
 
     @Override
@@ -85,6 +89,15 @@ public class InboxReputationDetailAdapter extends RecyclerView.Adapter<AbstractV
 
     public void clearList() {
         this.list.clear();
+    }
+
+
+    public void setProductRevIncentiveOvoDomain(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
+        this.productRevIncentiveOvoDomain = productRevIncentiveOvoDomain;
+    }
+
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
     }
 
     public InboxReputationDetailHeaderViewModel getHeader() {

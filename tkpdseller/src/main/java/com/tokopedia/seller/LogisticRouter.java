@@ -3,7 +3,6 @@ package com.tokopedia.seller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.Fragment;
 
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -15,4 +14,5 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 public interface LogisticRouter {
     Intent getDistrictRecommendationIntent(Activity activity, Token token);
     Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass);
+    boolean getBooleanRemoteConfig(String key, boolean value);
 }

@@ -7,6 +7,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.sendchat.SendChatComponent
+import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -35,6 +36,8 @@ class VideoComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
+    private val mockPlayVideoUtil = mockk<PlayVideoUtil>(relaxed = true)
+
     private val modelBuilder = ModelBuilder()
 
     @BeforeEach
@@ -42,7 +45,7 @@ class VideoComponentTest {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
 
-        component = VideoComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
+        component = VideoComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope, mockPlayVideoUtil)
     }
 
     @AfterEach
@@ -52,11 +55,11 @@ class VideoComponentTest {
 
     @Test
     fun `when new video is set, then video should update video`() = runBlockingTest(testDispatcher) {
-        val mockExoPlayer = mockk<ExoPlayer>()
+        val mockGeneralVideoPlayer = modelBuilder.buildGeneralVideoUiModel()
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockExoPlayer))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockGeneralVideoPlayer))
 
-        verify { component.uiView.setPlayer(mockExoPlayer) }
+        verify { component.uiView.setPlayer(mockGeneralVideoPlayer.exoPlayer) }
         confirmVerified(component.uiView)
     }
 
@@ -84,7 +87,7 @@ class VideoComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class VideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class VideoComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope, playVideoUtil: PlayVideoUtil) : VideoComponent(container, bus, scope, TestCoroutineDispatchersProvider, playVideoUtil) {
         override fun initView(container: ViewGroup): VideoView {
             return mockk(relaxed = true)
         }

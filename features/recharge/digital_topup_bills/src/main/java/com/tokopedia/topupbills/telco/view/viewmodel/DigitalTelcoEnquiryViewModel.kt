@@ -1,13 +1,17 @@
 package com.tokopedia.topupbills.telco.view.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -15,21 +19,23 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 27/05/19.
  */
 class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                       val dispatcher: CoroutineDispatcher)
+                                                       private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    fun getEnquiry(rawQuery: String, mapParam: Map<String, kotlin.Any>,
-                   onSuccess: (TelcoEnquiryData) -> Unit,
-                   onError: (Throwable) -> Unit) {
+    private val _enquiryResult = MutableLiveData<Result<TelcoEnquiryData>>()
+    val enquiryResult: LiveData<Result<TelcoEnquiryData>>
+        get() = _enquiryResult
+
+    fun getEnquiry(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoEnquiryData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoEnquiryData>()
 
-            onSuccess(data)
+            _enquiryResult.postValue(Success(data))
         }) {
-            onError(it)
+            _enquiryResult.postValue(Fail(it))
         }
     }
 }

@@ -11,11 +11,11 @@ import dagger.Provides
  */
 @AttachInvoiceScope
 @Module
-class AttachInvoiceModule {
+class AttachInvoiceModule constructor(val context: Context) {
 
     @AttachInvoiceScope
     @Provides
-    fun provideResources(@ApplicationContext context: Context): Resources {
+    fun provideResources(): Resources {
         return context.resources
     }
 }

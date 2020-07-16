@@ -14,8 +14,8 @@ import com.tokopedia.product.detail.common.data.model.variant.Option
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.*
-import com.tokopedia.purchase_platform.common.view.model.*
+import com.tokopedia.purchase_platform.common.feature.insurance.*
+import com.tokopedia.purchase_platform.common.feature.insurance.response.*
 import kotlin.math.roundToInt
 
 object ModelMapper {

@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
+import android.app.Activity.RESULT_OK
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,11 +16,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
+import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,12 +36,14 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
         private const val FILTER_OPTIONS = "filter_options"
+        private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
-        fun newInstance(filterOptions: ArrayList<String>): ProductManageSellerFragment {
+        fun newInstance(filterOptions: ArrayList<String>, searchKeyWord: String): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
+                    putString(SEARCH_KEYWORD_OPTIONS, searchKeyWord)
                 }
             }
         }
@@ -47,6 +53,10 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
+
+    private var alreadySendScreenNameAfterAddEditProduct: Boolean = false
+
+    override fun getScreenName(): String = "/product list page"
 
     override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
 
@@ -60,12 +70,13 @@ class ProductManageSellerFragment : ProductManageFragment() {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
+        getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
     }
 
     override fun initInjector() {
-        ProductManageListInstance.getComponent((requireActivity().application))
+        ProductManageListInstance.getComponent(requireContext())
                 .inject(this)
     }
 
@@ -82,6 +93,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
         } else {
             productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
         }
+        if (userVisibleHint) {
+            sendNormalSendScreen()
+        }
     }
 
     override fun onPause() {
@@ -90,6 +104,40 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     override fun callInitialLoadAutomatically() = false
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            sendNormalSendScreen()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT ->
+                    sendScreenWithCustomDimension(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE_ADD_PRODUCT)
+                ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT ->
+                    sendScreenWithCustomDimension(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE_EDIT_PRODUCT)
+                else -> super.onActivityResult(requestCode, resultCode, intent)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, intent)
+        }
+    }
+
+    private fun sendScreenWithCustomDimension(pageSource: String) {
+        ProductManageTracking.sendScreen(screenName, pageSource)
+        alreadySendScreenNameAfterAddEditProduct = true
+    }
+
+    private fun sendNormalSendScreen() {
+        if (!alreadySendScreenNameAfterAddEditProduct) {
+            ProductManageTracking.sendScreen(screenName)
+        } else {
+            alreadySendScreenNameAfterAddEditProduct = false
+        }
+    }
 
     private fun onDraftCountLoaded(rowCount: Long) {
         if (rowCount == 0L) {
@@ -108,6 +156,11 @@ class ProductManageSellerFragment : ProductManageFragment() {
         // delete all draft when error loading draft
         productDraftListCountViewModel.clearAllDraft()
         tvDraftProduct.visibility = View.GONE
+    }
+
+    private fun getDefaultKeywordOptionFromArguments() {
+        val searchKeyword = arguments?.getString(SEARCH_KEYWORD_OPTIONS).orEmpty()
+        super.setSearchKeywordOptions(searchKeyword)
     }
 
     private fun getDefaultFilterOptionsFromArguments() {
@@ -147,7 +200,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 addAction(UploadProductService.ACTION_DRAFT_CHANGED)
                 addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
             }
-            it.registerReceiver(draftBroadCastReceiver, intentFilters)
+            LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
         }
     }
 
@@ -159,9 +212,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     private fun observeGetAllDraftCount() {
         observe(productDraftListCountViewModel.getAllDraftCountResult) {
-            when(it) {
+            when (it) {
                 is Success -> onDraftCountLoaded(it.data)
-                is Fail -> onDraftCountLoadError()
+                is Fail -> {
+                    onDraftCountLoadError()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }

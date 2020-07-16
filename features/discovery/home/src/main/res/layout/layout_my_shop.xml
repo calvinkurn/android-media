@@ -15,7 +15,7 @@
         android:layout_height="56dp"
         app:cardUseCompatPadding="true">
 
-        <com.tokopedia.core.customwidget.SquareImageView
+        <com.tokopedia.design.image.SquareImageView
             android:id="@+id/image_shop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

@@ -1,78 +1,139 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.viewpager.widget.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.showcase.ShowCaseContentPosition
-import com.tokopedia.showcase.ShowCaseDialog
-import com.tokopedia.showcase.ShowCaseObject
-import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
-import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
-import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
-import com.tokopedia.topads.dashboard.data.utils.ShowCaseDialogFactory
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
+import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.fragment.HiddenTrialFragment
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
+import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import java.util.*
+import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
 
 /**
  * Created by hadi.putra on 23/04/2018.
  */
-class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsDashboardFragment.Callback {
 
-    internal lateinit var showCaseDialog: ShowCaseDialog
-    internal var tracker: TopAdsDashboardTracking? = null
+private const val CLICK_BUAT_IKLAN ="click - tambah iklan"
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction {
+
+    private var tracker: TopAdsDashboardTracking? = null
+
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
+        topAdsDashboardPresenter.getShopListHiddenTrial(resources)
+        setContentView(R.layout.topads_dash_activity_base_layout)
+        renderTabAndViewPager()
+        header_toolbar?.actionTextView?.setOnClickListener {
+            if (GlobalConfig.isSellerApp()) {
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
+            } else {
+                openDashboard()
+            }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
+        }
+        header_toolbar?.setNavigationOnClickListener {
+            super.onBackPressed()
+        }
         tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
-        topAdsDashboardPresenter.getShopListHiddenTrial(resources)
-        topAdsDashboardPresenter.getExpiryDate(resources)
-        setFragment()
+
+        topAdsDashboardPresenter.isShopWhiteListed.observe(this, Observer {
+            if (it) {
+                topAdsDashboardPresenter.getExpiryDate(resources)
+            }
+        })
+        topAdsDashboardPresenter.expiryDateHiddenTrial.observe(this, Observer {
+            val intent = Intent(this, HiddenTrialActivity::class.java)
+            intent.putExtra(EXPIRE, it)
+            startActivity(intent)
+            finish()
+        })
+        createAd.setOnClickListener {
+            if (GlobalConfig.isSellerApp()) {
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
+            } else {
+                openDashboard()
+            }
+        }
+        createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val height = createAd?.measuredHeight
+        view_pager?.setPadding(0, 0, 0, height ?: 0)
+
+        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(p0: TabLayout.Tab?) {}
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                if (tab.position == 0) {
+                    bottom.visibility = View.VISIBLE
+                    createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val height = createAd?.measuredHeight
+                    view_pager?.setPadding(0, 0, 0, height ?: 0)
+                } else {
+                    bottom.visibility = View.GONE
+                    view_pager?.setPadding(0, 0, 0, 0)
+
+                }
+            }
+        })
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
     }
 
-    private fun setFragment() {
-        topAdsDashboardPresenter.isShopWhiteListed.observe(this, androidx.lifecycle.Observer {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AUTO_ADS_DISABLED) {
+            if (resultCode == Activity.RESULT_OK)
+                renderTabAndViewPager()
+        }
+    }
 
-            if (it) {
-                val fragment = HiddenTrialFragment.newInstance()
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.parent_view, fragment, HiddenTrialFragment::class.java.name)
-                transaction.commit()
+    private fun renderTabAndViewPager() {
+        view_pager.adapter = getViewPagerAdapter()
+        view_pager.offscreenPageLimit = 3
+        view_pager.currentItem = 0
+        view_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
+        tab_layout.setupWithViewPager(view_pager)
+    }
 
-            } else {
-
-                val fragment = TopAdsDashboardFragment.createInstance()
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.parent_view, fragment, TopAdsDashboardFragment::class.java.name)
-                transaction.commit()
-
-            }
-
-        })
-        topAdsDashboardPresenter.expiryDateHiddenTrial.observe(this, androidx.lifecycle.Observer {
-            if (supportFragmentManager.findFragmentById(R.id.parent_view) is HiddenTrialFragment)
-                (supportFragmentManager.findFragmentById(R.id.parent_view) as HiddenTrialFragment)
-                        .getData(it.substring(0, it.length - 8))
-        })
+    private fun getViewPagerAdapter(): PagerAdapter {
+        val list: MutableList<FragmentTabItem> = mutableListOf()
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
+        val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
+        pagerAdapter.setList(list)
+        return pagerAdapter
     }
 
     private fun initInjector() {
@@ -116,101 +177,21 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         super.onBackPressed()
     }
 
-    override fun getTagFragment(): String {
-        return TAG
-    }
-
-    override fun startShowCase(isAutoAds : Boolean) {
-        val showCaseTag = TopAdsDashboardActivity::class.java.name
-
-        val fragment = supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment
-                ?: return
-
-        showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase(this)
-        showCaseDialog.setShowCaseStepListener { previousStep, nextStep, showCaseObject -> false }
-
-        val showCaseList = ArrayList<ShowCaseObject>()
-        val toolbar = findViewById<Toolbar>(com.tokopedia.product.manage.item.R.id.toolbar)
-        if (toolbar.height > 0) {
-            val height = toolbar.height
-            val width = toolbar.width
-
-            if (fragment.shopInfoLayout != null) {
-                showCaseList.add(ShowCaseObject(fragment.shopInfoLayout,
-                        getString(R.string.topads_showcase_home_title_3),
-                        getString(R.string.topads_showcase_home_desc_3),
-                        ShowCaseContentPosition.UNDEFINED,
-                        com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
-            }
-            if (fragment.isContentVisible) {
-                if (fragment.contentStatisticsView != null) {
-                    showCaseList.add(ShowCaseObject(fragment.contentStatisticsView,
-                            getString(R.string.topads_showcase_home_title_7),
-                            getString(R.string.topads_showcase_home_desc_5),
-                            ShowCaseContentPosition.UNDEFINED,
-                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
-                }
-
-                if (fragment.groupSummaryLabelView != null && !isAutoAds) {
-                    showCaseList.add(ShowCaseObject(fragment.groupSummaryLabelView,
-                            getString(R.string.topads_showcase_home_title_8),
-                            getString(R.string.topads_showcase_home_desc_8),
-                            ShowCaseContentPosition.UNDEFINED,
-                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
-                }
-                if (fragment.viewGroupPromo != null && !isAutoAds) {
-                    showCaseList.add(ShowCaseObject(fragment.viewGroupPromo,
-                            getString(R.string.topads_showcase_home_title_1),
-                            getString(R.string.topads_showcase_home_desc_1),
-                            ShowCaseContentPosition.UNDEFINED,
-                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
-                }
-            }
-
-            if (fragment.buttonAddPromo != null && !isAutoAds) {
-                showCaseList.add(ShowCaseObject(fragment.buttonAddPromo,
-                        getString(R.string.topads_showcase_home_title_6),
-                        getString(R.string.topads_showcase_home_desc_6),
-                        ShowCaseContentPosition.UNDEFINED,
-                        com.tokopedia.topads.auto.R.color.white))
-            }
-
-            showCaseList.add(
-                    ShowCaseObject(
-                            findViewById(android.R.id.content),
-                            getString(R.string.topads_showcase_help),
-                            getString(R.string.topads_showcase_detail_help),
-                            ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE)
-                            .withCustomTarget(intArrayOf(width - (height * 0.8).toInt(), 0, width, height)))
-
-            showCaseDialog.show(this, showCaseTag, showCaseList)
+    private fun openDashboard() {
+        if (AppUtil.isSellerInstalled(this)) {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+            intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsDashboardActivity::class.java.name)
+            startActivity(intent)
         } else {
-            toolbar.viewTreeObserver.addOnGlobalLayoutListener(OneUseGlobalLayoutListener(
-                    toolbar,
-                    OneUseGlobalLayoutListener.OnGlobalLayoutListener { startShowCase(isAutoAds) }
-            ))
+            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }
-
-
     }
 
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
-
-    companion object {
-        val TAG = TopAdsDashboardActivity::class.java.simpleName
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
-            ToasterAutoAds.showClose(this, getString(com.tokopedia.topads.auto.R.string.toaster_inactive_success), onClick = {
-                val fragment = (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
-                fragment.loadData()
-                fragment.loadAutoAds()
-            })
+    override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
+        if (state == TopAdsProductIklanFragment.State.COLLAPSED) {
+            app_bar_layout.setExpanded(false)
+        } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
+            app_bar_layout.setExpanded(true)
         }
     }
 }

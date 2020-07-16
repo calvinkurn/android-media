@@ -18,4 +18,9 @@ class ChatAdapter : BaseAdapter<PlayChatUiModel>() {
         addItem(chat)
         notifyItemInserted(itemCount)
     }
+
+    fun setChatList(chatList: List<PlayChatUiModel>) {
+        setItems(chatList)
+        notifyDataSetChanged()
+    }
 }

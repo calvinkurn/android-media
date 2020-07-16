@@ -1,14 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +9,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -120,8 +116,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetPerDayEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    CommonUtils.hideKeyboard(getActivity(), view);
+                if (!hasFocus && getActivity() != null) {
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
                 }
             }
         });

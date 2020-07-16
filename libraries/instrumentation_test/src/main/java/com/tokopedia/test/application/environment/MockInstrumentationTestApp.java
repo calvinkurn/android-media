@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-
+import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -14,9 +14,12 @@ import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.deprecated.SessionHandler;
@@ -24,31 +27,30 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.instrumentation.test.R;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.test.application.environment.interceptor.MockInterceptor;
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor;
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
-import java.io.BufferedReader;
+import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter, MockResponseInterface {
+
+    private static String KEY_MOCK_CLASS_PATH = "mockClassPath";
 
     @Override
     public void onCreate() {
@@ -56,55 +58,61 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
         TrackApp.initTrackApp(this);
+        NetworkClient.init(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
         GlobalConfig.DEBUG = true;
-        enableMockResponse();
+        checkMockClassArguments();
         super.onCreate();
     }
 
-    public void enableMockResponse() {
-        if (GlobalConfig.DEBUG) {
-            HashMap<String, String> responseList = new HashMap<>();
-            responseList.put("dynamicHomeChannel", getRawString(R.raw.response_mock_data_dynamic_home_channel));
-            responseList.put("widget_tab", getRawString(R.raw.response_mock_data_home_widget_tab));
-            responseList.put("widget_grid", getRawString(R.raw.response_mock_data_home_widget_grid));
-            responseList.put("suggestedProductReview", getRawString(R.raw.response_mock_data_suggested_review));
-            responseList.put("playGetLiveDynamicChannels", getRawString(R.raw.response_mock_data_play_widget));
-            responseList.put("rechargeRecommendation", getRawString(R.raw.response_mock_data_recharge_recommendation));
-
+    public void setupMockResponse(MockModelConfig mockModelConfig) {
+        if (GlobalConfig.DEBUG && mockModelConfig != null) {
             List<Interceptor> testInterceptors = new ArrayList<>();
-            testInterceptors.add(new MockInterceptor(responseList));
+            testInterceptors.add(new MockInterceptor(mockModelConfig));
+            GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
+        }
+    }
+
+    //Deprecated, please use MockModelConfig and inject mock class object from command line
+    @Deprecated
+    @Override
+    public void reInitMockResponse(HashMap<String, String> mapMockResponse) {
+        if (GlobalConfig.DEBUG) {
+            List<Interceptor> testInterceptors = new ArrayList<>();
+            testInterceptors.add(new MockInterceptor(
+                    new MockModelConfig() {
+                        @NotNull
+                        @Override
+                        public MockModelConfig createMockModel(@NotNull Context context) {
+                            for (Map.Entry<String,String> entry : mapMockResponse.entrySet())
+                                addMockResponse(entry.getKey(), entry.getValue(), FIND_BY_CONTAINS);
+                            return this;
+                        }
+                    }
+            ));
 
             GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
         }
     }
 
-    private String getRawString(int res) {
-        InputStream rawResource = this.getResources().openRawResource(res);
-        String content = streamToString(rawResource);
+    private void checkMockClassArguments() {
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        String className = arguments.getString(KEY_MOCK_CLASS_PATH);
         try {
-            rawResource.close();
-        } catch (IOException e) {
+            MockModelConfig mockModelConfig =
+                    (MockModelConfig) Class.forName(className).newInstance();
+            mockModelConfig.createMockModel(getApplicationContext());
+            setupMockResponse(mockModelConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return content;
-    }
-
-    public static String streamToString(InputStream in) {
-        String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            while ((temp = bufferedReader.readLine()) != null) {
-                stringBuilder.append(temp + "\n");
-            }
-        } catch (IOException e) {
-        }
-        return stringBuilder.toString();
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {
@@ -155,11 +163,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     }
 
     @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
     }
@@ -180,37 +183,17 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     }
 
     @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return null;
-    }
-
-    @Override
     public Intent getHomeIntent(Context context) {
         return null;
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+    public Class<?> getHomeClass() {
         return null;
     }
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxMessageIntent(Context mContext) {
         return null;
     }
 
@@ -222,18 +205,9 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     @Override
     public SessionHandler legacySessionHandler() {
         return new SessionHandler(this) {
-            @Override
-            public String getLoginName() {
-                return "null";
-            }
 
             @Override
             public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getShopID() {
                 return "null";
             }
 
@@ -243,62 +217,12 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
             }
 
             @Override
-            public boolean isUserHasShop() {
-                return false;
-            }
-
-            @Override
-            public boolean isV4Login() {
-                return false;
-            }
-
-            @Override
-            public String getPhoneNumber() {
-                return "null";
-            }
-
-            @Override
-            public String getEmail() {
-                return "null";
-            }
-
-            @Override
             public String getRefreshToken() {
                 return "null";
             }
 
             @Override
-            public String getAccessToken() {
-                return "null";
-            }
-
-            @Override
-            public String getFreshToken() {
-                return null;
-            }
-
-            @Override
-            public String getUserId() {
-                return "null";
-            }
-
-            @Override
-            public String getDeviceId() {
-                return "null";
-            }
-
-            @Override
-            public String getProfilePicture() {
-                return "null";
-            }
-
-            @Override
             public boolean isMsisdnVerified() {
-                return false;
-            }
-
-            @Override
-            public boolean isHasPassword() {
                 return false;
             }
         };
@@ -457,4 +381,5 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
+
 }

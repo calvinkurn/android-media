@@ -55,7 +55,7 @@
         android:id="@+id/shopName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/setting_black_text"
+        android:textColor="@color/default_black_text"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"

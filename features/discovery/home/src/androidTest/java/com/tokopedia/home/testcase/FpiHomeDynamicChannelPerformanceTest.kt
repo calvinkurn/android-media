@@ -8,13 +8,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
+import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writeFPIPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.R
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 
 /**
  * Created by DevAra
@@ -91,69 +90,7 @@ class FpiHomeDynamicChannelPerformanceTest {
     private fun saveFPIPerformanceResultData(tag: String) {
         val performanceData = activityRule.activity.getFpiPerformanceResultData()
         performanceData?.let {
-            writeFPIPerformanceFile(tag, performanceData)
+            writeFPIPerformanceFile(activityRule.activity, tag, performanceData)
         }
-    }
-
-    private fun writeFPIPerformanceFile(testCaseName: String, fpiPerformanceData: FpiPerformanceData) {
-        val path = activityRule.activity.getExternalFilesDir(null)
-        val perfDataDir = File(path, "perf_data")
-        if (!perfDataDir.exists()) {
-            makeInitialPerfDir(perfDataDir)
-        }
-        val perfReportFpi = File(perfDataDir, "report-fpi.csv")
-        val fpiValue = (100 - fpiPerformanceData.jankyFramePercentage)
-        perfReportFpi.appendText(
-                "$testCaseName," +
-                        "${fpiPerformanceData.allFrames}," +
-                        "${fpiPerformanceData.jankyFrames}," +
-                        "${fpiPerformanceData.jankyFramePercentage}," +
-                        "$fpiValue\n")
-
-        val perfReport = File(perfDataDir, "report.csv")
-        perfReport.appendText(
-                "$testCaseName," +
-                        "$fpiValue FPI\n"
-        )
-    }
-
-    private fun makeInitialPerfDir(perfDataDir: File) {
-        val testcase = "Test Case"
-        val metrics = "Metrics"
-        val value = "Value"
-
-        val startPagePlt = "Start Page Duration (ms)"
-        val networkRequestPlt = "Network Request Duration (ms)"
-        val renderPagePlt = "Render Page Duration (ms)"
-        val overallPlt = "Page Load Time (FPI) (ms)"
-        val datasource = "Data source"
-
-        val allframes = "All Frames"
-        val jankyframes = "Janky Frames"
-        val jankyframespercentage = "Janky Frames (%)"
-        val indexperformance = "Index Performance (FPI)"
-
-        perfDataDir.mkdirs()
-        val perfReportPlt = File(perfDataDir, "report-plt.csv")
-        perfReportPlt.appendText("" +
-                "$testcase," +
-                "$startPagePlt," +
-                "$networkRequestPlt," +
-                "$renderPagePlt," +
-                "$overallPlt," +
-                "$datasource\n")
-
-        val perfReportFpi = File(perfDataDir, "report-fpi.csv")
-        perfReportFpi.appendText("" +
-                "$testcase," +
-                "$allframes," +
-                "$jankyframes," +
-                "$jankyframespercentage," +
-                "$indexperformance\n")
-
-        val perfReport = File(perfDataDir, "report.csv")
-        perfReport.appendText("" +
-                "$metrics," +
-                "$value\n")
     }
 }

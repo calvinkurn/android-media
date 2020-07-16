@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
@@ -18,6 +17,8 @@ import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +49,13 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
     private Context context;
     private RemoteConfig remoteConfig;
+    private UserSession userSession;
 
     @Inject
-    BuyerAccountMapper(@ApplicationContext Context context, RemoteConfig remoteConfig) {
+    BuyerAccountMapper(@ApplicationContext Context context, RemoteConfig remoteConfig, UserSession userSession) {
         this.context = context;
         this.remoteConfig = remoteConfig;
+        this.userSession = userSession;
     }
 
     @Override
@@ -68,11 +71,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(getBuyerProfileMenu(accountModel));
         }
 
-        String cdnUrl = AccountHomeUrl.CDN_URL;
-        if (context.getApplicationContext() instanceof AccountHomeRouter) {
-            cdnUrl = ((AccountHomeRouter) context.getApplicationContext())
-                    .getStringRemoteConfig(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
-        }
+        String cdnUrl = remoteConfig
+                .getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         if (accountModel.getWallet() != null) {
@@ -218,6 +218,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         }
         buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
+        userSession.setHasPassword(accountModel.getUserProfileCompletion().isCreatedPassword());
         return buyerCardViewModel;
     }
 }

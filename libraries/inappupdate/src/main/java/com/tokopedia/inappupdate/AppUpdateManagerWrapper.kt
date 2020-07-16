@@ -3,11 +3,11 @@ package com.tokopedia.inappupdate
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -23,6 +23,9 @@ object AppUpdateManagerWrapper {
     private var INAPP_UPDATE_PREF = "inappupdate_pref"
     private var KEY_INAPP_TYPE = "inapp_type"
 
+    private var LOG_UPDATE_TYPE_FLEXIBLE = "flexible"
+    private var LOG_UPDATE_TYPE_IMMEDIATE = "immediate"
+
     @JvmField
     val REQUEST_CODE_FLEXIBLE = 12136
 
@@ -34,8 +37,8 @@ object AppUpdateManagerWrapper {
             appUpdateManager = AppUpdateManagerFactory.create(appContext)
             appUpdateManager!!.registerListener {
                 if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                    LocalBroadcastManager.getInstance(appContext)
-                        .sendBroadcast(Intent(INAPP_UPDATE))
+                    InAppUpdateLogUtil.logStatusDownload("-", "dl_success")
+                    LocalBroadcastManager.getInstance(appContext).sendBroadcast(Intent(INAPP_UPDATE))
                 }
             }
         }
@@ -56,6 +59,10 @@ object AppUpdateManagerWrapper {
         val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
 
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            weakRefActivity.get()?.let {activity ->
+                InAppUpdateLogUtil.logStatusCheck(activity, LOG_UPDATE_TYPE_FLEXIBLE, it.availableVersionCode(), it.updateAvailability(),
+                        it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE), it.clientVersionStalenessDays(), it.updatePriority(), it.totalBytesToDownload())
+            }
             if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                 it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                 val onProgressUpdating = onProgressUpdating(it.installStatus())
@@ -63,8 +70,8 @@ object AppUpdateManagerWrapper {
                     val message: String = getProgressMessage(appContext, it.installStatus())
                     onProgress(message)
                     if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                        LocalBroadcastManager.getInstance(appContext)
-                            .sendBroadcast(Intent(INAPP_UPDATE))
+                        InAppUpdateLogUtil.logStatusDownload(LOG_UPDATE_TYPE_FLEXIBLE, "dl_success")
+                        LocalBroadcastManager.getInstance(appContext).sendBroadcast(Intent(INAPP_UPDATE))
                     }
                 } else {
                     try {
@@ -72,13 +79,14 @@ object AppUpdateManagerWrapper {
                         if (activityObj!= null && !activityObj.isFinishing) {
                             val successTriggerUpdate = doFlexibleUpdate(activityObj, it)
                             if (!successTriggerUpdate) {
+                                InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
                                 onError()
                             }
                         }
                     } catch (e: Exception) {
+                        InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, e.toString())
                         onError()
                     }
-
                 }
             } else {
                 clearInAppPref(appContext)
@@ -86,6 +94,7 @@ object AppUpdateManagerWrapper {
             }
             onFinished()
         }.addOnFailureListener {
+            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, it.toString())
             onError()
         }
     }
@@ -113,6 +122,10 @@ object AppUpdateManagerWrapper {
         }
         val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
+            weakRefActivity.get()?.let { activity ->
+                InAppUpdateLogUtil.logStatusCheck(activity, LOG_UPDATE_TYPE_IMMEDIATE, it.availableVersionCode(), it.updateAvailability(),
+                        it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE), it.clientVersionStalenessDays(), it.updatePriority(), it.totalBytesToDownload())
+            }
             if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                 if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ||
                     it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
@@ -121,6 +134,7 @@ object AppUpdateManagerWrapper {
                     if (activityObj != null && !activityObj.isFinishing) {
                         val successTriggerUpdate = doImmediateUpdate(activityObj, it)
                         if (!successTriggerUpdate) {
+                            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, "start_update_false")
                             onError()
                         }
                     }
@@ -133,6 +147,7 @@ object AppUpdateManagerWrapper {
             }
         }.addOnFailureListener {
             onError()
+            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_IMMEDIATE, it.toString())
         }.addOnCompleteListener {
             onFinished()
         }
@@ -150,6 +165,7 @@ object AppUpdateManagerWrapper {
             }
             return success
         } catch (e: Exception) {
+            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_FLEXIBLE, e.toString())
             false
         }
     }
@@ -166,6 +182,7 @@ object AppUpdateManagerWrapper {
             }
             return success
         } catch (e: Exception) {
+            InAppUpdateLogUtil.logStatusFailure(LOG_UPDATE_TYPE_IMMEDIATE, e.toString())
             false
         }
     }
@@ -262,5 +279,6 @@ object AppUpdateManagerWrapper {
             else -> ""
         }
     }
+
 
 }

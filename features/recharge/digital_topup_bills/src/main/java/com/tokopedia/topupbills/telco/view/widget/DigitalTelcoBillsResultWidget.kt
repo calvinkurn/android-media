@@ -26,10 +26,10 @@ class DigitalTelcoBillsResultWidget @JvmOverloads constructor(@NotNull context: 
     }
 
     fun setLabel(labelText: String) {
-        label.setText(labelText)
+        label.text = labelText
     }
 
     fun setValue(valueText: String) {
-        value.setText(valueText)
+        value.text = valueText
     }
 }

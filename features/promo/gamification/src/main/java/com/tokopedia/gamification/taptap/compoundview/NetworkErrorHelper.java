@@ -31,7 +31,7 @@ public class NetworkErrorHelper {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.widget_error_page_tap_tap, (ViewGroup) rootview);
+            View retryLoad = inflater.inflate(com.tokopedia.gamification.R.layout.widget_error_page_tap_tap, (ViewGroup) rootview);
             Button retryButon = retryLoad.findViewById(R.id.button_retry);
             Button homeButton = retryLoad.findViewById(R.id.button_home);
             ImageView imageError = retryLoad.findViewById(R.id.image_error);
@@ -79,7 +79,7 @@ public class NetworkErrorHelper {
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
         LayoutInflater inflater = LayoutInflater.from(context);
-        View snackView = inflater.inflate(R.layout.gf_tap_tap_custom_snackbar, null);
+        View snackView = inflater.inflate(com.tokopedia.gamification.R.layout.gf_tap_tap_custom_snackbar, null);
         TextView tvmsg = snackView.findViewById(R.id.tv_msg);
         tvmsg.setText(text);
 

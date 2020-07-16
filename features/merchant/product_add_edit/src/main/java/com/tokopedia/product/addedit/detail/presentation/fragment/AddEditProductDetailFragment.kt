@@ -28,10 +28,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.*
@@ -113,7 +110,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: AddEditProductDetailViewModel
 
     private var selectedDurationPosition: Int = UNIT_DAY
-    private var isPreOrderFirstTime = false
+    private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
 
     // product photo
@@ -283,7 +280,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
         productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
         wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
-
                 onDeleteWholesale = {
                     if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
@@ -296,14 +292,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     addNewWholeSalePriceButton?.visibility = View.VISIBLE
-                },
-
-                onAddWholesale = {
-                    if (viewModel.isEditing && !viewModel.isAdding) {
-                        ProductEditMainTracking.clickAddWholesale(shopId)
-                    } else {
-                        ProductAddMainTracking.clickAddWholesale(shopId)
-                    }
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -312,6 +300,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.clickAddWholesale(shopId)
+            } else {
+                ProductAddMainTracking.clickAddWholesale(shopId)
+            }
             wholeSaleInputFormsAdapter?.itemCount?.let {
                 if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
                     addNewWholeSalePriceButton?.visibility = View.GONE
@@ -334,12 +327,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set input type no suggestion to prevent red underline on text
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
+        // pre order checked change listener
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                // tracker
+                if (!isPreOrderFirstTime) {
+                    if (viewModel.isEditing && !viewModel.isAdding) {
+                        ProductEditMainTracking.clickPreorderButton(shopId)
+                    } else {
+                        ProductAddMainTracking.clickPreorderButton(shopId)
+                    }
+                }
+
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
                 preOrderInputLayout?.visibility = View.GONE
             }
+
+            viewModel.isPreOrderActivated.value = isChecked
         }
 
         preOrderDurationUnitField?.apply {
@@ -422,7 +427,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // do the validation first
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
-                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                            InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                    charSequence.length, count,this)
                         }
                     }
                 }
@@ -432,13 +438,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isWholeSalePriceActivated.value = isChecked
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickWholesale(shopId)
-            } else {
-                ProductAddMainTracking.clickWholesale(shopId)
-            }
 
             if (isChecked) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.clickWholesale(shopId)
+                } else {
+                    ProductAddMainTracking.clickWholesale(shopId)
+                }
+
                 val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
                 val wholesalePriceEmpty = wholeSaleInputFormsAdapter?.itemCount == 0
@@ -475,11 +482,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productStockInput.let { viewModel.validateProductStockInput(it) }
             }
         })
-
-        // pre order checked change listener
-        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.isPreOrderActivated.value = isChecked
-        }
 
         // product pre order duration text change listener
         preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -652,20 +654,34 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        //countTouchPhoto is used for count how many times images hit
+        // we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
-        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.trackDragPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackDragPhoto(shopId)
+        //countTouchPhoto can increment 1 every time we come or back to this page
+        //if we back from ActivityOnResult countTouchPhoto still increment,
+        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        if(countTouchPhoto > 2) {
+            countTouchPhoto = 1
+        }
+        // tracker only hit when there are two images of product
+        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+            // to avoid double hit tracker when dragging or touching image product, we have to put if here
+            if (countTouchPhoto == 2) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductAddMainTracking.trackDragPhoto(shopId)
+                }
             }
-            countTouchPhoto = 0
         }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        // validate when 1 photo item is removed
+        val photoCount = productPhotoAdapter?.itemCount ?: 0
+        viewModel.validateProductPhotoInput(photoCount - 1)
+
+        // tracking
         if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
         } else {
@@ -741,20 +757,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun inputAllDataInProductInputModel() {
-        viewModel.productInputModel.detailInputModel.productName = productNameField.getText()
-        viewModel.productInputModel.detailInputModel.categoryId = viewModel.productInputModel.detailInputModel.categoryId
-        viewModel.productInputModel.detailInputModel.price = productPriceField.getTextBigIntegerOrZero()
-        viewModel.productInputModel.detailInputModel.stock = productStockField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
-        viewModel.productInputModel.detailInputModel.sku = productSkuField.getText()
-        viewModel.productInputModel.detailInputModel.imageUrlOrPathList = viewModel.productPhotoPaths
-        viewModel.productInputModel.detailInputModel.preorder.apply {
-            duration = preOrderDurationField.getTextIntOrZero()
-            timeUnit = selectedDurationPosition
-            isActive = preOrderSwitch?.isChecked ?: false
+        viewModel.productInputModel.detailInputModel.apply {
+            productName = productNameField.getText()
+            price = productPriceField.getTextBigIntegerOrZero()
+            stock = productStockField.getTextIntOrZero()
+            minOrder = productMinOrderField.getTextIntOrZero()
+            condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
+            sku = productSkuField.getText()
+            imageUrlOrPathList = viewModel.productPhotoPaths
+            preorder.apply {
+                duration = preOrderDurationField.getTextIntOrZero()
+                timeUnit = selectedDurationPosition
+                isActive = preOrderSwitch?.isChecked ?: false
+            }
+            wholesaleList = getWholesaleInput()
         }
-        viewModel.productInputModel.detailInputModel.wholesaleList = getWholesaleInput()
     }
 
     private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
@@ -971,17 +988,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToPreOrderSwitchStatus() {
         viewModel.isPreOrderActivated.observe(this, Observer {
+            isPreOrderFirstTime = false
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
-
-            if (isPreOrderFirstTime) {
-                if (viewModel.isEditing && !viewModel.isAdding) {
-                    ProductEditMainTracking.clickPreorderButton(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderButton(shopId)
-                }
-            }
-            isPreOrderFirstTime = true
         })
     }
 
@@ -1003,7 +1012,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productCategoryRecommendationLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
-                is Fail -> onGetCategoryRecommendationFailed()
+                is Fail -> {
+                    onGetCategoryRecommendationFailed()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         })
     }
@@ -1080,7 +1092,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                 selectedImagePathList,
                 placeholderDrawableRes,
-                R.string.label_primary,
+                com.tokopedia.product.addedit.R.string.label_primary,
                 MAX_PRODUCT_PHOTOS, false)
 
         return ImagePickerBuilder(
@@ -1097,14 +1109,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.rect_green_solid)
+        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
     }
 
     private fun disableSubmitButton() {
         submitButton?.isClickable = false
         submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N700_32)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32)) }
     }
 
     private fun showDurationUnitOption() {
@@ -1176,6 +1188,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecLoader?.hide()
                     productNameRecShimmering?.hide()
                     productNameRecView?.hide()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1212,7 +1225,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (itemSize > 0) {
                 setSelected(items, 0) {
                     val categoryId = it.getCategoryId().toString()
+                    val categoryName = it.getCategoryName()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                    viewModel.productInputModel.detailInputModel.categoryName = categoryName
                     true
                 }
             }
@@ -1222,22 +1237,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
             setSelected(items, position) {
-                onCategoryRecommendationSelected(it.getCategoryId().toString())
+                onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
                 setSelected(items, index) {
-                    onCategoryRecommendationSelected(it.getCategoryId().toString())
+                    onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
                 }
             }
         }
     }
 
-    private fun onCategoryRecommendationSelected(categoryId: String) {
+    private fun onCategoryRecommendationSelected(categoryId: String, categoryName: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
+        viewModel.productInputModel.detailInputModel.categoryName = categoryName
         if(viewModel.isAdding) {
             ProductAddMainTracking.clickProductCategoryRecom(shopId)
         }
@@ -1277,7 +1293,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     // do the validation first
                     viewModel.validateProductPriceInput(it)
                     productPriceBulkPriceEditBottomSheetContent.tfu_product_price?.textFieldInput?.let { editText ->
-                        InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                charSequence.length, count, this)
                     }
                     viewModel.shouldUpdateVariant = true
                 }
@@ -1293,33 +1310,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitInput(cacheManagerId: String) {
-        val detailInputModel = DetailInputModel(
-                productNameField.getText(),
-                viewModel.productInputModel.detailInputModel.categoryName,
-                viewModel.productInputModel.detailInputModel.categoryId,
-                "",
-                productPriceField.getTextBigIntegerOrZero(),
-                productStockField.getTextIntOrZero(),
-                productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
-                productSkuField.getText(),
-                viewModel.productInputModel.detailInputModel.status,
-                viewModel.productPhotoPaths,
-                PreorderInputModel(
-                        preOrderDurationField.getTextIntOrZero(),
-                        selectedDurationPosition,
-                        preOrderSwitch?.isChecked ?: false
-                ),
-                getWholesaleInput()
-        )
-
-        updateImageList(detailInputModel)
+        inputAllDataInProductInputModel()
         SaveInstanceCacheManager(requireContext(), cacheManagerId).apply {
             val productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java, ProductInputModel())
-            productInputModel?.apply {
-                this.detailInputModel = detailInputModel
-            }
-            put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            productInputModel?.let { viewModel.productInputModel = it }
+            put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
         }
         val intent = Intent()
         intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)

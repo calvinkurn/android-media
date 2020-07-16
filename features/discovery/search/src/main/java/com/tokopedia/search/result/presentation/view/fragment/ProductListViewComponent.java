@@ -7,9 +7,11 @@ import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.ResourcesModule;
 import com.tokopedia.search.di.module.SearchContextModule;
+import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
@@ -23,11 +25,13 @@ import dagger.Component;
         RecommendationModule.class,
         UserSessionModule.class,
         SearchProductUseCaseModule.class,
+        GetProductCountUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
         SearchLocalCacheHandlerModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
         AdvertisingLocalCacheHandlerModule.class,
+        SearchOnBoardingLocalCacheModule.class,
         ProductListPresenterModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {

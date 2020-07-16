@@ -8,14 +8,13 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductSocialProofDataModel(
         val type: String = "",
         val name: String = "",
-        //P2
-        var rating: Float? = null,
-        var wishListCount: Int = 0,
         var stats: Stats? = null,
         var txStats: TxStatsDynamicPdp? = null,
-        var isSocialProofPv: Boolean = false
+        var isSocialProofPv: Boolean = false,
+        var wishlistCount: Int = 0
 ) : DynamicPdpDataModel {
-    override val impressHolder: ImpressHolder =  ImpressHolder()
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 
