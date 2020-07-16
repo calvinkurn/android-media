@@ -101,9 +101,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .map(graphqlResponse -> {
                     AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
                     SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-                    if(saldoModel != null && accountModel != null) {
-                        accountModel.setSaldoModel(saldoModel);
-                    }
+                    accountModel.setSaldoModel(saldoModel);
                     return accountModel;
                 });
     }

@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.util
 
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
+import com.tokopedia.home.account.BuildConfig
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import timber.log.Timber
 
