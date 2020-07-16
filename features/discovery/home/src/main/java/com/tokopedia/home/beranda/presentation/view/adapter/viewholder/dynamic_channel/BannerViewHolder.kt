@@ -45,6 +45,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        resetBanner()
         BenchmarkHelper.endSystraceSection()
     }
 
@@ -60,6 +61,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         }catch (e: Exception){
             e.printStackTrace()
         }
+        resetBanner()
         BenchmarkHelper.endSystraceSection()
     }
 
@@ -86,6 +88,9 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         circularViewPager.setAdapter(adapter)
         circularViewPager.setItemList(list)
         indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+    }
+
+    private fun resetBanner() {
         currentModel?.let {
             if (it.isFirstBind) {
                 circularViewPager.reset()
