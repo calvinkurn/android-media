@@ -1,0 +1,26 @@
+{
+  "cart_type": "default",
+  "codes": [],
+  "is_suggested": 1,
+  "is_trade_in": 0,
+  "is_trade_in_drop_off": 0,
+  "orders": [
+    {
+      "codes": [
+        "TXOSV69115"
+      ],
+      "product_details": [
+        {
+          "product_id": 775172855,
+          "quantity": 2001
+        }
+      ],
+      "shipping_id": 0,
+      "shop_id": 7897230,
+      "sp_id": 0,
+      "unique_id": "7897230-0-8100659"
+    }
+  ],
+  "skip_apply": 0,
+  "state": "cart"
+}

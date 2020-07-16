@@ -5,7 +5,11 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideBasePromoRequestData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateBlacklisted
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateCouponListEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateEmpty
@@ -17,10 +21,6 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGe
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllExpanded
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllIneligible
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithPreSelectedPromo
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
@@ -355,7 +355,7 @@ object PromoCheckoutViewModelGetPromoListTest {
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
@@ -372,7 +372,7 @@ object PromoCheckoutViewModelGetPromoListTest {
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentSelectedExpandedMerchantPromoData())
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
@@ -391,7 +391,7 @@ object PromoCheckoutViewModelGetPromoListTest {
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
@@ -408,7 +408,7 @@ object PromoCheckoutViewModelGetPromoListTest {
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedMerchantPromoData())
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 

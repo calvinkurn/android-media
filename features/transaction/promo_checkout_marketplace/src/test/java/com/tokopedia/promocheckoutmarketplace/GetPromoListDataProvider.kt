@@ -13,7 +13,7 @@ object GetPromoListDataProvider {
     private val uiModelmapper = PromoCheckoutUiModelMapper()
     private val fileUtil = UnitTestFileUtils()
 
-    fun provideBasePromoRequestData(): PromoRequest {
+    fun provideGetPromoListRequest(): PromoRequest {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_request.json"), PromoRequest::class.java)
     }
 
@@ -92,7 +92,7 @@ object GetPromoListDataProvider {
 
     fun providePromoRequestWithSelectedExpandedGlobalPromo(): PromoRequest {
         val response = provideGetPromoListResponseSuccessAllExpanded()
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
         promoRequest.codes.add(response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].code)
 
         return promoRequest
@@ -100,7 +100,7 @@ object GetPromoListDataProvider {
 
     fun providePromoRequestWithSelectedCollapsedGlobalPromo(): PromoRequest {
         val response = provideGetPromoListResponseSuccessAllCollapsed()
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
         promoRequest.codes.add(response.couponListRecommendation.data.couponSections[0].subSections[0].coupons[0].code)
 
         return promoRequest
@@ -134,7 +134,7 @@ object GetPromoListDataProvider {
 
     fun providePromoRequestWithSelectedExpandedMerchantPromo(): PromoRequest {
         val response = provideGetPromoListResponseSuccessAllExpanded()
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         promoRequest.orders.forEach {
             if (it.shopId == selectedPromo.shopId.toLong()) {
@@ -147,7 +147,7 @@ object GetPromoListDataProvider {
 
     fun providePromoRequestWithSelectedCollapsedMerchantPromo(): PromoRequest {
         val response = provideGetPromoListResponseSuccessAllExpanded()
-        val promoRequest = provideBasePromoRequestData()
+        val promoRequest = provideGetPromoListRequest()
         val selectedPromo = response.couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
         promoRequest.orders.forEach {
             if (it.shopId == selectedPromo.shopId.toLong()) {
