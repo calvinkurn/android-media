@@ -118,7 +118,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
             view.progress_bar.setValue(data.adPriceDailySpentFmt.replace("Rp", "").trim().toInt(), true)
             view.progress_status1.text = data.adPriceDailySpentFmt
-            view.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), data.adPriceDaily)
+            view.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), data.adPriceDaily)
         } else {
             view.progress_layout.visibility = View.GONE
         }

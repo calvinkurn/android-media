@@ -37,7 +37,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -54,11 +53,14 @@ import com.tokopedia.topads.dashboard.utils.TopAdsDatePeriodUtil;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.TopAdsSortByModel;
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import kotlin.Unit;
 
 /**
  * Created by hadi.putra on 04/05/18.
@@ -68,7 +70,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         extends BaseListFragment<V, F>
         implements SearchInputView.Listener, EmptyResultViewHolder.Callback,
         TopAdsMultipleCheckListAdapter.TopAdsItemClickedListener<V>, BaseMultipleCheckViewHolder.CheckedCallback<V>,
-        BaseMultipleCheckViewHolder.OptionMoreCallback<V>{
+        BaseMultipleCheckViewHolder.OptionMoreCallback<V> {
 
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     protected static final String EXTRA_STATUS = "EXTRA_STATUS";
@@ -96,7 +98,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     protected SearchInputView searchInputView;
     private AppBarLayout appBarLayout;
     private LabelView dateLabelView;
-    private BottomActionView buttonActionView;
+    private FloatingButtonUnify buttonActionView;
     private CoordinatorLayout coordinatorLayout;
     private CoordinatorLayout.Behavior appBarBehaviour;
     private RecyclerView recyclerView;
@@ -130,7 +132,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnAdListFragmentListener){
+        if (context instanceof OnAdListFragmentListener) {
             listener = (OnAdListFragmentListener) context;
         }
     }
@@ -141,11 +143,11 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         return inflater.inflate(R.layout.fragment_top_ads_list, container, false);
     }
 
-    public int getSwipeRefreshLayoutResourceId(){
+    public int getSwipeRefreshLayoutResourceId() {
         return R.id.swipe_refresh_layout;
     }
 
-    public int getRecyclerViewResourceId(){
+    public int getRecyclerViewResourceId() {
         return R.id.recycler_view;
     }
 
@@ -154,7 +156,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         if (savedInstanceState == null) {
             onFirstTimeLaunched();
         } else {
-            onRestoreState (savedInstanceState);
+            onRestoreState(savedInstanceState);
         }
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -194,19 +196,15 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
         searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchInputView.setListener(this);
-        buttonActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
-        buttonActionView.setButton1OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToSortBy();
-            }
+        buttonActionView = view.findViewById(R.id.bottom_action_view);
+        buttonActionView.setDefault();
+        buttonActionView.sortItem.setListener(() -> {
+            Intent intent = TopAdsSortByActivity.createIntent(getActivity(), selectedSort == null ?
+                    SortTopAdsOption.LATEST : selectedSort.getId());
+            startActivityForResult(intent, REQUEST_CODE_AD_SORT_BY);
+            return Unit.INSTANCE;
         });
-        buttonActionView.setButton2OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToFilter();
-            }
-        });
+        buttonActionView.filterItem.setListener(this::invokeFilter);
         appBarBehaviour = new AppBarLayout.Behavior();
     }
 
@@ -254,8 +252,8 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         return (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
     }
 
-    protected void finishActionMode(){
-        if (actionMode != null){
+    protected void finishActionMode() {
+        if (actionMode != null) {
             actionMode.finish();
         }
     }
@@ -266,7 +264,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
-    private void handlingResultDateSelection(Intent data){
+    private void handlingResultDateSelection(Intent data) {
         long sDate = data.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
         long eDate = data.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
         int lastSelection = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
@@ -308,7 +306,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         isSearchMode = searchMode;
     }
 
-    public Visitable getSearchEmptyViewModel(){
+    public Visitable getSearchEmptyViewModel() {
         EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_state_kaktus);
         emptyModel.setTitle(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
@@ -327,22 +325,16 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     @Override
     protected Visitable getEmptyDataViewModel() {
-        if (isSearchMode){
+        if (isSearchMode) {
             return getSearchEmptyViewModel();
         } else {
             return getDefaultEmptyViewModel();
         }
     }
 
-    public void openDatePicker(){
+    public void openDatePicker() {
         Intent intent = getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, DatePickerConstant.REQUEST_CODE_DATE);
-    }
-
-    public void goToSortBy() {
-        Intent intent = TopAdsSortByActivity.createIntent(getActivity(), selectedSort == null?
-                SortTopAdsOption.LATEST : selectedSort.getId());
-        startActivityForResult(intent, REQUEST_CODE_AD_SORT_BY);
     }
 
     public void updateLabelDateView(Date startDate, Date endDate) {
@@ -357,7 +349,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     @Override
     public void onResume() {
         super.onResume();
-        if (getPresenter().isDateUpdated(startDate, endDate)){
+        if (getPresenter().isDateUpdated(startDate, endDate)) {
             startDate = getPresenter().getStartDate();
             endDate = getPresenter().getEndDate();
             updateLabelDateView(startDate, endDate);
@@ -366,7 +358,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     @Override
     public void onSearchSubmitted(String text) {
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
         }
         if (TextUtils.isEmpty(text)) {
@@ -393,14 +385,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         return adapter;
     }
 
-    private void onSearch(String text){
+    private void onSearch(String text) {
         this.keyword = text;
         loadInitialData();
     }
 
-    public void onSuccessLoadedData(List<V> data, boolean hasNextPage){
-        if (!hasNextPage && data.size() < 1){
-            if (isSearchMode){
+    public void onSuccessLoadedData(List<V> data, boolean hasNextPage) {
+        if (!hasNextPage && data.size() < 1) {
+            if (isSearchMode) {
                 showOption(true);
             } else {
                 showOption(false);
@@ -414,17 +406,17 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     protected void showOption(boolean show) {
         isMenuShown = show;
         getActivity().invalidateOptionsMenu();
-        if(buttonActionView != null)
+        if (buttonActionView != null)
             buttonActionView.setVisibility(show ? View.VISIBLE : View.GONE);
         showDateLabel(show);
         showSearchView(show);
-        if(menuAdd != null){
+        if (menuAdd != null) {
             menuAdd.setVisible(show);
         }
-        if (menuMulti != null){
+        if (menuMulti != null) {
             menuMulti.setVisible(show);
         }
-        if (menuHelp != null){
+        if (menuHelp != null) {
             menuHelp.setVisible(show);
         }
     }
@@ -473,7 +465,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         }
     }
 
-    private Intent getDatePickerIntent(Context context, Date start, Date end){
+    private Intent getDatePickerIntent(Context context, Date start, Date end) {
         Intent intent = new Intent(context, DatePickerActivity.class);
         Calendar maxCalendar = Calendar.getInstance();
         maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -544,7 +536,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
         });
     }
 
-    private void showButtonActionView(){
+    private void showButtonActionView() {
         View containerActionView = getView().findViewById(R.id.container_action_view);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) containerActionView.getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -564,7 +556,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.setTitle(getString(R.string.topads_multi_select_title,
-                    ((TopAdsMultipleCheckListAdapter)getAdapter()).getTotalChecked()));
+                        ((TopAdsMultipleCheckListAdapter) getAdapter()).getTotalChecked()));
                 TopAdsBaseListFragment.this.actionMode = actionMode;
                 getActivity().getMenuInflater().inflate(R.menu.menu_top_ads_action_menu, menu);
                 setAdapterActionMode(true);
@@ -578,10 +570,10 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
             @Override
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                final List<String> productIdList = ((TopAdsMultipleCheckListAdapter)getAdapter()).getListChecked();
+                final List<String> productIdList = ((TopAdsMultipleCheckListAdapter) getAdapter()).getListChecked();
                 if (menuItem.getItemId() == R.id.delete_product_menu) {
                     deleteBulkAction(productIdList);
-                } else if (menuItem.getItemId() == R.id.menu_more){
+                } else if (menuItem.getItemId() == R.id.menu_more) {
                     showBulkActionBottomSheet(productIdList);
                 }
                 return false;
@@ -590,14 +582,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             @Override
             public void onDestroyActionMode(ActionMode actionMode) {
                 setAdapterActionMode(false);
-                ((TopAdsMultipleCheckListAdapter)getAdapter()).resetCheckedItemSet();
+                ((TopAdsMultipleCheckListAdapter) getAdapter()).resetCheckedItemSet();
                 TopAdsBaseListFragment.this.actionMode = null;
             }
         };
     }
 
     protected void setAdapterActionMode(boolean isActionMode) {
-        ((TopAdsMultipleCheckListAdapter)getAdapter()).setActionMode(isActionMode);
+        ((TopAdsMultipleCheckListAdapter) getAdapter()).setActionMode(isActionMode);
         getAdapter().notifyDataSetChanged();
     }
 
@@ -614,14 +606,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     @Override
     public void onItemChecked(V item, boolean isChecked) {
         if (actionMode != null) {
-            int totalChecked = ((TopAdsMultipleCheckListAdapter)getAdapter()).getTotalChecked();
-            actionMode.setTitle(getString(R.string.topads_multi_select_title,totalChecked));
+            int totalChecked = ((TopAdsMultipleCheckListAdapter) getAdapter()).getTotalChecked();
+            actionMode.setTitle(getString(R.string.topads_multi_select_title, totalChecked));
             MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
             MenuItem moreMenuItem = actionMode.getMenu().findItem(R.id.menu_more);
             deleteMenuItem.setVisible(totalChecked > 0);
             moreMenuItem.setVisible(totalChecked > 0);
         } else {
-            ((TopAdsMultipleCheckListAdapter)getAdapter()).setChecked(((Ad) item).getId(), isChecked);
+            ((TopAdsMultipleCheckListAdapter) getAdapter()).setChecked(((Ad) item).getId(), isChecked);
             getAdapter().notifyDataSetChanged();
         }
     }
@@ -641,7 +633,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     }
 
     protected void showBottomsheetOptionMore(String title, @MenuRes int menuId,
-                                             final TopAdsMenuBottomSheets.OnMenuItemSelected listener){
+                                             final TopAdsMenuBottomSheets.OnMenuItemSelected listener) {
         if (getActivity() != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
         }
@@ -656,7 +648,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
             @Override
             public void onItemSelected(int itemId) {
                 bottomSheetMenu.dismiss();
-                if (listener != null){
+                if (listener != null) {
                     listener.onItemSelected(itemId);
                 }
             }
@@ -688,9 +680,14 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
     }
 
     public View getFab() {
-        if(menuAdd != null)
+        if (menuAdd != null)
             return menuAdd.getActionView();
         return null;
+    }
+
+    private Unit invokeFilter() {
+        goToFilter();
+        return Unit.INSTANCE;
     }
 
     public interface OnAdListFragmentListener {

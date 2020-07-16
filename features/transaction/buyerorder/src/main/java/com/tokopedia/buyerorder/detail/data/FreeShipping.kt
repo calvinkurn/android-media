@@ -2,11 +2,12 @@
 package com.tokopedia.buyerorder.detail.data
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
-class FreeShipping {
+class FreeShipping : Serializable {
 
     @SerializedName("imageUrl")
     var imageUrl: String? = null

@@ -272,6 +272,6 @@
     <string name="coachmark_booking_info">Cetak label pengiriman atau tulis kode booking di paket yang akan di kirim.</string>
     <string name="dialog_receiver_name">Nama Penerima</string>
     <string name="et_empty_error">Tidak Boleh Kosong</string>
-
+    <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
 
 </resources>

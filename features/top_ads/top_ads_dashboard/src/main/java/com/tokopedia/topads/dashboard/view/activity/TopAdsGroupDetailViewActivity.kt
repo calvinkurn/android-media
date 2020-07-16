@@ -211,7 +211,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             progress_bar.visibility = View.GONE
         } else {
             progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(R.string.topads_dash_group_item_progress_status), priceDaily)
+            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
             priceSpent?.replace("Rp", "")?.trim()?.toInt().let {

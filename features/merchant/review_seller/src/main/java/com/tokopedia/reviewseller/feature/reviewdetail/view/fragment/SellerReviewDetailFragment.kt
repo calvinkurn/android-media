@@ -608,7 +608,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val sortValue = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortBy)
 
         viewModelProductReviewDetail?.sortAndFilter?.first?.mapIndexed { index, data ->
-            isDifferent = topic[index].isSelected == data.isSelected
+            if(topic.isNotEmpty()) {
+                isDifferent = topic.getOrNull(index)?.isSelected == data.isSelected
+            }
         }
 
         if (viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return

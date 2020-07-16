@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
@@ -190,5 +191,41 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.onCancelAppliedVoucher("")
+    }
+
+    @Test
+    fun getTokopointsSumCoupon_isSuccess_shouldReturnData() {
+        //given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf<Type, Any>(TokopointsSumCoupon.Response::class.java to TokopointsSumCoupon.Response(TokopointsSumCoupon(sumCouponUnitOpt = "33 Kupon"))),
+                mapOf<Type, List<GraphqlError>>(),
+                false)
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } returns graphqlSuccessResponse
+
+        //when
+        hotelBookingViewModel.getTokopointsSumCoupon("")
+
+        //then
+        assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).equals("33 Kupon"))
+    }
+
+    @Test
+    fun getTokopointsSumCoupon_isFail_shouldNotUpdateData() {
+        //given
+        val graphqlFailResponse = GraphqlResponse(
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(TokopointsSumCoupon.Response::class.java to listOf(GraphqlError())),
+                false)
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } returns graphqlFailResponse
+
+        //when
+        hotelBookingViewModel.getTokopointsSumCoupon("")
+
+        //then
+        assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).isEmpty())
     }
 }

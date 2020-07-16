@@ -16,10 +16,6 @@ buildscript {
     }
 }
 
-kapt {
-    generateStubs = true
-}
-
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.commonDigital)

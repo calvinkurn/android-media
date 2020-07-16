@@ -6,6 +6,7 @@ import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineBackgr
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
@@ -20,22 +21,15 @@ class RecommendationAnalytics @Inject constructor(
 
 
     fun sendRecommendationItemDisplayed(recommendationItem: RecommendationItem,
-                                        position: Int) {
-        CoroutineScope(mainDispatcher.get()).launchCatchError(
-                block = {
-                    withContext(backgroundDispatcher.get()) {
-                        val data: MutableMap<String, Any> = mutableMapOf(
-                                KEY_EVENT to EVENT_PRODUCT_VIEW,
-                                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
-                                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
-                                KEY_EVENT_LABEL to position,
-                                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
-                        analyticTracker.sendEnhanceEcommerceEvent(data)
-                    }
-                }, onError = {
-            it.printStackTrace()
-        }
-        )
+                                        position: Int, trackingQueue: TrackingQueue) {
+        val data: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to EVENT_PRODUCT_VIEW,
+                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
+                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                KEY_EVENT_LABEL to position,
+                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
+
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
 
@@ -71,7 +65,7 @@ class RecommendationAnalytics @Inject constructor(
                                              position: Int): MutableMap<String, Any> {
         return mutableMapOf(
                 KEY_CLICK to mutableMapOf(
-                        KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE,
+                        KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE + recommendationItem.recommendationType + " - " + recommendationItem.isTopAds,
                         KEY_PRODUCTS to mutableListOf(getProductDataMap(recommendationItem, position))
                 )
         )
@@ -82,11 +76,11 @@ class RecommendationAnalytics @Inject constructor(
         return mutableMapOf(
                 KEY_PRODUCT_NAME to recommendationItem.name,
                 KEY_PRODUCT_ID to recommendationItem.productId,
-                KEY_PRODUCT_PRICE to recommendationItem.price,
+                KEY_PRODUCT_PRICE to recommendationItem.priceInt.toString(),
                 KEY_PRODUCT_BRAND to "",
                 KEY_PRODUCT_CATEGORY to "",
                 KEY_PRODUCT_VARIANT to "",
-                KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE,
+                KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE + recommendationItem.recommendationType + " - " + recommendationItem.isTopAds,
                 KEY_PRODUCT_POSITION to position
         )
     }
@@ -109,8 +103,8 @@ class RecommendationAnalytics @Inject constructor(
 
         const val EVENT_PRODUCT_CLICK = "productClick"
         const val EVENT_CATEGORY_ORDER_COMPLETE = "order complete"
-        const val EVENT_ACTION_CLICK_PRODUCT = "click product from product recommendation section"
-        const val EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE = "/recomendation-order complete"
+        const val EVENT_ACTION_CLICK_PRODUCT = "click - product recommendation"
+        const val EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE = "/thank_you_page - rekomendasi untuk anda - "
 
 
         const val EVENT_PRODUCT_VIEW = "productView"

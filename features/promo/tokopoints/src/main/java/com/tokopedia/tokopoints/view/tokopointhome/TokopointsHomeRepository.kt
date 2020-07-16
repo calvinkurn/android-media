@@ -49,7 +49,7 @@ class TokopointsHomeRepository @Inject constructor(@Named(TP_GQL_TOKOPOINT_DETAI
     }
 
     suspend fun getCouponCountData() = withContext(Dispatchers.IO){
-        mGetCouponCountUseCase.clearCache()
+        mGetCouponCountUseCase.clearRequest()
         val request5 = GraphqlRequest(tp_gql_sum_coupon,
                 TokoPointSumCouponOuter::class.java, false)
         mGetCouponCountUseCase.addRequest(request5)

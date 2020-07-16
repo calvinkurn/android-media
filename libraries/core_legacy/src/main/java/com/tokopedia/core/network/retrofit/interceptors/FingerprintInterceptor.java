@@ -78,9 +78,33 @@ public class FingerprintInterceptor implements Interceptor {
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
-        newRequest.addHeader(KEY_ADSID, getGoogleAdId(context));
+        String adsId = getGoogleAdId(context);
+        if(!TextUtils.isEmpty(adsId)){
+            adsId = trimGoogleAdId(getGoogleAdId(context));
+        }else{
+            adsId = "";
+        }
+        newRequest.addHeader(KEY_ADSID, adsId);
 
         return newRequest;
+    }
+
+    static String trimGoogleAdId(String googleAdsId){
+        StringBuilder sb = new StringBuilder(googleAdsId.length());//we know this is the capacity so we initialise with it:
+        for (int i = 0; i < googleAdsId.length(); i++) {
+            char c = googleAdsId.charAt(i);
+            switch (c){
+                case '\u2013':
+                case '\u2014':
+                case '\u2015':
+                    sb.append('-');
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
     }
 
     private String getFingerPrintJson() {

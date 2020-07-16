@@ -43,7 +43,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         }
     }
 
-    @DeepLink({ApplinkConst.DISCOVERY_PAGE})
+    @DeepLink({ApplinkConst.REACT_DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
         if (bundle != null) {
             String key = getKeyValueByCaseInsensitive(bundle);

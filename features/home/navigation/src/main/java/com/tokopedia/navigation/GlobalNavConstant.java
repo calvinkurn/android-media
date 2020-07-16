@@ -11,7 +11,7 @@ public class GlobalNavConstant {
 
     public class Analytics {
 
-        static final String CLICK_HOMEPAGE = "clickHomePage";
+        static final String CLICK_HOMEPAGE = "clickHomepage";
 
         static final String HOME_PAGE = "homepage";
 

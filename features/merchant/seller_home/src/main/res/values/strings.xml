@@ -22,6 +22,7 @@
 
     <!--toolbar menu-->
     <string name="sah_notification">Notifikasi</string>
+    <string name="sah_search">Search</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
 

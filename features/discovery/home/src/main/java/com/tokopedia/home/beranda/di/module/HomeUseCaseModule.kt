@@ -11,7 +11,6 @@ import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -30,6 +29,8 @@ import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -135,8 +136,8 @@ class HomeUseCaseModule {
             "    }\n" +
             "}"
 
-    val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
+    val walletBalanceQuery : String = "query(\$isGetTopup:Boolean!){\n" +
+            "  wallet(isGetTopup: \$isGetTopup) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +
@@ -164,6 +165,9 @@ class HomeUseCaseModule {
             "    help_applink\n" +
             "    tnc_applink\n" +
             "    show_announcement\n" +
+            "    is_show_topup\n" +
+            "    topup_applink\n" +
+            "    topup_limit\n" +
             "  }\n" +
             "}"
 
@@ -313,13 +317,6 @@ class HomeUseCaseModule {
     }
 
     @Provides
-    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
-                                 graphqlUseCase: GraphqlUseCase?,
-                                 feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
-        return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
-    }
-
-    @Provides
     @HomeScope
     fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): StickyLoginUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StickyLoginTickerPojo.TickerResponse>(graphqlRepository)
@@ -435,5 +432,11 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }

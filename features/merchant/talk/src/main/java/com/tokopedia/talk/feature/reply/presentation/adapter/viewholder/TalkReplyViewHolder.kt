@@ -2,14 +2,11 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -23,7 +20,6 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadList
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
-import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
@@ -39,24 +35,22 @@ class TalkReplyViewHolder(view: View,
     override fun bind(element: TalkReplyUiModel) {
         itemView.talkReplyContainer.setBackgroundColor(Color.WHITE)
         element.answer.apply {
-            showProfilePicture(userThumbnail, userId)
-            showDisplayName(userName, userId)
+            showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
+            showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, state.isMasked, maskedContent)
-            if(attachedProductCount > 0) {
-                showAttachedProducts(attachedProducts.toMutableList())
-            }
+            showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String, userId: String) {
+    private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.replyProfilePicture.apply {
                 loadImage(userThumbNail)
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
@@ -65,12 +59,12 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String) {
+    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userName.isNotEmpty()) {
             itemView.replyDisplayName.apply{
                 text = userName
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
@@ -90,11 +84,13 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean) {
-        if(isSeller) {
-            itemView.replySellerLabel.show()
+    private fun showSellerLabelWithCondition(isSeller: Boolean)  = with(itemView){
+        if (isSeller) {
+            replyDisplayName.hide()
+            replySellerLabel.show()
         } else {
-            itemView.replySellerLabel.hide()
+            replyDisplayName.show()
+            replySellerLabel.hide()
         }
     }
 

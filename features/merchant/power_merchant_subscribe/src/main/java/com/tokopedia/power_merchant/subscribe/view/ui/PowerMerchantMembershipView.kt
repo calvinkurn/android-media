@@ -16,7 +16,6 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantDateFormatter.formatCancellationDate
-import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.*
 
 class PowerMerchantMembershipView: ConstraintLayout {
@@ -62,11 +61,11 @@ class PowerMerchantMembershipView: ConstraintLayout {
 
     private fun showShopStatus(shopScore: Int) {
         if(shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
-            val textColor = ContextCompat.getColor(context, R.color.light_R500)
+            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_R500)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_inactive)
         } else {
-            val textColor = ContextCompat.getColor(context, R.color.light_N700)
+            val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_active)
         }

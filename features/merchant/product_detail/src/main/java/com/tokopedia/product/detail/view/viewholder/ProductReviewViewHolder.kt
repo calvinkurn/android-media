@@ -22,7 +22,6 @@ import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import kotlinx.android.synthetic.main.item_dynamic_image_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.container_most_helpful_review
-import kotlinx.android.synthetic.main.item_dynamic_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_review.view.container_image_review
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
@@ -61,12 +60,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             false
         }
 
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllReviewClick,
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
                 componentTrackDataModel)
 
         with(view) {
             txt_see_all_partial.setOnClickListener {
-                listener.onReviewClick()
+                listener.onSeeAllTextView(componentTrackDataModel)
             }
             review_count.text = context.getString(R.string.review_counter, rating.totalRating)
             review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)

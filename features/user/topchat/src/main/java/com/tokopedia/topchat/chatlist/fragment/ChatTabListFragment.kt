@@ -353,6 +353,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         if (isBuyerOnly() && isFromSeller(fromUid, tag)) return getBuyerFragment()
         if (isFromBuyer(fromUid, tag)) return getSellerFragment()
         if (isFromSeller(fromUid, tag)) return getBuyerFragment()
+        if (isFromMyselfAsSeller(fromUid, tag)) return getSellerFragment()
         return null
     }
 
@@ -362,6 +363,10 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     private fun isFromSeller(fromUid: String, tag: String): Boolean {
         return (tag == ROLE_SELLER && fromUid != userSession.userId)
+    }
+
+    private fun isFromMyselfAsSeller(fromUid: String, tag: String): Boolean {
+        return (tag == ROLE_SELLER && fromUid == userSession.userId)
     }
 
     private fun getBuyerFragment(): ChatListFragment {

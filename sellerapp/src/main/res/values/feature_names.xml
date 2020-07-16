@@ -179,15 +179,6 @@
     <!-- Dynamic feature for manage product list-->
     <string name="title_product_manage">Daftar Produk</string>
 
-    <!-- Dynamic feature for opportunity-->
-    <string name="opportunity_name">Opportunity</string>
-    <string name="title_opportunity">Peluang</string>
-    <string name="title_opportunity_detail">Peluang</string>
-    <string name="title_activity_snapshot_opportunity">Snapshot</string>
-    <string name="title_take_opportunity">Ambil Peluang</string>
-    <string name="title_sort_opportunity">Urutkan</string>
-    <string name="title_filter_opportunity">Filter</string>
-
     <!-- Dynamic feature for manage Seller Order Management-->
     <string name="title_seller_order">Seller Order Management</string>
     <string name="som_app_name">Seller Order Management</string>
@@ -231,5 +222,12 @@
 
     <!-- Dynamic features Voucher Creation -->
     <string name="title_voucher_creation">Voucher Create</string>
+
+    <!-- Dynamic features Shop Score / Performa Toko -->
+    <string name="title_shop_score_seller">Skor Performa Toko</string>
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
+    
+    <!-- Dynamic features Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
 
 </resources>

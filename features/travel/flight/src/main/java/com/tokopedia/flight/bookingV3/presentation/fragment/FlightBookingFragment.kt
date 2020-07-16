@@ -28,6 +28,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.*
@@ -47,8 +49,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -139,6 +141,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceModel)
         }
+
+        bookingViewModel.fetchTickerData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -246,6 +250,21 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
+        })
+
+        bookingViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.message.isNotEmpty()) {
+                        renderTickerView(it.data)
+                    } else {
+                        hideTickerView()
+                    }
+                }
+                is Fail -> {
+                    hideTickerView()
+                }
+            }
         })
 
     }
@@ -1052,6 +1071,25 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun getCheckoutQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart)
     private fun getProfileQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
     private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flightBookingTicker)
+        if (travelTickerModel.url.isNotEmpty()) {
+            flightBookingTicker.setOnClickListener {
+                RouteManager.route(requireContext(), travelTickerModel.url)
+            }
+        }
+
+        showTickerView()
+    }
+
+    private fun showTickerView() {
+        flightBookingTicker.visibility = View.VISIBLE
+    }
+
+    private fun hideTickerView() {
+        flightBookingTicker.visibility = View.GONE
+    }
 
     companion object {
 
