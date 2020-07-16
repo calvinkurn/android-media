@@ -363,6 +363,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
+    implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
