@@ -24,7 +24,6 @@ import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.launchActivityWithDefaultIntent
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
