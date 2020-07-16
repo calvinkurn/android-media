@@ -339,7 +339,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideCurrentSelectedExpandedGlobalPromoData()
+        viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
         val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -356,7 +356,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideCurrentSelectedExpandedMerchantPromoData()
+        viewModel.setPromoListValue(provideCurrentSelectedExpandedMerchantPromoData())
         val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -375,7 +375,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideCurrentSelectedCollapsedGlobalPromoData()
+        viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
         val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -392,7 +392,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideCurrentSelectedCollapsedMerchantPromoData()
+        viewModel.setPromoListValue(provideCurrentSelectedCollapsedMerchantPromoData())
         val promoRequest = provideBasePromoRequestData()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse

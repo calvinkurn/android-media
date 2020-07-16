@@ -137,7 +137,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideNoCurrentSelectedExpandedGlobalPromoData()
+        viewModel.setPromoListValue(provideNoCurrentSelectedExpandedGlobalPromoData())
         val promoRequest = providePromoRequestWithSelectedExpandedGlobalPromo()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -154,7 +154,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideNoCurrentSelectedExpandedMerchantPromoData()
+        viewModel.setPromoListValue(provideNoCurrentSelectedExpandedMerchantPromoData())
         val promoRequest = providePromoRequestWithSelectedExpandedMerchantPromo()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -171,7 +171,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideNoCurrentSelectedCollapsedGlobalPromoData()
+        viewModel.setPromoListValue(provideNoCurrentSelectedCollapsedGlobalPromoData())
         val promoRequest = providePromoRequestWithSelectedCollapsedGlobalPromo()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -188,7 +188,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         //given
         val result = HashMap<Type, Any>()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel._promoListUiModel.value = provideNoCurrentSelectedCollapsedMerchantPromoData()
+        viewModel.setPromoListValue(provideNoCurrentSelectedCollapsedMerchantPromoData())
         val promoRequest = providePromoRequestWithSelectedCollapsedMerchantPromo()
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
@@ -216,7 +216,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         viewModel.getPromoList("", PromoRequest(), attemptedPromoCode)
 
         //then
-        assert(viewModel._getPromoListResponseAction.value?.state == GetPromoListResponseAction.ACTION_CLEAR_DATA)
+        assert(viewModel.getPromoListResponseAction.value?.state == GetPromoListResponseAction.ACTION_CLEAR_DATA)
     }
 
     @Test
