@@ -1,0 +1,121 @@
+package com.tokopedia.deals.category.utils
+
+import android.content.Context
+import androidx.annotation.StringRes
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.deals.R
+import com.tokopedia.deals.brand.model.DealsEmptyDataView
+import com.tokopedia.deals.category.ui.dataview.ProductListDataView
+import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.common.ui.dataview.*
+import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.search.model.response.Category
+import com.tokopedia.deals.search.model.response.CuratedData
+import javax.inject.Inject
+
+class MapperCategoryLayout @Inject constructor(@ApplicationContext private val context: Context) {
+    val layout = mutableListOf<DealsBaseItemDataView>()
+
+    fun mapCategoryLayout(
+        chips: CuratedData,
+        brandProduct: SearchData
+    ): List<DealsBaseItemDataView> {
+        layout.clear()
+        mapCuratedtoLayout(chips)
+        mapBrandtoLayout(brandProduct)
+        mapProducttoLayout(brandProduct)
+        return layout
+    }
+
+    fun mapChipLayout(
+            chips: CuratedData,
+            isFilter:Boolean
+    ): List<DealsBaseItemDataView> {
+        layout.clear()
+        mapCuratedtoLayout(chips)
+        layout.add(DealsEmptyDataView(getString(EMPTY_TITLE),
+                if(isFilter) getString(EMPTY_DESC_FILTER)  else  getString(EMPTY_DESC),
+                isFilter
+        ))
+        return layout
+    }
+
+
+    private fun mapCuratedtoLayout(curatedData: CuratedData) {
+        val dealsChipsDataView = DealsChipsDataView(
+            mapCategoryToChips(curatedData.eventChildCategory.categories),
+            MAX_SIZE_CHIP
+        )
+        dealsChipsDataView.isLoadedAndSuccess()
+        layout.add(dealsChipsDataView)
+    }
+
+
+    private fun mapBrandtoLayout(searchData: SearchData) {
+        val brandLayout = searchData.eventSearch.brands.map { brand ->
+            DealsBrandsDataView.Brand(
+                brand.id,
+                brand.title,
+                brand.featuredThumbnailImage,
+                brand.seoUrl
+            )
+        }
+        val brandsDataView = DealsBrandsDataView(
+            title = getString(BRAND_POPULAR_TITLE),
+            seeAllText = getString(BRAND_SEE_ALL_TEXT),
+            brands = brandLayout
+        )
+
+        brandsDataView.isLoadedAndSuccess()
+        layout.add(brandsDataView)
+    }
+
+    fun mapProducttoLayout(searchData: SearchData): ProductListDataView {
+        val productsLayout = searchData.eventSearch.products.map {it ->
+            ProductCardDataView(
+                    id = it.id,
+                    imageUrl = it.thumbnailApp,
+                    title = it.displayName,
+                    oldPrice = DealsUtils.convertToCurrencyString(it.mrp.toLong()),
+                    price = DealsUtils.convertToCurrencyString(it.salesPrice.toLong()),
+                    appUrl = it.appUrl,
+                    discount = it.savingPercentage,
+                    shop = it.brand.title
+                    )
+        }
+
+        val productListDataView = ProductListDataView(productsLayout.toMutableList())
+        productListDataView.isLoadedAndSuccess()
+        layout.add(productListDataView)
+
+        return productListDataView
+    }
+
+    private fun mapCategoryToChips(categories: List<Category>): List<ChipDataView> {
+        val listChipData = mutableListOf<ChipDataView>()
+        categories.forEach {
+            if (it.isCard == 1 && it.isHidden == 0) listChipData.add(ChipDataView(it.title, it.id))
+        }
+        return listChipData
+    }
+
+    private fun DealsBaseItemDataView.isLoadedAndSuccess() {
+        this.isLoaded = true
+        this.isSuccess = true
+    }
+
+    private fun getString(@StringRes stringResId: Int): String {
+        return context.getString(stringResId)
+    }
+
+    companion object {
+        private const val MAX_SIZE_CHIP = 5
+        private val BRAND_POPULAR_TITLE = R.string.deals_homepage_brand_popular_section_title
+        private val BRAND_SEE_ALL_TEXT = R.string.deals_homepage_banner_see_all
+
+        private val EMPTY_TITLE = R.string.deals_category_empty_title
+        private val EMPTY_DESC =  R.string.deals_category_empty_description
+        private val EMPTY_DESC_FILTER = R.string.deals_category_empty_desc_filter
+    }
+
+}

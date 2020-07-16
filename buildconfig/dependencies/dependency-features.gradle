@@ -61,6 +61,7 @@ ext {
             travelCountryCode               : ":features:travel:travel_country_code",
             travelPassenger                 : ":features:travel:travel_passenger",
 
+            deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             digitalBrowse                   : ":features:digital:digital_browse",

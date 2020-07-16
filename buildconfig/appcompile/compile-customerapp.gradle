@@ -62,6 +62,7 @@ include "features:travel:hotel"
 include "features:travel:common_travel"
 
 include "features:entertainment:event"
+include "features:entertainment:deals"
 include "features:entertainment:digital_deals"
 
 include "features:salam:umrah"

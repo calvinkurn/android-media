@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        app:corners="16"
+        android:id="@+id/shimmering_title"
+        android:layout_width="@dimen/deals_dp_100"
+        android:layout_height="@dimen/spacing_lvl3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        />
+
+    <include
+        android:id="@+id/shimmering_brand_row_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/deals_dp_141"
+        layout="@layout/item_deals_brands_page_row_shimmering"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmering_title"/>
+
+    <include
+    android:id="@+id/shimmering_brand_row_2"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/deals_dp_141"
+    layout="@layout/item_deals_brands_page_row_shimmering"
+    app:layout_constraintTop_toBottomOf="@id/shimmering_brand_row_1"/>
+
+    <include
+        android:id="@+id/shimmering_brand_row_3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/deals_dp_141"
+        layout="@layout/item_deals_brands_page_row_shimmering"
+        app:layout_constraintTop_toBottomOf="@id/shimmering_brand_row_2"/>
+
+    <include
+        android:id="@+id/shimmering_brand_row_4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/deals_dp_141"
+        layout="@layout/item_deals_brands_page_row_shimmering"
+        app:layout_constraintTop_toBottomOf="@id/shimmering_brand_row_3"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
