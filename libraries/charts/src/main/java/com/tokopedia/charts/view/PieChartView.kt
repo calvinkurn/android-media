@@ -12,8 +12,8 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.tokopedia.charts.R
-import com.tokopedia.charts.config.piechart.PieChartConfigBuilder
-import com.tokopedia.charts.config.piechart.model.PieChartConfig
+import com.tokopedia.charts.config.PieChartConfig
+import com.tokopedia.charts.model.PieChartConfigModel
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.charts.view.adapter.PieChartLegendAdapter
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -30,7 +30,7 @@ class PieChartView(
         attrs: AttributeSet?
 ) : LinearLayout(context, attrs) {
 
-    var config: PieChartConfig? = null
+    var config: PieChartConfigModel? = null
         private set
 
     private val legendAdapter by lazy {
@@ -54,7 +54,7 @@ class PieChartView(
         pieChart.layoutParams.height = pieChartHeight
     }
 
-    fun init(config: PieChartConfig = PieChartConfigBuilder.getDefaultConfig()) {
+    fun init(config: PieChartConfigModel = PieChartConfig.getDefaultConfig()) {
         if (config != this.config) {
             this.config = config
         }
