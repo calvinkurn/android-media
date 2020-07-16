@@ -11,7 +11,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
 import okhttp3.WebSocket
 import rx.subscriptions.CompositeSubscription
-import java.lang.reflect.Type
 
 
 /**
