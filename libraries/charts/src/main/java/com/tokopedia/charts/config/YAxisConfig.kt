@@ -19,8 +19,8 @@ class YAxisConfig : BaseAxisConfig() {
     }
 
     override var labelPosition: Int = YAxisConfigModel.LABEL_OUTSIDE_CHART
-    var spaceTop: Float = 10f
-        private set
+
+    private var spaceTop: Float = 10f
 
     /**
      * Position can be YAxisConfigModel.LABEL_OUTSIDE_CHART or YAxisConfigModel.LABEL_INSIDE_CHART

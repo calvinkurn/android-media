@@ -18,34 +18,20 @@ class PieChartConfig {
         fun create(lambda: PieChartConfig.() -> Unit) = PieChartConfig().apply(lambda).build()
     }
 
-    var entryLabelColor: Int = Color.BLACK
-        private set
-    var entryLabelTextSize: Float = 12f
-        private set
-    var yAnimationDuration: Int = 0
-        private set
-    var xAnimationDuration: Int = 0
-        private set
-    var sliceSpaceWidth: Float = 0f
-        private set
-    var isHalfChart: Boolean = false
-        private set
-    var rotationEnabled: Boolean = false
-        private set
-    var highlightPerTapEnabled: Boolean = false
-        private set
-    var animationEnabled: Boolean = true
-        private set
-    var showXValueEnabled: Boolean = false
-        private set
-    var showYValueEnabled: Boolean = false
-        private set
-    var touchEnabled: Boolean = false
-        private set
-    var legendEnabled: Boolean = true
-        private set
-    var donutStyleConfig: DonutStyleConfigModel = DonutStyleConfig.getDefault()
-        private set
+    private var entryLabelColor: Int = Color.BLACK
+    private var entryLabelTextSize: Float = 12f
+    private var yAnimationDuration: Int = 0
+    private var xAnimationDuration: Int = 0
+    private var sliceSpaceWidth: Float = 0f
+    private var isHalfChart: Boolean = false
+    private var rotationEnabled: Boolean = false
+    private var highlightPerTapEnabled: Boolean = false
+    private var animationEnabled: Boolean = true
+    private var showXValueEnabled: Boolean = false
+    private var showYValueEnabled: Boolean = false
+    private var touchEnabled: Boolean = false
+    private var legendEnabled: Boolean = true
+    private var donutStyleConfig: DonutStyleConfigModel = DonutStyleConfig.getDefault()
 
     fun build(): PieChartConfigModel {
         return PieChartConfigModel(

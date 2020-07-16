@@ -11,20 +11,13 @@ import com.tokopedia.charts.config.annotation.ChartConfigDsl
 @ChartConfigDsl
 open class BaseAxisConfig {
 
-    var typeface: Typeface? = null
-        protected set
-    var isEnabled: Boolean = true
-        protected set
-    var isLabelEnabled: Boolean = true
-        protected set
-    var isGridEnabled: Boolean = true
-        protected set
-    var textSize: Float = 12f
-        protected set
-    var textColor: Int = Color.BLACK
-        protected set
-    open var labelPosition: Int = 0
-        protected set
+    protected var typeface: Typeface? = null
+    protected var isEnabled: Boolean = true
+    protected var isLabelEnabled: Boolean = true
+    protected var isGridEnabled: Boolean = true
+    protected var textSize: Float = 12f
+    protected var textColor: Int = Color.BLACK
+    open protected var labelPosition: Int = 0
 
     open fun typeface(lambda: () -> Typeface) {
         typeface = lambda()

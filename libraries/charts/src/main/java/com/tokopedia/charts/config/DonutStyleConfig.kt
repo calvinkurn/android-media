@@ -18,12 +18,9 @@ class DonutStyleConfig {
         }
     }
 
-    var isEnabled: Boolean = false
-        private set
-    var isCurveEnabled: Boolean = false
-        private set
-    var holeRadius: Float = 50f
-        private set
+    private var isEnabled: Boolean = false
+    private var isCurveEnabled: Boolean = false
+    private var holeRadius: Float = 50f
 
     fun build(): DonutStyleConfigModel {
         return DonutStyleConfigModel(

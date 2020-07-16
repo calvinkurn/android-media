@@ -12,24 +12,15 @@ import com.tokopedia.charts.model.YAxisConfigModel
 @ChartConfigDsl
 open class BaseChartConfig {
 
-    var isTooltipEnabled: Boolean = true
-        protected set
-    var isScaleXEnabled: Boolean = false
-        protected set
-    var isPitchZoomEnabled: Boolean = false
-        protected set
-    var isShowValueEnabled: Boolean = false
-        protected set
-    var xAnimationDuration: Int = 0
-        protected set
-    var yAnimationDuration: Int = 0
-        protected set
-    var xAxis: XAxisConfigModel = XAxisConfig.getDefault()
-        protected set
-    var yAxis: YAxisConfigModel = YAxisConfig.getDefault()
-        protected set
-    var tooltip: ChartTooltip? = null
-        protected set
+    protected var isTooltipEnabled: Boolean = true
+    protected var isScaleXEnabled: Boolean = false
+    protected var isPitchZoomEnabled: Boolean = false
+    protected var isShowValueEnabled: Boolean = false
+    protected var xAnimationDuration: Int = 0
+    protected var yAnimationDuration: Int = 0
+    protected var xAxis: XAxisConfigModel = XAxisConfig.getDefault()
+    protected var yAxis: YAxisConfigModel = YAxisConfig.getDefault()
+    protected var tooltip: ChartTooltip? = null
 
     fun tooltipEnabled(lambda: () -> Boolean) {
         isTooltipEnabled = lambda()

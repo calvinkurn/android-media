@@ -16,12 +16,9 @@ class BarChartConfig : BaseChartConfig() {
         fun create(lambda: BarChartConfig.() -> Unit) = BarChartConfig().apply(lambda).build()
     }
 
-    var isRoundedBarEnabled: Boolean = true
-        private set
-    var barBorderRadius: Int = 8
-        private set
-    var highLightAlpha: Int = 25
-        private set
+    private var isRoundedBarEnabled: Boolean = true
+    private var barBorderRadius: Int = 8
+    private var highLightAlpha: Int = 25
 
     fun roundedBarEnabled(lambda: () -> Boolean) {
         isRoundedBarEnabled = lambda()
