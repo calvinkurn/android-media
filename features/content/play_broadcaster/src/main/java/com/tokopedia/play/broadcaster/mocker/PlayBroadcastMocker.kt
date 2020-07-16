@@ -142,7 +142,7 @@ object PlayBroadcastMocker {
                 firstSentence = firstSentence,
                 secondSentence = secondSentence,
                 fullSentence = fullSentence,
-                interval = 1000
+                interval = 5000
         )
     }
 

@@ -32,6 +32,7 @@
         android:id="@+id/count_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:includeFontPadding="false"
         android:textColor="@color/Neutral_N0"
         android:textSize="@dimen/play_timer_count_size"
         app:layout_constraintBottom_toBottomOf="@+id/progress_circular"

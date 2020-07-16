@@ -201,8 +201,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         chatListView.showNewChat(chat)
     }
 
-    private fun setNewMetric(metric: PlayMetricUiModel) {
-        pmvMetrics.show(metric)
+    private fun setNewMetrics(metrics: List<PlayMetricUiModel>) {
+        pmvMetrics.addMetricsToQueue(metrics)
     }
 
     private fun getProductLiveBottomSheet(): PlayProductLiveBottomSheet {
@@ -365,7 +365,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeMetrics() {
-        parentViewModel.observableNewMetric.observe(viewLifecycleOwner, EventObserver(::setNewMetric))
+        parentViewModel.observableNewMetrics.observe(viewLifecycleOwner, EventObserver(::setNewMetrics))
     }
 
     private fun observeNetworkConnectionDuringLive() {
