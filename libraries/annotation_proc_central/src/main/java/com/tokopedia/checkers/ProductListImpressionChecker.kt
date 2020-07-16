@@ -12,9 +12,9 @@ object ProductListImpressionChecker {
      */
     fun isContainInvalidTerm(eventAction: String): Boolean {
         val trim_value = eventAction.trim()
-        return trim_value.isEmpty() &&
-                getKlikPattern.matcher(trim_value).find() &&
-                getClickPattern.matcher(trim_value).find()
+        return !(trim_value.isEmpty() ||
+                getKlikPattern.matcher(trim_value).find() ||
+                getClickPattern.matcher(trim_value).find())
     }
 
     fun isSizeBiggerThanOne(items: List<ProductListImpressionProduct>) = items.size >= 1
