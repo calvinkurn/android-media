@@ -4,6 +4,7 @@ import android.graphics.Color
 import com.tokopedia.charts.config.annotation.PieChartDsl
 import com.tokopedia.charts.model.DonutStyleConfigModel
 import com.tokopedia.charts.model.PieChartConfigModel
+import com.tokopedia.charts.view.PieChartView
 
 /**
  * Created By @ilhamsuaib on 07/07/20
@@ -20,6 +21,8 @@ class PieChartConfig {
 
     private var entryLabelColor: Int = Color.BLACK
     private var entryLabelTextSize: Float = 12f
+    private var pieChartWidth: Int = PieChartView.SIZE_UNDEFINED
+    private var pieChartHeight: Int = PieChartView.SIZE_UNDEFINED
     private var yAnimationDuration: Int = 0
     private var xAnimationDuration: Int = 0
     private var sliceSpaceWidth: Float = 0f
@@ -48,7 +51,9 @@ class PieChartConfig {
                 showYValueEnabled = showYValueEnabled,
                 touchEnabled = touchEnabled,
                 legendEnabled = legendEnabled,
-                donutStyleConfig = donutStyleConfig
+                donutStyleConfig = donutStyleConfig,
+                pieChartWidth = pieChartWidth,
+                pieChartHeight = pieChartHeight
         )
     }
 
@@ -58,6 +63,14 @@ class PieChartConfig {
 
     fun entryLabelTextSize(lambda: () -> Float) {
         this.entryLabelTextSize = lambda()
+    }
+
+    fun pieChartWidth(lambda: () -> Int) {
+        this.pieChartWidth = lambda()
+    }
+
+    fun pieChartHeight(lambda: () -> Int) {
+        this.pieChartHeight = lambda()
     }
 
     fun xAnimationDuration(lambda: () -> Int) {

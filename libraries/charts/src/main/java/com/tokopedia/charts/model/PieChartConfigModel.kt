@@ -1,15 +1,14 @@
 package com.tokopedia.charts.model
 
-import android.graphics.Color
-import com.tokopedia.charts.model.DonutStyleConfigModel
-
 /**
  * Created By @ilhamsuaib on 07/07/20
  */
 
 data class PieChartConfigModel(
-        val entryLabelColor: Int = Color.BLACK,
+        val entryLabelColor: Int,
         val entryLabelTextSize: Float,
+        val pieChartWidth: Int,
+        val pieChartHeight: Int,
         val xAnimationDuration: Int,
         val yAnimationDuration: Int,
         val sliceSpaceWidth: Float,
