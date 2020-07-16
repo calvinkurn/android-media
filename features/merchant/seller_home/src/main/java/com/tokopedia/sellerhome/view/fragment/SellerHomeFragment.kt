@@ -120,7 +120,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
-    private val performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
+    private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
