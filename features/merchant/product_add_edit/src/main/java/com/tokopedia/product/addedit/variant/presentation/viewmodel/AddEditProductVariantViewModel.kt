@@ -262,21 +262,24 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapSelections(variantDetailsSelected: List<VariantDetail>): List<SelectionInputModel> {
         val result: MutableList<SelectionInputModel> = mutableListOf()
-        var index = 0
-        selectedVariantUnitValuesMap.forEach {
-            val variantDetail = variantDetailsSelected.getOrElse(index) { VariantDetail() }
-            val unit = mapUnit(variantDetail, it.value)
-            unit?.run {
-                result.add(SelectionInputModel(
-                        variantDetail.variantID.toString(),
-                        variantDetail.name,
-                        unit.variantUnitID.toString(),
-                        unit.unitName,
-                        variantDetail.identifier,
-                        mapOptions(it.value)
-                ))
+        var level = 0 // varaint value level
+        selectedVariantUnitValuesMap.toSortedMap().forEach {
+            // get selected variant detail selected each level
+            variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
+                val unit = mapUnit(variantDetail, it.value) // get unit from variant detail
+                unit?.run {
+                    // if unit is not null then map the SelectionInputModel
+                    result.add(SelectionInputModel(
+                            variantDetail.variantID.toString(),
+                            variantDetail.name,
+                            unit.variantUnitID.toString(),
+                            unit.unitName,
+                            variantDetail.identifier,
+                            mapOptions(it.value)
+                    ))
+                    level++
+                }
             }
-            index++
         }
         return result
     }
