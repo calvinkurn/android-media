@@ -1,0 +1,30 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "500",
+    "status": "ERROR",
+    "data": {
+      "result_status": {
+        "code": "500",
+        "message": [
+          "Error"
+        ],
+        "reason": "ERROR"
+      },
+      "empty_state": {
+        "title": "",
+        "description": "",
+        "image_url": ""
+      },
+      "title": "",
+      "sub_title": "",
+      "reward_points_info": {
+        "message": "",
+        "gain_reward_points_tnc": {
+          "title": "",
+          "tnc_details": []
+        }
+      }
+    }
+  }
+}
