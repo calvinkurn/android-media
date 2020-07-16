@@ -34,7 +34,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
-import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -159,16 +158,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
-        recyclerView.setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
-        recyclerView.apply {
-            discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
-                setAdapter(it)
-            }
-        }
+        setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
         discoveryViewModel.getDiscoveryData()
         setUpObserver()
+    }
+
+    fun setAdapter() {
+        recyclerView.apply {
+            setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+            discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
+                setAdapter(it)
+            }
+        }
     }
 
     fun reSync() {
@@ -180,7 +183,9 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
+                        if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
+                        if (mSwipeRefreshLayout.isRefreshing) discoveryAdapter.notifyDataSetChanged()
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
