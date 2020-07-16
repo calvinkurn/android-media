@@ -53,14 +53,6 @@ class PowerMerchantTracking @Inject constructor(
                 GMParamTracker.LABEL_SHOP_INFO_LEARN_MORE)
     }
 
-    fun eventCancelMembershipPm() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-                GMParamTracker.CATEGORY_SELLER_APP,
-                GMParamTracker.ACTION_CLICK_POWER_MERCHANT_PM,
-                GMParamTracker.LABEL_CANCEL_MEMBERSHIP)
-    }
-
     fun eventCancelMembershipBottomSheet() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
@@ -335,6 +327,23 @@ class PowerMerchantTracking @Inject constructor(
             GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
             category,
             GMParamTracker.Action.CLICK_START_PM_SUCCESS_NOTIFIER,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickCancelMembership() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_CANCEL_MEMBERSHIP,
             ""
         )
 

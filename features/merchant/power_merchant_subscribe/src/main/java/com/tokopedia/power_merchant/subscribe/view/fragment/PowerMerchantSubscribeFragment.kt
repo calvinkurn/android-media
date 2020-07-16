@@ -400,13 +400,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         textCancelMembership.text = MethodChecker.fromHtml(cancelMembershipTxt)
 
         btnCallToAction.setOnClickListener {
-            powerMerchantTracking.eventCancelMembershipPm()
+            trackClickCancelMembership()
             showBottomSheetCancel()
         }
 
         btnRegister.hide()
         btnCallToAction.show()
         textCancelMembership.show()
+    }
+
+    private fun trackClickCancelMembership() {
+        powerMerchantTracking.eventClickCancelMembership()
     }
 
     private fun onClickRegister(shopScore: Int) {

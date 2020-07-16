@@ -46,6 +46,7 @@ object GMParamTracker {
         const val CLICK_SEE_SHOP_SCORE_TIPS = "power merchant - increase shop performance"
         const val CLICK_DISMISS_SHOP_SCORE = "click close pop up - score below"
         const val CLICK_START_PM_SUCCESS_NOTIFIER = "click mulai - sucess PM notifier"
+        const val CLICK_CANCEL_MEMBERSHIP = "click stop subscription - power merchant page"
     }
 
     object Label {
