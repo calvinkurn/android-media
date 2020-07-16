@@ -30,7 +30,6 @@ import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.S
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
@@ -177,7 +176,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private fun initInjector() {
         DaggerSellerHomeComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .sellerHomeModule(SellerHomeModule())
                 .build()
                 .inject(this)
     }
