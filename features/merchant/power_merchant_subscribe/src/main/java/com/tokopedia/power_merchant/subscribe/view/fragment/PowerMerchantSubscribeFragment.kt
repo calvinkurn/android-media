@@ -185,6 +185,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                 openFreeShippingPage()
                 trackFreeShippingClick(freeShipping)
             }
+            tracker = powerMerchantTracking
             show(freeShipping)
         }
     }
