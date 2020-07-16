@@ -5,15 +5,14 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.tokopedia.charts.R
 import com.tokopedia.charts.common.ChartColor
-import com.tokopedia.charts.config.barchart.BarChartConfigBuilder
-import com.tokopedia.charts.config.barchart.model.BarChartConfig
+import com.tokopedia.charts.config.BarChartConfig
 import com.tokopedia.charts.model.AxisLabel
+import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
 import com.tokopedia.charts.utils.RoundedBarChartRenderer
 import com.tokopedia.charts.utils.XAxisLabelFormatter
@@ -31,17 +30,17 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         View.inflate(context, R.layout.view_bar_chart, this)
     }
 
-    var config: BarChartConfig = BarChartConfigBuilder.getDefaultConfig()
+    var config: BarChartConfigModel = BarChartConfig.getDefaultConfig()
         private set
 
-    fun init(mConfig: BarChartConfig? = null) {
+    fun init(mConfig: BarChartConfigModel? = null) {
         if (mConfig != null) {
             this.config = mConfig
         }
 
         with(barChart) {
-            if (config.isRoundedBar) {
-                renderer = RoundedBarChartRenderer(this, animator, viewPortHandler, config.borderRadius)
+            if (config.isRoundedBarEnabled) {
+                renderer = RoundedBarChartRenderer(this, animator, viewPortHandler, config.barBorderRadius)
             }
 
             setupXAxis()
@@ -51,15 +50,18 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             legend.isEnabled = false
             axisRight.isEnabled = false
 
-            setScaleEnabled(false)
-            setPinchZoom(false)
+            setDrawMarkers(config.isTooltipEnabled)
+            setScaleEnabled(config.isScaleXEnabled)
+            setPinchZoom(config.isPitchZoomEnabled)
         }
 
+        setChartAnimation()
         setChartTooltip()
     }
 
     fun setData(data: BarChartData) {
         setXAxisLabelFormatter(data.xAxisLabels)
+        setYAxisLabelFormatter(data.yAxis)
         val barDataSets = mutableListOf<BarDataSet>()
         data.metrics.forEach { metric ->
             val barEntries: List<BarEntry> = metric.values.mapIndexed { i, value ->
@@ -68,7 +70,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             val dataSet = BarDataSet(barEntries, metric.title)
             dataSet.color = getColor(metric.barHexColor)
             dataSet.highLightAlpha = config.highLightAlpha
-            dataSet.setDrawValues(config.showBarValueEnabled)
+            dataSet.setDrawValues(config.isShowValueEnabled)
 
             barDataSets.add(dataSet)
         }
@@ -79,21 +81,38 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         if (data.metrics.size > 1) {
             showMultiBar(data)
         }
-
-        barChart.axisLeft.axisMinimum = data.yAxis.minBy { it.value }?.value.orZero()
-        barChart.axisLeft.run {
-            setLabelCount(data.yAxis.size, true)
-            valueFormatter = YAxisLabelFormatter(data.yAxis)
-            granularity = 1f
-        }
     }
 
     fun invalidateChart() {
         barChart.invalidate()
     }
 
+    private fun setYAxisLabelFormatter(yAxis: List<AxisLabel>) {
+        barChart.axisLeft.axisMinimum = yAxis.minBy { it.value }?.value.orZero()
+        barChart.axisLeft.run {
+            setLabelCount(yAxis.size, true)
+            valueFormatter = YAxisLabelFormatter(yAxis)
+        }
+    }
+
+    private fun setChartAnimation() {
+        with(barChart) {
+            when {
+                (config.xAnimationDuration > 0 && config.yAnimationDuration > 0) -> {
+                    animateXY(config.xAnimationDuration, config.yAnimationDuration)
+                }
+                config.xAnimationDuration > 0 -> {
+                    animateX(config.xAnimationDuration)
+                }
+                config.yAnimationDuration > 0 -> {
+                    animateX(config.yAnimationDuration)
+                }
+            }
+        }
+    }
+
     private fun setChartTooltip() {
-        if (config.drawMarkersEnabled) {
+        if (config.isTooltipEnabled) {
             val tooltip = config.tooltip
             tooltip?.markerView?.chartView = barChart
             barChart?.marker = tooltip?.markerView
@@ -103,7 +122,11 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     private fun setXAxisLabelFormatter(labels: List<AxisLabel>) {
         val labelsStr = labels.map { it.valueFmt }
         barChart.xAxis.valueFormatter = XAxisLabelFormatter(labelsStr)
-        barChart.isScaleXEnabled = labelsStr.size > 7
+        if (labelsStr.size > 7) {
+            barChart.isScaleXEnabled = true
+        } else {
+            barChart.isScaleXEnabled = config.isScaleXEnabled
+        }
     }
 
     private fun getColor(barHexColor: String): Int {
@@ -130,18 +153,28 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     private fun setupYAxis() {
         val axisConfig = config.yAxisConfig
         with(barChart.axisLeft) {
-            setDrawGridLines(axisConfig.showGridEnabled)
+            axisConfig.typeface?.let { tf ->
+                typeface = tf
+            }
+            isEnabled = axisConfig.isEnabled
             spaceTop = axisConfig.spaceTop
+            setDrawGridLines(axisConfig.isGridEnabled)
+            setDrawLabels(axisConfig.isLabelEnabled)
+            setPosition(axisConfig.getLabelPosition())
         }
     }
 
     private fun setupXAxis() {
         val axisConfig = config.xAxisConfig
         with(barChart.xAxis) {
-            setDrawLabels(axisConfig.showLabelEnabled)
-            position = XAxis.XAxisPosition.BOTTOM
+            axisConfig.typeface?.let { tf ->
+                typeface = tf
+            }
+            isEnabled = axisConfig.isEnabled
+            position = axisConfig.getLabelPosition()
             granularity = 1f
-            setDrawGridLines(axisConfig.showGridEnabled)
+            setDrawLabels(axisConfig.isLabelEnabled)
+            setDrawGridLines(axisConfig.isGridEnabled)
         }
     }
 }

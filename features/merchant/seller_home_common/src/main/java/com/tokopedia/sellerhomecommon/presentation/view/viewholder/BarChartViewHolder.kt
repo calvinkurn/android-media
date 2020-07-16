@@ -6,12 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
-import com.tokopedia.charts.config.barchart.BarChartConfigBuilder
-import com.tokopedia.charts.config.barchart.model.BarChartConfig
-import com.tokopedia.charts.model.AxisLabel
-import com.tokopedia.charts.model.BarChartData
-import com.tokopedia.charts.model.BarChartMetric
-import com.tokopedia.charts.model.BarChartMetricValue
+import com.tokopedia.charts.config.BarChartConfig
+import com.tokopedia.charts.model.*
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -21,9 +18,9 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
+import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 
 /**
  * Created By @ilhamsuaib on 09/07/20
@@ -118,14 +115,21 @@ class BarChartViewHolder(
         }
     }
 
-    private fun getBarChartConfig(): BarChartConfig {
-        return BarChartConfigBuilder.create {
-            borderRadius { itemView.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1) }
-            yAxis {
-                showGridEnabled { true }
+    private fun getBarChartConfig(): BarChartConfigModel {
+        val labelTextColor = itemView.context.getResColor(R.color.Neutral_N700_96)
+        return BarChartConfig.create {
+            xAnimationDuration { 200 }
+            yAnimationDuration { 200 }
+            barBorderRadius { itemView.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1) }
+            xAxis {
+                gridEnabled { false }
+                textColor { labelTextColor }
             }
-            drawMarkerEnabled { true }
-            tooltip = getBarChartTooltip()
+            yAxis {
+                textColor { labelTextColor }
+            }
+            tooltipEnabled { true }
+            setChartTooltip(getBarChartTooltip())
         }
     }
 
