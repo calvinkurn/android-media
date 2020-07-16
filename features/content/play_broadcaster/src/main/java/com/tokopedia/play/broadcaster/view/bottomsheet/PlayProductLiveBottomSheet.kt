@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,7 +12,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
-import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductLiveAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,7 +22,8 @@ import javax.inject.Inject
  * Created by jegul on 11/06/20
  */
 class PlayProductLiveBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetUnify() {
 
     private lateinit var clProductLive: ConstraintLayout
@@ -35,17 +35,7 @@ class PlayProductLiveBottomSheet @Inject constructor(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                updateNavigationBarColors(
-                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
-                )
-            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                updateNavigationBarColors(
-                        intArrayOf(
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
-                        )
-                )
+            dialogCustomizer.customize(this)
         }
     }
 

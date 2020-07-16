@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,11 +20,11 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
-import com.tokopedia.play.broadcaster.util.cleanBackstack
-import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
+import com.tokopedia.play.broadcaster.util.extension.cleanBackstack
+import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
+import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -56,6 +55,9 @@ class PlayBroadcastSetupBottomSheet(
     @Inject
     lateinit var dispatcher: CoroutineDispatcherProvider
 
+    @Inject
+    lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer
+
     private lateinit var flFragment: FrameLayout
     private lateinit var flOverlay: FrameLayout
 
@@ -83,17 +85,7 @@ class PlayBroadcastSetupBottomSheet(
                 }
             }
         }.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                updateNavigationBarColors(
-                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
-                )
-            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                updateNavigationBarColors(
-                        intArrayOf(
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
-                        )
-                )
+            dialogCustomizer.customize(this)
         }
     }
 
@@ -242,7 +234,8 @@ class PlayBroadcastSetupBottomSheet(
     private fun addBreadcrumb() {
         currentFragment?.let { fragment ->
             fragmentBreadcrumbs.add(
-                    BreadcrumbsModel(fragment.javaClass, fragment.arguments ?: Bundle.EMPTY)
+                    BreadcrumbsModel(fragment.javaClass, fragment.arguments
+                            ?: Bundle.EMPTY)
             )
         }
     }

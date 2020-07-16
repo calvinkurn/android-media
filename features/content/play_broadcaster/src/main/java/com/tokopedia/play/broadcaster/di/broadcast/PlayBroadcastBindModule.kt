@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.di.broadcast
 
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
+import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import dagger.Binds
@@ -54,4 +56,11 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @PlayBroadcastScope
     abstract fun bindPermissionSharedPrefs(sharedPref: HydraSharedPreferences): PermissionSharedPreferences
+
+    /**
+     * Util
+     */
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
 }

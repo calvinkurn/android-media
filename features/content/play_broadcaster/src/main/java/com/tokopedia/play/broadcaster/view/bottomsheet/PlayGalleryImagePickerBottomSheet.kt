@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -26,7 +25,7 @@ import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
@@ -37,7 +36,9 @@ import javax.inject.Inject
 /**
  * @author by furqan on 08/06/2020
  */
-class PlayGalleryImagePickerBottomSheet @Inject constructor() : BottomSheetUnify(),
+class PlayGalleryImagePickerBottomSheet @Inject constructor(
+        private val dialogCustomizer: PlayBroadcastDialogCustomizer
+) : BottomSheetUnify(),
         AlbumMediaAdapter.OnMediaClickListener,
         AlbumAdapter.OnAlbumAdapterListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -55,17 +56,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor() : BottomSheetUnify
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                updateNavigationBarColors(
-                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
-                )
-            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                updateNavigationBarColors(
-                        intArrayOf(
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
-                        )
-                )
+            dialogCustomizer.customize(this)
         }
     }
 

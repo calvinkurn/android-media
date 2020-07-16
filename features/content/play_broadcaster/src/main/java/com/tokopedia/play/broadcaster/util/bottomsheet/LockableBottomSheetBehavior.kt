@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.behavior
+package com.tokopedia.play.broadcaster.util.bottomsheet
 
 import android.content.Context
 import android.util.AttributeSet

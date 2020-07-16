@@ -17,8 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.compatTransitionName
-import com.tokopedia.play.broadcaster.util.loadImageFromUrl
+import com.tokopedia.play.broadcaster.util.extension.compatTransitionName
+import com.tokopedia.play.broadcaster.util.extension.loadImageFromUrl
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.unifycomponents.Label

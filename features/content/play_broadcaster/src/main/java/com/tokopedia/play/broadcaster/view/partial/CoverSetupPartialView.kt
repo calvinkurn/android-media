@@ -19,10 +19,10 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.util.doOnLayout
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
-import com.tokopedia.play.broadcaster.util.isLocal
-import com.tokopedia.play.broadcaster.util.setTextFieldColor
+import com.tokopedia.play.broadcaster.util.extension.doOnLayout
+import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.extension.isLocal
+import com.tokopedia.play.broadcaster.util.extension.setTextFieldColor
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton

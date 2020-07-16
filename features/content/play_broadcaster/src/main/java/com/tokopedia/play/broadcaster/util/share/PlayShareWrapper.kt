@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util
+package com.tokopedia.play.broadcaster.util.share
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -21,12 +21,12 @@ object PlayShareWrapper {
 
     fun doCopyShareLink(context: Context, shareData: ShareUiModel, onUrlCopied: () -> Unit) {
         if (shareData.shortenUrl) generateShortUrl(shareData) { shortenUrl ->
-            val shareContents = generateSharedContent(shareData.textContent, shortenUrl)?:
-            defaultSharedContent(shareData.description, shareData.redirectUrl)
+            val shareContents = generateSharedContent(shareData.textContent, shortenUrl)
+                    ?: defaultSharedContent(shareData.description, shareData.redirectUrl)
             doCopyToClipboard(context, shareContents, onUrlCopied)
         } else {
-            val shareContents = generateSharedContent(shareData.textContent, shareData.redirectUrl)?:
-            defaultSharedContent(shareData.description, shareData.redirectUrl)
+            val shareContents = generateSharedContent(shareData.textContent, shareData.redirectUrl)
+                    ?: defaultSharedContent(shareData.description, shareData.redirectUrl)
             doCopyToClipboard(context, shareContents, onUrlCopied)
         }
     }

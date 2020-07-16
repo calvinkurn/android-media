@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util
+package com.tokopedia.play.broadcaster.util.model
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
