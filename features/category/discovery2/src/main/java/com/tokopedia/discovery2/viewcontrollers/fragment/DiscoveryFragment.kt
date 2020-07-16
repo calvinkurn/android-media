@@ -127,7 +127,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             activity?.onBackPressed()
         }
         globalError = view.findViewById(R.id.global_error)
-        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
@@ -238,6 +237,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
         ivSearch.setOnClickListener {
+            getDiscoveryAnalytics().trackSearchClick()
             if (data?.searchApplink?.isNotEmpty() == true) {
                 RouteManager.route(context, data.searchApplink)
             } else {
