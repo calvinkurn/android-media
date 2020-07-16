@@ -1,20 +1,21 @@
 package com.tokopedia.test.application.util
 
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+
 private const val MOCK_TEST = "mockTest"
 
+/**
+ * Use this method if your test can switch between real network response and mock response
+ * Add "-e mockTest true" when running the test to use mock response
+ * */
 fun setupGraphqlMockResponseWithCheck(mockModelConfig: MockModelConfig) {
     if (!isMockTest()) return
 
     setupGraphqlMockResponse(mockModelConfig)
-}
-
-fun setupGraphqlMockResponse(mockModelConfig: MockModelConfig) {
-    val context = getInstrumentation().targetContext
-
-    mockModelConfig.createMockModel(context)
-
-    val testInterceptors = listOf(MockInterceptor(mockModelConfig))
-    GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
 }
 
 private fun isMockTest(): Boolean {
@@ -22,4 +23,16 @@ private fun isMockTest(): Boolean {
     val isMockTest = arguments.getString(MOCK_TEST) ?: ""
 
     return isMockTest.toBoolean()
+}
+
+/**
+ * Use this method if your test ONLY uses mock response
+ * */
+fun setupGraphqlMockResponse(mockModelConfig: MockModelConfig) {
+    val context = getInstrumentation().targetContext
+
+    mockModelConfig.createMockModel(context)
+
+    val testInterceptors = listOf(MockInterceptor(mockModelConfig))
+    GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
 }
