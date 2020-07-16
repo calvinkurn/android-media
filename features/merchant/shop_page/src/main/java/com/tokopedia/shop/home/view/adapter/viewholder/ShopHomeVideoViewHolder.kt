@@ -58,7 +58,7 @@ class ShopHomeVideoViewHolder(
 
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {
         this.youtubVideoModel = model
-        val highResVideoThumbnailUrl = youtubVideoModel?.data?.first()?.youTubeVideoDetail.getHighResThumbnailUrl()
+        val highResVideoThumbnailUrl = youtubVideoModel?.data?.first()?.youTubeVideoDetail.getMaxResThumbnailUrl()
         when {
             youtubVideoModel?.data?.first()?.youTubeVideoDetail == null -> {
                 val videoData = model.data?.first()
@@ -138,7 +138,7 @@ class ShopHomeVideoViewHolder(
         }
     }
 
-    private fun YoutubeVideoDetailModel?.getHighResThumbnailUrl(): String {
-        return this?.items?.firstOrNull()?.snippet?.thumbnails?.high?.url.orEmpty()
+    private fun YoutubeVideoDetailModel?.getMaxResThumbnailUrl(): String {
+        return this?.items?.firstOrNull()?.snippet?.thumbnails?.maxres?.url.orEmpty()
     }
 }
