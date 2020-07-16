@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.view_line_chart.view.*
 class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
     companion object {
-        const val UNDEFINED = -1
         const val LINE_MODE_LINEAR = 0
         const val LINE_MODE_CURVE = 1
     }
