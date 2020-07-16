@@ -14,7 +14,7 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           queryFileName: String): List<Validator> {
     val testCases = getTestCases(context, queryFileName)
     return ValidatorEngine(gtmLogDBSource)
-            .compute(testCases)
+            .computeRx(testCases)
             .toBlocking()
             .first()
 }
