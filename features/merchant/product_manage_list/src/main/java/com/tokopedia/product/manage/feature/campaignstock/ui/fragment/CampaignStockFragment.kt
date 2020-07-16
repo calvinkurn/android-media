@@ -21,7 +21,7 @@ import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStock
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.OtherCampaignStockData
-import com.tokopedia.product.manage.feature.campaignstock.ui.CampaignStockActivity
+import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.CampaignStockAdapter
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.NonVariantStockAllocationResult
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
@@ -73,8 +73,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         }
     }
 
-    private var productName = ""
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_campaign_stock, container, false)
     }
@@ -87,6 +85,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+    }
+
+    override fun onDestroyView() {
+        removeObservers()
+        super.onDestroyView()
     }
 
     override fun getScreenName(): String = ""
@@ -124,29 +127,32 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                     showResult()
                 }
                 is Fail -> {
-                    activity?.run {
-                        setResult(Activity.RESULT_CANCELED)
-                        finish()
-                    }
+                    cancelActivity()
                 }
             }
         })
         mViewModel.productUpdateResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is Success -> {
-                    val resultIntent = Intent().apply {
-                        putExtra(ProductManageListConstant.EXTRA_PRODUCT_NAME, productName)
-                    }
-                    activity?.run {
-                        setResult(Activity.RESULT_OK, resultIntent)
-                        finish()
+                    with(result.data) {
+                        if (isSuccess) {
+                            val resultIntent = Intent().apply {
+                                putExtra(ProductManageListConstant.EXTRA_PRODUCT_ID, productId)
+                                putExtra(ProductManageListConstant.EXTRA_PRODUCT_NAME, productName)
+                                putExtra(ProductManageListConstant.EXTRA_UPDATED_STOCK, stock)
+                                putExtra(ProductManageListConstant.EXTRA_UPDATED_STATUS, status.name)
+                            }
+                            activity?.run {
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
+                            }
+                        } else {
+                            cancelActivity()
+                        }
                     }
                 }
                 is Fail -> {
-                    activity?.run {
-                        setResult(Activity.RESULT_CANCELED)
-                        finish()
-                    }
+                    cancelActivity()
                 }
             }
         })
@@ -182,7 +188,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 }
             }
         }
-
     }
 
     private fun setupProductSummary(summary: GetStockAllocationSummary?,
@@ -192,7 +197,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 productImageUrl.let { url ->
                     img_campaign_stock_product?.loadImageRounded(url)
                 }
-                this@CampaignStockFragment.productName = productName
                 tv_campaign_stock_product_name?.text = productName
                 tv_campaign_stock_product_total_stock_count?.text = totalStock
             }
@@ -259,6 +263,18 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun changeViewPagerPage(position: Int) {
         vp2_campaign_stock?.currentItem = position
+    }
+
+    private fun cancelActivity() {
+        activity?.run {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
+    private fun removeObservers() {
+        mViewModel.getStockAllocationData.removeObservers(viewLifecycleOwner)
+        mViewModel.productUpdateResponseLiveData.removeObservers(viewLifecycleOwner)
     }
 
     private fun getMainStockFragment(isVariant: Boolean,

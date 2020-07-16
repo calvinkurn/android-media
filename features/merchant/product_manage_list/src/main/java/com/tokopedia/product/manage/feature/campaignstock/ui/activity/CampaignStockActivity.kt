@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.campaignstock.ui
+package com.tokopedia.product.manage.feature.campaignstock.ui.activity
 
 import android.content.Context
 import android.content.Intent

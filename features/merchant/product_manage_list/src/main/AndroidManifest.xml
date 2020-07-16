@@ -65,7 +65,7 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".feature.campaignstock.ui.CampaignStockActivity"
+            android:name=".feature.campaignstock.ui.activity.CampaignStockActivity"
             android:label="@string/product_manage_campaign_stock_allocation"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

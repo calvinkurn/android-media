@@ -43,7 +43,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.campaignstock.ui.CampaignStockActivity
+import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
@@ -57,8 +57,11 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STATUS
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STOCK
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
@@ -1334,7 +1337,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 REQUEST_CODE_CAMPAIGN_STOCK ->
                     when(resultCode) {
                         Activity.RESULT_OK -> {
+                            val productId = it.getStringExtra(EXTRA_PRODUCT_ID)
                             val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                            val stock = it.getIntExtra(EXTRA_UPDATED_STOCK, 0)
+                            val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS))
+
+                            productManageListAdapter.updateStock(productId, stock, status)
+
+                            filterTab?.getSelectedFilter()?.let { productStatus ->
+                                filterProductListByStatus(productStatus)
+                                renderMultiSelectProduct()
+                            }
+
+                            getFiltersTab(withDelay = true)
+
                             val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
                             Toaster.build(
                                     coordinatorLayout,
