@@ -12,8 +12,8 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherTimerInfoState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -85,6 +85,8 @@ class PlayBroadcastViewModel @Inject constructor(
         dataList.map { ProductContentUiModel.createFromData(it) }
     }
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
+    val observableReportDuration: LiveData<String>
+        get() = _observableReportDuration
 
     val shareInfo: ShareUiModel?
         get() = _observableShareInfo.value
@@ -93,16 +95,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
-    private val _observableLiveDuration = MediatorLiveData<Event<BroadcastTimerState>>().apply {
-        addSource(playPusher.getObservablePlayPusherInfoState()) {
-            when(it) {
-                is PlayPusherTimerInfoState.TimerActive -> value = Event(BroadcastTimerState.Active(it.remainingTime))
-                is PlayPusherTimerInfoState.TimerAlmostFinish -> value = Event(BroadcastTimerState.AlmostFinish(it.minutesUntilFinished))
-                is PlayPusherTimerInfoState.TimerFinish -> value = Event(BroadcastTimerState.Finish(it.timeElapsed))
-                is PlayPusherTimerInfoState.ReachMaximumPauseDuration -> value = Event(BroadcastTimerState.ReachMaximumPauseDuration)
-            }
-        }
-    }
+    private val _observableLiveDuration = MutableLiveData<Event<BroadcastTimerState>>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetrics = MutableLiveData<Event<List<PlayMetricUiModel>>>()
     private val _observableShareInfo = MutableLiveData<ShareUiModel>()
@@ -117,6 +110,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     private val _observableLiveInfoState = MutableLiveData<Event<BroadcastState>>()
+    private val _observableReportDuration = MutableLiveData<String>()
 
     init {
         _observableChatList.value = mutableListOf()
@@ -151,11 +145,16 @@ class PlayBroadcastViewModel @Inject constructor(
                 }
             }
 
+            _observableReportDuration.value = configUiModel.timeElapsed
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
-            playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration) // configure maximum live streaming duration
+
+            // configure live streaming duration
+            if (configUiModel.channelType == ChannelType.Pause) playPusher.addMaxStreamDuration(configUiModel.remainingTime)
+            else playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration)
+
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
         }) {
@@ -228,6 +227,28 @@ class PlayBroadcastViewModel @Inject constructor(
     fun initPushStream() {
         scope.launchCatchError(block = {
             playPusher.create()
+            playPusher.addPusherInfoListener(object : PlayPusherInfoListener{
+                override fun onTimerActive(remainingTime: String) {
+                    _observableLiveDuration.value = Event(BroadcastTimerState.Active(remainingTime))
+                }
+
+                override fun onTimerAlmostFinish(minutesUntilFinished: Long) {
+                    _observableLiveDuration.value = Event(BroadcastTimerState.AlmostFinish(minutesUntilFinished))
+                }
+
+                override fun onTimerFinish() {
+                    _observableLiveDuration.value = Event(BroadcastTimerState.Finish)
+                }
+
+                override fun onReachMaximumPauseDuration() {
+                    _observableLiveDuration.value = Event(BroadcastTimerState.ReachMaximumPauseDuration)
+                }
+
+                override fun onStop(timeElapsed: String) {
+                    retrievedReportDuration(timeElapsed)
+                }
+
+            })
         }) {
         }
     }
@@ -390,6 +411,12 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun retrieveNewChat(newChat: PlayChatUiModel) {
         scope.launch(dispatcher.io) {
             onRetrievedNewChat(newChat)
+        }
+    }
+
+    private fun retrievedReportDuration(timeElapsed: String) {
+        scope.launch(dispatcher.main) {
+            _observableReportDuration.value = timeElapsed
         }
     }
 

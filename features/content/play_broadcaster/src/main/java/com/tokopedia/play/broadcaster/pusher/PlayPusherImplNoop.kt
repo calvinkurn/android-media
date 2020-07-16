@@ -4,7 +4,7 @@ import android.view.SurfaceView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherTimerInfoState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 
@@ -14,7 +14,7 @@ import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
  */
 class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
-    private val _observableInfoState = MutableLiveData<PlayPusherTimerInfoState>()
+//    private val _observableInfoState = MutableLiveData<PlayPusherTimerInfoState>()
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
 
     //TODO("for testing only")
@@ -88,9 +88,13 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
         this.mTimer?.callback = mPlayPusherTimerListener
     }
 
-    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherTimerInfoState> {
-        return _observableInfoState
+    override fun addPusherInfoListener(playPusherInfoListener: PlayPusherInfoListener) {
+
     }
+
+//    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherTimerInfoState> {
+//        return _observableInfoState
+//    }
 
     override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
         return _observableNetworkState
@@ -102,19 +106,19 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
         override fun onCountDownActive(timeLeft: String) {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerActive(timeLeft))
+//            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerActive(timeLeft))
         }
 
         override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerAlmostFinish(minutesUntilFinished))
+//            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerAlmostFinish(minutesUntilFinished))
         }
 
-        override fun onCountDownFinish(timeElapsed: String) {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerFinish(timeElapsed))
+        override fun onCountDownFinish() {
+//            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerFinish(timeElapsed))
         }
 
         override fun onReachMaximumPauseDuration() {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.ReachMaximumPauseDuration)
+//            _observableInfoState.postValue(PlayPusherTimerInfoState.ReachMaximumPauseDuration)
         }
     }
 }

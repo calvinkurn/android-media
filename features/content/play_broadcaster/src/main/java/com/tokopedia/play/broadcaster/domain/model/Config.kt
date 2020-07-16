@@ -15,6 +15,10 @@ data class Config(
         val draftChannel: Int = 0,
         @SerializedName("paused_channel")
         val pausedChannel: Int = 0,
+        @SerializedName("active_live_channel_remaining_sec")
+        val activeChannelRemainingDuration: Long = 0,
+        @SerializedName("paused_channel_remaining_sec")
+        val pausedChannelRemainingDuration: Long = 0,
         @SerializedName("max_duration_sec")
         val maxDuration: Long = 0,
         @SerializedName("max_duration_desc")

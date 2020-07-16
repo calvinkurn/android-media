@@ -10,6 +10,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.Toaster
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by jegul on 16/07/20
@@ -62,3 +63,12 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .addListener(requestListener)
             .into(this)
 }
+
+internal fun Long.convertMillisToMinuteSecond(): String = String.format("%02d:%02d",
+        this.convertMillisToMinute(),
+        this.convertMillisToSecond()
+)
+
+internal fun Long.convertMillisToMinute() = TimeUnit.MILLISECONDS.toMinutes(this)
+internal fun Long.convertMillisToSecond() = TimeUnit.MILLISECONDS.toSeconds(this) -
+        TimeUnit.MINUTES.toSeconds(this.convertMillisToMinute())

@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -141,12 +142,22 @@ object PlayBroadcastUiMapper {
                 config.pausedChannel,
                 config.draftChannel
         )
+
+        val maxDuration = config.maxDuration * 1000
+        val remainingTime = when(channelStatus.second) {
+            ChannelType.Active -> config.activeChannelRemainingDuration*1000
+            ChannelType.Pause -> config.pausedChannelRemainingDuration*1000
+            else -> maxDuration
+        }
+
         return ConfigurationUiModel(
                 streamAllowed = config.streamAllowed,
                 channelId = channelStatus.first,
                 channelType =  channelStatus.second,
+                remainingTime = remainingTime,
+                timeElapsed = (maxDuration - remainingTime).convertMillisToMinuteSecond(),
                 durationConfig = DurationConfigUiModel(
-                        duration = config.maxDuration * 1000,
+                        duration = maxDuration,
                         pauseDuration = config.maxPauseDuration * 1000,
                         errorMessage = config.maxDurationDesc),
                 productTagConfig = ProductTagConfigUiModel(

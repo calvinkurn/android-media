@@ -57,7 +57,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         val view = inflater.inflate(R.layout.fragment_play_broadcast_summary, container, false)
 
         observeChannelInfo()
-//        observeLiveDuration()
+        observeLiveDuration()
         observeLiveTrafficMetrics()
 
         return view
@@ -155,7 +155,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer{
             when (it) {
                 is NetworkResult.Success -> setChannelInfo(it.data)
-                is NetworkResult.Fail -> showToaster(
+                is NetworkResult.Fail -> if (GlobalConfig.DEBUG) showToaster(
                         it.error.localizedMessage,
                         type = Toaster.TYPE_ERROR
                 )
@@ -188,9 +188,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         })
     }
 
-//    private fun observeLiveDuration() {
-//        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
-//            if (it is PlayPusherInfoState.TimerFinish) setLiveDuration(it.timeElapsed)
-//        })
-//    }
+    private fun observeLiveDuration() {
+        parentViewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this::setLiveDuration))
+    }
 }

@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.pusher
 
 import android.view.SurfaceView
 import androidx.lifecycle.LiveData
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherTimerInfoState
 
 
 /**
@@ -78,9 +78,9 @@ interface PlayPusher {
     fun addMaxPauseDuration(millis: Long)
 
     /**
-     * Callback timer during live streaming
+     * Callback pusher info during live streaming
      */
-    fun getObservablePlayPusherInfoState(): LiveData<PlayPusherTimerInfoState>
+    fun addPusherInfoListener(playPusherInfoListener: PlayPusherInfoListener)
 
     /**
      * Get Network State during Live Streaming

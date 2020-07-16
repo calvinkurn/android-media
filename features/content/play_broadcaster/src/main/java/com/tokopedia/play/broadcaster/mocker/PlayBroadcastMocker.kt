@@ -85,6 +85,8 @@ object PlayBroadcastMocker {
             streamAllowed = true,
             channelType = ChannelType.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
+            remainingTime = (30 * 60 * 1000),
+            timeElapsed = "01:00",
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
                     pauseDuration = (1 * 60 * 1000),

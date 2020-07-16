@@ -9,9 +9,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alivc.live.pusher.*
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoListener
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherStatus
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherTimerInfoState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
@@ -28,7 +28,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     private  var mAliVcLivePusher: AlivcLivePusher? = null
     private  var mPlayPusherStatus: PlayPusherStatus = PlayPusherStatus.Idle
 
-    private val _observableInfoState = MutableLiveData<PlayPusherTimerInfoState>()
+    private var  mPusherListener: PlayPusherInfoListener? = null
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
     
     private val mAliVcLivePushConfig: AlivcLivePushConfig = AlivcLivePushConfig().apply {
@@ -98,6 +98,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         mTimerDuration?.start()
         mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
         mPlayPusherStatus = PlayPusherStatus.Active
+        mPusherListener?.onStart()
     }
 
     override suspend fun restartPush() {
@@ -108,6 +109,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             mAliVcLivePusher?.stopPush()
             mTimerDuration?.stop()
+            mPusherListener?.onStop(mTimerDuration?.getTimeElapsed().orEmpty())
         } catch (e: Exception) {
             // crashlytics
             if (GlobalConfig.DEBUG) {
@@ -135,6 +137,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         } else {
             mTimerDuration?.resume()
             mPlayPusherStatus = PlayPusherStatus.Active
+            mPusherListener?.onResume()
         }
     }
 
@@ -152,6 +155,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         } else {
             mTimerDuration?.pause()
             mPlayPusherStatus = PlayPusherStatus.Paused
+            mPusherListener?.onPause()
         }
     }
 
@@ -186,8 +190,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
-    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherTimerInfoState> {
-        return _observableInfoState
+    override fun addPusherInfoListener(playPusherInfoListener: PlayPusherInfoListener) {
+        this.mPusherListener = playPusherInfoListener
     }
 
     override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
@@ -259,19 +263,19 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
         override fun onCountDownActive(timeLeft: String) {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerActive(timeLeft))
+            mPusherListener?.onTimerActive(timeLeft)
         }
 
         override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerAlmostFinish(minutesUntilFinished))
+            mPusherListener?.onTimerAlmostFinish(minutesUntilFinished)
         }
 
-        override fun onCountDownFinish(timeElapsed: String) {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.TimerFinish(timeElapsed))
+        override fun onCountDownFinish() {
+            mPusherListener?.onTimerFinish()
         }
 
         override fun onReachMaximumPauseDuration() {
-            _observableInfoState.postValue(PlayPusherTimerInfoState.ReachMaximumPauseDuration)
+            mPusherListener?.onReachMaximumPauseDuration()
         }
     }
 

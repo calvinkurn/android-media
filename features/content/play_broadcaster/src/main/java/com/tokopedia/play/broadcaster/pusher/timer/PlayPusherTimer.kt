@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.pusher.timer
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import java.util.concurrent.TimeUnit
+import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 
 
 /**
@@ -21,7 +21,7 @@ class PlayPusherTimer(val context: Context) {
     var pauseDuration: Long? = null
 
     private var mDuration: Long = 0
-    private var mRemainingMillis: Long = 0
+    private var mRemainingMillis: Long = mDuration
 
     private var mCountDownTimer: PlayCountDownTimer? = null
     private var mLocalStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
@@ -79,31 +79,21 @@ class PlayPusherTimer(val context: Context) {
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
         return object : PlayCountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
             override fun onFinish() {
-                callback?.onCountDownFinish(getTimeElapsed())
+                callback?.onCountDownFinish()
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 mRemainingMillis = millisUntilFinished
                 val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
                 if (timeout != null) callback?.onCountDownAlmostFinish(timeout.minute)
-                else callback?.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
+                else callback?.onCountDownActive(millisUntilFinished.convertMillisToMinuteSecond())
             }
         }
     }
 
-    private fun getTimeElapsed(): String = millisToMinuteSecond(
-            getTimeElapsedInMillis()
-    )
+    fun getTimeElapsed(): String = getTimeElapsedInMillis().convertMillisToMinuteSecond()
+
     private fun getTimeElapsedInMillis(): Long = mDuration - mRemainingMillis
-
-    private fun millisToMinuteSecond(millis: Long) = String.format("%02d:%02d",
-            millisToMinute(millis),
-            millisToSecond(millis)
-    )
-
-    private fun millisToMinute(millis: Long): Long = TimeUnit.MILLISECONDS.toMinutes(millis)
-    private fun millisToSecond(millis: Long): Long = TimeUnit.MILLISECONDS.toSeconds(millis) -
-            TimeUnit.MINUTES.toSeconds(millisToMinute(millis))
 
     private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
         val currentMillis = System.currentTimeMillis()

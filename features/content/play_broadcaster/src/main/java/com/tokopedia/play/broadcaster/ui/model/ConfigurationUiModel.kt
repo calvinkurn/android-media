@@ -8,6 +8,8 @@ data class ConfigurationUiModel(
         val streamAllowed: Boolean,
         val channelId: String,
         val channelType: ChannelType,
+        val remainingTime: Long, // millis
+        val timeElapsed: String,
         val durationConfig: DurationConfigUiModel,
         val productTagConfig: ProductTagConfigUiModel,
         val coverConfig: CoverConfigUiModel,
