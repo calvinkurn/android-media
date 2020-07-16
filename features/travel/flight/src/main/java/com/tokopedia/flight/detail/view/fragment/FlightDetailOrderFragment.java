@@ -45,8 +45,8 @@ import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -511,8 +511,16 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
+//        startActivityForResult(
+//                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
+//                REQUEST_CODE_CANCELLATION
+//        );
+
         startActivityForResult(
-                FlightCancellationActivity.createIntent(getContext(), invoiceId, items),
+                FlightCancellationPassengerActivity.Companion
+                        .createIntent(getContext(),
+                                invoiceId,
+                                items),
                 REQUEST_CODE_CANCELLATION
         );
 

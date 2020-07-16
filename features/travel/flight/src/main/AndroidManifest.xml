@@ -92,6 +92,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight"></activity>
+        <activity
             android:name=".cancellation.view.activity.FlightCancellationReasonAndProofActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
