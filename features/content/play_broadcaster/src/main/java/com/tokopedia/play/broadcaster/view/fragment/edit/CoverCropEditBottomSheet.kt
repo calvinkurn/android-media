@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.fragment.edit
 
 import android.app.Dialog
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
@@ -42,6 +44,18 @@ class CoverCropEditBottomSheet @Inject constructor() : BottomSheetDialogFragment
             override fun onBackPressed() {
                 goBack()
             }
+        }.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                updateNavigationBarColors(
+                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                )
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                updateNavigationBarColors(
+                        intArrayOf(
+                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
+                        )
+                )
         }
     }
 
