@@ -176,8 +176,13 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun onCheckBoxClicked() {
+        trackClickTermsAndConditionTickBox()
         isTermsAgreed = !isTermsAgreed
         checkbox.isChecked = isTermsAgreed
+    }
+
+    private fun trackClickTermsAndConditionTickBox() {
+        powerMerchantTracking.eventClickTermsAndConditionTickBox()
     }
 
     private fun resultOkAndFinish() {

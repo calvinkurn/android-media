@@ -40,6 +40,7 @@ object GMParamTracker {
         const val CLICK_TNC_BROADCAST_CHAT = "click t&c broadcast chat"
         const val CLICK_LEARN_MORE_UPGRADE_SHOP = "click pelajari selengkapnya upgrade tokomu"
         const val CLICK_POWER_MERCHANT = "click power merchant"
+        const val CLICK_TICK_BOX_TNC = "click tickbox term & condition"
     }
 
     object Label {
@@ -48,6 +49,7 @@ object GMParamTracker {
         const val POWER_MERCHANT = "PM"
         const val REGULAR_MERCHANT = "RM"
         const val UPGRADE_SHOP = "upgrade shop"
+        const val NO_DATA = "no data"
     }
 
     object CustomDimension {
