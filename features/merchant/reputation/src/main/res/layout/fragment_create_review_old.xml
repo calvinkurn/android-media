@@ -228,7 +228,7 @@
 
     <include
         android:id="@+id/shimmering_create_review"
-        layout="@layout/partial_shimmering_create_review"
+        layout="@layout/partial_shimmering_create_review_old"
         android:visibility="visible"
         tools:visibility="gone"/>
 

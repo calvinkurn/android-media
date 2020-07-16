@@ -110,16 +110,40 @@
             </com.tokopedia.unifycomponents.ContainerUnify>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/createReviewTextAreaTitle"
+                android:id="@+id/createReviewAddPhotoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginLeft="@dimen/layout_lvl2"
+                android:text="@string/review_create_add_picture_title"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createReviewContainer"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_img_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_16"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createReviewAddPhotoTitle"
+                tools:listitem="@layout/item_image_chooser_review" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/createReviewTextAreaTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_img_review"/>
 
             <com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextArea
                 android:id="@+id/createReviewExpandableTextArea"
@@ -132,24 +156,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createReviewTextAreaTitle"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_img_review"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/dp_16"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/createReviewExpandableTextArea"
-                tools:listitem="@layout/item_image_chooser_review" />
-
             <View
                 android:id="@+id/review_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@+id/rv_img_review"
+                app:layout_constraintTop_toBottomOf="@+id/createReviewExpandableTextArea"
                 android:background="@color/pale_grey" />
 
             <LinearLayout

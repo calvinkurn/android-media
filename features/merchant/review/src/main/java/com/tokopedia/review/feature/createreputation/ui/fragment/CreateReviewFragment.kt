@@ -109,8 +109,8 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
     private var orderId: String = ""
     private var utmSource: String = ""
 
-    private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
+    private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
 
     val getOrderId: String
         get() = orderId
@@ -167,7 +167,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reviewUserName = createReviewViewModel.userSessionInterface.name
         isLowDevice = DevicePerformanceInfo.isLow(context)
         initCreateReviewTextArea()
         getReviewData()
@@ -267,9 +266,14 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
         }
     }
 
-    override fun onExpandButtonClicked() {
-        val createReviewTextAreaBottomSheet = context?.let { CreateReviewTextAreaBottomSheet.createNewInstance(it) }
-        fragmentManager?.let { createReviewTextAreaBottomSheet?.show(it,"") }
+    override fun onExpandButtonClicked(text: String) {
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
+        fragmentManager?.let { textAreaBottomSheet?.show(it,"") }
+    }
+
+    override fun onCollapseButtonClicked(text: String) {
+        textAreaBottomSheet?.dismiss()
+        createReviewExpandableTextArea.setText(text)
     }
 
     private fun getReviewData() {
@@ -356,17 +360,17 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
     private fun updateViewBasedOnSelectedRating(position: Int) {
         when {
             position < 3 -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_1, reviewUserName))
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_negative, createReviewViewModel.userSessionInterface.name))
                 createReviewContainer.setContainerColor(ContainerUnify.RED)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_negative_title)
             }
             position == 3 -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_3, reviewUserName))
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_neutral, createReviewViewModel.userSessionInterface.name))
                 createReviewContainer.setContainerColor(ContainerUnify.YELLOW)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_neutral_title)
             }
             else -> {
-                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_5, reviewUserName))
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_positive, createReviewViewModel.userSessionInterface.name))
                 createReviewContainer.setContainerColor(ContainerUnify.GREEN)
                 createReviewTextAreaTitle.text = resources.getString(R.string.review_create_positive_title)
             }
@@ -500,12 +504,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener, Text
     private fun showToasterError(message: String) {
         view?.let {
             Toaster.make(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
-        }
-    }
-
-    private fun showToasterSuccess() {
-        view?.let {
-            Toaster.make(it, getString(R.string.txt_success_submit_review, createReviewViewModel.userSessionInterface.name), Toaster.toasterLength)
         }
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -27,17 +28,21 @@ class CreateReviewTextArea : BaseCustomView {
 
     fun setListener(textAreaListener: TextAreaListener) {
         reviewCreateTextAreaExpandButton.setOnClickListener {
-            textAreaListener.onExpandButtonClicked()
+            textAreaListener.onExpandButtonClicked(reviewCreateTextArea.text.toString())
         }
         reviewCreateTextArea.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
-                    this@CreateReviewTextArea.setBackgroundResource(R.drawable.bg_review_create_text_area_selected)
+                    this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_selected)
                 } else {
-                    this@CreateReviewTextArea.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
+                    this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_default)
                 }
             }
         }
+    }
+
+    fun setText(text: String) {
+        reviewCreateTextArea.setText(text)
     }
 
 

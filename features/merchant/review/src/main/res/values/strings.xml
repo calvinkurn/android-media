@@ -93,9 +93,9 @@
     <string name="image_picker_title">Pilih foto</string>
     <string name="error_upload_image">Gagal mengunggah gambar</string>
     <string name="review_overlay_count">%1$d +</string>
-    <string name="review_text_1">Hi %s, tolong bantu kami untuk mengerti masalah dengan pembelianmu.</string>
-    <string name="review_text_3">Hi %s, sepertinya kamu nggak suka dengan pembelian ini. Boleh tahu kenapa?</string>
-    <string name="review_text_5">Hi %s, yuk, bantu calon pembeli lain dengan bagikan pengalamanmu!</string>
+    <string name="review_text_negative">Hi %s, tolong bantu kami untuk mengerti masalah dengan pembelianmu.</string>
+    <string name="review_text_neutral">Hi %s, sepertinya kamu nggak suka dengan pembelian ini. Boleh tahu kenapa?</string>
+    <string name="review_text_positive">Hi %s, yuk, bantu calon pembeli lain dengan bagikan pengalamanmu!</string>
     <string name="review_already_submit">Ulasan untuk produk ini sudah kamu berikan.</string>
     <string name="review_error_not_found">Produk yang ingin kamu berikan ulasan tidak ditemukan.</string>
     <string name="anonymous_review_prefix">Kirim sebagai anonim %s</string>
@@ -108,6 +108,7 @@
     <string name="review_create_positive_title">Apa yang kamu suka?</string>
     <string name="review_create_add_picture_title">Fotoin dong barangnya</string>
     <string name="review_create_hide_name">Sembunyikan namamu</string>
+    <string name="review_create_bottom_sheet_title">Kasih tau alasannya</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>
