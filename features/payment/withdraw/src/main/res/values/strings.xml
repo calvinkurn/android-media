@@ -1,6 +1,7 @@
 <resources>
 
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
+    <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
     <string name="swd_rp">Rp%s</string>

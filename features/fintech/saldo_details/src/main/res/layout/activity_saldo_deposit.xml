@@ -35,8 +35,20 @@
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_16" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/toolbar_saldo_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/toolbarAutoWithdrawalSetting"
+                android:layout_toLeftOf="@id/toolbarAutoWithdrawalSetting"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                android:padding="@dimen/dp_4"
+                app:srcCompat="@drawable/saldo_ic_info" />
+
+            <ImageView
+                android:id="@+id/toolbarAutoWithdrawalSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -45,10 +57,7 @@
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
                 android:padding="@dimen/dp_4"
-                android:text="@string/saldo_help"
-                android:textColor="@color/unify_G500"
-                android:textSize="@dimen/sp_12"
-                tools:text="Pelajari" />
+                app:srcCompat="@drawable/saldo_ic_setting" />
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>

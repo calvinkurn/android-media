@@ -21,6 +21,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.activity_saldo_deposit.*
 import javax.inject.Inject
 
 /**
@@ -113,10 +114,14 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     private fun initializeView() {
         isSeller = userSession.hasShop() || userSession.isAffiliate
-        val saldoHelp = findViewById<TextView>(com.tokopedia.saldodetails.R.id.toolbar_saldo_help)
+        val saldoHelp = findViewById<View>(com.tokopedia.saldodetails.R.id.toolbar_saldo_help)
 
         saldoHelp.show()
         saldoHelp.setOnClickListener { v -> RouteManager.route(this, ApplinkConstInternalGlobal.SALDO_INTRO) }
+
+        toolbarAutoWithdrawalSetting.setOnClickListener {
+            RouteManager.route(this, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING)
+        }
     }
 
     override fun setupStatusBar() {
