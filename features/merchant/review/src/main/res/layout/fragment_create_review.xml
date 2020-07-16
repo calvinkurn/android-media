@@ -131,7 +131,7 @@
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:padding="@dimen/layout_lvl2"
-                android:background="@drawable/bg_create_review_add_photo"
+                android:background="@drawable/bg_review_create_add_photo"
                 app:layout_constraintTop_toBottomOf="@id/createReviewAddPhotoTitle">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
