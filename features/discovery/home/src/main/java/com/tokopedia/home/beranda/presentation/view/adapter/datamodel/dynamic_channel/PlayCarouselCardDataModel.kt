@@ -13,9 +13,10 @@ data class PlayCarouselCardDataModel(
 ): HomeVisitable, ImpressHolder() {
     companion object{
         const val UPDATE_REMIND = "update_remind"
+        private const val PLAY_V2_ID = "play_carousel"
     }
     override fun visitableId(): String {
-        return channel?.type ?: ""
+        return PLAY_V2_ID
     }
 
     override fun equalsWith(b: Any?): Boolean {
