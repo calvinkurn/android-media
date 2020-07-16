@@ -30,8 +30,10 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val indicatorView: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = HomeBannerAdapter(listOf(), this)
+    private var currentModel: HomepageBannerDataModel? = null
 
     override fun bind(element: HomepageBannerDataModel) {
+        this.currentModel = element
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BANNER_VIEWHOLDER)
         try {
             slidesList = element.slides
@@ -84,6 +86,12 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         circularViewPager.setAdapter(adapter)
         circularViewPager.setItemList(list)
         indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+        currentModel?.let {
+            if (it.isFirstBind) {
+                circularViewPager.reset()
+                it.isFirstBind = false
+            }
+        }
     }
 
     override fun onClick(position: Int) {
