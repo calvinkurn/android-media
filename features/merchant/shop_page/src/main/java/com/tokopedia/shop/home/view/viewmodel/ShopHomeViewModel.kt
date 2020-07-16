@@ -236,7 +236,7 @@ class ShopHomeViewModel @Inject constructor(
                 uri.host == "youtu.be" -> uri.lastPathSegment
                 uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                else -> throw MessageErrorException("")
+                else -> throw MessageErrorException("Unknown youtube url $webVideoUrl.")
             }
         } catch (e: NullPointerException) {
             throw MessageErrorException(e.message)
