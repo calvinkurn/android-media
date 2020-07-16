@@ -149,11 +149,11 @@ class LineGraphViewHolder(
 
     private fun getLineChartData(element: LineGraphWidgetUiModel): LineChartData {
         val chartEntry: List<LineChartEntry> = element.data?.list?.map {
-            LineChartEntry(it.yVal.toFloat(), it.yLabel, it.xLabel)
+            LineChartEntry(it.yVal, it.yLabel, it.xLabel)
         }.orEmpty()
 
         val yAxisLabel = element.data?.yLabels?.map {
-            AxisLabel(it.yVal.toFloat(), it.yLabel)
+            AxisLabel(it.yVal, it.yLabel)
         }.orEmpty()
 
         return LineChartData(

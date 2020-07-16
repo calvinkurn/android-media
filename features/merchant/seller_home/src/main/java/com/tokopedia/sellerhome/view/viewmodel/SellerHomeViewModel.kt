@@ -9,6 +9,7 @@ import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
 import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -47,13 +48,14 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     private val shopId: String by lazy { userSession.shopId }
-    private val startDate: String by lazy {
-        val timeInMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
-        return@lazy DateTimeUtil.format(timeInMillis, DATE_FORMAT)
-    }
-    private val endDate: String by lazy {
-        val timeInMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
-        return@lazy DateTimeUtil.format(timeInMillis, DATE_FORMAT)
+    private val dynamicParameter by lazy {
+        val startDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
+        val endDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
+        return@lazy WidgetDataParameterModel(
+                startDate = DateTimeUtil.format(startDateMillis, DATE_FORMAT),
+                endDate = DateTimeUtil.format(endDateMillis, DATE_FORMAT),
+                pageSource = SELLER_HOME_PAGE_NAME
+        )
     }
 
     private val _homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
@@ -128,7 +130,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<CardDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
+                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getCardDataUseCase.executeOnBackground()
             })
             _cardWidgetData.postValue(result)
@@ -140,7 +142,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<LineGraphDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
+                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
             _lineGraphWidgetData.postValue(result)
@@ -165,7 +167,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<PostListDataUiModel>> = Success(withContext(Dispatchers.IO) {
-                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
+                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getPostDataUseCase.executeOnBackground()
             })
             _postListWidgetData.postValue(result)

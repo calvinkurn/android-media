@@ -48,6 +48,6 @@ data class XYAxisModel(
         @SerializedName("yLabel")
         val yLabel: String?,
         @Expose
-        @SerializedName("yVal")
-        val yVal: Int?
+        @SerializedName("yValPrecise")
+        val yVal: Float?
 )

@@ -16,5 +16,5 @@ data class LineGraphDataUiModel(
 data class XYAxisUiModel(
         val xLabel: String,
         val yLabel: String,
-        val yVal: Int
+        val yVal: Float
 )

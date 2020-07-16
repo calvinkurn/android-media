@@ -37,16 +37,12 @@ class GetTableDataUseCase(
 
         fun getRequestParams(
                 dataKey: List<String>,
-                startDate: String,
-                endDate: String
+                dynamicParameter: WidgetDataParameterModel
         ): RequestParams {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = WidgetDataParameterModel(
-                                startDate = startDate,
-                                endDate = endDate
-                        ).toJsonString()
+                        jsonParams = dynamicParameter.toJsonString()
                 )
             }
             return RequestParams.create().apply {

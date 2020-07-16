@@ -19,6 +19,9 @@ data class WidgetDataParameterModel(
         @SerializedName("end_date")
         val endDate: String = "",
         @Expose
+        @SerializedName("page_source")
+        val pageSource: String = "",
+        @Expose
         @SerializedName("page")
         val page: Int = 0,
         @Expose
