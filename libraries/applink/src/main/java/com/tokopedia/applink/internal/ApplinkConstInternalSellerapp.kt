@@ -47,19 +47,37 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val SELLER_HOME_SOM_CANCELLED = "$INTERNAL_SELLERAPP/sellerhome-som-cancelled"
 
-    //WelcomeActivity
+    //SellerOnboardingActivity
     @JvmField
     val WELCOME = "$INTERNAL_SELLERAPP/welcome"
 
     //CentralizedPromoActivity
     @JvmField
     val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+    @JvmField
+    val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
 
     //MenuSettingActivity
     @JvmField
     val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
 
-    //SellerOnboardingActivity
+    //SellerSeamlessLoginFragment
     @JvmField
-    val SELLER_ONBOARDING = "$INTERNAL_SELLERAPP/seller-onboarding"
+    val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
+
+
+    //CreateMerchantVoucherStepsActivity
+    @JvmField
+    val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+
+    //VoucherListActivity
+    @JvmField
+    val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
+    @JvmField
+    val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
+    @JvmField
+    val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+
+    @JvmStatic
+    val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
 }

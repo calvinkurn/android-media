@@ -26,13 +26,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsFreeClaim)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.productManageCommon)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
@@ -103,6 +103,10 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {
@@ -114,3 +118,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

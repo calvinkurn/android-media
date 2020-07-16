@@ -440,10 +440,17 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
+    @JvmField
+    val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // AccountSettingActivity
+    // tokopedia-android-internal://global/account-setting
+    @JvmField
+    val ACCOUNT_SETTING = "$INTERNAL_GLOBAL/account-setting"
 
     // GeneralSettingActivity
     // tokopedia-android-internal://global/general-setting
@@ -487,4 +494,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     @JvmField
     val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

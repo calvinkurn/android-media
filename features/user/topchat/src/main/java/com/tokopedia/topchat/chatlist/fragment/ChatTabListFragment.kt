@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.fragment
 
+import android.graphics.Color
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,8 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -97,6 +100,14 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         initOnBoarding()
         initChatCounterObserver()
         initToolTip()
+        initBackground()
+        context?.let { UpdateShopActiveService.startService(it) }
+    }
+
+    private fun initBackground() {
+        if (GlobalConfig.isSellerApp()) {
+            viewPager?.setBackgroundColor(Color.WHITE)
+        }
     }
 
     override fun onAttachActivity(context: Context?) {

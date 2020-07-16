@@ -11,9 +11,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseGroupValidateName
-import com.tokopedia.topads.internal.ParamObject
-import com.tokopedia.topads.internal.ParamObject.GROUP_NAME
-import com.tokopedia.topads.internal.ParamObject.SHOP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

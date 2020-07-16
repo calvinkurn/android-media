@@ -17,7 +17,6 @@ import org.junit.Test
 import rx.Subscriber
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
-    private val deleteKeyword = "samsung"
     private val isSuccessful = true
 
     @Test
@@ -161,16 +160,27 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     @Test
-    fun `test delete recent search data`() {
+    fun `test delete recent search data with type keyword`() {
+        val item = BaseItemInitialStateSearch(
+                template = "list_single_line",
+                applink = "tokopedia://search?q=sepatu&source=universe&st=product",
+                url = "/search?q=sepatu&source=universe&st=product",
+                title = "sepatu",
+                label = "keyword",
+                type = "keyword",
+                productId = "0",
+                shortcutImage = "https://shortcut"
+        )
+
         `given initial state use case capture request params`()
         `given presenter get initial state data`()
         `given initial state API is called`()
         `given initial state view called showInitialStateResult behavior`()
         `given delete recent search API will return data`()
-        `when presenter delete recent search`()
+        `when presenter delete recent search`(item)
         `then verify deleteRecentSearch API is called`()
         `then verify initial state view called deleteRecentSearch`()
-        `then verify visitable list doesnt have keyword samsung in recent search`()
+        `then verify visitable list doesnt have keyword samsung in recent search`(item)
     }
 
     private fun `given delete recent search API will return data`() {
@@ -180,8 +190,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun `when presenter delete recent search`() {
-        initialStatePresenter.deleteRecentSearchItem(deleteKeyword)
+    private fun `when presenter delete recent search`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.deleteRecentSearchItem(item)
     }
 
     private fun `then verify deleteRecentSearch API is called`() {
@@ -194,31 +204,63 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun `then verify visitable list doesnt have keyword samsung in recent search`() {
+    private fun `then verify visitable list doesnt have keyword samsung in recent search`(item: BaseItemInitialStateSearch) {
         val newList = slotDeletedVisitableList.captured
-        Assert.assertTrue(newList[1] is RecentSearchViewModel)
-        Assert.assertFalse(
-                (newList[1] as RecentSearchViewModel).list.contains(
-                        BaseItemInitialStateSearch(
-                                template = "list_single_line",
-                                applink = "tokopedia://search?q=sepatu&source=universe&st=product",
-                                url = "/search?q=sepatu&source=universe&st=product",
-                                title = "sepatu",
-                                label = "keyword",
-                                shortcutImage = "https://shortcut"
-                        )
-                )
+        assert(newList[1] is RecentSearchViewModel) {
+            "Should be RecentSearchViewModel"
+        }
+        assert(!(newList[1] as RecentSearchViewModel).list.contains(item)) {
+            "Recent Search ${item.title} should be deleted"
+        }
+    }
+
+    @Test
+    fun `test delete recent search data with type shop`() {
+        val item = BaseItemInitialStateSearch(
+                template = "list_double_line",
+                applink = "tokopedia://shop/8384142?source=universe&st=product",
+                url = "/mizanbookc?source=universe&st=product",
+                title = "MizanBookCorner",
+                label = "Toko",
+                shortcutImage = "https://shortcut",
+                type = "shop"
         )
+
+        `given initial state use case capture request params`()
+        `given presenter get initial state data`()
+        `given initial state API is called`()
+        `given initial state view called showInitialStateResult behavior`()
+        `given delete recent search API will return data`()
+        `when presenter delete recent search`(item)
+        `then verify deleteRecentSearch API is called`()
+        `then verify initial state view called deleteRecentSearch`()
+        `then verify visitable list doesnt have shop in recent search`(item)
+    }
+
+    private fun `then verify visitable list doesnt have shop in recent search`(item: BaseItemInitialStateSearch) {
+        val newList = slotDeletedVisitableList.captured
+        assert(newList[1] is RecentSearchViewModel) {
+            "Should be RecentSearchViewModel"
+        }
+        assert(!(newList[1] as RecentSearchViewModel).list.contains(item)) {
+            "Recent Search ${item.title} should be deleted"
+        }
     }
 
     @Test
     fun  `test fail to delete recent search data`() {
+        val item = BaseItemInitialStateSearch(
+                title = "samsung",
+                type = "keyword",
+                productId = "0"
+        )
+
         `given initial state use case capture request params`()
         `given presenter get initial state data`()
         `given initial state API is called`()
         `given initial state view called showInitialStateResult behavior`()
         `given delete recent search API will return error`()
-        `when presenter delete recent search`()
+        `when presenter delete recent search`(item)
         `then verify deleteRecentSearch API is called`()
         `then verify initial state view do nothing behavior`()
     }
