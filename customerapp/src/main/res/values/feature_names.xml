@@ -192,6 +192,7 @@
 
     <!-- Setting-Notif-->
     <string name="setting_notif_app_name">Setting Notif</string>
+    <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
     <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
