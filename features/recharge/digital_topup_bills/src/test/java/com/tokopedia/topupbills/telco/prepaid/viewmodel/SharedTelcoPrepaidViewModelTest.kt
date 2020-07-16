@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.viewmodel
+package com.tokopedia.topupbills.telco.prepaid.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
@@ -6,8 +6,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topupbills.telco.data.*
-import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
+import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInputMultiTab
+import com.tokopedia.topupbills.telco.data.TelcoProduct
+import com.tokopedia.topupbills.telco.JsonToString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -21,7 +22,6 @@ import org.junit.Test
 import java.lang.reflect.Type
 
 class SharedTelcoPrepaidViewModelTest {
-
     @get:Rule
     val rule = InstantTaskExecutorRule()
 

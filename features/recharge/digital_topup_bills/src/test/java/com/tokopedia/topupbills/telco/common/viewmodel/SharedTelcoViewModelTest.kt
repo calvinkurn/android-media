@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.viewmodel
+package com.tokopedia.topupbills.telco.common.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
@@ -6,7 +6,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -14,15 +13,13 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
 class SharedTelcoViewModelTest {
-
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -67,6 +64,16 @@ class SharedTelcoViewModelTest {
         telcoViewModel.setSelectedRecentNumber(selectedRecent)
         //then
         assertEquals(selectedRecent.clientNumber, telcoViewModel.selectedRecentNumber.value?.clientNumber)
+    }
+
+    @Test
+    fun setTitleMenu_dataValid() {
+        //given
+        val showMenu = true
+        //when
+        telcoViewModel.setTitleMenu(showMenu)
+        //then
+        assertEquals(showMenu, telcoViewModel.titleMenu.value)
     }
 
     @Test

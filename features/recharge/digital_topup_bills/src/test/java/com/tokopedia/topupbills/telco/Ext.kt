@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.view.viewmodel
+package com.tokopedia.topupbills.telco
 
 import com.google.gson.Gson
 import java.io.File
