@@ -1,11 +1,11 @@
 package com.tokopedia.sellerhome.config
 
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 class SellerHomeRemoteConfig @Inject constructor(
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: FirebaseRemoteConfigImpl
 ) {
 
     fun isImprovementDisabled(): Boolean {
