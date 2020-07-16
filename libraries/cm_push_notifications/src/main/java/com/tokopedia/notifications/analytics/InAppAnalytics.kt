@@ -30,10 +30,10 @@ object InAppAnalytics {
 
     fun impression(data: CMInApp) {
         val promotion = mapOf(
-                KEY_ID to data.getId().toString(), // name
-                KEY_NAME to data.screen, // applink
-                KEY_CREATIVE to "", // campaign name
-                KEY_CREATIVE_URL to "", // optional
+                KEY_ID to data.getId().toString(),
+                KEY_NAME to "$CATEGORY - ${data.screen}",
+                KEY_CREATIVE to "",
+                KEY_CREATIVE_URL to "",
                 KEY_POSITION to POSITION,
                 KEY_CATEGORY to "",
                 KEY_PROMO_ID to "",
@@ -55,10 +55,10 @@ object InAppAnalytics {
 
     fun click(data: CMInApp) {
         val promotion = mapOf(
-                KEY_ID to data.getId().toString(), // name
-                KEY_NAME to data.screen, // applink
-                KEY_CREATIVE to "", // campaign name
-                KEY_CREATIVE_URL to "", // optional
+                KEY_ID to data.getId().toString(),
+                KEY_NAME to "$CATEGORY - ${data.screen}",
+                KEY_CREATIVE to "",
+                KEY_CREATIVE_URL to "",
                 KEY_POSITION to POSITION,
                 KEY_CATEGORY to "",
                 KEY_PROMO_ID to "",
