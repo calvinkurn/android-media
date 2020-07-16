@@ -14,55 +14,55 @@ object UnitTestGetPromoListDataProvider {
     private val fileUtil = UnitTestFileUtils()
 
     fun provideBasePromoResponseSuccessDataAllExpanded(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseSuccessDataAllCollapsed(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_success_all_collapsed.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_collapsed.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseSuccessDataWithPreSelectedPromo(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_success_with_pre_selected_promo.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_with_pre_selected_promo.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoRequestData(): PromoRequest {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_request.json"), PromoRequest::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_request.json"), PromoRequest::class.java)
     }
 
     fun provideBasePromoResponseSuccessDataAllEligible(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_success_all_eligible.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_eligible.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseSuccessDataAllIneligible(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_success_all_ineligible.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_ineligible.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseApplyManualFailed(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_apply_manual_failed.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_apply_manual_failed.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseError(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_error.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_error.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseEmptyStateEmpty(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_empty_state_empty.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_empty.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseEmptyStateCouponListEmpty(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_empty_state_coupon_list_empty.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_coupon_list_empty.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseEmptyStatePhoneVerification(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_empty_state_phone_verification.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_phone_verification.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseEmptyStateBlacklisted(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_empty_state_blacklisted.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_blacklisted.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideBasePromoResponseEmptyStateUnknown(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/base_promo_recommendation_response_empty_state_unknown.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_empty_state_unknown.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideNoCurrentSelectedExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
