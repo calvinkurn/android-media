@@ -1216,7 +1216,8 @@ open class HomeViewModel @Inject constructor(
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
 
-        getTokopointJob = launchCatchError(coroutineContext, block={
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            getHomeTokopointsDataUseCase.get().setParams("2.0.0")
             val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
             updateHeaderViewModel(
                     isTokoPointDataError = false,

@@ -59,6 +59,8 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import java.lang.Exception
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -71,6 +73,7 @@ object DeeplinkMapper {
 
     val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
+    var mShowTokopointNative=false
 
     /**
      * Get registered deeplink navigation in manifest
@@ -196,8 +199,20 @@ object DeeplinkMapper {
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
-        if (uri.pathSegments.joinToString("/") == TOKOPOINTS) {
-            return ApplinkConstInternalPromo.TOKOPOINTS_HOME
+
+        //Fallback strategy for new Rewards Page
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        firebaseRemoteConfig.let {
+            mShowTokopointNative = it.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false)
+        }
+        if (mShowTokopointNative) {
+            if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
+                return ApplinkConstInternalPromo.TOKOPOINTS_HOME
+            }
+        } else {
+            if (uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS){
+               return deeplink.replaceFirst("rewards","tokopoints")
+            }
         }
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
@@ -237,6 +252,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
             DLP.startWith(ApplinkConst.REPUTATION) { _, _, deeplink -> getRegisteredNavigationReputation(deeplink) },
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink -> getRegisteredNavigationRecommendation(deeplink) },
             DLP.startWith(ApplinkConst.CHAT_BOT) { _, _, deeplink -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink -> getRegisteredNavigationCatalog(deeplink) },
