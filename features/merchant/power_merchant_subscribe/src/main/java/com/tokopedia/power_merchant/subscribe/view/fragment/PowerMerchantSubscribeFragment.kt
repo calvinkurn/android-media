@@ -373,12 +373,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         btnRegister.text = getString(R.string.power_merchant_register_now)
 
         btnCallToAction.setOnClickListener {
+            trackClickRegister()
             onClickRegister()
         }
 
         btnRegister.show()
         btnCallToAction.show()
         textCancelMembership.hide()
+    }
+
+    private fun trackClickRegister() {
+        powerMerchantTracking.eventClickUpgradeShop()
     }
 
     private fun showCancelMembershipBtn() {
@@ -396,7 +401,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun onClickRegister() {
-        powerMerchantTracking.eventUpgradeShopPm()
         goToTermsAndConditionPage()
     }
 

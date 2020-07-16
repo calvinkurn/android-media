@@ -21,16 +21,6 @@ class PowerMerchantTracking @Inject constructor(
                 GMParamTracker.LABEL_FEATURES_LEARN_MORE)
     }
 
-
-    fun eventUpgradeShopPm() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-                GMParamTracker.CATEGORY_SELLER_APP,
-                GMParamTracker.ACTION_CLICK_POWER_MERCHANT,
-                GMParamTracker.LABEL_UPGRADE_SHOP)
-    }
-
-
     fun eventUpgradeShopWebView() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
@@ -218,6 +208,23 @@ class PowerMerchantTracking @Inject constructor(
             category,
             GMParamTracker.Action.CLICK_LEARN_MORE_UPGRADE_SHOP,
             ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickUpgradeShop() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.CLICK_POWER_MERCHANT,
+            GMParamTracker.Label.UPGRADE_SHOP
         )
 
         event[CustomDimension.USER_ID] = user.userId
