@@ -303,19 +303,19 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private val currentShippingConfiguration: OpenShopData?
         get() = editShippingPresenter?.passShippingData()
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
-                    val address: DistrictRecommendationAddress = data.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
+                    val address: DistrictRecommendationAddress? = data?.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION)
                     editShippingPresenter?.setSelectedAddress(address)
                     fragmentShippingHeader?.initializeZipCodes()
                     fragmentShippingHeader?.updateLocationData(
-                            address.provinceName,
-                            address.cityName,
-                            address.districtName)
-                    changeLocationRequest(address.districtId)
+                            address?.provinceName,
+                            address?.cityName,
+                            address?.districtName)
+                    changeLocationRequest(address?.districtId)
                 }
                 OPEN_MAP_CODE -> changeGoogleMapData(data)
                 ADDITIONAL_OPTION_REQUEST_CODE -> {
@@ -327,7 +327,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         }
     }
 
-    private fun changeLocationRequest(originId: Int) {
+    private fun changeLocationRequest(originId: Int?) {
         progressDialog?.show()
         if (arguments.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments.containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             editShippingPresenter?.fetchDataByLocationOpenShop(originId.toString())
@@ -336,14 +336,14 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         }
     }
 
-    private fun changeGoogleMapData(data: Intent) {
+    private fun changeGoogleMapData(data: Intent?) {
         addressLayout?.setGoogleMapData(data)
     }
 
-    private fun additionalOptionRequest(data: Intent) {
+    private fun additionalOptionRequest(data: Intent?) {
         editShippingPresenter?.setCourierAdditionalOptionConfig(
-                data.getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0),
-                data.getStringExtra(EDIT_SHIPPING_RESULT_KEY))
+                data?.getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0),
+                data?.getStringExtra(EDIT_SHIPPING_RESULT_KEY))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
