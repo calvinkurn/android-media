@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.charts.config.piechart.PieChartConfigBuilder
+import com.tokopedia.charts.config.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -70,9 +70,9 @@ class PieChartViewHolder(
 
         val data = element.data?.data
         tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
-        tvPieChartSubValue.text = data?.summary?.diffPercentageFmt?.parseAsHtml()
+        tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
 
-        pieChartShc.init(PieChartConfigBuilder.getDefaultConfig())
+        pieChartShc.init(PieChartConfig.getDefaultConfig())
         pieChartShc.setData(getPieChartData(element))
         pieChartShc.invalidateChart()
     }

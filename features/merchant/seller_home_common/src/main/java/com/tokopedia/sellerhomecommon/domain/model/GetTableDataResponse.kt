@@ -7,62 +7,62 @@ import com.google.gson.annotations.SerializedName
 data class GetTableDataResponse(
         @Expose
         @SerializedName("fetchSearchTableWidgetData")
-        val fetchSearchTableWidgetData: FetchSearchTableWidgetDataModel
+        val fetchSearchTableWidgetData: FetchSearchTableWidgetDataModel = FetchSearchTableWidgetDataModel()
 )
 
 data class FetchSearchTableWidgetDataModel(
         @Expose
         @SerializedName("data")
-        val `data`: List<TableDataModel>
+        val `data`: List<TableDataModel> = emptyList()
 )
 
 data class TableDataModel(
         @Expose
         @SerializedName("data")
-        val `data`: TableDataSetModel,
+        val `data`: TableDataSetModel = TableDataSetModel(),
         @Expose
         @SerializedName("dataKey")
-        val dataKey: String,
+        val dataKey: String = "",
         @Expose
         @SerializedName("error")
-        val error: Boolean,
+        val error: Boolean = false,
         @Expose
         @SerializedName("errorMsg")
-        val errorMsg: String
+        val errorMsg: String = ""
 )
 
 data class TableDataSetModel(
         @Expose
         @SerializedName("headers")
-        val headers: List<HeaderModel>,
+        val headers: List<HeaderModel> = emptyList(),
         @Expose
         @SerializedName("rows")
-        val rows: List<RowModel>
+        val rows: List<RowModel> = emptyList()
 )
 
 data class HeaderModel(
         @Expose
         @SerializedName("title")
-        val title: String,
+        val title: String = "",
         @Expose
         @SerializedName("width")
-        val width: Int
+        val width: Int = 0
 )
 
 data class RowModel(
         @Expose
         @SerializedName("columns")
-        val columns: List<ColumnModel>,
+        val columns: List<ColumnModel> = emptyList(),
         @Expose
         @SerializedName("id")
-        val id: String
+        val id: String = ""
 )
 
 data class ColumnModel(
         @Expose
         @SerializedName("type")
-        val type: Int,
+        val type: Int = 0,
         @Expose
         @SerializedName("value")
-        val value: String
+        val value: String = ""
 )

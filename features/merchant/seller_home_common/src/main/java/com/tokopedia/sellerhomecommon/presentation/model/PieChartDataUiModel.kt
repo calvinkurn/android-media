@@ -12,7 +12,7 @@ class PieChartDataUiModel(
 
 data class PieChartUiModel(
         val item: List<PieChartItemUiModel> = emptyList(),
-        val summary: PieChartSummaryUiModel = PieChartSummaryUiModel()
+        val summary: ChartSummaryUiModel = ChartSummaryUiModel()
 )
 
 data class PieChartItemUiModel(
@@ -20,13 +20,6 @@ data class PieChartItemUiModel(
         val legend: String = "",
         val percentage: Int = 0,
         val percentageFmt: String = "",
-        val value: Int = 0,
-        val valueFmt: String = ""
-)
-
-data class PieChartSummaryUiModel(
-        val diffPercentage: Int = 0,
-        val diffPercentageFmt: String = "",
         val value: Int = 0,
         val valueFmt: String = ""
 )

@@ -84,4 +84,13 @@ class StatisticUseCaseModule {
     ): GetPieChartDataUseCase {
         return GetPieChartDataUseCase(gqlRepository, mapper)
     }
+
+    @StatisticScope
+    @Provides
+    fun provideGetBarChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: BarChartMapper
+    ): GetBarChartDataUseCase {
+        return GetBarChartDataUseCase(gqlRepository, mapper)
+    }
 }
