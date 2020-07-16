@@ -9,5 +9,4 @@ interface InboxReviewTypeFactory {
     fun type(inboxReviewEmptyUiModel: InboxReviewEmptyUiModel): Int
     fun type(inboxReviewErrorUiModel: InboxReviewErrorUiModel): Int
     fun type(feedbackInboxUiModel: FeedbackInboxUiModel): Int
-    fun type(filterInboxReviewUiModel: FilterInboxReviewUiModel): Int
 }

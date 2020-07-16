@@ -16,6 +16,7 @@ object ReviewSellerConstant {
     const val LAST_MONTH_VALUE = "30 Hari Terakhir"
     const val LAST_YEAR_VALUE = "1 Tahun Terakhir"
     const val ALL_VALUE = "Semua"
+    const val ALL_RATING = "all"
 
     const val MOST_REVIEW_KEY = "review_count desc"
     const val HIGHEST_RATING_KEY = "rating_avg desc"
@@ -39,6 +40,9 @@ object ReviewSellerConstant {
     const val UNANSWERED_VALUE = "unanswered"
 
     const val ALL_RATINGS = "Semua Rating"
+
+    const val prefixStatus = "status="
+    const val prefixRating = "rating="
 
     fun mapSortReviewProduct(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()

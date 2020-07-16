@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ALL_RATING
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixRating
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
 import com.tokopedia.reviewseller.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.reviewseller.feature.inboxreview.domain.usecase.GetInboxReviewUseCase
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewUiModel
@@ -16,6 +19,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
+import java.util.ArrayList
 import javax.inject.Inject
 
 class InboxReviewViewModel @Inject constructor(
@@ -33,9 +37,6 @@ class InboxReviewViewModel @Inject constructor(
     private var allFilterList: List<SortFilterInboxItemWrapper> = listOf()
 
     private var filterByList: MutableList<String> = mutableListOf()
-
-    private val prefixStatus = "status="
-    private val prefixRating = "rating="
 
     private val _ratingFilterData = MutableLiveData<List<ListItemRatingWrapper>>()
     private val _allFilterInboxReviewData = MutableLiveData<List<SortFilterInboxItemWrapper>>()
@@ -70,15 +71,28 @@ class InboxReviewViewModel @Inject constructor(
         }
     }
 
-    fun setFilterRatingDataText(data: List<SortFilterInboxItemWrapper>) {
-        _allFilterInboxReviewData.value = data
+    fun setFilterAllDataText(data: ArrayList<SortFilterInboxItemWrapper>) {
+        val countSelected = data.filter { it.isSelected }.count()
+        val updatedData = data.mapIndexed { index, filter ->
+            if(index == 0) {
+                if (countSelected == 5) {
+                    filter.sortValue = ALL_RATING
+                }
+            }
+            filter
+        }
+        _allFilterInboxReviewData.value = updatedData
     }
 
-    fun setFilterDataText(data: ArrayList<ListItemRatingWrapper>) {
+    fun setFilterRatingDataText(data: List<ListItemRatingWrapper>) {
         _ratingFilterData.value = data
     }
 
-    fun getFilterListUpdated(): ArrayList<ListItemRatingWrapper> {
+    fun getFilterListUpdated(): List<SortFilterInboxItemWrapper> {
+        return allFilterList
+    }
+
+    fun getRatingFilterListUpdated(): ArrayList<ListItemRatingWrapper> {
         return filterRatingList
     }
 
@@ -91,7 +105,7 @@ class InboxReviewViewModel @Inject constructor(
                 )
 
                 val inboxReviewResultResponse = getInboxReviewUseCase.executeOnBackground()
-                InboxReviewMapper.mapToInboxReviewUiModel(inboxReviewResultResponse, itemRatingListWrapper = filterRatingList, userSession =  userSession)
+                InboxReviewMapper.mapToInboxReviewUiModel(inboxReviewResultResponse, userSession =  userSession)
             }
             _inboxReview.postValue(Success(inboxReviewResult))
         }, onError = {
@@ -110,7 +124,7 @@ class InboxReviewViewModel @Inject constructor(
             if (ratingFilterTextGenerated.isNotBlank()) {
                 filterByList.add(ratingFilterTextGenerated)
             }
-            getFeedbackInboxReviewListNext( 1)
+            getInboxReview( 1)
         }
 
         _feedbackInboxReview.addSource(_allFilterInboxReviewData) { data ->
@@ -123,7 +137,7 @@ class InboxReviewViewModel @Inject constructor(
             if(statusFilterTextGenerated.isNotBlank()) {
                 filterByList.add(statusFilterTextGenerated)
             }
-            getFeedbackInboxReviewListNext(1)
+            getInboxReview(1)
         }
     }
 
@@ -136,15 +150,12 @@ class InboxReviewViewModel @Inject constructor(
                 )
 
                 val productFeedbackInboxReviewResponse = getInboxReviewUseCase.executeOnBackground()
-                InboxReviewMapper.mapToInboxReviewUiModel(productFeedbackInboxReviewResponse, itemRatingListWrapper = filterRatingList, userSession =  userSession)
+                InboxReviewMapper.mapToInboxReviewUiModel(productFeedbackInboxReviewResponse, userSession =  userSession)
             }
             _feedbackInboxReview.postValue(Success(feedbackInboxReviewList))
         }, onError = {
             _feedbackInboxReview.postValue(Fail(it))
         })
     }
-
-
-
 
 }

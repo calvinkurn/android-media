@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FilterInboxReviewUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewEmptyUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewErrorUiModel
 
@@ -13,13 +12,6 @@ class InboxReviewAdapter(
 ) : BaseListAdapter<Visitable<*>, InboxReviewAdapterTypeFactory>(inboxReviewAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
 
     private var feedbackInboxListUiModel: MutableList<FeedbackInboxUiModel> = mutableListOf()
-
-    fun setFilterInboxReview(filterInboxReviewList: FilterInboxReviewUiModel) {
-        if (visitables.getOrNull(lastIndex) !is FilterInboxReviewUiModel) {
-            visitables.add(filterInboxReviewList)
-            notifyItemInserted(lastIndex)
-        }
-    }
 
     fun setFeedbackListData(feedbackInboxList: List<FeedbackInboxUiModel>) {
         val lastIndex = visitables.size
@@ -48,19 +40,9 @@ class InboxReviewAdapter(
     }
 
     fun addInboxFeedbackEmpty(isFilter: Boolean) {
-        if (isFilter) {
-            val feedbackFirstIndex = visitables.count { it is FeedbackInboxUiModel }
-            if (visitables.getOrNull(lastIndex) !is InboxReviewEmptyUiModel) {
-                visitables.removeAll { it is FeedbackInboxUiModel }
-                notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
-                visitables.add(InboxReviewEmptyUiModel(isFilter))
-                notifyItemInserted(lastIndex)
-            }
-        } else {
-            if (visitables.getOrNull(lastIndex) !is InboxReviewEmptyUiModel) {
-                visitables.add(InboxReviewEmptyUiModel(isFilter))
-                notifyItemInserted(lastIndex)
-            }
+        if (visitables.getOrNull(lastIndex) !is InboxReviewEmptyUiModel) {
+            visitables.add(InboxReviewEmptyUiModel(isFilter))
+            notifyItemInserted(lastIndex)
         }
     }
 

@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListItemRatingWrapper
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -112,33 +112,14 @@ fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int)
     }
 }
 
-fun ListUnify.setSelectedFilterCheckbox(items: List<ListItemRatingWrapper>, position: Int): List<ListItemRatingWrapper> {
-    val clickedItem = this.getItemAtPosition(position) as? ListItemUnify
-    val isSelected = clickedItem?.listLeftCheckbox?.isSelected ?: false
-    return items.mapIndexed { index, item ->
-        when (choiceMode) {
-            ListView.CHOICE_MODE_MULTIPLE -> {
-                item.listItemUnify?.listLeftCheckbox?.isChecked = item.listItemUnify?.listLeftCheckbox?.isChecked != isSelected
-                item.sortValue = if (item.listItemUnify?.listLeftCheckbox?.isChecked != isSelected) (index + 1).toString() else ""
-                item.isSelected = item.listItemUnify?.listLeftCheckbox?.isChecked != isSelected
-            }
-        }
-        item
-    }
+fun String.getStatusFilter(prefix: String): String {
+    return this.substringAfterLast(prefix)
 }
 
-fun ListUnify.resetAllFilterCheckbox(items: List<ListItemRatingWrapper>): List<ListItemRatingWrapper> {
-    return items.map {
-        when (choiceMode) {
-            ListView.CHOICE_MODE_MULTIPLE -> {
-                it.listItemUnify?.listLeftCheckbox?.isChecked = false
-                it.isSelected = false
-                it.sortValue = ""
-            }
-        }
-        it
+val String.isAnswered: Boolean
+    get() {
+        return this == ANSWERED_VALUE
     }
-}
 
 fun Float?.roundDecimal(): String {
     val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()

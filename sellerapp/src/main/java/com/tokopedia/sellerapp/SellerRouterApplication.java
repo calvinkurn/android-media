@@ -60,6 +60,8 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.fragment.InboxReviewFragment;
+import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.InboxReviewFragment;
 import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -239,6 +241,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getReviewSellerFragment() {
         return RatingProductFragment.Companion.createInstance();
+    }
+
+    @Override
+    public Fragment getInboxReviewFragment() {
+        return InboxReviewFragment.Companion.createInstance();
     }
 
     @Override

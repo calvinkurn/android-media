@@ -269,7 +269,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Fragment getReviewSellerFragment() {
+    public Fragment getInboxReviewFragment() {
         return null;
     }
 

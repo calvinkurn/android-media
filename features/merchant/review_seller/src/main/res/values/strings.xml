@@ -89,5 +89,7 @@
     <string name="empty_desc_add_template_label">Oops, isi template harus diisi.</string>
     <string name="error_message_maximum_template_reply">Maksimum 5 template balas ulasan</string>
     <string name="titlte_inbox_review">Inbox Review</string>
+    <string name="title_filter_rating">Filter Rating</string>
+    <string name="reset_filter">Reset</string>
 
 </resources>

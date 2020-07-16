@@ -1,7 +1,6 @@
 package com.tokopedia.reviewseller.feature.inboxreview.domain.mapper
 
-import android.content.Context
-import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ALL_RATINGS
@@ -9,23 +8,23 @@ import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_KEY
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_KEY
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VALUE
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
+import com.tokopedia.reviewseller.common.util.getStatusFilter
+import com.tokopedia.reviewseller.common.util.isAnswered
 import com.tokopedia.reviewseller.feature.inboxreview.domain.response.InboxReviewResponse
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.setImage
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.ArrayList
 
 object InboxReviewMapper {
 
     fun mapToInboxReviewUiModel(inboxReviewResponse: InboxReviewResponse.ProductGetInboxReviewByShop,
-                                itemRatingListWrapper: ArrayList<ListItemRatingWrapper>,
                                 userSession: UserSessionInterface): InboxReviewUiModel {
         return InboxReviewUiModel(
                 feedbackInboxList = mapToFeedbackUiModel(inboxReviewResponse, userSession),
-                filterItemWrapper = FilterInboxReviewUiModel(mapToItemSortFilter(itemRatingListWrapper)),
                 filterBy = inboxReviewResponse.filterBy.orEmpty(),
                 page = inboxReviewResponse.page.orZero(),
                 hasNext = inboxReviewResponse.hasNext ?: false,
@@ -63,105 +62,82 @@ object InboxReviewMapper {
                             variantID = it.product.productVariant.variantID.orZero(),
                             variantName = it.product.productVariant.variantName.orEmpty(),
                             invoiceID = it.invoiceID.orEmpty(),
-                            sellerUser = userSession.name
+                            sellerUser = userSession.name,
+                            isReplied = inboxReviewResponse.filterBy?.getStatusFilter(prefixStatus)?.isAnswered
+                                    ?: false
                     )
             )
         }
         return feedbackListUiModel
     }
 
-    fun mapToItemSortFilter(data: ArrayList<ListItemRatingWrapper>): ArrayList<SortFilterInboxItemWrapper> {
-        val countSelected = data.filter { it.isSelected }.count()
-        val valueSelected = data.joinToString(separator = ",") { it.sortValue }
-        val isAllFilter = countSelected == 5
-
-        return if (data.isEmpty()) {
-            mapToItemSortFilterIsEmpty(countSelected, valueSelected = valueSelected, isAllFilter = isAllFilter)
-        } else {
-            mapToItemSortFilterIsNotEmpty(countSelected, valueSelected, isAllFilter, data)
-        }
-    }
-
-    fun mapToItemSortFilterIsNotEmpty(countSelected: Int, valueSelected: String, isAllFilter: Boolean, data: ArrayList<ListItemRatingWrapper>): ArrayList<SortFilterInboxItemWrapper> {
+    fun mapToItemSortFilterIsNotEmpty(countSelected: Int, isAllFilter: Boolean, data: List<SortFilterInboxItemWrapper>): ArrayList<SortFilterInboxItemWrapper> {
         val itemSortFilterList = ArrayList<SortFilterInboxItemWrapper>()
 
-        data.mapIndexed { index, listItemRatingWrapper ->
+        data.mapIndexed { index, sortFilterItem ->
             if (index == 0) {
                 if (!isAllFilter) {
-                    if (countSelected > 1) {
+                    if (countSelected == 0) {
                         val sortFilter = SortFilterItem(
-                                title = "($countSelected) Filter",
-                                type = if(listItemRatingWrapper.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
+                                title = ALL_RATINGS,
+                                type = if (sortFilterItem.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
                                 size = ChipsUnify.SIZE_SMALL).apply {
                             refChipUnify.setChevronClickListener { }
                         }
-                        itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = valueSelected, isSelected = listItemRatingWrapper.isSelected))
+                        itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = "", isSelected = sortFilterItem.isSelected))
+                    } else if (countSelected > 1) {
+                        val sortFilter = SortFilterItem(
+                                title = "($countSelected) Filter",
+                                type = if (sortFilterItem.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
+                                size = ChipsUnify.SIZE_SMALL).apply {
+                            refChipUnify.setChevronClickListener { }
+                        }
+                        itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = sortFilterItem.sortValue, isSelected = sortFilterItem.isSelected))
                     } else {
                         val sortFilter = SortFilterItem(
                                 title = countSelected.toString(),
-                                type = if(listItemRatingWrapper.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
+                                type = if (sortFilterItem.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
                                 size = ChipsUnify.SIZE_SMALL).apply {
                             refChipUnify.chip_image_icon.setImage(R.drawable.ic_rating_star_item, 0F)
                             refChipUnify.setChevronClickListener { }
                         }
-                        itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = valueSelected, isSelected = listItemRatingWrapper.isSelected))
+                        itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = sortFilterItem.sortValue, isSelected = sortFilterItem.isSelected))
                     }
                 } else {
                     val sortFilter = SortFilterItem(
                             title = ALL_RATINGS,
-                            type = if(listItemRatingWrapper.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
+                            type = if (sortFilterItem.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
                             size = ChipsUnify.SIZE_SMALL).apply {
                         refChipUnify.setChevronClickListener { }
                     }
                     val allSort = "all"
-                    itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = allSort, isSelected = listItemRatingWrapper.isSelected))
+                    itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = allSort, isSelected = sortFilterItem.isSelected))
                 }
             }
 
             val sortFilterUnAnswered = SortFilterItem(
-                    title = listItemRatingWrapper.listItemUnify?.listTitleText.orEmpty(),
-                    type = ChipsUnify.TYPE_NORMAL,
+                    title = sortFilterItem.sortFilterItem?.title.toString(),
+                    type = if (sortFilterItem.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
 
-            itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilterUnAnswered, sortValue = listItemRatingWrapper.sortValue,
-                    isSelected = listItemRatingWrapper.isSelected))
+            itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilterUnAnswered, sortValue = sortFilterItem.sortValue,
+                    isSelected = sortFilterItem.isSelected))
         }
 
         return itemSortFilterList
     }
 
-    fun mapToItemSortFilterIsEmpty(countSelected: Int, valueSelected: String, isAllFilter: Boolean): ArrayList<SortFilterInboxItemWrapper> {
+    fun mapToItemSortFilterIsEmpty(): ArrayList<SortFilterInboxItemWrapper> {
         val itemSortFilterList = ArrayList<SortFilterInboxItemWrapper>()
 
-        if (!isAllFilter) {
-            if (countSelected > 1) {
-                val sortFilter = SortFilterItem(
-                        title = "($countSelected) Filter",
-                        type = ChipsUnify.TYPE_NORMAL,
-                        size = ChipsUnify.SIZE_SMALL).apply {
-                    refChipUnify.setChevronClickListener { }
-                }
-                itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = valueSelected, isSelected = false))
-            } else {
-                val sortFilter = SortFilterItem(
-                        title = countSelected.toString(),
-                        type = ChipsUnify.TYPE_NORMAL,
-                        size = ChipsUnify.SIZE_SMALL).apply {
-                    refChipUnify.chip_image_icon.setImage(R.drawable.ic_rating_star_item, 0F)
-                    refChipUnify.setChevronClickListener { }
-                }
-                itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = valueSelected, isSelected = false))
-            }
-        } else {
-            val sortFilter = SortFilterItem(
-                    title = ALL_RATINGS,
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL).apply {
-                refChipUnify.setChevronClickListener { }
-            }
-            val allSort = "all"
-            itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, sortValue = allSort, isSelected = false))
+        val sortFilter = SortFilterItem(
+                title = ALL_RATINGS,
+                type = ChipsUnify.TYPE_NORMAL,
+                size = ChipsUnify.SIZE_SMALL).apply {
+            refChipUnify.chip_image_icon.hide()
+            refChipUnify.setChevronClickListener { }
         }
+        itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, isSelected = false))
 
         val sortFilterUnAnswered = SortFilterItem(
                 title = UNANSWERED_KEY,
@@ -169,7 +145,6 @@ object InboxReviewMapper {
                 size = ChipsUnify.SIZE_SMALL)
 
         itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilterUnAnswered, sortValue = UNANSWERED_VALUE, isSelected = false))
-
 
         val sortFilterAnswered = SortFilterItem(
                 title = ANSWERED_KEY,
@@ -181,24 +156,14 @@ object InboxReviewMapper {
         return itemSortFilterList
     }
 
-    fun mapToItemRatingFilterBottomSheet(context: Context, data: ArrayList<ListItemRatingWrapper>): ArrayList<ListItemRatingWrapper> {
+    fun mapToItemRatingFilterBottomSheet(data: ArrayList<ListItemRatingWrapper>): ArrayList<ListItemRatingWrapper> {
         val itemUnifyList: ArrayList<ListItemRatingWrapper> = arrayListOf()
         val maxRatingFilter = 5
-        val iconSize = 20.toPx()
-        val iconList = ContextCompat.getDrawable(context, R.drawable.ic_rating_star_item)
 
         if (data.isEmpty()) {
             itemUnifyList.apply {
                 for (i in 1..maxRatingFilter) {
                     add(ListItemRatingWrapper(
-                            listItemUnify = ListItemUnify(
-                                    title = i.toString(),
-                                    description = "").apply {
-                                listDrawable = iconList
-                                listIconHeight = iconSize
-                                listIconWidth = iconSize
-                                setVariant(leftComponent = ListItemUnify.CHECKBOX)
-                            },
                             isSelected = false,
                             sortValue = i.toString()
                     ))
@@ -209,14 +174,6 @@ object InboxReviewMapper {
                 data.map { item ->
                     add(
                             ListItemRatingWrapper(
-                                    listItemUnify = ListItemUnify(
-                                            title = item.listItemUnify?.listTitleText.orEmpty(),
-                                            description = "").apply {
-                                        listDrawable = iconList
-                                        listIconHeight = iconSize
-                                        listIconWidth = iconSize
-                                        setVariant(leftComponent = ListItemUnify.CHECKBOX)
-                                    },
                                     isSelected = item.isSelected,
                                     sortValue = item.sortValue
                             )

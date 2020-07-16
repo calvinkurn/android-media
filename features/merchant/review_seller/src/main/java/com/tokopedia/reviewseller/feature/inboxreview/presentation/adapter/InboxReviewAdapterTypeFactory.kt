@@ -5,13 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FilterInboxReviewUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewEmptyUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewErrorUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.viewholder.*
 
 class InboxReviewAdapterTypeFactory(
-        private val filterInboxReviewListener: FilterInboxReviewListener,
         private val feedbackInboxReviewListener: FeedbackInboxReviewListener,
         private val globalErrorStateListener: GlobalErrorStateListener
 ) : BaseAdapterTypeFactory(), InboxReviewTypeFactory {
@@ -28,17 +26,12 @@ class InboxReviewAdapterTypeFactory(
         return InboxReviewFeedbackViewHolder.LAYOUT
     }
 
-    override fun type(filterInboxReviewUiModel: FilterInboxReviewUiModel): Int {
-        return FilterInboxReviewViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: LoadingModel): Int {
         return InboxReviewShimmerLoadingViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type) {
-            FilterInboxReviewViewHolder.LAYOUT -> FilterInboxReviewViewHolder(parent, filterInboxReviewListener)
             InboxReviewEmptyViewHolder.LAYOUT -> InboxReviewEmptyViewHolder(parent)
             InboxReviewErrorViewHolder.LAYOUT -> InboxReviewErrorViewHolder(parent, globalErrorStateListener)
             InboxReviewShimmerLoadingViewHolder.LAYOUT -> InboxReviewShimmerLoadingViewHolder(parent)

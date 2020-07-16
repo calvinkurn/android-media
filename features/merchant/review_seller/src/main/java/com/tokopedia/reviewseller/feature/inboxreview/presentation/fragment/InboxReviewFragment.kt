@@ -5,52 +5,65 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
 import com.tokopedia.reviewseller.common.di.component.DaggerReviewSellerComponent
 import com.tokopedia.reviewseller.common.di.component.ReviewSellerComponent
+import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ALL_RATINGS
+import com.tokopedia.reviewseller.common.util.toggle
+import com.tokopedia.reviewseller.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter.*
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FilterInboxReviewUiModel
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewUiModel
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.*
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.viewmodel.InboxReviewViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_inbox_review.*
+import kotlinx.android.synthetic.main.item_filter_inbox_review.*
 import javax.inject.Inject
 
-class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(), HasComponent<ReviewSellerComponent>,
-        FilterInboxReviewListener, FeedbackInboxReviewListener, GlobalErrorStateListener{
+class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(), HasComponent<ReviewSellerComponent>,
+        FeedbackInboxReviewListener, GlobalErrorStateListener {
+
+    companion object {
+        fun createInstance(): InboxReviewFragment {
+            return InboxReviewFragment()
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val inboxReviewViewModel: InboxReviewViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxReviewViewModel::class.java)
     }
 
     private val inboxReviewAdapterTypeFactory by lazy {
-        InboxReviewAdapterTypeFactory(this, this, this)
+        InboxReviewAdapterTypeFactory( this, this)
     }
 
     private val inboxReviewAdapter: InboxReviewAdapter
         get() = adapter as InboxReviewAdapter
 
+    private val allSelected = 5
+
     private var isFilter = false
 
-    private var bottomSheetFilterRating: BottomSheetUnify? = null
-    private var filterRatingListUnify: ListUnify? = null
-    private var filterRatingButton: UnifyButton? = null
+    private var sortFilterItemInboxReviewWrapper = ArrayList<SortFilterInboxItemWrapper>()
 
     override fun getScreenName(): String {
         return getString(R.string.titlte_inbox_review)
@@ -63,9 +76,9 @@ class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewBottomSheet()
         observeInboxReview()
         observeFeedbackInboxReview()
+        initSortFilterInboxReview()
     }
 
     override fun onDestroy() {
@@ -96,9 +109,11 @@ class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterType
 
     override fun getComponent(): ReviewSellerComponent? {
         return activity?.run {
+            val appComponent = (activity?.application as? BaseMainApplication)?.baseAppComponent
             DaggerReviewSellerComponent
                     .builder()
-                    .reviewSellerComponent(ReviewSellerComponentBuilder.getComponent(application))
+                    .reviewSellerModule(ReviewSellerModule())
+                    .reviewSellerComponent(appComponent)
                     .build()
         }
     }
@@ -113,31 +128,34 @@ class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterType
         loadInitialData()
     }
 
+    override fun getRecyclerView(view: View?): RecyclerView {
+        return rvInboxReview
+    }
+
     override fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isReply: Boolean, adapterPosition: Int) {
 
     }
 
-    override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int) {
-
-    }
-
-    override fun onItemFilterRatingClicked(data: FilterInboxReviewUiModel, adapterPosition: Int) {
-
-    }
-
-    override fun onItemFilterStatusClicked(data: FilterInboxReviewUiModel, adapterPosition: Int) {
-
+    override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int) {
+        context?.run {
+            startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                    context = this,
+                    title = titleProduct,
+                    imageUrls = imageUrls,
+                    imageThumbnailUrls = thumbnailsUrl,
+                    imagePosition = position
+            ))
+        }
     }
 
     override fun onActionGlobalErrorStateClicked() {
-        clearAllData()
         loadInitialData()
     }
 
     private fun observeInboxReview() {
         observe(inboxReviewViewModel.inboxReview) {
             hideLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
                     onSuccessGetFeedbackInboxReview(it.data)
                 }
@@ -151,9 +169,9 @@ class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterType
     private fun observeFeedbackInboxReview() {
         observe(inboxReviewViewModel.feedbackInboxReview) {
             hideLoading()
-            when(it) {
+            when (it) {
                 is Success -> {
-                    onSuccessGetFeedbackInboxReview(it.data)
+                    onSuccessGetFeedbackInboxReviewNext(it.data)
                 }
                 is Fail -> {
                     onErrorGetInboxReviewData()
@@ -164,31 +182,24 @@ class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterType
 
     private fun onSuccessGetFeedbackInboxReview(data: InboxReviewUiModel) {
         swipeToRefresh.isRefreshing = false
-        if(data.page == 1) {
+        if (data.page == 1) {
             if (data.feedbackInboxList.isEmpty() && isFilter) {
+                sortFilterInboxReview?.show()
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
+                isFilter = false
             } else if (data.feedbackInboxList.isEmpty() && !isFilter) {
+                sortFilterInboxReview?.hide()
                 inboxReviewAdapter.clearAllElements()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             }
         } else {
-            inboxReviewAdapter.setFilterInboxReview(data.filterItemWrapper)
             inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
         }
         updateScrollListenerState(data.hasNext)
     }
 
     private fun onSuccessGetFeedbackInboxReviewNext(data: InboxReviewUiModel) {
-        if(data.page == 1) {
-            if (data.feedbackInboxList.isEmpty() && isFilter) {
-                inboxReviewAdapter.addInboxFeedbackEmpty(true)
-            } else if (data.feedbackInboxList.isEmpty() && !isFilter) {
-                inboxReviewAdapter.clearAllElements()
-                inboxReviewAdapter.addInboxFeedbackEmpty(false)
-            }
-        } else {
-            inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
-        }
+        inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
         updateScrollListenerState(data.hasNext)
     }
 
@@ -210,12 +221,116 @@ class InboxReviewFragment: BaseListFragment<Visitable<*>, InboxReviewAdapterType
         }
     }
 
-    private fun initViewBottomSheet() {
-        val view = View.inflate(context, R.layout.bottom_sheet_filter_rating_inbox_review, null)
-        bottomSheetFilterRating = BottomSheetUnify()
-        filterRatingListUnify = view.findViewById(R.id.ratingListInboxReview)
-        filterRatingButton = view.findViewById(R.id.btnFilter)
-        bottomSheetFilterRating?.setChild(view)
+    private fun initSortFilterInboxReview() {
+        inboxReviewViewModel.updateStatusFilterData(InboxReviewMapper.mapToItemSortFilterIsEmpty())
+        sortFilterItemInboxReviewWrapper = ArrayList(inboxReviewViewModel.getFilterListUpdated())
+        val itemSortFilterList = ArrayList<SortFilterItem>()
+        itemSortFilterList.addAll(sortFilterItemInboxReviewWrapper.mapIndexed { index, it ->
+            SortFilterItem(
+                    title = it.sortFilterItem?.title.toString(),
+                    type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
+                    size = ChipsUnify.SIZE_SMALL
+            ).apply {
+                if(index == 0) {
+                    refChipUnify.setChevronClickListener {}
+                }
+            }
+        })
+
+        itemSortFilterList.forEachIndexed { index, sortFilterItem ->
+            sortFilterItem.listener = {
+                if (index == 0) {
+                    initBottomSheetFilterPeriod()
+                } else {
+                    updateFilterStatusInboxReview(index)
+                }
+                sortFilterItem.toggle()
+            }
+        }
+        sortFilterInboxReview?.apply {
+            addItem(itemSortFilterList)
+            dismissListener = {
+                resetAllFilterUnselected()
+            }
+        }
     }
 
+    private fun resetAllFilterUnselected() {
+        sortFilterItemInboxReviewWrapper.map {
+            it.sortFilterItem?.type = ChipsUnify.TYPE_NORMAL
+            it.isSelected = false
+        }
+    }
+
+    private fun initBottomSheetFilterPeriod() {
+        val ratingListWrapper = InboxReviewMapper.mapToItemRatingFilterBottomSheet(inboxReviewViewModel.getRatingFilterListUpdated())
+        inboxReviewViewModel.updateRatingFilterData(ratingListWrapper)
+        val bottomSheet = FilterRatingBottomSheet(activity, ::onRatingFilterSelected)
+        inboxReviewViewModel.getRatingFilterListUpdated().let { bottomSheet.setRatingFilterList(it) }
+        bottomSheet.showDialog()
+    }
+
+    private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
+        isFilter = true
+        updatedSortFilterRatingInboxReview(filterRatingList)
+        inboxReviewAdapter.removeInboxFeedbackError()
+        inboxReviewAdapter.removeInboxFeedbackEmpty()
+        inboxReviewAdapter.showLoading()
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
+    private fun updateFilterStatusInboxReview(index: Int) {
+        isFilter = true
+        val updatedState = sortFilterItemInboxReviewWrapper[index].sortFilterItem?.type == ChipsUnify.TYPE_SELECTED
+        sortFilterItemInboxReviewWrapper[index].isSelected = updatedState
+
+        inboxReviewViewModel.setFilterAllDataText(sortFilterItemInboxReviewWrapper)
+        inboxReviewViewModel.updateStatusFilterData(ArrayList(sortFilterItemInboxReviewWrapper))
+
+        inboxReviewAdapter.removeInboxFeedbackError()
+        inboxReviewAdapter.removeInboxFeedbackEmpty()
+        inboxReviewAdapter.showLoading()
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
+    private fun updatedSortFilterRatingInboxReview(filterRatingList: List<ListItemRatingWrapper>) {
+        val countSelected = filterRatingList.filter { it.isSelected }.count()
+        val ratingOneSelected = filterRatingList.firstOrNull()?.sortValue.orEmpty()
+        val isAllRating = countSelected == allSelected
+        val positionSortFilter = 0
+
+        val updatedState = sortFilterItemInboxReviewWrapper[positionSortFilter].sortFilterItem?.type == ChipsUnify.TYPE_SELECTED
+
+        sortFilterItemInboxReviewWrapper[positionSortFilter].isSelected = updatedState
+
+        if (isAllRating) {
+            sortFilterItemInboxReviewWrapper[positionSortFilter].apply {
+                sortFilterItem?.title = ALL_RATINGS
+                sortFilterItem?.refChipUnify?.chip_image_icon?.hide()
+            }
+        } else {
+            if (countSelected == 0) {
+                sortFilterItemInboxReviewWrapper[positionSortFilter].apply {
+                    sortFilterItem?.title = ALL_RATINGS
+                    sortFilterItem?.refChipUnify?.chip_image_icon?.hide()
+                }
+            } else if (countSelected == 1) {
+                sortFilterItemInboxReviewWrapper[positionSortFilter].apply {
+                    sortFilterItem?.also {
+                        it.title = ratingOneSelected
+                        it.refChipUnify.chip_image_icon.show()
+                        it.refChipUnify.chip_image_icon.setImage(R.drawable.ic_rating_star_item, 0F)
+                    }
+                }
+            } else {
+                sortFilterItemInboxReviewWrapper[positionSortFilter].sortFilterItem?.apply {
+                    title = "($countSelected) Filter"
+                    refChipUnify.chip_image_icon.hide()
+                }
+            }
+        }
+
+        inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
+        inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
+    }
 }

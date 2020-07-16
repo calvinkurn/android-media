@@ -56,6 +56,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
+    private Fragment inboxReviewFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
@@ -102,6 +103,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
+            inboxReviewFragment = applicationContext.getInboxReviewFragment();
             Bundle reviewSellerBundle = new Bundle();
             reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
             reviewSellerFragment.setArguments(reviewSellerBundle);
@@ -132,6 +134,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         if(GlobalConfig.isSellerApp()) {
             if(reviewSellerFragment != null) {
                 indicator.addNewTab(getString(R.string.title_rating_product));
+            }
+            if(inboxReviewFragment != null) {
+                indicator.addNewTab(getString(R.string.title_review_inbox));
             }
         }
 
@@ -197,6 +202,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
+            fragmentList.add(inboxReviewFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {

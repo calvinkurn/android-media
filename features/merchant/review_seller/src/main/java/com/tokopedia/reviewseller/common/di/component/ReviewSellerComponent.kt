@@ -3,7 +3,7 @@ package com.tokopedia.reviewseller.common.di.component
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
 import com.tokopedia.reviewseller.common.di.scope.ReviewSellerScope
-import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.InboxReviewFragment
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.fragment.InboxReviewFragment
 import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment
 import dagger.Component
 
