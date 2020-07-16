@@ -15,13 +15,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
@@ -31,11 +30,11 @@ class PreferenceListActivityTest {
     @get:Rule
     var activityRule = ActivityTestRule(PreferenceListActivity::class.java, false, false)
 
+    @get:Rule
+    val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    private var swipeRefreshIdlingResource: IdlingResource? = null
-    private var progressDialogIdlingResource: IdlingResource? = null
-
+    private var idlingResource: IdlingResource? = null
     private val interceptor = PreferenceListActivityTestInterceptor()
 
     private fun setupGraphqlMockResponse() {
@@ -44,36 +43,14 @@ class PreferenceListActivityTest {
     }
 
     private fun setupIdlingResource() {
-        val activity = activityRule.launchActivity(null)
-        swipeRefreshIdlingResource = SwipeRefreshIdlingResource(activity, R.id.swipe_refresh_layout)
-        progressDialogIdlingResource = ProgressDialogIdlingResource {
-            for (fragment in activity.supportFragmentManager.fragments) {
-                if (fragment is PreferenceListFragment) {
-                    return@ProgressDialogIdlingResource fragment.progressDialog
-                }
-            }
-            return@ProgressDialogIdlingResource null
-        }
-        IdlingRegistry.getInstance().register(swipeRefreshIdlingResource, progressDialogIdlingResource)
+        idlingResource = OccIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
+        activityRule.launchActivity(null)
     }
 
     private fun cleanup() {
-        IdlingRegistry.getInstance().unregister(swipeRefreshIdlingResource, progressDialogIdlingResource)
+        IdlingRegistry.getInstance().unregister(idlingResource)
         activityRule.finishActivity()
-    }
-
-    @Before
-    fun before() {
-        // remove other idling resources before starting test
-        val instance = IdlingRegistry.getInstance()
-        instance.unregister(*instance.resources.toTypedArray())
-    }
-
-    @After
-    fun after() {
-        // remove left idling resources after test
-        val instance = IdlingRegistry.getInstance()
-        instance.unregister(*instance.resources.toTypedArray())
     }
 
     @Test

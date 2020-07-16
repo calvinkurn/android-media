@@ -20,6 +20,7 @@ import com.tokopedia.analyticsdebugger.validator.core.Status
 import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -36,6 +37,9 @@ class PreferenceListActivityTrackingTest {
 
     @get:Rule
     var activityRule = ActivityTestRule(PreferenceListActivity::class.java, false, false)
+
+    @get:Rule
+    val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
 
     private val cls: String? = null
     private val activityMonitor = Instrumentation.ActivityMonitor(cls, null, true)
@@ -69,20 +73,19 @@ class PreferenceListActivityTrackingTest {
 
         setupGraphqlMockResponse()
 
-        activityRule.launchActivity(null)
-
-        idlingResource = SwipeRefreshIdlingResource(activityRule.activity, R.id.swipe_refresh_layout)
+        idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
+        activityRule.launchActivity(null)
 
         InstrumentationRegistry.getInstrumentation().addMonitor(activityMonitor)
     }
 
     private fun cleanup() {
+        gtmLogDBSource.deleteAll().subscribe()
+
         IdlingRegistry.getInstance().unregister(idlingResource)
 
         InstrumentationRegistry.getInstrumentation().removeMonitor(activityMonitor)
-
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @Test

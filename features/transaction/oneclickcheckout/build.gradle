@@ -71,7 +71,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
