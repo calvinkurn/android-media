@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.showToaster
@@ -39,7 +40,8 @@ import javax.inject.Inject
  * Created by jegul on 20/05/20
  */
 class PlayBroadcastPrepareFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
 
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
@@ -104,6 +106,11 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         }
     }
 
+    override fun onBackPressed(): Boolean {
+        analytic.clickCloseOnSetupPage()
+        return false
+    }
+
     private fun initView(view: View) {
         with (view) {
             btnSetup = findViewById(R.id.btn_setup)
@@ -115,6 +122,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
+            analytic.clickPrepareBroadcast()
             openBroadcastSetupPage()
         }
 
@@ -146,6 +154,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
             tvTermsCondition.text = spannedTermsConditionText
 
             tvTermsCondition.setOnClickListener {
+                analytic.clickTnC()
                 openTermsConditionPage()
             }
 
@@ -173,10 +182,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         broadcastCoordinator.navigateToFragment(
                 fragmentClass = PlayBeforeLiveFragment::class.java
         )
-    }
-
-    private fun showBeforeLiveCountDown() {
-
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {

@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -56,7 +57,8 @@ import javax.inject.Inject
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatcherProvider,
-        private val permissionPref: PermissionSharedPreferences
+        private val permissionPref: PermissionSharedPreferences,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment() {
 
     private val job = SupervisorJob()
@@ -146,6 +148,11 @@ class PlayCoverSetupFragment @Inject constructor(
         permissionHelper = PermissionHelperImpl(this, permissionPref)
     }
 
+    override fun onStart() {
+        super.onStart()
+        analytic.viewAddCoverTitleBottomSheet()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_cover_setup, container, false)
     }
@@ -233,10 +240,16 @@ class PlayCoverSetupFragment @Inject constructor(
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
                         viewModel.saveCover(coverSetupView.coverTitle)
                         requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
+                        analytic.clickAddCover()
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
                         shouldUploadCover(coverTitle)
+                        analytic.clickContinueOnAddCoverAndTitlePage()
+                    }
+
+                    override fun onTitleAreaHasFocus() {
+                        analytic.clickAddTitle()
                     }
                 }
         )
@@ -272,10 +285,12 @@ class PlayCoverSetupFragment @Inject constructor(
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
+                analytic.clickContinueOnCroppingPage()
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
                 onChangeCoverFromCropping(viewModel.source)
+                analytic.clickChangeCoverOnCroppingPage()
             }
         })
     }
@@ -331,6 +346,9 @@ class PlayCoverSetupFragment @Inject constructor(
         coverCropView.show()
 
         coverCropView.setImageForCrop(coverImageUri)
+
+        // called twice, the first one with null coverImageUri
+        if (coverImageUri != null) analytic.viewCroppingPage()
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {

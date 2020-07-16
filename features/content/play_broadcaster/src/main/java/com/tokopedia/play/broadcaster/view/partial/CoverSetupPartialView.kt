@@ -31,7 +31,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class CoverSetupPartialView(
         container: ViewGroup,
         private val dataSource: DataSource,
-        listener: Listener
+        private val listener: Listener
 ) : PartialView(container, R.id.cl_cover_setup), LifecycleObserver {
 
     var coverTitle: String
@@ -226,6 +226,7 @@ class CoverSetupPartialView(
             updateTextField(coverTitle)
             showHint(!hasFocus)
             showCounter(hasFocus)
+            if (hasFocus) listener.onTitleAreaHasFocus()
         }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
     }
@@ -275,6 +276,7 @@ class CoverSetupPartialView(
 
         fun onImageAreaClicked(view: CoverSetupPartialView)
         fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String)
+        fun onTitleAreaHasFocus()
     }
 
     interface DataSource {

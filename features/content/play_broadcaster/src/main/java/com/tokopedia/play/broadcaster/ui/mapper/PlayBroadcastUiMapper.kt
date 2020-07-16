@@ -60,6 +60,7 @@ object PlayBroadcastUiMapper {
 
         SearchSuggestionUiModel(
                 queriedText = keyword,
+                suggestedId = it.id,
                 suggestedText = it.name,
                 spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
                     if (startIndex >= 0) setSpan(StyleSpan(Typeface.BOLD), startIndex, lastIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)

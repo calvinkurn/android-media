@@ -21,6 +21,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
@@ -36,6 +37,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.showToaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
+import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
@@ -59,6 +61,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -235,6 +240,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener {
             override fun onCameraIconClicked() {
                 viewModel.switchCamera()
+                sendClickCameraAnalytic()
             }
 
             override fun onCloseIconClicked() {
@@ -329,6 +335,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             this.channelType = config.channelType
             if (channelType == ChannelType.Active) {
                 showDialogWhenActiveOnOtherDevices()
+                analytic.viewDialogViolation(viewModel.channelId, viewModel.title)
             } else {
                 if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
                 else requestPermission()
@@ -344,6 +351,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         if (channelType == ChannelType.Pause) {
             showDialogContinueLiveStreaming()
             openBroadcastActivePage()
+            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
         } else  {
             openBroadcastSetupPage()
         }
@@ -378,15 +386,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun openBroadcastSetupPage() {
         navigateToFragment(PlayBroadcastPrepareFragment::class.java)
+        analytic.openSetupScreen()
     }
 
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
+        analytic.openBroadcastScreen(viewModel.channelId)
     }
 
     private fun showPermissionPage() {
         showActionBar(false)
         navigateToFragment(PlayPermissionFragment::class.java)
+        analytic.openPermissionScreen()
     }
 
     private fun showDialogWhenUnSupportedDevices() {
@@ -410,6 +421,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     viewModel.startPushStream()
+                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -450,6 +462,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 actionListener = actionListener,
                 bottomMargin = toasterBottomMargin
         )
+    }
+
+    private fun sendClickCameraAnalytic() {
+        val currentVisibleFragment = getCurrentFragment()
+        if (currentVisibleFragment != null) {
+            when(currentVisibleFragment) {
+                is PlayBroadcastPrepareFragment -> analytic.clickSwitchCameraOnSetupPage()
+                is PlayBeforeLiveFragment -> analytic.clickSwitchCameraOnFinalSetupPage()
+                is PlayBroadcastUserInteractionFragment -> analytic.clickSwitchCameraOnLivePage(viewModel.channelId, viewModel.title)
+            }
+        }
     }
 
     companion object {

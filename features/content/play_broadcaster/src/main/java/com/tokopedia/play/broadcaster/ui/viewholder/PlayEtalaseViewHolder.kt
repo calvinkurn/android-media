@@ -55,7 +55,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
         if (item.productMap.isEmpty() && item.totalProduct > 0) listener.onEtalaseBound(item.id)
 
         vClickArea.setOnClickListener {
-            listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).mapNotNull {
+            listener.onEtalaseClicked(item.id, item.name, (0 until rvProductPreview.childCount).mapNotNull {
                 val childView = rvProductPreview.getChildAt(it)
                 val viewHolder = rvProductPreview.getChildViewHolder(childView)
                 if (viewHolder is ProductPreviewViewHolder) viewHolder.ivImage else null
@@ -82,6 +82,6 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     interface Listener {
 
         fun onEtalaseBound(etalaseId: String)
-        fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>)
+        fun onEtalaseClicked(etalaseId: String, etalaseName: String, sharedElements: List<View>)
     }
 }

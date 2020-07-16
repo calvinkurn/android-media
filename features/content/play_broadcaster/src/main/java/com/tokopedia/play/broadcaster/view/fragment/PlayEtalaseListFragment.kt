@@ -34,9 +34,10 @@ class PlayEtalaseListFragment @Inject constructor(
     private lateinit var rvEtalase: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
+        override fun onEtalaseClicked(etalaseId: String, etalaseName: String, sharedElements: List<View>) {
             etalaseSetupCoordinator.openEtalaseDetail(
                     etalaseId,
+                    etalaseName,
                     sharedElements
             )
         }

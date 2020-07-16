@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
@@ -47,6 +48,9 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var dispatcher: CoroutineDispatcherProvider
+
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private val job = SupervisorJob()
 
@@ -193,6 +197,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
             if (btnSave.isLoading) return@setOnClickListener
             viewModel.editTitle(title)
             etCoverTitle.clearFocus()
+            analytic.clickSubmitOnEditTitleBottomSheet()
         }
     }
 

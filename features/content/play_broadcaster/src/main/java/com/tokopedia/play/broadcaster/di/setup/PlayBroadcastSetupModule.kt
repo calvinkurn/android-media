@@ -52,4 +52,5 @@ class PlayBroadcastSetupModule {
     @Provides
     @PlayBroadcastSetupScope
     fun provideCoverImageTransformer(): ImageTransformer = PlayMinimumCoverImageTransformer()
+
 }

@@ -58,6 +58,8 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = hydraConfigStore.getChannelId()
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
+    val title: String
+        get() = hydraConfigStore.getTitle()
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -193,7 +195,7 @@ class PlayBroadcastViewModel @Inject constructor(
             _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
 
             setChannelId(channelInfo.channelId)
-            setIngestUrl(channelInfo.ingestUrl)
+            setChannelInfo(channelInfo)
             setSelectedProduct(PlayBroadcastUiMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
 
@@ -349,8 +351,9 @@ class PlayBroadcastViewModel @Inject constructor(
         getCurrentSetupDataStore().setFullCover(cover)
     }
 
-    private fun setIngestUrl(ingestUrl: String) {
-        hydraConfigStore.setIngestUrl(ingestUrl)
+    private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
+        hydraConfigStore.setIngestUrl(channelInfo.ingestUrl)
+        hydraConfigStore.setTitle(channelInfo.title)
     }
 
     private fun setProductConfig(configModel: ProductTagConfigUiModel) {
