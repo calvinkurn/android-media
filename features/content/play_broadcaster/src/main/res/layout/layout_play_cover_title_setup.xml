@@ -132,7 +132,6 @@
                     android:imeOptions="actionDone"
                     android:includeFontPadding="false"
                     android:inputType="textMultiLine"
-                    android:privateImeOptions="disableSticker=true;disableGifKeyboard=true"
                     android:textColor="@color/Neutral_N0"
                     android:textColorHint="@color/play_white_68"
                     android:textCursorDrawable="@drawable/bg_cover_title_cursor"
