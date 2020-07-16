@@ -48,16 +48,17 @@ class TableViewHolder(
 
     private fun setOnSuccess(element: TableWidgetUiModel) {
         with(itemView) {
-            shcTableView.visible()
             commonWidgetErrorState.gone()
             shimmerTableWidgetWidget.gone()
 
             val dataSet = element.data?.dataSet.orEmpty()
             if (dataSet.isNotEmpty()) {
-                shcTableView.showTable(element.data?.dataSet.orEmpty())
-
                 if (dataSet[0].rows.isEmpty()) {
                     setOnTableEmpty()
+                } else {
+                    shcTableView.visible()
+                    tvShcTableOnEmpty.gone()
+                    shcTableView.showTable(element.data?.dataSet.orEmpty())
                 }
             } else {
                 setOnTableEmpty()
@@ -75,6 +76,7 @@ class TableViewHolder(
     private fun showLoadingState() = with(itemView) {
         shimmerTableWidgetWidget.visible()
         shcTableView.gone()
+        tvShcTableOnEmpty.gone()
     }
 
     private fun showErrorState() = with(itemView) {
@@ -82,6 +84,7 @@ class TableViewHolder(
         commonWidgetErrorState.visible()
         tvTableWidgetTitle.visible()
         shcTableView.gone()
+        tvShcTableOnEmpty.gone()
 
         ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
     }
