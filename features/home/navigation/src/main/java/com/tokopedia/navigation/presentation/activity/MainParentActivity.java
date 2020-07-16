@@ -673,7 +673,11 @@ public class MainParentActivity extends BaseActivity implements
     public void renderNotification(Notification notification) {
         this.notification = notification;
         if(bottomNavigation != null) {
-            bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
+            if (notification.getTotalCart() != 0) {
+                bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
+            } else {
+                bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.INVISIBLE);
+            }
             if (notification.getHaveNewFeed()) {
                 bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
                 Intent intent = new Intent(BROADCAST_FEED);
