@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Level
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -528,14 +530,14 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    fun trackOpenScreen(screenName: String, userLoggedIn: Boolean) {
+    fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {
         if (screenName.isNotEmpty()) {
-            val map = getTrackingMapOpenScreen(screenName, userLoggedIn)
+            val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn)
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
         }
     }
 
-    private fun getTrackingMapOpenScreen(pageIdentifier: String, userLoggedIn: Boolean): MutableMap<String, String> {
+    private fun getTrackingMapOpenScreen(pageIdentifier: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[KEY_EVENT] = OPEN_SCREEN
         map[EVENT_NAME] = OPEN_SCREEN
@@ -543,11 +545,40 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         map[IS_LOGGED_IN_STATUS] = userLoggedIn.toString()
         map[DISCOVERY_NAME] = pageIdentifier
         map[DISCOVERY_SLUG] = pageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = DISCOVERY
         map[CATEGORY] = EMPTY_STRING
         map[CATEGORY_ID] = EMPTY_STRING
         map[SUB_CATEGORY] = EMPTY_STRING
         map[SUB_CATEGORY_ID] = EMPTY_STRING
+
+        additionalInfo?.category?.levels?.let { categoryListLevels ->
+            addCategoryData(categoryListLevels)?.let {
+                map.putAll(it)
+            }
+        }
         return map
+    }
+
+    private fun addCategoryData(categoryListLevelsInfo: List<Level>?): MutableMap<String, String>? {
+        val categoryMap = mutableMapOf<String, String>()
+
+        if (!categoryListLevelsInfo.isNullOrEmpty()) {
+            categoryListLevelsInfo.forEach { levelData ->
+                when (levelData.level) {
+                    CATEGORY_LEVEL_1 -> {
+                        categoryMap[CATEGORY] = levelData.name ?: EMPTY_STRING
+                        categoryMap[CATEGORY_ID] = levelData.categoryId?.toString() ?: EMPTY_STRING
+                    }
+                    CATEGORY_LEVEL_2 -> {
+                        categoryMap[SUB_CATEGORY] = levelData.name ?: EMPTY_STRING
+                        categoryMap[SUB_CATEGORY_ID] = levelData.categoryId?.toString()
+                                ?: EMPTY_STRING
+                    }
+                }
+            }
+        }
+        return categoryMap
     }
 
     private fun removeDashPageIdentifier(identifier: String): String {

@@ -20,45 +20,84 @@ import org.json.JSONObject
 
 object AddToCartOccExternalTracking {
 
+    private const val EVENT_NAME_VALUE = "addToCart"
+    private const val EVENT_CATEGORY_VALUE = "product detail page"
+    private const val EVENT_ACTION_VALUE = "click - Beli Langsung on pdp"
+    private const val EVENT_LABEL_VALUE = "fitur : Beli Langsung occ"
+
+    private const val PARAM_LAYOUT = "layout"
+    private const val PARAM_COMPONENT = "component"
+    private const val PARAM_PRODUCTID = "productId"
+    private const val PARAM_SHOPID = "shopId"
+    private const val PARAM_SHOPTYPE = "shopType"
+    private const val PARAM_ECOMMERCE = "ecommerce"
+
+    private const val PARAM_CURRENCYCODE = "currencyCode"
+    private const val PARAM_ADD = "add"
+
+    private const val PARAM_PRODUCTS = "products"
+    private const val PARAM_NAME = "name"
+    private const val PARAM_ID = "id"
+    private const val PARAM_PRICE = "price"
+    private const val PARAM_BRAND = "brand"
+    private const val PARAM_CATEGORY = "category"
+    private const val PARAM_VARIANT = "variant"
+    private const val PARAM_QUANTITY = "quantity"
+    private const val PARAM_DIMENSION_38 = "dimension38"
+    private const val PARAM_DIMENSION_40 = "dimension40"
+    private const val PARAM_DIMENSION_45 = "dimension45"
+    private const val PARAM_DIMENSION_54 = "dimension54"
+    private const val PARAM_DIMENSION_79 = "dimension79"
+    private const val PARAM_SHOP_ID = "shop_id"
+    private const val PARAM_DIMENSION_80 = "dimension80"
+    private const val PARAM_SHOP_NAME = "shop_name"
+    private const val PARAM_DIMENSION_81 = "dimension81"
+    private const val PARAM_SHOP_TYPE = "shop_type"
+    private const val PARAM_PICTURE = "picture"
+    private const val PARAM_URL = "url"
+    private const val PARAM_CATEGORY_ID = "category_id"
+    private const val PARAM_DIMENSION_82 = "dimension82"
+    private const val PARAM_DIMENSION_83 = "dimension83"
+
     fun sendEETracking(response: DetailOccResponse) {
         //same as atc occ in pdp
         AddToCartBaseTracking.sendEETracking(
                 mutableMapOf(
-                        TrackAppUtils.EVENT to "addToCart",
-                        TrackAppUtils.EVENT_CATEGORY to "product detail page",
-                        TrackAppUtils.EVENT_ACTION to "click - Beli Langsung on pdp",
-                        TrackAppUtils.EVENT_LABEL to "fitur : Beli Langsung occ",
-                        "layout" to "layout:${""};catName:${response.category.substringAfterLast("/")};catId:${response.categoryId.substringAfterLast("/")};",
-                        "component" to "",
-                        "productId" to response.productId,
-                        "shopId" to response.shopId,
-                        "shopType" to setDefaultIfEmpty(response.shopType),
-                        "ecommerce" to mutableMapOf(
-                                "currencyCode" to VALUE_CURRENCY,
-                                "add" to mutableMapOf(
-                                        "products" to arrayListOf(mutableMapOf(
-                                                "name" to response.productName,
-                                                "id" to response.productId,
-                                                "price" to response.price,
-                                                "brand" to setDefaultIfEmpty(response.brand),
-                                                "category" to setDefaultIfEmpty(response.category),
-                                                "variant" to setDefaultIfEmpty(response.variant),
-                                                "quantity" to response.quantity,
-                                                "dimension38" to setDefaultIfEmpty(response.trackerAttribution),
-                                                "dimension40" to "",
-                                                "dimension45" to response.cartId,
-                                                "dimension54" to getMultiOriginAttribution(response.isMultiOrigin),
-                                                "dimension79" to response.shopId,
-                                                "shop_id" to response.shopId,
-                                                "dimension80" to setDefaultIfEmpty(response.shopName),
-                                                "shop_name" to setDefaultIfEmpty(response.shopName),
-                                                "dimension81" to response.shopType,
-                                                "shop_type" to response.shopType,
-                                                "picture" to setDefaultIfEmpty(response.picture),
-                                                "url" to response.url,
-                                                "category_id" to response.categoryId,
-                                                "dimension82" to response.categoryId,
-                                                "dimension83" to if (response.isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        TrackAppUtils.EVENT to EVENT_NAME_VALUE,
+                        TrackAppUtils.EVENT_CATEGORY to EVENT_CATEGORY_VALUE,
+                        TrackAppUtils.EVENT_ACTION to EVENT_ACTION_VALUE,
+                        TrackAppUtils.EVENT_LABEL to EVENT_LABEL_VALUE,
+                        PARAM_LAYOUT to "layout:${""};catName:${response.category.substringAfterLast("/")};catId:${response.categoryId.substringAfterLast("/")};",
+                        PARAM_COMPONENT to "",
+                        PARAM_PRODUCTID to response.productId,
+                        PARAM_SHOPID to response.shopId,
+                        PARAM_SHOPTYPE to setDefaultIfEmpty(response.shopType),
+                        PARAM_ECOMMERCE to mutableMapOf(
+                                PARAM_CURRENCYCODE to VALUE_CURRENCY,
+                                PARAM_ADD to mutableMapOf(
+                                        PARAM_PRODUCTS to arrayListOf(mutableMapOf(
+                                                PARAM_NAME to response.productName,
+                                                PARAM_ID to response.productId,
+                                                PARAM_PRICE to response.price,
+                                                PARAM_BRAND to setDefaultIfEmpty(response.brand),
+                                                PARAM_CATEGORY to setDefaultIfEmpty(response.category),
+                                                PARAM_VARIANT to setDefaultIfEmpty(response.variant),
+                                                PARAM_QUANTITY to response.quantity,
+                                                PARAM_DIMENSION_38 to setDefaultIfEmpty(response.trackerAttribution),
+                                                PARAM_DIMENSION_40 to "",
+                                                PARAM_DIMENSION_45 to response.cartId,
+                                                PARAM_DIMENSION_54 to getMultiOriginAttribution(response.isMultiOrigin),
+                                                PARAM_DIMENSION_79 to response.shopId,
+                                                PARAM_SHOP_ID to response.shopId,
+                                                PARAM_DIMENSION_80 to setDefaultIfEmpty(response.shopName),
+                                                PARAM_SHOP_NAME to setDefaultIfEmpty(response.shopName),
+                                                PARAM_DIMENSION_81 to response.shopType,
+                                                PARAM_SHOP_TYPE to response.shopType,
+                                                PARAM_PICTURE to setDefaultIfEmpty(response.picture),
+                                                PARAM_URL to response.url,
+                                                PARAM_CATEGORY_ID to response.categoryId,
+                                                PARAM_DIMENSION_82 to response.categoryId,
+                                                PARAM_DIMENSION_83 to if (response.isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                                         ))
                                 )
                         )
@@ -66,6 +105,7 @@ object AddToCartOccExternalTracking {
     }
 
     fun sendAppsFlyerTracking(response: DetailOccResponse) {
+        val content = JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, response.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, response.quantity))
         AddToCartBaseTracking.sendAppsFlyerTracking(
                 mutableMapOf(
                         AFInAppEventParameterName.CONTENT_ID to response.productId,
@@ -75,7 +115,7 @@ object AddToCartOccExternalTracking {
                         AFInAppEventParameterName.QUANTITY to response.quantity,
                         AFInAppEventParameterName.PRICE to response.price,
                         AF_PARAM_CATEGORY to response.category,
-                        AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, response.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, response.quantity))
+                        AFInAppEventParameterName.CONTENT to content.toString()
                 )
         )
     }

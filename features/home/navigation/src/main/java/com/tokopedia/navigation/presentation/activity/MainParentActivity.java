@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,7 +12,6 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,11 +38,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieDrawable;
-import com.airbnb.lottie.LottieTask;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -250,6 +244,7 @@ public class MainParentActivity extends BaseActivity implements
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_GAMIFICATION);
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_LOGIN);
         }
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
@@ -338,26 +333,9 @@ public class MainParentActivity extends BaseActivity implements
         showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
-        inflateBottomNavigationViewAsync(savedInstanceState);
-    }
-
-    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
-        AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
-        AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
-            @Override
-            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
-                parent.addView(view);
-                afterBottomNavigationInflation(savedInstanceState);
-            }
-        };
-        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
-                .findViewById(android.R.id.content)).getChildAt(0);
-        asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
-    }
-
-    private void afterBottomNavigationInflation(Bundle savedInstanceState){
         showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
+        populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
 
         initNewFeedClickReceiver();
@@ -1082,7 +1060,6 @@ public class MainParentActivity extends BaseActivity implements
             getPageLoadTimePerformanceInterface().stopMonitoring();
             pageLoadTimePerformanceCallback = null;
         }
-        populateBottomNavigationView();
     }
 
     @Override

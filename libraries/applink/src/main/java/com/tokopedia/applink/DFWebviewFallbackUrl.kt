@@ -33,4 +33,7 @@ object DFWebviewFallbackUrl {
     // User Profile
     const val USER_PROFILE_SETTINGS = "https://m.tokopedia.com/user/profile/edit"
     const val USER_SETTING_BANK = "https://m.tokopedia.com/user/bank-account"
+
+    // Merchant
+    const val FAVORITE_SHOP = "https://m.tokopedia.com/favorite"
 }

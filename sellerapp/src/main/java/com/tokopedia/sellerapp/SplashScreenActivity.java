@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
@@ -33,6 +34,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 public class SplashScreenActivity extends SplashScreen {
 
     private boolean isApkTempered;
+    private static String KEY_AUTO_LOGIN = "is_auto_login";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,21 @@ public class SplashScreenActivity extends SplashScreen {
         syncFcmToken();
     }
 
+    /**
+     * handle/forward app link redirection from customer app to seller app
+     * */
+    private boolean handleAppLink() {
+        Uri uri = getIntent().getData();
+        if (null != uri) {
+            boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
+            if (isFromMainApp) {
+                return RouteManager.route(this, uri.toString());
+            }
+            return false;
+        }
+        return false;
+    }
+
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
     }
@@ -60,6 +77,12 @@ public class SplashScreenActivity extends SplashScreen {
         if (isApkTempered) {
             return;
         }
+
+        if (handleAppLink()) {
+            finish();
+            return;
+        }
+
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.hasShop()) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
@@ -83,11 +106,17 @@ public class SplashScreenActivity extends SplashScreen {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);
         } else {
+            boolean isAutoLoginSeamless = getIntent().getBooleanExtra(KEY_AUTO_LOGIN, false);
             boolean hasOnboarding = new OnboardingPreference(this)
                     .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
             Intent intent;
-            if (hasOnboarding) {
-                intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
+            if (isAutoLoginSeamless){
+                intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
+                Bundle b = new Bundle();
+                b.putBoolean(KEY_AUTO_LOGIN, true);
+                intent.putExtras(b);
+            } else if (hasOnboarding) {
+                intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             } else {
                 intent = new Intent(this, SellerOnboardingActivity.class);
             }
