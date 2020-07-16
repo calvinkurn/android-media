@@ -1,33 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="LineChartView">
-        <attr name="lcvFillEnabled" format="boolean" />
-        <attr name="lcvFillColor" format="color" />
-
-        <!--chart line-->
-        <attr name="lcvFillDrawable" format="reference" />
-        <attr name="lcvLineWidth" format="float" />
-        <attr name="lcvLineColor" format="color" />
-        <attr name="lcvLineMode" format="enum">
-            <enum name="LINEAR" value="0" />
-            <enum name="CONTINUES" value="1" />
-        </attr>
-
-        <!--chart dot-->
-        <attr name="lcvShowChartDot" format="boolean" />
-        <attr name="lcvChartDotColor" format="color" />
-        <attr name="lcvDrawCircleHole" format="boolean" />
-
-        <attr name="lcvShowChartValue" format="boolean" />
-
-        <!--chart grid-->
-        <attr name="lcvShowVerticalGrid" format="boolean" />
-        <attr name="lcvShowHorizontalGrid" format="boolean" />
-
-        <!--chart axis-->
-        <attr name="lcvXAxisTextColor" format="color" />
-        <attr name="lcvYAxisTextColor" format="color" />
-    </declare-styleable>
 
     <declare-styleable name="PieChartView">
         <attr name="pcvChartWidth" format="dimension" />

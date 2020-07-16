@@ -6,21 +6,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
-import com.tokopedia.charts.config.linechart.LineChartConfigBuilder
-import com.tokopedia.charts.config.linechart.model.LineChartConfig
+import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.AxisLabel
+import com.tokopedia.charts.model.LineChartConfigModel
+import com.tokopedia.charts.model.LineChartData
 import com.tokopedia.charts.model.LineChartEntry
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
+import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -142,24 +140,42 @@ class LineGraphViewHolder(
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
-        val dataSet: List<LineChartEntry> = element.data?.list?.map {
-            LineChartEntry(it.yVal.toFloat(), it.yLabel, it.xLabel)
-        }.orEmpty()
-
         with(itemView.lineGraphView) {
             init(getLineChartConfig())
-            setCustomYAxisLabel(getCustomYAxisLabel(element))
-            setData(dataSet)
+            setData(getLineChartData(element))
             invalidateChart()
         }
     }
 
-    private fun getLineChartConfig(): LineChartConfig {
-        return LineChartConfigBuilder.create {
-            showTooltipEnabled { true }
-            setTooltip(getLineGraphTooltip())
+    private fun getLineChartData(element: LineGraphWidgetUiModel): LineChartData {
+        val chartEntry: List<LineChartEntry> = element.data?.list?.map {
+            LineChartEntry(it.yVal.toFloat(), it.yLabel, it.xLabel)
+        }.orEmpty()
+
+        val yAxisLabel = element.data?.yLabels?.map {
+            AxisLabel(it.yVal.toFloat(), it.yLabel)
+        }.orEmpty()
+
+        return LineChartData(
+                chartEntry = chartEntry,
+                yAxisLabel = yAxisLabel
+        )
+    }
+
+    private fun getLineChartConfig(): LineChartConfigModel {
+        return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
+            tooltipEnabled { true }
+            setChartTooltip(getLineGraphTooltip())
+            xAxis {
+                gridEnabled { false }
+                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+            }
+            yAxis {
+                textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
+            }
+            chartLineWidth { 1.8f }
         }
     }
 
@@ -171,10 +187,6 @@ class LineGraphViewHolder(
                         view.tvShcTooltipValue.text = it.yLabel
                     }
                 }
-    }
-
-    private fun getCustomYAxisLabel(element: LineGraphWidgetUiModel): List<AxisLabel> {
-        return element.data?.yLabels?.map { AxisLabel(it.yVal.toFloat(), it.yLabel) }.orEmpty()
     }
 
     interface Listener : BaseViewHolderListener {

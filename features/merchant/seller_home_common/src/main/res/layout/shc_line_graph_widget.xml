@@ -89,15 +89,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLineGraphSubValue"
-            app:layout_constraintVertical_bias="0.0"
-            app:lcvFillColor="@color/shc_line_chart_fill_color"
-            app:lcvLineColor="@color/shc_line_chart_line_color"
-            app:lcvLineWidth="1.8"
-            app:lcvShowChartDot="false"
-            app:lcvShowChartValue="false"
-            app:lcvShowVerticalGrid="false"
-            app:lcvXAxisTextColor="@color/Neutral_N700_96"
-            app:lcvYAxisTextColor="@color/Neutral_N700_96" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/btnLineGraphMore"
