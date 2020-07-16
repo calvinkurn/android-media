@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.HeaderErrorListResponse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.data.remote.TickerService
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
@@ -30,7 +31,6 @@ import javax.inject.Named
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-@SellerHomeScope
 @Module
 class SellerHomeModule {
 
@@ -102,12 +102,14 @@ class SellerHomeModule {
 
     @SellerHomeScope
     @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
-            FirebaseRemoteConfigImpl(context)
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
 
     @SellerHomeScope
     @Provides
-    fun provideSellerHomeRemoteConfig(remoteConfig: FirebaseRemoteConfigImpl): SellerHomeRemoteConfig {
+    fun provideSellerHomeRemoteConfig(remoteConfig: RemoteConfig): SellerHomeRemoteConfig {
         return SellerHomeRemoteConfig(remoteConfig)
     }
+
 }

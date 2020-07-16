@@ -26,9 +26,9 @@ import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.SellerHomeConst.NOTIF_TRAY_CONFIG
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
@@ -57,6 +57,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -231,7 +232,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun clearNotification() {
-        if (remoteConfig.getBoolean(NOTIF_TRAY_CONFIG, false)) {
+        if (remoteConfig.isNotificationTrayClear()) {
             (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)?.cancelAll()
         }
     }
