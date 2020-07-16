@@ -126,7 +126,7 @@ class DynamicItemActionView @JvmOverloads constructor(
     }
 
     fun setRightLayoutNotification(notif: String) {
-        notifCenterLayout.show()
+        notifRightLayout.show()
         notifRightLayout.setNotification(notif, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
 
     }
