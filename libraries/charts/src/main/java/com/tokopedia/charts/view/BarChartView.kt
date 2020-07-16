@@ -130,7 +130,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     }
 
     private fun getColor(barHexColor: String): Int {
-        val hexColor = if (barHexColor.isBlank()) ChartColor.DEFAULT_COLOR else barHexColor
+        val hexColor = if (barHexColor.isBlank()) ChartColor.DEFAULT_BAR_COLOR else barHexColor
         return Color.parseColor(hexColor)
     }
 

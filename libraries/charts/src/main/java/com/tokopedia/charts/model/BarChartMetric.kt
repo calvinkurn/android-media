@@ -8,6 +8,6 @@ import com.tokopedia.charts.common.ChartColor
 
 data class BarChartMetric(
         val title: String = "",
-        val barHexColor: String = ChartColor.DEFAULT_COLOR,
+        val barHexColor: String = ChartColor.DEFAULT_BAR_COLOR,
         val values: List<BarChartMetricValue> = emptyList()
 )
