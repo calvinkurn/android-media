@@ -225,7 +225,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         child.getLocationInWindow(location)
         val xPosition = if(location[0] < 0) location[0] else 0
         val visibleWidthChild = ((child.width + xPosition).toDouble() / child.width.toDouble()) * 100
-        return if(visibleWidthChild < 49){
+        return if(visibleWidthChild < 99){
             -1
         } else {
             1
