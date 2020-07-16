@@ -406,4 +406,186 @@ class PromoCheckoutViewModelGetPromoListTest {
                 promoRequest.orders[2].codes.isNotEmpty())
     }
 
+    @Test
+    fun `WHEN get promo list and get response error THEN fragment state should be failed to load`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseError()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == true)
+    }
+
+    @Test
+    fun `WHEN get promo list empty and empty state also empty THEN fragment state should be failed to load`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == true)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is coupon list is empty THEN should show empty state`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assertNotNull(viewModel.promoEmptyStateUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is coupon list is empty THEN should not show button action`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == false)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is coupon list is empty THEN should show promo input`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assertNotNull(viewModel.promoInputUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is phone not verified THEN should show empty state`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStatePhoneVerification()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assertNotNull(viewModel.promoEmptyStateUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is phone not verified THEN should show button action`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStatePhoneVerification()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == true)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is blacklisted THEN should show empty state`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateBlacklisted()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assertNotNull(viewModel.promoEmptyStateUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is blacklisted THEN should not show button action`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateBlacklisted()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == false)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is unknown THEN should show empty state`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateUnknown()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assertNotNull(viewModel.promoEmptyStateUiModel.value)
+    }
+
+    @Test
+    fun `WHEN get promo list and status is unknown THEN should show button action`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateUnknown()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == true)
+    }
+
 }

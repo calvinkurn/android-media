@@ -219,4 +219,69 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         assert(viewModel._getPromoListResponseAction.value?.state == GetPromoListResponseAction.ACTION_CLEAR_DATA)
     }
 
+    @Test
+    fun `WHEN apply manual input promo THEN get error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseApplyManualFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "PROMO_CODE")
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiState?.isError == true)
+    }
+
+    @Test
+    fun `WHEN apply manual input promo THEN get exception`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseApplyManualFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "PROMO_CODE")
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiData?.exception != null)
+    }
+
+    @Test
+    fun `WHEN apply manual input promo and get empty data THEN promo list state should be show toast error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "PROMO CODE")
+
+        //then
+        assert(viewModel.getPromoListResponseAction.value?.state == GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
+
+    @Test
+    fun `WHEN apply manual input promo and get empty data THEN promo input state should be error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideBasePromoResponseEmptyStateCouponListEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.initPromoInput()
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "PROMO CODE")
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiState?.isError == true)
+    }
+
 }
