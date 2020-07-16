@@ -74,9 +74,6 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if(saldoModel != null && accountModel != null) {
             accountModel.setSaldoModel(saldoModel);
         }
-        if(saldoModel == null || accountModel == null) {
-            AccountHomeErrorHandler.logNullData(graphqlResponse);
-        }
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;
         if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()) {

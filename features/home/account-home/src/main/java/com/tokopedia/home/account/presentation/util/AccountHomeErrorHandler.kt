@@ -41,18 +41,4 @@ object AccountHomeErrorHandler {
 
         }
     }
-
-
-    @JvmStatic
-    fun logNullData(graphqlResponse: GraphqlResponse) {
-
-        val exception = AccountHomeException(graphqlResponse.toString(), Throwable())
-
-        Timber.w("P2#ACCOUNT_HOME_ERROR#'Null Data';response='$graphqlResponse'")
-        try {
-            Crashlytics.logException(exception)
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
 }

@@ -106,10 +106,6 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     if(saldoModel != null && accountModel != null) {
                         accountModel.setSaldoModel(saldoModel);
                     }
-
-                    if(saldoModel == null || accountModel == null) {
-                        AccountHomeErrorHandler.logNullData(graphqlResponse);
-                    }
                     return accountModel;
                 });
     }
