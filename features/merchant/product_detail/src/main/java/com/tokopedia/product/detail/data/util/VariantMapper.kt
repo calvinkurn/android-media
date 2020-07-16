@@ -156,11 +156,13 @@ object VariantMapper {
                 startDate = newData?.upcoming?.startDate ?: "",
                 endDate = newData?.upcoming?.endDate ?: "",
                 notifyMe = newData?.upcoming?.notifyMe ?: false,
-                upcomingType = "",
-                ribbonCopy = ""
+                upcomingType = newData?.upcoming?.upcomingType ?: "",
+                ribbonCopy = newData?.upcoming?.ribbonCopy ?: ""
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        val newCampaignStatus = newData?.campaignStatus ?: ""
+
+        return DynamicProductInfoP1(basic, data, oldData.layoutName, newCampaignStatus)
     }
 
     fun updateVariantDeals(variantData: ProductVariantCommon?, productId: Int): ProductVariantCommon? {
