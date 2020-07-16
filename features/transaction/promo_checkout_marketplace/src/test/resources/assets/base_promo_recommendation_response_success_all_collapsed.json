@@ -44,24 +44,6 @@
               "tags": [],
               "coupons": [
                 {
-                  "code": "THIRX598GSA7MADK2X7",
-                  "title": "Cashback Rp42.930",
-                  "message": "",
-                  "expiry_info": "Berakhir 1 hari lagi!",
-                  "expiry_count_down": 1593363599,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 42930,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": []
-                },
-                {
                   "code": "KRDCICIL598GSNML0AM",
                   "title": "Discount Rp143.100",
                   "message": "",
@@ -108,24 +90,6 @@
                   "is_attempted": false,
                   "radio_check_state": "enabled",
                   "clashing_infos": []
-                },
-                {
-                  "code": "POMA3A96FB",
-                  "title": "Cashback Rp15.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593275350,
-                  "coupon_url": "HCKCSCP239594-",
-                  "coupon_app_link": "HCKCSCP239594-",
-                  "unique_id": "239594-0-301643",
-                  "shop_id": 239594,
-                  "tag_image_urls": [],
-                  "benefit_amount": 15000,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": []
                 }
               ]
             }
@@ -148,24 +112,6 @@
               "is_collapsed": false,
               "tags": [],
               "coupons": [
-                {
-                  "code": "REDPW73ON9",
-                  "title": "Promo Cashback REDPW73ON9",
-                  "message": "Tambah Rp434.000 untuk pakai promo",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593275350,
-                  "coupon_url": "HCKCSCP915523-",
-                  "coupon_app_link": "HCKCSCP915523-",
-                  "unique_id": "",
-                  "shop_id": 915523,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
-                },
                 {
                   "code": "REDP1A5ZJR",
                   "title": "Promo Cashback REDP1A5ZJR",
