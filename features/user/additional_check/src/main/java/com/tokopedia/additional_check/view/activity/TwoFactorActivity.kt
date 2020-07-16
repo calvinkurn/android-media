@@ -25,7 +25,6 @@ class TwoFactorActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.setHomeAsUpIndicator(closeButton)
         enableBackBtn = intent?.extras?.getParcelable<TwoFactorResult>(TwoFactorFragment.RESULT_POJO_KEY)?.showSkipButton
     }
 
@@ -37,16 +36,6 @@ class TwoFactorActivity: BaseSimpleActivity() {
         if(enableBackBtn == true) {
             super.onBackPressed()
         }
-    }
-
-    fun disableBackBtn(){
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setHomeButtonEnabled(false)
-    }
-
-    fun enableBackBtn(){
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
     }
 
 }

@@ -15,12 +15,10 @@ object MockGetObjectResponse {
 
 val responseAtcSuccess = """
     {
-       "status": true,
-       "data": {
-           "interval": 1594210316352,
-           "isSkipable": false,
-           "isHavePin": false,
-           "isHavePhone": true
+       "show_interrupt": {
+           "popup_2fa": 1,
+           "interval": 1,
+           "show_skip": false
         }
    }
 """.trimIndent()

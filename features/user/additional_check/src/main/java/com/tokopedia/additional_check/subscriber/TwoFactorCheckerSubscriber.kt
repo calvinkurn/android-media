@@ -35,11 +35,20 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 .build()
                 .inject(this)
 
-        viewModel.check(onSuccess = {
-            handleResponse(activity, twoFactorResult = it)
-        }, onError = {
-            it.printStackTrace()
-        })
+        if(!activity.javaClass.simpleName.toString().contains("ConsumerSplashScreen") &&
+                !activity.javaClass.simpleName.toString().contains("AddPinActivity") &&
+                !activity.javaClass.simpleName.toString().contains("AddPhoneActivity") &&
+                !activity.javaClass.simpleName.toString().contains("TwoFactorActivity") &&
+                !activity.javaClass.simpleName.toString().contains("RegisterFingerprintOnboardingActivity") &&
+                !activity.javaClass.simpleName.toString().contains("VerificationActivity") &&
+                !activity.javaClass.simpleName.toString().contains("PinOnboardingActivity")
+        ) {
+            viewModel.check(onSuccess = {
+                handleResponse(activity, twoFactorResult = it)
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
@@ -82,6 +91,6 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity?) {
-
+//        isShown = false
     }
 }
