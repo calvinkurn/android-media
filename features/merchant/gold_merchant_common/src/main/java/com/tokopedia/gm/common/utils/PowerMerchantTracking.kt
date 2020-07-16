@@ -177,9 +177,11 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventClickFreeShippingTnC() {
+        val category = getCategory()
+
         val event = TrackAppUtils.gtmData(
             GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-            GMParamTracker.CATEGORY_SELLER_APP,
+            category,
             GMParamTracker.Action.CLICK_TNC_FREE_SHIPPING,
             ""
         )
@@ -192,9 +194,11 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventClickBroadcastTnC() {
+        val category = getCategory()
+
         val event = TrackAppUtils.gtmData(
             GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-            GMParamTracker.CATEGORY_SELLER_APP,
+            category,
             GMParamTracker.Action.CLICK_TNC_BROADCAST_CHAT,
             ""
         )
