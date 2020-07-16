@@ -69,7 +69,7 @@ data class CampaignModular(
      * when timer < 24H show count down timer
      */
     val isCampaignNewUser
-        get() = isActive && (campaignID.toIntOrNull() == CAMPAIGN_ID_NEW_USER)
+        get() = isActive && (campaignType.toIntOrNull() == CAMPAIGN_ID_NEW_USER)
 
     val shouldShowRibbonCampaign
         get() = isActive && timeIsUnder1Day()
