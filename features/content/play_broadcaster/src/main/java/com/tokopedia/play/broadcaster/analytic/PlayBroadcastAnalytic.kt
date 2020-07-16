@@ -479,9 +479,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
-    fun viewErrorOnLivePage(channelId: String, titleChannel: String) {
+    fun viewErrorOnLivePage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
-                "error state on live room",
+                "error state on live room - $errorMessage",
                 "- $channelId - $titleChannel"
         )
     }
@@ -529,14 +529,15 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      *
      */
     private fun viewGeneralEvent(action: String, label: String = "") {
-        val eventAction = KEY_TRACK_VIEW
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_VIEW)
         if (action.isNotBlank()) {
-            eventAction.plus(" ")
-            eventAction.plus(action)
+            eventAction.append(" ")
+            eventAction.append(action)
         }
 
         viewCustomGeneralEvent(
-                action = eventAction,
+                action = eventAction.toString(),
                 label = label
         )
     }
@@ -550,24 +551,26 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     private fun clickGeneralEvent(action: String, label: String =  "") {
-        val eventAction = KEY_TRACK_CLICK
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_CLICK)
         if (action.isNotBlank()) {
-            eventAction.plus(" ")
-            eventAction.plus(action)
+            eventAction.append(" ")
+            eventAction.append(action)
         }
 
         sendGeneralEvent(
                 event = KEY_TRACK_CLICK_EVENT,
-                action = eventAction,
+                action = eventAction.toString(),
                 label = label
         )
     }
 
     private fun sendGeneralEvent(event: String, action: String, label: String) {
-        val eventLabel = userSession.shopId
+        val eventLabel = StringBuilder()
+        eventLabel.append(userSession.shopId)
         if (label.isNotBlank()) {
-            eventLabel.plus(" ")
-            eventLabel.plus(label)
+            eventLabel.append(" ")
+            eventLabel.append(label)
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(

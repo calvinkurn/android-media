@@ -44,11 +44,9 @@ import javax.inject.Inject
  * Created by mzennis on 25/05/20.
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ): PlayBaseBroadcastFragment() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -99,7 +97,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        analytic.openBroadcastScreen(parentViewModel.channelId)
         ivShareLink.requestApplyInsetsWhenAttached()
         viewTimer.requestApplyInsetsWhenAttached()
     }
@@ -120,8 +117,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcastCoordinator.setupTitle("")
         broadcastCoordinator.setupCloseButton(getString(R.string.play_action_bar_end))
 
-        ivShareLink.setOnClickListener{ doCopyShareLink() }
-        ivProductTag.setOnClickListener { doShowProductInfo() }
+        ivShareLink.setOnClickListener{
+            doCopyShareLink()
+            analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.title)
+        }
+        ivProductTag.setOnClickListener {
+            doShowProductInfo()
+            analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.title)
+        }
     }
 
     private fun setupInsets(view: View) {
@@ -221,6 +224,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun showDialogWhenActionClose(): Boolean {
         getExitDialog().show()
+        analytic.viewDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.title)
         return true
     }
 
@@ -236,6 +240,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    secondaryListener = { dialog ->
                        dialog.dismiss()
                        stopLiveStreaming(shouldNavigate = true)
+                       analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.title)
                    }
            )
         }
@@ -250,6 +255,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     navigateToSummary()
+                    analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
                 }
         ).show()
     }
@@ -265,7 +271,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             val offset24 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
             toasterBottomMargin = ivShareLink.height + offset24
         }
-
         view?.showToaster(
                 message = message,
                 duration = duration,
@@ -292,6 +297,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun navigateToSummary() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
+        analytic.openReportScreen(parentViewModel.channelId)
     }
 
     private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
@@ -301,10 +307,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         type = Toaster.TYPE_NORMAL)
             }
             is PlayPusherNetworkState.Poor -> {
-                showToaster(message = getString(R.string.play_live_broadcast_network_loss),
+                val errorMessage = getString(R.string.play_live_broadcast_network_loss)
+                showToaster(message = errorMessage,
                         type = Toaster.TYPE_ERROR)
+                analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
             }
             is PlayPusherNetworkState.Loss -> {
+                val errorMessage = getString(R.string.play_live_broadcast_network_loss)
                 showToaster(message = getString(R.string.play_live_broadcast_network_loss),
                         type = Toaster.TYPE_ERROR,
                         duration = Toaster.LENGTH_INDEFINITE,
@@ -312,6 +321,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         actionListener = View.OnClickListener {
                             parentViewModel.restartPushStream()
                         })
+                analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
             }
         }
     }
@@ -352,6 +362,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is BroadcastTimerState.Finish -> {
                     stopLiveStreaming(shouldNavigate = false)
                     showDialogWhenTimeout()
+                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
                 }
                 is BroadcastTimerState.ReachMaximumPauseDuration -> stopLiveStreaming(shouldNavigate = true)
             }

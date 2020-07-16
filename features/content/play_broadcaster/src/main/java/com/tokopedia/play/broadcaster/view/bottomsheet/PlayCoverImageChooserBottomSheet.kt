@@ -26,11 +26,9 @@ import javax.inject.Inject
  * @author by furqan on 03/06/2020
  */
 class PlayCoverImageChooserBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ) : BottomSheetUnify() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     var mListener: Listener? = null
 
@@ -53,6 +51,11 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
                 }
             }
     )
+
+    override fun onStart() {
+        super.onStart()
+        analytic.viewAddCoverSourceBottomSheet()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

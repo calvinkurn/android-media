@@ -57,11 +57,9 @@ import javax.inject.Inject
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatcherProvider,
-        private val permissionPref: PermissionSharedPreferences
+        private val permissionPref: PermissionSharedPreferences,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -247,6 +245,11 @@ class PlayCoverSetupFragment @Inject constructor(
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
                         shouldUploadCover(coverTitle)
+                        analytic.clickContinueOnAddCoverAndTitlePage()
+                    }
+
+                    override fun onTitleAreaHasFocus() {
+                        analytic.clickAddTitle()
                     }
                 }
         )
@@ -282,10 +285,12 @@ class PlayCoverSetupFragment @Inject constructor(
                     }
                 } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
 
+                analytic.clickContinueOnCroppingPage()
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
                 onChangeCoverFromCropping(viewModel.source)
+                analytic.clickChangeCoverOnCroppingPage()
             }
         })
     }
@@ -341,6 +346,9 @@ class PlayCoverSetupFragment @Inject constructor(
         coverCropView.show()
 
         coverCropView.setImageForCrop(coverImageUri)
+
+        // called twice, the first one with null coverImageUri
+        if (coverImageUri != null) analytic.viewCroppingPage()
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {

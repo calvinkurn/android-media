@@ -52,6 +52,7 @@ class PlayBroadcastModule(val mContext: Context) {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
+    @PlayBroadcastScope
     @Provides
     fun providePlayBroadcastAnalytic(userSession: UserSessionInterface): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(userSession)

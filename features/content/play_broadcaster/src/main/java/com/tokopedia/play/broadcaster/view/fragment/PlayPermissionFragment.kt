@@ -26,9 +26,6 @@ import javax.inject.Inject
  */
 class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment() {
 
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
-
     private lateinit var ivClose: AppCompatImageView
     private var tvCheckCamera: AppCompatTextView? = null
     private var tvCheckMic: AppCompatTextView? = null
@@ -36,11 +33,6 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
     private lateinit var permissionHelper: PermissionHelper
 
     override fun getScreenName(): String = "Play Permission page"
-
-    override fun onStart() {
-        super.onStart()
-        analytic.openPermissionScreen()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

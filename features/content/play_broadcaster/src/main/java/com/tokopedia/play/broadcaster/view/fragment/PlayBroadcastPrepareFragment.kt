@@ -40,11 +40,9 @@ import javax.inject.Inject
  * Created by jegul on 20/05/20
  */
 class PlayBroadcastPrepareFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -98,7 +96,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         requireView().requestApplyInsetsWhenAttached()
-        analytic.openSetupScreen()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {

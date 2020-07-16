@@ -32,10 +32,9 @@ import javax.inject.Inject
 /**
  * @author by jessica on 26/05/20
  */
-class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : PlayBaseBroadcastFragment() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
+class PlayBroadcastSummaryFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic) : PlayBaseBroadcastFragment() {
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -88,7 +87,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     private fun setupView(view: View) {
         broadcastCoordinator.showActionBar(false)
-        btnFinish.setOnClickListener { activity?.finish() }
+        btnFinish.setOnClickListener {
+            analytic.clickDoneOnReportPage(parentViewModel.channelId, parentViewModel.title)
+            activity?.finish()
+        }
         summaryInfoView.entranceAnimation(view as ViewGroup)
     }
 
@@ -180,6 +182,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
                             type = Toaster.TYPE_ERROR
                     )
                     summaryInfoView.showError { it.onRetry() }
+                    analytic.viewErrorOnReportPage(parentViewModel.channelId, parentViewModel.title, it.error.localizedMessage)
                 }
             }
         })

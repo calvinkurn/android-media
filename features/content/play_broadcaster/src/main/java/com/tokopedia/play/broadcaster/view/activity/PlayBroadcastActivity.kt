@@ -335,6 +335,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             this.channelType = config.channelType
             if (channelType == ChannelType.Active) {
                 showDialogWhenActiveOnOtherDevices()
+                analytic.viewDialogViolation(viewModel.channelId, viewModel.title)
             } else {
                 if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
                 else requestPermission()
@@ -350,6 +351,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         if (channelType == ChannelType.Pause) {
             showDialogContinueLiveStreaming()
             openBroadcastActivePage()
+            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
         } else  {
             openBroadcastSetupPage()
         }
@@ -384,15 +386,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun openBroadcastSetupPage() {
         navigateToFragment(PlayBroadcastPrepareFragment::class.java)
+        analytic.openSetupScreen()
     }
 
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
+        analytic.openBroadcastScreen(viewModel.channelId)
     }
 
     private fun showPermissionPage() {
         showActionBar(false)
         navigateToFragment(PlayPermissionFragment::class.java)
+        analytic.openPermissionScreen()
     }
 
     private fun showDialogWhenUnSupportedDevices() {
@@ -416,6 +421,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     viewModel.startPushStream()
+                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->

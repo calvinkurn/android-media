@@ -43,11 +43,9 @@ import javax.inject.Inject
  */
 class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        dispatcher: CoroutineDispatcherProvider
+        dispatcher: CoroutineDispatcherProvider,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)

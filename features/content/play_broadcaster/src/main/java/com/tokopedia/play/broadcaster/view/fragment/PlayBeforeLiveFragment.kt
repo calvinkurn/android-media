@@ -46,11 +46,9 @@ import javax.inject.Inject
  * Created by jegul on 11/06/20
  */
 class PlayBeforeLiveFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var ivImagePreview: ImageView
     private lateinit var tvCoverTitle: TextView

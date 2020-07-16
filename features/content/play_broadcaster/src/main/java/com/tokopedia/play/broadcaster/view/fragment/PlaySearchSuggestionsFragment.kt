@@ -18,11 +18,9 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewMo
 import javax.inject.Inject
 
 class PlaySearchSuggestionsFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val analytic: PlayBroadcastAnalytic
 ): PlayBaseEtalaseSetupFragment() {
-
-    @Inject
-    lateinit var analytic: PlayBroadcastAnalytic
 
     private lateinit var viewModel: PlaySearchSuggestionsViewModel
 

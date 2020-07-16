@@ -18,12 +18,16 @@ import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
+import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
+import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
@@ -32,15 +36,16 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.user.session.UserSession
 import java.io.File
+import javax.inject.Inject
 
 class PlayCoverCameraActivity : AppCompatActivity() {
 
     private var cameraTimerEnum: CameraTimerEnum = CameraTimerEnum.Immediate
     private var isTimerRunning = false
 
-    private lateinit var analytic: PlayBroadcastAnalytic
+    @Inject
+    lateinit var analytic: PlayBroadcastAnalytic
 
     private val cvCamera by lazy { findViewById<CameraView>(R.id.cv_camera) }
     private val tvCancel by lazy { findViewById<TextView>(R.id.tv_cancel) }
@@ -69,16 +74,12 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_cover_camera)
-        initAnalytic()
         initView()
         setupView()
         setupInsets()
-    }
-
-    private fun initAnalytic() {
-        analytic = PlayBroadcastAnalytic(UserSession(this))
     }
 
     override fun onResume() {
@@ -147,6 +148,14 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun setupView() {
         requestRequiredPermission()
+    }
+
+    private fun inject() {
+        DaggerPlayBroadcastComponent.builder()
+                .playBroadcastModule(PlayBroadcastModule(this))
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun setupInsets() {
@@ -301,5 +310,4 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
         private const val REQUEST_CODE_PERMISSION = 1010
     }
-
 }
