@@ -7,13 +7,17 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PowerMerchantViewAdapter
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.*
+import com.tokopedia.power_merchant.subscribe.view.viewholder.PowerMerchantItemViewHolder.*
 import kotlinx.android.synthetic.main.layout_power_merchant_feature.view.*
 
 class PowerMerchantFeatureView: LinearLayout {
+
+    private var tracker: PowerMerchantTracking? = null
 
     constructor (context: Context): super(context)
 
@@ -21,19 +25,22 @@ class PowerMerchantFeatureView: LinearLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
-    private val adapter by lazy { PowerMerchantViewAdapter() }
-
     init {
         inflate(context, R.layout.layout_power_merchant_feature, this)
     }
 
-    fun show(powerMerchantStatus: PowerMerchantStatus) {
+    fun show(powerMerchantStatus: PowerMerchantStatus, tracker: PowerMerchantTracking) {
         val data = powerMerchantStatus.goldGetPmOsStatus.result.data
         val powerMerchantInactive = data.isPowerMerchantInactive()
 
+        setTracker(tracker)
         setupTitle(powerMerchantInactive)
         setupFeatureList(powerMerchantInactive)
         showLayout()
+    }
+
+    private fun setTracker(tracker: PowerMerchantTracking) {
+        this.tracker = tracker
     }
 
     private fun setupTitle(powerMerchantInactive: Boolean) {
@@ -45,6 +52,8 @@ class PowerMerchantFeatureView: LinearLayout {
     }
 
     private fun setupFeatureList(powerMerchantInactive: Boolean) {
+        val listener = createViewHolderListener()
+        val adapter = PowerMerchantViewAdapter(listener)
         val features = mutableListOf<PowerMerchantFeature>()
 
         if(powerMerchantInactive) {
@@ -82,13 +91,25 @@ class PowerMerchantFeatureView: LinearLayout {
         ))
 
         with(listFeature) {
+            this.adapter = adapter
             isNestedScrollingEnabled = false
-            adapter = this@PowerMerchantFeatureView.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             addItemDecoration(FeatureItemDecoration())
         }
 
         adapter.items = features
+    }
+
+    private fun createViewHolderListener() = object : PmViewHolderListener {
+        override fun onItemClicked(title: Int) {
+            when (title) {
+                R.string.power_merchant_bebas_ongkir -> trackClickFreeShippingTnC()
+            }
+        }
+    }
+
+    private fun trackClickFreeShippingTnC() {
+        tracker?.eventClickFreeShippingTnC()
     }
 
     private fun showLayout() {

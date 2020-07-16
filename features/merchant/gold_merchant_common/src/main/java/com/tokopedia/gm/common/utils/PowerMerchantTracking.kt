@@ -1,7 +1,10 @@
 package com.tokopedia.gm.common.utils
 
 import com.tokopedia.gm.common.constant.GMParamTracker
+import com.tokopedia.gm.common.constant.GMParamTracker.CustomDimension
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
@@ -180,8 +183,32 @@ class PowerMerchantTracking @Inject constructor(
         )
     }
 
+    fun eventClickFreeShippingTnC() {
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            GMParamTracker.CATEGORY_SELLER_APP,
+            GMParamTracker.Action.CLICK_TNC_FREE_SHIPPING,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
     fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
+    private fun getShopType(): String {
+        val isPowerMerchant = user.isGoldMerchant
+
+        return if (isPowerMerchant) {
+            GMParamTracker.Label.POWER_MERCHANT
+        } else {
+            GMParamTracker.Label.REGULAR_MERCHANT
+        }
+    }
 }

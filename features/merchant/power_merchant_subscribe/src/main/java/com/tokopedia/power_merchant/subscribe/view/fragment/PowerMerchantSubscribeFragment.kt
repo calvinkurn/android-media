@@ -345,7 +345,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         membershipLayout.show(powerMerchantStatus) {
             onClickRegister()
         }
-        featureLayout.show(powerMerchantStatus)
+        featureLayout.show(powerMerchantStatus, powerMerchantTracking)
         freeShippingLayout.show()
         registrationLayout.hide()
         benefitLayout.hide()
@@ -353,7 +353,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showRegistrationView(powerMerchantStatus: PowerMerchantStatus) {
         registrationLayout.show(powerMerchantStatus, powerMerchantTracking)
-        featureLayout.show(powerMerchantStatus)
+        featureLayout.show(powerMerchantStatus, powerMerchantTracking)
         benefitLayout.show(powerMerchantTracking)
         freeShippingLayout.hide()
         membershipLayout.hide()

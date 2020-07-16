@@ -9,7 +9,6 @@ object GMParamTracker {
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
     const val CATEGORY_HOME_PAGE = "tokopedia seller app - homepage"
 
-
     const val ACTION_CLICK_POWER_MERCHANT = "click power merchant"
     const val ACTION_CLICK_UPGRADE_SHOP = "click upgrade shop"
     const val ACTION_POWER_MERCHANT_INCREASE_PERFORMANCE = "power merchant - increase shop performance"
@@ -17,7 +16,6 @@ object GMParamTracker {
     const val ACTION_CLICK_POWER_MERCHANT_PM = "click power merchant - pm"
     const val ACTION_CLICK_POWER_MERCHANT_DEACTIVATION = "click power merchant - pm deactivation"
     const val ACTION_CLICK_INCREASE_SHOP_PERFORMANCE = "click increase shop performance"
-
 
     const val LABEL_FEATURES_LEARN_MORE = "pm features - learn more"
     const val LABEL_UPGRADE_SHOP = "upgrade shop"
@@ -37,12 +35,19 @@ object GMParamTracker {
         const val CLICK_FEATURES = "click features"
         const val CLICK_RATING = "click rating"
         const val CLICK_CANCELLATION_REASON = "click cancellation reason"
-
+        const val CLICK_TNC_FREE_SHIPPING = "click t&c free ongkir"
     }
 
     object Label {
         const val SEND_ANSWER = "kirim jawaban"
         const val BACK_BUTTON = "back button"
+        const val POWER_MERCHANT = "PM"
+        const val REGULAR_MERCHANT = "RM"
     }
 
+    object CustomDimension {
+        const val USER_ID = "userId"
+        const val SHOP_ID = "shopId"
+        const val SHOP_TYPE = "shopType"
+    }
 }
