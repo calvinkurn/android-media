@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util
+package com.tokopedia.play.broadcaster.util.deviceinfo
 
 import android.os.Build
 

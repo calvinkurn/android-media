@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment.edit
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -23,10 +22,10 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.setTextFieldColor
-import com.tokopedia.play.broadcaster.util.showToaster
-import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
+import com.tokopedia.play.broadcaster.util.extension.setTextFieldColor
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.EditCoverTitleViewModel
@@ -51,6 +50,9 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var analytic: PlayBroadcastAnalytic
+
+    @Inject
+    lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer
 
     private val job = SupervisorJob()
 
@@ -81,17 +83,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                updateNavigationBarColors(
-                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
-                )
-            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                updateNavigationBarColors(
-                        intArrayOf(
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
-                        )
-                )
+            dialogCustomizer.customize(this)
         }
     }
 

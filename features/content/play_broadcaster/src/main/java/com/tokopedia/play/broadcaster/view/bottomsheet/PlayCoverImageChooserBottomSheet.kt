@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -19,7 +18,7 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecorat
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
-import com.tokopedia.play.broadcaster.util.updateNavigationBarColors
+import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,7 +29,8 @@ import javax.inject.Inject
  */
 class PlayCoverImageChooserBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val analytic: PlayBroadcastAnalytic
+        private val analytic: PlayBroadcastAnalytic,
+        private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetUnify() {
 
     var mListener: Listener? = null
@@ -62,17 +62,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                updateNavigationBarColors(
-                        intArrayOf(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
-                )
-            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                updateNavigationBarColors(
-                        intArrayOf(
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N0,
-                                com.tokopedia.unifyprinciples.R.color.Neutral_N700_20
-                        )
-                )
+            dialogCustomizer.customize(this)
         }
     }
 

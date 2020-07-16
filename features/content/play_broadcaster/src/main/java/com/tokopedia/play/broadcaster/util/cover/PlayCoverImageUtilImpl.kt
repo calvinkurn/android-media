@@ -1,9 +1,8 @@
-package com.tokopedia.play.broadcaster.util
+package com.tokopedia.play.broadcaster.util.cover
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import java.io.File
 import java.io.FileOutputStream
 

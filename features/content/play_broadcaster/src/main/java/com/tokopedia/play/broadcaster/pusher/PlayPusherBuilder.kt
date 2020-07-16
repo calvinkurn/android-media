@@ -4,7 +4,7 @@ import android.content.Context
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
-import com.tokopedia.play.broadcaster.util.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 
 
 /**
