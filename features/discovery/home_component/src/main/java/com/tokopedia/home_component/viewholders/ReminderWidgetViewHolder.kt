@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.*
 
 class ReminderWidgetViewHolder(
         itemView: View,
-        val reminderWidgetListener : ReminderWidgetListener
+        val reminderWidgetListener : ReminderWidgetListener?
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -45,7 +45,7 @@ class ReminderWidgetViewHolder(
         with(itemView) {
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
-                reminderWidgetListener.getReminderWidget(element.source)
+                reminderWidgetListener?.getReminderWidget(element.source)
                 performanceMonitoring?.stopTrace()
                 performanceMonitoring = null
             } else {
@@ -72,18 +72,18 @@ class ReminderWidgetViewHolder(
                 }
 
                 btn_reminder_recommendation.setOnClickListener {
-                    reminderWidgetListener.onReminderWidgetClickListener(element)
-                    reminderWidgetListener.onReminderWidgetDeclineClickListener(element, false)
+                    reminderWidgetListener?.onReminderWidgetClickListener(element)
+                    reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, false)
                 }
 
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
-                        reminderWidgetListener.onReminderWidgetImpressionListener(element)
+                        reminderWidgetListener?.onReminderWidgetImpressionListener(element)
                     }
                 })
 
                 ic_close_reminder_recommendation.setOnClickListener {
-                    reminderWidgetListener.onReminderWidgetDeclineClickListener(element, true)
+                    reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, true)
                 }
                 performanceMonitoring?.stopTrace()
                 performanceMonitoring = null

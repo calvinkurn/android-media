@@ -295,4 +295,6 @@
     <string name="kol_title_post_youtube">Post Youtube</string>
     <string name="kol_title_report">Laporan Konten</string>
 
+    <!-- Merchant Login -->
+    <string name="title_module_merchant_login">Fitur Toko</string>
 </resources>
