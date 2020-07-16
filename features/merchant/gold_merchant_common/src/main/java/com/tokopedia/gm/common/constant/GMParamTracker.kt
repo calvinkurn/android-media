@@ -36,6 +36,7 @@ object GMParamTracker {
         const val CLICK_RATING = "click rating"
         const val CLICK_CANCELLATION_REASON = "click cancellation reason"
         const val CLICK_TNC_FREE_SHIPPING = "click t&c free ongkir"
+        const val CLICK_TNC_BROADCAST_CHAT = "click t&c broadcast chat"
     }
 
     object Label {
