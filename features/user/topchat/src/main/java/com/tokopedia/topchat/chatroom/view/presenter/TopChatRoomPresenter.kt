@@ -49,7 +49,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressRes
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.*
+import com.tokopedia.topchat.chatroom.domain.subscriber.ChangeChatBlockSettingSubscriber
+import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
+import com.tokopedia.topchat.chatroom.domain.subscriber.GetExistingMessageIdSubscriber
+import com.tokopedia.topchat.chatroom.domain.subscriber.GetShopFollowingStatusSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
@@ -226,12 +229,9 @@ class TopChatRoomPresenter @Inject constructor(
             onError: (Throwable) -> Unit,
             onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(
-                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
-                    GetChatSubscriber(
-                            onError,
-                            onSuccessGetExistingMessage
-                    )
+            getChatUseCase.getChat(
+                    messageId, paramBeforeReplyTime,
+                    onSuccessGetExistingMessage, onError
             )
         }
     }
@@ -253,12 +253,9 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(
-                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
-                    GetChatSubscriber(
-                            onError,
-                            onSuccessGetPreviousChat
-                    )
+            getChatUseCase.getChat(
+                    messageId, paramBeforeReplyTime,
+                    onSuccessGetPreviousChat, onError
             )
         }
     }
