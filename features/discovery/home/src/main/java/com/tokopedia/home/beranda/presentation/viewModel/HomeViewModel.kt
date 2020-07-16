@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
@@ -51,6 +52,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -187,7 +189,7 @@ open class HomeViewModel @Inject constructor(
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
     private var jobChannel: Job? = null
-    private var channel : Channel<UpdateLiveDataModel>? = null
+    private var channel : Channel<UpdateLiveDataModel> = Channel()
 
 // ============================================================================================
 // ===================================== LOCAL VARIABLE =======================================
@@ -239,7 +241,7 @@ open class HomeViewModel @Inject constructor(
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
-        channel?.close()
+        channel.close()
         jobChannel?.cancelChildren()
         super.onCleared()
     }
@@ -311,7 +313,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private suspend fun rollbackRemindPlayBanner(){
-        val pair = _homeLiveData.value?.list?.withIndex()?.find { (index, model) -> model is PlayCarouselCardDataModel }
+        val pair = _homeLiveData.value?.list?.withIndex()?.find { (_, model) -> model is PlayCarouselCardDataModel }
         if(pair != null){
             updateWidget(UpdateLiveDataModel(
                     action = ACTION_UPDATE,
@@ -591,7 +593,7 @@ open class HomeViewModel @Inject constructor(
                     val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
                             rechargeRecommendation = data
                     )
-                    launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                    launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
                 }
             }
         } else {
@@ -604,7 +606,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
                         ?: return
         if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
-            launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
         }
     }
 
@@ -762,12 +764,10 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun initChannel(){
-        channel = Channel()
-        if(channel != null) {
-            jobChannel?.cancelChildren()
-            jobChannel = launch(homeDispatcher.ui()) {
-                updateChannel(channel!!)
-            }
+        logChannelUpdate("init channel")
+        jobChannel?.cancelChildren()
+        jobChannel = launch(homeDispatcher.ui()) {
+            updateChannel(channel)
         }
     }
 
@@ -1076,10 +1076,11 @@ open class HomeViewModel @Inject constructor(
 // ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
-
-    private suspend fun updateChannel(channel: Channel<UpdateLiveDataModel>){
+    // make coffee channel
+    private suspend fun updateChannel(channel: ReceiveChannel<UpdateLiveDataModel>){
         for(data in channel){
             if(data.action == ACTION_UPDATE_HOME_DATA){
+                logChannelUpdate("Update channel: (Update all home data)")
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
@@ -1091,11 +1092,12 @@ open class HomeViewModel @Inject constructor(
                     if(newList != null && newList.size >  data.position) {
                         when (data.action) {
                             ACTION_ADD -> {
+                                logChannelUpdate("Update channel: (Add widget ${homeVisitable.javaClass.simpleName})")
                                 if(data.position == -1 || data.position > newList.size) newList.add(homeVisitable)
                                 else newList.add(data.position, homeVisitable)
                             }
                             ACTION_UPDATE -> {
-                                Log.d("UPDATE", "UPDATE WIDGET $homeVisitable")
+                                logChannelUpdate("Update channel: (Update widget ${homeVisitable.javaClass.simpleName})")
                                 if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                     newList[data.position] = homeVisitable
                                 } else {
@@ -1104,7 +1106,12 @@ open class HomeViewModel @Inject constructor(
                                     }
                                 }
                             }
-                            ACTION_DELETE -> newList.remove(homeVisitable)
+                            ACTION_DELETE -> {
+                                logChannelUpdate("Update channel: (Remove widget ${homeVisitable.javaClass.simpleName})")
+                                newList.withIndex().find { it::class.java == homeVisitable::class.java && (it as HomeVisitable).visitableId() == homeVisitable.visitableId() }?.let {
+                                    newList.remove(homeVisitable)
+                                }
+                            }
                         }
                         _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                     }
@@ -1115,13 +1122,16 @@ open class HomeViewModel @Inject constructor(
 
     private suspend fun updateWidget(updateWidget: UpdateLiveDataModel){
         try {
-            if(channel?.isClosedForSend == true){
+            if(updateWidget.visitable != null) logChannelUpdate("Send Update Widget... (send = ${channel.isClosedForSend} | widget = ${updateWidget.visitable.javaClass.simpleName})")
+            else logChannelUpdate("Send Widget Processing... (send = ${channel.isClosedForSend} | homeData = ${updateWidget.homeData?.javaClass?.simpleName})")
+            if(channel.isClosedForSend){
                 initChannel()
             }
-            channel?.send(updateWidget)
+            channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
+            logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
             initChannel()
-            channel?.send(updateWidget)
+            channel.send(updateWidget)
         }
     }
 
@@ -1154,6 +1164,10 @@ open class HomeViewModel @Inject constructor(
                 walletType = walletBalanceModel.walletType,
                 isShowAnnouncement = walletBalanceModel.isShowAnnouncement
         )
+    }
+
+    private fun logChannelUpdate(message: String){
+        if(GlobalConfig.DEBUG) Log.e(this.javaClass.simpleName, message)
     }
 
 }
