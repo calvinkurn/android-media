@@ -478,7 +478,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             globalErrorStc.gone()
             progressBarStc.visible()
         } else {
-            swipeRefreshStc.isRefreshing = false
             progressBarStc.gone()
         }
     }
