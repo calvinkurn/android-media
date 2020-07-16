@@ -63,11 +63,6 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private var campaignStockListener: CampaignStockListener? = null
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeLiveData()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_campaign_stock_tab, container, false)
     }
@@ -100,10 +95,6 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     override fun loadData(page: Int) {}
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_campaign_stock
-
-    private fun observeLiveData() {
-
-    }
 
     private fun setupView(view: View) {
         view.setBackgroundColor(Color.TRANSPARENT)

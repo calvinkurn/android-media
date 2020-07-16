@@ -38,11 +38,9 @@ class VariantProductStockAccordion @JvmOverloads constructor(
 
     private var onActionClickListener: (isAccordionOpened: Boolean) -> Unit = {}
 
-    fun setEventVariantInfo(actionWording: String,
-                            variantsProductList: List<ReservedStockProductModel>,
+    fun setEventVariantInfo(variantsProductList: List<ReservedStockProductModel>,
                             isAccordionOpened: Boolean) {
         layout_campaign_stock_variant_action?.run {
-            tv_campaign_stock_action?.text = actionWording
             setOnClickListener {
                 onActionClickListener(!isAccordionOpened)
             }

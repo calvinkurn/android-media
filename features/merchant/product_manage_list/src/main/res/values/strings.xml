@@ -251,6 +251,7 @@
     <string name="product_manage_campaign_stock_stock_amount">Jumlah Stok</string>
     <string name="product_manage_campaign_stock_main_stock">Stok Utama (%s)</string>
     <string name="product_manage_campaign_stock_campaign_stock">Stok Campaign (%s)</string>
+    <string name="product_manage_campaign_stock_event_action">Lihat varian produk</string>
     <string name="product_manage_campaign_stock_variant_zero_desc">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
     <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
     <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>

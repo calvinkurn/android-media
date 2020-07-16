@@ -25,7 +25,6 @@ class ReservedEventInfoViewHolder(itemView: View?,
             if (element.isVariant) {
                 accordion_campaign_stock?.run {
                     setEventVariantInfo(
-                            element.actionWording,
                             element.products,
                             element.isAccordionOpened
                     )

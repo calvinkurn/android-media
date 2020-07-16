@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Re
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -177,6 +178,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun applyLayout(stockAllocationResult: StockAllocationResult) {
         with(stockAllocationResult) {
+            sendOpenScreenTracking(getStockAllocationData.summary.isVariant)
             setupProductSummary(getStockAllocationData.summary, otherCampaignStockData.pictureList.firstOrNull()?.urlThumbnail.orEmpty())
             setupFragmentTabs(getStockAllocationData)
             when(this) {
@@ -255,6 +257,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         divider_campaign_stock?.visible()
         btn_campaign_stock_save?.visible()
         loader_campaign_stock?.gone()
+    }
+
+    private fun sendOpenScreenTracking(isVariant: Boolean) {
+        ProductManageTracking.sendStockAllocationScreen(isVariant)
     }
 
     private fun showButtonLoading() {
