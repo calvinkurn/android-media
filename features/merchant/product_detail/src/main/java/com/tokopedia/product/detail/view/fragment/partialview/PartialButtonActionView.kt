@@ -112,12 +112,22 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     private fun UnifyButton.generateTheme(colorDescription: String) {
-        if (colorDescription == ProductDetailConstant.KEY_BUTTON_PRIMARY) {
-            this.buttonVariant = UnifyButton.Variant.FILLED
-            this.buttonType = UnifyButton.Type.TRANSACTION
-        } else {
-            this.buttonVariant = UnifyButton.Variant.GHOST
-            this.buttonType = UnifyButton.Type.TRANSACTION
+        when (colorDescription) {
+            ProductDetailConstant.KEY_BUTTON_PRIMARY -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.TRANSACTION
+                this.isEnabled = true
+            }
+            ProductDetailConstant.KEY_BUTTON_DISABLE -> {
+                this.buttonVariant = UnifyButton.Variant.FILLED
+                this.buttonType = UnifyButton.Type.MAIN
+                this.isEnabled = false
+            }
+            else -> {
+                this.buttonVariant = UnifyButton.Variant.GHOST
+                this.buttonType = UnifyButton.Type.TRANSACTION
+                this.isEnabled = true
+            }
         }
     }
 

@@ -4,7 +4,7 @@ package com.tokopedia.product.detail.common.data.model.carttype
 import com.google.gson.annotations.SerializedName
 
 data class CartRedirectionResponse(
-        @SerializedName("cart_redirection")
+        @SerializedName("cart_redirection_v2")
         val cartRedirection: CartRedirection? = null
 )
 

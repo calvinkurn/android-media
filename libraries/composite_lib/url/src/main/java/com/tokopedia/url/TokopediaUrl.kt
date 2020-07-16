@@ -40,10 +40,7 @@ class TokopediaUrl {
         }
 
         fun selectInstance(env: String?): Url {
-            return when(env) {
-                Env.STAGING.value -> staging
-                else -> live
-            }
+            return staging
         }
 
         fun setEnvironment(context: Context, env: Env) {
