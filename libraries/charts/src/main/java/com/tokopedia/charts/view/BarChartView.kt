@@ -34,8 +34,8 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         private set
 
     fun init(mConfig: BarChartConfigModel? = null) {
-        if (mConfig != null) {
-            this.config = mConfig
+        mConfig?.let {
+            this.config = it
         }
 
         with(barChart) {
