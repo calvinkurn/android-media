@@ -32,8 +32,10 @@ class PreferenceListActivityTest {
     var activityRule = ActivityTestRule(PreferenceListActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var idlingResource: IdlingResource? = null
-    private var idlingResource1: IdlingResource? = null
+
+    private var swipeRefreshIdlingResource: IdlingResource? = null
+    private var progressDialogIdlingResource: IdlingResource? = null
+
     private val interceptor = PreferenceListActivityTestInterceptor()
 
     private fun setupGraphqlMockResponse() {
@@ -43,8 +45,8 @@ class PreferenceListActivityTest {
 
     private fun setupIdlingResource() {
         val activity = activityRule.launchActivity(null)
-        idlingResource = SwipeRefreshIdlingResource(activity, R.id.swipe_refresh_layout)
-        idlingResource1 = ProgressDialogIdlingResource {
+        swipeRefreshIdlingResource = SwipeRefreshIdlingResource(activity, R.id.swipe_refresh_layout)
+        progressDialogIdlingResource = ProgressDialogIdlingResource {
             for (fragment in activity.supportFragmentManager.fragments) {
                 if (fragment is PreferenceListFragment) {
                     return@ProgressDialogIdlingResource fragment.progressDialog
@@ -52,22 +54,24 @@ class PreferenceListActivityTest {
             }
             return@ProgressDialogIdlingResource null
         }
-        IdlingRegistry.getInstance().register(idlingResource, idlingResource1)
+        IdlingRegistry.getInstance().register(swipeRefreshIdlingResource, progressDialogIdlingResource)
     }
 
     private fun cleanup() {
-        IdlingRegistry.getInstance().unregister(idlingResource, idlingResource1)
+        IdlingRegistry.getInstance().unregister(swipeRefreshIdlingResource, progressDialogIdlingResource)
         activityRule.finishActivity()
     }
 
     @Before
     fun before() {
+        // remove other idling resources before starting test
         val instance = IdlingRegistry.getInstance()
         instance.unregister(*instance.resources.toTypedArray())
     }
 
     @After
     fun after() {
+        // remove left idling resources after test
         val instance = IdlingRegistry.getInstance()
         instance.unregister(*instance.resources.toTypedArray())
     }
