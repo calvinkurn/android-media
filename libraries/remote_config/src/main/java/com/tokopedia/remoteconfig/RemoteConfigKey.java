@@ -221,4 +221,6 @@ public class RemoteConfigKey {
     public static final String SELLER_HOME_IMPROVEMENT_DISABLED = "android_seller_home_improvement_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
 
+    public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+
 }
