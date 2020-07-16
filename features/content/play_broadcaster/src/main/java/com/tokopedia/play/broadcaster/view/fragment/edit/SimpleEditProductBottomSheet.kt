@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -53,6 +55,8 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private lateinit var tvChooseOver: TextView
     private lateinit var tvSelectedProductTitle: TextView
     private lateinit var rvSelectedProduct: RecyclerView
+    private lateinit var coordinatorEdit: CoordinatorLayout
+    private lateinit var llBtnContainer: LinearLayout
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -61,6 +65,8 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private var mListener: Listener? = null
+
+    private var toasterBottomMargin = 0
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
@@ -134,6 +140,8 @@ class SimpleEditProductBottomSheet @Inject constructor(
             tvChooseOver = findViewById(R.id.tv_choose_over)
             tvSelectedProductTitle = findViewById(R.id.tv_selected_product_title)
             rvSelectedProduct = findViewById(R.id.rv_selected_product)
+            coordinatorEdit = findViewById(R.id.coordinator_edit)
+            llBtnContainer = findViewById(R.id.ll_btn_container)
         }
 
     }
@@ -195,9 +203,22 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun onUploadFailed(e: Throwable) {
         btnAction.isLoading = false
-        view?.showToaster(
+        showToaster(
                 message = e.localizedMessage,
                 type = Toaster.TYPE_ERROR
+        )
+    }
+
+    private fun showToaster(message: String, type: Int, duration: Int = Toaster.LENGTH_SHORT) {
+        if (toasterBottomMargin == 0) {
+            toasterBottomMargin = llBtnContainer.height
+        }
+
+        coordinatorEdit.showToaster(
+                message = message,
+                type = type,
+                duration = duration,
+                bottomMargin = toasterBottomMargin
         )
     }
 
