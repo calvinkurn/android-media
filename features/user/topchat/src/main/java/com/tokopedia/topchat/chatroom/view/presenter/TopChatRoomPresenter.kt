@@ -229,9 +229,10 @@ class TopChatRoomPresenter @Inject constructor(
             onError: (Throwable) -> Unit,
             onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.getChat(
-                    messageId, paramBeforeReplyTime,
-                    onSuccessGetExistingMessage, onError
+            getChatUseCase.getFirstPageChat(
+                    messageId = messageId,
+                    onSuccess = onSuccessGetExistingMessage,
+                    onErrorGetChat = onError
             )
         }
     }
@@ -253,9 +254,11 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.getChat(
-                    messageId, paramBeforeReplyTime,
-                    onSuccessGetPreviousChat, onError
+            getChatUseCase.getTopChat(
+                    messageId = messageId,
+                    beforeReplyTime = paramBeforeReplyTime,
+                    onSuccess = onSuccessGetPreviousChat,
+                    onErrorGetChat = onError
             )
         }
     }
