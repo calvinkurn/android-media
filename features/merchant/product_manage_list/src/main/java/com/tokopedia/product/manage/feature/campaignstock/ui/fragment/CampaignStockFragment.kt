@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.ProductManageInstance
@@ -195,7 +195,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         summary?.run {
             layout_campaign_stock_product_info?.run {
                 productImageUrl.let { url ->
-                    img_campaign_stock_product?.loadImageRounded(url)
+                    ImageHandler.loadImageFitCenter(context, img_campaign_stock_product, url)
                 }
                 tv_campaign_stock_product_name?.text = productName
                 tv_campaign_stock_product_total_stock_count?.text = totalStock

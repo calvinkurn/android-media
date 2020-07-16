@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <include
         android:id="@+id/layout_campaign_stock_variant_action"
@@ -12,6 +13,8 @@
         android:id="@+id/rv_campaign_stock_variant_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/layout_campaign_stock_variant_action"/>
+        app:layout_constraintTop_toBottomOf="@id/layout_campaign_stock_variant_action"
+        tools:listitem="@layout/item_campaign_stock_variant_name"
+        tools:itemCount="3"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
