@@ -74,10 +74,7 @@ class DealCategoryViewModel @Inject constructor(
 
     fun updateChips(chips: DealsChipsDataView, location: Location, categoryId: String, isFilter: Boolean) {
         loadFilterShimmering()
-        var categoryIds = chips.chipList.filter { it.isSelected }
-                .joinToString(separator = ",") { it.id }
-        if (categoryIds.isEmpty()) categoryIds = categoryId
-        getCategoryBrandData(categoryIds, location.coordinates, location.locType.name, isFilter = isFilter)
+        getCategoryBrandData(categoryId, location.coordinates, location.locType.name, isFilter = isFilter)
         privateObservableChips.value = chips
     }
 

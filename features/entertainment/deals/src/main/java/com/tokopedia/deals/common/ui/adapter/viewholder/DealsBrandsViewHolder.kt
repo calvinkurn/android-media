@@ -1,5 +1,6 @@
 package com.tokopedia.deals.common.ui.adapter.viewholder
 
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,7 @@ class DealsBrandsViewHolder(itemView: View, private val brandActionListener: Dea
 
     fun bind(categories: DealsBrandsDataView) {
         with(itemView) {
-            if (!categories.isLoaded){
+            if (!categories.isLoaded) {
                 container.hide()
                 shimmering.show()
             } else {
@@ -39,11 +40,24 @@ class DealsBrandsViewHolder(itemView: View, private val brandActionListener: Dea
                 rvDealsBrandPopular.adapter = adapter
                 rvDealsBrandPopular.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
+                disallowInterceptTouchEvent(rvDealsBrandPopular)
                 adapter.brandList = categories.brands
             }
 
             ViewCompat.setNestedScrollingEnabled(rvDealsBrandPopular, false)
         }
+    }
+
+    private fun disallowInterceptTouchEvent(recyclerview: RecyclerView) {
+        recyclerview.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                rv.parent.requestDisallowInterceptTouchEvent(e.action == MotionEvent.ACTION_MOVE)
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        })
     }
 
     companion object {

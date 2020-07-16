@@ -104,9 +104,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun loadData(page: Int) {
+        var categoryIDs = chips.chipList.filter { it.isSelected }.joinToString(separator = ",") { it.id }
+        if (categoryIDs.isEmpty()) categoryIDs = categoryID
         getCurrentLocation().let {
             dealCategoryViewModel.getCategoryBrandData(
-                categoryID,
+                categoryIDs,
                 it.coordinates,
                 it.locType.name,
                 page,
@@ -148,12 +150,18 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onChipClicked(chips: DealsChipsDataView) {
-        dealCategoryViewModel.updateChips(chips, getCurrentLocation(), categoryID,true)
+        applyFilter(chips)
     }
 
     /** DealsCategoryFilterBottomSheetListener **/
     override fun onFilterApplied(chips: DealsChipsDataView) {
-        dealCategoryViewModel.updateChips(chips, getCurrentLocation(), categoryID, true)
+        applyFilter(chips)
+    }
+
+    private fun applyFilter(chips: DealsChipsDataView) {
+        var categoryIDs = chips.chipList.filter { it.isSelected }.joinToString(separator = ",") { it.id }
+        if (categoryIDs.isEmpty()) categoryIDs = categoryID
+        dealCategoryViewModel.updateChips(chips, getCurrentLocation(), categoryIDs,true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
