@@ -16,6 +16,7 @@ import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.PremiumAccountCopyWriting;
 import com.tokopedia.home.account.data.model.PremiumAccountResponse;
 import com.tokopedia.home.account.data.model.ShopInfoLocation;
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
@@ -72,6 +73,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
         if(saldoModel != null && accountModel != null) {
             accountModel.setSaldoModel(saldoModel);
+        }
+        if(saldoModel == null || accountModel == null) {
+            AccountHomeErrorHandler.logNullData(graphqlResponse);
         }
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;

@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.util
 
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.account.BuildConfig
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import timber.log.Timber
@@ -38,6 +39,20 @@ object AccountHomeErrorHandler {
             Crashlytics.logException(exception)
         } catch (exception: Exception) {
 
+        }
+    }
+
+
+    @JvmStatic
+    fun logNullData(graphqlResponse: GraphqlResponse) {
+
+        val exception = AccountHomeException(graphqlResponse.toString(), Throwable())
+
+        Timber.w("P2#ACCOUNT_HOME_ERROR#'Null Data';response='$graphqlResponse'")
+        try {
+            Crashlytics.logException(exception)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 }

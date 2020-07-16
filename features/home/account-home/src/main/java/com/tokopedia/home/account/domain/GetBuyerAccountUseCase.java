@@ -9,6 +9,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
+import com.tokopedia.home.account.presentation.util.AccountHomeException;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletPref;
@@ -103,6 +105,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
                     if(saldoModel != null && accountModel != null) {
                         accountModel.setSaldoModel(saldoModel);
+                    }
+
+                    if(saldoModel == null || accountModel == null) {
+                        AccountHomeErrorHandler.logNullData(graphqlResponse);
                     }
                     return accountModel;
                 });
