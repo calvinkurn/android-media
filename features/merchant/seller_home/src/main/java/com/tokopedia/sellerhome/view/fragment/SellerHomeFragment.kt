@@ -192,7 +192,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun initPltPerformanceMonitoring() {
-        if(remoteConfig.isNewSellerHomeDisabled()) {
+        performanceMonitoringSellerHomePlt = if(remoteConfig.isNewSellerHomeDisabled()) {
             (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
         } else {
             (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
