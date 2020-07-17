@@ -6,7 +6,7 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.DealsChipListener
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chip_normal.view.*
+import kotlinx.android.synthetic.main.item_deals_chip_normal.view.*
 
 class ChipViewHolder(itemView: View, private val dealsChipListener: DealsChipListener) :
     RecyclerView.ViewHolder(itemView) {
@@ -24,6 +24,6 @@ class ChipViewHolder(itemView: View, private val dealsChipListener: DealsChipLis
     }
 
     companion object {
-        val LAYOUT = R.layout.item_chip_normal
+        val LAYOUT = R.layout.item_deals_chip_normal
     }
 }

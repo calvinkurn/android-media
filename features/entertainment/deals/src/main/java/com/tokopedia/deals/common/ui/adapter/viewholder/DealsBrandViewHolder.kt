@@ -6,7 +6,7 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_brand_home.view.*
+import kotlinx.android.synthetic.main.item_deals_brand_home.view.*
 import kotlinx.android.synthetic.main.item_deals_brand_popular_item.view.*
 
 /**
@@ -34,7 +34,7 @@ class DealsBrandViewHolder(itemView: View, private val dealsBrandActionListener:
 
     companion object {
         val LAYOUT = R.layout.item_deals_brand_popular_item
-        val LAYOUT_WIDE = R.layout.item_brand_home
+        val LAYOUT_WIDE = R.layout.item_deals_brand_home
     }
 
 }

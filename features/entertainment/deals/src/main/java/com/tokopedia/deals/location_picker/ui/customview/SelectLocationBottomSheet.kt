@@ -2,14 +2,12 @@ package com.tokopedia.deals.location_picker.ui.customview
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
-import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.fragment.DealsSelectLocationFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.deal_search_bar_layout.*
+import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 
 class SelectLocationBottomSheet (private val currentLocation: Location?, private val isLandmarkPage: Boolean, private val callback: CurrentLocationCallback)
     : BottomSheetUnify() {
@@ -26,7 +24,7 @@ class SelectLocationBottomSheet (private val currentLocation: Location?, private
     private fun initBottomSheet() {
         isFullpage = true
         setTitle(getString(R.string.deals_location_bottomsheet_title))
-        setChild(View.inflate(requireContext(), R.layout.layout_change_location, null))
+        setChild(View.inflate(requireContext(), R.layout.layout_deals_change_location, null))
     }
     private fun initView() {
         setLayoutMargin()

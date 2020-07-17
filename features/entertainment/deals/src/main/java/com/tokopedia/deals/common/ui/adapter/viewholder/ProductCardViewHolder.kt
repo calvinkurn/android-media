@@ -10,7 +10,7 @@ import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.item_product_card.view.*
+import kotlinx.android.synthetic.main.item_deals_product_card.view.*
 
 class ProductCardViewHolder(itemView: View, private val productCardListener: ProductCardListener) :
     RecyclerView.ViewHolder(itemView) {
@@ -49,6 +49,6 @@ class ProductCardViewHolder(itemView: View, private val productCardListener: Pro
     }
 
     companion object {
-        val LAYOUT = R.layout.item_product_card
+        val LAYOUT = R.layout.item_deals_product_card
     }
 }

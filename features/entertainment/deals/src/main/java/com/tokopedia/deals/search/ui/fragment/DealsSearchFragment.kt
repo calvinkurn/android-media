@@ -44,7 +44,7 @@ import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactoryImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.deal_search_bar_layout.*
+import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 import kotlinx.android.synthetic.main.fragment_deals_search.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -6,7 +6,7 @@ import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_voucher_place_card.view.*
+import kotlinx.android.synthetic.main.item_deals_voucher_place_card.view.*
 
 /**
  * @author by jessica on 24/06/20

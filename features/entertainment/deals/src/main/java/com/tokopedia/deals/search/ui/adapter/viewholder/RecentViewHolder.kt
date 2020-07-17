@@ -31,7 +31,7 @@ class RecentViewHolder (itemView: View, dealsSearchListener: DealsSearchListener
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_last_seen_list_search
+        val LAYOUT = R.layout.layout_deals_last_seen_list_search
     }
 
 }

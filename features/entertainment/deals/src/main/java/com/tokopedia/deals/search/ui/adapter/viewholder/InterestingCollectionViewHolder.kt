@@ -41,7 +41,7 @@ class InterestingCollectionViewHolder(itemView: View, dealsSearchListener: Deals
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_curated_list_search
+        val LAYOUT = R.layout.layout_deals_curated_list_search
         const val TOPDEALS = "topdeals"
     }
 }

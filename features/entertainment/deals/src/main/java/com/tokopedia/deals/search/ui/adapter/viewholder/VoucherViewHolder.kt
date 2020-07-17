@@ -66,6 +66,6 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_voucher
+        val LAYOUT = R.layout.layout_deals_voucher
     }
 }

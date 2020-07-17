@@ -31,7 +31,7 @@ class PopularCityViewHolder(itemView: View, locationListener: DealsLocationListe
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_popular_city_list
+        val LAYOUT = R.layout.layout_deals_popular_city_list
     }
 
 }

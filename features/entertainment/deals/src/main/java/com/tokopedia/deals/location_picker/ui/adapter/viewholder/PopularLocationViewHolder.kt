@@ -27,6 +27,6 @@ class PopularLocationViewHolder(itemView: View, private val locationListener: De
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_popular_location_bottomsheet
+        val LAYOUT = R.layout.item_deals_popular_location_bottomsheet
     }
 }
