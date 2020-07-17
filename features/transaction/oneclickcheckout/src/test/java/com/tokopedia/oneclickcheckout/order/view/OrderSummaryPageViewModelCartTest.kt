@@ -9,6 +9,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Insuran
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PriceData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.data.model.Shipment
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -201,7 +202,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Cart`() {
+    fun `Update Cart Params`() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
@@ -227,6 +228,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Preference Failed`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        val responseMessage = "message"
+        val response = MessageErrorException(responseMessage)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Preference Error`() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
         val response = Throwable()
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {

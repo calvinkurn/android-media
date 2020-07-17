@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.checkout.*
@@ -116,5 +117,64 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode 000"), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Status Error`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val responseMessage = "error"
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = "", header = Header(messages = listOf(responseMessage)))))
+        }
+
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Status Error Default Message`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = "")))
+        }
+
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = DEFAULT_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Failed`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val response = Throwable()
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
     }
 }

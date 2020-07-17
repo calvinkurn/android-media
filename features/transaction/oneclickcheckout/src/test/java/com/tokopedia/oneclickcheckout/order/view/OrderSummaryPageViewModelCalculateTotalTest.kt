@@ -14,6 +14,18 @@ import org.junit.Test
 class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
+    fun `Calculate Total Invalid Quantity`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 500),
+                preference = ProfileResponse(payment = Payment()))
+
+        orderSummaryPageViewModel.calculateTotal()
+
+        assertEquals(OrderTotal(OrderCost(), ButtonBayarState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
     fun `Calculate Total`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))

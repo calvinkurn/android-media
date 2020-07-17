@@ -212,6 +212,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 ))
                                 orderPreference.value = OccState.Success(_orderPreference!!)
                                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                sendViewOspEe()
                             }
 
                             override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
@@ -1036,11 +1037,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     }
                 }
             } else {
-                if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
-                    globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
-                } else {
-                    globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = DEFAULT_ERROR_MESSAGE)
-                }
+                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.header.messages.firstOrNull()
+                        ?: DEFAULT_ERROR_MESSAGE)
             }
         }, { throwable: Throwable ->
             globalEvent.value = OccGlobalEvent.Error(throwable)
