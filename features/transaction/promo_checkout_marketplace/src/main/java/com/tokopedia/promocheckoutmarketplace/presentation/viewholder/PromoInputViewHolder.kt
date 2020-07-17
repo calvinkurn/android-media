@@ -50,7 +50,7 @@ class PromoInputViewHolder(private val view: View,
             textFieldInputPromo.setFirstIcon(com.tokopedia.abstraction.R.color.white)
         }
 
-        textFieldInputPromo.textFieldWrapper.setOnClickListener {
+        textFieldInputPromo.textFieldInput.setOnClickListener {
             Toast.makeText(textFieldInputPromo.context, "setOnClickListener", Toast.LENGTH_SHORT).show()
             listener.onClickPromoManualInputTextField()
         }

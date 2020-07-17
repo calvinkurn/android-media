@@ -179,7 +179,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 keyboardHeight = heightDiff
                 if (!isPromoCheckoutlastSeenBottomsheetShown) {
                     isPromoCheckoutlastSeenBottomsheetShown = true
-                    getOrShowLastSeenData()
+//                    getOrShowLastSeenData()
                 }
             } else {
                 keyboardHeight = 0
