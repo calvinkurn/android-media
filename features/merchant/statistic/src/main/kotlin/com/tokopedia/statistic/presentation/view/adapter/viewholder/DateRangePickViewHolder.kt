@@ -65,6 +65,11 @@ class DateRangePickViewHolder(
             } else {
                 setupDatePicker()
             }
+
+            if (element.startDate != null && element.endDate != null) {
+                datePicker.selectedDates = listOf(element.startDate!!, element.endDate!!)
+                setSelectedDate(element.startDate, element.endDate)
+            }
         }
     }
 
