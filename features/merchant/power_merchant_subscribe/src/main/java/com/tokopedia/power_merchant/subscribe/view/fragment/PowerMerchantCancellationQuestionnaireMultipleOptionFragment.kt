@@ -128,6 +128,10 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
     }
 
     private fun trackClickQuestionnaireOption(option: String) {
-        tracker.eventClickCancellationReasonQuestionnaire(option)
+        if(parentActivity.isFinalPage()) {
+            tracker.eventClickCancellationFeatureQuestionnaire(option)
+        } else {
+            tracker.eventClickCancellationReasonQuestionnaire(option)
+        }
     }
 }
