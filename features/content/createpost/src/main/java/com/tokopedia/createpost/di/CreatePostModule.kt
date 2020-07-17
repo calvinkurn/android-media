@@ -4,12 +4,8 @@ import android.app.NotificationManager
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
-import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.data.pojo.uploadimage.UploadImageResponse
-import com.tokopedia.createpost.domain.usecase.GetAffiliateProductSuggestionUseCase
-import com.tokopedia.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.createpost.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.presenter.CreatePostPresenter
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -34,13 +30,18 @@ import com.tokopedia.videouploader.domain.usecase.GenerateVideoTokenUseCase
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 /**
  * @author by milhamj on 9/26/18.
  */
 @Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class, ShopCommonModule::class])
 class CreatePostModule(private val context: Context) {
+
+    @Provides
+    @ActivityContext
+    fun provideActivityContext(): Context {
+        return context
+    }
 
     @Provides
     @ApplicationContext
@@ -106,21 +107,6 @@ class CreatePostModule(private val context: Context) {
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
-
-    @Provides
-    @CreatePostScope
-    @Named(GetShopProductSuggestionUseCase.QUERY_SHOP_PRODUCT_SUGGESTION)
-    fun provideGetProductSuggestionShopQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_shop_product_suggestion)
-    }
-
-    @Provides
-    @CreatePostScope
-    @Named(GetAffiliateProductSuggestionUseCase.QUERY_AFFILIATE_PRODUCT_SUGGESTION)
-    fun provideGetProductSuggestionAffiliateQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_affiliate_product_suggestion)
-    }
-
 
     @Provides
     @CreatePostScope

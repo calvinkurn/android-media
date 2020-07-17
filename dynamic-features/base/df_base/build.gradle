@@ -63,6 +63,7 @@ dependencies {
 
     //Content
     implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
