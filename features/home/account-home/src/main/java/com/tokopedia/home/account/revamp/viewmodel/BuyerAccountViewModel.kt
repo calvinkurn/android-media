@@ -67,6 +67,7 @@ class BuyerAccountViewModel @Inject constructor (
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
+                saveLocallyAttributes(accountModel)
                 _buyerAccountData.postValue(Success(accountModel))
             }
         }, onError = {
@@ -74,7 +75,7 @@ class BuyerAccountViewModel @Inject constructor (
         })
     }
 
-    fun saveLocallyAttributes(accountModel: AccountModel) {
+    private fun saveLocallyAttributes(accountModel: AccountModel) {
         saveLocallyWallet(accountModel)
         saveLocallyVccUserStatus(accountModel)
         savePhoneVerified(accountModel)

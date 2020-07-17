@@ -106,7 +106,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             hideLoading()
             when(it) {
                 is Success -> {
-                    viewModel.saveLocallyAttributes(it.data)
                     loadBuyerData(buyerAccountMapper.call(it.data))
                 }
                 is Fail -> {
