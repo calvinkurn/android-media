@@ -9,6 +9,8 @@ import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
 import com.tokopedia.editshipping.data.interactor.EditShippingRetrofitInteractor;
 import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
+import com.tokopedia.editshipping.domain.ValidateShippingUseCase;
+import com.tokopedia.editshipping.domain.model.ValidateShippingModel;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict;
@@ -76,6 +78,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     private DistrictRecommendationAddress selectedAddress;
 
     private UserSessionInterface userSession;
+
+    private ValidateShippingUseCase validateShippingUseCase;
 
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
@@ -806,6 +810,28 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     @Override
     public void validateBo() {
+        scanActivatedCourier();
+        Map<String, String> shippingUpdateParams = new HashMap<>();
+        putDataToHashMap(shippingUpdateParams);
         //ToDo:: validate Bo here
+        validateShippingUseCase.execute(new Subscriber<ValidateShippingModel>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ValidateShippingModel validateShippingModel) {
+
+            }
+        });
+
     }
+
 }

@@ -56,6 +56,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.popup_validation_bo.view.*
 import timber.log.Timber
 
 /**
@@ -375,7 +376,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             return true
         } else if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
-                submitData()
+                openPopupValidation()
             } else showErrorToast(getString(R.string.dialog_on_process))
         }
         return super.onOptionsItemSelected(item)
@@ -490,6 +491,13 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         bottomSheetValidation = BottomSheetUnify()
         val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
             //ToDo:: contains view from popup
+
+            btn_nonaktifkan.setOnClickListener {
+                submitData()
+            }
+            btn_aktifkan.setOnClickListener {
+               bottomSheetValidation?.dismiss()
+            }
         }
 
         bottomSheetValidation?.apply {
