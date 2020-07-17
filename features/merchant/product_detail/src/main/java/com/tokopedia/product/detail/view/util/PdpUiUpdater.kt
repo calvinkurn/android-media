@@ -138,7 +138,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 endDate = it.data.endDate
                 startDate = it.data.startDate
                 notifyMe = it.data.notifyMe
-                isUpcomingNplType = it.data.isUpcomingNplType()
+                isUpcomingNplType = dataP1.isUpcomingNplType()
             }
 
             miniShopInfo?.run {
