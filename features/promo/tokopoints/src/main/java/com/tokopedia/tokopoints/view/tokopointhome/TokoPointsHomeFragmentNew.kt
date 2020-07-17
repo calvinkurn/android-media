@@ -31,6 +31,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -55,9 +56,11 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.tp_fragment_homepage_new.*
+import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
 
 /*
@@ -100,6 +103,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var categorySeeAll: TextView
     lateinit var cardTierInfo: CardUnify
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private val dynamicItem = "dynamicItem"
+    private val toolbarItemList = mutableListOf<NotificationUnify>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -385,7 +390,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         cardTierInfo.doOnLayout {
             setLayoutParams(it.height)
         }
-        tokoPointToolbar?.setScrolledItem(data?.dynamicActionList)
+        addDynamicToolbar(data?.dynamicActionList)
         mTextMembershipLabel?.text = data?.introductionText
 
         data?.target?.let {
@@ -411,6 +416,35 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         renderDynamicActionList(data?.dynamicActionList)
     }
 
+
+    private fun addDynamicToolbar(dynamicActionList: List<DynamicActionListItem?>?) {
+        dynamicActionList?.forEachIndexed { index, it ->
+            it?.let { item ->
+                tokoPointToolbar?.addItem(it)?.apply {
+                    toolbarItemList.add(this.notif_dynamic)
+                    setOnClickListener {
+                        RouteManager.route(context, item.cta?.appLink)
+                        hideNotification(index)
+                        AnalyticsTrackerUtil.sendEvent(context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                                item.cta?.text?.let { it1 -> AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, it1) },
+                                "")
+                    }
+                }
+            }
+        }
+    }
+
+    fun hideNotification(index: Int) {
+        toolbarItemList[index].hide()
+        when (index) {
+            0 -> dynamicAction?.notifFirstLayout?.hide()
+            1 -> dynamicAction?.notifCenterLayout?.hide()
+            2 -> dynamicAction?.notifRightLayout?.hide()
+        }
+    }
+
     fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
 
         if (dataList != null && dataList.isNotEmpty()) {
@@ -421,7 +455,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dataList[0]?.counter?.counterStr?.let { dynamicAction?.setFirstLayoutNotification(it) }
             }
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
-                dataList[0]?.cta?.let { dynamicAction?.setLayoutClickListener(it.appLink, it.text) }
+                dataList[0]?.cta?.let {
+                    hideNotification(0)
+                    dynamicAction?.setLayoutClickListener(it.appLink, it.text) }
             }
             if (dataList.size > 1) {
                 dynamicAction?.setCenterLayoutVisibility(View.VISIBLE)
@@ -431,7 +467,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     dataList[1]?.counter?.counterStr?.let { dynamicAction?.setCenterLayoutNotification(it) }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
-                    dataList[1]?.cta?.let { dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text) }
+                    dataList[1]?.cta?.let {
+                        hideNotification(1)
+                        dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text) }
                 }
                 dynamicAction?.setVisibilityDividerOne(View.VISIBLE)
             }
@@ -443,7 +481,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     dataList[2]?.counter?.counterStr?.let { dynamicAction?.setRightLayoutNotification(it) }
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
-                    dataList[2]?.cta?.let { dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
+                    dataList[2]?.cta?.let {
+                        hideNotification(3)
+                        dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
                 }
                 dynamicAction?.setVisibilityDividerTwo(View.VISIBLE)
             }

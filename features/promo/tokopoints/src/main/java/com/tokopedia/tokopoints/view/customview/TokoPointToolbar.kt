@@ -50,7 +50,6 @@ class TokoPointToolbar : Toolbar {
     var mContext: Context? = null
     var backArrowWhite: Drawable? = null
     var view: View? = null
-    val dynamicItem = "dynamicItem"
 
     constructor(context: Context) : super(context) {
         inflateResource(context)
@@ -177,33 +176,21 @@ class TokoPointToolbar : Toolbar {
         container_scrolledState.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun setScrolledItem(dynamicActionList: List<DynamicActionListItem?>?) {
+    fun addItem(dynamicActionItem: DynamicActionListItem) : View? {
         view?.let {
-            if (dynamicActionList != null) {
-                for (item in dynamicActionList) {
-                    val viewCntainer = View.inflate(context, R.layout.tp_item_dynamic_action, null)
-                    val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
-                    param.rightMargin = convertDpToPixel(10,viewCntainer.context)
-                    ImageUtil.loadImage(viewCntainer.iv_dynamic, item?.iconImageURLScrolled)
-                    if (item?.counter?.isShowCounter != null && item.counter.counterStr != null
-                            && item.counter.counterStr.isNotEmpty() && item.counter.counterStr != "0") {
-                        viewCntainer.notif_dynamic.visibility = View.VISIBLE
-                        viewCntainer.notif_dynamic.setNotification(item.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
-                    }
-                    viewCntainer.setOnClickListener {
-                        RouteManager.route(context, item?.cta?.appLink)
-                        viewCntainer.notif_dynamic.visibility = View.GONE
-
-                        AnalyticsTrackerUtil.sendEvent(context,
-                                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                                item?.cta?.text?.let { it1 -> AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, it1) },
-                                "")
-                    }
-                    it.container_scrolledState.addView(viewCntainer, param)
-                }
+            val viewCntainer = View.inflate(context, R.layout.tp_item_dynamic_action, null)
+            val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+            param.rightMargin = convertDpToPixel(10,viewCntainer.context)
+            ImageUtil.loadImage(viewCntainer.iv_dynamic, dynamicActionItem.iconImageURLScrolled)
+            if (dynamicActionItem.counter?.isShowCounter != null && dynamicActionItem.counter.counterStr != null
+                    && dynamicActionItem.counter.counterStr.isNotEmpty() && dynamicActionItem.counter.counterStr != "0") {
+                viewCntainer.notif_dynamic.visibility = View.VISIBLE
+                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
+            it.container_scrolledState.addView(viewCntainer, param)
+            return viewCntainer
         }
+        return null
     }
 
     internal enum class ToolbarState {
