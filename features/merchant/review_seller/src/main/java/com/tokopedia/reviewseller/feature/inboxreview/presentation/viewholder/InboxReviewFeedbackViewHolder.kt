@@ -36,8 +36,8 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     override fun bind(element: FeedbackInboxUiModel) {
         with(itemView) {
-            if(!element.isReplied) {
-                containerInboxReview?.setBackgroundColor(Color.WHITE)
+            if(element.replyText.isNotBlank()) {
+                containerInboxReview?.setBackgroundColor(Color.TRANSPARENT)
             } else {
                 containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.clr_unanswered))
             }
@@ -48,6 +48,7 @@ class InboxReviewFeedbackViewHolder(view: View,
 
             setupVariant(element.variantName)
             setActionReply(element)
+            setFeedbackReply(element)
             setupFeedbackReview(element.reviewText, element.feedbackId.toString())
             setImageAttachment(element)
         }
@@ -125,6 +126,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             } else {
                 reviewInboxFeedbackImageAdapter.setAttachmentUiData(element.attachments)
                 reviewInboxFeedbackImageAdapter.setFeedbackId(element.feedbackId.toString())
+                reviewInboxFeedbackImageAdapter.setTitleProduct(element.productName)
                 reviewInboxFeedbackImageAdapter.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }
@@ -133,14 +135,14 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     private fun setActionReply(element: FeedbackInboxUiModel) {
         with(itemView) {
-            if(element.isReplied) {
+            if(element.replyText.isBlank()) {
                 tvActionReplyReview?.text = getString(R.string.edit_review_label)
             } else {
                 tvActionReplyReview.text = getString(R.string.review_reply_label)
             }
 
             tvActionReplyReview.setOnClickListener {
-                feedbackInboxReviewListener.onItemReplyOrEditClicked(element, element.isReplied, adapterPosition)
+                feedbackInboxReviewListener.onItemReplyOrEditClicked(element, element.replyText.isBlank(), adapterPosition)
             }
         }
     }

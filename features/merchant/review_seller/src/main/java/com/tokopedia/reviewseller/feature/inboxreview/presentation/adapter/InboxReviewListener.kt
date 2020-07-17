@@ -1,7 +1,6 @@
 package com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter
 
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FilterInboxReviewUiModel
 
 interface FeedbackInboxReviewListener {
     fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isReply: Boolean, adapterPosition: Int)

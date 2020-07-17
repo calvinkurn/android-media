@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class InboxReviewResponse(
         @Expose
         @SerializedName("productrevGetInboxReviewByShop")
-        val productrevGetInboxReviewByShop: ProductGetInboxReviewByShop
+        val productrevGetInboxReviewByShop: ProductGetInboxReviewByShop = ProductGetInboxReviewByShop()
 ) {
     data class ProductGetInboxReviewByShop(
             @Expose
@@ -20,7 +20,7 @@ data class InboxReviewResponse(
             val limit: Int? = 0,
             @Expose
             @SerializedName("list")
-            val list: List<InboxReviewList>,
+            val list: List<InboxReviewList> = listOf(),
             @Expose
             @SerializedName("page")
             val page: Int? = 0,
@@ -84,6 +84,9 @@ data class InboxReviewResponse(
                     @Expose
                     @SerializedName("productName")
                     val productName: String? = "",
+                    @Expose
+                    @SerializedName("productImageURL")
+                    val productImageURL: String? = "",
                     @Expose
                     @SerializedName("productPageURL")
                     val productPageURL: String? = "",

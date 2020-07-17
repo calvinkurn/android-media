@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.reviewseller.common.di.scope.ReviewSellerScope
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.viewmodel.InboxReviewViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
 import dagger.Binds
 import dagger.Module
@@ -22,4 +23,9 @@ abstract class ReviewProductListViewModelModule {
     @IntoMap
     @ViewModelKey(SellerReviewListViewModel::class)
     abstract fun reviewProductListViewModel(viewModelListReviewList: SellerReviewListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(InboxReviewViewModel::class)
+    abstract fun inboxReviewViewModel(inboxReviewViewModel: InboxReviewViewModel): ViewModel
 }

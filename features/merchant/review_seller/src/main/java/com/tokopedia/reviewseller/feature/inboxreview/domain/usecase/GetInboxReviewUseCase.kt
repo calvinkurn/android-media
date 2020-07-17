@@ -31,6 +31,7 @@ class GetInboxReviewUseCase @Inject constructor(
                     product {
                         productID
                         productName
+                        productImageURL
                         productVariant {
                             variantID
                             variantName

@@ -1,6 +1,5 @@
 package com.tokopedia.reviewseller.feature.inboxreview.domain.mapper
 
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ALL_RATINGS
@@ -12,12 +11,16 @@ import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
 import com.tokopedia.reviewseller.common.util.getStatusFilter
 import com.tokopedia.reviewseller.common.util.isAnswered
 import com.tokopedia.reviewseller.feature.inboxreview.domain.response.InboxReviewResponse
-import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.*
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewUiModel
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListItemRatingWrapper
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
+import java.util.*
 
 object InboxReviewMapper {
 
@@ -59,6 +62,7 @@ object InboxReviewMapper {
                             username = it.user.userName.orEmpty(),
                             productID = it.product.productID.orZero(),
                             productName = it.product.productName.orEmpty(),
+                            productImageUrl = it.product.productImageURL.orEmpty(),
                             variantID = it.product.productVariant.variantID.orZero(),
                             variantName = it.product.productVariant.variantName.orEmpty(),
                             invoiceID = it.invoiceID.orEmpty(),
@@ -133,10 +137,8 @@ object InboxReviewMapper {
         val sortFilter = SortFilterItem(
                 title = ALL_RATINGS,
                 type = ChipsUnify.TYPE_NORMAL,
-                size = ChipsUnify.SIZE_SMALL).apply {
-            refChipUnify.chip_image_icon.hide()
-            refChipUnify.setChevronClickListener { }
-        }
+                size = ChipsUnify.SIZE_SMALL)
+
         itemSortFilterList.add(SortFilterInboxItemWrapper(sortFilter, isSelected = false))
 
         val sortFilterUnAnswered = SortFilterItem(
@@ -195,6 +197,30 @@ object InboxReviewMapper {
         }
 
         return Pair(thumbnailSlider, imageSlider)
+    }
+
+    fun mapFeedbackInboxToFeedbackUiModel(data: FeedbackInboxUiModel): FeedbackUiModel {
+        val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
+        data.attachments.map { attachment ->
+            mapAttachment.add(FeedbackUiModel.Attachment(
+                    thumbnailURL = attachment.thumbnailURL,
+                    fullSizeURL = attachment.fullSizeURL
+            ))
+        }
+        return FeedbackUiModel(
+                attachments = mapAttachment,
+                autoReply = data.isAutoReply,
+                feedbackID = data.feedbackId,
+                rating = data.rating,
+                replyText = data.replyText,
+                replyTime = data.replyTime,
+                reviewText = data.reviewText,
+                isMoreReply = data.isMoreReply,
+                reviewTime = data.reviewTime,
+                reviewerName = data.username,
+                variantName = data.variantName,
+                sellerUser = data.sellerUser
+        )
     }
 
 }

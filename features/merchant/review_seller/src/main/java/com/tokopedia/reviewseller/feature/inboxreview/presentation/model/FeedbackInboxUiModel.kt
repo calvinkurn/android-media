@@ -10,6 +10,7 @@ data class FeedbackInboxUiModel(
         var username: String = "",
         var productID: Int = 0,
         var productName: String = "",
+        var productImageUrl: String = "",
         var productVariant: String = "",
         var attachments: List<Attachment> = mutableListOf(),
         var variantID: Int = 0,

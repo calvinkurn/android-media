@@ -13,7 +13,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class FilterRatingBottomSheet(private val mActivity: FragmentActivity?,
-                              private val listener: (List<ListItemRatingWrapper>) -> Unit): BottomSheetUnify(), RatingListListener {
+                              private val listener: (List<ListItemRatingWrapper>) -> Unit,
+                              private val dismissListener: () -> Unit) : BottomSheetUnify(), RatingListListener {
 
     companion object {
         const val BOTTOM_SHEET_TITLE = "Filter Rating"
@@ -30,14 +31,15 @@ class FilterRatingBottomSheet(private val mActivity: FragmentActivity?,
         val view = View.inflate(mActivity, R.layout.bottom_sheet_filter_rating_inbox_review, null)
         rvRatingFilter = view.findViewById(R.id.rvRatingInboxReview)
         btnFilter = view.findViewById(R.id.btnFilter)
-        isDragable = true
-        isFullpage = true
         setTitle(BOTTOM_SHEET_TITLE)
         setAction(ACTION_TITLE) {
             resetRatingFilter()
         }
         setCloseClickListener {
             dismiss()
+        }
+        setOnDismissListener {
+            dismissListener.invoke()
         }
         setChild(view)
     }

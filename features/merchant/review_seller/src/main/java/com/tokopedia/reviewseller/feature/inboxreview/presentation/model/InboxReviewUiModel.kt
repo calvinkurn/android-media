@@ -1,7 +1,6 @@
 package com.tokopedia.reviewseller.feature.inboxreview.presentation.model
 
 data class InboxReviewUiModel(
-        var filterItemWrapper: FilterInboxReviewUiModel = FilterInboxReviewUiModel(),
         var feedbackInboxList: List<FeedbackInboxUiModel> = listOf(),
         var filterBy: String = "",
         var page: Int = 0,

@@ -11,7 +11,7 @@ import dagger.Module
 import dagger.Provides
 
 @InboxReviewScope
-@Module
+@Module(includes = [InboxReviewViewModelModule::class])
 class InboxReviewModule {
 
     @InboxReviewScope

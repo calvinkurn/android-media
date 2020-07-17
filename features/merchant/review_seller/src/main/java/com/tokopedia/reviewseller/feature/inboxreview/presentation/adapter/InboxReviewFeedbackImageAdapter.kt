@@ -7,7 +7,6 @@ import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.AdapterDiffCallback
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.viewholder.InboxReviewFeedbackImageViewHolder
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 
 class InboxReviewFeedbackImageAdapter(
         private val feedbackInboxReviewListener: FeedbackInboxReviewListener
