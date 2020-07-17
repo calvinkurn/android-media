@@ -29,11 +29,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
-    sourceSets {
-        androidTest {
-            resources.srcDirs += ['src/androidTest/resources']
-        }
-    }
 }
 
 dependencies {
@@ -110,13 +105,13 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.junit
+//    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+//    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+//    androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation rootProject.ext.testDependencies.testCore
+//    androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
