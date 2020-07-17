@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.source;
 
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.network.mapper.DataResponseMapper;
+import com.tokopedia.topads.common.model.shopmodel.ShopModel;
 import com.tokopedia.topads.dashboard.data.source.cloud.ShopInfoCloud;
 
 import rx.Observable;
@@ -12,9 +12,9 @@ import rx.Observable;
 
 public class ShopInfoDataSource {
     private final ShopInfoCloud shopInfoCloud;
-    private final SimpleDataResponseMapper<ShopModel> mapper;
+    private final DataResponseMapper<ShopModel> mapper;
 
-    public ShopInfoDataSource(ShopInfoCloud shopInfoCloud, SimpleDataResponseMapper<ShopModel> mapper) {
+    public ShopInfoDataSource(ShopInfoCloud shopInfoCloud, DataResponseMapper<ShopModel> mapper) {
         this.shopInfoCloud = shopInfoCloud;
         this.mapper = mapper;
     }

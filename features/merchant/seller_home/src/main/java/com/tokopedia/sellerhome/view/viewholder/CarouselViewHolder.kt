@@ -33,7 +33,7 @@ class CarouselViewHolder(
     private var hasSetSnapHelper = false
 
     override fun bind(element: CarouselWidgetUiModel) {
-        listener.getCarouselData()
+        itemView.rvCarouselBanner.isNestedScrollingEnabled = false
         observeState(element)
     }
 

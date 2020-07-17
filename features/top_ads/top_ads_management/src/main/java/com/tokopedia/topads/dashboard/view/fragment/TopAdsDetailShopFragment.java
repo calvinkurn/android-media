@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsManagementRouter;
@@ -29,6 +28,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoShopActivit
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -114,7 +114,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailShopViewPresenterImpl(getActivity(), this,
-                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity())),
+                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new UserSession(getActivity())),
                         new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
     }

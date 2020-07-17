@@ -11,5 +11,5 @@ object AddEditProductConstants {
     const val PHOTO_TIPS_URL_2 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png"
     const val PHOTO_TIPS_URL_3 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
 
-    const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = 2048
+    const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = 30 * 1024
 }
