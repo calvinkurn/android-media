@@ -154,7 +154,7 @@ class MixTopTrackerTest : Spek({
                         "event", "productClick",
                         "eventCategory", "homepage",
                         "eventAction", "click on product dynamic channel top carousel",
-                        "eventLabel", "Testing Top",
+                        "eventLabel", "21370 - Testing Top",
                         "channelId", "21370",
                         "ecommerce", DataLayer.mapOf(
                             "currencyCode","IDR",
