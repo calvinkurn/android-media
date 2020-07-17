@@ -89,10 +89,10 @@ open class ConfigViewHolder(
     private fun troubleshootStatus(status: StatusState) {
         when (status) {
             is StatusState.Success -> {
-                iconStatusVisibility(R.drawable.ic_green_checked)
+                iconStatusVisibility(R.drawable.ic_status_notif_green_checked)
             }
             is StatusState.Error -> {
-                iconStatusVisibility(R.drawable.ic_red_error)
+                iconStatusVisibility(R.drawable.ic_status_notif_red_error)
             }
         }
     }

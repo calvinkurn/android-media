@@ -59,31 +59,13 @@ internal class SearchProductTrackingTest {
 
         setupGraphqlMockResponse(SearchMockModelConfig())
 
-        disableOnBoarding()
+        disableOnBoarding(context)
 
         activityRule.launchActivity(createIntent())
 
         setupIdlingResource()
 
         intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-    }
-
-    private fun disableOnBoarding() {
-        LocalCacheHandler(context, FREE_ONGKIR_LOCAL_CACHE_NAME).also {
-            it.putBoolean(FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN, true)
-            it.applyEditor()
-        }
-
-        LocalCacheHandler(context, LOCAL_CACHE_NAME).also {
-            it.putBoolean(FILTER_ONBOARDING_SHOWN, true)
-            it.applyEditor()
-        }
-    }
-
-    private fun createIntent(): Intent {
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
-            it.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=samsung")
-        }
     }
 
     private fun setupIdlingResource() {
@@ -113,17 +95,6 @@ internal class SearchProductTrackingTest {
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))
 
         activityRule.activity.finish()
-    }
-
-    private fun RecyclerView?.getProductListAdapter(): ProductListAdapter {
-        val productListAdapter = this?.adapter as? ProductListAdapter
-
-        if (productListAdapter == null) {
-            val detailMessage = "Adapter is not ${ProductListAdapter::class.java.simpleName}"
-            throw AssertionError(detailMessage)
-        }
-
-        return productListAdapter
     }
 
     private fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
