@@ -261,7 +261,7 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* FAVOURITE CATEGORY SECTION ACTION */
     override fun onClickFavouriteCategory(url: String) {
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext()))
+        RouteManager.route(context, url)
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc

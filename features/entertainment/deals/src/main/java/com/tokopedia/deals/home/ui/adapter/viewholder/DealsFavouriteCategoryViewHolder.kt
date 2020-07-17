@@ -26,7 +26,7 @@ class DealsFavouriteCategoryViewHolder(itemView: View, private val listener: Dea
 
             setOnClickListener {
                 listener.onClickFavouriteCategory(
-                        places.imageUrl
+                        places.url
                 )
             }
         }
