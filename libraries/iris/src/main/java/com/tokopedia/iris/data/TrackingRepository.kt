@@ -98,15 +98,20 @@ class TrackingRepository(
     }
 
     suspend fun sendSingleEvent(data: String, session: Session): Boolean {
-        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
-            userSession.userId, userSession.deviceId)
-        val requestBody = ApiService.parse(dataRequest)
-        val response = apiService.sendSingleEventAsync(requestBody)
-        val isSuccessFul = response.isSuccessful
-        if (!isSuccessFul) {
-            Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
+        try {
+            val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+                    userSession.userId, userSession.deviceId)
+            val requestBody = ApiService.parse(dataRequest)
+            val response = apiService.sendSingleEventAsync(requestBody)
+            val isSuccessFul = response.isSuccessful
+            if (!isSuccessFul) {
+                Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
+            }
+            return isSuccessFul
+        } catch (e: Exception) {
+            Timber.e("P1#IRIS_REALTIME_ERROR#%s", e.toString())
+            return false
         }
-        return isSuccessFul
     }
 
     /**

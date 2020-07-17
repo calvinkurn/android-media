@@ -124,12 +124,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     override fun sendEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
-                try {
-                    val trackingRepository = TrackingRepository(context)
-                    trackingRepository.sendSingleEvent(gson.toJson(map), session)
-                } catch (e: Exception) {
-                    Timber.e("P2#IRIS_REALTIME_ERROR#%s", e.toString())
-                }
+                val trackingRepository = TrackingRepository(context)
+                trackingRepository.sendSingleEvent(gson.toJson(map), session)
             }
         }
     }
