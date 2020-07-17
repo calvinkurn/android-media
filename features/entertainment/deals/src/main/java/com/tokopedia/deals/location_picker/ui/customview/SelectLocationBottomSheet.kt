@@ -21,11 +21,10 @@ class SelectLocationBottomSheet (private val currentLocation: Location?, private
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.configureBottomSheetHeight()
         initView()
     }
     private fun initBottomSheet() {
-        isDragable = false
+        isFullpage = true
         setTitle(getString(R.string.deals_location_bottomsheet_title))
         setChild(View.inflate(requireContext(), R.layout.layout_change_location, null))
     }
@@ -40,10 +39,5 @@ class SelectLocationBottomSheet (private val currentLocation: Location?, private
         val padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
         bottomSheetWrapper.setPadding(0, padding, 0, 0)
         bottomSheetHeader.setPadding(padding, 0, padding, 0)
-    }
-
-    private fun BottomSheetUnify.configureBottomSheetHeight() {
-        val maxHeight = (DealsUtils.screenHeightPx * 0.9f).toInt()
-        bottomSheetWrapper.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, maxHeight)
     }
 }
