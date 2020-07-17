@@ -250,7 +250,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext()))
+        RouteManager.route(context, curatedProductCategoryDataView.seeAllUrl)
     }
 
     /* NEAREST PLACE SECTION ACTION */
