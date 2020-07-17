@@ -42,6 +42,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
@@ -188,6 +189,14 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     companion object {
         private val TAG_COACHMARK_DETAIL = "coachmark"
+
+        private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
+        private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
+        private const val ERROR_GET_ORDER_REJECT_REASONS = "Error when get order reject reasons."
+        private const val ERROR_WHEN_SET_DELIVERED = "Error when set order status to delivered."
+        private const val ERROR_EDIT_AWB = "Error when edit AWB."
+        private const val ERROR_REJECT_ORDER = "Error when rejecting order."
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -304,6 +313,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     renderDetail()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }
@@ -327,6 +337,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
                 }
             }
@@ -376,6 +387,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     fragmentManager?.let { it1 -> bottomSheetRejectReason.show(it1, getString(R.string.show_bottomsheet)) }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
                     showToasterError(getString(R.string.global_error), bottomSheetRejectReason.view)
                 }
             }
@@ -396,6 +408,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
                     view?.let { v ->
                         val msg = it.throwable.message
                         val msgProcessed = if (msg.isNullOrBlank()) "Terjadi Kesalahan" else msg
@@ -561,7 +574,15 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         if (detailResponse.flagOrderMeta.flagFreeShipping) {
             showFreeShippingAcceptOrderDialog(buttonResp)
         } else {
-            showAcceptOrderDialog(buttonResp)
+            acceptOrder(buttonResp)
+        }
+    }
+
+    private fun acceptOrder(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        val mapParam = buttonResp.param.convertStrObjToHashMap()
+        if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
+            somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
+                    mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
         }
     }
 
@@ -633,29 +654,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 setChild(dialogView)
-            }
-            dialogUnify.show()
-        }
-    }
-
-    private fun showAcceptOrderDialog(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        view?.context?.let {
-            val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                setTitle(buttonResp.title)
-                setDescription(buttonResp.content)
-                setPrimaryCTAText(getString(R.string.terima_pesanan))
-                setPrimaryCTAClickListener {
-                    val mapParam = buttonResp.param.convertStrObjToHashMap()
-                    if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
-                        somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                            mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
-                        dismiss()
-                    }
-                }
-                setSecondaryCTAText(getString(R.string.kembali))
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
             }
             dialogUnify.show()
         }
@@ -866,6 +864,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if(failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
@@ -1304,6 +1303,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
                     showToasterError(getString(R.string.global_error), view)
                 }
             }

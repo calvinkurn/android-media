@@ -97,21 +97,21 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
-        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter).list
+        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
         var dataNegativeAdded: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var dataNegativeDeleted: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var deletedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var addedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var editedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
 
-        if (fragments[0] is EditKeywordsFragment) {
+        if (fragments?.get(0) is EditKeywordsFragment) {
             val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
             addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
             deletedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_DELETE)
             editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
 
         }
-        if (fragments[1] is EditNegativeKeywordsFragment) {
+        if (fragments?.get(1) is EditNegativeKeywordsFragment) {
             val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
             dataNegativeAdded = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_ADDED)
             dataNegativeDeleted = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_DELETED)

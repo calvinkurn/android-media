@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
@@ -23,23 +24,41 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 
-class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFinishedListener,
-                                          private var product: ProductViewModel) : BottomSheetUnify() {
+class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFinishedListener? = null,
+                                          private var product: ProductViewModel? = null) : BottomSheetUnify() {
 
     companion object {
-        fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
-            return ProductManageQuickEditPriceFragment(onFinishedListener, product).apply{
-                val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
-                setChild(view)
-                setTitle(context.resources.getString(R.string.product_manage_menu_set_price))
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-            }
+        private const val KEY_CACHE_MANAGER_ID = "cache_manager_id"
+        private const val KEY_PRODUCT = "product"
+
+        fun createInstance(product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
+            return ProductManageQuickEditPriceFragment(onFinishedListener, product)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            val cacheManagerId = it.getString(KEY_CACHE_MANAGER_ID).orEmpty()
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            product = cacheManager?.get<ProductViewModel>(KEY_PRODUCT, ProductViewModel::class.java, null)
+        }
+        val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
+        setChild(view)
+        setTitle(getString(R.string.product_manage_menu_set_price))
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        product.minPrice?.price?.let { initView(it) }
+        product?.minPrice?.price?.let { initView(it) }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(KEY_PRODUCT, product)
+        outState.putString(KEY_CACHE_MANAGER_ID, cacheManager?.id.orEmpty())
     }
 
     private fun initView(currentPrice: String) {
@@ -56,8 +75,8 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    val editedPrice = PriceUiModel(textFieldInput.text.toString(), product.minPrice?.priceFormatted)
-                    product = product.copy(minPrice = editedPrice)
+                    val editedPrice = PriceUiModel(textFieldInput.text.toString(), product?.minPrice?.priceFormatted)
+                    product = product?.copy(minPrice = editedPrice)
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(textFieldInput.windowToken, 0)
                 }
@@ -99,12 +118,12 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
         quickEditPriceTextField.requestFocus()
         quickEditPriceSaveButton.setOnClickListener {
             isPriceValid()
-            ProductManageTracking.eventEditPriceSave(product.id)
+            ProductManageTracking.eventEditPriceSave(product?.id.orEmpty())
         }
     }
 
     private fun isPriceTooLow(): Boolean {
-        if(product.minPrice?.price.toIntOrZero() < MINIMUM_PRICE) return true
+        if(product?.minPrice?.price.toIntOrZero() < MINIMUM_PRICE) return true
         return false
     }
 
@@ -119,17 +138,23 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
     }
 
     private fun isPriceValid() {
-        product = product.copy(minPrice = product.minPrice?.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()))
+        product = product?.copy(minPrice = product?.minPrice?.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()))
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
                 return
             }
             else -> {
-                onFinishedListener.onFinishEditPrice(product)
-                super.dismiss()
+                product?.run {
+                    onFinishedListener?.onFinishEditPrice(this)
+                    super.dismiss()
+                }
             }
         }
+    }
+
+    fun setOnFinishedListener(onFinishedListener: OnFinishedListener) {
+        this.onFinishedListener = onFinishedListener
     }
 
     interface OnFinishedListener {

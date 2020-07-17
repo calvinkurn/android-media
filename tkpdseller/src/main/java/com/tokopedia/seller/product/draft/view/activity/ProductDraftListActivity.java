@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.draft.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -12,17 +13,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
@@ -192,7 +193,14 @@ public class ProductDraftListActivity extends BaseSimpleActivity
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
             if(GlobalConfig.isSellerApp()) {
-                startActivity(AddEditProductPreviewActivity.Companion.createInstance(this, draftProductIdList.get(0).toString(), true, false));
+                String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                        .buildUpon()
+                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, draftProductIdList.get(0).toString())
+                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                        .build()
+                        .toString();
+                Intent intent = RouteManager.getIntent(this, uri);
+                startActivity(intent);
             } else {
                 startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
             }

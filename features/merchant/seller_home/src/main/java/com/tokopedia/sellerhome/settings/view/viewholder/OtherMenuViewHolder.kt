@@ -94,6 +94,7 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.shopInfoLayout.shopBadges?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
+                listener.onShopBadgeClicked()
                 shopBadgeUiModel.sendSettingShopInfoClickTracking()
             }
         }
@@ -296,6 +297,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     interface Listener {
         fun onShopInfoClicked()
+        fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()
