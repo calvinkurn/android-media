@@ -128,7 +128,7 @@ class AddEditProductVariantViewModel @Inject constructor(
                     val selectedVariantUnitData = variantData.units.find { unit ->
                         unit.variantUnitID == selectedVariantUnit.variantUnitID
                     }
-                    selectedVariantUnitData?.unitValues?.toMutableList()?.add(customVariantUnitValue)
+                    selectedVariantUnitData?.unitValues?.add(customVariantUnitValue)
                 }
             }
         }
