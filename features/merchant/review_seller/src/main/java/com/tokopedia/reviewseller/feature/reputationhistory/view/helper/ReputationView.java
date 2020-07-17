@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
-import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.Stats;
 import com.tokopedia.reviewseller.R;
 
