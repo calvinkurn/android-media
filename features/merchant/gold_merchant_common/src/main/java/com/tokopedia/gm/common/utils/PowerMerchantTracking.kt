@@ -105,14 +105,6 @@ class PowerMerchantTracking @Inject constructor(
         )
     }
 
-    fun eventPMCancellationClickNextQuestionButtonMiddlePage(questionName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-                GMParamTracker.Category.PM_QUESTIONNAIRE,
-                GMParamTracker.Action.CLICK_CANCELLATION_REASON,
-                questionName)
-    }
-
     fun eventPMCancellationClickOptionBackButtonFirstPage() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
@@ -431,6 +423,21 @@ class PowerMerchantTracking @Inject constructor(
             GMParamTracker.CATEGORY_PM_QUESTIONNAIRE,
             GMParamTracker.Action.CLICK_CANCELLATION_REASON,
             option
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickCancellationQuestionnaireSubmitReason(options: List<String>) {
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            GMParamTracker.CATEGORY_PM_QUESTIONNAIRE,
+            GMParamTracker.Action.CLICK_SUBMIT_CANCELLATION_REASON,
+            options.toString()
         )
 
         event[CustomDimension.USER_ID] = user.userId

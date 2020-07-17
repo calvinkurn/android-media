@@ -53,6 +53,7 @@ object GMParamTracker {
         const val CLICK_CANCEL_MEMBERSHIP_POP_UP = "click stop - pop up stop power merchant"
         const val CLICK_QUESTIONNAIRE_RATING = "click rating"
         const val CLICK_SUBMIT_RATING = "submit rating"
+        const val CLICK_SUBMIT_CANCELLATION_REASON = "submit cancellation reason"
     }
 
     object Label {
