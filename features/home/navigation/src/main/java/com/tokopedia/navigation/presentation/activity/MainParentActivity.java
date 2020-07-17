@@ -92,6 +92,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import androidx.annotation.RestrictTo;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -609,6 +610,7 @@ public class MainParentActivity extends BaseActivity implements
     private void clearNotification() {
         if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
+            NotificationManagerCompat.from(this).cancelAll();
         }
     }
 
