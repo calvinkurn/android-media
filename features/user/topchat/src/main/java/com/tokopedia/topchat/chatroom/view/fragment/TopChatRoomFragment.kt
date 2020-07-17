@@ -367,8 +367,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                 onSuccessGetShopFollowingStatus())
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
-        renderList(chatRoom.listChat, chatRoom.canLoadMore)
-        rvScrollListener?.updateHasNextState(chat)
+        renderList(chatRoom.listChat)
+        updateHasNextState(chat)
         rvScrollListener?.updateHasNextAfterState(chat)
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
@@ -380,6 +380,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         showStickerOnBoardingTooltip()
 
 //        fpm.stopTrace()
+    }
+
+    private fun updateHasNextState(chat: ChatReplies) {
+        val hasNext = chat.hasNext
+        if (hasNext) {
+            showTopLoading()
+            rvScrollListener?.updateHasNextState(chat)
+        }
     }
 
     private fun showStickerOnBoardingTooltip() {
