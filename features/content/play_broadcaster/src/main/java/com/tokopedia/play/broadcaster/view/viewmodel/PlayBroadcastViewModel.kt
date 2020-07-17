@@ -283,7 +283,9 @@ class PlayBroadcastViewModel @Inject constructor(
             }
             _observableLiveInfoState.value = Event(BroadcastState.Start)
         }) {
-            _observableLiveInfoState.value = Event(BroadcastState.Error(it))
+            _observableLiveInfoState.value = Event(BroadcastState.Error(it,
+                    onRetry = { this.startPushStream() }
+            ))
         }
     }
 
@@ -313,7 +315,9 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(dispatcher.io, block = {
             playPusher.restartPush()
         }) {
-            _observableLiveInfoState.value = Event(BroadcastState.Error(it))
+            _observableLiveInfoState.value = Event(BroadcastState.Error(it,
+                    onRetry = { this.restartPushStream() }
+            ))
         }
     }
 
@@ -327,7 +331,9 @@ class PlayBroadcastViewModel @Inject constructor(
             }
             _observableLiveInfoState.value = Event(BroadcastState.Stop(shouldNavigate))
         }) {
-            _observableLiveInfoState.value = Event(BroadcastState.Error(it))
+            _observableLiveInfoState.value = Event(BroadcastState.Error(it,
+                    onRetry = { this.stopPushStream(shouldNavigate) }
+            ))
         }
     }
 

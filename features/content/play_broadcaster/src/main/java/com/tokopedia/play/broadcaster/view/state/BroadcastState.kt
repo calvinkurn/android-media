@@ -9,5 +9,5 @@ sealed class BroadcastState {
     object Start: BroadcastState()
     object Pause: BroadcastState()
     data class Stop(val shouldNavigate: Boolean): BroadcastState()
-    data class Error(val error: Throwable): BroadcastState()
+    data class Error(val error: Throwable, val onRetry: () -> Unit): BroadcastState()
 }
