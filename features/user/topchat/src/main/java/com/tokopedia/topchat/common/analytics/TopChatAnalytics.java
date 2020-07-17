@@ -29,6 +29,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 /**
  * Created by stevenfredian on 11/6/17.
  */
@@ -313,6 +315,48 @@ public class TopChatAnalytics {
 
     // #AP5
     public void eventSeenProductAttachment(
+            Context context,
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull UserSessionInterface user
+    ) {
+
+        String devConst = "-dev";
+
+        ArrayList<com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct> products = new ArrayList<>();
+        com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct product1 = new com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct(
+                product.getIdString(),
+                product.getProductName(),
+                null,
+                product.getCategory(),
+                product.getVariants().toString(),
+                product.getPriceInt() + 0.0,
+                null,
+                PRODUCT_INDEX,
+                getField(String.valueOf(product.getBlastId())),
+                getField(String.valueOf(product.getBlastId())),
+                null,
+                null
+        );
+        products.add(product1);
+
+        Bundle bundle = com.tokopedia.abstraction.processor.beta.ProductListImpressionBundler.getBundle(
+                getField(String.valueOf(product.getBlastId())),
+                products,
+                null,
+                ProductListImpressionBundler.KEY,
+                Category.CHAT_DETAIL+devConst,
+                Action.VIEW_PRODUCT_PREVIEW+devConst,
+                null,
+                null
+        );
+        IrisAnalytics.getInstance(context).saveEvent(bundle);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                ProductListImpressionBundler.KEY, bundle
+        );
+    }
+
+    // #AP5
+    public void eventSeenProductAttachmentBeta(
             Context context,
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
