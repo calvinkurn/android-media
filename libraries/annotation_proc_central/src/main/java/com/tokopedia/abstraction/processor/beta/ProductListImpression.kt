@@ -75,11 +75,9 @@ data class ProductListImpressionProduct(
         @DefaultValueString("none / other")
         @Key(KEY_DIMENSION_40)
         val dimension40: String?,
-//        @CustomChecker(ProductListImpressionProductChecker::class, Level.IGNORE, "isOnlyMainApp")
         @DefaultValueString("")
         @Key("dimension87")
         val dimension87: String?,
-//        @CustomChecker(ProductListImpressionProductChecker::class, Level.IGNORE, "isOnlyMainApp")
         @DefaultValueString("")
         @Key("dimension88")
         val dimension88: String?
