@@ -26,6 +26,7 @@ sealed class DateRangeItem(
         const val TYPE_PER_WEEK = 4
         const val TYPE_PER_MONTH = 5
         const val TYPE_BUTTON = 6
+        const val TYPE_DIVIDER = 6
     }
 
     fun getHeaderSubTitle(): String {
@@ -99,7 +100,7 @@ sealed class DateRangeItem(
         }
     }
 
-    object Divider : DateRangeItem(type = TYPE_BUTTON) {
+    object Divider : DateRangeItem(type = TYPE_DIVIDER) {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)
