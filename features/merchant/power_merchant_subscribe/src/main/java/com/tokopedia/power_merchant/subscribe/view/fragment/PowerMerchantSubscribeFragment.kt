@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,7 +52,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
     override fun initInjector() {
             activity?.let {

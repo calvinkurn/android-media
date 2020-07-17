@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.power_merchant.subscribe.R
@@ -52,7 +53,7 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getQuestionnaireScreenName()
 
     override fun initInjector() {
         getComponent(BaseAppComponent::class.java)?.let {
@@ -183,8 +184,9 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
                 )
             }
         }
-
     }
 
-
+    private fun getQuestionnaireScreenName(): String {
+        return "${GMParamTracker.ScreenName.PM_CANCEL_QUESTIONNAIRE}${position+1}"
+    }
 }

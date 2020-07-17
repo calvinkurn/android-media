@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -51,7 +52,7 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getQuestionnaireScreenName()
 
     override fun initInjector() {
         getComponent(BaseAppComponent::class.java)?.let {
@@ -133,5 +134,9 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
         } else {
             tracker.eventClickCancellationReasonQuestionnaire(option)
         }
+    }
+
+    private fun getQuestionnaireScreenName(): String {
+        return "${GMParamTracker.ScreenName.PM_CANCEL_QUESTIONNAIRE}${position+1}"
     }
 }

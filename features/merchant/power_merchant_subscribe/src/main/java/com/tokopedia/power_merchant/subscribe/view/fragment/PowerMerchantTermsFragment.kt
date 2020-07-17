@@ -10,6 +10,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.observe
@@ -59,7 +60,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_TERMS_AND_CONDITION_PAGE
 
     override fun initInjector() {
         activity?.let {
