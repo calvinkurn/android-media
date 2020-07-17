@@ -305,7 +305,9 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     }
 
     private fun sendClickSendAnswerButtonTrackingEvent() {
-        powerMerchantTracking.eventPMCancellationQuestionnaireClickSendAnswer()
+        val options = pmCancellationQuestionnaireStepperModel
+            .listQuestionnaireAnswer[currentPosition - 1].answers
+        powerMerchantTracking.eventClickCancellationQuestionnaireSendAnswer(options)
     }
 
     private fun sendClickNextQuestionButtonTrackingEvent() {
