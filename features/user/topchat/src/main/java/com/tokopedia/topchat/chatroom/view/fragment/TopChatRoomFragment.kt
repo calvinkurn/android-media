@@ -192,8 +192,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun initLoadMoreListener() {
         rvScrollListener = object : LoadMoreTopBottomScrollListener(rvLayoutManager) {
             override fun loadMoreTop() {
-                showLoading()
-                presenter.loadTopChat(messageId, onError(), ::onSuccessGetPreviousChat)
+                showTopLoading()
+                presenter.loadTopChat(messageId, ::onErrorGetTopChat, ::onSuccessGetTopChat)
             }
 
             override fun loadMoreDown() {
@@ -202,6 +202,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }.also {
             rv?.addOnScrollListener(it)
         }
+    }
+
+    private fun onErrorGetTopChat(throwable: Throwable) {
+        hideTopLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        rvScrollListener?.finishTopLoadingState()
+    }
+
+    private fun showTopLoading() {
+        showLoading()
+    }
+
+    private fun hideTopLoading() {
+        hideLoading()
     }
 
     private fun initTooltipPopup() {
@@ -386,9 +400,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         getViewState().showErrorWebSocket(isWebSocketError)
     }
 
-    private fun onSuccessGetPreviousChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+    private fun onSuccessGetTopChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
-        renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        renderList(chatRoom.listChat)
+        rvScrollListener?.finishTopLoadingState()
+        rvScrollListener?.updateHasNextState(chat)
         checkShowLoading(chatRoom.canLoadMore)
         loadChatRoomSettings(chatRoom)
         presenter.updateMinReplyTime(chatRoom)

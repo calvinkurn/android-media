@@ -61,4 +61,8 @@ abstract class LoadMoreTopBottomScrollListener(
     fun updateHasNextState(chat: ChatReplies) {
         hasNextPage = chat.hasNext
     }
+
+    fun finishTopLoadingState() {
+        isLoadingTop = false
+    }
 }
