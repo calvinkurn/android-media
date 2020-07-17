@@ -916,9 +916,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         val imagePickerPickerTabTypeDef = intArrayOf(
                 ImagePickerTabTypeDef.TYPE_GALLERY,
+                ImagePickerTabTypeDef.TYPE_CAMERA
+        )
+
+        /*
+        val imagePickerPickerTabTypeDef = intArrayOf(
+                ImagePickerTabTypeDef.TYPE_GALLERY,
                 ImagePickerTabTypeDef.TYPE_CAMERA,
                 ImagePickerTabTypeDef.TYPE_INSTAGRAM
-        )
+        )*/
 
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
             this.belowMinResolutionErrorMessage = getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
