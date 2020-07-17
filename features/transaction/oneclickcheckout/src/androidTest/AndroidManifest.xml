@@ -6,13 +6,5 @@
 
     <application
         android:label="OCC Test"
-        tools:replace="android:label">
-
-        <activity
-            android:name="com.tokopedia.oneclickcheckout.preference.list.view.MockPreferenceListActivity"
-            android:label="Preference List Test"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-    </application>
+        tools:replace="android:label" />
 </manifest>
