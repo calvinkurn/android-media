@@ -20,8 +20,7 @@ object DeeplinkMapperDeals {
         return when {
             // tokopedia://deals
             uri.pathSegments.size == 0 -> {
-//                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
-                if (true) {
+                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
                     ApplinkConstInternalDeals.DEALS_HOMEPAGE
                 }
                 else ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
@@ -44,8 +43,7 @@ object DeeplinkMapperDeals {
 
             //tokopedia://deals/allbrands/{isVoucher}
             uri.pathSegments.size == 2 && uri.pathSegments[0] == "allbrands"-> {
-//                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
-                if (true) {
+                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
                     "${ApplinkConstInternalDeals.DEALS_BRAND_PAGE}?${uri.query}"
                 }
                 else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri.pathSegments[1])
@@ -53,8 +51,7 @@ object DeeplinkMapperDeals {
 
             //tokopedia://deals/category/page
             uri.pathSegments.size == 2 -> {
-//                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
-                if (true) {
+                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
                     "${ApplinkConstInternalDeals.DEALS_CATEGORY_PAGE}?${uri.query}"
                 }
                 else ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY
