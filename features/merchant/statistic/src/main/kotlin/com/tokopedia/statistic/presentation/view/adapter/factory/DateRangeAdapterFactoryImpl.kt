@@ -30,13 +30,8 @@ class DateRangeAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            DateRangeClickViewHolder.RES_LAYOUT -> DateRangeClickViewHolder(parent) {
-                listener.onItemDateRangeClick(it)
-                listener.onApplyDateFilter()
-            }
-            DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm) {
-                listener.onItemDateRangeClick(it)
-            }
+            DateRangeClickViewHolder.RES_LAYOUT -> DateRangeClickViewHolder(parent, listener::onItemDateRangeClick)
+            DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm, listener::onItemDateRangeClick)
             DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent) {
                 listener.onApplyDateFilter()
             }
