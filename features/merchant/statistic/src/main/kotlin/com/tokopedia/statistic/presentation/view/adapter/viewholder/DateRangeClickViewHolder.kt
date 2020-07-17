@@ -37,6 +37,8 @@ class DateRangeClickViewHolder(
             setOnClickListener {
                 setOnSelected(element)
             }
+
+            verLineStcDefault.visibility = if (element.showBottomBorder) View.VISIBLE else View.GONE
         }
     }
 

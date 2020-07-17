@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeApplyViewHolder
 import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeClickViewHolder
+import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeDividerViewHolder
 import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangePickViewHolder
 
 /**
@@ -25,6 +26,8 @@ class DateRangeAdapterFactoryImpl(
 
     override fun type(item: DateRangeItem.ApplyButton): Int = DateRangeApplyViewHolder.RES_LAYOUT
 
+    override fun type(divider: DateRangeItem.Divider): Int = DateRangeDividerViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             DateRangeClickViewHolder.RES_LAYOUT -> DateRangeClickViewHolder(parent) {
@@ -37,6 +40,7 @@ class DateRangeAdapterFactoryImpl(
             DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent) {
                 listener.onApplyDateFilter()
             }
+            DateRangeDividerViewHolder.RES_LAYOUT -> DateRangeDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
