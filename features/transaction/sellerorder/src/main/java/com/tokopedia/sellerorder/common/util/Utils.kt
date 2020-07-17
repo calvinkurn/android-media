@@ -2,10 +2,9 @@ package com.tokopedia.sellerorder.common.util
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.View
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
 import com.tokopedia.unifycomponents.Toaster
@@ -42,15 +41,12 @@ object Utils {
 
     private fun goToHome(context: Context) {
         context.run {
-            val intent = Intent().apply {
-                setClassName(context.packageName, GlobalConfig.HOME_ACTIVITY_CLASS_NAME)
+            RouteManager.getIntent(context, ApplinkConst.HOME).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                if (GlobalConfig.isSellerApp()) {
-                    data = Uri.parse(ApplinkConstInternalSellerapp.SELLER_HOME)
-                }
+
+                startActivity(this)
             }
-            startActivity(intent)
         }
     }
 }
