@@ -98,9 +98,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun setupView(view: View) {
         view.setBackgroundColor(Color.TRANSPARENT)
-        if (sellableProductList.isNotEmpty()) {
-            setupAdapterModels(isVariant)
-        }
+        setupAdapterModels(isVariant)
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {

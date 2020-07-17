@@ -17,7 +17,8 @@ data class OtherCampaignStockData(
         val stock: Int = 0
 ){
 
-        val isActive = status == ProductStatus.ACTIVE.name
+        fun getIsActive() =
+                status == ProductStatus.ACTIVE.name
 }
 
 data class CampaignStockPicture(

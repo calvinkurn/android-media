@@ -251,8 +251,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             adapter = activity?.let {
                 CampaignStockAdapter(it, getFragmentList(
                         getStockAllocation.summary.isVariant,
-                        otherCampaignStockData.isActive,
-                        otherCampaignStockData.stock,
+                        otherCampaignStockData.getIsActive(),
+                        getStockAllocation.summary.reserveStock.toIntOrZero(),
                         CampaignStockMapper.mapToParcellableSellableProduct(getStockAllocation.detail.sellable, getVariantResult.variants) as ArrayList<SellableStockProductUIModel>,
                         getStockAllocation.detail.reserve.map { reserved ->
                             CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
@@ -268,8 +268,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 adapter = activity?.let {
                     CampaignStockAdapter(it, getFragmentList(
                             summary.isVariant,
-                            otherCampaignStockData.isActive,
-                            otherCampaignStockData.stock,
+                            otherCampaignStockData.getIsActive(),
+                            summary.sellableStock.toIntOrZero(),
                             arrayListOf(),
                             detail.reserve.map { reserved ->
                                 CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))

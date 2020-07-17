@@ -227,7 +227,7 @@ class CampaignStockViewModel @Inject constructor(
         val otherCampaignStockData = otherCampaignStockDataUseCase.executeOnBackground()
 
         mNonVariantStockLiveData.postValue(otherCampaignStockData.stock)
-        mNonVariantIsActiveLiveData.postValue(otherCampaignStockData.isActive)
+        mNonVariantIsActiveLiveData.postValue(otherCampaignStockData.getIsActive())
 
         return NonVariantStockAllocationResult(
                 stockAllocationData,
