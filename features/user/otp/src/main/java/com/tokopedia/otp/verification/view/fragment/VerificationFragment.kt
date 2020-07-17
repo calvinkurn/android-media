@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -67,6 +68,8 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
+    @Inject
+    lateinit var smsRetrieverClient: SmsRetrieverClient
 
     private lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
@@ -96,14 +99,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initView()
         initObserver()
-        if (modeListData.modeText != OtpConstant.OtpMode.PIN &&
-                modeListData.modeText != OtpConstant.OtpMode.GOOGLE_AUTH) {
+        if (!(modeListData.modeText == OtpConstant.OtpMode.PIN ||
+                modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH)) {
+            smsRetrieverClient.startSmsRetriever()
             sendOtp()
         }
-        showKeyboard()
     }
 
     override fun onStart() {
@@ -116,6 +118,13 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         context?.let {
             smsBroadcastReceiver.register(it, getOtpReceiverListener())
         }
+        showKeyboard()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
+        hideKeyboard()
     }
 
     override fun onDestroy() {
@@ -123,7 +132,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         if (::countDownTimer.isInitialized) {
             countDownTimer.cancel()
         }
-        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     override fun onBackPressed(): Boolean {
@@ -283,7 +291,6 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
             throwable.printStackTrace()
             hideLoading()
             viewBound.pin?.isError = true
-            viewBound.pin?.value = ""
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -389,9 +396,16 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     }
 
     private fun showKeyboard() {
-        viewBound.pin?.pinTextField?.requestFocus()
-        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(viewBound.pin?.pinTextField, InputMethodManager.SHOW_FORCED)
+        viewBound.pin?.pinTextField?.let { view ->
+            if(view.requestFocus()) {
+                val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
+    }
+
+    private fun hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     private fun setActivateTextFull(text: String) {

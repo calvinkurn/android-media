@@ -837,7 +837,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-
     override fun onEmailExist(email: String) {
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)

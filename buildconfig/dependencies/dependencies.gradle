@@ -52,7 +52,7 @@ ext {
     playServiceMaps = '17.0.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
-    playServiceAuthApiPhone = '16.0.0'
+    playServiceAuthApiPhone = '17.4.0'
     playServiceMapsUtil = '1.0.2'
     playServiceFirebaseRemoteConfig = '16.1.3'
     playServiceFirebasePerfMon = '16.2.3'
