@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
+import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
@@ -17,6 +18,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.CoroutineDispatcher
 import java.math.BigInteger
@@ -38,6 +40,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     val hasWholesale = Transformations.map(productInputModel) {
         it.detailInputModel.wholesaleList.isNotEmpty()
+    }
+
+    val hasSku = Transformations.map(productInputModel) { productInputModel ->
+        productInputModel.variantInputModel.products.any {
+            it.sku.isNotEmpty()
+        }
     }
 
     val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
@@ -95,20 +103,19 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun updateProductInputModel() {
         val products = productInputModel.value?.variantInputModel?.products.orEmpty()
-        var index = 0
-        inputLayoutModelMap.forEach {
-            val variantDetail = it.value
-            products.getOrNull(index)?.apply {
-                price = variantDetail.price.replace(".", "").toBigIntegerOrNull().orZero()
-                sku = variantDetail.sku
-                stock = variantDetail.stock.toIntOrZero()
-                status = if (variantDetail.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
-                // the minimum product variant price will replace the main product price
-                if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
-                    productInputModel.value?.detailInputModel?.price = price
+        for (index in 0 until inputLayoutModelMap.size) {
+            inputLayoutModelMap[index]?.let { variantDetailInput ->
+                products.getOrNull(index)?.apply {
+                    price = variantDetailInput.price.replace(".", "").toBigIntegerOrNull().orZero()
+                    sku = variantDetailInput.sku
+                    stock = variantDetailInput.stock.toIntOrZero()
+                    status = if (variantDetailInput.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
+                    // the minimum product variant price will replace the main product price
+                    if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
+                        productInputModel.value?.detailInputModel?.price = price
+                    }
                 }
             }
-            index++
         }
     }
 
@@ -287,6 +294,26 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
                     productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
         }
+    }
+
+    fun generateVariantDetailInputModel(
+            productVariantIndex: Int,
+            headerPosition: Int,
+            unitValueLabel: String
+    ): VariantDetailInputLayoutModel{
+        val productVariants = productInputModel.value?.variantInputModel?.products.orEmpty()
+        val productVariant = productVariants
+                .getOrElse(productVariantIndex) { ProductVariantInputModel() }
+        val priceString = productVariant.price.toString()
+
+        return VariantDetailInputLayoutModel(
+                price = InputPriceUtil.formatProductPriceInput(priceString),
+                isActive = productVariant.status == STATUS_ACTIVE_STRING,
+                sku = productVariant.sku,
+                stock = productVariant.stock.toString(),
+                headerPosition = headerPosition,
+                isSkuFieldVisible = hasSku.value ?: false,
+                unitValueLabel = unitValueLabel)
     }
 
 }

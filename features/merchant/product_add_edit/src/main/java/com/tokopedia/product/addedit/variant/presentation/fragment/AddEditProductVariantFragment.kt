@@ -299,7 +299,8 @@ class AddEditProductVariantFragment :
             }
         }
 
-        viewModel.updateSizechartFieldVisibility(variantDetail, true)
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
@@ -383,11 +384,7 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues: MutableList<UnitValue>, layoutPosition: Int) {
-
         val variantData = viewModel.getVariantData(layoutPosition)
-
-        // TODO: DEV TEST
-
         // tracking save variant unit values event
         val selectedCount = selectedVariantUnitValues.size
         val eventLabel = "${variantData.name} - $selectedCount"
@@ -418,6 +415,9 @@ class AddEditProductVariantFragment :
             }
             variantPhotoAdapter?.setData(variantPhotoList)
         }
+
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onVariantUnitPicked(selectedVariantUnit: Unit, layoutPosition: Int) {
@@ -522,6 +522,9 @@ class AddEditProductVariantFragment :
             variantPhotoAdapter?.removeData(position)
             if (variantPhotoAdapter?.getData()?.size == 0) variantPhotoLayout.hide()
         }
+
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
     }
 
     override fun onItemClicked(position: Int) {
@@ -609,6 +612,7 @@ class AddEditProductVariantFragment :
         variantUnitPicker?.setTitle("Pilih " + variantDetail.name)
         variantUnitPicker?.showCloseIcon = true
         variantValuePicker?.isHideable = true
+        variantUnitPicker?.clearContentPadding = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
         variantUnitPickerLayout.setSelectedVariantUnit(selectedVariantUnit)
@@ -687,6 +691,7 @@ class AddEditProductVariantFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
+            // TODO - change flow, able to causing race condition
             // extract selected variant details
             val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
             // set selected variant details
@@ -809,7 +814,9 @@ class AddEditProductVariantFragment :
         val sizechart = viewModel.productInputModel.value?.variantInputModel?.sizecharts
                 ?: PictureVariantInputModel()
         viewModel.updateSizechart(sizechart)
-        viewModel.updateSizechartFieldVisibility()
+
+        // update sizechart visibility based on variant selected type
+        viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
 
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.widget
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -86,6 +87,8 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
                         }
                     }
                 }
+                listItemUnify.listRightRadiobtn?.setPadding(0,0,0,0)
+                listItemUnify.listRightRadiobtn?.setMargin(0,0,0,0)
             }
         }
     }

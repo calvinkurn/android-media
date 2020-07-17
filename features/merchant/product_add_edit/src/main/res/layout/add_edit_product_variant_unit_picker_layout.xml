@@ -12,7 +12,7 @@
             android:id="@+id/listUnifyVariantUnits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl6"
             android:choiceMode="singleChoice" />
     </ScrollView>

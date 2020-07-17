@@ -207,15 +207,33 @@ class AddEditProductVariantViewModel @Inject constructor(
         if (hasColorVariant) mIsVariantPhotosVisible.value = false
     }
 
-    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
-        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
-            mIsVariantSizechartVisible.value = isVisible
+    fun updateSizechartFieldVisibility(selectedVariantDetails: List<VariantDetail>) {
+        var index = -1
+        val isSizechartIdentifierExist = selectedVariantDetails.any {
+            index += 1
+            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
+        }
+
+        // get selected variant values for each level
+        val unitValuesLevel1 = selectedVariantUnitValuesMap[VARIANT_VALUE_LEVEL_ONE_POSITION].orEmpty()
+        val unitValuesLevel2 = selectedVariantUnitValuesMap[VARIANT_VALUE_LEVEL_TWO_POSITION].orEmpty()
+
+        // if identifier exist, then update sizechart visibility
+        if (isSizechartIdentifierExist) {
+            when (index) {
+                VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                    mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty()
+                }
+                VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                    mIsVariantSizechartVisible.value = unitValuesLevel2.isNotEmpty()
+                }
+            }
         }
     }
 
-    fun updateSizechartFieldVisibility() {
-        mIsVariantSizechartVisible.value = selectedVariantDetails.any {
-            it.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART
+    fun updateSizechartFieldVisibility(variantDetail: VariantDetail, isVisible: Boolean) {
+        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
+            mIsVariantSizechartVisible.value = isVisible
         }
     }
 
@@ -259,7 +277,10 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun removeVariant() {
-        productInputModel.value?.variantInputModel = VariantInputModel()
+        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.
+                isRemoteDataHasVariant ?: false // keep isRemoteDataHasVariant old data
+        productInputModel.value?.variantInputModel = VariantInputModel(
+                isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
         mSelectedVariantUnitValuesLevel1.value = mutableListOf()
         mSelectedVariantUnitValuesLevel2.value = mutableListOf()
@@ -276,21 +297,24 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapSelections(variantDetailsSelected: List<VariantDetail>): List<SelectionInputModel> {
         val result: MutableList<SelectionInputModel> = mutableListOf()
-        var index = 0
-        selectedVariantUnitValuesMap.forEach {
-            val variantDetail = variantDetailsSelected.getOrElse(index) { VariantDetail() }
-            val unit = mapUnit(variantDetail, it.value)
-            unit?.run {
-                result.add(SelectionInputModel(
-                        variantDetail.variantID.toString(),
-                        variantDetail.name,
-                        unit.variantUnitID.toString(),
-                        unit.unitName,
-                        variantDetail.identifier,
-                        mapOptions(it.value)
-                ))
+        var level = 0 // varaint value level
+        selectedVariantUnitValuesMap.toSortedMap().forEach {
+            // get selected variant detail selected each level
+            variantDetailsSelected.getOrNull(level)?.let { variantDetail ->
+                val unit = mapUnit(variantDetail, it.value) // get unit from variant detail
+                unit?.run {
+                    // if unit is not null then map the SelectionInputModel
+                    result.add(SelectionInputModel(
+                            variantDetail.variantID.toString(),
+                            variantDetail.name,
+                            unit.variantUnitID.toString(),
+                            unit.unitName,
+                            variantDetail.identifier,
+                            mapOptions(it.value)
+                    ))
+                    level++
+                }
             }
-            index++
         }
         return result
     }
