@@ -12,6 +12,7 @@ import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoFilterAdapterTypeFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_telco_filter.view.*
+import java.lang.StringBuilder
 
 class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
         BaseCheckableViewHolder.CheckableInteractionListener,
@@ -93,8 +94,15 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
 
     private fun saveFilter() {
         val checkedFilterList = ArrayList<String>()
-        adapter.checkedDataList.map { checkedFilterList.add(it.key) }
-        listener.onTelcoFilterSaved(checkedFilterList)
+        val checkedFilterValues = StringBuilder()
+        for ((index, checkedData) in adapter.checkedDataList.withIndex()) {
+            checkedFilterList.add(checkedData.key)
+            checkedFilterValues.append("${checkedData.value.toLowerCase()}")
+            if (index < adapter.checkedDataList.size - 1) {
+                checkedFilterValues.append(" - ")
+            }
+        }
+        listener.onTelcoFilterSaved(checkedFilterList, checkedFilterValues.toString())
 
         if (isAdded) {
             dismiss()
@@ -102,6 +110,7 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun resetFilter() {
+        listener.resetFilter()
         adapter.resetCheckedItemSet()
         adapter.notifyDataSetChanged()
     }
@@ -119,9 +128,9 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
     }
 
     interface ActionListener {
-        fun onTelcoFilterSaved(valuesFilter: ArrayList<String>)
-
+        fun onTelcoFilterSaved(keysFilter: ArrayList<String>, valuesFilter: String)
         fun getFilterSelected(): ArrayList<String>
+        fun resetFilter()
     }
 
     companion object {

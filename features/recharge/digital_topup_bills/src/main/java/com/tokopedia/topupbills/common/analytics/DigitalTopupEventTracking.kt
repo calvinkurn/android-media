@@ -61,6 +61,10 @@ interface DigitalTopupEventTracking {
             val CLICK_TAB_RECENT = "click tab recent"
             val CLICK_DETAIL_CLUSTER = "click pilih detail cluster"
             val CLICK_DOTS_MENU = "click 3 dots"
+            val CLICK_QUICK_FILTER = "click quick filter"
+            val CLICK_SAVE_QUICK_FILTER = "click Simpan"
+            val CLICK_RESET_QUICK_FILTER = "click Reset filter bottom sheet"
+            val CLICK_RESET_FILTER_CLUSTER = "click reset cluster"
         }
     }
 

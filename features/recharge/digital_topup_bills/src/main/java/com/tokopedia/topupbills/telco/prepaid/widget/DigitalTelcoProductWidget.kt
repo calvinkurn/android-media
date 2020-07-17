@@ -6,12 +6,16 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
-import com.tokopedia.topupbills.telco.prepaid.adapter.DigitalProductAdapter
 import com.tokopedia.topupbills.telco.prepaid.adapter.DigitalProductGridDecorator
+import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
+import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapterFactory
+import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 
 
@@ -23,7 +27,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val recyclerView: RecyclerView
-    private lateinit var adapter: DigitalProductAdapter
+
+    private lateinit var adapter: TelcoProductAdapter
     private lateinit var listener: ActionListener
     private val digitalTrackTelcoPrev = mutableListOf<DigitalTrackProductTelco>()
 
@@ -36,22 +41,31 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         this.listener = listener
     }
 
-    fun renderProductList(productType: Int, productList: List<TelcoProduct>) {
-        adapter = DigitalProductAdapter(productList, productType)
-        adapter.setListener(object : DigitalProductAdapter.ActionListener {
-            override fun onClickItemProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
-                listener.onClickProduct(itemProduct, position, labelList)
+    fun renderProductList(productType: Int, showTitle: Boolean, productList: List<TelcoCatalogDataCollection>) {
+        val dataCollection = mutableListOf<Visitable<*>>()
+        val dataTracking = mutableListOf<TelcoProduct>()
+        productList.map {
+            if (showTitle) {
+                if (it.name.isNotEmpty()) {
+                    dataCollection.add(TelcoCatalogDataCollection(it.name, listOf()))
+                } else {
+                    dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
+                }
+            }
+            dataCollection.addAll(it.products)
+            dataTracking.addAll(it.products)
+        }
+
+        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, object : TelcoProductViewHolder.OnClickListener {
+            override fun onClickItemProduct(element: TelcoProduct, position: Int) {
+                val label = getLabelProductItem(element.id)
+                listener.onClickProduct(element, position, label)
             }
 
-            override fun onClickSeeMoreProduct(itemProduct: TelcoProduct) {
-                listener.onSeeMoreProduct(itemProduct)
+            override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
+                listener.onSeeMoreProduct(element, position)
             }
-
-            override fun notifyItemChanged(position: Int) {
-                adapter.notifyItemChanged(position)
-            }
-        })
-
+        }))
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
@@ -59,16 +73,17 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
             }
         } else {
-            recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            recyclerView.layoutManager = linearLayoutManager
         }
-        adapter.notifyDataSetChanged()
+        adapter.renderList(dataCollection)
 
-        getVisibleProductItemsToUsersTracking(productList)
+        getVisibleProductItemsToUsersTracking(dataTracking)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    getVisibleProductItemsToUsersTracking(productList)
+                    getVisibleProductItemsToUsersTracking(dataTracking)
                 }
             }
         })
@@ -102,20 +117,59 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
     }
 
-    fun selectProductItem(itemProduct: TelcoProduct) {
-        adapter.selectItemProduct(itemProduct)
+    fun selectProductItem(position: Int) {
+        adapter.selectItemProduct(position)
     }
 
-    fun notifyProductItemChanges(productId: String) {
+    fun resetSelectedProductItem() {
         if (::adapter.isInitialized) {
-            adapter.resetProductListSelected(productId)
+            adapter.selectItemProduct(TelcoProductAdapter.INIT_SELECTED_POSITION)
+        }
+    }
+
+    fun getLabelProductItem(productId: String): String {
+        var label = ""
+        var itemTitle = ""
+
+        for (i in adapter.data.indices) {
+            if (adapter.data[i] is TelcoCatalogDataCollection) {
+                itemTitle = (adapter.data[i] as TelcoCatalogDataCollection).name
+            }
+
+            if (adapter.data[i] is TelcoProduct) {
+                val itemProduct = adapter.data[i] as TelcoProduct
+                if (itemProduct.id == productId) {
+                    label = itemTitle
+                    break
+                }
+            }
+        }
+        return label
+    }
+
+    fun selectProductFromFavNumber(productId: String) {
+        val label = getLabelProductItem(productId)
+        for (i in adapter.data.indices) {
+            if (adapter.data[i] is TelcoProduct) {
+                val itemProduct = adapter.data[i] as TelcoProduct
+                if (itemProduct.id == productId) {
+                    listener.onClickProduct(itemProduct, i, label)
+
+                    recyclerView.getChildAt(i)?.let {
+                        val yPosition = it.y
+                        listener.onScrollToPositionItem(yPosition.toInt())
+                    }
+                    break
+                }
+            }
         }
     }
 
     interface ActionListener {
         fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
-        fun onSeeMoreProduct(itemProduct: TelcoProduct)
+        fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
+        fun onScrollToPositionItem(position: Int)
     }
 
     companion object {

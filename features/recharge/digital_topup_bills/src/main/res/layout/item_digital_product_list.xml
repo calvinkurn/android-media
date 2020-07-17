@@ -15,6 +15,7 @@
         android:id="@+id/layout_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/telco_bg_product_item"
         android:paddingBottom="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifycomponents.Label

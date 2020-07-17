@@ -19,16 +19,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
+import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
+import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.prepaid.bottomsheet.DigitalTelcoFilterBottomSheet
-import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.prepaid.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
@@ -56,8 +55,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var titleFilterResult: TextView
 
     private var titleProduct: String = ""
-    private var selectedProduct: Int = 0
-    private var hasTitle = false
+    private var categoryId: Int = 0
     private var telcoFilterData: TelcoFilterData = TelcoFilterData()
     private var productType = TelcoProductType.PRODUCT_LIST
 
@@ -81,8 +79,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
-            it?.run {
-                telcoTelcoProductView.notifyProductItemChanges(it.id)
+            if (it.id == DigitalTelcoPrepaidFragment.ID_PRODUCT_EMPTY) {
+                telcoTelcoProductView.resetSelectedProductItem()
             }
         })
     }
@@ -114,8 +112,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         arguments?.let { it ->
             titleProduct = it.getString(TITLE_PAGE)
             productType = it.getInt(PRODUCT_TYPE)
-            selectedProduct = it.getInt(SELECTED_PRODUCT)
             selectedOperatorName = it.getString(OPERATOR_NAME)
+            categoryId = it.getInt(CATEGORY_ID)
 
             sharedModelPrepaid.productList.observe(this, Observer {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
@@ -133,14 +131,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
             override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                sharedModelPrepaid.setShowTotalPrice(true)
+                telcoTelcoProductView.selectProductItem(position)
                 if (::selectedOperatorName.isInitialized) {
                     topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
                             userSession.userId, labelList)
                 }
             }
 
-            override fun onSeeMoreProduct(itemProduct: TelcoProduct) {
+            override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
                 topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
 
                 activity?.let {
@@ -155,7 +153,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         override fun onClickOnProduct() {
                             activity?.run {
                                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                                telcoTelcoProductView.selectProductItem(itemProduct)
+                                telcoTelcoProductView.selectProductItem(position)
                                 topupAnalytics.impressionPickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
                             }
                         }
@@ -169,6 +167,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, selectedOperatorName,
                         userSession.userId)
             }
+
+            override fun onScrollToPositionItem(position: Int) {
+                sharedModelPrepaid.setPositionScrollToItem(position)
+            }
         })
     }
 
@@ -179,28 +181,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             val filterData = arrayListOf<SortFilterItem>()
             telcoFilterData.getFilterTags().map { filterTag ->
                 val sortFilterItem = SortFilterItem(filterTag.text)
-                sortFilterItem.listener = {
-                    val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,
-                            filterTag.paramName, filterTag.filterTagDataCollections as ArrayList<FilterTagDataCollection>)
-                    filterBottomSheet.setListener(object : DigitalTelcoFilterBottomSheet.ActionListener {
-                        override fun onTelcoFilterSaved(valuesFilter: ArrayList<String>) {
-                            telcoFilterData.addFilter(componentId, filterTag.paramName, valuesFilter)
-                            sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
-
-                            if (telcoFilterData.isFilterSelectedByParamName(filterTag.paramName)) {
-                                sortFilterItem.type = ChipsUnify.TYPE_SELECTED
-                            } else {
-                                sortFilterItem.type = ChipsUnify.TYPE_NORMAL
-                            }
-                        }
-
-                        override fun getFilterSelected(): ArrayList<String> {
-                            return telcoFilterData.getFilterSelectedByParamName(filterTag.paramName)
-                        }
-                    })
-                    filterBottomSheet.setShowListener { filterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-                    filterBottomSheet.show(childFragmentManager, "filter telco")
-                }
+                sortFilterItem.listener = { showBottomSheetFilter(filterTag, componentId, sortFilterItem) }
                 filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
@@ -212,8 +193,42 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             sortFilter.dismissListener = {
                 telcoFilterData.clearAllFilter()
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
+                topupAnalytics.eventClickResetFilterCluster(categoryId, userSession.userId)
             }
         }
+    }
+
+    private fun showBottomSheetFilter(filterTag: TelcoFilterTagComponent, componentId: Int,
+                                      sortFilterItem: SortFilterItem) {
+        topupAnalytics.eventClickQuickFilter(categoryId, filterTag.text, userSession.userId)
+        val filterBottomSheet = DigitalTelcoFilterBottomSheet.newInstance(filterTag.text,
+                filterTag.paramName, filterTag.filterTagDataCollections as ArrayList<FilterTagDataCollection>)
+        filterBottomSheet.setListener(object : DigitalTelcoFilterBottomSheet.ActionListener {
+            override fun onTelcoFilterSaved(keysFilter: ArrayList<String>, valuesFilter: String) {
+                topupAnalytics.eventClickSaveFilter(categoryId, filterTag.text, valuesFilter, userSession.userId)
+
+                telcoFilterData.addFilter(componentId, filterTag.paramName, keysFilter)
+                telcoTelcoProductView.resetSelectedProductItem()
+                sharedModelPrepaid.setVisibilityTotalPrice(false)
+                sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
+
+                if (telcoFilterData.isFilterSelectedByParamName(filterTag.paramName)) {
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                } else {
+                    sortFilterItem.type = ChipsUnify.TYPE_NORMAL
+                }
+            }
+
+            override fun getFilterSelected(): ArrayList<String> {
+                return telcoFilterData.getFilterSelectedByParamName(filterTag.paramName)
+            }
+
+            override fun resetFilter() {
+                topupAnalytics.eventClickResetFilter(categoryId, filterTag.text, userSession.userId)
+            }
+        })
+        filterBottomSheet.setShowListener { filterBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        filterBottomSheet.show(childFragmentManager, "filter telco")
     }
 
     private fun onSuccessProductList() {
@@ -225,20 +240,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     emptyStateProductView.hide()
                     telcoTelcoProductView.show()
 
-                    val dataCollections = wrapDataCollections(it)
+                    val hasTitle = it.product.dataCollections.size > 1 && it.label != TelcoComponentName.PRODUCT_PULSA
+                    val showTitle = hasTitle && !telcoFilterData.isFilterSelected()
 
-                    //set true on selected product datacollection list
-                    val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
-                    if (activeCategory == titleProduct && selectedProduct > 0) {
-                        for (i in dataCollections.indices) {
-                            if (dataCollections[i].id == selectedProduct.toString()) {
-                                dataCollections[i].attributes.selected = true
-                                break
-                            }
-                        }
-                    }
                     renderSortFilter(it.product.id, it.filterTagComponents)
-                    telcoTelcoProductView.renderProductList(productType, dataCollections)
+                    telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections)
 
                 } else {
                     onErrorProductList()
@@ -247,22 +253,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 //do nothing
             }
         }
-    }
 
-    private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
-        val dataCollections = mutableListOf<TelcoProduct>()
-        hasTitle = productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA
-        productInput.product.dataCollections.map {
-            if (hasTitle && !telcoFilterData.isFilterSelected()) {
-                if (it.name.isNotEmpty()) {
-                    dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
-                } else {
-                    dataCollections.add(TelcoProduct(titleSection = getString(R.string.telco_other_recommendation), isTitle = true))
-                }
+        sharedModelPrepaid.favNumberSelected.observe(this, Observer { favNumber ->
+            val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+            if (activeCategory == titleProduct) {
+                telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)
             }
-            dataCollections.addAll(it.products)
-        }
-        return dataCollections
+        })
     }
 
     private fun onErrorProductList() {
@@ -299,8 +296,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         const val PRODUCT_TYPE = "product_type"
         const val TITLE_PAGE = "title_page"
-        const val SELECTED_PRODUCT = "selected_product"
         const val OPERATOR_NAME = "operator_name"
+        const val CATEGORY_ID = "category_id"
 
         fun newInstance(bundle: Bundle): Fragment {
             val fragment = DigitalTelcoProductFragment()

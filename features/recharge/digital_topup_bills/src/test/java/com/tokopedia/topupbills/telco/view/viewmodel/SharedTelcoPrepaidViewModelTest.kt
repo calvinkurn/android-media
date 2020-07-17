@@ -49,9 +49,9 @@ class SharedTelcoPrepaidViewModelTest {
     }
 
     @Test
-    fun setShowTotalPrice_validData() {
+    fun setVisibilityTotalPrice_validData() {
         //when
-        sharedTelcoPrepaidViewModel.setShowTotalPrice(true)
+        sharedTelcoPrepaidViewModel.setVisibilityTotalPrice(true)
         //then
         val actualData = sharedTelcoPrepaidViewModel.showTotalPrice.value
         assertEquals(true, actualData)
