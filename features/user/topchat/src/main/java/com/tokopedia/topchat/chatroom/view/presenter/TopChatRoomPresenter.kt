@@ -78,6 +78,8 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
 
 /**
  * @author : Steven 11/12/18
@@ -260,6 +262,16 @@ class TopChatRoomPresenter @Inject constructor(
                     onSuccess = onSuccessGetPreviousChat,
                     onErrorGetChat = onError
             )
+        }
+    }
+
+    override fun loadBottomChat(
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
+    ) {
+        if (messageId.isNotEmpty()) {
+            getChatUseCase.getBottomChat(messageId, onsuccess, onError)
         }
     }
 

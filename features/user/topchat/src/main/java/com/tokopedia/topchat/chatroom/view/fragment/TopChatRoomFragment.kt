@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
@@ -197,17 +198,44 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             }
 
             override fun loadMoreDown() {
-
+                showBottomLoading()
+                presenter.loadBottomChat(messageId, ::onErrorGetBottomChat, ::onSuccessGetBottomChat)
             }
         }.also {
             rv?.addOnScrollListener(it)
         }
     }
 
+
+    private fun onSuccessGetBottomChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+//        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
+        renderBottomList(chatRoom.listChat)
+        rvScrollListener?.finishBottomLoadingState()
+        rvScrollListener?.updateHasNextAfterState(chat)
+//        loadChatRoomSettings(chatRoom)
+//        presenter.updateMinReplyTime(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+    }
+
+    private fun renderBottomList(listChat: List<Visitable<*>>) {
+        adapter.hideBottomLoading()
+        adapter.addBottomData(listChat)
+    }
+
+    private fun onErrorGetBottomChat(throwable: Throwable) {
+//        hideTopLoading()
+//        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+//        rvScrollListener?.finishTopLoadingState()
+    }
+
     private fun onErrorGetTopChat(throwable: Throwable) {
         hideTopLoading()
         showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
         rvScrollListener?.finishTopLoadingState()
+    }
+
+    private fun showBottomLoading() {
+        adapter.showBottomLoading()
     }
 
     private fun showTopLoading() {
@@ -341,6 +369,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
         rvScrollListener?.updateHasNextState(chat)
+        rvScrollListener?.updateHasNextAfterState(chat)
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)

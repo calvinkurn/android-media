@@ -29,6 +29,7 @@ abstract class LoadMoreTopBottomScrollListener(
         }
         if (hasNextAfterPage && !isLoadingBottom && shouldLoadMoreDown(firstVisiblePosition)) {
 //                Toast.makeText(context, "Load more down", Toast.LENGTH_SHORT).show()
+            isLoadingBottom = true
             loadMoreDown()
         }
 //        if (dy < 0) {
@@ -62,7 +63,15 @@ abstract class LoadMoreTopBottomScrollListener(
         hasNextPage = chat.hasNext
     }
 
+    fun updateHasNextAfterState(chat: ChatReplies) {
+        hasNextAfterPage = chat.hasNextAfter
+    }
+
     fun finishTopLoadingState() {
         isLoadingTop = false
+    }
+
+    fun finishBottomLoadingState() {
+        isLoadingBottom = false
     }
 }

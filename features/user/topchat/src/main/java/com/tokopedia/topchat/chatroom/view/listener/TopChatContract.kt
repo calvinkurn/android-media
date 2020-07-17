@@ -97,6 +97,12 @@ interface TopChatContract {
                 onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
+        fun loadBottomChat(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
+        )
+
         fun isUploading(): Boolean
 
         fun deleteChat(messageId: String,

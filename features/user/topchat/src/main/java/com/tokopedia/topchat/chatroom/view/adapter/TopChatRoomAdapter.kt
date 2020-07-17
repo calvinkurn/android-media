@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatViewModel
@@ -131,5 +132,22 @@ class TopChatRoomAdapter(
 
     fun dataExistAt(position: Int): Boolean {
         return visitables.getOrNull(position) != null
+    }
+
+    fun showBottomLoading() {
+        visitables.add(0, loadingMoreModel)
+        notifyItemInserted(0)
+    }
+
+    fun hideBottomLoading() {
+        if (visitables[0] is LoadingMoreModel) {
+            visitables.removeAt(0)
+            notifyItemRemoved(0)
+        }
+    }
+
+    fun addBottomData(listChat: List<Visitable<*>>) {
+        visitables.addAll(0, listChat)
+        notifyItemRangeInserted(0, listChat.size)
     }
 }
