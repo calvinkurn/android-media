@@ -77,8 +77,8 @@ class ShopPageProductListViewModel @Inject constructor(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
             shopEtalaseItemDataModel: ShopEtalaseItemDataModel,
-            sortId: String,
-            isShowNewShopHomeTab: Boolean
+            isShowNewShopHomeTab: Boolean,
+            isInitialProductListEmpty: Boolean
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -101,17 +101,6 @@ class ShopPageProductListViewModel @Inject constructor(
                     if (isShowNewShopHomeTab) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
-                val productListDataAsync = async(Dispatchers.IO) {
-                    getProductList(
-                            getShopProductUseCase,
-                            shopId,
-                            START_PAGE,
-                            ShopPageConstant.DEFAULT_PER_PAGE,
-                            shopEtalaseItemDataModel.etalaseId,
-                            "",
-                            sortId.toIntOrZero()
-                    )
-                }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
                 }
@@ -124,42 +113,17 @@ class ShopPageProductListViewModel @Inject constructor(
                 shopProductEtalaseHighlightDataAsync.await()?.let {
                     shopProductEtalaseHighlightData.postValue(Success(it))
                 }
-                val productListDataModel = productListDataAsync.await()
-                if (productListDataModel.second.isNotEmpty()) {
+                if (!isInitialProductListEmpty) {
                     shopProductEtalaseTitleData.postValue(Success(ShopProductEtalaseTitleViewModel(
                             shopEtalaseItemDataModel.etalaseName,
                             shopEtalaseItemDataModel.etalaseBadge
                     )))
                 }
-                productListData.postValue(Success(productListDataModel))
             }
         },
                 {
                     productListData.postValue(Fail(it))
                 })
-    }
-
-
-    fun getSellerShopPageProductTabData(shopId: String, shopEtalaseItemDataModel: ShopEtalaseItemDataModel, sortId: String) {
-        launchCatchError(coroutineContext, {
-            coroutineScope {
-                val productListDataAsync = async(Dispatchers.IO) {
-                    getProductList(
-                            getShopProductUseCase,
-                            shopId,
-                            START_PAGE,
-                            ShopPageConstant.DEFAULT_PER_PAGE,
-                            shopEtalaseItemDataModel.etalaseId,
-                            "",
-                            sortId.toIntOrZero()
-                    )
-                }
-                val productListDataModel = productListDataAsync.await()
-                productListData.postValue(Success(productListDataModel))
-            }
-        }, {
-            productListData.postValue(Fail(it))
-        })
     }
 
     private suspend fun getShopProductEtalaseHighlightData(
@@ -389,5 +353,9 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
+    }
+
+    fun setInitialProductList(qwe: Pair<Boolean, List<ShopProductViewModel>>) {
+        productListData.postValue(Success(qwe))
     }
 }

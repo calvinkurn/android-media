@@ -138,7 +138,7 @@ object ShopPageProductListMapper {
     fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
-        } catch (ignored: ParseException) {
+        } catch (ignored: Exception) {
             0
         }
 

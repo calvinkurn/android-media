@@ -700,6 +700,9 @@ class ShopPageFragment :
                     shopAttribution,
                     shopRef
             )
+            shopPageProductFragment.setInitialProductListData(
+                    shopViewModel.productListData
+            )
             add(ShopPageTabModel(
                     getString(R.string.new_shop_info_title_tab_product),
                     iconTabProduct,

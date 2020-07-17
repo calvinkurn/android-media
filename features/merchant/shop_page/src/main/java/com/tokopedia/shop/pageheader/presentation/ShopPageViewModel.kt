@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
 import com.tokopedia.shop.common.di.GqlGetShopInfoForTabUseCaseQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
@@ -38,6 +39,10 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabData
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.RequestModerateShopUseCase
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -66,10 +71,13 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
                                             private val stickyLoginUseCase: StickyLoginUseCase,
                                             private val gqlGetShopOperationalHourStatusUseCase: GQLGetShopOperationalHourStatusUseCase,
+                                            private val getShopProductUseCase : GqlGetShopProductUseCase,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
+        private const val START_PAGE = 1
+        private const val DEFAULT_SORT_ID = 0
     }
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -79,19 +87,74 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
 
     val shopPageHeaderTabData = MutableLiveData<Result<ShopPageHeaderTabData>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
+    var productListData : Pair<Boolean, List<ShopProductViewModel>> = Pair(false, listOf())
 
     fun getShopPageTabData(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            val shopPageTabDataResponse = withContext(Dispatchers.IO) {
-                getShopPageTabData(id, shopDomain, isRefresh)
+            val shopPageTabDataResponse = asyncCatchError(
+                    Dispatchers.IO,
+                    block = {
+                        getShopPageTabData(id, shopDomain, isRefresh)
+                    },
+                    onError = {
+                        shopPageHeaderTabData.postValue(Fail(it))
+                        null
+                    })
+            val productListDataAsync = asyncCatchError(
+                    Dispatchers.IO,
+                    block = {
+                        getProductList(
+                                getShopProductUseCase,
+                                shopId.orEmpty(),
+                                START_PAGE,
+                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                "",
+                                "",
+                                DEFAULT_SORT_ID,
+                                isRefresh
+                        )
+                    },
+                    onError = {
+                        shopPageHeaderTabData.postValue(Fail(it))
+                        null
+                    })
+
+            shopPageTabDataResponse.await()?.let{ headerData ->
+                productListDataAsync.await()?.let{ productList ->
+                    productListData = productList
+                    shopPageHeaderTabData.postValue(Success(headerData))
+                }
             }
-            shopPageHeaderTabData.postValue(Success(shopPageTabDataResponse))
         }) {
             shopPageHeaderTabData.postValue(Fail(it))
         }
     }
+
+    private suspend fun getProductList(
+            useCase: GqlGetShopProductUseCase,
+            shopId: String,
+            page: Int,
+            perPage: Int,
+            etalaseId: String,
+            keyword: String,
+            sortId: Int,
+            isRefresh: Boolean
+    ): Pair<Boolean, List<ShopProductViewModel>> {
+        useCase.isFromCacheFirst = isRefresh
+        useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
+                page,perPage,keyword,etalaseId,sortId
+        ))
+        val productListResponse = useCase.executeOnBackground()
+        val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+        return Pair(
+                isHasNextPage,
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) }
+        )
+    }
+
+    private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
         gqlGetShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
