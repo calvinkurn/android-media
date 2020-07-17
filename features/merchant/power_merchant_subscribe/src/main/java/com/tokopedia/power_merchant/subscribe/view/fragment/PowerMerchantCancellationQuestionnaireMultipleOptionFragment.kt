@@ -120,11 +120,11 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
     override fun onOptionChecked(isChecked: Boolean, optionValue: String) {
         stepperModel?.listQuestionnaireAnswer?.let {
             if (isChecked) {
+                trackClickQuestionnaireOption(optionValue)
                 it[position].answers.add(optionValue)
             } else {
                 it[position].answers.remove(optionValue)
             }
-            trackClickQuestionnaireOption(optionValue)
         }
     }
 
