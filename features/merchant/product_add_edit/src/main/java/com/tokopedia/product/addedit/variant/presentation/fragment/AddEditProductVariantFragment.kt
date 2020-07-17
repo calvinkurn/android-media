@@ -595,8 +595,6 @@ class AddEditProductVariantFragment :
         variantValuePicker?.setTitle("Pilih " + variantData.name)
         variantValuePicker?.showCloseIcon = false
         variantValuePicker?.showKnob = true
-        variantValuePicker?.isDragable = true
-        variantValuePicker?.isHideable = true
         // set the bottom sheet to full screen
         variantValuePicker?.setShowListener {
             variantValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
@@ -611,7 +609,6 @@ class AddEditProductVariantFragment :
         variantUnitPicker = BottomSheetUnify()
         variantUnitPicker?.setTitle("Pilih " + variantDetail.name)
         variantUnitPicker?.showCloseIcon = true
-        variantValuePicker?.isHideable = true
         variantUnitPicker?.clearContentPadding = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
@@ -626,8 +623,6 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm = BottomSheetUnify()
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
         customVariantValueInputForm?.isKeyboardOverlap = false
-        variantValuePicker?.isDragable = true
-        variantValuePicker?.isHideable = true
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)
