@@ -105,26 +105,24 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onActivityCreated(savedInstanceState)
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             if (isProductExist(it)) {
-                it?.run {
-                    sharedModelPrepaid.setVisibilityTotalPrice(true)
-                    buy_widget.setTotalPrice(it.attributes.price)
-                    it.attributes.productPromo?.run {
-                        if (this.newPrice.isNotEmpty()) {
-                            buy_widget.setTotalPrice(this.newPrice)
-                        }
+                sharedModelPrepaid.setVisibilityTotalPrice(true)
+                buy_widget.setTotalPrice(it.attributes.price)
+                it.attributes.productPromo?.run {
+                    if (this.newPrice.isNotEmpty()) {
+                        buy_widget.setTotalPrice(this.newPrice)
                     }
-
-                    productId = it.id.toIntOrZero()
-                    price = it.attributes.pricePlain
-                    checkVoucherWithDelay()
-                    generateCheckoutPassData(telco_input_number.getInputNumber(),
-                            if (it.attributes.productPromo != null) "1" else "0",
-                            it.attributes.categoryId.toString(),
-                            it.attributes.operatorId.toString(),
-                            it.id)
                 }
+                prepareProductForCheckout(it)
             }
         })
+
+        sharedModelPrepaid.productAutoCheckout.observe(this, Observer {
+            if (!isExpressCheckout) {
+                setupCheckoutData()
+                processTransaction()
+            }
+        })
+
         sharedModelPrepaid.showTotalPrice.observe(this, Observer {
             it?.run {
                 buyWidget.setVisibilityLayout(it)
@@ -165,9 +163,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         initViewPager()
         getPrefixOperatorData()
-        renderInputNumber()
+        telcoClientNumberWidget.setListener(clientNumberCallback)
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+    }
+
+    private fun prepareProductForCheckout(telcoProduct: TelcoProduct) {
+        productId = telcoProduct.id.toIntOrZero()
+        price = telcoProduct.attributes.pricePlain
+        checkVoucherWithDelay()
+        generateCheckoutPassData(telco_input_number.getInputNumber(),
+                if (telcoProduct.attributes.productPromo != null) "1" else "0",
+                telcoProduct.attributes.categoryId.toString(),
+                telcoProduct.attributes.operatorId.toString(),
+                telcoProduct.id)
     }
 
     private fun initViewPager() {
@@ -368,46 +377,44 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    private fun renderInputNumber() {
-        telcoClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
-            override fun onNavigateToContact() {
-                inputNumberActionType = InputNumberActionType.CONTACT
-                navigateContact()
-            }
+    private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
+        override fun onNavigateToContact() {
+            inputNumberActionType = InputNumberActionType.CONTACT
+            navigateContact()
+        }
 
-            override fun onRenderOperator() {
-                operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
-                    if (it) {
-                        getPrefixOperatorData()
-                    } else {
-                        renderProductFromCustomData()
-                    }
+        override fun onRenderOperator() {
+            operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
+                if (it) {
+                    getPrefixOperatorData()
+                } else {
+                    renderProductFromCustomData()
                 }
             }
+        }
 
-            override fun onClearAutoComplete() {
-                topupAnalytics.eventClearInputNumber()
-                showProducts = false
-                renderPromoAndRecommendation()
+        override fun onClearAutoComplete() {
+            topupAnalytics.eventClearInputNumber()
+            showProducts = false
+            renderPromoAndRecommendation()
 
-                productId = 0
-                operatorId = ""
-                sharedModelPrepaid.setVisibilityTotalPrice(false)
-            }
+            productId = 0
+            operatorId = ""
+            sharedModelPrepaid.setVisibilityTotalPrice(false)
+        }
 
-            override fun onClientNumberHasFocus(clientNumber: String) {
-                operatorId = ""
-                productId = 0
-                sharedModelPrepaid.setVisibilityTotalPrice(false)
+        override fun onClientNumberHasFocus(clientNumber: String) {
+            operatorId = ""
+            productId = 0
+            sharedModelPrepaid.setVisibilityTotalPrice(false)
 
-                telcoClientNumberWidget.clearFocusAutoComplete()
-                startActivityForResult(activity?.let {
-                    DigitalSearchNumberActivity.newInstance(it,
-                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
-                },
-                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-            }
-        })
+            telcoClientNumberWidget.clearFocusAutoComplete()
+            startActivityForResult(activity?.let {
+                DigitalSearchNumberActivity.newInstance(it,
+                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+            },
+                    REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+        }
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {

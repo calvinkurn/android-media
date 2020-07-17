@@ -12,7 +12,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.item_digital_product_list.view.*
+import kotlinx.android.synthetic.main.item_telco_product.view.*
 
 class TelcoProductViewHolder(itemView: View, private val productType: Int,
                              val listener: OnClickListener)
@@ -24,23 +24,37 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             title_product.text = element.attributes.desc
 
+            renderDescProduct(element)
             renderSeeMoreBtn(element)
             renderTextColor(element.attributes.status)
             renderPrice(element)
-            renderLabel(element)
+            renderCornerLabel(element)
             setItemSelected(element)
             renderOutOfStockProduct(element.attributes.status)
+        }
+    }
+
+    private fun renderDescProduct(element: TelcoProduct) {
+        with(itemView) {
+            if (productType == TelcoProductType.PRODUCT_LIST) {
+                telco_empty_view.hide()
+                telco_desc_product.show()
+                telco_desc_product.text = element.attributes.detail
+            } else {
+                telco_empty_view.show()
+                telco_desc_product.hide()
+            }
         }
     }
 
     private fun renderSeeMoreBtn(element: TelcoProduct) {
         with(itemView) {
             if (productType == TelcoProductType.PRODUCT_GRID) {
-                see_more_btn.hide()
+                telco_see_more_btn.hide()
             } else {
-                see_more_btn.show()
+                telco_see_more_btn.show()
             }
-            see_more_btn.setOnClickListener {
+            telco_see_more_btn.setOnClickListener {
                 listener.onClickSeeMoreProduct(element, adapterPosition)
             }
         }
@@ -50,30 +64,30 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             if (isProductOutOfStock(status)) {
                 title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
-                product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
             } else {
                 title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
-                product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, R.color.digital_orange_price))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, R.color.digital_orange_price))
             }
         }
     }
 
     private fun renderPrice(element: TelcoProduct) {
         with(itemView) {
-            product_price.text = element.attributes.price
-            product_promo_price.visibility = View.INVISIBLE
+            telco_product_price.text = element.attributes.price
+            telco_product_promo_price.visibility = View.INVISIBLE
             element.attributes.productPromo?.run {
                 if (this.newPrice.isNotEmpty()) {
-                    product_price.text = this.newPrice
-                    product_promo_price.text = element.attributes.price
-                    product_promo_price.paintFlags = product_promo_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    product_promo_price.visibility = View.VISIBLE
+                    telco_product_price.text = this.newPrice
+                    telco_product_promo_price.text = element.attributes.price
+                    telco_product_promo_price.paintFlags = telco_product_promo_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    telco_product_promo_price.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    private fun renderLabel(element: TelcoProduct) {
+    private fun renderCornerLabel(element: TelcoProduct) {
         with(itemView) {
             if (element.attributes.productLabels.isEmpty()) {
                 label_product.visibility = View.GONE
@@ -88,7 +102,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun setItemSelected(element: TelcoProduct) {
         with(itemView) {
             if (::adapter.isInitialized) {
-                isSelected = adapterPosition == adapter.selectedPosition
+                isSelected = adapterPosition == adapter.selectedPosition && !isProductOutOfStock(element.attributes.status)
 
                 layout_product.setOnClickListener {
                     listener.onClickItemProduct(element, adapterPosition)
@@ -115,7 +129,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_digital_product_list
+        val LAYOUT = R.layout.item_telco_product
 
         const val PRODUCT_STATUS_OUT_OF_STOCK = 3
     }

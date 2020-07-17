@@ -6,6 +6,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchInstance
 import java.util.*
@@ -26,6 +27,14 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasCompone
 
     override fun getComponent(): DigitalTelcoSearchComponent {
         return DigitalTelcoSearchInstance.getComponent(application)
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_search_number_telco
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar_search_telco
     }
 
     companion object {

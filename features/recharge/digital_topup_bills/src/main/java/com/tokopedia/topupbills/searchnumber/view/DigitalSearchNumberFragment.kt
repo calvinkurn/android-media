@@ -16,8 +16,8 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
+import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
 import javax.inject.Inject
@@ -26,6 +26,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -54,7 +55,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
         }
     }
 
-    fun navigateContact() {
+    private fun navigateContact() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
@@ -102,6 +103,10 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                 }
             }
         }
+    }
+
+    override fun onSearchDone(text: String) {
+        pickOrderClientNumber(text)
     }
 
     override fun onSearchReset() {

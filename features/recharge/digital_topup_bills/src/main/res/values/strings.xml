@@ -3,6 +3,7 @@
 
     <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
+    <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_hint_input_numbers">Contoh 081234567890</string>
     <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
     <string name="title_telco_product_empty_state">Tidak ada pilihan %s</string>

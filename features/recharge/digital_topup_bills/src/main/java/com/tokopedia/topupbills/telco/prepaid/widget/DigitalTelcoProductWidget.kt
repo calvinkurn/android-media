@@ -173,7 +173,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     companion object {
-        const val CELL_MARGIN_DP: Int = 5
+        const val CELL_MARGIN_DP: Int = 2
     }
 
 }
