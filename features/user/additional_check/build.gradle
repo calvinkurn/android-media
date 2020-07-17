@@ -44,7 +44,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     //test

@@ -21,8 +21,6 @@ import javax.inject.Inject
  */
 class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
-//    private var isShown = false
-
     @Inject
     lateinit var viewModel: BottomSheetCheckViewModel
 
@@ -41,8 +39,9 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 !activity.javaClass.simpleName.toString().contains("TwoFactorActivity") &&
                 !activity.javaClass.simpleName.toString().contains("RegisterFingerprintOnboardingActivity") &&
                 !activity.javaClass.simpleName.toString().contains("VerificationActivity") &&
-                !activity.javaClass.simpleName.toString().contains("PinOnboardingActivity")
-        ) {
+                !activity.javaClass.simpleName.toString().contains("PinOnboardingActivity")&&
+                !activity.javaClass.simpleName.toString().contains("LogoutActivity")
+                ) {
             viewModel.check(onSuccess = {
                 handleResponse(activity, twoFactorResult = it)
             }, onError = {
@@ -52,7 +51,6 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
-//        isShown = false
     }
 
     override fun onActivityPaused(activity: Activity?) {
@@ -67,19 +65,10 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 })
             }
             activity?.startActivity(i)
-//            isShown = true
         }
     }
 
-
     override fun onActivityResumed(activity: Activity?) {
-//        if(!isShown) {
-//            viewModel.check(onSuccess = {
-//                handleResponse(activity, twoFactorResult = it)
-//            }, onError = {
-//                it.printStackTrace()
-//            })
-//        }
     }
 
     override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
@@ -91,6 +80,5 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStopped(activity: Activity?) {
-//        isShown = false
     }
 }
