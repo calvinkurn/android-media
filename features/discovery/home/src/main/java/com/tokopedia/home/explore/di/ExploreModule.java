@@ -9,7 +9,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
 import com.tokopedia.home.explore.data.source.ExploreDataSource;
@@ -70,7 +69,7 @@ public class ExploreModule {
     @Provides
     CloudProfileSource cloudProfileSource(@ApplicationContext Context context) {
         return new CloudProfileSource(context, new PeopleService(), new ProfileMapper(),
-                new GlobalCacheManager(), new SessionHandler(context));
+                new GlobalCacheManager(), getUserSession(context));
     }
 
 }
