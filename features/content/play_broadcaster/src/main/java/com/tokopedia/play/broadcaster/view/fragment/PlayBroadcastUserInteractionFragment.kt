@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -336,11 +337,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is BroadcastState.Init -> startCountDown()
                 is BroadcastState.Stop -> if (it.shouldNavigate) navigateToSummary()
                 is BroadcastState.Error -> {
-                    if (GlobalConfig.DEBUG) showToaster(
-                            message = it.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_SHORT
-                    )
+                    if (it.error is DefaultNetworkThrowable)
+                        showToaster(
+                                message = it.error.localizedMessage,
+                                type = Toaster.TYPE_ERROR,
+                                duration = Toaster.LENGTH_INDEFINITE,
+                                actionLabel = getString(R.string.play_broadcast_try_again),
+                                actionListener = View.OnClickListener { view-> it.onRetry() }
+                        )
+                    else {
+                        if (GlobalConfig.DEBUG) showToaster(
+                                message = it.error.localizedMessage,
+                                type = Toaster.TYPE_ERROR,
+                                duration = Toaster.LENGTH_SHORT
+                        )
+                    }
                 }
             }
         })
