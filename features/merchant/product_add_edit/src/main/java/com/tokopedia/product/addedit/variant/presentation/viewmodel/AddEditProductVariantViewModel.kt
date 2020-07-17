@@ -41,6 +41,8 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     var isSingleVariantTypeIsSelected = false
 
+    private var variantDataMap: HashMap<Int, VariantDetail> = HashMap()
+
     // adapter - layout position map
     private var variantValuesLayoutMap: TreeMap<Int, Int> = TreeMap()
 
@@ -51,8 +53,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     private var selectedVariantUnitValuesMap: HashMap<Int, MutableList<UnitValue>> = HashMap()
 
     private var selectedVariantDetails = mutableListOf<VariantDetail>()
-    private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
-    private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
+    private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<MutableList<UnitValue>>()
+    private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<MutableList<UnitValue>>()
 
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
@@ -115,9 +117,21 @@ class AddEditProductVariantViewModel @Inject constructor(
         })
     }
 
-    fun addCustomVariantUnitValue(layoutPosition: Int, customVariantUnitValue: UnitValue) {
-        val selectedVariantUnitValues = this.selectedVariantUnitValuesMap[layoutPosition]
-        selectedVariantUnitValues?.add(customVariantUnitValue)
+    fun addCustomVariantUnitValue(layoutPosition: Int, selectedVariantUnit: Unit, customVariantUnitValue: UnitValue) {
+        if (variantDataMap.containsKey(layoutPosition)) {
+            val selectedVariantData = variantDataMap[layoutPosition]
+            selectedVariantData?.let { variantData ->
+                if (selectedVariantUnit.unitName.isBlank()) {
+                    // add the custom variant unit value
+                    variantData.units.firstOrNull()?.unitValues?.add(customVariantUnitValue)
+                } else {
+                    val selectedVariantUnitData = variantData.units.find { unit ->
+                        unit.variantUnitID == selectedVariantUnit.variantUnitID
+                    }
+                    selectedVariantUnitData?.unitValues?.toMutableList()?.add(customVariantUnitValue)
+                }
+            }
+        }
     }
 
     fun getVariantValuesLayoutPosition(adapterPosition: Int): Int {
@@ -129,8 +143,18 @@ class AddEditProductVariantViewModel @Inject constructor(
         return variantValuesLayoutMap.firstEntry().key
     }
 
+    fun getVariantData(layoutPosition: Int): VariantDetail {
+        return if (variantDataMap.containsKey(layoutPosition)) {
+            return variantDataMap[layoutPosition] ?: VariantDetail()
+        } else VariantDetail()
+    }
+
     fun isVariantUnitValuesLayoutEmpty(): Boolean {
         return variantValuesLayoutMap.isEmpty()
+    }
+
+    fun updateVariantDataMap(layoutPosition: Int, variantData: VariantDetail) {
+        variantDataMap[layoutPosition] = variantData
     }
 
     fun updateVariantValuesLayoutMap(adapterPosition: Int, layoutPosition: Int) {
@@ -145,11 +169,11 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValuesMap[layoutPosition] = selectedVariantUnitValues
     }
 
-    fun updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues: List<UnitValue>) {
+    fun updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues: MutableList<UnitValue>) {
         mSelectedVariantUnitValuesLevel1.value = selectedVariantUnitValues
     }
 
-    fun updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues: List<UnitValue>) {
+    fun updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues: MutableList<UnitValue>) {
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
@@ -173,13 +197,13 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun showProductVariantPhotos(selectedVariantDetail: VariantDetail) {
         // if the product has color variant show the photos
-        val hasColorVariant =  selectedVariantDetail.variantID == COLOUR_VARIANT_TYPE_ID
+        val hasColorVariant = selectedVariantDetail.variantID == COLOUR_VARIANT_TYPE_ID
         if (hasColorVariant) mIsVariantPhotosVisible.value = true
     }
 
     fun hideProductVariantPhotos(selectedVariantDetail: VariantDetail) {
         // if the product has color variant show the photos
-        val hasColorVariant =  selectedVariantDetail.variantID == COLOUR_VARIANT_TYPE_ID
+        val hasColorVariant = selectedVariantDetail.variantID == COLOUR_VARIANT_TYPE_ID
         if (hasColorVariant) mIsVariantPhotosVisible.value = false
     }
 
@@ -216,7 +240,10 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
         return if (selectedVariantUnitMap.containsKey(layoutPosition)) {
             selectedVariantUnitMap[layoutPosition] ?: Unit()
-        } else Unit()
+        } else {
+            // return either the first unit (default selection case) or empty unit (no variant unit)
+            variantDataMap[layoutPosition]?.units?.firstOrNull() ?: Unit()
+        }
     }
 
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
@@ -236,9 +263,17 @@ class AddEditProductVariantViewModel @Inject constructor(
         return true
     }
 
-    fun removeSelectedVariantUnitValue(layoutPosition: Int, position: Int) {
+    fun removeSelectedVariantUnitValue(layoutPosition: Int, removedUnitValue: UnitValue) {
         val selectedVariantUnitValues = this.selectedVariantUnitValuesMap[layoutPosition]
-        selectedVariantUnitValues?.removeAt(position)
+        selectedVariantUnitValues?.remove(removedUnitValue)
+        when (layoutPosition) {
+            VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                mSelectedVariantUnitValuesLevel1.value?.remove(removedUnitValue)
+            }
+            VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                mSelectedVariantUnitValuesLevel2.value?.remove(removedUnitValue)
+            }
+        }
     }
 
     fun removeVariant() {
@@ -247,8 +282,8 @@ class AddEditProductVariantViewModel @Inject constructor(
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
-        mSelectedVariantUnitValuesLevel1.value = emptyList()
-        mSelectedVariantUnitValuesLevel2.value = emptyList()
+        mSelectedVariantUnitValuesLevel1.value = mutableListOf()
+        mSelectedVariantUnitValuesLevel2.value = mutableListOf()
         selectedVariantUnitValuesMap = HashMap()
         variantValuesLayoutMap = TreeMap()
         selectedVariantUnitMap = HashMap()

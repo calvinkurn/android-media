@@ -18,5 +18,5 @@ data class Unit (
         var unitShortName: String = "",
         @SerializedName("unitValues")
         @Expose
-        var unitValues: List<UnitValue> = emptyList()
+        var unitValues: MutableList<UnitValue> = mutableListOf()
 )
