@@ -37,12 +37,12 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderDescProduct(element: TelcoProduct) {
         with(itemView) {
             if (productType == TelcoProductType.PRODUCT_LIST) {
-                empty_view.hide()
-                desc_product.show()
-                desc_product.text = element.attributes.detail
+                telco_empty_view.hide()
+                telco_desc_product.show()
+                telco_desc_product.text = element.attributes.detail
             } else {
-                empty_view.show()
-                desc_product.hide()
+                telco_empty_view.show()
+                telco_desc_product.hide()
             }
         }
     }
@@ -50,11 +50,11 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderSeeMoreBtn(element: TelcoProduct) {
         with(itemView) {
             if (productType == TelcoProductType.PRODUCT_GRID) {
-                see_more_btn.hide()
+                telco_see_more_btn.hide()
             } else {
-                see_more_btn.show()
+                telco_see_more_btn.show()
             }
-            see_more_btn.setOnClickListener {
+            telco_see_more_btn.setOnClickListener {
                 listener.onClickSeeMoreProduct(element, adapterPosition)
             }
         }
@@ -64,24 +64,24 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             if (isProductOutOfStock(status)) {
                 title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
-                product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
             } else {
                 title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
-                product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, R.color.digital_orange_price))
+                telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, R.color.digital_orange_price))
             }
         }
     }
 
     private fun renderPrice(element: TelcoProduct) {
         with(itemView) {
-            product_price.text = element.attributes.price
-            product_promo_price.visibility = View.INVISIBLE
+            telco_product_price.text = element.attributes.price
+            telco_product_promo_price.visibility = View.INVISIBLE
             element.attributes.productPromo?.run {
                 if (this.newPrice.isNotEmpty()) {
-                    product_price.text = this.newPrice
-                    product_promo_price.text = element.attributes.price
-                    product_promo_price.paintFlags = product_promo_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    product_promo_price.visibility = View.VISIBLE
+                    telco_product_price.text = this.newPrice
+                    telco_product_promo_price.text = element.attributes.price
+                    telco_product_promo_price.paintFlags = telco_product_promo_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    telco_product_promo_price.visibility = View.VISIBLE
                 }
             }
         }

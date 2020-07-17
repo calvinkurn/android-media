@@ -162,7 +162,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         }
                     }
                 })
-                seeMoreBottomSheet.show(it.supportFragmentManager, "")
+                seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
 
             }
         }

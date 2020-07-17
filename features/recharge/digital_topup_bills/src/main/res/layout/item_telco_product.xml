@@ -40,7 +40,7 @@
             tools:text="Pulsa 40.000" />
 
         <View
-            android:id="@+id/empty_view"
+            android:id="@+id/telco_empty_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_below="@id/title_product"
@@ -48,10 +48,10 @@
             android:visibility="gone"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/desc_product"
+            android:id="@+id/telco_desc_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/empty_view"
+            android:layout_below="@+id/telco_empty_view"
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
@@ -61,7 +61,7 @@
             tools:text="Masa aktif 30 hari"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/product_price"
+            android:id="@+id/telco_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_promo_price"
@@ -74,9 +74,9 @@
             tools:text="Pulsa 40.000" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/product_promo_price"
+            android:id="@+id/telco_product_promo_price"
             style="@style/TextView.Micro10"
-            android:layout_below="@+id/desc_product"
+            android:layout_below="@+id/telco_desc_product"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:gravity="center_vertical"
@@ -87,10 +87,10 @@
 
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/see_more_btn"
+            android:id="@+id/telco_see_more_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/desc_product"
+            android:layout_below="@+id/telco_desc_product"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_alignParentRight="true"
