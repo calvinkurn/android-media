@@ -291,7 +291,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         if (it == 1) {
                             productWholeSaleSwitch?.isChecked = false
                         }
-                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it)
+                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1)
                     }
                 })
 
