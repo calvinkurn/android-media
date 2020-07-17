@@ -35,26 +35,18 @@ class PieChartLegendAdapter : RecyclerView.Adapter<PieChartLegendAdapter.ViewHol
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        val isEmpty = items.sumBy { it.value } == 0
-        holder.bind(item, isEmpty)
+        holder.bind(item)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: PieChartEntry, isEmpty: Boolean) = with(itemView) {
-            vPieChartLegendDot.background = getShapeDrawable(item.hexColor, isEmpty)
+        fun bind(item: PieChartEntry) = with(itemView) {
+            vPieChartLegendDot.background = getShapeDrawable(item.hexColor)
             tvPieChartLegend.text = item.legend
             tvPieChartLegendValue.text = item.valueFmt
         }
 
-        private fun getShapeDrawable(hexColor: String, isEmpty: Boolean): Drawable {
-            if (isEmpty) {
-                val emptyDrawableRes: Drawable? = itemView.context.getResDrawable(R.drawable.shape_charts_pie_empty)
-                emptyDrawableRes?.let {
-                    return it
-                }
-            }
-
+        private fun getShapeDrawable(hexColor: String): Drawable {
             val dp8: Float = itemView.context.resources.getDimension(R.dimen.layout_lvl1)
             val radius: FloatArray = floatArrayOf(dp8, dp8, dp8, dp8, dp8, dp8, dp8, dp8)
             val shape = ShapeDrawable(RoundRectShape(radius, null, null))
