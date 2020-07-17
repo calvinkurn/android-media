@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -51,7 +50,6 @@ class PromoInputViewHolder(private val view: View,
         }
 
         textFieldInputPromo.textFieldInput.setOnClickListener {
-            Toast.makeText(textFieldInputPromo.context, "setOnClickListener", Toast.LENGTH_SHORT).show()
             listener.onClickPromoManualInputTextField()
         }
         textFieldInputPromo.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE

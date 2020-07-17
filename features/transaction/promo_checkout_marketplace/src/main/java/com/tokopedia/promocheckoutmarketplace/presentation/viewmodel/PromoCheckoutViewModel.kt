@@ -1345,7 +1345,10 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 throw PromoErrorException()
             }
         }) { throwable ->
-
+            getPromoLastSeenResponse.value?.let {
+                it.state = GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG
+                _getPromoLastSeenResponse.value = it
+            }
         }
     }
 
