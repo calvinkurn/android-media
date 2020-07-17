@@ -70,7 +70,7 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
         if (parent is PreferenceEditParent) {
             parent.hideAddButton()
             parent.hideDeleteButton()
-            parent.setHeaderTitle(getString(R.string.lbl_choose_payment))
+            parent.setHeaderTitle(getString(R.string.lbl_choose_payment_method))
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.hideStepper()
             } else {

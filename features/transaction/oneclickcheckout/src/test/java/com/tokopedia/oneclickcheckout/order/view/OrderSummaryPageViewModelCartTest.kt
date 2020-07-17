@@ -92,7 +92,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
-        every { ratesResponseStateConverter.fillState(any(), any(), any(), any()) } returnsArgument (0)
         every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData().apply {
             shippingDurationViewModels = ArrayList()
         })
@@ -137,7 +136,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     }
             )
         }
-        every { ratesResponseStateConverter.fillState(any(), any(), any(), any()) } returnsArgument (0)
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
 
@@ -156,20 +154,41 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Product Debounce Success`() {
-        setUpCartAndRates()
-        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
-            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(response = UpdateCartOccResponse(data = UpdateCartDataOcc())))
-        }
-
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
 
-        verify(exactly = 1) { ratesUseCase.execute(any()) }
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
         assertEquals(10, orderSummaryPageViewModel.orderProduct.quantity.orderQuantity)
-        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(ButtonBayarState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
 
-        verify(exactly = 2) { ratesUseCase.execute(any()) }
+        verify { ratesUseCase.execute(any()) }
+        verify { updateCartOccUseCase.execute(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Update Product Debounce Should Not Reload Rates`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
+
+        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Update Product Debounce With Error Quantity Should Not Reload Rates`() {
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)), false)
+
+        (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
+
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
     }
 
     @Test
@@ -183,19 +202,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Cart`() {
-        setUpCartAndRates()
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
 
         orderSummaryPageViewModel.updateCart()
 
-        verify { updateCartOccUseCase.execute(withArg { assertEquals(it, UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "0", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "1", serviceId = 1, addressId = "0"))) }, any(), any()) }
+        verify { updateCartOccUseCase.execute(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "0", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "1", serviceId = 1, addressId = "0")), it) }, any(), any()) }
     }
 
     @Test
     fun `Update Preference Success Should Trigger Refresh`() {
-        setUpCartAndRates()
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
@@ -207,7 +227,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Preference Failed`() {
-        setUpCartAndRates()
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
         val response = Throwable()
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)

@@ -57,9 +57,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         ViewModelProviders.of(this, viewModelFactory)[AddressListViewModel::class.java]
     }
 
-    private lateinit var searchAddress: SearchInputView
     private val adapter = AddressListItemAdapter(this)
 
+    private var searchAddress: SearchInputView? = null
     private var addressListRv: RecyclerView? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var searchInputView: SearchInputView? = null
@@ -154,7 +154,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             }
             emptyStateLayout?.gone()
             textSearchError?.gone()
-            searchAddress.visible()
+            searchAddress?.visible()
             addressListRv?.visible()
             bottomLayout?.visible()
         } else if (isFirstLoad) {
@@ -163,7 +163,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 goToPickLocation(REQUEST_FIRST_CREATE)
             }
             addressListRv?.gone()
-            searchAddress.gone()
+            searchAddress?.gone()
             textSearchError?.gone()
             emptyStateLayout?.visible()
             bottomLayout?.visible()
@@ -171,7 +171,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             addressListRv?.gone()
             bottomLayout?.gone()
             emptyStateLayout?.gone()
-            searchAddress.visible()
+            searchAddress?.visible()
             textSearchError?.visible()
         }
     }
@@ -258,21 +258,21 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            performSearch(searchAddress.searchTextView.text.toString())
+            performSearch(searchAddress?.searchTextView?.text?.toString() ?: "")
         }
 
     }
 
     private fun initSearchView() {
-        searchAddress.searchTextView.setOnClickListener { view ->
-            searchAddress.searchTextView.isCursorVisible = true
+        searchAddress?.searchTextView?.setOnClickListener { view ->
+            searchAddress?.searchTextView?.isCursorVisible = true
             openSoftKeyboard()
         }
-        searchAddress.setResetListener {
+        searchAddress?.setResetListener {
             performSearch("")
         }
-        searchAddress.setListener(this)
-        searchAddress.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
+        searchAddress?.setListener(this)
+        searchAddress?.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address))
     }
 
     override fun onSelect(addressId: String) {
@@ -293,8 +293,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun openSoftKeyboard() {
-        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
-                searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
+        searchAddress?.searchTextView?.let {
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     private fun goToPickLocation(requestCode: Int) {
@@ -368,7 +369,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         globalErrorLayout?.setActionClickListener {
             viewModel.searchAddress("")
         }
-        searchAddress.gone()
+        searchAddress?.gone()
         textSearchError?.gone()
         addressListRv?.gone()
         bottomLayout?.gone()

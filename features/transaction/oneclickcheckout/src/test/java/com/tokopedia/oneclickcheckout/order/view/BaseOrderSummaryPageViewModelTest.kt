@@ -10,21 +10,16 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Rule
-import rx.Observable
 
 open class BaseOrderSummaryPageViewModelTest {
 
@@ -37,28 +32,27 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK
     lateinit var getOccCartUseCase: GetOccCartUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var ratesUseCase: GetRatesUseCase
 
     @MockK
     lateinit var getPreferenceListUseCase: GetPreferenceListUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
 
-    @MockK
-    lateinit var ratesResponseStateConverter: RatesResponseStateConverter
+    private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
     @MockK
     lateinit var editAddressUseCase: EditAddressUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
 
     @MockK
     lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
 
     @MockK(relaxed = true)
@@ -83,19 +77,5 @@ open class BaseOrderSummaryPageViewModelTest {
                 getOccCartUseCase, ratesUseCase, getPreferenceListUseCase, updateCartOccUseCase, ratesResponseStateConverter,
                 editAddressUseCase, checkoutOccUseCase, clearCacheAutoApplyStackUseCase,
                 validateUsePromoRevampUseCase, userSessionInterface, orderSummaryAnalytics)
-    }
-
-    fun setUpCartAndRates() {
-        setUpCartAndRatesMocks()
-
-        orderSummaryPageViewModel.getOccCart(true, "")
-    }
-
-    fun setUpCartAndRatesMocks() {
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(helper.orderData) }
-        every { ratesResponseStateConverter.fillState(any(), any(), any(), any()) } returnsArgument (0)
-        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
     }
 }

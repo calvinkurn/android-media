@@ -7,10 +7,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.*
 import com.tokopedia.oneclickcheckout.common.data.model.Shipment
 import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
+import com.tokopedia.oneclickcheckout.order.view.model.*
 
 class OrderSummaryPageViewModelTestHelper {
 
@@ -84,6 +81,15 @@ class OrderSummaryPageViewModelTestHelper {
     val shipment = Shipment(serviceId = 1)
 
     val preference = ProfileResponse(shipment = shipment, profileId = 1)
+
+    val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
+            serviceName = firstDuration.serviceData.serviceName,
+            serviceDuration = firstDuration.serviceData.serviceName,
+            shipperId = firstCourierFirstDuration.productData.shipperId,
+            shipperProductId = firstCourierFirstDuration.productData.shipperProductId,
+            shippingRecommendationData = shippingRecommendationData,
+            logisticPromoViewModel = logisticPromo,
+    logisticPromoTickerMessage = "Tersedia bbo")
 
     val product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))
 

@@ -198,7 +198,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun getRates() {
+    fun getRates() {
         compositeSubscription.add(
                 ratesUseCase.execute(generateRatesParam())
                         .map(::mapShippingRecommendationData)
@@ -606,10 +606,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun chooseCourier(choosenShippingCourierViewModel: ShippingCourierUiModel) {
         val value = _orderPreference
-        val shippingRecommendationData = value?.shipping?.shippingRecommendationData
         val curShip = value?.preference?.shipment
         val shipping = value?.shipping
-        if (shippingRecommendationData != null && curShip != null && shipping != null) {
+        val shippingRecommendationData = shipping?.shippingRecommendationData
+        if (shippingRecommendationData != null && curShip != null) {
             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
             clearBboIfExist()
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
