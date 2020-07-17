@@ -93,9 +93,9 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
 
     override fun onDeleteButtonClicked(position: Int) {
         if (position != NO_POSITION) {
-            onDeleteWholesale?.invoke()
             wholeSaleInputModelList.removeAt(position)
             notifyItemRemoved(position)
+            onDeleteWholesale?.invoke()
         }
     }
 }
