@@ -7,9 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -19,6 +17,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -31,7 +30,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     private val etQty by lazy { view.findViewById<EditText>(R.id.et_qty) }
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
-    private val ivProductImage by lazy { view.findViewById<RoundedCornerImageView>(R.id.iv_product_image) }
+    private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
     private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
     private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
@@ -42,7 +41,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
-    private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
+    private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
     private var quantityTextWatcher: QuantityTextWatcher? = null
@@ -58,9 +57,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     fun initView() {
         if (isProductInitialized()) {
-            ivProductImage?.let {
-                ImageHandler.loadImageFitCenter(view.context, it, product.productImageUrl)
-            }
+            ivProductImage?.setImageUrl(product.productImageUrl)
             tvProductName?.text = product.productName
             showPrice()
 
@@ -218,10 +215,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         }
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
-            ivFreeShipping?.let {
-                ImageHandler.LoadImage(it, product.freeOngkirImg)
-                it.visible()
-            }
+            ivFreeShipping?.setImageUrl(product.freeOngkirImg)
+            ivFreeShipping?.visible()
         } else {
             ivFreeShipping?.gone()
         }

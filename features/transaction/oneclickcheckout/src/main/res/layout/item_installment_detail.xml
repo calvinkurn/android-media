@@ -53,9 +53,9 @@
         app:typographyWeight="bold"
         tools:text="Rp7.500.000/bulan" />
 
-    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+    <RadioButton
         android:id="@+id/rb_installment_detail"
-        android:layout_width="@dimen/dp_24"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"

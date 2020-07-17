@@ -194,7 +194,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 parent.hideDeleteButton()
                 parent.hideAddButton()
                 parent.showStepper()
-                parent.setStepperValue(50, true)
+                parent.setStepperValue(50)
                 parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
                 parent.setHeaderSubtitle(getString(R.string.activity_subtitle_shipping_address))
             }

@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -223,15 +222,9 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
-    override fun setStepperValue(value: Int, isSmooth: Boolean) {
-        if (isSmooth && stepper != null) {
-            try {
-                ObjectAnimator.ofInt(stepper, "progress", value).setDuration(500).start()
-            } catch (e: Exception) {
-                stepper.progress = value
-            }
-        } else {
-            stepper.progress = value
+    override fun setStepperValue(value: Int) {
+        if (stepper != null) {
+            stepper.setValue(value, true)
         }
     }
 

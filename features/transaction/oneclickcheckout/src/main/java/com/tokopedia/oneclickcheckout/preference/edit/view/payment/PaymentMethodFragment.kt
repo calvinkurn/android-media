@@ -77,7 +77,7 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
             } else {
                 parent.setHeaderSubtitle(getString(R.string.step_choose_payment))
                 parent.showStepper()
-                parent.setStepperValue(75, true)
+                parent.setStepperValue(75)
             }
         }
     }
@@ -124,7 +124,7 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
         super.onStart()
         val parent = activity
         if (parent is PreferenceEditParent) {
-            parent.setStepperValue(75, true)
+            parent.setStepperValue(75)
         }
     }
 

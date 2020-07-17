@@ -70,12 +70,12 @@
         app:typographyWeight="reguler"
         tools:text="Jakarta" />
 
-    <com.tokopedia.design.image.RoundedCornerImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
         android:layout_width="46dp"
         android:layout_height="46dp"
+        android:scaleType="fitCenter"
         android:layout_marginTop="@dimen/dp_16"
-        android:src="@color/black"
         app:layout_constraintStart_toStartOf="@+id/tv_shop_location"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_location" />
 
@@ -149,7 +149,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_free_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -157,9 +157,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintStart_toEndOf="@id/lbl_cashback"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-        tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_close_default" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_product_extra"

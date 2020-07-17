@@ -399,7 +399,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 parent.setHeaderTitle(getString(R.string.lbl_summary_preference_title))
                 parent.setHeaderSubtitle(getString(R.string.lbl_summary_preference_subtitle))
                 parent.showStepper()
-                parent.setStepperValue(100, true)
+                parent.setStepperValue(100)
             }
         }
     }

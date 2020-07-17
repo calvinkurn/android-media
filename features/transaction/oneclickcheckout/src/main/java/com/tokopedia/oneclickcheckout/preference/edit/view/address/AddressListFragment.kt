@@ -235,7 +235,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     goToPickLocation(REQUEST_CREATE)
                 }
                 parent.showStepper()
-                parent.setStepperValue(25, true)
+                parent.setStepperValue(25)
                 parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
                 parent.setHeaderSubtitle(getString(R.string.activity_subtitle_choose_address))
             }
