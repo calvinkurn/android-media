@@ -121,8 +121,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ShimmerProductCard, ::ShimmerProductCardViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.LoadMore, ::LoadMoreViewHolder, ::LoadMoreViewModel)
             initializeComponent(ComponentsList.QuickCoupon, ::QuickCouponViewHolder, ::QuickCouponViewModel)
-            initializeComponent(ComponentsList.CarouselBanner, ::BannerCarouselViewHolder, ::BannerCarouselViewModel)
-            initializeComponent(ComponentsList.CarouselBannerItemView, ::BannerCarouselItemViewHolder, ::BannerCarouselItemViewModel)
+            initializeComponent(ComponentsList.BannerCarousel, ::BannerCarouselViewHolder, ::BannerCarouselViewModel)
+            initializeComponent(ComponentsList.BannerCarouselItemView, ::BannerCarouselItemViewHolder, ::BannerCarouselItemViewModel)
 
             // Product Card Revamp
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)

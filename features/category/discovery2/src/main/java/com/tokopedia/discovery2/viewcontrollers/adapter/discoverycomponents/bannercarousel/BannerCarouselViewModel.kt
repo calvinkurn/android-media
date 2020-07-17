@@ -1,12 +1,35 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel
 
 import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
 
-class BannerCarouselViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = TODO("Not yet implemented")
+class BannerCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+    private val bannerCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val title: MutableLiveData<String> = MutableLiveData()
+
+    init {
+        components.data?.let {
+            if (it.isNotEmpty()) {
+                bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BannerCarouselItemView.componentName,
+                        components.name, position, components.properties?.design
+                        ?: "")
+                title.value = components.properties?.bannerTitle ?: ""
+            }
+        }
+    }
+
+    fun getComponentData(): LiveData<ArrayList<ComponentsItem>> = bannerCarouselList
+    fun getTitleLiveData(): LiveData<String> = title
+
+    fun getLihatUrl() : String{
+       components.properties?.let {
+           return it.ctaApp
+       }
+        return ""
+    }
 }
