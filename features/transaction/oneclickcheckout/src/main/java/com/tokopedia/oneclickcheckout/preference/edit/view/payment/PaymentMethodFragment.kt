@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.webkit.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -106,7 +107,7 @@ class PaymentMethodFragment : BaseDaggerFragment(), PreferenceEditBackPressedLis
         if (msisdnVerified && phoneNumber.isNotBlank()) {
             phone = phoneNumber
         }
-        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=${phone}&address_id=${addressId}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
+        val data = "version=${GlobalConfig.VERSION_NAME}&merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=${phone}&address_id=${addressId}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
         val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
         web_view.postUrl(url, data.toByteArray())
     }
