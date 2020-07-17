@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -30,36 +31,36 @@ class GetChatUseCase @Inject constructor(
 
     fun getFirstPageChat(
             messageId: String,
-            onSuccess: (ChatroomViewModel) -> Unit,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
             onErrorGetChat: (Throwable) -> Unit
     ) {
         val topQuery = generateFirstPageQuery()
         val params = generateFirstPageParam(messageId)
-        getChat(topQuery, params, onSuccess, onErrorGetChat) { chat, _ ->
+        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
             updateMinReplyTime(chat)
         }
     }
 
     fun getTopChat(
             messageId: String,
-            onSuccess: (ChatroomViewModel) -> Unit,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
             onErrorGetChat: (Throwable) -> Unit
     ) {
         val topQuery = generateTopQuery()
         val params = generateTopParam(messageId)
-        getChat(topQuery, params, onSuccess, onErrorGetChat) { chat, _ ->
+        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
             updateMinReplyTime(chat)
         }
     }
 
     fun getBottomChat(
             messageId: String,
-            onSuccess: (ChatroomViewModel) -> Unit,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
             onErrorGetChat: (Throwable) -> Unit
     ) {
         val topQuery = generateBottomQuery()
         val params = generateBottomParam(messageId)
-        getChat(topQuery, params, onSuccess, onErrorGetChat) { chat, _ ->
+        getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
             updateMaxReplyTime(chat)
         }
     }
@@ -67,9 +68,9 @@ class GetChatUseCase @Inject constructor(
     private fun getChat(
             query: String,
             params: Map<String, Any>,
-            onSuccess: (ChatroomViewModel) -> Unit,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
             onErrorGetChat: (Throwable) -> Unit,
-            onResponseReady: (GetExistingChatPojo, ChatroomViewModel) -> Unit
+            onResponseReady: (ChatroomViewModel, GetExistingChatPojo) -> Unit
     ) {
         launchCatchError(
                 dispatchers.IO,
@@ -80,9 +81,9 @@ class GetChatUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val chatroomViewModel = mapper.map(response)
-                    onResponseReady(response, chatroomViewModel)
+                    onResponseReady(chatroomViewModel, response)
                     withContext(dispatchers.Main) {
-                        onSuccess(chatroomViewModel)
+                        onSuccess(chatroomViewModel, response.chatReplies)
                     }
                 },
                 {

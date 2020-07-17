@@ -28,6 +28,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
@@ -227,7 +228,7 @@ class TopChatRoomPresenter @Inject constructor(
     override fun getExistingChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
+            onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.getFirstPageChat(
                     messageId = messageId,
@@ -248,10 +249,10 @@ class TopChatRoomPresenter @Inject constructor(
         ))
     }
 
-    override fun loadPreviousChat(
+    override fun loadTopChat(
             messageId: String,
             onError: (Throwable) -> Unit,
-            onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+            onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.getTopChat(

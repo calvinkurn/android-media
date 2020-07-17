@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
@@ -76,7 +77,7 @@ interface TopChatContract {
         fun getExistingChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit)
+                onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit)
 
         fun getMessageId(
                 toUserId: String,
@@ -90,10 +91,10 @@ interface TopChatContract {
 
         fun startUploadImages(it: ImageUploadViewModel)
 
-        fun loadPreviousChat(
+        fun loadTopChat(
                 messageId: String,
                 onError: (Throwable) -> Unit,
-                onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+                onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
         fun isUploading(): Boolean

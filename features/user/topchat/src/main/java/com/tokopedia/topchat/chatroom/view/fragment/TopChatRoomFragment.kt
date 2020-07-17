@@ -35,13 +35,13 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -67,6 +67,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
@@ -146,9 +147,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
     private var rvLayoutManager: LinearLayoutManager? = null
+    private var rvScrollListener: LoadMoreTopBottomScrollListener? = null
+    private var rv: RecyclerView? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
+    override fun isLoadMoreEnabledByDefault(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,6 +171,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         composeArea = view?.findViewById(R.id.new_comment)
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
+        rv = view?.findViewById(recyclerViewResourceId)
     }
 
     private fun initStickerView() {
@@ -181,6 +186,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupAlertDialog()
         setupAnalytic()
         loadInitialData()
+        initLoadMoreListener()
+    }
+
+    private fun initLoadMoreListener() {
+        rvScrollListener = object : LoadMoreTopBottomScrollListener(rvLayoutManager) {
+            override fun loadMoreTop() {
+                showLoading()
+                presenter.loadTopChat(messageId, onError(), ::onSuccessGetPreviousChat)
+            }
+
+            override fun loadMoreDown() {
+
+            }
+        }.also {
+            rv?.addOnScrollListener(it)
+        }
     }
 
     private fun initTooltipPopup() {
@@ -213,11 +234,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        val manager = super.getRecyclerViewLayoutManager()
-        if (manager is LinearLayoutManager) {
-            rvLayoutManager = manager
+        return LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, true).also {
+            rvLayoutManager = it
         }
-        return manager
     }
 
     override fun loadInitialData() {
@@ -298,7 +317,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
+    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
         presenter.updateMinReplyTime(chatRoom)
@@ -307,6 +326,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 onSuccessGetShopFollowingStatus())
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        rvScrollListener?.updateHasNextState(chat)
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
@@ -316,7 +336,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
         showStickerOnBoardingTooltip()
 
-        fpm.stopTrace()
+//        fpm.stopTrace()
     }
 
     private fun showStickerOnBoardingTooltip() {
@@ -366,15 +386,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         getViewState().showErrorWebSocket(isWebSocketError)
     }
 
-    private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
-        return {
-            adapter.removeLastHeaderDateIfSame(it.latestHeaderDate)
-            renderList(it.listChat, it.canLoadMore)
-            checkShowLoading(it.canLoadMore)
-            loadChatRoomSettings(it)
-            presenter.updateMinReplyTime(it)
-            presenter.loadAttachmentData(messageId.toInt(), it)
-        }
+    private fun onSuccessGetPreviousChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
+        renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        checkShowLoading(chatRoom.canLoadMore)
+        loadChatRoomSettings(chatRoom)
+        presenter.updateMinReplyTime(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
     }
 
     private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
@@ -453,14 +471,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPreviousChat(messageId, onError(), onSuccessGetPreviousChat())
+//        presenter.loadPreviousChat(messageId, onError(), onSuccessGetPreviousChat())
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
-                loadData(page)
+//                showLoading()
+//                loadData(page)
             }
         }
     }
