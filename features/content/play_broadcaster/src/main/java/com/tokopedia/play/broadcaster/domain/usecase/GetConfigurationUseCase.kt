@@ -33,9 +33,8 @@ class GetConfigurationUseCase @Inject constructor(
         val gqlResponse = configureGqlResponse(graphqlRepository, query, GetBroadcasterShopConfigResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
-        val config = mapConfiguration(response.shopConfig.config)
-        config.streamAllowed = response.shopConfig.streamAllowed
-        return config
+        return mapConfiguration(response.shopConfig.config)
+                .copy(streamAllowed = response.shopConfig.streamAllowed)
     }
 
     private fun mapConfiguration(config: String): Config {
