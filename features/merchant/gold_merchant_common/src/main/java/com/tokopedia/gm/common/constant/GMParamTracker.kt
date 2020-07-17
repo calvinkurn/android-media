@@ -51,7 +51,6 @@ object GMParamTracker {
     }
 
     object Label {
-        const val SEND_ANSWER = "kirim jawaban"
         const val BACK_BUTTON = "back button"
         const val POWER_MERCHANT = "PM"
         const val REGULAR_MERCHANT = "RM"

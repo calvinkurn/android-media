@@ -14,7 +14,7 @@ class PowerMerchantTracking @Inject constructor(
 ) {
 
     fun eventLearnMorePm() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.CATEGORY_SELLER_APP,
                 GMParamTracker.ACTION_CLICK_POWER_MERCHANT,
@@ -22,7 +22,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventUpgradeShopWebView() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.CATEGORY_SELLER_APP,
                 GMParamTracker.ACTION_CLICK_POWER_MERCHANT,
@@ -30,7 +30,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventLearnMoreSuccessPopUp() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.CATEGORY_SELLER_APP,
                 GMParamTracker.ACTION_CLICK_POWER_MERCHANT,
@@ -38,7 +38,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventUpgradeShopSetting() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_SHOP_SETTING,
                 GMParamTracker.CATEGORY_SELLER_APP,
                 GMParamTracker.ACTION_CLICK_SHOP_SETTINGS,
@@ -46,7 +46,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventLearnMoreSetting() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_SHOP_SETTING,
                 GMParamTracker.CATEGORY_SELLER_APP,
                 GMParamTracker.ACTION_CLICK_SHOP_SETTINGS,
@@ -54,7 +54,7 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventCancelMembershipBottomSheet() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
                 GMParamTracker.CATEGORY_SELLER_APP,
                 GMParamTracker.ACTION_CLICK_POWER_MERCHANT_PM,
@@ -62,20 +62,11 @@ class PowerMerchantTracking @Inject constructor(
     }
 
     fun eventIncreaseScoreBottomSheet() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_HOME_PAGE,
                 GMParamTracker.CATEGORY_HOME_PAGE,
                 GMParamTracker.ACTION_CLICK_INCREASE_SHOP_PERFORMANCE,
                 "")
-    }
-
-    fun eventPMCancellationQuestionnaireClickSendAnswer() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-                GMParamTracker.Category.PM_QUESTIONNAIRE,
-                GMParamTracker.Action.CLICK_FEATURES,
-                GMParamTracker.Label.SEND_ANSWER
-        )
     }
 
     fun eventPMCancellationClickBackButtonFirstPage() {
@@ -475,10 +466,6 @@ class PowerMerchantTracking @Inject constructor(
         event[CustomDimension.SHOP_TYPE] = getShopType()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
-    }
-
-    fun sendScreenName(screenName: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
     private fun getShopType(): String {
