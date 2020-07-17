@@ -7,12 +7,13 @@ import com.tokopedia.brandlist.brandlist_category.presentation.viewmodel.Brandli
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import tkpd.tokopedia.com.brandlist.TestDispatcherProvider
 
 @ExperimentalCoroutinesApi
 class BrandlistCategoryTabViewModelTest {
@@ -23,12 +24,12 @@ class BrandlistCategoryTabViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatchers by lazy {
-        Dispatchers.Unconfined
-    }
+//    private val dispatchers by lazy {
+//        Dispatchers.Unconfined
+//    }
 
     private val viewModel by lazy {
-        BrandlistCategoryViewModel(getBrandlistCategoriesUseCase, dispatchers)
+        BrandlistCategoryViewModel(getBrandlistCategoriesUseCase, TestDispatcherProvider())
     }
 
     @Before

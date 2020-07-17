@@ -78,21 +78,5 @@ class HotelChangeSearchActivity : HotelGlobalSearchActivity() {
                         .putExtra(EXTRA_DESTINATION_SEARCH_ID, searchId)
                         .putExtra(EXTRA_DESTINATION_SEARCH_TYPE, searchType)
                         .putExtra(EXTRA_TITLE, title)
-
-        fun getIntent(context: Context, destinationId: Long, destinationName: String,
-                                     destinationType: String, latitude: Double, longitude: Double,
-                                     checkInDate: String, checkOutDate: String,
-                                     numOfGuests: Int, numOfRooms: Int, title: String = ""): Intent =
-                Intent(context, HotelChangeSearchActivity::class.java)
-                        .putExtra(EXTRA_DESTINATION_ID, destinationId)
-                        .putExtra(EXTRA_DESTINATION_NAME, destinationName)
-                        .putExtra(EXTRA_DESTINATION_TYPE, destinationType)
-                        .putExtra(EXTRA_DESTINATION_LAT, latitude)
-                        .putExtra(EXTRA_DESTINATION_LONG, longitude)
-                        .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)
-                        .putExtra(EXTRA_CHECK_OUT_DATE, checkOutDate)
-                        .putExtra(EXTRA_NUM_OF_GUESTS, numOfGuests)
-                        .putExtra(EXTRA_NUM_OF_ROOMS, numOfRooms)
-                        .putExtra(EXTRA_TITLE, title)
     }
 }

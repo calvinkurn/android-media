@@ -16,11 +16,16 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductMerchantVoucherDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
-    fun type(data: ProductOpenShopDataModel): Int
     fun type(data: ProductLastSeenDataModel): Int
     fun type(data: ProductValuePropositionDataModel): Int
     fun type(data: PageErrorDataModel): Int
     fun type(data: VariantDataModel): Int
     fun type(data: ProductNotifyMeDataModel): Int
+    fun type(data: ProductMediaDataModel): Int
+    fun type(data: ProductContentDataModel): Int
+    fun type(data: ProductMiniSocialProofDataModel): Int
+    fun type(data: ProductMiniShopInfoDataModel): Int
+    fun type(data: ProductTickerInfoDataModel): Int
+    fun type(data: ProductShopCredibilityDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

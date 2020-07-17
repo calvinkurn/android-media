@@ -84,9 +84,6 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.dagger

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,25 +36,11 @@
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.design.loading.LoadingStateView
-        android:id="@+id/line_1"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/line"
-        app:layout_constraintBottom_toBottomOf="@+id/line_2"
-        app:layout_constraintEnd_toStartOf="@+id/line_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
-
-    <com.tokopedia.design.loading.LoadingStateView
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/line_2"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="17dp"
-        android:background="@drawable/line"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
 
     <LinearLayout
@@ -101,7 +88,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.design.loading.LoadingStateView
+    <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/rectangle_8_1"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_76"
@@ -110,10 +97,10 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/rectangle_8_1"
+        app:card_type="border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linear_layout_background">
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout_background" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -164,7 +151,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.design.loading.LoadingStateView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -180,53 +167,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.tokopedia.design.loading.LoadingStateView
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/rectangle_8_2"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:background="@drawable/rectangle_8_2" />
+            android:layout_marginLeft="@dimen/dp_16" />
 
         <include layout="@layout/partial_shimmering_product_list" />
 
-        <com.tokopedia.design.loading.LoadingStateView
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/rectangle_8_3"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:background="@drawable/rectangle_8_2" />
+            android:layout_marginLeft="@dimen/dp_16" />
 
         <include layout="@layout/partial_shimmering_product_list" />
 
-        <com.tokopedia.design.loading.LoadingStateView
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/rectangle_8_4"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:background="@drawable/rectangle_8_2" />
+            android:layout_marginLeft="@dimen/dp_16" />
 
         <include layout="@layout/partial_shimmering_product_list" />
 
-        <com.tokopedia.design.loading.LoadingStateView
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/rectangle_8_5"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:background="@drawable/rectangle_8_2" />
+            android:layout_marginLeft="@dimen/dp_16" />
 
         <include layout="@layout/partial_shimmering_product_list" />
 
-        <com.tokopedia.design.loading.LoadingStateView
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/rectangle_8_6"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:background="@drawable/rectangle_8_2" />
+            android:layout_marginLeft="@dimen/dp_16" />
 
         <include layout="@layout/partial_shimmering_product_list" />
     </LinearLayout>

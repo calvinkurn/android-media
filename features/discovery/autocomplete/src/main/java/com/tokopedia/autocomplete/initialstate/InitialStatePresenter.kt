@@ -12,6 +12,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 class InitialStatePresenter @Inject constructor(
         private val initialStateUseCase: UseCase<List<InitialStateData>>,
-        private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
+        private val deleteRecentSearchUseCase: UseCase<Boolean>,
         private val refreshPopularSearchUseCase: RefreshPopularSearchUseCase,
         private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InitialStateContract.View>(), InitialStateContract.Presenter {
@@ -45,6 +46,10 @@ class InitialStatePresenter @Inject constructor(
 
     fun getSearchParameter(): Map<String, String> {
         return searchParameter
+    }
+
+    private fun getUserId(): String {
+        return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
     override fun getInitialStateData() {
@@ -241,15 +246,15 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun deleteRecentSearchItem(keyword: String) {
+    override fun deleteRecentSearchItem(item: BaseItemInitialStateSearch) {
         val params = DeleteRecentSearchUseCase.getParams(
-                keyword,
                 userSession.deviceId,
-                userSession.userId
+                userSession.userId,
+                item
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                getDeleteRecentSearchSubscriber(keyword)
+                getDeleteRecentSearchSubscriber(item.title)
         )
     }
 
@@ -260,8 +265,8 @@ class InitialStatePresenter @Inject constructor(
             e.printStackTrace()
         }
 
-        override fun onNext(isSuccessful: Boolean) {
-            if (isSuccessful) {
+        override fun onNext(isSuccess: Boolean) {
+            if (isSuccess) {
                 var needDelete = false
                 listVistable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
@@ -310,13 +315,39 @@ class InitialStatePresenter @Inject constructor(
             e.printStackTrace()
         }
 
-        override fun onNext(isSuccessful: Boolean) {
-            if (isSuccessful) {
+        override fun onNext(isSuccess: Boolean) {
+            if (isSuccess) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
                 view.deleteRecentSearch(listVistable)
             }
         }
+    }
+
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        trackEventItemClicked(item, adapterPosition)
+
+        view?.dropKeyBoard()
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    private fun trackEventItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        when(item.type) {
+            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId())
+            else -> view?.trackEventClickRecentSearch(
+                    getItemEventLabelForTracking(item, adapterPosition),
+                    adapterPosition
+            )
+        }
+    }
+
+    private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
+        return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
+    }
+
+    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
+        return "value: ${item.title} - po: ${adapterPosition +1} - applink: ${item.applink}"
     }
 
     override fun detachView() {

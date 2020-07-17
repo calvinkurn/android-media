@@ -26,9 +26,7 @@ import javax.inject.Inject
 /**
  * A simple [Fragment] subclass.
  */
-class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
-
-    val TAG = "RegisterFingerprintFragment"
+class RegisterFingerprintOnboardingFragment : BaseDaggerFragment(), ScanFingerprintInterface {
 
     private var scanFingerprintDialog: ScanFingerprintDialog? = null
 
@@ -42,6 +40,23 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val viewModel by lazy { viewModelProvider.get(RegisterOnboardingViewModel::class.java) }
+
+    override fun onFingerprintValid() {
+        showProgressBar()
+        viewModel.registerFingerprint()
+        hideFingerprintDialog()
+    }
+
+    override fun onLoginFingerprintSuccess() {}
+
+    override fun onFingerprintError(msg: String, errCode: Int) {
+        if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE ||
+                errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS ||
+                errCode == ScanFingerprintDialog.FP_ERROR_KEY_NOT_INITIALIZED){
+            activity?.finish()
+        }
+        else onErrorRegisterFP(Throwable(message = msg))
+    }
 
     override fun getScreenName(): String {
         return ""
@@ -80,31 +95,29 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun showFingerprintDialog(){
-        scanFingerprintDialog = ScanFingerprintDialog(activity!!, object: ScanFingerprintInterface {
-            override fun onFingerprintValid() {
-                showProgressBar()
-                viewModel.registerFingerprint()
-                scanFingerprintDialog?.dismiss()
-            }
+        activity?.run {
+            if(scanFingerprintDialog == null)
+                scanFingerprintDialog = ScanFingerprintDialog.newInstance(this, this@RegisterFingerprintOnboardingFragment)
 
-            override fun onLoginFingerprintSuccess() {
-                // do nothing
+            scanFingerprintDialog?.setCloseClickListener {
+                hideFingerprintDialog()
             }
-
-            override fun onFingerprintError(msg: String, errCode: Int) {
-                if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE || errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS || errCode == ScanFingerprintDialog.FP_ERROR_KEY_NOT_INITIALIZED){
-                    activity?.finish()
-                }
-                else{
-                    onErrorRegisterFP(Throwable(message = msg))
-                }
-            }
-        })
-
-        scanFingerprintDialog?.setCloseClickListener {
-            scanFingerprintDialog?.dismiss()
+            scanFingerprintDialog?.showWithMode(ScanFingerprintDialog.MODE_REGISTER)
         }
-        scanFingerprintDialog?.showWithMode(ScanFingerprintDialog.MODE_REGISTER)
+    }
+
+    override fun onDestroy() {
+        hideFingerprintDialog()
+        super.onDestroy()
+    }
+
+    override fun onPause() {
+        hideFingerprintDialog()
+        super.onPause()
+    }
+
+    private fun hideFingerprintDialog(){
+        scanFingerprintDialog?.dismiss()
     }
 
     private fun onSuccessRegisterFP(){
@@ -126,5 +139,9 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
         fingerprint_onboarding_aktivasi_btn?.show()
         fingerprint_onboarding_skip_btn?.show()
         fingerprint_onboarding_loader?.hide()
+    }
+
+    companion object {
+        fun newInstance(): RegisterFingerprintOnboardingFragment = RegisterFingerprintOnboardingFragment()
     }
 }

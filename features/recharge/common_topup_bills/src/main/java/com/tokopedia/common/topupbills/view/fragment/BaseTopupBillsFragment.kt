@@ -176,8 +176,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             isExpressCheckout = getBoolean(EXTRA_IS_EXPRESS_CHECKOUT, isExpressCheckout)
         }
 
-        getMenuDetail(menuId)
-
         val checkoutView = getCheckoutView()
         checkoutView?.run {
             promoTicker = getPromoTicker()
@@ -283,7 +281,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
                 requestCode = REQUEST_CODE_PROMO_DETAIL
             } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                 intent.putExtra(EXTRA_PROMO_CODE, promoCode)
                 intent.putExtra(EXTRA_COUPON_ACTIVE, true)
                 intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
@@ -343,6 +341,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getMenuDetail(menuId: Int) {
+        onLoadingMenuDetail(true)
         topupBillsViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
@@ -387,15 +386,20 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
+        onLoadingMenuDetail(false)
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
     }
 
+    open fun onMenuDetailError(error: Throwable) {
+        onLoadingMenuDetail(false)
+    }
+
+    abstract fun onLoadingMenuDetail(showLoading:  Boolean)
+
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
     abstract fun onEnquiryError(error: Throwable)
-
-    abstract fun onMenuDetailError(error: Throwable)
 
     abstract fun onCatalogPluginDataError(error: Throwable)
 

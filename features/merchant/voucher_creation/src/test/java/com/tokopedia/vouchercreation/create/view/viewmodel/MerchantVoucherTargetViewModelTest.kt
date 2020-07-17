@@ -150,6 +150,8 @@ class MerchantVoucherTargetViewModelTest {
 
         mViewModel.validateVoucherTarget(anyString(), anyString())
 
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             voucherTargetValidationUseCase.executeOnBackground()
         }

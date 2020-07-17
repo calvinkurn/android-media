@@ -56,13 +56,12 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
 
                     currentPosition = element.layoutData.position
                 }
-
             } catch (e: Throwable) {
 
             }
         } else {
             currentPosition = -1
-            onBindListener.onBannerItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
+            onBindListener.onBannerItemBind(element.layoutData, element.isLoadFromCloud)
         }
 
         itemView.banner_shimmering.visibility = if (element.isLoaded) View.GONE else View.VISIBLE
@@ -73,12 +72,16 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoClick(position: Int) {
-        travelHomepageActionListener.onClickSliderBannerItem(bannerList[position], position)
-        travelHomepageActionListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
+        bannerList.getOrNull(position)?.let {
+            travelHomepageActionListener.onClickSliderBannerItem(it, position)
+            travelHomepageActionListener.onItemClick(it.attribute.appUrl, it.attribute.webUrl)
+        }
     }
 
     override fun onPromoScrolled(position: Int) {
-        travelHomepageActionListener.onViewSliderBanner(bannerList[position], position)
+        bannerList.getOrNull(position)?.let {
+            travelHomepageActionListener.onViewSliderBanner(it, position)
+        }
     }
 
     override fun onPromoAllClick() {

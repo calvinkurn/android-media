@@ -69,12 +69,6 @@
                     android:hint="@string/shop_menu_search_placeholder_text"
                     android:lines="1" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/searchBarSort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_shop_sort" />
-
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </FrameLayout>
@@ -156,7 +150,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@color/sticky_bg_color"
                 android:visibility="gone"
                 app:sticky_highlight_color="@color/g_500"
                 app:sticky_left_icon="@drawable/ic_toped_widget_login"

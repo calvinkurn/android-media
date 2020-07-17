@@ -27,3 +27,7 @@ internal fun String.toJsonMap(): JsonMap {
 internal fun GtmLogDB.toUiModel() = GtmLogUi(
         this.id, this.data, this.name, this.category, this.timestamp
 )
+
+internal fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
+    return this["query"] as List<Map<String, Any>>
+}

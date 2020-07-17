@@ -75,7 +75,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         context = parent.getContext();
         imageLoader = new ImageLoader(context);
         View itemLayoutView = LayoutInflater.from(context)
-                .inflate(R.layout.listview_reccommend_shop, parent, false);
+                .inflate(R.layout.favorite_listview_reccommend_shop, parent, false);
         createScaleAnimation();
         return new ViewHolder(itemLayoutView);
     }

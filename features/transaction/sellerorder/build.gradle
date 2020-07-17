@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -14,7 +13,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -57,10 +55,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.androidxTest
@@ -74,4 +73,5 @@ project.ext {
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

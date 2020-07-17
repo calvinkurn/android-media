@@ -7,7 +7,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombinationViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombination
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionChild
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -112,8 +112,8 @@ class AddEditProductDescriptionViewModelTest {
 
     private val productVariantOptionParent1 = ProductVariantOptionParent(name = "Warna", productVariantOptionChild = listOf(ProductVariantOptionChild(value = "Kuning"), ProductVariantOptionChild(value = "Ungu")))
     private val productVariantOptionParent2 = ProductVariantOptionParent(name = "Ukuran", productVariantOptionChild = listOf(ProductVariantOptionChild(value = "XL"), ProductVariantOptionChild(value = "M")))
-    private val productVariant1 = ProductVariantCombinationViewModel(opt = listOf(0, 0), level1String = "Kuning", level2String = "XL")
-    private val productVariant2 = ProductVariantCombinationViewModel(opt = listOf(1, 1), level1String = "Ungu", level2String = "M")
+    private val productVariant1 = ProductVariantCombination(opt = listOf(0, 0), level1String = "Kuning", level2String = "XL")
+    private val productVariant2 = ProductVariantCombination(opt = listOf(1, 1), level1String = "Ungu", level2String = "M")
     private val productVariants = arrayListOf(productVariant1, productVariant2)
     private val productVariantOptionParents = arrayListOf(productVariantOptionParent1, productVariantOptionParent2)
 
@@ -279,7 +279,7 @@ class AddEditProductDescriptionViewModelTest {
 
     @Test
     fun `When product variant is empty expect resetting variant name and count`() {
-        val productVariant = arrayListOf<ProductVariantCombinationViewModel>()
+        val productVariant = arrayListOf<ProductVariantCombination>()
         val variantOptionParent = arrayListOf<ProductVariantOptionParent>()
 
         viewModel.setVariantInput(productVariant, variantOptionParent, null)

@@ -40,7 +40,6 @@ object DeepLinkChecker {
     const val ACCOUNTS = 13
     const val RECHARGE = 14
     const val BLOG = 15
-    const val PELUANG = 16
     const val DISCOVERY_PAGE = 17
     const val FLIGHT = 18
     const val REFERRAL = 19

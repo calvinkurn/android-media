@@ -15,11 +15,27 @@ buildscript {
     }
 }
 
-// For instrumentation test
 android {
+    flavorDimensions "tier", "client"
+    productFlavors {
+        prod {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
+        }
+    }
+
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
     }
 }
 
@@ -38,7 +54,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopEtalasePicker)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -63,6 +78,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -85,7 +101,6 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

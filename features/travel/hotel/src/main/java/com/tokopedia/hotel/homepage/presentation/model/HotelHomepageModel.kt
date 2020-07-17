@@ -15,9 +15,9 @@ class HotelHomepageModel(var checkInDate: String = "",
                          var adultCount: Int = 1,
                          var locLat: Double = 0.0,
                          var locLong: Double = 0.0,
-                         var locName: String = "Bali",
-                         var locId: Long = 4712,
-                         var locType: String = "region",
+                         var locName: String = "",
+                         var locId: Long = 0,
+                         var locType: String = "",
                          var searchType: String = "",
                          var searchId: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(

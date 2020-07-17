@@ -14,7 +14,8 @@ object ApplinkConstInternalPromo {
     const val PROMO_LIST_FLIGHT = "${INTERNAL_PROMO}/list/flight"
     const val PROMO_DETAIL_FLIGHT = "${INTERNAL_PROMO}/detail/flight"
 
-    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${INTERNAL_PROMO}/campaign-shake-landing/{is_long_shake}/"
+    const val PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX = "${INTERNAL_PROMO}/campaign-shake-landing"
+    const val PROMO_CAMPAIGN_SHAKE_LANDING = "${PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX}/{is_long_shake}/"
 
     /**
      * PromoCheckoutListHotelActivity
@@ -61,5 +62,6 @@ object ApplinkConstInternalPromo {
     const val INTERNAL_GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     const val INTERNAL_GAMIFICATION_SMC_REFERRAL = "$INTERNAL_GLOBAL/smc-referral"
     const val INTERNAL_GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    const val INTERNAL_GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
 }

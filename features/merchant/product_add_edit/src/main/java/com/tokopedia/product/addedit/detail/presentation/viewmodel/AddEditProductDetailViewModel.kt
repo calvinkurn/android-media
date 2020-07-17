@@ -18,7 +18,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
-import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -317,6 +316,12 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsPreOrderDurationInputError.value = false
     }
 
+    /**
+     * This method purpose is to update the productPhotoPaths
+     * @param imagePickerResult is the list of product photo paths that returned from the image picker (it will have different value if the user do addition, removal or edit any images that are previously added)
+     * @param originalImageUrl is the list of product photo paths that returned from the image picker which contains all the original image path (it doesn't contain image path of any added or edited image)
+     * @param editted is the list of image edit status any image added and edited will have true value
+     **/
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)

@@ -77,8 +77,9 @@ dependencies {
 
     //User
 //    implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.managepassword)
 //    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
@@ -90,4 +91,5 @@ dependencies {
     implementation project(rootProject.ext.features.liveness)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
+    implementation project(rootProject.ext.features.sellerSearch)
 }

@@ -10,6 +10,9 @@ import com.tokopedia.profilecompletion.addpin.view.fragment.PinOnboardingFragmen
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
 import com.tokopedia.profilecompletion.changename.view.ChangeNameFragment
+import com.tokopedia.profilecompletion.newprofilecompletion.view.fragment.ProfileCompletionDateFragment
+import com.tokopedia.profilecompletion.newprofilecompletion.view.fragment.ProfileCompletionFragment
+import com.tokopedia.profilecompletion.newprofilecompletion.view.fragment.ProfileCompletionGenderFragment
 import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
 import dagger.Component
 
@@ -32,4 +35,7 @@ interface ProfileCompletionSettingComponent {
     fun inject(fragment: PinCompleteFragment)
     fun inject(fragment: ChangePinFragment)
     fun inject(fragment: ChangeNameFragment)
+    fun inject(fragment: ProfileCompletionFragment)
+    fun inject(fragment: ProfileCompletionGenderFragment)
+    fun inject(fragment: ProfileCompletionDateFragment)
 }

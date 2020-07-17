@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionDataModel
 import com.tokopedia.product.detail.data.model.talk.Talk
-import com.tokopedia.product.detail.data.util.thousandFormatted
+import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion.view.*
 
@@ -54,7 +54,7 @@ class ProductDiscussionViewHolder(val view: View, val listener: DynamicProductDe
             } else {
                 removeCommentList()
             }
-            txt_see_all_talk.text = context.getString(R.string.label_see_all_talk, totalTalk.thousandFormatted())
+            txt_see_all_talk.text = context.getString(R.string.label_see_all_talk, totalTalk.productThousandFormatted())
             txt_see_all_talk.setOnClickListener { listener.onLastDiscussionClicked(talk.id, componentTrackData) }
             visible()
         }

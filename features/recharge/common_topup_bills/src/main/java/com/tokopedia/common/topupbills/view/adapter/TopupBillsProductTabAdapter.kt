@@ -11,7 +11,7 @@ import com.tokopedia.design.viewpager.WrapContentViewPager
 /**
  * Created by nabillasabbaha on 09/05/19.
  */
-class TopupBillsProductTabAdapter(val tabList: List<TopupBillsTabItem>, fm: FragmentManager)
+class TopupBillsProductTabAdapter(val tabList: MutableList<TopupBillsTabItem>, fm: FragmentManager)
     : FragmentStatePagerAdapter(fm) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
@@ -19,6 +19,12 @@ class TopupBillsProductTabAdapter(val tabList: List<TopupBillsTabItem>, fm: Frag
 
     override fun getItem(position: Int): Fragment {
         return tabList[position].fragment
+    }
+
+    fun addTabItem(tabs: List<TopupBillsTabItem>) {
+        tabList.clear()
+        tabList.addAll(tabs)
+        notifyDataSetChanged()
     }
 
     override fun getCount(): Int {

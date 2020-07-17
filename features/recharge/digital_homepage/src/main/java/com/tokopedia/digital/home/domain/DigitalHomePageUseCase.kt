@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.domain
 
 import com.tokopedia.digital.home.model.*
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -62,7 +63,8 @@ class DigitalHomePageUseCase (private val useCase: MultiRequestGraphqlUseCase,
         if (queryList.isNotEmpty() && sectionOrdering.isNotEmpty()) {
             useCase.clearRequest()
             useCase.setCacheStrategy(GraphqlCacheStrategy
-                    .Builder(if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
+                    .Builder(if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
+                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
 
             val bannerRequest = GraphqlRequest(queryList[QUERY_BANNER],
                     DigitalHomePageBannerModel::class.java)

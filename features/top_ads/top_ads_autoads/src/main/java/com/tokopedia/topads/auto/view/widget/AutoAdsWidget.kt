@@ -28,13 +28,14 @@ import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
-import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.internal.NonDeliveryReason
 import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.AutoAdsBaseBudgetFragment
 import com.tokopedia.topads.auto.view.sheet.ManualAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +45,12 @@ import javax.inject.Inject
 /**
  * Created by Pika on 16/5/20.
  */
+
+private const val CLICK_TAMBHA_STOK = "click - tambah stok"
+private const val CLICK_TOP_UP_KREDIT = "click - top up kredit"
+private const val CLICK_CEK_STATUS = "click - cek status"
+private const val CLICK_TINGA_KATLAN = "click - tingkatkan"
+private const val CLICK_SETTING_ICON = "click - settings icon"
 class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
 
 
@@ -160,21 +167,33 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
         val spannableText = SpannableString(moreInfo)
         val startIndex = 0
         val endIndex = spannableText.length
-        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 when (status) {
-                    outOfCredit -> RouteManager.route(context, TOPADS_BUY_CREDIT)
-                    outOfStock -> RouteManager.route(context, MANAGE_PRODUCT_LINK)
-                    outOfDailyBudget -> startEditActivity()
-                    merchantClosed -> RouteManager.route(context, MERCHANT_SETTING_LINK)
+                    outOfCredit -> {
+                        RouteManager.route(context, TOPADS_BUY_CREDIT)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TOP_UP_KREDIT, "")
+                    }
+                    outOfStock -> {
+                        RouteManager.route(context, MANAGE_PRODUCT_LINK)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBHA_STOK, "")
+                    }
+                    outOfDailyBudget -> {
+                        startEditActivity()
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TINGA_KATLAN, "")
+                    }
+                    merchantClosed -> {
+                        RouteManager.route(context, MERCHANT_SETTING_LINK)
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_CEK_STATUS, "")
+                    }
                 }
             }
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(context, R.color.Green_G500)
+                ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
             }
         }
         spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -198,6 +217,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
             switch.visibility = View.INVISIBLE
             setting.setOnClickListener {
                 startEditActivity()
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
             }
         }
     }
@@ -241,7 +261,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
         baseLayout?.addView(view)
         view.let { it ->
             it.progress_status1.text = "Rp $dailyUsage"
-            it.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), currentBudget)
+            it.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), currentBudget)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 progress_bar.setProgress(dailyUsage, true)
             } else {
@@ -260,6 +280,7 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
                 it.btn_switch.visibility = View.INVISIBLE
                 it.setting.setOnClickListener {
                     startEditActivity()
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_SETTING_ICON, "")
                 }
             }
         }

@@ -3,7 +3,14 @@ package com.tkpd.remoteresourcerequest.task
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.DisplayMetrics
+import com.tkpd.remoteresourcerequest.callback.DeferredTaskCallback
 import com.tkpd.remoteresourcerequest.database.ResourceDB
+import com.tkpd.remoteresourcerequest.runnable.ImageDecodeRunnable
+import com.tkpd.remoteresourcerequest.runnable.ResourceDownloadRunnable
+import com.tkpd.remoteresourcerequest.type.ImageType
+import com.tkpd.remoteresourcerequest.type.RequestedResourceType
+import com.tkpd.remoteresourcerequest.utils.Constants
+import com.tkpd.remoteresourcerequest.utils.Constants.URL_SEPARATOR
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import okhttp3.OkHttpClient
 import java.io.File
@@ -14,15 +21,16 @@ class DeferredResourceTask(
         private val okHttpClient: OkHttpClient,
         private val resourceDB: ResourceDB
 ) :
-        ImageDecodeRunnable.TaskDecodeProperties, ResourceDownloadRunnable.TaskDownloadProperties {
-    var isRequestedFromWorker: Boolean = false
+        ImageDecodeRunnable.TaskDecodeProperties,
+        ResourceDownloadRunnable.TaskDownloadProperties {
+    internal var isRequestedFromWorker: Boolean = false
     private var mDecodeRunnable: Runnable? = null
-
-    var mDownloadRunnable: Runnable? = null
+    internal var mDownloadRunnable: Runnable? = null
     private lateinit var mUrl: String
     private val downloadManager by lazy { resourceDownloadManager }
-    var deferredImageView: WeakReference<DeferredImageView>? = null
-    var deferredTaskCallback: DeferredTaskCallback? = null
+    internal var deferredImageView: WeakReference<DeferredImageView>? = null
+    private var deferredTaskCallback: DeferredTaskCallback? = null
+    private var mResVersion: String = ""
 
     private var byteArray: ByteArray? = null
 
@@ -37,17 +45,21 @@ class DeferredResourceTask(
     override val mTargetHeight: Int
         get() = deferredImageView?.get()?.height ?: 0
 
+    internal var requestedDensity: Int = 0
+
     fun initTask(
             url: String,
-            imageView: DeferredImageView?,
+            resourceType: RequestedResourceType,
             deferredTaskCallback: DeferredTaskCallback?
     ) {
         mUrl = url
-        deferredImageView =
-                imageView?.let { WeakReference(it) }
+        deferredImageView = resourceType.imageView?.let { WeakReference(it) }
+        mResVersion = resourceType.resourceVersion
+        isRequestedFromWorker = resourceType.isRequestedFromWorker
+        if (resourceType is ImageType)
+            requestedDensity = resourceType.densityType
         this.deferredTaskCallback = deferredTaskCallback
     }
-
 
     override fun getByteBuffer(): ByteArray? = byteArray
 
@@ -75,7 +87,7 @@ class DeferredResourceTask(
         val directory =
                 downloadManager.getContextWrapper().getDir("downloads", Context.MODE_PRIVATE)
         directory.mkdir()
-        val name = mUrl.substring(mUrl.lastIndexOf(ResourceDownloadManager.URL_SEPARATOR))
+        val name = mUrl.substring(mUrl.lastIndexOf(Constants.URL_SEPARATOR))
         return File(directory.absoluteFile, name)
     }
 
@@ -97,6 +109,14 @@ class DeferredResourceTask(
 
         }
     }
+
+    /**
+     *  Creating separate [resourceVersion] for separate task objects since in future it can be used
+     *  to purge specific file if it gets updated in server using remote config from firebase.
+     *  Current behavior is similar to that of an apk update. Unless you don't update the app, you
+     *  can't get updated resources.
+     */
+    override fun resourceVersion() = mResVersion
 
     override fun handleDecodeState(state: Int) {
         when (state) {
@@ -133,7 +153,6 @@ class DeferredResourceTask(
     }
 
     fun recycleTask() {
-        notifyDeferredWorker()
         byteArray = null
         mDownloadRunnable = null
         mDecodeRunnable = null
@@ -142,9 +161,19 @@ class DeferredResourceTask(
         bitmap = null
     }
 
-    private fun notifyDeferredWorker() {
-        if (deferredTaskCallback != null) {
-            deferredTaskCallback?.onTaskCompleted(mUrl)
-        }
+    fun notifyDownloadComplete() {
+        deferredTaskCallback?.onTaskCompleted(
+                mUrl.substring(mUrl.lastIndexOf(URL_SEPARATOR) + 1),
+                filePath = getFilePath()
+        )
     }
+
+    fun notifyDownloadFailed() {
+        deferredTaskCallback?.onTaskFailed(
+                mUrl.substring(mUrl.lastIndexOf(URL_SEPARATOR) + 1)
+        )
+    }
+
+    private fun getFilePath(): String? = getFileLocationFromDirectory().absolutePath
+
 }
