@@ -391,7 +391,7 @@ class PowerMerchantTracking @Inject constructor(
         val event = TrackAppUtils.gtmData(
             GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
             GMParamTracker.CATEGORY_PM_QUESTIONNAIRE,
-            GMParamTracker.Action.CLICK_QUESTIONNAIRE_RATING,
+            GMParamTracker.Action.CLICK_RATING,
             rating.toString()
         )
 
