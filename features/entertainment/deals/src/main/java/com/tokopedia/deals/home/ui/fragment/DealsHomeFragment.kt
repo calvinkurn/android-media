@@ -237,12 +237,11 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* BRAND SECTION ACTION */
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        val intent = RouteManager.getIntent(context, brand.brandUrl)
-        startActivityForResult(intent, DEALS_BRAND_REQUEST_CODE)
+        RouteManager.route(context, brand.brandUrl)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
-        startActivity(DealsBrandActivity.getCallingIntent(requireContext(), ""))
+        startActivityForResult(DealsBrandActivity.getCallingIntent(requireContext(), ""), DEALS_BRAND_REQUEST_CODE)
     }
 
     /* PRODUCT SECTION ACTION */
@@ -257,6 +256,7 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* NEAREST PLACE SECTION ACTION */
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
+        (activity as DealsBaseActivity).setCurrentLocation(voucherPlaceCard.location)
         startActivityForResult(DealsCategoryActivity.getCallingIntent(requireContext()), DEALS_CATEGORY_REQUEST_CODE)
     }
 

@@ -3,6 +3,8 @@ package com.tokopedia.deals.home.util
 import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.*
@@ -91,7 +93,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
 
         val brandLayout = brands.map { brand ->
             DealsBrandsDataView.Brand(brand.id, brand.title, brand.featuredThumbnailImage,
-                    "tokopedia://deals/brand/${brand.seoUrl}")
+                    UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl))
         }
         brandsDataView = DealsBrandsDataView(title = getString(BRAND_POPULAR_SECTION_TITLE),
                 seeAllText = getString(DEALS_SEE_ALL), brands = brandLayout)
