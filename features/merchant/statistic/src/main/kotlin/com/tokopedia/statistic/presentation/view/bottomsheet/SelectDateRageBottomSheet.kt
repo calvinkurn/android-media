@@ -36,9 +36,11 @@ class SelectDateRageBottomSheet(
         mutableListOf(
                 getDateRangeItemToday(),
                 getDateRangeItemClick(DAYS_7, DateRangeItem.TYPE_LAST_7_DAYS, true),
-                getDateRangeItemClick(DAYS_30, DateRangeItem.TYPE_LAST_30_DAYS),
+                getDateRangeItemClick(DAYS_30, DateRangeItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                DateRangeItem.Divider,
                 getDateRangeItemPick(DateRangeItem.TYPE_PER_DAY),
-                getDateRangeItemPick(DateRangeItem.TYPE_PER_WEEK)
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_WEEK),
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_MONTH)
         )
     }
 
@@ -47,6 +49,7 @@ class SelectDateRageBottomSheet(
         setTitle(mContext.getString(R.string.stc_change_date_range))
         setChild(child)
 
+        clearContentPadding = true
         setupView(child)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
@@ -111,11 +114,11 @@ class SelectDateRageBottomSheet(
         return DateRangeItem.Pick(label = label, type = type)
     }
 
-    private fun getDateRangeItemClick(nPastDays: Int, type: Int, isSelected: Boolean = false): DateRangeItem.Click {
+    private fun getDateRangeItemClick(nPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateRangeItem.Click {
         val label: String = mContext.getString(R.string.stc_last_n_days, nPastDays)
         val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.minus(1).toLong()))
         val endDate = Date()
-        return DateRangeItem.Click(label, startDate, endDate, isSelected, type)
+        return DateRangeItem.Click(label, startDate, endDate, isSelected, type, showBottomBorder)
     }
 
     private fun getDateRangeItemToday(): DateRangeItem {

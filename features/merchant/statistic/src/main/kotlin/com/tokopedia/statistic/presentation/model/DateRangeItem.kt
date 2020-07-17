@@ -70,7 +70,8 @@ sealed class DateRangeItem(
             override val startDate: Date,
             override val endDate: Date,
             override var isSelected: Boolean = false,
-            override val type: Int
+            override val type: Int,
+            val showBottomBorder: Boolean = true
     ) : DateRangeItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
@@ -92,6 +93,13 @@ sealed class DateRangeItem(
     }
 
     object ApplyButton : DateRangeItem(type = TYPE_BUTTON) {
+
+        override fun type(typeFactory: DateRangeAdapterFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    object Divider : DateRangeItem(type = TYPE_BUTTON) {
 
         override fun type(typeFactory: DateRangeAdapterFactory): Int {
             return typeFactory.type(this)
