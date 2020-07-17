@@ -286,13 +286,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
                     }
+                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
                     wholeSaleInputFormsAdapter?.itemCount?.let {
                         if (it == 1) {
                             productWholeSaleSwitch?.isChecked = false
                         }
+                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it)
                     }
-                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
-                    validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -563,7 +563,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product wholesale input validation
         viewModel.isWholeSalePriceActivated.value?.run {
-            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
+            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
         }
 
         // product stock validation
@@ -775,11 +775,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
-        wholesaleInputForms?.childCount?.let {
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?) {
+        itemCount?.let {
             var wholeSaleErrorCounter = 0
             for (index in 0 until it) {
-                val productWholeSaleFormView = wholesaleInputForms.layoutManager?.getChildAt(index)
+                val productWholeSaleFormView = wholesaleInputForms?.layoutManager?.getChildAt(index)
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
