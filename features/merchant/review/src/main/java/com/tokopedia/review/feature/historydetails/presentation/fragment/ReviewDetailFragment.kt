@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -31,16 +32,19 @@ import com.tokopedia.review.feature.historydetails.presentation.viewmodel.Review
 import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
+import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailReputation
 import com.tokopedia.review.feature.inbox.common.util.OnBackPressedListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
+import kotlinx.android.synthetic.main.widget_review_detail_score.*
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickedListener, OnBackPressedListener {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
+        const val INDEX_OF_EDIT_BUTTON = 1
 
         fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
@@ -119,6 +123,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                         setProduct(product, review.feedbackId)
                         setReview(review, product.productName)
                         setResponse(response)
+                        setReputation(reputation)
                     }
                 }
                 is Fail -> {
@@ -161,11 +166,19 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     show()
                 }
             }
-            reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
-            reviewDetailContent.setTextAndCheckShow(reviewText)
-            reviewDetailAttachedImages.setImages(attachments, productName, this@ReviewDetailFragment)
             if(editable) {
                 addEditHeaderIcon()
+            }
+            reviewDetailAttachedImages.setImages(attachments, productName, this@ReviewDetailFragment)
+            reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
+            if(reviewText.isEmpty()) {
+                reviewDetailContent.apply {
+                    text = getString(R.string.no_reviews_yet)
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                    show()
+                }
+            } else {
+                reviewDetailContent.setTextAndCheckShow(reviewText)
             }
         }
     }
@@ -176,6 +189,19 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             return
         }
         reviewDetailResponse.setContent(response)
+    }
+
+    private fun setReputation(reputation: ProductrevGetReviewDetailReputation) {
+        with(reputation) {
+            when {
+                !editable && isLocked && score != 0  -> {
+                    reviewHistoryDetailReputation.setFinalScore(score)
+                }
+                else -> {
+                    // Later
+                }
+            }
+        }
     }
 
     private fun initHeader() {
@@ -200,7 +226,14 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     }
 
     private fun addEditHeaderIcon() {
-        reviewDetailHeader.addRightIcon(R.drawable.ic_edit_review_history_detail)
+        reviewDetailHeader.apply {
+            addRightIcon(R.drawable.ic_edit_review_history_detail)
+            rightIcons?.let {
+                it[INDEX_OF_EDIT_BUTTON].setOnClickListener {
+                    goToEditForm()
+                }
+            }
+        }
     }
 
     private fun showError() {

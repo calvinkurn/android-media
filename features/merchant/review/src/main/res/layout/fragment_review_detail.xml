@@ -49,7 +49,8 @@
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_3"
                 app:layout_constraintStart_toStartOf="@id/reviewDetailStars"
-                app:layout_constraintTop_toBottomOf="@id/reviewDetailStars"/>
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailStars"
+                tools:text="Sebagai Bambang"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewDetailDate"
@@ -60,7 +61,8 @@
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 app:typographyType="body_3"
                 app:layout_constraintTop_toTopOf="@id/reviewDetailName"
-                app:layout_constraintStart_toEndOf="@id/reviewDetailName" />
+                app:layout_constraintStart_toEndOf="@id/reviewDetailName"
+                tools:text="• Hari ini"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewDetailContent"
@@ -71,7 +73,8 @@
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="body_2"
-                app:layout_constraintTop_toBottomOf="@id/reviewDetailName" />
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailName"
+                tools:text="Mantap-mantap"/>
 
             <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages
                 android:id="@+id/reviewDetailAttachedImages"
@@ -84,6 +87,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedImages"/>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/review_history_detail_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="reviewDetailAttachedImages, reviewDetailResponse, reviewDetailContent"/>
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/review_history_detail_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:layout_constraintTop_toBottomOf="@id/review_history_detail_barrier"/>
+
+            <com.tokopedia.review.feature.historydetails.presentation.widget.ReviewDetailScoreWidget
+                android:id="@+id/reviewHistoryDetailReputation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/review_history_detail_divider"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
