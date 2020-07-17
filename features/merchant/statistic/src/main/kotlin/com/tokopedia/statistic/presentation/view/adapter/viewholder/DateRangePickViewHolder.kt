@@ -23,7 +23,6 @@ import java.util.*
 class DateRangePickViewHolder(
         itemView: View?,
         private val fm: FragmentManager,
-        private val showApplyButton: (Boolean) -> Unit,
         private val onClick: (DateRangeItem) -> Unit
 ) : AbstractViewHolder<DateRangeItem.Pick>(itemView) {
 
@@ -59,7 +58,6 @@ class DateRangePickViewHolder(
                 element.isSelected = true
                 showCustomForm(true)
                 onClick(element)
-                showApplyButton(element)
             }
 
             if (element.type == DateRangeItem.TYPE_PER_MONTH) {
@@ -94,13 +92,7 @@ class DateRangePickViewHolder(
             } else {
                 DateRangeFormatUtil.getDateRangeStr(startDate, endDate)
             }
-            showApplyButton(true)
         }
-    }
-
-    private fun showApplyButton(element: DateRangeItem.Pick) {
-        val shouldShowButton = element.startDate != null && element.endDate != null
-        showApplyButton(shouldShowButton)
     }
 
     private fun showCustomForm(isShown: Boolean) = with(itemView) {

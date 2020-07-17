@@ -34,7 +34,7 @@ class DateRangeAdapterFactoryImpl(
                 listener.onItemDateRangeClick(it)
                 listener.onApplyDateFilter()
             }
-            DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm, listener::showApplyButton) {
+            DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm) {
                 listener.onItemDateRangeClick(it)
             }
             DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent) {
@@ -48,8 +48,6 @@ class DateRangeAdapterFactoryImpl(
     interface Listener {
 
         fun onItemDateRangeClick(model: DateRangeItem)
-
-        fun showApplyButton(isShown: Boolean)
 
         fun onApplyDateFilter()
     }

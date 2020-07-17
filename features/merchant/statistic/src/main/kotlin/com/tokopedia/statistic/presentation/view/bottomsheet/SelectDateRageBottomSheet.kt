@@ -31,7 +31,6 @@ class SelectDateRageBottomSheet(
 
     private var applyChangesCallback: (DateRangeItem) -> Unit = {}
     private val mAdapter by lazy { DateRangeAdapter(this, fm) }
-    private val itemApplyButton = DateRangeItem.ApplyButton
     private val items: MutableList<DateRangeItem> by lazy {
         mutableListOf(
                 getDateRangeItemToday(),
@@ -40,7 +39,8 @@ class SelectDateRageBottomSheet(
                 DateRangeItem.Divider,
                 getDateRangeItemPick(DateRangeItem.TYPE_PER_DAY),
                 getDateRangeItemPick(DateRangeItem.TYPE_PER_WEEK),
-                getDateRangeItemPick(DateRangeItem.TYPE_PER_MONTH)
+                getDateRangeItemPick(DateRangeItem.TYPE_PER_MONTH),
+                DateRangeItem.ApplyButton
         )
     }
 
@@ -60,23 +60,7 @@ class SelectDateRageBottomSheet(
                 it.isSelected = false
             }
         }
-        if (model is DateRangeItem.Click && items.contains(itemApplyButton)) {
-            items.remove(itemApplyButton)
-            mAdapter.removeElement(itemApplyButton)
-        }
         mAdapter.notifyDataSetChanged()
-    }
-
-    override fun showApplyButton(isShown: Boolean) {
-        if (isShown) {
-            if (!items.contains(itemApplyButton)) {
-                items.add(itemApplyButton)
-                mAdapter.addElement(itemApplyButton)
-            }
-        } else {
-            items.remove(itemApplyButton)
-            mAdapter.removeElement(itemApplyButton)
-        }
     }
 
     override fun onApplyDateFilter() {
