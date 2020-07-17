@@ -209,7 +209,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                 telcoFilterData.addFilter(componentId, filterTag.paramName, keysFilter)
                 telcoTelcoProductView.resetSelectedProductItem()
-                sharedModelPrepaid.hideTotalPrice()
+                sharedModelPrepaid.setVisibilityTotalPrice(false)
                 sharedModelPrepaid.setSelectedFilter(telcoFilterData.getAllFilter())
 
                 if (telcoFilterData.isFilterSelectedByParamName(filterTag.paramName)) {

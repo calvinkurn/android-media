@@ -95,10 +95,10 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
     private fun saveFilter() {
         val checkedFilterList = ArrayList<String>()
         val checkedFilterValues = StringBuilder()
-        for (i in adapter.checkedDataList.indices) {
-            checkedFilterList.add(adapter.checkedDataList[i].key)
-            checkedFilterValues.append("${adapter.checkedDataList[i].value.toLowerCase()}")
-            if (i < adapter.checkedDataList.size - 1) {
+        for ((index, checkedData) in adapter.checkedDataList.withIndex()) {
+            checkedFilterList.add(checkedData.key)
+            checkedFilterValues.append("${checkedData.value.toLowerCase()}")
+            if (index < adapter.checkedDataList.size - 1) {
                 checkedFilterValues.append(" - ")
             }
         }
