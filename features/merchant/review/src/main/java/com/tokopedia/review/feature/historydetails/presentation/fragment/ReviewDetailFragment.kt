@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.historydetails.presentation.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
 import com.tokopedia.review.feature.inbox.common.util.OnBackPressedListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
@@ -51,6 +53,11 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     @Inject
     lateinit var viewModel: ReviewDetailViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+    }
 
     override fun getScreenName(): String {
         return ""
@@ -144,10 +151,15 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                 setImageResource(getReviewStar(rating))
                 show()
             }
-            if(sentAsAnonymous) {
-                reviewDetailName.setTextAndCheckShow(getString(R.string.review_detail_anonymous))
-            } else {
-                reviewDetailName.setTextAndCheckShow(getString(R.string.review_detail_name, reviewerName))
+            reviewDetailName.apply {
+                context?.let {
+                    text = if (sentAsAnonymous) {
+                        HtmlLinkHelper(it, getString(R.string.review_history_details_anonymous)).spannedString
+                    } else {
+                        HtmlLinkHelper(it, getString(R.string.review_history_details_name, reviewerName)).spannedString
+                    }
+                    show()
+                }
             }
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             reviewDetailContent.setTextAndCheckShow(reviewText)
@@ -159,13 +171,20 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     }
 
     private fun setResponse(response: ProductrevGetReviewDetailResponse) {
+        if(response.responseText.isEmpty()) {
+            reviewDetailResponse.hide()
+            return
+        }
         reviewDetailResponse.setContent(response)
     }
 
     private fun initHeader() {
-        reviewDetailHeader.addRightIcon(R.drawable.ic_share)
-        reviewDetailHeader.rightIcons?.firstOrNull()?.setOnClickListener {
-            goToSharing()
+        reviewDetailHeader.apply {
+            addRightIcon(R.drawable.ic_share)
+            rightIcons?.firstOrNull()?.setOnClickListener {
+                goToSharing()
+            }
+            title = getString(R.string.review_history_details_toolbar)
         }
     }
 
@@ -181,7 +200,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     }
 
     private fun addEditHeaderIcon() {
-        reviewDetailHeader.addRightIcon(R.drawable.ic_pencil_edit)
+        reviewDetailHeader.addRightIcon(R.drawable.ic_edit_review_history_detail)
     }
 
     private fun showError() {

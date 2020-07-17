@@ -10,6 +10,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -85,7 +87,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
 
     override fun onItemClicked(t: ReviewHistoryUiModel?) {
         t?.let {
-            goToReviewDetails(it.productrevFeedbackHistory.review.feedbackId, it.productrevFeedbackHistory.reputationId)
+            goToReviewDetails(it.productrevFeedbackHistory.review.feedbackId)
         }
     }
 
@@ -160,8 +162,8 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         })
     }
 
-    private fun goToReviewDetails(feedbackId: Int, reputationId: Int) {
-
+    private fun goToReviewDetails(feedbackId: Int) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId.toString())
     }
 
     private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {

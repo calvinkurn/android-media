@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/review_detail_response_divider"
@@ -27,12 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        android:text="Oleh Sneakers Indonesia"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:typographyType="body_3"
         app:layout_constraintStart_toEndOf="@id/review_detail_response_tab"
-        app:layout_constraintTop_toBottomOf="@id/review_detail_response_divider"/>
+        app:layout_constraintTop_toBottomOf="@id/review_detail_response_divider"
+        tools:text="Oleh Sneakers Indonesia"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewDetailResponseDate"
@@ -41,10 +42,10 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_68"
-        android:text="• Hari ini"
         app:typographyType="body_3"
         app:layout_constraintTop_toTopOf="@id/reviewDetailResponderName"
-        app:layout_constraintStart_toEndOf="@id/reviewDetailResponderName" />
+        app:layout_constraintStart_toEndOf="@id/reviewDetailResponderName"
+        tools:text="• Hari ini"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewDetailResponseContent"
@@ -54,11 +55,11 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        android:text="Terima kasih sudah berbelanja di toko kami, semoga pengalaman berbelanjanya memuaskan, silakan mampir kembali kalau butuh sesuatu ;)"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailResponderName"
         app:typographyType="body_2"
         app:layout_constraintStart_toEndOf="@id/review_detail_response_tab"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Terima kasih sudah berbelanja di toko kami, semoga pengalaman berbelanjanya memuaskan, silakan mampir kembali kalau butuh sesuatu ;)"/>
 
     
 

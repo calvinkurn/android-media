@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailResponse
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.widget_review_detail_response.view.*
 
 class ReviewDetailResponseWidget : BaseCustomView {
@@ -29,9 +30,9 @@ class ReviewDetailResponseWidget : BaseCustomView {
 
     fun setContent(response: ProductrevGetReviewDetailResponse) {
         with(response) {
-            if(responderData.shopName.isNotEmpty()) {
+            if(shopName.isNotEmpty()) {
                 reviewDetailResponderName.apply {
-                    text = context.getString(R.string.review_detail_by, responderData.shopName)
+                    text = HtmlLinkHelper(context, context.getString(R.string.review_history_details_by, shopName)).spannedString
                     show()
                 }
             }

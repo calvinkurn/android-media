@@ -46,7 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:text="Sebagai Alexandra Ronodipuro"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_3"
                 app:layout_constraintStart_toStartOf="@id/reviewDetailStars"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailStars"/>
 
@@ -54,8 +55,12 @@
                 android:id="@+id/reviewDetailDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N700_68"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                app:typographyType="body_3"
                 app:layout_constraintTop_toTopOf="@id/reviewDetailName"
-                app:layout_constraintStart_toEndOf="@id/reviewDetailName"/>
+                app:layout_constraintStart_toEndOf="@id/reviewDetailName" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reviewDetailContent"
@@ -64,7 +69,8 @@
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
-                android:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi."
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailName" />
 
             <com.tokopedia.review.common.presentation.widget.ReviewAttachedImages

@@ -135,16 +135,17 @@
     <string name="review_history_no_review_history_title">Belum ada riwayat ulasan</string>
     <string name="review_history_no_review_history_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
 
-    <string name="review_detail_name">Sebagai &lt;b>%s&lt;/b></string>
-    <string name="review_detail_anonymous">Sebagai &lt;b>Anonim&lt;/b></string>
-    <string name="review_detail_by">Oleh &lt;b>%s&lt;/b></string>
-    <string name="review_detail_toaster_modify_smiley_error">Kamu hanya bisa ubah penilaian toko menjadi ‘Puas’.</string>
-    <string name="review_detail_toaster_modify_smiley_success">Penilaian toko berhasil kamu ubah</string>
+    <string name="review_history_details_toolbar">Detail Ulasan</string>
+    <string name="review_history_details_name">Sebagai &lt;b>%s&lt;/b></string>
+    <string name="review_history_details_anonymous">Sebagai &lt;b>Anonim&lt;/b></string>
+    <string name="review_history_details_by">Oleh &lt;b>%s&lt;/b></string>
+    <string name="review_history_details_toaster_modify_smiley_error">Kamu hanya bisa ubah penilaian toko menjadi ‘Puas’.</string>
+    <string name="review_history_details_toaster_modify_smiley_success">Penilaian toko berhasil kamu ubah</string>
     <string name="review_detail_score_bad">Kecewa</string>
     <string name="review_detail_score_mediocre">Biasa aja</string>
     <string name="review_detail_score_excellent">Puas</string>
-    <string name="review_detail_score_title">Penilaian tentang toko ini</string>
-    <string name="review_detail_score_empty">Gimana layanan toko ini?</string>
+    <string name="review_history_details_score_title">Penilaian tentang toko ini</string>
+    <string name="review_history_details_score_empty">Gimana layanan toko ini?</string>
     <string name="review_detail_score_expired">Batas waktu penilaian toko sudah habis</string>
 
 
