@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
@@ -17,9 +18,13 @@ import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionn
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
+import javax.inject.Inject
 
 class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
     : BaseDaggerFragment(), MultipleOptionAdapter.MultipleOptionAdapterListener {
+
+    @Inject
+    lateinit var tracker: PowerMerchantTracking
 
     private lateinit var parentActivity: PMCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
@@ -118,7 +123,11 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
             } else {
                 it[position].answers.remove(optionValue)
             }
+            trackClickQuestionnaireOption(optionValue)
         }
     }
 
+    private fun trackClickQuestionnaireOption(option: String) {
+        tracker.eventClickCancellationReasonQuestionnaire(option)
+    }
 }

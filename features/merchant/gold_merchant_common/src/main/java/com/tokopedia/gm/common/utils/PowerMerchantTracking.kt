@@ -425,6 +425,21 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+    fun eventClickCancellationReasonQuestionnaire(option: String) {
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            GMParamTracker.CATEGORY_PM_QUESTIONNAIRE,
+            GMParamTracker.Action.CLICK_CANCELLATION_REASON,
+            option
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
     fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
