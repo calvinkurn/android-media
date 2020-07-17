@@ -101,7 +101,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun initViews() {
         tv_location?.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                MethodChecker.getDrawable(context, R.drawable.location_arrow_down), null)
+                MethodChecker.getDrawable(context, R.drawable.ic_deals_dropdown_down_24dp), null)
         initObserver()
         setListener()
     }

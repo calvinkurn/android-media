@@ -21,7 +21,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/deals_item_voucher_place_card_scrim_height"
-            android:background="@drawable/bg_scrim_voucher_place_card"
+            android:background="@drawable/bg_deals_scrim_voucher_place_card"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
