@@ -48,11 +48,11 @@ public class TabLayoutImagePickerAdapter {
                     unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
-                /*case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+                case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                     tab.setText(context.getString(R.string.instagram));
                     unselectTab(tab);
                     tabLayout.addTab(tab);
-                    break;*/
+                    break;
             }
         }
     }

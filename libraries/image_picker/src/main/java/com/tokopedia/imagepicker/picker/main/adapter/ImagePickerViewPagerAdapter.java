@@ -40,8 +40,8 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return createGalleryFragment();
             case ImagePickerTabTypeDef.TYPE_CAMERA:
                 return createCameraFragment();
-            /*case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
-                return createInstagramFragment();*/
+            case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+                return createInstagramFragment();
             case ImagePickerTabTypeDef.TYPE_RECORDER:
                 return createVideoFragment();
             default:
@@ -64,14 +64,13 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
         return ImagePickerCameraFragment.newInstance();
     }
 
-    /*
     @SuppressLint("MissingPermission")
     protected Fragment createInstagramFragment(){
         return ImagePickerInstagramFragment.newInstance(
                 imagePickerBuilder.getGalleryType(),
                 imagePickerBuilder.supportMultipleSelection() ,
                 imagePickerBuilder.getMinResolution());
-    }*/
+    }
 
     protected Fragment createVideoFragment(){
         return new VideoRecorderFragment();
@@ -84,8 +83,8 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return context.getString(R.string.gallery);
             case ImagePickerTabTypeDef.TYPE_CAMERA:
                 return context.getString(R.string.camera);
-            /*case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
-                return context.getString(R.string.instagram);*/
+            case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
+                return context.getString(R.string.instagram);
             case ImagePickerTabTypeDef.TYPE_RECORDER:
                 return context.getString(R.string.recorder);
             default:
