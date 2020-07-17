@@ -482,7 +482,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let {
-                        hideNotification(3)
+                        hideNotification(2)
                         dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
                 }
                 dynamicAction?.setVisibilityDividerTwo(View.VISIBLE)
