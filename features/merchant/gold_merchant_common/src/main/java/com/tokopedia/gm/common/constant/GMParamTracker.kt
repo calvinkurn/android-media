@@ -12,22 +12,16 @@ object GMParamTracker {
     const val CATEGORY_PM_QUESTIONNAIRE = "power merchant questionnaire"
 
     const val ACTION_CLICK_POWER_MERCHANT = "click power merchant"
-    const val ACTION_CLICK_UPGRADE_SHOP = "click upgrade shop"
-    const val ACTION_POWER_MERCHANT_INCREASE_PERFORMANCE = "power merchant - increase shop performance"
     const val ACTION_CLICK_SHOP_SETTINGS = "click shop settings"
     const val ACTION_CLICK_POWER_MERCHANT_PM = "click power merchant - pm"
-    const val ACTION_CLICK_POWER_MERCHANT_DEACTIVATION = "click power merchant - pm deactivation"
     const val ACTION_CLICK_INCREASE_SHOP_PERFORMANCE = "click increase shop performance"
 
     const val LABEL_FEATURES_LEARN_MORE = "pm features - learn more"
-    const val LABEL_UPGRADE_SHOP = "upgrade shop"
     const val LABEL_TERMS_CONDITION = "terms condition - upgrade shop"
     const val LABEL_POP_UP_LEARN = "pop up - learn upgrade shop"
     const val LABEL_POP_UP_CANCEL_MEMBERSHIP = "pop up - cancel membership"
     const val LABEL_SHOP_INFO = "shop info - upgrade shop"
     const val LABEL_SHOP_INFO_LEARN_MORE= "shop info - learn more"
-    const val LABEL_CANCEL_MEMBERSHIP= "cancel membership"
-    const val LABEL_LEARN_MORE= "learn more"
 
     object Category {
         const val PM_QUESTIONNAIRE = "power merchant questionnaire"
