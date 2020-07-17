@@ -37,6 +37,7 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
     override fun getPageTAG(): String = TAG
 
     override fun findCategoryPosition(categoryId: String): Int? {
+        if (categoryId.isEmpty()) return 0
         childCategoryList.forEachIndexed { index, s ->
             if (s == categoryId) {
                 return index
