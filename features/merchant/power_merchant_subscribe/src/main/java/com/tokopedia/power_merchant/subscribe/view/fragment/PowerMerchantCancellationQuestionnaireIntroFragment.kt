@@ -27,6 +27,9 @@ import javax.inject.Inject
 
 class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment() {
 
+    @Inject
+    lateinit var tracker: PowerMerchantTracking
+
     private lateinit var parentActivity: PMCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
     private var deactivateDate = ""
@@ -118,17 +121,23 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
             val spannedDescription = spanBoldText(description, deactivateDate)
             tv_description.text = spannedDescription
             tv_question.text = pmCancellationQuestionnaireRateModel?.question
-            questionnaire_rating.setOnRatingBarChangeListener { _, rating, _ ->
+            questionnaire_rating.setOnRatingBarChangeListener { _, selectedRating, _ ->
                 stepperModel?.let {
+                    val rating = selectedRating.toInt()
                     if (it.listQuestionnaireAnswer[position].answers.isEmpty()) {
-                        it.listQuestionnaireAnswer[position].answers.add(rating.toInt().toString())
+                        it.listQuestionnaireAnswer[position].answers.add(rating.toString())
                     } else {
-                        it.listQuestionnaireAnswer[position].answers[0] = rating.toInt().toString()
+                        it.listQuestionnaireAnswer[position].answers[0] = rating.toString()
                     }
-                    mapRatingToTextView(rating.toInt())
+                    trackClickQuestionnaireRating(rating)
+                    mapRatingToTextView(rating)
                 }
             }
         }
+    }
+
+    private fun trackClickQuestionnaireRating(rating: Int) {
+        tracker.eventClickCancellationQuestionnaireRating(rating)
     }
 
     private fun spanBoldText(stringSource: String, stringToBeSpanned: String): CharSequence {

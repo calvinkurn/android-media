@@ -9,6 +9,7 @@ object GMParamTracker {
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
     const val CATEGORY_MAIN_APP = "tokopedia main app"
     const val CATEGORY_HOME_PAGE = "tokopedia seller app - homepage"
+    const val CATEGORY_PM_QUESTIONNAIRE = "power merchant questionnaire"
 
     const val ACTION_CLICK_POWER_MERCHANT = "click power merchant"
     const val ACTION_CLICK_UPGRADE_SHOP = "click upgrade shop"
@@ -50,6 +51,7 @@ object GMParamTracker {
         const val CLICK_PERFORMANCE_TIPS = "click performance tips - inactive pm"
         const val CLICK_LEARN_MORE_PM_PAGE = "click learn more - power merchant page"
         const val CLICK_CANCEL_MEMBERSHIP_POP_UP = "click stop - pop up stop power merchant"
+        const val CLICK_QUESTIONNAIRE_RATING = "click rating"
     }
 
     object Label {
