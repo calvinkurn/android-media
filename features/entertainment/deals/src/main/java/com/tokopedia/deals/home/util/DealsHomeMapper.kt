@@ -67,9 +67,12 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                                 discount = product.savingPercentage,
                                 oldPrice = DealsUtils.convertToCurrencyString(product.mrp.toLong()),
                                 price = DealsUtils.convertToCurrencyString(product.salesPrice.toLong()),
+                                priceNonCurrency = product.salesPrice,
+                                categoryName =  product.category.firstOrNull()?.title ?: "",
                                 shop = product.brand.title,
                                 appUrl = product.appUrl,
-                                productCategory = productCategoryDataView
+                                productCategory = productCategoryDataView,
+                                brand = product.brand.title
                         )
                     }
 

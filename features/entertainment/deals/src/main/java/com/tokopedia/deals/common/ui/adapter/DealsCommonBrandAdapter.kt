@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.adapter.viewholder.DealsBrandViewHolder
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 /**
  * @author by jessica on 17/06/20
@@ -30,7 +31,11 @@ class DealsCommonBrandAdapter(private val brandActionListener: DealsBrandActionL
     override fun getItemCount(): Int = brandList.size
 
     override fun onBindViewHolder(holder: DealsBrandViewHolder, position: Int) {
+        val item = brandList.get(position)
         holder.bind(brandList[position])
+        holder.itemView.addOnImpressionListener(item, {
+            brandActionListener.onImpressionBrand(item,position)
+        })
     }
 
     private class ProductCardDiffCallback(

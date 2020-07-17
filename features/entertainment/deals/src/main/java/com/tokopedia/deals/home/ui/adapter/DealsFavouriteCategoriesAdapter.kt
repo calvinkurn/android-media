@@ -32,7 +32,7 @@ class DealsFavouriteCategoriesAdapter(private val listener: DealsFavouriteCatego
     override fun getItemCount(): Int = voucherPlaceCards.size
 
     override fun onBindViewHolder(holder: DealsFavouriteCategoryViewHolder, position: Int) {
-        holder.bindData(voucherPlaceCards[position])
+        holder.bindData(voucherPlaceCards[position],position)
     }
 
     private class VoucherPlaceCardDiffCallback(

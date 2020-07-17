@@ -7,6 +7,6 @@ import com.tokopedia.deals.home.ui.dataview.BannersDataView
  */
 
 interface DealsBannerActionListener {
-    fun onBannerClicked(banner: BannersDataView.BannerDataView, position: Int)
+    fun onBannerClicked(banner: List<BannersDataView.BannerDataView>, position: Int)
     fun onBannerSeeAllClick(bannerSeeAllUrl: String)
 }

@@ -13,4 +13,9 @@ interface CuratedProductCategoryListener {
         curatedProductCategoryDataView: CuratedProductCategoryDataView,
         position: Int
     )
+
+    fun onImpressionCuratedProduct(
+            curatedProductCategoryDataView: CuratedProductCategoryDataView,
+            position: Int
+    )
 }

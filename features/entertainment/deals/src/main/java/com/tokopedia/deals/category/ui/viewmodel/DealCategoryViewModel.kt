@@ -58,13 +58,13 @@ class DealCategoryViewModel @Inject constructor(
                 if (page == 1) {
                     var categoryLayout = listOf<DealsBaseItemDataView>()
                     if (!brandProduct.eventSearch.brands.isEmpty() && !brandProduct.eventSearch.products.isEmpty()) {
-                        categoryLayout = mapCategoryLayout.mapCategoryLayout(curatedData, brandProduct)
+                        categoryLayout = mapCategoryLayout.mapCategoryLayout(curatedData, brandProduct, page)
                     } else {
                         categoryLayout = mapCategoryLayout.mapChipLayout(curatedData, isFilter)
                     }
                     privateObservablDealsCategoryLayout.value = categoryLayout
                 } else {
-                    privateObservableProducts.value = listOf(mapCategoryLayout.mapProducttoLayout(brandProduct))
+                    privateObservableProducts.value = listOf(mapCategoryLayout.mapProducttoLayout(brandProduct, page))
                 }
             } catch (t: Throwable) {
                 privateErrorMessage.value = t

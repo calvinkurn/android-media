@@ -1,5 +1,7 @@
 package com.tokopedia.deals.common.ui.dataview
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 /**
  * @author by jessica on 17/06/20
  */
@@ -16,5 +18,5 @@ data class DealsBrandsDataView(
             var image: String = "",
             var brandUrl: String = "",
             var position: Int = 0
-    )
+    ): ImpressHolder()
 }
