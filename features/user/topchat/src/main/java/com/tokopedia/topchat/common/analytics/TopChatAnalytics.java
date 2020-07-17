@@ -319,9 +319,6 @@ public class TopChatAnalytics {
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
-
-        String devConst = "-dev";
-
         ArrayList<com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct> products = new ArrayList<>();
         com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct product1 = new com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct(
                 product.getIdString(),
@@ -344,8 +341,8 @@ public class TopChatAnalytics {
                 products,
                 null,
                 ProductListImpressionBundler.KEY,
-                Category.CHAT_DETAIL+devConst,
-                Action.VIEW_PRODUCT_PREVIEW+devConst,
+                Category.CHAT_DETAIL,
+                Action.VIEW_PRODUCT_PREVIEW,
                 null,
                 null
         );
@@ -361,6 +358,7 @@ public class TopChatAnalytics {
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
+        String devConst = "-dev";
 
         ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
         ProductListImpressionProduct product1 = new ProductListImpressionProduct(
@@ -384,8 +382,8 @@ public class TopChatAnalytics {
                 products,
                 null,
                 ProductListImpressionBundler.KEY,
-                Category.CHAT_DETAIL,
-                Action.VIEW_PRODUCT_PREVIEW,
+                Category.CHAT_DETAIL+devConst,
+                Action.VIEW_PRODUCT_PREVIEW+devConst,
                 null,
                 null
         );

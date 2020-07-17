@@ -898,7 +898,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
             // this for experimentation of DATA
             if(remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false)?:false){
-                analytics.eventSeenProductAttachment(requireContext(), element, session)
+                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
             }
         }
     }
