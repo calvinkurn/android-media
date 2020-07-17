@@ -170,7 +170,7 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             return DataLayer.mapOf(
                     "id", name,
                     "name", "/search result - widget",
-                    "creative", name,
+                    "creative", applink,
                     "position", Integer.toString(position)
             );
         }
