@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 class ChatListActivityTest {
 
     @get:Rule
-    var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java, true, true)
+    var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java)
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -36,11 +36,11 @@ class ChatListActivityTest {
     private lateinit var activity: ChatListActivityStub
 
     private val exEmptyChatListPojo = ChatListPojo()
-    private val exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
+    private var exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
             "success_get_chat_list.json",
             ChatListPojo::class.java
     )
-    private val exSize5ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
+    private var exSize5ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
             "success_get_chat_list_size_5.json",
             ChatListPojo::class.java
     )
@@ -63,7 +63,7 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(1000)
+        Thread.sleep(500)
     }
 
     @Test
@@ -77,7 +77,7 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(1000)
+        Thread.sleep(500)
 
         // Then
 //        val tabView = onView(
@@ -113,7 +113,7 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(1000)
+        Thread.sleep(500)
     }
 
     @Test
@@ -129,7 +129,7 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(1000)
+        Thread.sleep(500)
     }
 
 //    private fun childAtPosition(parentMatcher: Matcher<View>, position: Int): Matcher<View> {
