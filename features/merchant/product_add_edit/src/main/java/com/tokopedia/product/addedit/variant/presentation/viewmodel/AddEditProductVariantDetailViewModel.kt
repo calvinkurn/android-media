@@ -103,20 +103,19 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun updateProductInputModel() {
         val products = productInputModel.value?.variantInputModel?.products.orEmpty()
-        var index = 0
-        inputLayoutModelMap.forEach {
-            val variantDetail = it.value
-            products.getOrNull(index)?.apply {
-                price = variantDetail.price.replace(".", "").toBigIntegerOrNull().orZero()
-                sku = variantDetail.sku
-                stock = variantDetail.stock.toIntOrZero()
-                status = if (variantDetail.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
-                // the minimum product variant price will replace the main product price
-                if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
-                    productInputModel.value?.detailInputModel?.price = price
+        for (index in 0 until inputLayoutModelMap.size) {
+            inputLayoutModelMap[index]?.let { variantDetailInput ->
+                products.getOrNull(index)?.apply {
+                    price = variantDetailInput.price.replace(".", "").toBigIntegerOrNull().orZero()
+                    sku = variantDetailInput.sku
+                    stock = variantDetailInput.stock.toIntOrZero()
+                    status = if (variantDetailInput.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
+                    // the minimum product variant price will replace the main product price
+                    if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
+                        productInputModel.value?.detailInputModel?.price = price
+                    }
                 }
             }
-            index++
         }
     }
 

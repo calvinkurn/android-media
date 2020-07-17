@@ -8,7 +8,8 @@ import java.math.BigInteger
 data class VariantInputModel(
         var products: List<ProductVariantInputModel> = listOf(),
         var selections: List<SelectionInputModel> = listOf(),
-        var sizecharts: PictureVariantInputModel = PictureVariantInputModel()
+        var sizecharts: PictureVariantInputModel = PictureVariantInputModel(),
+        var isRemoteDataHasVariant: Boolean = false // used for removing variant
 ) : Parcelable
 
 @Parcelize
