@@ -21,8 +21,6 @@ class BottomSheetCheckViewModel @Inject constructor (@Named(SessionModule.SESSIO
                                                      dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
 
     private val mutableGetDataResponse = MutableLiveData<Result<GetObjectPojo>>()
-    val getDataResponse: LiveData<Result<GetObjectPojo>>
-        get() = mutableGetDataResponse
 
     fun check(onSuccess: (TwoFactorResult) -> Unit, onError: (Throwable) -> Unit) {
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
@@ -32,8 +30,6 @@ class BottomSheetCheckViewModel @Inject constructor (@Named(SessionModule.SESSIO
             }, onError = {
                 onError(it)
             })
-        }else {
-            println("No Need checking....")
         }
     }
 }
