@@ -32,9 +32,7 @@ class DateRangeAdapterFactoryImpl(
         return when (type) {
             DateRangeClickViewHolder.RES_LAYOUT -> DateRangeClickViewHolder(parent, listener::onItemDateRangeClick)
             DateRangePickViewHolder.RES_LAYOUT -> DateRangePickViewHolder(parent, fm, listener::onItemDateRangeClick)
-            DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent) {
-                listener.onApplyDateFilter()
-            }
+            DateRangeApplyViewHolder.RES_LAYOUT -> DateRangeApplyViewHolder(parent, listener::onApplyDateFilter)
             DateRangeDividerViewHolder.RES_LAYOUT -> DateRangeDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
