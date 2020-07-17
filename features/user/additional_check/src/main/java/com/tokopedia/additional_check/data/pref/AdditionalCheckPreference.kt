@@ -22,7 +22,7 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
     }
 
     fun setInterval(interval: Int){
-        val days = interval * 24 * 60 * 60 * 1000
+        val days = interval * 60000
         val nextCheck = days + System.currentTimeMillis()
         sharedPrefs?.edit()?.putLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, nextCheck)?.apply()
     }
