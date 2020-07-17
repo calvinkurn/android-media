@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.activity
 
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
@@ -15,8 +16,8 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import javax.inject.Inject
 
 /**
@@ -50,6 +51,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     override fun onResume() {
         super.onResume()
+        volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
