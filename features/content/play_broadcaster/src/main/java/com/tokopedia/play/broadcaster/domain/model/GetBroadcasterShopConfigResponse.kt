@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class GetBroadcasterShopConfigResponse(
         @SerializedName("broadcasterGetShopConfig")
-        val config: GetBroadcasterShopConfig
+        val shopConfig: GetBroadcasterShopConfig = GetBroadcasterShopConfig()
 ) {
         data class GetBroadcasterShopConfig(
                 @SerializedName("streamAllowed")
