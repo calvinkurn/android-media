@@ -45,10 +45,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -66,8 +63,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -91,7 +88,10 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -1683,7 +1683,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToTradein() {
-        tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
+        if (tradeinDialog?.isAdded == false) {
+            tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
+        }
     }
 
     override fun onVariantGuideLineClicked(url: String) {
@@ -2175,9 +2177,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun gotoEditProduct() {
         val id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
-        context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
-            intent?.run { startActivityForResult(this, ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT) }
+
+        if (!GlobalConfig.isSellerApp()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
+                intent?.run { startActivityForResult(this, ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT) }
+            }
+        } else {
+            val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, id)
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                    .build()
+                    .toString()
+            RouteManager.route(context, applink)
         }
     }
 
@@ -2789,8 +2802,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
         val accessDialog = ProductAccessRequestDialogFragment()
-        accessDialog.setBodyText(getString(com.tokopedia.common_tradein.R.string.tradein_text_permission_description))
-        accessDialog.setTitle(getString(com.tokopedia.common_tradein.R.string.tradein_text_request_access))
+        accessDialog.setBodyText(getString(R.string.pdp_tradein_text_permission_description))
+        accessDialog.setTitle(getString(R.string.pdp_tradein_text_request_access))
         accessDialog.setNegativeButton("")
         accessDialog.setListener(this)
         return accessDialog

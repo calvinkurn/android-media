@@ -1,7 +1,6 @@
 package com.tokopedia.otp.cotp.view.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class VerificationMethodAdapter extends RecyclerView.Adapter<Verification
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.verification_method_item, parent, false));
+                .inflate(com.tokopedia.otp.R.layout.verification_method_item, parent, false));
     }
 
     @Override

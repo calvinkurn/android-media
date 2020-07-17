@@ -61,6 +61,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -111,7 +112,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -126,6 +127,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var registerAnalytics: RegisterAnalytics
 
     @Inject
+    lateinit var seamlessAnalytics: SeamlessLoginAnalytics
+
+    @Inject
     lateinit var presenter: LoginEmailPhonePresenter
 
     @Inject
@@ -136,7 +140,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var userSession: UserSessionInterface
 
     private var source: String = ""
-    private var isAutoLogin: Boolean = false
+    protected var isAutoLogin: Boolean = false
+    protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
@@ -324,11 +329,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     private fun showSmartLock() {
-        val intent = Intent(activity, SmartLockActivity::class.java)
-        val bundle = Bundle()
-        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_SMART_LOCK)
+        if(isEnableSmartLock) {
+            val intent = Intent(activity, SmartLockActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_SMART_LOCK)
+        }
     }
 
 
@@ -700,7 +707,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 finish()
             }
 
-            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+            if(userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS){
+                seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
+            }else analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+
             setTrackingUserId(userSession.userId)
             setFCM()
         }

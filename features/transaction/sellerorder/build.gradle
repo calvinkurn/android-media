@@ -27,6 +27,7 @@ android{
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -53,6 +54,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.scannerZxing
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     testImplementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8

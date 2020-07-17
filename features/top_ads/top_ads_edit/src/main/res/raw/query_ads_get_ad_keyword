@@ -1,0 +1,18 @@
+query topAdsListKeyword($source: String!, $filter: TopAdsKeywordFilterReq) {
+  topAdsListKeyword(source: $source, filter: $filter) {
+    error {
+      code
+      title
+      detail
+    }
+    data {
+      keywords {
+        keyword_id
+        tag
+        type
+        status
+        price_bid
+      }
+    }
+  }
+}
