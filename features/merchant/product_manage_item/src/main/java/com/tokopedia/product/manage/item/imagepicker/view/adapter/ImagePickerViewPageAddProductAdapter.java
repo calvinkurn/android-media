@@ -36,8 +36,8 @@ public class ImagePickerViewPageAddProductAdapter extends ImagePickerViewPagerAd
                 return context.getString(R.string.gallery);
             case 2:
                 return context.getString(R.string.camera);
-            case 3:
-                return context.getString(R.string.instagram);
+            /*case 3:
+                return context.getString(R.string.instagram);*/
             default:
                 return context.getString(R.string.gallery);
         }
@@ -52,8 +52,8 @@ public class ImagePickerViewPageAddProductAdapter extends ImagePickerViewPagerAd
                 return createGalleryFragment();
             case 2:
                 return createCameraFragment();
-            case 3:
-                return createInstagramFragment();
+            /*case 3:
+                return createInstagramFragment();*/
             default:
                 return new Fragment();
         }
