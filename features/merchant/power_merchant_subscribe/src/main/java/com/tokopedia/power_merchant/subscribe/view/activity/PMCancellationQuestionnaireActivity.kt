@@ -313,7 +313,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
             isFirstPage() -> {
                 val rating = pmCancellationQuestionnaireStepperModel
                         .listQuestionnaireAnswer[currentPosition - 1].answers[0].toIntOrZero()
-                powerMerchantTracking.eventPMCancellationClickNextQuestionButtonFirstPage(rating)
+                powerMerchantTracking.eventClickCancellationQuestionnaireSubmitRating(rating)
             }
             else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage(
                     pmCancellationQuestionnaireStepperModel

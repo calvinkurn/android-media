@@ -105,16 +105,6 @@ class PowerMerchantTracking @Inject constructor(
         )
     }
 
-    fun eventPMCancellationClickNextQuestionButtonFirstPage(rating: Int) {
-        val label = "$rating, 1-5"
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
-                GMParamTracker.Category.PM_QUESTIONNAIRE,
-                GMParamTracker.Action.CLICK_RATING,
-                label
-        )
-    }
-
     fun eventPMCancellationClickNextQuestionButtonMiddlePage(questionName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
@@ -410,6 +400,21 @@ class PowerMerchantTracking @Inject constructor(
             GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
             GMParamTracker.CATEGORY_PM_QUESTIONNAIRE,
             GMParamTracker.Action.CLICK_QUESTIONNAIRE_RATING,
+            rating.toString()
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun eventClickCancellationQuestionnaireSubmitRating(rating: Int) {
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            GMParamTracker.CATEGORY_PM_QUESTIONNAIRE,
+            GMParamTracker.Action.CLICK_SUBMIT_RATING,
             rating.toString()
         )
 
