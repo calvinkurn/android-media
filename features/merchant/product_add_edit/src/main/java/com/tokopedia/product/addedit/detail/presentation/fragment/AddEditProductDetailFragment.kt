@@ -292,6 +292,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     addNewWholeSalePriceButton?.visibility = View.VISIBLE
+                    validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
                 })
 
         productWholeSaleInputFormsView?.apply {
