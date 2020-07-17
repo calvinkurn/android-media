@@ -140,6 +140,8 @@ class CreateMerchantVoucherStepsViewModelTest {
 
         mViewModel.initiateVoucherPage()
 
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             initiateVoucherUseCase.executeOnBackground()
         }
@@ -182,6 +184,8 @@ class CreateMerchantVoucherStepsViewModelTest {
         } returns dummySuccessInitiateVoucher
 
         mViewModel.initiateEditDuplicateVoucher()
+
+        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()

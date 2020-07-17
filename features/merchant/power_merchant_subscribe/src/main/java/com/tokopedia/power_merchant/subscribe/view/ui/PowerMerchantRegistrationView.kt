@@ -40,9 +40,10 @@ class PowerMerchantRegistrationView : ConstraintLayout {
         val shopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_REGULAR
 
         setTracker(tracker)
-        showDescription(kycVerified, shopScoreEligible)
+        showRegistrationCheckList()
         showVerificationCheckList(kycVerified)
         showShopScoreCheckList(shopScoreEligible)
+        showDescription(kycVerified, shopScoreEligible)
         showLayout()
     }
 
@@ -75,6 +76,11 @@ class PowerMerchantRegistrationView : ConstraintLayout {
 
         textDescription.movementMethod = LinkMovementMethod.getInstance()
         textDescription.text = description
+    }
+
+    private fun showRegistrationCheckList() {
+        val checkListIcon = R.drawable.ic_pm_steps_not_active
+        textRegister.setCompoundDrawablesWithIntrinsicBounds(checkListIcon, 0, 0, 0)
     }
 
     private fun showVerificationCheckList(kycVerified: Boolean) {

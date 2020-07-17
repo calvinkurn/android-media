@@ -39,6 +39,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
@@ -47,7 +48,7 @@ import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionMod
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductPicture
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
@@ -194,13 +195,17 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
         super.onResume()
         btnNext.isLoading = false
         btnSave.isLoading = false
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.product.addedit.R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -345,7 +350,10 @@ class AddEditProductDescriptionFragment:
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> tvAddVariant.isEnabled = true
-                is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
+                is Fail -> {
+                    showVariantErrorToast(getString(com.tokopedia.abstraction.R.string.default_request_error_timeout))
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
+                }
             }
         })
     }
@@ -365,6 +373,7 @@ class AddEditProductDescriptionFragment:
                     }
                 }
                 is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
                     displayErrorOnSelectedVideo(position)
                 }
             }
@@ -437,7 +446,7 @@ class AddEditProductDescriptionFragment:
         view?.let {
             Toaster.make(it, errorMessage,
                     type =  Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     clickListener =  View.OnClickListener {
                         descriptionViewModel.getVariants(descriptionViewModel.categoryId)
                     })
@@ -462,7 +471,7 @@ class AddEditProductDescriptionFragment:
                     val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
                     val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                                object : TypeToken<ProductPicture>() {}.type, ProductPicture())
                     } else null
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,

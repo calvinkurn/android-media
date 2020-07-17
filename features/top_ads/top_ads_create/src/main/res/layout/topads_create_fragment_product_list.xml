@@ -140,7 +140,7 @@
         android:text="@string/tip_memilih_produk"
         android:textAllCaps="false"
         app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
         app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

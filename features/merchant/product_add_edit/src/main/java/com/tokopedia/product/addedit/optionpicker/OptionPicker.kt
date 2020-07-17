@@ -51,7 +51,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     }
 
     private fun changeCloseButtonSize() {
-        val fontSize = resources.getDimension(R.dimen.fontSize_lvl5).toDp()
+        val fontSize = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl5).toDp()
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         context?.also { context ->
             bottomSheetClose.apply {
@@ -71,7 +71,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     }
 
     private fun addMarginCloseButton() {
-        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
         val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
@@ -89,9 +89,9 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
                     addItemDecoration(TooltipDividerItemDecoration(
                             drawable = it,
                             drawOnLastItem = false,
-                            paddingLeft = context.resources.getDimension(R.dimen.layout_lvl2).toInt(),
-                            paddingTop = context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                            paddingBottom = context.resources.getDimension(R.dimen.layout_lvl0).toInt()))
+                            paddingLeft = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt(),
+                            paddingTop = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                            paddingBottom = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt()))
                 }
             }
             layoutManager = LinearLayoutManager(context)
