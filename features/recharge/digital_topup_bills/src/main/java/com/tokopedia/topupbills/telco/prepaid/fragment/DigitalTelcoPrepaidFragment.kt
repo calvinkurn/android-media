@@ -105,7 +105,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onActivityCreated(savedInstanceState)
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             if (isProductExist(it)) {
-                buy_widget.setVisibilityLayout(true)
+                sharedModelPrepaid.setVisibilityTotalPrice(true)
                 buy_widget.setTotalPrice(it.attributes.price)
                 it.attributes.productPromo?.run {
                     if (this.newPrice.isNotEmpty()) {
@@ -218,7 +218,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 nestedScrollView.smoothScrollTo(0, 0)
                 categoryId = getIdCategoryCurrentItem()
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
-                sharedModelPrepaid.hideTotalPrice()
+                sharedModelPrepaid.setVisibilityTotalPrice(false)
                 sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
             } else {
                 setTrackingOnTabMenu(tabs[position].title)
@@ -400,13 +400,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             productId = 0
             operatorId = ""
-            sharedModelPrepaid.hideTotalPrice()
+            sharedModelPrepaid.setVisibilityTotalPrice(false)
         }
 
         override fun onClientNumberHasFocus(clientNumber: String) {
             operatorId = ""
             productId = 0
-            sharedModelPrepaid.hideTotalPrice()
+            sharedModelPrepaid.setVisibilityTotalPrice(false)
 
             telcoClientNumberWidget.clearFocusAutoComplete()
             startActivityForResult(activity?.let {

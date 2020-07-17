@@ -81,8 +81,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _favNumberSelected.postValue(favNumber)
     }
 
-    fun hideTotalPrice() {
-        _showTotalPrice.postValue(false)
+    fun setVisibilityTotalPrice(show: Boolean) {
+        _showTotalPrice.postValue(show)
     }
 
     fun setSelectedCategoryViewPager(categoryName: String) {
