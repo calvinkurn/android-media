@@ -12,14 +12,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire_intro.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire_intro.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
+import javax.inject.Inject
 
 class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment() {
 
@@ -48,6 +52,12 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
+        getComponent(BaseAppComponent::class.java)?.let {
+            DaggerPowerMerchantSubscribeComponent.builder()
+                .baseAppComponent(it)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
