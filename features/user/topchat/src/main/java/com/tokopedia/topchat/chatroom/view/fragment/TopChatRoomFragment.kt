@@ -209,9 +209,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onSuccessGetBottomChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
 //        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
-        renderBottomList(chatRoom.listChat)
         rvScrollListener?.finishBottomLoadingState()
-        rvScrollListener?.updateHasNextAfterState(chat)
+        renderBottomList(chatRoom.listChat)
+        updateHasNextAfterState(chat)
 //        loadChatRoomSettings(chatRoom)
 //        presenter.updateMinReplyTime(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
@@ -369,7 +369,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
-        rvScrollListener?.updateHasNextAfterState(chat)
+        updateHasNextAfterState(chat)
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
@@ -382,11 +382,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 //        fpm.stopTrace()
     }
 
+    private fun updateHasNextAfterState(chat: ChatReplies) {
+        val hasNextAfter = chat.hasNextAfter
+        rvScrollListener?.updateHasNextAfterState(chat)
+        if (hasNextAfter) {
+            showBottomLoading()
+        }
+    }
+
     private fun updateHasNextState(chat: ChatReplies) {
         val hasNext = chat.hasNext
+        rvScrollListener?.updateHasNextState(chat)
         if (hasNext) {
             showTopLoading()
-            rvScrollListener?.updateHasNextState(chat)
         }
     }
 
@@ -438,11 +446,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun onSuccessGetTopChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        rvScrollListener?.finishTopLoadingState()
         adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat)
-        rvScrollListener?.finishTopLoadingState()
-        rvScrollListener?.updateHasNextState(chat)
-        checkShowLoading(chatRoom.canLoadMore)
+        updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
         presenter.updateMinReplyTime(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)

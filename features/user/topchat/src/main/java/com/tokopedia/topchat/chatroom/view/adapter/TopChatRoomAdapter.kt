@@ -135,8 +135,10 @@ class TopChatRoomAdapter(
     }
 
     fun showBottomLoading() {
-        visitables.add(0, loadingMoreModel)
-        notifyItemInserted(0)
+        if (visitables[0] !is LoadingMoreModel) {
+            visitables.add(0, loadingMoreModel)
+            notifyItemInserted(0)
+        }
     }
 
     fun hideBottomLoading() {
