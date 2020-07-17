@@ -29,6 +29,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
@@ -151,6 +152,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
+    
+    private var userNotAllowedDialog: DialogUnify? = null
 
     companion object {
         private val TAG_COACHMARK = "coachMark"
@@ -491,7 +494,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onUserNotAllowedToViewSOM() {
         context?.run {
-            Utils.showReturnToHomeDialog(this)
+            if (userNotAllowedDialog == null) {
+                userNotAllowedDialog = Utils.createUserNotAllowedDialog(this)
+            }
+            userNotAllowedDialog?.show()
         }
     }
 

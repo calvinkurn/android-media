@@ -197,6 +197,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
+    private var userNotAllowedDialog: DialogUnify? = null
+
     companion object {
         private val TAG_COACHMARK_DETAIL = "coachmark"
 
@@ -465,7 +467,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun onUserNotAllowedToViewSOM() {
-        context?.run { Utils.showReturnToHomeDialog(this) }
+        context?.run {
+            if (userNotAllowedDialog == null) {
+                Utils.createUserNotAllowedDialog(this)
+            }
+            userNotAllowedDialog?.show()
+        }
     }
 
     private fun onUserAllowedToViewSOM() {
