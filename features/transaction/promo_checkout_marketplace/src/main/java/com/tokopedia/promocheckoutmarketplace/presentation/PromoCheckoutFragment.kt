@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -814,6 +815,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoManualInputTextField() {
+        Toast.makeText(activity, "onClickPromoManualInputTextField", Toast.LENGTH_SHORT).show()
         viewModel.sendAnalyticsClickPromoInputField()
         getOrShowLastSeenData()
     }
