@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.tokopedia.product.detail.common.data.model.constant.ProductCampaignStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import java.util.concurrent.TimeUnit
 
 data class DynamicProductInfoP1(
@@ -8,6 +10,9 @@ data class DynamicProductInfoP1(
         val layoutName: String = "",
         val campaignStatus:String = ""
 ) {
+
+    fun isUpcomingNplType(): Boolean = data.upcomingType.isNotEmpty() && data.upcomingType.equals(ProductUpcomingTypeDef.UPCOMING_NPL, true)
+            && campaignStatus.equals(ProductCampaignStatusTypeDef.UPCOMING, true)
 
     fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
 

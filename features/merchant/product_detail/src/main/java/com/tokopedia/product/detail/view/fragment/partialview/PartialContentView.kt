@@ -41,13 +41,9 @@ class PartialContentView(private val view: View,
         }
 
         when {
-            data.isUpcomingNplType() -> {
+            product.isUpcomingNplType() -> {
                 renderNplRibbon(data.ribbonCopy)
-                if (campaign.isActive) {
-                    renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording), true)
-                } else {
-                    renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
-                }
+                renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
             }
             campaign.isActive -> {
                 renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording), false)
