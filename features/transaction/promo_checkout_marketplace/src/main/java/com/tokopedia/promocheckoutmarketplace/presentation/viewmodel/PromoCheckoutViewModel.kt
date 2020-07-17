@@ -579,7 +579,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         )
 
         // Get response data
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, applyPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ValidateUseResponse>()

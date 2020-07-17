@@ -1,157 +1,159 @@
 {
-  "status": "OK",
-  "message": [],
-  "error_code": "200",
-  "code": "200000",
-  "promo": {
-    "global_success": true,
-    "message": {
-      "state": "",
-      "color": "",
-      "text": ""
-    },
-    "success": true,
-    "codes": [],
-    "promo_code_id": 0,
-    "title_description": "Promo ",
-    "discount_amount": 0,
-    "cashback_wallet_amount": 0,
-    "cashback_advocate_referral_amount": 0,
-    "cashback_voucher_description": "",
-    "invoice_description": "",
-    "gateway_id": "",
-    "is_coupon": 0,
-    "coupon_description": "",
-    "is_tokopedia_gerai": false,
-    "voucher_orders": [
-      {
-        "code": "TXOSV69115",
-        "success": true,
-        "unique_id": "7897230-0-8100659",
-        "cart_id": 0,
-        "order_id": 0,
-        "shop_id": 7897230,
-        "is_po": 0,
-        "duration": "0",
-        "warehouse_id": 8100659,
-        "address_id": 0,
-        "type": "merchant",
-        "cashback_wallet_amount": 20000,
-        "discount_amount": 0,
-        "invoice_description": "",
-        "title_description": "Promo Cashback TXOSV69115",
-        "message": {
-          "state": "green",
-          "color": "#ade3af",
-          "text": "Kamu berpotensi dapat cashback sebesar Rp20.000 setelah pesanan selesai"
-        },
-        "benefit_details": [
+  "validate_use_promo_revamp": {
+    "status": "OK",
+    "message": [],
+    "error_code": "200",
+    "code": "200000",
+    "promo": {
+      "global_success": true,
+      "message": {
+        "state": "",
+        "color": "",
+        "text": ""
+      },
+      "success": true,
+      "codes": [],
+      "promo_code_id": 0,
+      "title_description": "Promo ",
+      "discount_amount": 0,
+      "cashback_wallet_amount": 0,
+      "cashback_advocate_referral_amount": 0,
+      "cashback_voucher_description": "",
+      "invoice_description": "",
+      "gateway_id": "",
+      "is_coupon": 0,
+      "coupon_description": "",
+      "is_tokopedia_gerai": false,
+      "voucher_orders": [
+        {
+          "code": "TXOSV69115",
+          "success": true,
+          "unique_id": "7897230-0-8100659",
+          "cart_id": 0,
+          "order_id": 0,
+          "shop_id": 7897230,
+          "is_po": 0,
+          "duration": "0",
+          "warehouse_id": 8100659,
+          "address_id": 0,
+          "type": "merchant",
+          "cashback_wallet_amount": 20000,
+          "discount_amount": 0,
+          "invoice_description": "",
+          "title_description": "Promo Cashback TXOSV69115",
+          "message": {
+            "state": "green",
+            "color": "#ade3af",
+            "text": "Kamu berpotensi dapat cashback sebesar Rp20.000 setelah pesanan selesai"
+          },
+          "benefit_details": [
+            {
+              "code": "TXOSV69115",
+              "type": "",
+              "order_id": 1,
+              "unique_id": "7897230-0-8100659",
+              "discount_amount": 0,
+              "discount_details": [],
+              "cashback_amount": 20000,
+              "cashback_details": [
+                {
+                  "amount_idr": 20000,
+                  "amount_points": 20000,
+                  "benefit_type": "cashback"
+                }
+              ],
+              "promo_type": {
+                "is_bebas_ongkir": false,
+                "is_exclusive_shipping": false
+              },
+              "benefit_product_details": [
+                {
+                  "product_id": 775172855,
+                  "cashback_amount": 20000,
+                  "cashback_amount_idr": 0,
+                  "discount_amount": 0,
+                  "is_bebas_ongkir": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "benefit_details": [],
+      "benefit_summary_info": {
+        "final_benefit_text": "Total benefit anda: ",
+        "final_benefit_amount": 20000,
+        "final_benefit_amount_str": "Rp20.000",
+        "summaries": [
           {
-            "code": "TXOSV69115",
-            "type": "",
-            "order_id": 1,
-            "unique_id": "7897230-0-8100659",
-            "discount_amount": 0,
-            "discount_details": [],
-            "cashback_amount": 20000,
-            "cashback_details": [
+            "description": "Total cashback: ",
+            "type": "cashback",
+            "amount_str": "Rp20.000",
+            "amount": 20000,
+            "section_name": "Cashback",
+            "section_description": "",
+            "details": [
               {
-                "amount_idr": 20000,
-                "amount_points": 20000,
-                "benefit_type": "cashback"
-              }
-            ],
-            "promo_type": {
-              "is_bebas_ongkir": false,
-              "is_exclusive_shipping": false
-            },
-            "benefit_product_details": [
-              {
-                "product_id": 775172855,
-                "cashback_amount": 20000,
-                "cashback_amount_idr": 0,
-                "discount_amount": 0,
-                "is_bebas_ongkir": false
+                "section_name": "",
+                "description": "Total Cashback OVO Points ",
+                "type": "ovo_points",
+                "amount": 20000,
+                "amount_str": "Rp20.000",
+                "points": 20000,
+                "points_str": ""
               }
             ]
           }
         ]
-      }
-    ],
-    "benefit_details": [],
-    "benefit_summary_info": {
-      "final_benefit_text": "Total benefit anda: ",
-      "final_benefit_amount": 20000,
-      "final_benefit_amount_str": "Rp20.000",
-      "summaries": [
+      },
+      "clashing_info_detail": {
+        "clash_message": "",
+        "clash_reason": "",
+        "is_clashed_promos": false,
+        "options": []
+      },
+      "tracking_details": [
         {
-          "description": "Total cashback: ",
-          "type": "cashback",
-          "amount_str": "Rp20.000",
-          "amount": 20000,
-          "section_name": "Cashback",
-          "section_description": "",
-          "details": [
-            {
-              "section_name": "",
-              "description": "Total Cashback OVO Points ",
-              "type": "ovo_points",
-              "amount": 20000,
-              "amount_str": "Rp20.000",
-              "points": 20000,
-              "points_str": ""
-            }
-          ]
-        }
-      ]
-    },
-    "clashing_info_detail": {
-      "clash_message": "",
-      "clash_reason": "",
-      "is_clashed_promos": false,
-      "options": []
-    },
-    "tracking_details": [
-      {
-        "product_id": 775172855,
-        "promo_codes_tracking": "TXOSV69115",
-        "promo_details_tracking": "M:1:20000:green"
-      }
-    ],
-    "tokopoints_detail": {
-      "conversion_rate": {
-        "rate": 0,
-        "points_coefficient": 0,
-        "external_currency_coefficient": 0
-      }
-    },
-    "ticker_info": {
-      "unique_id": "",
-      "status_code": 0,
-      "message": ""
-    },
-    "additional_info": {
-      "message_info": {
-        "message": "Kamu bisa hemat Rp20.000",
-        "detail": "1 promo dipakai"
-      },
-      "error_detail": {
-        "message": ""
-      },
-      "empty_cart_info": {
-        "image_url": "",
-        "message": "",
-        "detail": ""
-      },
-      "usage_summaries": [
-        {
-          "description": "Cashback OVO Points",
-          "type": "cashback",
-          "amount_str": "20.000",
-          "amount": 20000
+          "product_id": 775172855,
+          "promo_codes_tracking": "TXOSV69115",
+          "promo_details_tracking": "M:1:20000:green"
         }
       ],
-      "sp_ids": []
+      "tokopoints_detail": {
+        "conversion_rate": {
+          "rate": 0,
+          "points_coefficient": 0,
+          "external_currency_coefficient": 0
+        }
+      },
+      "ticker_info": {
+        "unique_id": "",
+        "status_code": 0,
+        "message": ""
+      },
+      "additional_info": {
+        "message_info": {
+          "message": "Kamu bisa hemat Rp20.000",
+          "detail": "1 promo dipakai"
+        },
+        "error_detail": {
+          "message": ""
+        },
+        "empty_cart_info": {
+          "image_url": "",
+          "message": "",
+          "detail": ""
+        },
+        "usage_summaries": [
+          {
+            "description": "Cashback OVO Points",
+            "type": "cashback",
+            "amount_str": "20.000",
+            "amount": 20000
+          }
+        ],
+        "sp_ids": []
+      }
     }
   }
 }

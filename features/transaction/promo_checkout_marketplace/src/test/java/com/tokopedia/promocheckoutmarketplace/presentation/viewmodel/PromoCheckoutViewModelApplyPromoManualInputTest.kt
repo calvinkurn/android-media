@@ -1,7 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -34,7 +33,6 @@ import java.lang.reflect.Type
 object PromoCheckoutViewModelApplyPromoManualInputTest {
 
     private lateinit var viewModel: PromoCheckoutViewModel
-    private lateinit var gson: Gson
     private lateinit var dispatcher: CoroutineDispatcher
 
     private var graphqlRepository: GraphqlRepository = mockk(relaxed = true)
@@ -48,7 +46,6 @@ object PromoCheckoutViewModelApplyPromoManualInputTest {
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
         viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics)
-        gson = Gson()
 
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
         every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
