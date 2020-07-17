@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import javax.inject.Inject
 
 /**
@@ -34,14 +33,16 @@ class GetConfigurationUseCase @Inject constructor(
         val gqlResponse = configureGqlResponse(graphqlRepository, query, GetBroadcasterShopConfigResponse::class.java, params, GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
-        response?.config?.let { shopConfig -> return mapConfiguration(shopConfig) }
-        throw DefaultErrorThrowable()
+        var config = Config(streamAllowed = response.shopConfig.streamAllowed)
+        if (response.shopConfig.config.isNotEmpty()) {
+            config = mapConfiguration(response.shopConfig.config)
+        }
+        return config
     }
 
-    private fun mapConfiguration(shopConfig: GetBroadcasterShopConfigResponse.GetBroadcasterShopConfig): Config {
+    private fun mapConfiguration(config: String): Config {
         return try {
-            val config = gson.fromJson(shopConfig.config, Config::class.java)
-            config.copy(streamAllowed = shopConfig.streamAllowed)
+            gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {
                 Crashlytics.log(0, TAG, e.localizedMessage)
