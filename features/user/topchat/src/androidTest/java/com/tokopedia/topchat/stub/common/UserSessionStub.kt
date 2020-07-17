@@ -7,7 +7,7 @@ class UserSessionStub(context: Context?) : UserSession(context) {
 
     var hasShopStub = true
     var shopNameStub = "Toko Rifqi"
-    var nameStub = "Rifqi M Fahmi"
+    var nameStub = "Rifqi MF"
 
     override fun hasShop(): Boolean {
         return hasShopStub

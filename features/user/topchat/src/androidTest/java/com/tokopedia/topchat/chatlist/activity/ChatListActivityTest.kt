@@ -29,15 +29,19 @@ class ChatListActivityTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var userSession: UserSessionStub
-    private lateinit var activity: ChatListActivityStub
-
     @RelaxedMockK
     private lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
+
+    private lateinit var userSession: UserSessionStub
+    private lateinit var activity: ChatListActivityStub
 
     private val exEmptyChatListPojo = ChatListPojo()
     private val exSize2ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
             "success_get_chat_list.json",
+            ChatListPojo::class.java
+    )
+    private val exSize5ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
+            "success_get_chat_list_size_5.json",
             ChatListPojo::class.java
     )
 
@@ -59,7 +63,7 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(5000)
+        Thread.sleep(1000)
     }
 
     @Test
@@ -73,8 +77,9 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(5000)
-//        val scenario = launchFragmentInContainer<ChatTabListFragment>()
+        Thread.sleep(1000)
+
+        // Then
 //        val tabView = onView(
 //                allOf(childAtPosition(
 //                        childAtPosition(
@@ -93,6 +98,38 @@ class ChatListActivityTest {
 //                        0),
 //                        isDisplayed()))
 //        constraintLayout.perform(click())
+    }
+
+    @Test
+    fun empty_chat_list_seller_buyer() {
+        // Given
+        userSession.hasShopStub = true
+        userSession.shopNameStub = "Toko Rifqi"
+        userSession.nameStub = "Rifqi MF"
+        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+            onSuccess.invoke(exEmptyChatListPojo)
+        }
+
+        // When
+        activity.setupTestFragment(chatListUseCase)
+        Thread.sleep(1000)
+    }
+
+    @Test
+    fun size_5_chat_list_seller_buyer() {
+        // Given
+        userSession.hasShopStub = true
+        userSession.shopNameStub = "Toko Rifqi 123"
+        userSession.nameStub = "Rifqi MF 123"
+        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+            onSuccess.invoke(exSize5ChatListPojo)
+        }
+
+        // When
+        activity.setupTestFragment(chatListUseCase)
+        Thread.sleep(1000)
     }
 
 //    private fun childAtPosition(parentMatcher: Matcher<View>, position: Int): Matcher<View> {
