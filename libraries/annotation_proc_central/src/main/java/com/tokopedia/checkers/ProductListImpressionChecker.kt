@@ -14,7 +14,6 @@ object ProductListImpressionChecker {
      */
     fun isContainInvalidTerm(eventAction: String): Boolean {
 
-        Timber.w(String.format("event Action %s"))
         val trim_value = eventAction.trim()
         try {
             return !(trim_value.isEmpty() ||
