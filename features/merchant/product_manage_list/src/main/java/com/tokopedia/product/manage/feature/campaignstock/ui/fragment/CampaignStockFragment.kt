@@ -167,7 +167,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                 finish()
                             }
                         } else {
-                            cancelActivity()
+                            cancelActivity(result.data.message)
                         }
                     }
                 }
@@ -299,9 +299,14 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         vp2_campaign_stock?.currentItem = position
     }
 
-    private fun cancelActivity() {
+    private fun cancelActivity(errorMessage: String? = null) {
         activity?.run {
-            setResult(Activity.RESULT_CANCELED)
+            val intent = Intent().apply {
+                errorMessage?.run {
+                    putExtra(ProductManageListConstant.EXTRA_UPDATE_MESSAGE, this)
+                }
+            }
+            setResult(Activity.RESULT_CANCELED, intent)
             finish()
         }
     }

@@ -12,6 +12,7 @@ object ProductManageListConstant {
     const val EXTRA_PRODUCT_ID = "extra_product_id"
     const val EXTRA_UPDATED_STOCK = "extra_updated_stock"
     const val EXTRA_UPDATED_STATUS = "extra_update_status"
+    const val EXTRA_UPDATE_MESSAGE = "extra_update_message"
     const val EXTRA_THRESHOLD = "extra_threshold"
     const val GQL_POPUP_NAME = "gql_popup"
     const val URL_TIPS_TRICK = "https://seller.tokopedia.com/edu/cara-cepat-dapat-transaksi/"

@@ -7,5 +7,6 @@ data class UpdateCampaignStockResult(
         val productName: String,
         val stock: Int,
         val status: ProductStatus,
-        val isSuccess: Boolean
+        val isSuccess: Boolean,
+        val message: String? = null
 )

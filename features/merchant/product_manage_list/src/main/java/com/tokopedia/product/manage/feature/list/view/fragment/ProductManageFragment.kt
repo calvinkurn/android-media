@@ -62,6 +62,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STATUS
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATED_STOCK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_CAMPAIGN_STOCK
@@ -1360,9 +1361,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                                     .show()
                         }
                         Activity.RESULT_CANCELED -> {
+                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
                             Toaster.build(
                                     coordinatorLayout,
-                                    getString(R.string.product_manage_campaign_stock_error_toast),
+                                    errorMessage,
                                     Snackbar.LENGTH_SHORT,
                                     Toaster.TYPE_ERROR)
                                     .show()

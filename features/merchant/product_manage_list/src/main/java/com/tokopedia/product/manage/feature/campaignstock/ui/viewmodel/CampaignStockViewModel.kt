@@ -166,7 +166,8 @@ class CampaignStockViewModel @Inject constructor(
                                                 mCampaignProductNameLiveData.value.orEmpty(),
                                                 stock,
                                                 status,
-                                                editStockResponse.productUpdateV3Data.isSuccess
+                                                editStockResponse.productUpdateV3Data.isSuccess,
+                                                editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
                                         )
                                     })
                                 },
@@ -204,7 +205,8 @@ class CampaignStockViewModel @Inject constructor(
                                                 productName,
                                                 totalStock,
                                                 status,
-                                                editStockResponse.productUpdateV3Data.isSuccess
+                                                editStockResponse.productUpdateV3Data.isSuccess,
+                                                editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
                                         )
                                     }
                                 })
