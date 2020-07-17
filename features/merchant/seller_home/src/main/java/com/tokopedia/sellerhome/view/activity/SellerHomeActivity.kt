@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
@@ -289,6 +290,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private fun clearNotification() {
         if (remoteConfig.isNotificationTrayClear()) {
             (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)?.cancelAll()
+            NotificationManagerCompat.from(this).cancelAll()
         }
     }
 
