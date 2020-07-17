@@ -61,9 +61,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     @Inject lateinit var viewModelFactory: ViewModelFactory
     @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
 
-    @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
-
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
 
