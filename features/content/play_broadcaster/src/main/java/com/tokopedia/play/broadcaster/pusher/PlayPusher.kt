@@ -63,19 +63,24 @@ interface PlayPusher {
     fun destroy()
 
     /**
+     * add live streaming duration
+     */
+    fun addStreamDuration(durationInMillis: Long)
+
+    /**
      * add maximum live streaming duration
      */
-    fun addMaxStreamDuration(millis: Long)
+    fun addMaxStreamDuration(durationInMillis: Long)
 
     /**
      * restart live streaming duration
      */
-    fun restartStreamDuration(millis: Long)
+    fun restartStreamDuration(durationInMillis: Long)
 
     /**
      * add maximum pause duration when streaming
      */
-    fun addMaxPauseDuration(millis: Long)
+    fun addMaxPauseDuration(durationInMillis: Long)
 
     /**
      * Callback pusher info during live streaming

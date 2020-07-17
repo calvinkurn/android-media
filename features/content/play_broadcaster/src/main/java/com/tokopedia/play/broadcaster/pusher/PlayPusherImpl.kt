@@ -108,15 +108,15 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override suspend fun stopPush() {
         try {
             mAliVcLivePusher?.stopPush()
-            mTimerDuration?.stop()
-            mPusherListener?.onStop(mTimerDuration?.getTimeElapsed().orEmpty())
         } catch (e: Exception) {
             // crashlytics
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
+        mTimerDuration?.stop()
         mPlayPusherStatus = PlayPusherStatus.Stop
+        mPusherListener?.onStop(mTimerDuration?.getTimeElapsed().orEmpty())
     }
 
     override suspend fun switchCamera() {
@@ -171,22 +171,26 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
     }
 
-    override fun addMaxStreamDuration(millis: Long) {
+    override fun addStreamDuration(durationInMillis: Long) {
         if (this.mTimerDuration == null)
-            this.mTimerDuration = PlayPusherTimer(builder.context, duration = millis)
+            this.mTimerDuration = PlayPusherTimer(builder.context, durationInMillis)
 
         this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
-    override fun restartStreamDuration(millis: Long) {
-        this.mTimerDuration?.restart(millis)
+    override fun addMaxStreamDuration(durationInMillis: Long) {
+        this.mTimerDuration?.mMaxDuration = durationInMillis
     }
 
-    override fun addMaxPauseDuration(millis: Long) {
+    override fun restartStreamDuration(durationInMillis: Long) {
+        this.mTimerDuration?.restart(durationInMillis)
+    }
+
+    override fun addMaxPauseDuration(durationInMillis: Long) {
         if (this.mTimerDuration == null)
             this.mTimerDuration = PlayPusherTimer(builder.context)
 
-        this.mTimerDuration?.pauseDuration = millis
+        this.mTimerDuration?.pauseDuration = durationInMillis
         this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 

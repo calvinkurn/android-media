@@ -14,14 +14,17 @@ class PlayPusherTimer(val context: Context) {
     constructor(context: Context,
                 duration: Long) : this(context) {
         this.mDuration = duration
+        this.mRemainingMillis = duration
+        this.mMaxDuration = duration
     }
 
     var callback: PlayPusherTimerListener? = null
     var timeoutList: List<Timeout> = Timeout.Default()
     var pauseDuration: Long? = null
+    var mMaxDuration: Long = 0L
 
-    private var mDuration: Long = 0
-    private var mRemainingMillis: Long = mDuration
+    private var mDuration: Long = 0L
+    private var mRemainingMillis: Long = 0L
 
     private var mCountDownTimer: PlayCountDownTimer? = null
     private var mLocalStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
@@ -93,7 +96,7 @@ class PlayPusherTimer(val context: Context) {
 
     fun getTimeElapsed(): String = getTimeElapsedInMillis().convertMillisToMinuteSecond()
 
-    private fun getTimeElapsedInMillis(): Long = mDuration - mRemainingMillis
+    private fun getTimeElapsedInMillis(): Long = mMaxDuration - mRemainingMillis
 
     private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
         val currentMillis = System.currentTimeMillis()

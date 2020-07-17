@@ -152,9 +152,11 @@ class PlayBroadcastViewModel @Inject constructor(
             setCoverConfig(configUiModel.coverConfig)
 
             // configure live streaming duration
-            if (configUiModel.channelType == ChannelType.Pause) playPusher.addMaxStreamDuration(configUiModel.remainingTime)
-            else playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration)
+            if (configUiModel.channelType == ChannelType.Pause)
+                playPusher.addStreamDuration(configUiModel.remainingTime)
+            else playPusher.addStreamDuration(configUiModel.durationConfig.duration)
 
+            playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration)
             playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
         }) {
