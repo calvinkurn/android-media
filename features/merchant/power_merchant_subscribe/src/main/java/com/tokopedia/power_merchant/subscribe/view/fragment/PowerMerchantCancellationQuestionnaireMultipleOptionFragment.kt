@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.adapter.MultipleOptionAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
@@ -47,6 +49,12 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
+        getComponent(BaseAppComponent::class.java)?.let {
+            DaggerPowerMerchantSubscribeComponent.builder()
+                .baseAppComponent(it)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
