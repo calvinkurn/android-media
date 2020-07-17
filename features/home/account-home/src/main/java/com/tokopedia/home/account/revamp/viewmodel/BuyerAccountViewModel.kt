@@ -87,7 +87,7 @@ class BuyerAccountViewModel @Inject constructor (
             launchCatchError(block = {
                 val params = RequestParams.create()
                 params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, item.wishlistUrl)
-                val result = topAdsWishlishedUseCase.createObservable(params).toBlocking().first()
+                val result = topAdsWishlishedUseCase.createObservable(params).toBlocking().single()
                 if (result.data.isSuccess) {
                     _addWishList.postValue(Success(MSG_SUCCESS_ADD_WISHLIST))
                 } else {
@@ -118,13 +118,11 @@ class BuyerAccountViewModel @Inject constructor (
                     emptyList()
             )
 
-            withContext(dispatcher.io()) {
-                val data = getRecommendationUseCase.createObservable(params).toBlocking().first()
-                if (isFirstData) {
-                    _firstRecommendation.postValue(Success(data[0]))
-                } else {
-                    _recommendation.postValue(Success(data[0]))
-                }
+            val data = getRecommendationUseCase.createObservable(params).toBlocking().single()
+            if (isFirstData) {
+                _firstRecommendation.postValue(Success(data[0]))
+            } else {
+                _recommendation.postValue(Success(data[0]))
             }
         }, onError = {
             if (isFirstData) {
