@@ -24,7 +24,7 @@ object DeeplinkMapperDeals {
                 if (true) {
                     ApplinkConstInternalDeals.DEALS_HOMEPAGE
                 }
-                else "tokopedia-android-internal://global/deals"
+                else ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
             }
 
             //tokopedia://deals/order

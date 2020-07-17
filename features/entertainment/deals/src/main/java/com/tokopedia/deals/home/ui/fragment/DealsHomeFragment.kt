@@ -191,7 +191,7 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            DEALS_SEARCH_REQUEST_CODE, DEALS_CATEGORY_REQUEST_CODE -> {
+            DEALS_SEARCH_REQUEST_CODE, DEALS_CATEGORY_REQUEST_CODE, DEALS_BRAND_REQUEST_CODE -> {
                 changeLocationAndLoadData()
             }
         }
@@ -237,7 +237,8 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* BRAND SECTION ACTION */
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        RouteManager.route(context, brand.brandUrl)
+        val intent = RouteManager.getIntent(context, brand.brandUrl)
+        startActivityForResult(intent, DEALS_BRAND_REQUEST_CODE)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
@@ -250,18 +251,19 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
-        RouteManager.route(context, curatedProductCategoryDataView.seeAllUrl)
+        val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
+        startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
     }
 
     /* NEAREST PLACE SECTION ACTION */
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
-        (activity as DealsBaseActivity).setCurrentLocation(voucherPlaceCard.location)
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext()))
+        startActivityForResult(DealsCategoryActivity.getCallingIntent(requireContext()), DEALS_CATEGORY_REQUEST_CODE)
     }
 
     /* FAVOURITE CATEGORY SECTION ACTION */
     override fun onClickFavouriteCategory(url: String) {
-        RouteManager.route(context, url)
+        val intent = RouteManager.getIntent(context, url)
+        startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
@@ -276,6 +278,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     companion object {
         const val DEALS_SEARCH_REQUEST_CODE = 27
         const val DEALS_CATEGORY_REQUEST_CODE = 33
+        const val DEALS_BRAND_REQUEST_CODE = 39
 
         fun getInstance(): DealsHomeFragment = DealsHomeFragment()
         private const val PREFERENCES_NAME = "deals_home_preferences"
