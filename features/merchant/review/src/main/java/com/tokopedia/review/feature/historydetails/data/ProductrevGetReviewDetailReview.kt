@@ -13,9 +13,6 @@ data class ProductrevGetReviewDetailReview(
         @SerializedName("reviewText")
         @Expose
         val reviewText: String = "",
-        @SerializedName("reviewTime")
-        @Expose
-        val reviewTime: String = "",
         @SerializedName("reviewTimeFormatted")
         @Expose
         val reviewTimeFormatted: String = "",
@@ -25,7 +22,10 @@ data class ProductrevGetReviewDetailReview(
         @SerializedName("editable")
         @Expose
         val editable: Boolean = false,
-        @SerializedName("reviewerData")
+        @SerializedName("sentAsAnonymous")
         @Expose
-        val reviewerData: ProductrevGetReviewDetailReviewerData = ProductrevGetReviewDetailReviewerData()
+        val sentAsAnonymous: Boolean = false,
+        @SerializedName("reviewerName")
+        @Expose
+        val reviewerName: String = ""
 )

@@ -16,7 +16,7 @@ data class ProductrevGetReviewDetailReputation(
         @SerializedName("lockTime")
         @Expose
         val lockTime: String = "",
-        @SerializedName("lockTimeFormatted")
+        @SerializedName("isLocked")
         @Expose
-        val lockTimeFormatted: String = ""
+        val isLocked: Boolean = false
 )

@@ -10,14 +10,14 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
 
     companion object {
         const val PARAM_FEEDBACK_ID = "feedbackID"
-        const val PARAM_REPUTATION_ID = "reputationID"
         private val query by lazy {
             """
-                query productrevGetReviewDetail(${'$'}feedbackID: Integer!, ${'$'}reputationID: Integer!) {
-                  productrevGetReviewDetail(feedbackID:${'$'}feedbackID, reputationID:${'$'}reputationID) {
+                query productrevGetReviewDetail(${'$'}feedbackID: Int!) {
+                  productrevGetReviewDetail(feedbackID: ${'$'}feedbackID) {
                     product {
                       productID
                       productName
+                      productPageURL
                       productImageURL
                       productVariantName
                     }
@@ -25,29 +25,23 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                       feedbackID
                       rating
                       reviewText
-                      reviewTime
                       reviewTimeFormatted
                       attachmentsURL
                       editable
-                      reviewerData {
-                        isAnonym
-                        fullName
-                      }
+                      reviewerName
+                      sentAsAnonymous
                     }
                     response {
                       responseText
-                      responseTime
                       responseTimeFormatted
-                      responderData {
-                        shopName
-                      }
+                      shopName
                     }
                     reputation {
                       reputationID
                       score
                       editable
                       lockTime
-                      lockTimeFormatted
+                      isLocked
                     }
                   }
                 }
@@ -60,11 +54,10 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
         setTypeClass(ProductrevGetReviewDetailResponseWrapper::class.java)
     }
 
-    fun setRequestParams(feedbackID: Int, reputationID: Int) {
+    fun setRequestParams(feedbackID: Int) {
         setRequestParams(
                 RequestParams.create().apply {
                     putInt(PARAM_FEEDBACK_ID, feedbackID)
-                    putInt(PARAM_REPUTATION_ID, reputationID)
                 }.parameters
         )
     }

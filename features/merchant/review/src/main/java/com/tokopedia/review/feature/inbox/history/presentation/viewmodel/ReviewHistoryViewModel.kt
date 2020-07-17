@@ -25,13 +25,9 @@ class ReviewHistoryViewModel @Inject constructor(
     val reviewList: LiveData<ReviewViewState<ProductrevFeedbackHistoryResponse>>
         get() = _reviewList
 
-    private val _searchQuery = MutableLiveData("")
-    val searchQuery: LiveData<String>
-        get() = _searchQuery
+    private val searchQuery = MutableLiveData("")
 
-    private val _currentPage = MutableLiveData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
-    val currentPage: LiveData<Int>
-        get() = _currentPage
+    private val currentPage = MutableLiveData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
 
     init {
         _reviewList.addSource(currentPage) {
@@ -55,19 +51,18 @@ class ReviewHistoryViewModel @Inject constructor(
     }
 
     fun updatePage(page: Int) {
-        _currentPage.value = page
-        _currentPage.notifyObserver()
+        currentPage.value = page
+        currentPage.notifyObserver()
     }
 
     fun updateKeyWord(keyword: String) {
-        _searchQuery.value = keyword
-        _searchQuery.notifyObserver()
+        searchQuery.value = keyword
+        searchQuery.notifyObserver()
         resetPage()
     }
 
-    fun resetPage() {
-        _currentPage.value = ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
-        _currentPage.notifyObserver()
+    private fun resetPage() {
+        updatePage(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
     }
 
     private fun <T> MutableLiveData<T>.notifyObserver() {

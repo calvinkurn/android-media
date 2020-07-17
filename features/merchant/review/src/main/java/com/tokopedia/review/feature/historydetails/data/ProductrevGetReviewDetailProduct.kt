@@ -10,6 +10,9 @@ data class ProductrevGetReviewDetailProduct(
         @SerializedName("productName")
         @Expose
         val productName: String = "",
+        @SerializedName("productPageURL")
+        @Expose
+        val productPageUrl: String = "",
         @SerializedName("productImageURL")
         @Expose
         val productImageUrl: String = "",

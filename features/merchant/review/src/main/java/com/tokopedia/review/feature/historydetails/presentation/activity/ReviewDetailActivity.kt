@@ -7,8 +7,7 @@ import com.tokopedia.review.feature.historydetails.presentation.fragment.ReviewD
 class ReviewDetailActivity : BaseSimpleActivity() {
 
     private var feedbackId: Int = 0
-    private var reputationId: Int = 0
-    private val reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId, reputationId)
+    private val reviewDetailFragment = ReviewDetailFragment.createNewInstance(feedbackId)
 
     override fun getNewFragment(): Fragment? {
         return reviewDetailFragment

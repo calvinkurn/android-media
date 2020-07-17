@@ -39,13 +39,11 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
-        const val KEY_REPUTATION_ID = "reputationID"
 
-        fun createNewInstance(feedbackId: Int, reputationId: Int) : ReviewDetailFragment{
+        fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(KEY_FEEDBACK_ID, feedbackId)
-                    putInt(KEY_REPUTATION_ID, reputationId)
                 }
             }
         }
@@ -72,7 +70,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         initHeader()
         initErrorPage()
         observeReviewDetails()
-        getReviewData()
     }
 
     override fun getComponent(): ReviewDetailComponent? {
@@ -95,25 +92,25 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     override fun onBackPressed() {
         (viewModel.reviewDetails.value as? Success)?.let {
-            ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.userId)
+            ReviewDetailTracking.eventClickBack(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
         }
     }
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setFeedbackAndReputationId(it.getInt(KEY_FEEDBACK_ID), it.getInt(KEY_REPUTATION_ID))
+            viewModel.setFeedbackId(it.getInt(KEY_FEEDBACK_ID))
         }
     }
 
     private fun observeReviewDetails() {
-        viewModel.reviewDetails.observe(this, Observer {
+        viewModel.reviewDetails.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     hideError()
                     hideLoading()
                     with(it.data) {
                         setProduct(product, review.feedbackId)
-                        setReview(review, product.productName, product.productId)
+                        setReview(review, product.productName)
                         setResponse(response)
                     }
                 }
@@ -134,23 +131,23 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             reviewDetailProductCard.apply {
                 setItem(ReviewProductUiModel(productId, productImageUrl, productName, productVariantName))
                 setOnClickListener {
-                    ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.userId)
+                    ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
                     goToPdp(productId)
                 }
             }
         }
     }
 
-    private fun setReview(review: ProductrevGetReviewDetailReview, productName: String, productId: Int) {
+    private fun setReview(review: ProductrevGetReviewDetailReview, productName: String) {
         with(review) {
             reviewDetailStars.apply {
                 setImageResource(getReviewStar(rating))
                 show()
             }
-            if(reviewerData.isAnonym) {
+            if(sentAsAnonymous) {
                 reviewDetailName.setTextAndCheckShow(getString(R.string.review_detail_anonymous))
             } else {
-                reviewDetailName.setTextAndCheckShow(getString(R.string.review_detail_name, reviewerData.fullName))
+                reviewDetailName.setTextAndCheckShow(getString(R.string.review_detail_name, reviewerName))
             }
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             reviewDetailContent.setTextAndCheckShow(reviewText)
@@ -175,16 +172,12 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     private fun initErrorPage() {
         reviewDetailConnectionError.apply {
             reviewConnectionErrorRetryButton.setOnClickListener {
-                getReviewData()
+                retry()
             }
             reviewConnectionErrorRetryButton.setOnClickListener {
                 goToSettings()
             }
         }
-    }
-
-    private fun getReviewData() {
-        viewModel.getReviewDetails()
     }
 
     private fun addEditHeaderIcon() {
@@ -225,5 +218,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun goToPdp(productId: Int) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
+    }
+
+    private fun retry() {
+        viewModel.retry()
     }
 }
