@@ -2,13 +2,12 @@ package com.tokopedia.play_common.widget.playBannerCarousel.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
 import android.net.Uri
 import android.os.CountDownTimer
 import android.os.Handler
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.C
@@ -77,6 +76,9 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     private var durationPlayWithData: Int = 0
     private var delayDuration: Int = 0
 
+    /* Surface height */
+    private val screenDefaultHeight: Int
+
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -91,13 +93,22 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 resetVideoView(view.tag)
             }
         })
+        val display: Display = (Objects.requireNonNull(
+                getContext().getSystemService(Context.WINDOW_SERVICE)) as WindowManager).defaultDisplay
+        val point = Point()
+        display.getSize(point)
+        screenDefaultHeight = point.y
     }
 
     fun playVideos(isEndOfList: Boolean) {
         try{
+            // check surface height first, if not visible 100% it will stop all videos
+//            if(!getVisibleVideoSurfaceHeight()){
+//                resetVideoPlayer()
+//                return
+//            }
             // check internet wifi or data available or auto play or video data is not empty
             if(!(PlayConnectionCommon.isConnectWifi(context) || PlayConnectionCommon.isConnectCellular(context)) || !isAutoPlay || mediaObjects.isEmpty()) return
-
             val targetPositions: MutableList<Int> = mutableListOf()
             var startPosition: Int = (Objects.requireNonNull(
                     layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
@@ -214,6 +225,14 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         }
     }
 
+    private fun getVisibleVideoSurfaceHeight(): Boolean{
+        val parent = this
+        val location = IntArray(2)
+        parent.getLocationInWindow(location)
+        val yParentPosition = if(location[1] <= 0) screenDefaultHeight else location[1]
+        return yParentPosition + parent.height < screenDefaultHeight && yParentPosition >= 0
+    }
+
     /**
      * Returns the visible region of the video surface on the screen.
      * if some is cut off, it will return less than the @videoSurfaceDefaultHeight
@@ -303,7 +322,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     }
 
     fun setAutoPlay(isAutoPlay: Boolean, autoPlayAmount: Int){
-        this.isAutoPlay = isAutoPlay
+        this.isAutoPlay = true
 
         // clear old players
         for (videoPlayer in videoPlayers) {

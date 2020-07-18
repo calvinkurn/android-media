@@ -659,7 +659,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         Toaster.TYPE_NORMAL
                 )
             } else {
-                showToaster(it.error?.message ?: "", Toaster.TYPE_ERROR)
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
             }
         })
     }
