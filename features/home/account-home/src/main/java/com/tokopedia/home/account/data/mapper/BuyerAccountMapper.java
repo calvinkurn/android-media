@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
@@ -72,11 +71,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(getBuyerProfileMenu(accountModel));
         }
 
-        String cdnUrl = AccountHomeUrl.CDN_URL;
-        if (context.getApplicationContext() instanceof AccountHomeRouter) {
-            cdnUrl = ((AccountHomeRouter) context.getApplicationContext())
-                    .getStringRemoteConfig(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
-        }
+        String cdnUrl = remoteConfig
+                .getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         if (accountModel.getWallet() != null) {
@@ -124,9 +120,10 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
-            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
-
+            if(accountModel.getSaldoModel() != null && accountModel.getSaldoModel().getSaldo() != null) {
+                tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                        (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
+            }
             tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);
 

@@ -1,13 +1,14 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.graphics.Paint
 import android.text.Editable
-import android.text.Html
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -40,6 +41,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
+    private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
@@ -155,20 +157,17 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
 
             validateQuantity()
-            renderProductPropertiesInvenage()
+            renderProductTickerMessage()
         }
     }
 
-    private fun renderProductPropertiesInvenage() {
-        if (product.productInvenageTotal.byUserText.complete.isNotEmpty()) {
-            val completeText = product.productInvenageTotal.byUserText.complete
-            val totalInOtherCart = product.productInvenageTotal.byUser.inCart
-            val totalRemainingStock = product.productInvenageTotal.byUser.lastStockLessThan
-            val invenageText = completeText.replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_remaining_stock)
-                    ?: "", "" + totalRemainingStock)
-                    .replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_in_other_cart)
-                            ?: "", "" + totalInOtherCart)
-            tvQuantityStockAvailable?.text = Html.fromHtml(invenageText)
+    private fun renderProductTickerMessage() {
+        if (product.tickerMessage.message.isNotEmpty()) {
+            var completeText = product.tickerMessage.message
+            for (replacement in product.tickerMessage.replacement) {
+                completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
+            }
+            tvQuantityStockAvailable?.text = MethodChecker.fromHtml(completeText)
         } else {
             tvQuantityStockAvailable?.text = ""
         }
@@ -217,6 +216,14 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
         }
         tvProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false).removeDecimalSuffix()
+
+        if (product.originalPrice.isNotBlank()) {
+            tvProductSlashPrice.text = product.originalPrice
+            tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            tvProductSlashPrice.visible()
+        } else {
+            tvProductSlashPrice.gone()
+        }
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             ivFreeShipping?.let {

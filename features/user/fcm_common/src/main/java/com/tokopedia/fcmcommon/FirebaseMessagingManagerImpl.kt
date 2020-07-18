@@ -83,6 +83,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         return prefToken == currentFcmToken
     }
 
+    override fun currentToken(): String {
+        return getTokenFromPref()?: ""
+    }
+
     override fun clear() {
         coroutineContext.cancelChildren()
     }
