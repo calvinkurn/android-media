@@ -52,9 +52,10 @@ fun createProductVariant(
     price: Int = 100,
     sku: String = "sku",
     stock: Int = 0,
-    pictures: List<Picture> = emptyList()
+    pictures: List<Picture> = emptyList(),
+    isAllStockEmpty: Boolean = true
 ): ProductVariant {
-    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures)
+    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, isAllStockEmpty)
 }
 
 fun createGetVariantResponse(

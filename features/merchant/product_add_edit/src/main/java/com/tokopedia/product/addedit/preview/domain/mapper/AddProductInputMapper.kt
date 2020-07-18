@@ -53,7 +53,7 @@ class AddProductInputMapper @Inject constructor() {
                 detailInputModel.price,
                 PRICE_CURRENCY,
                 detailInputModel.stock,
-                STOCK_STATUS,
+                getActiveStatus(detailInputModel.status),
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
                 mapShipmentUnit(shipmentInputModel.weightUnit),
@@ -88,7 +88,7 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapVariantSizeChart(productSizeChart: PictureViewModel?,
+    private fun mapVariantSizeChart(productSizeChart: ProductPicture?,
                                     sizeChartUploadId: String): List<Picture> {
         val sizeCharts: ArrayList<Picture> = ArrayList()
         productSizeChart?.let {
@@ -101,7 +101,7 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapVariantProducts(
-            productVariant: ArrayList<ProductVariantCombinationViewModel>,
+            productVariant: ArrayList<ProductVariantCombination>,
             variantOptionUploadId: List<String>): List<Product> {
         val products: ArrayList<Product> = ArrayList()
         productVariant.forEach {

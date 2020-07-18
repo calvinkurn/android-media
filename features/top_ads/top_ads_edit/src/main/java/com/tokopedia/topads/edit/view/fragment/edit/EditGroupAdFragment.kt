@@ -15,7 +15,7 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent

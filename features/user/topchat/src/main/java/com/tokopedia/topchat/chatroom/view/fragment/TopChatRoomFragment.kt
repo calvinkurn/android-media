@@ -895,6 +895,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session)
+
+            // this for experimentation of DATA
+            if(remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false)?:false){
+                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
+            }
         }
     }
 
