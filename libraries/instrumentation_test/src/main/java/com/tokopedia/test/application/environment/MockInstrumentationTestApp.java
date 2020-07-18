@@ -220,11 +220,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
             public String getRefreshToken() {
                 return "null";
             }
-
-            @Override
-            public boolean isMsisdnVerified() {
-                return false;
-            }
         };
     }
 
@@ -240,11 +235,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 

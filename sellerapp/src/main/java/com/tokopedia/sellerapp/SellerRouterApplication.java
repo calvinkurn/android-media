@@ -488,11 +488,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-
-    }
-
-    @Override
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);

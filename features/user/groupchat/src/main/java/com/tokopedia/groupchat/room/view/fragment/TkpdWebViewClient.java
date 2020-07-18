@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.webview;
+package com.tokopedia.groupchat.room.view.fragment;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;

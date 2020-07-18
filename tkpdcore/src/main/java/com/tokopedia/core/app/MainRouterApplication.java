@@ -33,11 +33,6 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
                 public String getRefreshToken() {
                     return mSessionHandler.getAuthRefreshToken();
                 }
-
-                @Override
-                public boolean isMsisdnVerified() {
-                    return mSessionHandler.isMsisdnVerified();
-                }
             };
         }else{
             return sessionHandler;
