@@ -192,6 +192,7 @@ public interface ApplinkConst {
     String SETTING_PROFILE = "tokopedia://setting/profile";
 
     String NOTIFICATION = "tokopedia://notification";
+    String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
@@ -231,7 +232,7 @@ public interface ApplinkConst {
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
     String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
-    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}/";
+    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
     String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";

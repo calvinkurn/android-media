@@ -272,7 +272,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.affiliateCommon)
-    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kolCommon)
@@ -354,7 +353,6 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.playCommon)
-    implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)

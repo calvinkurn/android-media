@@ -11,6 +11,7 @@ import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNaviga
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
+import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationInterestPick
@@ -302,6 +303,10 @@ object DeeplinkMapper {
             DLP(logic = { _, uri, _ -> DeeplinkMapperContent.isPostDetailDeepLink(uri) },
                     targetDeeplink = { _, _, deeplink -> getKolDeepLink(deeplink) }),
             DLP.startWithPattern(ApplinkConst.KOL_YOUTUBE) { _, _, deeplink -> getKolDeepLink(deeplink) },
+            DLP.startWith(ApplinkConst.CONTENT_CREATE_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.CONTENT_DRAFT_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },
+            DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },
+            DLP.startWithPattern(ApplinkConst.AFFILIATE_DRAFT_POST) { _, _, deeplink -> getContentCreatePostDeepLink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY) { _, _, deeplink -> getDiscoveryDeeplink(deeplink) },
             DLP(logic = { _, uri, _ -> specialNavigationMapper(uri, ApplinkConst.HOST_CATEGORY_P) },
                     targetDeeplink = { _, _, deeplink -> getRegisteredCategoryNavigation(deeplink) }),
@@ -337,6 +342,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.INSTANT_LOAN, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN),
             DLP.exact(ApplinkConst.INSTANT_LOAN_TAB, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB),
             DLP.exact(ApplinkConst.PINJAMAN_ONLINE_TAB, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB),
+            DLP.exact(ApplinkConst.RECENT_VIEW, ApplinkConsInternalHome.HOME_RECENT_VIEW),
             DLP.exact(ApplinkConst.WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
             DLP.exact(ApplinkConst.NEW_WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
             DLP.exact(ApplinkConst.CREATE_SHOP, ApplinkConstInternalGlobal.LANDING_SHOP_CREATION),
@@ -348,7 +354,8 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.HAS_PASSWORD, ApplinkConstInternalGlobal.HAS_PASSWORD),
             DLP.exact(ApplinkConst.THANK_YOU_PAGE_NATIVE, ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
-            DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST)
+            DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
+            DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER)
     ).toMutableList()
 
     /**

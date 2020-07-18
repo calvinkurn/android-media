@@ -1,4 +1,6 @@
-{
+package com.tokopedia.createpost.data.raw
+
+const val GQL_QUERY_AFFILIATE_PRODUCT_SUGGESTION: String = """{
   affiliateParticularSections(limit: 5) {
     explore_page_section {
       type
@@ -25,3 +27,4 @@
     }
   }
 }
+"""
