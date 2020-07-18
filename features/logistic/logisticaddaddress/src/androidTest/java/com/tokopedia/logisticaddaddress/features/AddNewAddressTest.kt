@@ -24,37 +24,39 @@ class AddNewAddressTest {
     var mActivityTestRule = ActivityTestRule(PinpointMapActivity::class.java)
 
     @get:Rule
-    var permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-
+    var permissionRule: GrantPermissionRule =
+            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @Test
     fun givenCurrentLocationShouldAddAddressPositive() {
 
         // Startup activity
-        Thread.sleep(3000L)
+        delayShort()
+
+        onView(withId(R.id.et_search)).perform(typeText("jak"), closeSoftKeyboard())
+        delayShort()
 
         onView(withId(R.id.rv_poi_list))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-        Thread.sleep(3000L)
+        delayShort()
 
         onView(withId(R.id.et_detail_address))
                 .perform(typeText("no 27 RT 1/ RW X"), closeSoftKeyboard())
-
-        onView(withId(R.id.btn_choose_location))
-                .perform(click())
-        Thread.sleep(3000L)
-
-        onView(withId(R.id.et_detail_address)).perform(typeText(""), closeSoftKeyboard())
+        onView(withId(R.id.btn_choose_location)).perform(click())
+        delayShort()
 
         onView(withId(R.id.btn_save_address)).perform(scrollTo(), click())
-
-        Thread.sleep(1000L)
+        delayShort()
 
         /*// Failing Test: Cannot assert test result, mismatch result code,
         // possibly caused by improper assertion time due to use of Thread.sleep()
         // Possible solution: use idling resource
         assertThat(mActivityTestRule.activityResult, hasResultCode(Activity.RESULT_OK))
         assertThat(mActivityTestRule.activityResult, hasResultData(IntentMatchers.hasExtraWithKey("EXTRA_ADDRESS_NEW")))*/
+    }
+
+    private fun delayShort() {
+        Thread.sleep(2000L)
     }
 
 }
