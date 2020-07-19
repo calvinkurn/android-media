@@ -42,10 +42,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
-    val hasSku = Transformations.map(productInputModel) { productInputModel ->
-        productInputModel.variantInputModel.products.any {
-            it.sku.isNotEmpty()
-        }
+    val hasSku: Boolean get () {
+        return productInputModel.value?.variantInputModel?.products?.any {
+             it.sku.isNotEmpty()
+        } ?: false
     }
 
     val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
@@ -303,7 +303,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun generateVariantDetailInputModel(
             productVariantIndex: Int,
             headerPosition: Int,
-            unitValueLabel: String
+            unitValueLabel: String,
+            isSkuFieldVisible: Boolean
     ): VariantDetailInputLayoutModel{
         val productVariants = productInputModel.value?.variantInputModel?.products.orEmpty()
         val productVariant = productVariants
@@ -316,7 +317,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 sku = productVariant.sku,
                 stock = productVariant.stock.toString(),
                 headerPosition = headerPosition,
-                isSkuFieldVisible = hasSku.value ?: false,
+                isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel)
     }
 
