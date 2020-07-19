@@ -25,11 +25,14 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -103,6 +106,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeTable: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomePieChart: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeBarChart: PerformanceMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
@@ -131,6 +137,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(sellerHomeViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+        observeWidgetData(sellerHomeViewModel.tableWidgetData, WidgetType.TABLE)
+        observeWidgetData(sellerHomeViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
+        observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeTickerLiveData()
         observeShopStatusLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
@@ -292,6 +301,27 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeCarousel = PerformanceMonitoring.start(SELLER_HOME_CAROUSEL_TRACE)
         sellerHomeViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        performanceMonitoringSellerHomeTable = PerformanceMonitoring.start(SELLER_HOME_TABLE_TRACE)
+        sellerHomeViewModel.getTableWidgetData(dataKeys)
+    }
+
+    private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
+        performanceMonitoringSellerHomePieChart = PerformanceMonitoring.start(SELLER_HOME_PIE_CHART_TRACE)
+        sellerHomeViewModel.getPieChartWidgetData(dataKeys)
+    }
+
+    private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
+        performanceMonitoringSellerHomeBarChart = PerformanceMonitoring.start(SELLER_HOME_BAR_CHART_TRACE)
+        sellerHomeViewModel.getBarChartWidgetData(dataKeys)
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
@@ -482,6 +512,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
         groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData(this) }
         groupedWidgets[WidgetType.POST_LIST]?.run { getPostData(this) }
+        groupedWidgets[WidgetType.TABLE]?.run { getTableData(this) }
+        groupedWidgets[WidgetType.PIE_CHART]?.run { getPieChartData(this) }
+        groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             forEach {
                 if (!it.isLoaded) {
@@ -611,6 +644,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             WidgetType.PROGRESS -> performanceMonitoringSellerHomeProgress?.stopTrace()
             WidgetType.POST_LIST -> performanceMonitoringSellerHomePostList?.stopTrace()
             WidgetType.CAROUSEL -> performanceMonitoringSellerHomeCarousel?.stopTrace()
+            WidgetType.TABLE -> performanceMonitoringSellerHomeTable?.stopTrace()
+            WidgetType.PIE_CHART -> performanceMonitoringSellerHomePieChart?.stopTrace()
+            WidgetType.BAR_CHART -> performanceMonitoringSellerHomeBarChart?.stopTrace()
         }
     }
 

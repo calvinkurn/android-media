@@ -39,6 +39,9 @@ class SellerHomeViewModel @Inject constructor(
         private val getProgressDataUseCase: GetProgressDataUseCase,
         private val getPostDataUseCase: GetPostDataUseCase,
         private val getCarouselDataUseCase: GetCarouselDataUseCase,
+        private val getTableDataUseCase: GetTableDataUseCase,
+        private val getPieChartDataUseCase: GetPieChartDataUseCase,
+        private val getBarChartDataUseCase: GetBarChartDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : CustomBaseViewModel(dispatcher) {
 
@@ -67,6 +70,9 @@ class SellerHomeViewModel @Inject constructor(
     private val _progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
     private val _postListWidgetData = MutableLiveData<Result<List<PostListDataUiModel>>>()
     private val _carouselWidgetData = MutableLiveData<Result<List<CarouselDataUiModel>>>()
+    private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
+    private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
+    private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
 
     val homeTicker: LiveData<Result<List<TickerUiModel>>>
         get() = _homeTicker
@@ -86,6 +92,12 @@ class SellerHomeViewModel @Inject constructor(
         get() = _postListWidgetData
     val carouselWidgetData: LiveData<Result<List<CarouselDataUiModel>>>
         get() = _carouselWidgetData
+    val tableWidgetData: LiveData<Result<List<TableDataUiModel>>>
+        get() = _tableWidgetData
+    val pieChartWidgetData: LiveData<Result<List<PieChartDataUiModel>>>
+        get() = _pieChartWidgetData
+    val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
+        get() = _barChartWidgetData
 
     fun getTicker() {
         launchCatchError(block = {
@@ -185,6 +197,43 @@ class SellerHomeViewModel @Inject constructor(
             _carouselWidgetData.postValue(result)
         }, onError = {
             _carouselWidgetData.postValue(Fail(it))
+        })
+    }
+
+
+    fun getTableWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<TableDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getTableDataUseCase.executeOnBackground()
+            })
+            _tableWidgetData.postValue(result)
+        }, onError = {
+            _tableWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getPieChartWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<PieChartDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getPieChartDataUseCase.executeOnBackground()
+            })
+            _pieChartWidgetData.postValue(result)
+        }, onError = {
+            _pieChartWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getBarChartWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<BarChartDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getBarChartDataUseCase.executeOnBackground()
+            })
+            _barChartWidgetData.postValue(result)
+        }, onError = {
+            _barChartWidgetData.postValue(Fail(it))
         })
     }
 }
