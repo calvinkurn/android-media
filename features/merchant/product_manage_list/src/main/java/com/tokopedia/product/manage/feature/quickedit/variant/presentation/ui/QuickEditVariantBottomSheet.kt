@@ -28,6 +28,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.Prod
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.di.DaggerQuickEditVariantComponent
 import com.tokopedia.product.manage.feature.quickedit.variant.di.QuickEditVariantComponent
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel.QuickEditVariantViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage_quick_edit_variant.*
@@ -102,6 +103,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         variantList.apply {
             adapter = this@QuickEditVariantBottomSheet.adapter
             layoutManager = LinearLayoutManager(this@QuickEditVariantBottomSheet.context)
+            itemAnimator = null
         }
     }
 

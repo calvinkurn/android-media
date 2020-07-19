@@ -75,5 +75,6 @@ object TopAdsDashboardConstant {
     const val STATUS_ACTIVE = 1
     const val STATUS_TIDAK_TAMPIL = 2
     const val TAB_POSITION = "tab_position"
+    const val SELLER_PACKAGENAME = "com.tokopedia.sellerapp"
 
 }

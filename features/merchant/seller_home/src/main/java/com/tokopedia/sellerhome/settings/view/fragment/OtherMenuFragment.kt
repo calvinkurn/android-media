@@ -30,6 +30,7 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
@@ -71,6 +72,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+
+        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -182,7 +185,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         if (bottomSheet is BottomSheetUnify) {
             bottomSheet.dismiss()
         }
-        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
     }
 
     override fun onRefreshShopInfo() {
@@ -264,7 +267,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
                     }
-                    is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
+                    is Fail -> {
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+                        showSettingShopInfoState(SettingResponseState.SettingError)
+                    }
                 }
             })
             isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->

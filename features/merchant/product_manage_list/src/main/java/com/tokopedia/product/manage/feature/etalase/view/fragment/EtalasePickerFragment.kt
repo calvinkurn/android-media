@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel
 import com.tokopedia.product.manage.feature.etalase.di.DaggerProductManageEtalaseComponent
 import com.tokopedia.product.manage.feature.etalase.di.ProductManageEtalaseComponent
@@ -229,7 +230,10 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
         observe(viewModel.getEtalaseResult) {
             when(it) {
                 is Success -> onGetEtalaseSuccess(it.data)
-                is Fail -> showErrorToast()
+                is Fail -> {
+                    showErrorToast()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         }
     }
