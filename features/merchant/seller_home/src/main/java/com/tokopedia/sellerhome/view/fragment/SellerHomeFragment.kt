@@ -98,11 +98,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var isFirstLoad = true
     private var isErrorToastShown = false
 
-    private var hasLoadCardData = false
-    private var hasLoadLineGraphData = false
-    private var hasLoadProgressData = false
-    private var hasLoadPostData = false
-    private var hasLoadCarouselData = false
     private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeLineGraph: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
@@ -243,12 +238,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun reloadPage() = view?.run {
-        hasLoadCardData = false
-        hasLoadLineGraphData = false
-        hasLoadProgressData = false
-        hasLoadPostData = false
-        hasLoadCarouselData = false
-
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
@@ -270,27 +259,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     }
 
-    override fun getCardData() {
-        if (hasLoadCardData) return
-        hasLoadCardData = true
-        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(adapter.data.filter { !it.data?.error.isNullOrBlank() })
-        performanceMonitoringSellerHomeCard = PerformanceMonitoring.start(SELLER_HOME_CARD_TRACE)
-        sellerHomeViewModel.getCardWidgetData(dataKeys)
-    }
-
     private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeCard = PerformanceMonitoring.start(SELLER_HOME_CARD_TRACE)
         sellerHomeViewModel.getCardWidgetData(dataKeys)
-    }
-
-    override fun getLineGraphData() {
-        if (hasLoadLineGraphData) return
-        hasLoadLineGraphData = true
-        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(adapter.data.filter { !it.data?.error.isNullOrBlank() })
-        performanceMonitoringSellerHomeLineGraph = PerformanceMonitoring.start(SELLER_HOME_LINE_GRAPH_TRACE)
-        sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
     }
 
     private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
@@ -300,14 +273,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
     }
 
-    override fun getProgressData() {
-        if (hasLoadProgressData) return
-        hasLoadProgressData = true
-        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(adapter.data.filter { !it.data?.error.isNullOrBlank() })
-        performanceMonitoringSellerHomeProgress = PerformanceMonitoring.start(SELLER_HOME_PROGRESS_TRACE)
-        sellerHomeViewModel.getProgressWidgetData(dataKeys)
-    }
-
     private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
@@ -315,27 +280,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getProgressWidgetData(dataKeys)
     }
 
-    override fun getPostData() {
-        if (hasLoadPostData) return
-        hasLoadPostData = true
-        val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(adapter.data.filter { !it.data?.error.isNullOrBlank() })
-        performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
-        sellerHomeViewModel.getPostWidgetData(dataKeys)
-    }
-
     private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
         performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
-    }
-
-    override fun getCarouselData() {
-        if (hasLoadCarouselData) return
-        hasLoadCarouselData = true
-        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(adapter.data.filter { !it.data?.error.isNullOrBlank() })
-        performanceMonitoringSellerHomeCarousel = PerformanceMonitoring.start(SELLER_HOME_CAROUSEL_TRACE)
-        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
@@ -584,33 +533,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         isErrorToastShown = false
-        adapter.data.forEachIndexed { index, widget ->
-            if (!widget.data?.error.isNullOrBlank()) {
-                when (widget.widgetType) {
-                    WidgetType.CARD -> {
-                        hasLoadCardData = false
-                        getCardData()
-                    }
-                    WidgetType.LINE_GRAPH -> {
-                        hasLoadLineGraphData = false
-                        getLineGraphData()
-                    }
-                    WidgetType.PROGRESS -> {
-                        hasLoadProgressData = false
-                        getProgressData()
-                    }
-                    WidgetType.CAROUSEL -> {
-                        hasLoadCarouselData = false
-                        getCarouselData()
-                    }
-                    WidgetType.POST_LIST -> {
-                        hasLoadPostData = false
-                        getPostData()
-                    }
-                }
+
+        val errorWidgets: List<BaseWidgetUiModel<*>> = adapter.data.filterIndexed { index, widget ->
+            val isWidgetError = !widget.data?.error.isNullOrBlank()
+            if (isWidgetError) {
+                //set data to null then notify adapter to show the widget shimmer
                 widget.data = null
                 adapter.notifyItemChanged(index)
             }
+            return@filterIndexed isWidgetError
+        }
+
+        if (errorWidgets.isNotEmpty()) {
+            getWidgetsData(errorWidgets)
         }
     }
 
