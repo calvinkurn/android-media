@@ -17,6 +17,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
@@ -130,6 +131,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             setShopId(anyString())
             updateVariantStockCount(anyString(), anyInt())
             updateVariantIsActive(anyString(), ProductStatus.ACTIVE)
+
+            delay(500)
             updateStockData()
         }
 
