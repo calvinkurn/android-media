@@ -11,6 +11,7 @@ import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
+import com.tokopedia.navigation_common.model.UohCounterModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -79,6 +80,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
                     String query = request.getString(AccountConstants.QUERY, "");
                     String saldoQuery = request.getString(AccountConstants.SALDO_QUERY, "");
+                    String uohCounterQuery = request.getString(AccountConstants.UOH_COUNTER_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) request.getObject(VARIABLES);
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
@@ -91,6 +93,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                                 SaldoModel.class);
                         graphqlUseCase.addRequest(saldoGraphql);
 
+                        GraphqlRequest uohGraphql = new GraphqlRequest(uohCounterQuery,
+                                UohCounterModel.class);
+                        graphqlUseCase.addRequest(uohGraphql);
+
 
                         return graphqlUseCase.createObservable(null);
                     }
@@ -101,7 +107,11 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .map(graphqlResponse -> {
                     AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
                     SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
+                    UohCounterModel uohCounterModel = graphqlResponse.getData(UohCounterModel.class);
                     accountModel.setSaldoModel(saldoModel);
+                    if (uohCounterModel != null) {
+                        accountModel.setUohOrderCount(uohCounterModel.getUohOrderCount());
+                    }
                     return accountModel;
                 });
     }

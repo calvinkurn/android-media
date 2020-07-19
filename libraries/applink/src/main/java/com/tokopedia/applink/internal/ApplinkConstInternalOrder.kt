@@ -67,4 +67,6 @@ object ApplinkConstInternalOrder {
     @JvmField
     val INVOICE = "$INTERNAL_ORDER/invoice"
 
+    @JvmField
+    val UNIFY_ORDER = "$INTERNAL_ORDER/unified"
 }

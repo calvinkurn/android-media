@@ -34,6 +34,8 @@ import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationItemViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridIconNotificationViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
@@ -54,7 +56,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -208,7 +209,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
+    public void onMenuGridBackgroundItemClicked(@NotNull MenuGridIconNotificationItemViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getDescription());
+        openApplink(item.getApplink());
+    }
+
+    @Override
     public void onMenuGridLinkClicked(MenuGridViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
+        openApplink(item.getApplinkUrl());
+    }
+
+    @Override
+    public void onMenuGridBackgroundLinkClicked(@NotNull MenuGridIconNotificationViewModel item) {
         sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getLinkText());
         openApplink(item.getApplinkUrl());
     }

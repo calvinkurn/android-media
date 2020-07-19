@@ -190,7 +190,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         } else {
             tokopediaPayViewModel.setBsDataCentre(null);
         }
-        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig));
+        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig, accountModel.getUohOrderCount()));
         model.setItems(items);
 
         return model;

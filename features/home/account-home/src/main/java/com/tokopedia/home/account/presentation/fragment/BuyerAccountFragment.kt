@@ -141,7 +141,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig, null))
             }
         }
 
@@ -349,8 +349,10 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         context?.let {
             val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
                     .new_query_saldo_balance)
+            val uohCounterQuery = GraphqlHelper.loadRawString(it.resources, R.raw
+                    .query_uoh_order_count)
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_buyer_account_home), saldoQuery)
+                    .query_buyer_account_home), saldoQuery, uohCounterQuery)
         }
     }
 

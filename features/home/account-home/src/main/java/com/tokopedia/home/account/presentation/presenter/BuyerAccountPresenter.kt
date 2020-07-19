@@ -17,11 +17,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-
-import java.util.ArrayList
-import java.util.HashMap
-
 import rx.Subscriber
+import java.util.*
 
 /**
  * @author okasurya on 7/17/18.
@@ -104,13 +101,14 @@ class BuyerAccountPresenter(
         return recomendationList
     }
 
-    override fun getBuyerData(query: String, saldoQuery: String) {
+    override fun getBuyerData(query: String, saldoQuery: String, uohCounterQuery: String) {
         view?.showLoading()
 
         val requestParams = RequestParams.create()
 
         requestParams.putString(AccountConstants.QUERY, query)
         requestParams.putString(AccountConstants.SALDO_QUERY, saldoQuery)
+        requestParams.putString(AccountConstants.UOH_COUNTER_QUERY, uohCounterQuery)
         requestParams.putObject(AccountConstants.VARIABLES, HashMap<Any, Any>())
 
         getBuyerAccountUseCase.execute(requestParams, GetBuyerAccountSubscriber(view))

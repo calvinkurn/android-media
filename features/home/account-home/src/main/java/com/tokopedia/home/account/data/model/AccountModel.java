@@ -13,6 +13,7 @@ import com.tokopedia.navigation_common.model.ReputationShop;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
+import com.tokopedia.navigation_common.model.UohCounterModel.UohOrderCount;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -72,6 +73,8 @@ public class AccountModel {
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
     private SaldoModel saldoModel = new SaldoModel();
+
+    private UohOrderCount uohOrderCount = new UohOrderCount();
 
     @SerializedName("isAffiliate")
     private boolean isAffiliate = false;
@@ -204,6 +207,14 @@ public class AccountModel {
 
     public void setSaldoModel(SaldoModel saldoModel) {
         this.saldoModel = saldoModel;
+    }
+
+    public UohOrderCount getUohOrderCount() {
+        return uohOrderCount;
+    }
+
+    public void setUohOrderCount(UohOrderCount uohOrderCount) {
+        this.uohOrderCount = uohOrderCount;
     }
 
     public DebitInstantModel getDebitInstant() {

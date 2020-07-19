@@ -13,6 +13,7 @@ public class AccountConstants {
     public static final String RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
+    public static final String UOH_COUNTER_QUERY = "uoh_counter_query";
     public static final String SHOP_LOCATION_QUERY = "query_shop_location";
     public static final String ACCOUNT_TAB = "ACCOUNT_TAB";
     public static final String ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER";
