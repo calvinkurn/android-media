@@ -11,6 +11,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.matchers.RecyclerViewItemCountAssertion
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.ChatListGraphqlUseCase
 import com.tokopedia.topchat.stub.common.UserSessionStub
@@ -85,9 +86,10 @@ class ChatListActivityTest {
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(2500)
 
         // Then
+        onView(withId(R.id.recycler_view))
+                .check(RecyclerViewItemCountAssertion(2))
     }
 
     @Test
