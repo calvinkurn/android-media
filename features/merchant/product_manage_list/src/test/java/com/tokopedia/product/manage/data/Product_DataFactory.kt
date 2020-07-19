@@ -12,7 +12,7 @@ fun createProduct(
     name: String? = "Tolak Angin",
     price: Price? = Price(),
     stock: Int? = 1,
-    hasStockReserved: Boolean? = false,
+    hasStockReserved: Boolean = false,
     status: ProductStatus? = ProductStatus.ACTIVE,
     cashback: Int = 0,
     featured: Int = 0,
@@ -38,7 +38,7 @@ fun createProductViewModel(
     isVariant: Boolean? = false,
     multiSelectActive: Boolean = false,
     isChecked: Boolean = false,
-    hasStockReserved: Boolean? = false
+    hasStockReserved: Boolean = false
 ): ProductViewModel {
     return ProductViewModel(
         id,
