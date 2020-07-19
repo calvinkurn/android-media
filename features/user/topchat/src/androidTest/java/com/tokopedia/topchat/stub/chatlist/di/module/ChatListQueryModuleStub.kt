@@ -56,5 +56,6 @@ class ChatListQueryModuleStub (
             GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_blast_seller_metadata)
 
     @Provides
+    @ChatListScope
     fun provideGetChatListMessageInfoUseCase(): GraphqlUseCase<ChatListPojo> = chatListUseCase
 }

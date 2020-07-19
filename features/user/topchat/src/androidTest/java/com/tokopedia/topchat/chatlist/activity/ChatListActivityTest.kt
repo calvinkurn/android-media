@@ -5,15 +5,20 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
+import com.tokopedia.topchat.stub.chatlist.usecase.ChatListGraphqlUseCase
 import com.tokopedia.topchat.stub.common.UserSessionStub
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.invoke
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,9 +34,7 @@ class ChatListActivityTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
-    private lateinit var chatListUseCase: GraphqlUseCase<ChatListPojo>
-
+    private lateinit var chatListUseCase: ChatListGraphqlUseCase
     private lateinit var userSession: UserSessionStub
     private lateinit var activity: ChatListActivityStub
 
@@ -45,9 +48,12 @@ class ChatListActivityTest {
             ChatListPojo::class.java
     )
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
+//        MockKAnnotations.init(this)
+        Dispatchers.setMain(TestCoroutineDispatcher())
+        chatListUseCase = ChatListGraphqlUseCase()
         userSession = mActivityTestRule.activity.userSessionInterface
         activity = mActivityTestRule.activity
     }
@@ -56,28 +62,33 @@ class ChatListActivityTest {
     fun empty_chat_list_buyer_only() {
         // Given
         userSession.hasShopStub = false
-        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-            onSuccess.invoke(exEmptyChatListPojo)
-        }
+        chatListUseCase.response = exEmptyChatListPojo
+//        coEvery { chatListUseCase.executeOnBackground() } returns exEmptyChatListPojo
+//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+//            lambda<(ChatListPojo) -> Unit>().invoke(exEmptyChatListPojo)
+////            onSuccess.invoke(exSize2ChatListPojo)
+//        }
 
         // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(500)
+        Thread.sleep(2500)
     }
 
     @Test
     fun size_2_chat_list_buyer_only() {
         // Given
         userSession.hasShopStub = false
-        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-            onSuccess.invoke(exSize2ChatListPojo)
-        }
+        chatListUseCase.response = exSize2ChatListPojo
+//        coEvery { chatListUseCase.execute(captureLambda(), any()) } coAnswers {
+//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+////            onSuccess.invoke(exSize2ChatListPojo)
+//            onSuccess.invoke(exEmptyChatListPojo)
+//        }
+//        every { chatListUseCase.execute(captureLambda(), any()) } just Runs
 
-        // When
+//        // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(500)
+        Thread.sleep(2500)
 
         // Then
 //        val tabView = onView(
@@ -106,14 +117,16 @@ class ChatListActivityTest {
         userSession.hasShopStub = true
         userSession.shopNameStub = "Toko Rifqi"
         userSession.nameStub = "Rifqi MF"
-        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-            onSuccess.invoke(exEmptyChatListPojo)
-        }
-
-        // When
+        chatListUseCase.response = exEmptyChatListPojo
+//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+//            onSuccess.invoke(exEmptyChatListPojo)
+//        }
+//        every { chatListUseCase.execute(captureLambda(), any()) } just Runs
+//
+//        // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(500)
+        Thread.sleep(2500)
     }
 
     @Test
@@ -122,14 +135,17 @@ class ChatListActivityTest {
         userSession.hasShopStub = true
         userSession.shopNameStub = "Toko Rifqi 123"
         userSession.nameStub = "Rifqi MF 123"
-        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-            onSuccess.invoke(exSize5ChatListPojo)
-        }
-
-        // When
+        chatListUseCase.response = exSize5ChatListPojo
+//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
+//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
+////            onSuccess.invoke(exSize5ChatListPojo)
+//            onSuccess.invoke(exEmptyChatListPojo)
+//        }
+//        every { chatListUseCase.execute(captureLambda(), any()) } just Runs
+//
+//        // When
         activity.setupTestFragment(chatListUseCase)
-        Thread.sleep(500)
+        Thread.sleep(2500)
     }
 
 //    private fun childAtPosition(parentMatcher: Matcher<View>, position: Int): Matcher<View> {
