@@ -132,11 +132,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     if (inputModel.price.isNotEmpty()) {
                         price = inputModel.price.toBigIntegerOrNull().orZero()
                     }
+                    // assign new value if input stock is not empty
+                    if (inputModel.stock.isNotEmpty()) {
+                        stock = inputModel.stock.toIntOrZero()
+                    }
                     // assign new value if input sku is not empty
                     if (inputModel.sku.isNotEmpty()) {
                         sku = inputModel.sku
                     }
-                    stock = inputModel.stock.toInt()
                 }
             }
         }
