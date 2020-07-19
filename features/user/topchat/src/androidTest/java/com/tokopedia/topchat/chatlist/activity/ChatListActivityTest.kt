@@ -51,7 +51,6 @@ class ChatListActivityTest {
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-//        MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
         chatListUseCase = ChatListGraphqlUseCase()
         userSession = mActivityTestRule.activity.userSessionInterface
@@ -63,11 +62,6 @@ class ChatListActivityTest {
         // Given
         userSession.hasShopStub = false
         chatListUseCase.response = exEmptyChatListPojo
-//        coEvery { chatListUseCase.executeOnBackground() } returns exEmptyChatListPojo
-//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-//            lambda<(ChatListPojo) -> Unit>().invoke(exEmptyChatListPojo)
-////            onSuccess.invoke(exSize2ChatListPojo)
-//        }
 
         // When
         activity.setupTestFragment(chatListUseCase)
@@ -79,36 +73,12 @@ class ChatListActivityTest {
         // Given
         userSession.hasShopStub = false
         chatListUseCase.response = exSize2ChatListPojo
-//        coEvery { chatListUseCase.execute(captureLambda(), any()) } coAnswers {
-//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-////            onSuccess.invoke(exSize2ChatListPojo)
-//            onSuccess.invoke(exEmptyChatListPojo)
-//        }
-//        every { chatListUseCase.execute(captureLambda(), any()) } just Runs
 
-//        // When
+        // When
         activity.setupTestFragment(chatListUseCase)
         Thread.sleep(2500)
 
         // Then
-//        val tabView = onView(
-//                allOf(childAtPosition(
-//                        childAtPosition(
-//                                withId(R.id.tl_chat_list),
-//                                0),
-//                        1),
-//                        isDisplayed()))
-//        tabView.perform(click())
-//
-//        val constraintLayout = onView(
-//                allOf(childAtPosition(
-//                        allOf(withId(R.id.recycler_view),
-//                                childAtPosition(
-//                                        withId(R.id.swipe_refresh_layout),
-//                                        0)),
-//                        0),
-//                        isDisplayed()))
-//        constraintLayout.perform(click())
     }
 
     @Test
@@ -118,13 +88,8 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi"
         userSession.nameStub = "Rifqi MF"
         chatListUseCase.response = exEmptyChatListPojo
-//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-//            onSuccess.invoke(exEmptyChatListPojo)
-//        }
-//        every { chatListUseCase.execute(captureLambda(), any()) } just Runs
-//
-//        // When
+
+        // When
         activity.setupTestFragment(chatListUseCase)
         Thread.sleep(2500)
     }
@@ -136,31 +101,10 @@ class ChatListActivityTest {
         userSession.shopNameStub = "Toko Rifqi 123"
         userSession.nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
-//        every { chatListUseCase.execute(captureLambda(), any()) } answers {
-//            val onSuccess = lambda<(ChatListPojo) -> Unit>()
-////            onSuccess.invoke(exSize5ChatListPojo)
-//            onSuccess.invoke(exEmptyChatListPojo)
-//        }
-//        every { chatListUseCase.execute(captureLambda(), any()) } just Runs
-//
-//        // When
+
+        // When
         activity.setupTestFragment(chatListUseCase)
         Thread.sleep(2500)
     }
 
-//    private fun childAtPosition(parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-//
-//        return object : TypeSafeMatcher<View>() {
-//            override fun describeTo(description: Description) {
-//                description.appendText("Child at position $position in parent ")
-//                parentMatcher.describeTo(description)
-//            }
-//
-//            public override fun matchesSafely(view: View): Boolean {
-//                val parent = view.parent
-//                return parent is ViewGroup && parentMatcher.matches(parent)
-//                        && view == parent.getChildAt(position)
-//            }
-//        }
-//    }
 }
