@@ -183,7 +183,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
                 }
             }
         }
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_add_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.recent_view_msg_success_add_wishlist))
     }
 
     override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
@@ -203,7 +203,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
                 }
             }
         }
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_remove_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.recent_view_msg_success_remove_wishlist))
     }
 
     override fun dismissLoadingProgress() {}
