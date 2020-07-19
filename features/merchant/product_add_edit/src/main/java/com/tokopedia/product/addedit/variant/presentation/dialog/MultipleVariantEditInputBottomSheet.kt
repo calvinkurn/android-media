@@ -98,6 +98,9 @@ class MultipleVariantEditInputBottomSheet(
             validateStock()
             updateSubmitButtonInput()
         }
+        contentView?.tfuSku?.textFieldInput?.afterTextChanged {
+            updateSubmitButtonInput()
+        }
         contentView?.buttonApply?.setOnClickListener {
             submitInput()
             updateSubmitButtonInput()
@@ -159,8 +162,9 @@ class MultipleVariantEditInputBottomSheet(
     private fun updateSubmitButtonInput() {
         val isPriceEmpty = contentView?.tfuPrice.getText().isEmpty()
         val isStockEmpty = contentView?.tfuStock.getText().isEmpty()
+        val isSkuEmpty = contentView?.tfuSku.getText().isEmpty()
 
-        contentView?.buttonApply?.isEnabled = if (isPriceEmpty && isStockEmpty) {
+        contentView?.buttonApply?.isEnabled = if (isPriceEmpty && isStockEmpty && isSkuEmpty) {
             false
         } else {
             !isPriceError && !isStockError
@@ -168,12 +172,6 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun submitInput() {
-        if (enableEditPrice) {
-            validatePrice()
-        }
-
-        validateStock()
-
         if (!isPriceError && !isStockError) {
             contentView?.apply {
                 val price = tfuPrice.getText().replace(".", "")
