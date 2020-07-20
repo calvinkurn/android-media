@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.view.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -31,7 +30,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
@@ -52,9 +50,6 @@ class ShopHomeViewModel @Inject constructor(
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
-        const val KEY_YOUTUBE_VIDEO_ID = "v"
-        const val WEB_PREFIX_HTTP = "http://"
-        const val WEB_PREFIX_HTTPS = "https://"
     }
 
     val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
@@ -203,14 +198,12 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun getVideoYoutube(videoUrl: String, widgetId: String) {
-        launchCatchError( block = {
-            getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
-                getYoutubeVideoUseCase.setVideoId(youtubeId)
-                val result = withContext(Dispatchers.IO) {
-                    convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
-                }
-                _videoYoutube.value = Pair(widgetId, Success(result))
+        launchCatchError(block = {
+            getYoutubeVideoUseCase.setVideoUrl(videoUrl)
+            val result = withContext(Dispatchers.IO) {
+                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
             }
+            _videoYoutube.value = Pair(widgetId, Success(result))
         }, onError = {
             _videoYoutube.value = Pair(videoUrl, Fail(it))
         })
@@ -218,28 +211,6 @@ class ShopHomeViewModel @Inject constructor(
 
     private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
         return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
-    }
-
-    private fun getIdYoutubeUrl(videoUrl: String): String? {
-        return try {
-            // add https:// prefix to videoUrl
-            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
-                videoUrl
-            } else {
-                WEB_PREFIX_HTTPS + videoUrl
-            }
-            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
-
-            val uri = Uri.parse(webVideoUrl)
-            when {
-                uri.host == "youtu.be" -> uri.lastPathSegment
-                uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                else -> throw MessageErrorException("Unknown youtube url $webVideoUrl.")
-            }
-        } catch (e: NullPointerException) {
-            throw MessageErrorException(e.message)
-        }
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
