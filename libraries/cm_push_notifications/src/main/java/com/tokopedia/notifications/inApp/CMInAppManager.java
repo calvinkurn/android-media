@@ -10,6 +10,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
+import com.tokopedia.notifications.di.DaggerCMNotificationComponent;
+import com.tokopedia.notifications.di.module.NotificationModule;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
@@ -20,15 +22,17 @@ import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
@@ -36,6 +40,8 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_
  * @author lalit.singh
  */
 public class CMInAppManager implements CmInAppListener, DataProvider {
+
+    @Inject private UserSessionInterface userSession;
 
     private static CMInAppManager inAppManager;
     private Application application;
@@ -60,6 +66,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         this.application = application;
         this.cmInAppListener = this;
         RulesManager.initRuleEngine(application);
+        initInjector();
         initInAppManager();
     }
 
@@ -73,6 +80,17 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private void initInAppManager() {
         application.registerActivityLifecycleCallbacks(new CMActivityLifeCycle(this));
+    }
+
+    private void initInjector() {
+        NotificationModule module = new NotificationModule(
+                application.getApplicationContext()
+        );
+
+        DaggerCMNotificationComponent.builder()
+                .notificationModule(module)
+                .build()
+                .inject(this);
     }
 
     private void updateCurrentActivity(Activity activity) {
@@ -101,13 +119,13 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     @Override
     public void sendEventInAppPrepared(List<CMInApp> inAppDataList) {
         for (CMInApp cmInApp: inAppDataList) {
-            sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREPARED, null);
+            sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREPARED);
         }
     }
 
     @Override
     public void sendEventInAppDelivered(CMInApp cmInApp) {
-        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED);
     }
 
     /**
@@ -236,13 +254,27 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
-        if (cmInApp == null)
-            return;
+        if (cmInApp == null) return;
+
         if (elementId != null) {
             IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {
             IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp);
         }
+    }
+
+    private void sendPushEvent(CMInApp cmInApp, String eventName) {
+        if (cmInApp == null) return;
+
+        String deviceId = userSession.getDeviceId();
+        String userId = userSession.getUserId();
+        IrisAnalyticsEvents.INSTANCE.sendPushEvent(
+                application.getApplicationContext(),
+                cmInApp,
+                eventName,
+                userId,
+                deviceId
+        );
     }
 
     @Override
