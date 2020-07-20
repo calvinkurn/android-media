@@ -166,11 +166,20 @@ public class GlobalNavViewModel implements Parcelable, Visitable<ProductListType
             return position;
         }
 
-        public Object getGlobalNavItemAsObjectDataLayer() {
+        public Object getImpressionGlobalNavItemAsObjectDataLayer() {
             return DataLayer.mapOf(
                     "id", name,
                     "name", "/search result - widget",
                     "creative", applink,
+                    "position", Integer.toString(position)
+            );
+        }
+
+        public Object getClickGlobalNavItemAsObjectDataLayer() {
+            return DataLayer.mapOf(
+                    "id", name,
+                    "name", "/search result - widget",
+                    "creative", name,
                     "position", Integer.toString(position)
             );
         }
