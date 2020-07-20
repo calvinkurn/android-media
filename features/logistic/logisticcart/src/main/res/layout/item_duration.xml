@@ -44,6 +44,19 @@
             app:typographyWeight="reguler"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_cod_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_toEndOf="@+id/tv_duration"
+            android:layout_toRightOf="@+id/tv_duration"
+            android:layout_alignBottom="@id/tv_duration"
+            android:layout_alignTop="@id/tv_duration"
+            android:text="Tersedia Bayar di tempat"
+            app:labelType="general_light_green" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_price"
             android:layout_width="wrap_content"
