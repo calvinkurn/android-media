@@ -254,6 +254,29 @@
                         tools:text="Rp20.000"
                         tools:visibility="gone" />
 
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/lbl_cod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/label_free_shipping_original_price"
+                        app:typographyType="small"
+                        app:typographyWeight="reguler"
+                        tools:text="Tersedia bayar di tempat." />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/term_and_conds_cod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_3"
+                        android:text="@string/label_otdg_tnc"
+                        android:textColor="@color/color_03AC0E"
+                        android:layout_toEndOf="@+id/lbl_cod"
+                        android:layout_toRightOf="@+id/lbl_cod"
+                        android:layout_alignBottom="@id/lbl_cod"
+                        app:typographyType="small"
+                        app:typographyWeight="reguler"
+                        tools:text="S&amp;K Berlaku" />
+
                 </RelativeLayout>
 
                 <ImageView
