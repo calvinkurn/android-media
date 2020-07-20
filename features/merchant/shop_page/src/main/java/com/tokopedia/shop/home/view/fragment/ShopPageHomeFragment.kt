@@ -373,13 +373,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun onSuccessGetYouTubeData(videoUrl: String, data: YoutubeVideoDetailModel) {
-        shopHomeAdapter.setHomeYouTubeData(videoUrl, data)
+    private fun onSuccessGetYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+        shopHomeAdapter.setHomeYouTubeData(widgetId, data)
     }
 
-    private fun onFailedGetYouTubeData(videoUrl: String, throwable: Throwable) {
+    private fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
         logExceptionToCrashlytics(ERROR_WHEN_GET_YOUTUBE_DATA, throwable)
-        shopHomeAdapter.setHomeYouTubeData(videoUrl, YoutubeVideoDetailModel())
+        shopHomeAdapter.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
     }
 
     private fun logExceptionToCrashlytics(message: String, throwable: Throwable) {
@@ -637,8 +637,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun loadYouTubeData(videoUrl: String) {
-        viewModel?.getVideoYoutube(videoUrl)
+    override fun loadYouTubeData(videoUrl: String, widgetId: String) {
+        viewModel?.getVideoYoutube(videoUrl, widgetId)
     }
 
     override fun onVoucherClicked(parentPosition: Int, position: Int, merchantVoucherViewModel: MerchantVoucherViewModel) {

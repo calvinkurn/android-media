@@ -203,14 +203,14 @@ class ShopHomeViewModel @Inject constructor(
         )
     }
 
-    fun getVideoYoutube(videoUrl: String) {
+    fun getVideoYoutube(videoUrl: String, widgetId: String) {
         launchCatchError( block = {
             getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
                 val result = withContext(Dispatchers.IO) {
                     convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
                 }
-                _videoYoutube.value = Pair(videoUrl, Success(result))
+                _videoYoutube.value = Pair(widgetId, Success(result))
             }
         }, onError = {
             _videoYoutube.value = Pair(videoUrl, Fail(it))

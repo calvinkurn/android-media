@@ -64,7 +64,7 @@ class ShopHomeVideoViewHolder(
                 val videoData = model.data?.first()
                 val uri = Uri.parse(videoData?.videoUrl ?: "")
                 videoUrl = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
-                listener.loadYouTubeData(uri.toString())
+                listener.loadYouTubeData(uri.toString(), model.widgetId)
                 btnYoutubePlayer?.setOnClickListener(this)
                 ivVideoNotFound?.setOnClickListener(this)
                 videoData?.let {

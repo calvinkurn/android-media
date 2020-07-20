@@ -84,10 +84,10 @@ class ShopHomeAdapter(
         notifyChangedDataSet()
     }
 
-    fun setHomeYouTubeData(videoUrl: String, data: YoutubeVideoDetailModel) {
+    fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
         visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().onEach {
-            if (it.data?.firstOrNull()?.videoUrl == videoUrl) {
-                it.data.firstOrNull()?.youTubeVideoDetail = data
+            if (it.widgetId == widgetId) {
+                it.data?.firstOrNull()?.youTubeVideoDetail = data
                 notifyItemChanged(visitables.indexOf(it))
                 return
             }
