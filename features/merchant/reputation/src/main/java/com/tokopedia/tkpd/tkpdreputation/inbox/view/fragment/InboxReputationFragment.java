@@ -265,7 +265,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         else {
             presenter.getFirstTimeInboxReputation(getTab());
         }
-        ViewCompat.setNestedScrollingEnabled(mainList, false);
     }
 
     public int getTab() {
