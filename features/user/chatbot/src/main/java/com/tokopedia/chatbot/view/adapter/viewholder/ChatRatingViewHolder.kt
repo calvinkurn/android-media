@@ -15,6 +15,8 @@ import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chatbot.EllipsizeMaker
+import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -115,8 +117,9 @@ class ChatRatingViewHolder(itemView: View,
         if (element.message.isNotEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
             message.post {
-                if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
-                    message.maxLines = ChatBotMessageViewHolder.MESSAGE_LINE_COUNT
+                if (message.lineCount >= MESSAGE_LINE_COUNT) {
+                    message.maxLines = MESSAGE_LINE_COUNT
+                    message.text = EllipsizeMaker.getTruncatedMsg(message)
                     MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {

@@ -11,12 +11,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.MessageViewHolder;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
+import com.tokopedia.chatbot.EllipsizeMaker;
 import com.tokopedia.chatbot.R;
 import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet;
 
+import static com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT;
+
 public class ChatBotMessageViewHolder extends MessageViewHolder {
 
-    public static final int MESSAGE_LINE_COUNT = 10;
     private TextView mesageBottom;
     private String htmlMessage;
 
@@ -39,9 +41,9 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
         message.post(() -> {
             if (message.getLineCount() >= MESSAGE_LINE_COUNT) {
                 message.setMaxLines(MESSAGE_LINE_COUNT);
+                message.setText(EllipsizeMaker.INSTANCE.getTruncatedMsg(message));
                 MethodChecker.setBackground(chatBalloon, ContextCompat.getDrawable(itemView.getContext(),R.drawable.left_bubble_with_stroke));
                 mesageBottom.setVisibility(View.VISIBLE);
-                message.scrollTo(0, 0);
                 mesageBottom.setOnClickListener((View v) -> {
                     ReadMoreBottomSheet.createInstance(htmlMessage)
                             .show(((FragmentActivity) itemView.getContext()).getSupportFragmentManager(), "read_more_bottom_sheet");
