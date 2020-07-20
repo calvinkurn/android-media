@@ -13,7 +13,7 @@ import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_curated_product_category.view.*
+import kotlinx.android.synthetic.main.item_deals_curated_product_category.view.*
 
 class CuratedProductCategoryViewHolder(
         itemView: View,
@@ -72,6 +72,6 @@ class CuratedProductCategoryViewHolder(
 
     companion object {
         private const val PRODUCT_SPAN_COUNT = 2
-        val LAYOUT = R.layout.item_curated_product_category
+        val LAYOUT = R.layout.item_deals_curated_product_category
     }
 }

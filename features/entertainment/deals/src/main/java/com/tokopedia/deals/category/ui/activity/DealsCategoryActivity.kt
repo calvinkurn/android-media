@@ -9,6 +9,7 @@ import com.tokopedia.deals.category.di.DealsCategoryComponent
 import com.tokopedia.deals.category.di.DaggerDealsCategoryComponent
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
+import com.tokopedia.deals.search.model.response.Category
 import javax.inject.Inject
 
 /**
@@ -50,6 +51,16 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
     }
 
     override fun getPageTAG(): String = TAG
+
+    override fun findCategoryPosition(categoryId: String): Int? {
+        if (categoryId.isEmpty()) return 0
+        childCategoryList.forEachIndexed { index, s ->
+            if (s == categoryId) {
+                return index
+            }
+        }
+        return null
+    }
 
     companion object {
         const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"

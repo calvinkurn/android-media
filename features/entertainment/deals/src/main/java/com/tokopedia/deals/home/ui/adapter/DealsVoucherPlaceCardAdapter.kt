@@ -21,7 +21,7 @@ class DealsVoucherPlaceCardAdapter(private val voucherPlaceCardListener: DealsVo
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherPlaceCardViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.item_voucher_place_card, parent, false)
+        val itemView = inflater.inflate(R.layout.item_deals_voucher_place_card, parent, false)
         return VoucherPlaceCardViewHolder(itemView, voucherPlaceCardListener)
     }
 

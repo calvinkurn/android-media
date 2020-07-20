@@ -223,11 +223,14 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         locationBottomSheet.show(supportFragmentManager, "")
     }
 
-    fun changeLocationBasedOnCache() {
+    fun changeLocationBasedOnCache(): Boolean {
         val location = dealsLocationUtils.getLocation()
         if (location != currentLoc) {
+            currentLoc = location
             renderLocationName(location.name)
+            return true
         }
+        return false
     }
 
     /**

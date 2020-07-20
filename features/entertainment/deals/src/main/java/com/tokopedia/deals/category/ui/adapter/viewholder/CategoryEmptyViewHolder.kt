@@ -6,10 +6,9 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.category.listener.DealsCategoryEmptyListener
 import com.tokopedia.deals.category.ui.dataview.CategoryEmptyDataView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.item_category_empty.view.*
+import kotlinx.android.synthetic.main.item_deals_category_empty.view.*
 
 class CategoryEmptyViewHolder(
     itemView: View,
@@ -29,6 +28,6 @@ class CategoryEmptyViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_category_empty
+        val LAYOUT = R.layout.item_deals_category_empty
     }
 }

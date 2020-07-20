@@ -17,7 +17,7 @@ class DealsPoularCityAdapter(private val locationListener: DealsLocationListener
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chip_normal, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deals_chip_normal, parent, false)
         return CityViewHolder(view, locationListener)
     }
 

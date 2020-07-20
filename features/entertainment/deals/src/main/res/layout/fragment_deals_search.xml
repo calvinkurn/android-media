@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/search_layout"
-        layout="@layout/deal_search_bar_layout"
+        layout="@layout/layout_deals_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/Neutral_N0"
-        tools:listitem="@layout/layout_voucher"
+        tools:listitem="@layout/layout_deals_voucher"
         tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

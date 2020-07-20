@@ -17,6 +17,6 @@ class LocationSectionTitleViewHolder(itemView: View): AbstractViewHolder<Section
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_section_title_location
+        val LAYOUT = R.layout.layout_deals_section_title_location
     }
 }

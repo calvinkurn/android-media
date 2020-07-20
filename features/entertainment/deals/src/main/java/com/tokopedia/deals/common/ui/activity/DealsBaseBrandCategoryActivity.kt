@@ -11,6 +11,7 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.ui.adapter.DealsFragmentPagerAdapter
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
+import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.getCustomText
@@ -23,7 +24,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
     override fun getLayoutRes(): Int = R.layout.activity_base_brand_category_deals
 
-    private val childCategoryList: ArrayList<String?> = arrayListOf()
+    protected var childCategoryList: ArrayList<String?> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +55,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         vp_deals_brand_category?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 val tab = tab_deals_brand_category?.getUnifyTabLayout()?.getTabAt(position)
-//                tab_deals_brand_category?.getUnifyTabLayout()?.selectTab(tab)
+                tab?.select()
                 tabAnalytics(tab?.getCustomText() ?: "", position)
             }
         })
@@ -62,25 +63,38 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         dealBrandCategoryActivityViewModel.curatedData.observe(this, Observer {
             tabs_shimmering?.hide()
             val tabNameList: ArrayList<String> = arrayListOf()
+
             if (showAllItemPage()) {
                 childCategoryList.add(null)
                 tab_deals_brand_category.addNewTab(ALL_ITEM_PAGE)
                 tabNameList.add(ALL_ITEM_PAGE)
             }
 
-            it.eventChildCategory.categories.forEach { category ->
-                if (category.isCard == 0 && category.isHidden == 0) {
-                    tab_deals_brand_category.addNewTab(category.title)
-                    childCategoryList.add(category.id)
-                    tabNameList.add(category.title)
+            childCategoryList = ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
+                    .map { category -> category.id })
+
+            val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID) ?: ""
+            val position = findCategoryPosition(categoryId)
+
+            if (position != null) {
+                it.eventChildCategory.categories.forEach { category ->
+                    if (category.isCard == 0 && category.isHidden == 0) {
+                        tab_deals_brand_category.addNewTab(category.title)
+                        tabNameList.add(category.title)
+                    }
                 }
+
+                adapter = DealsFragmentPagerAdapter(this, childCategoryList.toList(), getPageTAG(), tabNameList.toList())
+                vp_deals_brand_category.offscreenPageLimit = 1
+                vp_deals_brand_category.adapter = adapter
+
+                redirectsToSpecificCategory(position)
+            } else  {
+                tab_deals_brand_category.hide()
+                adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId))
+                vp_deals_brand_category.offscreenPageLimit = 1
+                vp_deals_brand_category.adapter = adapter
             }
-            adapter = DealsFragmentPagerAdapter(this, childCategoryList.toList(), getPageTAG(), tabNameList.toList())
-
-            vp_deals_brand_category.offscreenPageLimit = 1
-            vp_deals_brand_category.adapter = adapter
-
-            redirectsToSpecificCategory()
         })
 
         dealBrandCategoryActivityViewModel.errorMessage.observe(this, Observer {
@@ -88,22 +102,17 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         })
     }
 
-    private fun redirectsToSpecificCategory() {
-        val categoryId: String? = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID)
+    private fun redirectsToSpecificCategory(position: Int?) {
+        position?.let {
+            tab_deals_brand_category.getUnifyTabLayout().isSmoothScrollingEnabled = true
 
-        if (categoryId != null) {
-            selectTab(findCategoryPosition(categoryId))
+            val tab = tab_deals_brand_category.getUnifyTabLayout().getTabAt(position)
+            tab?.select()
         }
     }
 
-    private fun selectTab(position: Int) {
-        tab_deals_brand_category.getUnifyTabLayout().isSmoothScrollingEnabled = true
-
-        val tab = tab_deals_brand_category.getUnifyTabLayout().getTabAt(position)
-        tab?.select()
-    }
-
-    private fun findCategoryPosition(categoryId: String): Int {
+    open fun findCategoryPosition(categoryId: String): Int? {
+        if (categoryId.isEmpty()) return 0
         childCategoryList.forEachIndexed { index, s ->
             if (s == categoryId) {
                 return index

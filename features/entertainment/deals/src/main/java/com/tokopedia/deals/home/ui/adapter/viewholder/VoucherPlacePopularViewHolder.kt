@@ -8,7 +8,7 @@ import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
 import com.tokopedia.deals.home.ui.adapter.DealsVoucherPlaceCardAdapter
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.kotlin.extensions.view.hide
-import kotlinx.android.synthetic.main.item_voucher_popular_place.view.*
+import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
 
 class VoucherPlacePopularViewHolder(
         itemView: View,
@@ -38,6 +38,6 @@ class VoucherPlacePopularViewHolder(
     companion object {
         private const val VOUCHER_PLACE_SPAN_COUNT = 2
 
-        val LAYOUT: Int = com.tokopedia.deals.R.layout.item_voucher_popular_place
+        val LAYOUT: Int = com.tokopedia.deals.R.layout.item_deals_voucher_popular_place
     }
 }

@@ -224,8 +224,14 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            DEALS_SEARCH_REQUEST_CODE -> (activity as DealsBaseActivity).changeLocationBasedOnCache()
+            DEALS_SEARCH_REQUEST_CODE, DEALS_CATEGORY_REQUEST_CODE, DEALS_BRAND_REQUEST_CODE -> {
+                changeLocationAndLoadData()
+            }
         }
+    }
+
+    private fun changeLocationAndLoadData() {
+        if ((activity as DealsBaseActivity).changeLocationBasedOnCache()) loadData(0)
     }
 
     /* BASE DEALS ACTIVITY ACTION */
@@ -255,7 +261,8 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* CATEGORY SECTION ACTION */
     override fun onDealsCategoryClicked(dealsCategory: DealsCategoryDataView, position: Int) {
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext(), dealsCategory.id))
+        val intent = RouteManager.getIntent(requireContext(), dealsCategory.appUrl)
+        startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
         analytics.eventClickCategoryIcon(dealsCategory.title, position)
     }
 
@@ -274,7 +281,7 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
         analytics.eventSeeAllBrandPopular()
-        startActivity(DealsBrandActivity.getCallingIntent(requireContext(), ""))
+        startActivityForResult(DealsBrandActivity.getCallingIntent(requireContext(), ""), DEALS_BRAND_REQUEST_CODE)
     }
 
     /* PRODUCT SECTION ACTION */
@@ -291,19 +298,21 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
+        val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
+        startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
         analytics.clickAllCuratedProduct()
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext()))
     }
 
     /* NEAREST PLACE SECTION ACTION */
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
         (activity as DealsBaseActivity).setCurrentLocation(voucherPlaceCard.location)
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext()))
+        startActivityForResult(DealsCategoryActivity.getCallingIntent(requireContext()), DEALS_CATEGORY_REQUEST_CODE)
     }
 
     /* FAVOURITE CATEGORY SECTION ACTION */
     override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: FavouritePlacesDataView.Place, position: Int) {
-        startActivity(DealsCategoryActivity.getCallingIntent(requireContext()))
+        val intent = RouteManager.getIntent(context, url)
+        startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
         analytics.eventClickCuratedSection(favoritePlacesDataView, position)
     }
 
@@ -328,6 +337,9 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     companion object {
         const val DEALS_SEARCH_REQUEST_CODE = 27
+        const val DEALS_CATEGORY_REQUEST_CODE = 33
+        const val DEALS_BRAND_REQUEST_CODE = 39
+
         fun getInstance(): DealsHomeFragment = DealsHomeFragment()
         private const val PREFERENCES_NAME = "deals_home_preferences"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key"

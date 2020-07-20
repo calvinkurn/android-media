@@ -36,7 +36,7 @@ class MerchantViewHolder(itemView: View, searchListener: DealsSearchListener): A
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_brand_list_search
+        val LAYOUT = R.layout.layout_deals_brand_list_search
     }
 
 }

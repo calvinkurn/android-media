@@ -7,7 +7,7 @@ import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_category_empty.view.*
+import kotlinx.android.synthetic.main.item_deals_category_empty.view.*
 
 class DealsEmptyViewHolder(
         private val emptyStateListener: EmptyStateListener,
@@ -28,6 +28,6 @@ class DealsEmptyViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_category_empty
+        val LAYOUT = R.layout.item_deals_category_empty
     }
 }

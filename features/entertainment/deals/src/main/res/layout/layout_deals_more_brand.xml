@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_green_selected_border"
+        android:background="@drawable/bg_deals_green_selected_border"
         android:gravity="center"
         android:padding="@dimen/spacing_lvl3"
         android:text="@string/deals_brand_count_text"

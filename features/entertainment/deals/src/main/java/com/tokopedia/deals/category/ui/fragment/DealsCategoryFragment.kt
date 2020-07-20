@@ -14,7 +14,6 @@ import com.tokopedia.deals.category.di.DealsCategoryComponent
 import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.category.ui.adapter.DealsCategoryAdapter
-import com.tokopedia.deals.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.DealChipsListActionListener
@@ -40,7 +39,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         OnBaseLocationActionListener, SearchBarActionListener,
         DealsBrandActionListener, ProductListListener,
         DealChipsListActionListener, DealsCategoryFilterBottomSheetListener,
-        EmptyStateListener{
+        EmptyStateListener {
 
     private var categoryID: String = ""
     private var page : Int = 0
@@ -78,6 +77,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun observeLayout() {
         dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
+            checkIfCategoryIdEqualsToFilterChipId(it)
             renderList(it, true)
         })
 
@@ -94,9 +94,9 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
         dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, Observer {
             val chipsViewHolder = recyclerView.findViewHolderForAdapterPosition(
-                CHIPS_VIEW_HOLDER_POSITION) as DealsChipsViewHolder
-            chipsViewHolder.updateChips(it)
+                    CHIPS_VIEW_HOLDER_POSITION) as DealsChipsViewHolder
             chips = it
+            chipsViewHolder.updateChips(chips)
         })
 
         baseViewModel.observableCurrentLocation.observe(this, Observer {
@@ -104,8 +104,16 @@ class DealsCategoryFragment : DealsBaseFragment(),
         })
     }
 
+    private fun checkIfCategoryIdEqualsToFilterChipId(layouts: List<DealsBaseItemDataView>) {
+        if (layouts[CHIPS_VIEW_HOLDER_POSITION] is DealsChipsDataView) {
+            (layouts[CHIPS_VIEW_HOLDER_POSITION] as DealsChipsDataView).chipList.forEach {
+                if (it.id == categoryID) it.isSelected = true
+            }
+        }
+    }
+
     override fun createAdapterInstance(): BaseCommonAdapter {
-        return DealsCategoryAdapter(this, this, this,this)
+        return DealsCategoryAdapter(this, this, this, this)
     }
 
     override fun loadData(page: Int) {
@@ -113,11 +121,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
         if (categoryIDs.isEmpty()) categoryIDs = categoryID
         getCurrentLocation().let {
             dealCategoryViewModel.getCategoryBrandData(
-                categoryIDs,
-                it.coordinates,
-                it.locType.name,
-                page,
-                false
+                    categoryIDs,
+                    it.coordinates,
+                    it.locType.name,
+                    page,
+                    false
             )
         }
     }
@@ -131,6 +139,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         analytics.eventClickBrandPopular(brand, position, true)
+        RouteManager.route(requireContext(), brand.brandUrl)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
@@ -140,8 +149,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     /** ProductListListener **/
     override fun onProductClicked(
-        productCardDataView: ProductCardDataView,
-        productItemPosition: Int
+            productCardDataView: ProductCardDataView,
+            productItemPosition: Int
     ) {
         RouteManager.route(context, productCardDataView.appUrl)
     }
@@ -169,7 +178,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun applyFilter(chips: DealsChipsDataView) {
         var categoryIDs = chips.chipList.filter { it.isSelected }.joinToString(separator = ",") { it.id }
         if (categoryIDs.isEmpty()) categoryIDs = categoryID
-        dealCategoryViewModel.updateChips(chips, getCurrentLocation(), categoryIDs,true)
+        dealCategoryViewModel.updateChips(chips, getCurrentLocation(), categoryIDs, true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -228,7 +237,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
-    override fun afterSearchBarTextChanged(text: String) { /* do nothing */ }
+    override fun afterSearchBarTextChanged(text: String) { /* do nothing */
+    }
 
     override fun resetFilter() {
         val chipReseted = DealsChipsDataView(chips.chipList.map { it.copy(isSelected = false) })

@@ -3,6 +3,8 @@ package com.tokopedia.deals.home.util
 import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.*
@@ -36,10 +38,10 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         homeLayout.forEach {
             if (it.title.equals(getString(TYPE_CAROUSEL), true)) {
                 val banners = it.productDetails.map { item ->
-                    val banner = BannersDataView.BannerDataView(item.id, item.title, item.appUrl, item.imageApp)
+                    val banner = BannersDataView.BannerDataView(item.id, item.title, item.seoUrl, item.imageApp)
                     banner
                 }
-                bannersDataView = BannersDataView(list = banners, seeAllUrl = it.seoUrl)
+                bannersDataView = BannersDataView(list = banners, seeAllUrl = ApplinkConst.PROMO_LIST)
 
             } else if (it.isCard == 0 && it.isHidden == 0) {
                 val category = DealsCategoryDataView(id = it.id, imageUrl = it.mediaUrl, title = it.title, appUrl = it.appUrl)
@@ -93,7 +95,8 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         }
 
         val brandLayout = brands.map { brand ->
-            DealsBrandsDataView.Brand(brand.id.toString(), brand.title, brand.featuredThumbnailImage, brand.seoUrl)
+            DealsBrandsDataView.Brand(brand.id, brand.title, brand.featuredThumbnailImage,
+                    UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl))
         }
         brandsDataView = DealsBrandsDataView(title = getString(BRAND_POPULAR_SECTION_TITLE),
                 seeAllText = getString(DEALS_SEE_ALL), brands = brandLayout)
