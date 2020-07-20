@@ -49,8 +49,10 @@ object IrisAnalyticsEvents {
     private const val PARENT_ID = "parent_id"
     private const val PUSH_TYPE = "push_type"
     private const val IS_SILENT = "is_silent"
-    private const val CLICKED_ELEMENT_ID="clicked_element_id"
-    private const val INAPP_TYPE="inapp_type"
+    private const val CLICKED_ELEMENT_ID = "clicked_element_id"
+    private const val INAPP_TYPE = "inapp_type"
+    private const val DEVICE_ID = "Device_id"
+    private const val USER_ID = "user_id"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.isTest)
@@ -107,6 +109,17 @@ object IrisAnalyticsEvents {
 
             trackEvent(context, irisAnalytics, values)
         }
+    }
+
+    fun sendPushEvent(context: Context, cmInApp: CMInApp, eventName: String, userId: String, deviceId: String) {
+        if (cmInApp.isTest) return
+        val irisAnalytics = IrisAnalytics(context)
+
+        val values = addBaseValues(context, eventName, cmInApp)
+        values[DEVICE_ID] = deviceId
+        values[USER_ID] = userId
+
+        trackEvent(context, irisAnalytics, values)
     }
 
     fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
