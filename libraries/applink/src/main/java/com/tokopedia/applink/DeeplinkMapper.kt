@@ -96,7 +96,7 @@ object DeeplinkMapper {
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = uri.query
-                val tempDeeplink = getRegisteredNavigationFromSellerapp(context, uri, deeplink)
+                val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
                 return createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
@@ -329,6 +329,7 @@ object DeeplinkMapper {
                                 uri.pathSegments.first())
                     }),
             DLP.exact(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE),
+            DLP.exact(ApplinkConst.SELLER_SHIPPING_EDITOR, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING),
             DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),
             DLP.exact(ApplinkConst.ADD_CREDIT_CARD, ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD),
             DLP.exact(ApplinkConst.SETTING_NOTIFICATION, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING),
@@ -445,15 +446,9 @@ object DeeplinkMapper {
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
      */
-    private fun getRegisteredNavigationFromSellerapp(context: Context, uri: Uri, deeplink: String): String {
-        val trimDeeplink = trimDeeplink(uri, deeplink)
-        if (trimDeeplink == ApplinkConst.SellerApp.TOPADS_DASHBOARD) {
-            if (AppUtil.isSellerInstalled(context)) {
-                return ApplinkConst.SellerApp.TOPADS_DASHBOARD
-            } else
-                ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
-        }
-        return when (trimDeeplink) {
+    private fun getRegisteredNavigationFromSellerapp(uri: Uri, deeplink: String): String {
+        return when (val trimDeeplink = trimDeeplink(uri, deeplink)) {
+            ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE

@@ -10,6 +10,7 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletPref;
@@ -106,9 +107,11 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .map(graphqlResponse -> {
                     AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
                     SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-                    ShortcutResponse shortcutResponse = graphqlResponse.getData(ShortcutResponse.class);
-                    accountModel.setSaldoModel(saldoModel);
-                    accountModel.setShortcutResponse(shortcutResponse);
+                    if(saldoModel != null && accountModel != null) {
+                        ShortcutResponse shortcutResponse = graphqlResponse.getData(ShortcutResponse.class);
+                        accountModel.setSaldoModel(saldoModel);
+                        accountModel.setShortcutResponse(shortcutResponse);
+                    }
                     return accountModel;
                 });
     }
