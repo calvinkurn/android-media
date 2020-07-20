@@ -69,7 +69,7 @@ query {
       sumUserCard
       sumUserCardStr
     }
-  vcc_user_status(){
+  vcc_user_status {
       status
       redirection_url
       message_header
@@ -80,7 +80,7 @@ query {
       title
       body
   }
-  vcc_user_balance(){
+  vcc_user_balance {
     data{
       vcc_id
       vcc_number
@@ -94,7 +94,7 @@ query {
       vcc_expire_at
     }
   }
-  openDebitSettings() {
+  openDebitSettings {
       data {
         redirectURL
       }
