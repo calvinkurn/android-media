@@ -55,7 +55,6 @@ class ShopHomeViewModel @Inject constructor(
         const val KEY_YOUTUBE_VIDEO_ID = "v"
         const val WEB_PREFIX_HTTP = "http://"
         const val WEB_PREFIX_HTTPS = "https://"
-        const val WEB_YOUTUBE_PREFIX = "https://"
     }
 
     val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
@@ -227,7 +226,7 @@ class ShopHomeViewModel @Inject constructor(
             var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
                 videoUrl
             } else {
-                WEB_YOUTUBE_PREFIX + videoUrl
+                WEB_PREFIX_HTTPS + videoUrl
             }
             webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
 
