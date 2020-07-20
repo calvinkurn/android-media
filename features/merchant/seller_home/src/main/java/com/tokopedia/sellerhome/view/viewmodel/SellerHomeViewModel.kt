@@ -200,7 +200,6 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-
     fun getTableWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<TableDataUiModel>> = Success(withContext(Dispatchers.IO) {

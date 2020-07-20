@@ -157,7 +157,6 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getProgressData() {}
 
         fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {}
 

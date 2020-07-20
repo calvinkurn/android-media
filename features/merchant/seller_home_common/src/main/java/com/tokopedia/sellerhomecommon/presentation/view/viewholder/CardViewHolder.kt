@@ -109,7 +109,6 @@ class CardViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getCardData() {}
 
         fun sendCardImpressionEvent(model: CardWidgetUiModel) {}
 
