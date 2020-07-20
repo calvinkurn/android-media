@@ -290,11 +290,9 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         return { throwable ->
             throwable.printStackTrace()
             hideLoading()
-            viewBound.pin?.isError = true
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-
                 when (otpData.otpType) {
                     OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                         analytics.trackFailedClickVerificationRegisterPhoneButton(message)
@@ -304,6 +302,8 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
                     }
                 }
             }
+            viewBound.pin?.isError = true
+            showKeyboard()
         }
     }
 
