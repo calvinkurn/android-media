@@ -240,7 +240,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     adapter.notifyItemChanged(it.first, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
-                    showErrorToast((it.second as Fail).throwable.message ?: "")
+                    showErrorToast(getString(R.string.shop_page_play_card_error_reminder))
                 }
             }
         })
