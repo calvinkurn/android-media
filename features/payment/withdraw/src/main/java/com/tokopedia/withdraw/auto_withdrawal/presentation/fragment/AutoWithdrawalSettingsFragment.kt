@@ -39,15 +39,19 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     var getInfoAutoWD: GetInfoAutoWD? = null
-    var autoWDStatusData: AutoWDStatusData? = null
-    var currentSchedule: Schedule? = null
-    var requestedSchedule: Schedule? = null
+    private var autoWDStatusData: AutoWDStatusData? = null
+    private var currentSchedule: Schedule? = null
+    private var requestedSchedule: Schedule? = null
 
-    var primaryBankAccount: BankAccount? = null
+    private var primaryBankAccount: BankAccount? = null
 
     private val autoWDSettingsViewModel: AutoWDSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(AutoWDSettingsViewModel::class.java)
+    }
+
+    override fun initInjector() {
+        getComponent(AutoWithdrawalComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +61,10 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let { context ->
+            setTermsAndConditionSpannable(context)
+        }
+        scrollViewAutoWDContent.gone()
         setLoaderViewVisibility(true)
         observeViewModel()
         autoWDSettingsViewModel.getAutoWDInfo()
@@ -64,8 +72,10 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
 
     override fun getScreenName() = ""
 
-    override fun initInjector() {
-        getComponent(AutoWithdrawalComponent::class.java).inject(this)
+    private fun setActionMenu() {
+        val headerUnify = (activity as AutoWithdrawalActivity).getHeader()
+        headerUnify.actionText = getString(R.string.swd_info)
+        headerUnify.actionTextView?.setOnClickListener { openInfoBottomSheet() }
     }
 
     private fun observeViewModel() {
@@ -87,87 +97,6 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getAutoWDStatus)
             }
         })
-    }
-
-    private fun onAutoWithdrawalStatusLoaded(autoWDStatusData: AutoWDStatusData) {
-        setLoaderViewVisibility(false)
-        groupAutoWDSaveSetting.gone()
-        this.autoWDStatusData = autoWDStatusData
-        scrollViewAutoWDContent.visible()
-        autoWDStatusData.apply {
-            if (isOwner) {
-                tickerAutoWD.gone()
-                if (status == 0)
-                    setBannerViewVisibility(true)
-                else
-                    setBannerViewVisibility(false)
-            } else {
-                tickerAutoWD.visible()
-                tickerAutoWD.setTextDescription(getString(R.string.swd_auto_wd_user_not_owner))
-            }
-            setPrimaryBankAccount(this)
-            setScheduleData(this)
-        }
-        checkboxAutoWD.setOnCheckedChangeListener { _, isChecked ->
-            setPrimaryBankAccount(autoWDStatusData)
-            enableScheduleSection(isChecked)
-            showSaveButton()
-        }
-    }
-
-    private fun showSaveButton() {
-        if (primaryBankAccount != null && currentSchedule != null) {
-            if ((checkboxAutoWD.isChecked && currentSchedule?.status != 1)
-                    || (!checkboxAutoWD.isChecked && currentSchedule?.status == 1)
-            || (requestedSchedule != currentSchedule))
-                setSaveSettingBottomViewVisibility(true)
-            else
-                setSaveSettingBottomViewVisibility(false)
-        } else {
-            setSaveSettingBottomViewVisibility(false)
-        }
-    }
-
-    private fun setScheduleData(autoWDStatusData: AutoWDStatusData) {
-        currentSchedule = autoWDStatusData.schedule[0]
-        //todo commented for testing purpose
-        /*autoWDStatusData.schedule.forEach {
-            if (it.status == 1) {
-                currentSchedule = it
-            }
-        }*/
-        currentSchedule?.apply {
-            tvAutoWDScheduleType.text = title
-            tvScheduleTiming.text = desc
-            checkboxAutoWD.isChecked = status == 1
-            enableScheduleSection(status == 1 && autoWDStatusData.isOwner)
-            enableBankAccountSection(status == 1 && autoWDStatusData.isOwner)
-        }
-    }
-
-    private fun onBankAccountLoaded(accountList: ArrayList<BankAccount>) {
-        accountList.forEach lit@{ bankAccount ->
-            if (bankAccount.isDefaultBank == 1) {
-                primaryBankAccount = bankAccount
-                return@lit
-            }
-        }
-    }
-
-    private fun setPrimaryBankAccount(autoWDStatusData: AutoWDStatusData) {
-        primaryBankAccount?.apply {
-            tvAutoWDBankName.text = bankName
-            tvAutoWdBankAccountDetail.text = "$accountNo - $accountName"
-            if (status == 2 || status == 3 || status == 5) {
-                enableBankAccountData(false)
-                btnAutoWDSaveSettings.isEnabled = false
-            } else {
-                enableBankAccountSection(autoWDStatusData.isOwner && checkboxAutoWD.isChecked)
-            }
-            tvAutoWdBankNote.text = copyWriting ?: ""
-        } ?: run {
-            //todo no bank account case...
-        }
     }
 
     private fun onWithdrawalInfoLoaded(data: GetInfoAutoWD) {
@@ -196,18 +125,103 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
             loaderView.gone()
     }
 
-    private fun setActionMenu() {
-        val headerUnify = (activity as AutoWithdrawalActivity).getHeader()
-        headerUnify.actionText = getString(R.string.swd_info)
-        headerUnify.actionTextView?.setOnClickListener { openInfoBottomSheet() }
+    private fun onBankAccountLoaded(accountList: ArrayList<BankAccount>) {
+        accountList.forEach lit@{ bankAccount ->
+            if (bankAccount.isDefaultBank == 1) {
+                primaryBankAccount = bankAccount
+                return@lit
+            }
+        }
+        primaryBankAccount?.apply {
+            tvAutoWDBankName.text = bankName
+            tvAutoWdBankAccountDetail.text = "$accountNo - $accountName"
+            tvAutoWdBankNote.text = copyWriting ?: ""
+        } ?: run {
+            tvAutoWDBankName.gone()
+            tvAutoWdBankAccountDetail.gone()
+            tvAutoWdBankNote.gone()
+        }
+    }
+
+    private fun onAutoWithdrawalStatusLoaded(autoWDStatusData: AutoWDStatusData) {
+        groupAutoWDSaveSetting.gone()
+        this.autoWDStatusData = autoWDStatusData
+        autoWDStatusData.apply {
+            setScheduleData(this)
+            if (isOwner) {
+                setAutoWdCheckBoxListener(this)
+                tickerAutoWD.gone()
+                setBannerViewVisibility(status == 0)
+            } else {
+                tickerAutoWD.visible()
+                tickerAutoWD.setTextDescription(getString(R.string.swd_auto_wd_user_not_owner))
+            }
+            enableAutoWDSettingSection(isOwner)
+            enableScheduleSection(currentSchedule?.status == 1 && autoWDStatusData.isOwner)
+            enableBankAccountSection(currentSchedule?.status == 1 && autoWDStatusData.isOwner)
+            updateBankAccountSectionState()
+            setLoaderViewVisibility(false)
+            scrollViewAutoWDContent.visible()
+        }
+    }
+
+    private fun setScheduleData(autoWDStatusData: AutoWDStatusData) {
+        currentSchedule = autoWDStatusData.schedule[0]
+        autoWDStatusData.schedule.forEach {
+            if (it.status == 1) {
+                currentSchedule = it
+            }
+        }
+        currentSchedule?.apply {
+            tvAutoWDScheduleType.text = title
+            tvScheduleTiming.text = desc
+            checkboxAutoWD.isChecked = status == 1
+        }
+    }
+
+    private fun setAutoWdCheckBoxListener(autoWDStatusData: AutoWDStatusData){
+        checkboxAutoWD.setOnCheckedChangeListener { _, isChecked ->
+            updateBankAccountSectionState()
+            enableScheduleSection(isChecked && autoWDStatusData.isOwner)
+            showSaveButton()
+        }
+    }
+
+    private fun showSaveButton() {
+        if (currentSchedule != null
+                && autoWDStatusData?.isOwner == true) {
+            if ((checkboxAutoWD.isChecked && currentSchedule?.status != 1)
+                    || (!checkboxAutoWD.isChecked && currentSchedule?.status == 1)
+                    || (requestedSchedule != null && requestedSchedule != currentSchedule)) {
+                setSaveSettingBottomViewVisibility(true)
+                btnAutoWDSaveSettings.isEnabled = isPrimaryAccountActive()
+            } else
+                setSaveSettingBottomViewVisibility(false)
+        } else {
+            setSaveSettingBottomViewVisibility(false)
+        }
+    }
+
+    private fun isPrimaryAccountActive(): Boolean {
+        primaryBankAccount?.apply {
+            return !(status == 2 || status == 3 || status == 5)
+        }
+        return false
+    }
+
+    private fun updateBankAccountSectionState() {
+        if (!checkboxAutoWD.isChecked)
+            enableBankAccountSection(false)
+        else if (!isPrimaryAccountActive()) {
+            enableBankAccountSection(autoWDStatusData?.isOwner == true)
+            enableBankAccountData(false)
+        } else
+            enableBankAccountSection(autoWDStatusData?.isOwner == true)
     }
 
     private fun setSaveSettingBottomViewVisibility(isVisible: Boolean) {
         if (isVisible) {
             groupAutoWDSaveSetting.visible()
-            context?.let { context ->
-                setTermsAndConditionSpannable(context)
-            }
         } else
             groupAutoWDSaveSetting.gone()
     }
@@ -223,23 +237,19 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
 
     }
 
-    private fun enableAutoWDSettingSection(isEnable: Boolean, isAutoWdOn: Boolean) {
+    private fun enableAutoWDSettingSection(isEnable: Boolean) {
         context?.let { context ->
-            checkboxAutoWD.setChecked(true)
             CompoundButtonCompat.getButtonDrawable(checkboxAutoWD)
-            checkboxAutoWD.isEnabled = false
+            checkboxAutoWD.isEnabled = isEnable
             if (isEnable) {
                 val textHeadingColor = ContextCompat.getColor(context, R.color.Neutral_N700_96)
                 val textBodyColor = ContextCompat.getColor(context, R.color.Neutral_N700_68)
                 tvAutoWDTitle.setTextColor(textHeadingColor)
                 tvAutoWDAllBalanceAccording.setTextColor(textBodyColor)
-                tvScheduleTiming.setTextColor(textBodyColor)
-                tvChangeAutoWDSchedule.visible()
             } else {
                 val textDisabledColor = ContextCompat.getColor(context, R.color.Neutral_N700_32)
                 tvAutoWDTitle.setTextColor(textDisabledColor)
                 tvAutoWDAllBalanceAccording.setTextColor(textDisabledColor)
-
             }
         }
     }
@@ -360,13 +370,25 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
     }
 
     private fun openInfoBottomSheet() {
-
+        //todo...
     }
 
     companion object {
-
         fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment().apply {
             arguments = bundle
         }
     }
 }
+
+
+/*
+tomorrow dev ----add Tamba Rekening
+--> change schedule actions
+---> Open Info Bottomsheet---> TNC bottom Sheet
+---> Non Rekening Try to set bottomsheet
+---->Final Api Integration ---> Refresh Data...
+
+
+
+
+    */

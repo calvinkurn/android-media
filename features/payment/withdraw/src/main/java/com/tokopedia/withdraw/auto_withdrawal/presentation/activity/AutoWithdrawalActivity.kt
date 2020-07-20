@@ -10,7 +10,6 @@ import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.di.component.DaggerAutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
-import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.TestHeadless
 import kotlinx.android.synthetic.main.swd_activity_auto_withdrawal.*
 
 class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawalComponent> {
@@ -27,11 +26,6 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
 
     companion object {
         const val SCREEN_NAME = "Auto Withdrawal Settings"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        TestHeadless.addFragmentToActivity(supportFragmentManager)
     }
 
 
