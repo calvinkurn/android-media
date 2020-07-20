@@ -41,8 +41,10 @@ class SellableStockProductViewHolder(itemView: View?,
                 setOnCheckedChangeListener { _, isChecked ->
                     val status =
                             if (isChecked) {
+                                label_campaign_stock_inactive?.gone()
                                 ProductStatus.ACTIVE
                             } else {
+                                label_campaign_stock_inactive?.visible()
                                 ProductStatus.INACTIVE
                             }
                     onVariantStatusChanged(element.productId, status)
