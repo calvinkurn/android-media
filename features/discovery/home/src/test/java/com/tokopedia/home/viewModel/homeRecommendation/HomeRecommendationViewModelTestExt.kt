@@ -11,15 +11,9 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
 import java.lang.Exception
 import java.util.concurrent.TimeoutException
 
-
-fun TestBody.createHomeRecommendationViewModel(): HomeRecommendationViewModel{
-    val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase>()
-    return HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
-}
-
-fun FeatureBody.createHomeRecommendationViewModelTestInstance() {
-    val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase> { mockk(relaxed = true) }
-}
+/**
+ * Created by Lukas on 14/05/20.
+ */
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel) {
     setParams("", 0, 10, 0)

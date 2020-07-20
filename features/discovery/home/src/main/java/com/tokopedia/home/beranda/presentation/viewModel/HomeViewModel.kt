@@ -95,7 +95,7 @@ open class HomeViewModel @Inject constructor(
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
-        private val declineSalamWIdgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+        private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()){
@@ -939,8 +939,8 @@ open class HomeViewModel @Inject constructor(
         removeSalamWidget()
         if (declineSalamWidgetJob?.isActive==true) return
         declineSalamWidgetJob = launchCatchError(coroutineContext, block = {
-            declineSalamWIdgetUseCase.get().setParams(requestParams)
-            declineSalamWIdgetUseCase.get().executeOnBackground()
+            declineSalamWidgetUseCase.get().setParams(requestParams)
+            declineSalamWidgetUseCase.get().executeOnBackground()
         }){}
     }
 

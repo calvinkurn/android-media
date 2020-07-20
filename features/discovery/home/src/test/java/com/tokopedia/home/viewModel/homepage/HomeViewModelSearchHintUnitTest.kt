@@ -3,54 +3,39 @@ package com.tokopedia.home.viewModel.homepage
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.coEvery
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.mockk
+import org.junit.Test
 import java.util.concurrent.TimeoutException
 
-class HomeViewModelSearchHintUnitTest : Spek({
-    InstantTaskExecutorRuleSpek(this)
+/**
+ * Created by Lukas on 14/05/20.
+ */
 
-    Feature("Test Search hint"){
-        lateinit var homeViewModel: HomeViewModel
-        createHomeViewModelTestInstance()
-        val getKeywordSearchUseCase by memoized<GetKeywordSearchUseCase>()
+class HomeViewModelSearchHintUnitTest {
+    private val getKeywordSearchUseCase = mockk<GetKeywordSearchUseCase>(relaxed = true)
+    private val homeViewModel: HomeViewModel = createHomeViewModel(getKeywordSearchUseCase = getKeywordSearchUseCase)
+    @Test
+    fun `Get success data search hint`(){
+        // Success data placeholder
+        coEvery{ getKeywordSearchUseCase.executeOnBackground() } returns KeywordSearchData()
 
-        Scenario("Get success data search hint"){
-            Given("Success data placeholder"){
-                coEvery{ getKeywordSearchUseCase.executeOnBackground() } returns KeywordSearchData()
-            }
+        // Get Search hint
+        homeViewModel.getSearchHint(true)
 
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-            When("Get Search hint"){
-                homeViewModel.getSearchHint(true)
-            }
-
-            Then("Check data observer"){
-                assert(homeViewModel.searchHint.value != null)
-            }
-        }
-
-        Scenario("Get timeout exception search hint"){
-            Given("Success data placeholder"){
-                coEvery{ getKeywordSearchUseCase.executeOnBackground() } throws TimeoutException()
-            }
-
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-            When("Get Search hint"){
-                homeViewModel.getSearchHint(true)
-            }
-
-            Then("Check data observer"){
-                assert(homeViewModel.searchHint.value == null)
-            }
-        }
+        // Check data observer
+        assert(homeViewModel.searchHint.value != null)
     }
-})
+
+    @Test
+    fun `Get timeout exception search hint`(){
+        // Error data placeholder
+        coEvery{ getKeywordSearchUseCase.executeOnBackground() } throws TimeoutException()
+
+        // Get Search hint
+        homeViewModel.getSearchHint(true)
+
+        // Check data observer
+        assert(homeViewModel.searchHint.value == null)
+    }
+}
