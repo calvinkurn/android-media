@@ -1,13 +1,10 @@
 package com.tokopedia.home.viewModel.homepage
 
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
 
 /**
  * Created by Lukas on 14/05/20.

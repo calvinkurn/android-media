@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -12,6 +13,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
 import org.junit.Test
 
 
@@ -20,9 +22,12 @@ import org.junit.Test
  */
 
 class HomeViewModelPopularKeywordUnitTest {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Test Popular is visible`(){
@@ -37,6 +42,7 @@ class HomeViewModelPopularKeywordUnitTest {
         )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect popular keyword will show on user screen
@@ -74,6 +80,7 @@ class HomeViewModelPopularKeywordUnitTest {
         )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Load popular keyword
@@ -106,6 +113,7 @@ class HomeViewModelPopularKeywordUnitTest {
         )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect popular widget not show on user screen

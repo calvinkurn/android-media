@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
@@ -14,6 +15,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
 import org.junit.Test
 
 
@@ -22,6 +24,8 @@ import org.junit.Test
  */
 
 class HomeViewModelReviewUnitTest {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)

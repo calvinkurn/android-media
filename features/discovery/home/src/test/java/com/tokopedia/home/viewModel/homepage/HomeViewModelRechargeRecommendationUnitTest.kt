@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRechargeRecommendationUseCase
@@ -14,7 +15,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -22,16 +23,12 @@ import org.junit.Test
  */
 
 class HomeViewModelRechargeRecommendationUnitTest{
-
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
     private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(
-            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-            getHomeUseCase = getHomeUseCase,
-            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
-
-    )
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Recharge Decline`(){
@@ -58,6 +55,12 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 declineRechargeRecommendation
         )
 
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+        )
+
         // decline recharge
         homeViewModel.declineRechargeRecommendationItem(requestParams)
 
@@ -80,6 +83,12 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 HomeDataModel(
                         list = listOf(rechargeDataModel)
                 )
+        )
+
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
 
         // insert null recharge to home data
@@ -136,6 +145,12 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 )
         )
 
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+        )
+
         // insert recharge to home data
         homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
 
@@ -157,6 +172,12 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 HomeDataModel(
                         list = listOf()
                 )
+        )
+
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
 
         // viewmodel load recharge data
@@ -182,6 +203,11 @@ class HomeViewModelRechargeRecommendationUnitTest{
         // recharge data returns success
         getRechargeRecommendationUseCase.givenGetRechargeRecommendationThrowReturn()
 
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+        )
         // viewmodel load recharge data
         homeViewModel.getRechargeRecommendation()
 
@@ -224,6 +250,11 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 rechargeRecommendation = rechargeRecommendation
         )
 
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+        )
 
         // viewmodel load recharge data
         homeViewModel.getRechargeRecommendation()

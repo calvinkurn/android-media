@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -13,15 +14,18 @@ import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 
 class HomeViewModelListCarouselUnitTest{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Get dynamic channel data success with single data and try close widget`() {
@@ -38,7 +42,7 @@ class HomeViewModelListCarouselUnitTest{
         // Success Express Checkout
         every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
 
-
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Express checkout clicked
@@ -77,9 +81,9 @@ class HomeViewModelListCarouselUnitTest{
         every{ getAtcUseCase.createObservable(any()) } returns
                 Observable.just(mockk())
 
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.oneClickCheckout.observeForever(observerExpressCheckout)
-
 
         // dynamic data returns success
         getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
@@ -123,6 +127,7 @@ class HomeViewModelListCarouselUnitTest{
         // Success Express Checkout
         every{ getAtcUseCase.createObservable(any()) } returns Observable.error(mockk())
 
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.oneClickCheckout.observeForever(observerExpressCheckout)
 

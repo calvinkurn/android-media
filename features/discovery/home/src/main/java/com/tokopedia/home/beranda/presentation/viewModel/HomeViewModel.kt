@@ -172,9 +172,9 @@ open class HomeViewModel @Inject constructor(
             get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
-    val isViewModelInitalized: LiveData<Event<Boolean>>
-        get() = _isViewModelInitalized
-    private val _isViewModelInitalized = MutableLiveData<Event<Boolean>>(null)
+    val isViewModelInitialized: LiveData<Event<Boolean>>
+        get() = _isViewModelInitialized
+    private val _isViewModelInitialized = MutableLiveData<Event<Boolean>>(null)
 
     val isRequestNetworkLiveData: LiveData<Event<Boolean>>
         get() = _isRequestNetworkLiveData
@@ -225,7 +225,7 @@ open class HomeViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     init {
-        _isViewModelInitalized.value = Event(true)
+        _isViewModelInitialized.value = Event(true)
         initChannel()
         initFlow()
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.home.viewModel.homepage
 
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.home.ext.observeOnce
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -20,10 +22,11 @@ import org.junit.Test
  */
 
 class HomeViewModelPlayTest{
-
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Get play data success and image url valid and try update view`() {
@@ -43,6 +46,7 @@ class HomeViewModelPlayTest{
         )
 
         // viewModel load play data
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data available and check image
@@ -85,6 +89,7 @@ class HomeViewModelPlayTest{
         )
 
         // viewModel load play data
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data not available
@@ -113,7 +118,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = playCardHome
         )
-
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data available and check image
@@ -139,7 +144,7 @@ class HomeViewModelPlayTest{
                         list = listOf()
                 )
         )
-
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         // Expect the event on live data not available
         homeViewModel.homeLiveData.observeOnce {
             assert(it.list.isEmpty())
@@ -164,7 +169,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = PlayChannel()
         )
-
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         // simulate view want load play data with position
         homeViewModel.getPlayBanner(1)
 
@@ -198,7 +203,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = playCardHome
         )
-
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
 
@@ -237,7 +242,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = PlayChannel()
         )
-
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         // simulate view want load play data wrong position
         homeViewModel.getPlayBanner(0)
 

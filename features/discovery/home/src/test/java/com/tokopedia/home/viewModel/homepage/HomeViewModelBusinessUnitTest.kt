@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -19,14 +21,13 @@ import org.junit.Test
  */
 
 class HomeViewModelBusinessUnitTest{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
     private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab>(relaxed = true)
     private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(
-            getHomeUseCase = getHomeUseCase,
-            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-            getBusinessWidgetTab = getBusinessWidgetTab
-    )
+    private lateinit var homeViewModel: HomeViewModel
     @Test
     fun `Get Tab Data success && bu data success`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
@@ -39,7 +40,11 @@ class HomeViewModelBusinessUnitTest{
                 )
         )
 
-        // home view model
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase,
+                getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
+                getBusinessWidgetTab = getBusinessWidgetTab
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // load tab data return success
@@ -91,7 +96,11 @@ class HomeViewModelBusinessUnitTest{
                         list = listOf(businessUnitDataModel)
                 )
         )
-
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase,
+                getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
+                getBusinessWidgetTab = getBusinessWidgetTab
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // load tab data returns success

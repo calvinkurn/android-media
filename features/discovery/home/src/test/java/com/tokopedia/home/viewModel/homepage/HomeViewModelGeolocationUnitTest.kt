@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -8,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -15,6 +17,9 @@ import org.junit.Test
  */
 
 class HomeViewModelGeolocationUnitTest {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
     @Test

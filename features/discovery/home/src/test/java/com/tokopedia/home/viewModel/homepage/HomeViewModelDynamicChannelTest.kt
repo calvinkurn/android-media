@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
@@ -11,14 +12,17 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class HomeViewModelDynamicChannelTest{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Get dynamic channel data success with single data`() {
@@ -29,13 +33,14 @@ class HomeViewModelDynamicChannelTest{
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
         dynamicChannelViewModel.channel = dynamicChannel
         // dynamic banner almost expired time
-            getHomeUseCase.givenGetHomeDataReturn(
-                    HomeDataModel(
-                            list = listOf(dataModel)
-                    )
-            )
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(dataModel)
+                )
+        )
 
-            homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
 
         // dynamic data returns success
         getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
@@ -85,6 +90,7 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // dynamic data returns success
@@ -135,6 +141,7 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // dynamic data returns success
@@ -171,6 +178,7 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // dynamic data returns success

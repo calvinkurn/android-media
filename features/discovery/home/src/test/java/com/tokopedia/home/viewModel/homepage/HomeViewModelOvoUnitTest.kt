@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
@@ -13,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeoutException
 
@@ -21,14 +23,13 @@ import java.util.concurrent.TimeoutException
  */
 
 class HomeViewModelOvoUnitTest{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getHomeTokopointsDataUseCase = mockk<GetHomeTokopointsDataUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(
-            userSessionInterface = userSessionInterface,
-            getHomeUseCase = getHomeUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
-    )
+    private lateinit var homeViewModel: HomeViewModel
 
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
     private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase>(relaxed = true)
@@ -44,6 +45,11 @@ class HomeViewModelOvoUnitTest{
                 HomeDataModel(
                         list = listOf(headerDataModel)
                 )
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
@@ -77,6 +83,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
@@ -109,6 +120,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.getTokocashPendingBalance()
 
@@ -136,6 +152,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.getTokocashPendingBalance()
 
@@ -158,6 +179,11 @@ class HomeViewModelOvoUnitTest{
                 HomeDataModel(
                         list = listOf(headerDataModel)
                 )
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.refresh(true)
@@ -189,7 +215,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
-
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
@@ -222,6 +252,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoPoint()
         verifyOrder {
@@ -246,6 +281,11 @@ class HomeViewModelOvoUnitTest{
                 )
         )
 
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoPoint()
@@ -271,6 +311,11 @@ class HomeViewModelOvoUnitTest{
                 HomeDataModel(
                         list = listOf(headerDataModel)
                 )
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
@@ -302,6 +347,11 @@ class HomeViewModelOvoUnitTest{
                 )
         )
 
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoPoint()
         verifyOrder {
@@ -333,7 +383,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
-
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoCash()
@@ -359,7 +413,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
-
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoCash()
@@ -381,6 +439,11 @@ class HomeViewModelOvoUnitTest{
                 HomeDataModel(
                         list = listOf(headerDataModel)
                 )
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoCash()
@@ -410,7 +473,11 @@ class HomeViewModelOvoUnitTest{
                         list = listOf(headerDataModel)
                 )
         )
-
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.onRefreshTokoCash()

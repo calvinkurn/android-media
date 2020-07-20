@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
@@ -9,6 +10,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -17,8 +19,11 @@ import org.junit.Test
 
 class HomeViewModelInjectCouponUnitTest {
 
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
 
     @Test
@@ -31,8 +36,7 @@ class HomeViewModelInjectCouponUnitTest {
                 )
         )
 
-
-        // HomeViewModel object
+        homeViewModel = createHomeViewModel(injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase)
         homeViewModel.injectCouponTimeBasedResult.observeForever(observerInjectCouponTimeBased)
 
         // Hit injectCouponTimeBased on HomeViewModel
@@ -58,7 +62,7 @@ class HomeViewModelInjectCouponUnitTest {
                 )
         )
 
-        // HomeViewModel object
+        homeViewModel = createHomeViewModel(injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase)
         homeViewModel.injectCouponTimeBasedResult.observeForever(observerInjectCouponTimeBased)
 
         // Hit injectCouponTimeBased on HomeViewModel
@@ -80,7 +84,7 @@ class HomeViewModelInjectCouponUnitTest {
         // Exception data
         injectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseThrowReturn()
 
-        // HomeViewModel object
+        homeViewModel = createHomeViewModel(injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase)
         homeViewModel.injectCouponTimeBasedResult.observeForever(observerInjectCouponTimeBased)
 
         // Hit injectCouponTimeBased on HomeViewModel
@@ -89,10 +93,9 @@ class HomeViewModelInjectCouponUnitTest {
         // Expect inject coupon failed sent
         verifyOrder {
             observerInjectCouponTimeBased.onChanged(match {
-                (it.data == null) && (it.error != null && it.error == Exception())
+                it.data == null && it.error != null
             })
         }
         confirmVerified(observerInjectCouponTimeBased)
-
     }
 }

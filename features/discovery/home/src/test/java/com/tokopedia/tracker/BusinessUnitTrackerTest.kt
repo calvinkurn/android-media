@@ -1,9 +1,9 @@
 package com.tokopedia.tracker
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.areEqualKeyValues
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.areEqualKeyValues
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.every

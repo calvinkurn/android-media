@@ -28,27 +28,27 @@ android {
         jvmTarget = "1.8"
     }
 
-    flavorDimensions "tier", "client"
-    productFlavors {
-        benchmark {
-            dimension "client"
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
-        }
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-        }
-    }
+//    flavorDimensions "tier", "client"
+//    productFlavors {
+//        benchmark {
+//            dimension "client"
+//            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+//            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
+//        }
+//        prod {
+//            dimension "client"
+//            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+//        }
+//        live {
+//            dimension "tier"
+//        }
+//        staging {
+//            dimension "tier"
+//        }
+//        dev {
+//            dimension "client"
+//        }
+//    }
 
     defaultConfig {
         defaultConfig {

@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.DeclineSalamWIdgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetSalamWidgetUseCase
@@ -8,26 +9,26 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
 import org.junit.Test
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
 
 /**
  * Created by Lukas on 14/05/20.
  */
 
 class HomeViewModelSalamWidgetUnitTest {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val getSalamWidgetUseCase = mockk<GetSalamWidgetUseCase>(relaxed = true)
     private val declineSalamWidgetUseCase = mockk<DeclineSalamWIdgetUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Get SalamWidget Success`(){
@@ -59,6 +60,7 @@ class HomeViewModelSalamWidgetUnitTest {
         )
 
         // viewmodel load salam data
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.getSalamWidget()
 
         // Expect the salam data available
@@ -91,6 +93,7 @@ class HomeViewModelSalamWidgetUnitTest {
         getSalamWidgetUseCase.givenGetSalamWidgetThrowReturn()
 
         // viewmodel load salam data
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.getSalamWidget()
 
         // Expect the reminder salam not available in home live data
@@ -111,6 +114,7 @@ class HomeViewModelSalamWidgetUnitTest {
         )
 
         // viewmodel load salam data
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.getSalamWidget()
 
         // Expect the reminder salam not available in home live data
@@ -161,6 +165,7 @@ class HomeViewModelSalamWidgetUnitTest {
         )
 
         // insert salam to home data
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.insertSalamWidget(salamWidget)
 
         // salam data available in home data
@@ -185,6 +190,7 @@ class HomeViewModelSalamWidgetUnitTest {
         )
 
         // insert null salam to home data
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.insertSalamWidget(salamWidget)
 
         // Expect the reminder salam not available in home live data
@@ -221,6 +227,7 @@ class HomeViewModelSalamWidgetUnitTest {
         )
 
         // decline salam
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.declineSalamItem(requestParams)
 
         // Expect the reminder salam not available in home live data

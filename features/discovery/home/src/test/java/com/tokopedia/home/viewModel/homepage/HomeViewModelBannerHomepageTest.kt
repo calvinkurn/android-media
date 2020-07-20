@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -8,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import io.mockk.*
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -15,11 +17,13 @@ import org.junit.Test
  */
 
 class HomeViewModelBannerHomepageTest{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
 
-    private val homeViewModel: HomeViewModel = createHomeViewModel(
-            getHomeUseCase = getHomeUseCase
-    )
+    private lateinit var homeViewModel: HomeViewModel
+
     @Test
     fun `User doesn't have cache, and must get data from network, and should available on view`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
@@ -34,7 +38,9 @@ class HomeViewModelBannerHomepageTest{
                 )
         )
 
-        // home view model
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect channel updated
@@ -64,6 +70,10 @@ class HomeViewModelBannerHomepageTest{
         )
 
         // home view model
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase
+        )
+
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect channel updated
@@ -99,7 +109,9 @@ class HomeViewModelBannerHomepageTest{
                 )
         )
 
-        // home view model
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect channel updated
@@ -149,7 +161,9 @@ class HomeViewModelBannerHomepageTest{
         }
 
 
-        // home view model
+        homeViewModel = createHomeViewModel(
+                getHomeUseCase = getHomeUseCase
+        )
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect channel updated"
