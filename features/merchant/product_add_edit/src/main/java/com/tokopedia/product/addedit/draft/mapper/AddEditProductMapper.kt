@@ -94,7 +94,7 @@ object AddEditProductMapper {
         if(productDraft.variantInputModel.isNotEmpty()) {
             productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
         } else {
-            productInputModel.variantInputModel = ProductVariantInputModel()
+            productInputModel.variantInputModel = VariantInputModel()
         }
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
