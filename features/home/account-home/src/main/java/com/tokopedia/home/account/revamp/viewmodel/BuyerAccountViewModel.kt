@@ -171,7 +171,7 @@ class BuyerAccountViewModel @Inject constructor (
     }
 
     private fun saveDebitInstantData(accountModel: AccountModel) {
-        if (accountModel.debitInstant != null) {
+        if (accountModel.debitInstant != null && accountModel.debitInstant.data != null) {
             walletPref.saveDebitInstantUrl(accountModel.debitInstant.data.redirectUrl)
         }
     }
