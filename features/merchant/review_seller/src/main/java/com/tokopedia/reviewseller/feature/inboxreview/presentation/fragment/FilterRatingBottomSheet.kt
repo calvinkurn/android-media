@@ -2,6 +2,7 @@ package com.tokopedia.reviewseller.feature.inboxreview.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -12,7 +13,8 @@ import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListIte
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class FilterRatingBottomSheet(private val listener: (List<ListItemRatingWrapper>) -> Unit) : BottomSheetUnify(), RatingListListener {
+class FilterRatingBottomSheet(mActivity: FragmentActivity,
+                              private val listener: (List<ListItemRatingWrapper>) -> Unit) : BottomSheetUnify(), RatingListListener {
 
     companion object {
         const val BOTTOM_SHEET_TITLE = "Filter Rating"
@@ -26,10 +28,8 @@ class FilterRatingBottomSheet(private val listener: (List<ListItemRatingWrapper>
 
     private var ratingFilterAdapter: RatingListAdapter? = null
 
-    private var filterRatingBottomSheetListener: FilterRatingBottomSheetListener? = null
-
     init {
-        val view = View.inflate(context, R.layout.bottom_sheet_filter_rating_inbox_review, null)
+        val view = View.inflate(mActivity, R.layout.bottom_sheet_filter_rating_inbox_review, null)
         rvRatingFilter = view.findViewById(R.id.rvRatingInboxReview)
         btnFilter = view.findViewById(R.id.btnFilter)
         isHideable = true
@@ -38,8 +38,7 @@ class FilterRatingBottomSheet(private val listener: (List<ListItemRatingWrapper>
             resetRatingFilter()
         }
         setCloseClickListener {
-            filterRatingBottomSheetListener?.onBottomSheetDismiss()
-            dismissAllowingStateLoss()
+            dismiss()
         }
         setShowListener {
             bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -48,15 +47,13 @@ class FilterRatingBottomSheet(private val listener: (List<ListItemRatingWrapper>
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if(newState == BottomSheetBehavior.STATE_EXPANDED) {
-                        bottomSheet.requestLayout()
-                        bottomSheet.invalidate()
                         ratingListFilter?.let { ratingFilterAdapter?.setRatingFilter(it) }
                     }
                 }
             })
         }
         setOnDismissListener {
-            filterRatingBottomSheetListener?.onBottomSheetDismiss()
+            listener.invoke(ratingFilterAdapter?.ratingFilterList?.toList() ?: listOf())
         }
         setChild(view)
     }
@@ -89,14 +86,6 @@ class FilterRatingBottomSheet(private val listener: (List<ListItemRatingWrapper>
 
     fun setRatingFilterList(filterRatingWrapper: List<ListItemRatingWrapper>) {
         ratingListFilter = filterRatingWrapper.toMutableList()
-    }
-
-    fun setFilterRatingBottomSheetListener(listener: FilterRatingBottomSheetListener) {
-        this.filterRatingBottomSheetListener = listener
-    }
-
-    interface FilterRatingBottomSheetListener {
-        fun onBottomSheetDismiss()
     }
 
 }

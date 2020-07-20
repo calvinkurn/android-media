@@ -16,7 +16,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ALL_RATINGS
@@ -49,7 +52,7 @@ import kotlinx.android.synthetic.main.fragment_inbox_review.*
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(), HasComponent<InboxReviewComponent>,
-        FeedbackInboxReviewListener, GlobalErrorStateListener, FilterRatingBottomSheet.FilterRatingBottomSheetListener {
+        FeedbackInboxReviewListener, GlobalErrorStateListener {
 
     companion object {
         fun createInstance(): InboxReviewFragment {
@@ -88,7 +91,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private var bottomSheet: FilterRatingBottomSheet? = null
 
     private var feedbackInboxList: MutableList<FeedbackInboxUiModel>? = null
-    private var ratingFilterList: MutableList<ListItemRatingWrapper>? = null
 
     override fun getScreenName(): String {
         return getString(R.string.titlte_inbox_review)
@@ -237,7 +239,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun initRatingFilterList() {
         inboxReviewViewModel.updateRatingFilterData(InboxReviewMapper.mapToItemRatingFilterBottomSheet())
-        ratingFilterList = InboxReviewMapper.mapToItemRatingFilterBottomSheet()
     }
 
     private fun onSuccessGetFeedbackInboxReview(data: InboxReviewUiModel) {
@@ -336,19 +337,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun initBottomSheetFilterPeriod() {
         bottomSheet = FilterRatingBottomSheet(::onRatingFilterSelected)
-        bottomSheet?.setFilterRatingBottomSheetListener(this)
-        ratingFilterList?.toList()?.let { bottomSheet?.setRatingFilterList(it) }
+        inboxReviewViewModel.getRatingFilterListUpdated().toList().let { bottomSheet?.setRatingFilterList(it) }
         bottomSheet?.setShowListener { bottomSheet?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED }
         fragmentManager?.let {
             bottomSheet?.show(it, TAG_FILTER_RATING)
         }
     }
 
-    override fun onBottomSheetDismiss() {
-        val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count().orZero()
-        selectedRatingsFilter(countSelected)
-        bottomSheet?.dismissAllowingStateLoss()
-    }
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
         isFilter = true
@@ -359,7 +354,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         updatedFilterRatingInboxReview(filterRatingList)
         selectedRatingsFilter(countSelected)
         endlessRecyclerViewScrollListener?.resetState()
-        bottomSheet?.dismissAllowingStateLoss()
+        bottomSheet?.dismiss()
     }
 
     private fun selectedRatingsFilter(countSelected: Int) {
@@ -421,8 +416,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 }
             }
         }
-
-        this.ratingFilterList = filterRatingList.toMutableList()
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
         inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
