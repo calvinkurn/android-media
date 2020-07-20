@@ -18,7 +18,7 @@ class DealsBrandAdapter(private val searchListener: DealsSearchListener) : Recyc
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_brand_home, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deals_brand_home, parent, false)
         return BrandViewHolder(view, searchListener)
     }
 

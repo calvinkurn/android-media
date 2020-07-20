@@ -11,6 +11,7 @@
     <dimen name="deals_dp_18">18dp</dimen>
     <dimen name="deals_dp_20">20dp</dimen>
     <dimen name="deals_dp_30">30dp</dimen>
+    <dimen name="deals_dp_60">60dp</dimen>
     <dimen name="deals_dp_72">72dp</dimen>
     <dimen name="deals_dp_78">78dp</dimen>
     <dimen name="deals_dp_79">79dp</dimen>

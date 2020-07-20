@@ -25,7 +25,7 @@ class DealsFavouriteCategoriesAdapter(private val listener: DealsFavouriteCatego
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealsFavouriteCategoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.item_voucher_place_card, parent, false)
+        val itemView = inflater.inflate(R.layout.item_deals_voucher_place_card, parent, false)
         return DealsFavouriteCategoryViewHolder(itemView, listener)
     }
 

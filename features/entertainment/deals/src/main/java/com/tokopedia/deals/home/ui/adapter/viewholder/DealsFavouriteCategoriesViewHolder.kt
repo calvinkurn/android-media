@@ -9,7 +9,7 @@ import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.ui.adapter.DealsFavouriteCategoriesAdapter
 import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
 import com.tokopedia.kotlin.extensions.view.hide
-import kotlinx.android.synthetic.main.item_voucher_popular_place.view.*
+import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
 
 /**
  * @author by jessica on 17/06/20
@@ -36,6 +36,6 @@ class DealsFavouriteCategoriesViewHolder(itemView: View, private val listener: D
 
     companion object {
         const val DEALS_CATEGORY_SPAN_COUNT = 3
-        val LAYOUT = R.layout.item_voucher_popular_place
+        val LAYOUT = R.layout.item_deals_voucher_popular_place
     }
 }

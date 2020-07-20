@@ -57,7 +57,7 @@
                     android:layout_marginBottom="@dimen/deals_dp_14"
                     app:layout_constraintTop_toBottomOf="@id/divider_search_location"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:srcCompat="@drawable/ic_deals_current_location"/>
+                    app:srcCompat="@drawable/ic_system_action_currentlocation_grayscale_24"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/detect_current_location"

@@ -17,7 +17,7 @@ class DealsLastSeenAdapter(private val dealsSearchListener: DealsSearchListener)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LastSeenViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.deal_curated_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deals_curated, parent, false)
         return LastSeenViewHolder(view,  dealsSearchListener)
     }
 

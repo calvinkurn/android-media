@@ -8,10 +8,11 @@
     android:orientation="vertical"
     tools:background="@color/Neutral_N0">
 
-    <com.tokopedia.unifycomponents.CardUnify
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <FrameLayout
+        android:layout_width="@dimen/deals_dp_60"
+        android:layout_height="@dimen/deals_dp_60"
         android:padding="@dimen/spacing_lvl3"
+        android:background="@drawable/bg_deals_squircle_category_white"
         >
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_deals_category"
@@ -21,13 +22,12 @@
             android:layout_gravity="center"
             tools:src="@tools:sample/avatars"
             />
-    </com.tokopedia.unifycomponents.CardUnify>
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_deals_category_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/deals_dp_6"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="small"
         app:typographyWeight="reguler"

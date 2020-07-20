@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         tools:itemCount="4"
         tools:layoutManager="GridLayoutManager"
-        tools:listitem="@layout/item_voucher_place_card"
+        tools:listitem="@layout/item_deals_voucher_place_card"
         tools:spanCount="2"
         android:layout_marginTop="@dimen/deals_dp_12"/>
 

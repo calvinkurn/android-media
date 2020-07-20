@@ -19,6 +19,6 @@ class NotFoundViewHolder(itemView: View): AbstractViewHolder<NotFoundModel>(item
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_search_not_found
+        val LAYOUT = R.layout.layout_deals_search_not_found
     }
 }

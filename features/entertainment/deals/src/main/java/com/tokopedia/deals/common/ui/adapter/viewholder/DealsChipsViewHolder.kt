@@ -45,11 +45,15 @@ class DealsChipsViewHolder(
                 val item = SortFilterItem(it.title)
                 filterItems.add(item)
             }
-        } catch (e: Exception) {
-        }
+        } catch (e: Exception) { }
 
         itemView.sort_filter_deals_category.run {
             filterItems.forEachIndexed { index, sortFilterItem ->
+
+                if (chips.chipList[index].isSelected) {
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                }
+
                 sortFilterItem.listener = {
                     sortFilterItem.toggle()
 
@@ -74,6 +78,8 @@ class DealsChipsViewHolder(
                 }
             }
         }
+
+        checkIfAdditionalFilterSelected()
     }
 
     private var additionalSelectedFilterCount = 0
@@ -95,6 +101,18 @@ class DealsChipsViewHolder(
                 else ChipsUnify.TYPE_NORMAL
             }
 
+            it.indicatorCounter += additionalSelectedFilterCount
+        }
+    }
+
+    private fun checkIfAdditionalFilterSelected() {
+        itemView.sort_filter_deals_category.let {
+            additionalSelectedFilterCount = 0
+            if (chips.chipList.size > it.chipItems.size) {
+                for (i in it.chipItems.size until chips.chipList.size) {
+                    if (chips.chipList[i].isSelected) additionalSelectedFilterCount++
+                }
+            }
             it.indicatorCounter += additionalSelectedFilterCount
         }
     }

@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
-        android:background="@drawable/bg_grey_loc_type"
+        android:background="@drawable/bg_deals_grey_loc_type"
         android:padding="@dimen/spacing_lvl2"
         android:textColor="@color/deal_location_type"
         app:typographyType="small"

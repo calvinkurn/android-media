@@ -3,6 +3,8 @@ package com.tokopedia.deals.category.utils
 import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.category.ui.dataview.ProductListDataView
@@ -57,7 +59,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                 brand.id,
                 brand.title,
                 brand.featuredThumbnailImage,
-                brand.seoUrl
+                    UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl)
             )
         }
         val brandsDataView = DealsBrandsDataView(
@@ -80,7 +82,8 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                     price = DealsUtils.convertToCurrencyString(it.salesPrice.toLong()),
                     appUrl = it.appUrl,
                     discount = it.savingPercentage,
-                    shop = it.brand.title
+                    shop = it.brand.title,
+                    productCategory = ProductCategoryDataView(it.displayTags, com.tokopedia.unifyprinciples.R.color.Yellow_Y500)
                     )
         }
 

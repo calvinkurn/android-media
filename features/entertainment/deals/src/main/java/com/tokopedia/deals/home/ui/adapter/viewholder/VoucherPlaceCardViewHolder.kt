@@ -7,7 +7,7 @@ import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_voucher_place_card.view.*
+import kotlinx.android.synthetic.main.item_deals_voucher_place_card.view.*
 
 class VoucherPlaceCardViewHolder(
         itemView: View,

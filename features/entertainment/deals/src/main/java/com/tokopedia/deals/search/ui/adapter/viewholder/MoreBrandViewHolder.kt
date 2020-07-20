@@ -21,6 +21,6 @@ class MoreBrandViewHolder (itemView: View, private val searchListener: DealsSear
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_more_brand
+        val LAYOUT = R.layout.layout_deals_more_brand
     }
 }

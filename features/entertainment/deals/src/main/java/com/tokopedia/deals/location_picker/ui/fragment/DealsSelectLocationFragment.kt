@@ -31,7 +31,7 @@ import com.tokopedia.deals.location_picker.ui.typefactory.DealsSelectLocationTyp
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.layout_search_location_bottomsheet.*
+import kotlinx.android.synthetic.main.layout_deals_search_location_bottomsheet.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
