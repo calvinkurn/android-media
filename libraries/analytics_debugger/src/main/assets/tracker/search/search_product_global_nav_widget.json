@@ -1,5 +1,5 @@
 {
-  "readme": "Search Product Widget Tracking - Global Nav, CPM, etc",
+  "readme": "Search Product Global Nav Widget Tracking",
   "query" : [
     {
       "event": "select_content",
