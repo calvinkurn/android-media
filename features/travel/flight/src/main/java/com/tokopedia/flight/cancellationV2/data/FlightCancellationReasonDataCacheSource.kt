@@ -14,8 +14,9 @@ class FlightCancellationReasonDataCacheSource @Inject constructor() {
     fun saveCache(reasonList: List<FlightCancellationPassengerEntity.Reason>) {
         PersistentCacheManager.instance.delete(FLIGHT_CANCELLATION_REASON_CACHE_KEY)
         val type = object : TypeToken<List<FlightCancellationPassengerEntity.Reason>>() {}.type
+        val jsonString = CacheUtil.convertListModelToString(reasonList, type)
         PersistentCacheManager.instance.put(FLIGHT_CANCELLATION_REASON_CACHE_KEY,
-                CacheUtil.convertListModelToString(reasonList, type),
+                jsonString,
                 FLIGHT_CANCELLATION_REASON_CACHE_TIMEOUT)
     }
 

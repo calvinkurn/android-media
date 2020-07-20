@@ -1,7 +1,11 @@
 package com.tokopedia.flight.cancellationV2.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationChooseReasonAdapterTypeFactory
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by furqan on 06/07/2020
@@ -18,7 +22,7 @@ data class FlightCancellationPassengerEntity(
         val reasons: List<String> = arrayListOf(),
         @SerializedName("formattedReasons")
         @Expose
-        val formattedReasons: List<Reason> = arrayListOf(),
+        val formattedReasons: MutableList<Reason> = arrayListOf(),
         @SerializedName("included")
         @Expose
         val included: List<Included> = arrayListOf()
@@ -76,6 +80,7 @@ data class FlightCancellationPassengerEntity(
             val statusString: String = ""
     )
 
+    @Parcelize
     data class Reason(
             @SerializedName("id")
             @Expose
@@ -88,9 +93,13 @@ data class FlightCancellationPassengerEntity(
             val requiredDocs: List<String> = arrayListOf(),
             @SerializedName("formattedRequiredDocs")
             @Expose
-            val formattedRequiredDocs: List<RequiredDoc> = arrayListOf()
-    )
+            val formattedRequiredDocs: MutableList<RequiredDoc> = arrayListOf()
+    ) : Parcelable, Visitable<FlightCancellationChooseReasonAdapterTypeFactory> {
+        override fun type(typeFactory: FlightCancellationChooseReasonAdapterTypeFactory): Int =
+                typeFactory.type(this)
+    }
 
+    @Parcelize
     data class RequiredDoc(
             @SerializedName("id")
             @Expose
@@ -98,7 +107,7 @@ data class FlightCancellationPassengerEntity(
             @SerializedName("title")
             @Expose
             val title: String = ""
-    )
+    ) : Parcelable
 
     data class Included(
             @SerializedName("type")

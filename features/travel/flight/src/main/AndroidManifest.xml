@@ -139,6 +139,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
+            android:name=".cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity"
+            android:label="@string/flight_cancellation_reason_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
             android:name=".detail.view.activity.FlightInvoiceActivity"
             android:label="@string/flight_order_invoice_toolbar_title"
             android:screenOrientation="portrait"
