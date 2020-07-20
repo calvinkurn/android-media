@@ -154,7 +154,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        if(getTwoFactorRemoteConfig()) {
+            registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        }
+    }
+
+    private Boolean getTwoFactorRemoteConfig() {
+//        return remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_2FA, true);
+        return true;
     }
 
     private void createAndCallPreSeq(){
