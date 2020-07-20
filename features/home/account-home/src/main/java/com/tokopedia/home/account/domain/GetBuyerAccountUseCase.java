@@ -9,6 +9,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletPref;
@@ -24,6 +26,7 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.home.account.AccountConstants.ACCOUNT_TAB_SELLER;
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
 /**
@@ -79,6 +82,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
                     String query = request.getString(AccountConstants.QUERY, "");
                     String saldoQuery = request.getString(AccountConstants.SALDO_QUERY, "");
+                    String rewardQuery = request.getString(AccountConstants.REWARD_SHORTCUT_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) request.getObject(VARIABLES);
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
@@ -91,6 +95,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                                 SaldoModel.class);
                         graphqlUseCase.addRequest(saldoGraphql);
 
+                        GraphqlRequest rewardGraphql = new GraphqlRequest(rewardQuery, ShortcutResponse.class);
+                        graphqlUseCase.addRequest(rewardGraphql);
 
                         return graphqlUseCase.createObservable(null);
                     }
@@ -102,7 +108,9 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
                     SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
                     if(saldoModel != null && accountModel != null) {
+                        ShortcutResponse shortcutResponse = graphqlResponse.getData(ShortcutResponse.class);
                         accountModel.setSaldoModel(saldoModel);
+                        accountModel.setShortcutResponse(shortcutResponse);
                     }
                     return accountModel;
                 });
