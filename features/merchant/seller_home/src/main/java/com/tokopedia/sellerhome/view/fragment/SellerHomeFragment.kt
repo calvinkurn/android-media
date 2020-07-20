@@ -84,7 +84,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
@@ -223,19 +222,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    /**
+     * load only visible widget on screen, except card widget should load all directly
+     * */
     private fun requestVisibleWidgetsData() {
         val layoutManager = recyclerView.layoutManager as GridLayoutManager
         val firstVisible = layoutManager.findFirstVisibleItemPosition()
         val lastVisible = layoutManager.findLastVisibleItemPosition()
 
         val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-        widgetHasMap.entries.forEach { pair ->
-            if (pair.key == WidgetType.CARD) {
-                visibleWidgets.addAll(pair.value.filter { !it.isLoaded })
-            } else {
-                pair.value.forEach { widget ->
-                    val widgetIndexInRecyclerView = adapter.data.indexOf(widget)
-                    if (widgetIndexInRecyclerView in firstVisible..lastVisible && !widget.isLoaded) {
+        adapter.data.forEachIndexed { index, widget ->
+            if (!widget.isLoaded) {
+                if (widget.widgetType == WidgetType.CARD) {
+                    visibleWidgets.add(widget)
+                } else {
+                    if (index in firstVisible..lastVisible && !widget.isLoaded) {
                         visibleWidgets.add(widget)
                     }
                 }
@@ -333,7 +334,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
-            widgetHasMap[widget.widgetType]?.remove(widget)
         }
     }
 
@@ -480,17 +480,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.visible()
 
         super.clearAllData()
-        widgetHasMap.clear()
-
         super.renderList(widgets)
-        adapter.notifyDataSetChanged()
-        widgets.forEach {
-            if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
-                widgetHasMap[it.widgetType] = mutableListOf(it)
-                return@forEach
-            }
-            widgetHasMap[it.widgetType]?.add(it)
-        }
 
         if (isFirstLoad) {
             recyclerView.post {
@@ -651,7 +641,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
         forEach { widgetData ->
-            widgetHasMap[widgetType]?.find { it.dataKey == widgetData.dataKey }?.let { widget ->
+            adapter.data.find { it.dataKey == widgetData.dataKey }?.let { widget ->
                 if (widget is W) {
                     widget.data = widgetData
                     notifyWidgetChanged(widget)
@@ -665,7 +655,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
-        widgetHasMap[widgetType]?.forEach { widget ->
+        adapter.data.forEach { widget ->
             if (widget is W && widget.data == null && widget.isLoaded) {
                 widget.data = D::class.java.newInstance().apply {
                     error = message
