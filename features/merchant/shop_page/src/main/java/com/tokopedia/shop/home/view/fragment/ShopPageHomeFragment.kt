@@ -53,6 +53,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.exception.ShopPageException
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
@@ -380,22 +381,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
         logExceptionToCrashlytics(ERROR_WHEN_GET_YOUTUBE_DATA, throwable)
         shopHomeAdapter.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
-    }
-
-    private fun logExceptionToCrashlytics(message: String, throwable: Throwable) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                Crashlytics.logException(ShopPageException(
-                        message = exceptionMessage,
-                        cause = throwable
-                ))
-            } else {
-                throwable.printStackTrace()
-            }
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
     }
 
     private fun onSuccessAddToCart(
