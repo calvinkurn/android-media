@@ -46,23 +46,23 @@ class GetCategoryRecommendationUseCaseTest {
         MockKAnnotations.init(this)
     }
 
-//    @Test
-//    fun `should success on get category recommendation`() = runBlocking {
-//        usecase.params = params
-//        val successResponse = createSuccessResponse<GetCategoryRecommendationResponse>(SUCCESS_RESPONSE)
-//
-//        coEvery {
-//            gqlRepository.getReseponse(any(), any())
-//        } returns successResponse
-//
-//        val result = usecase.executeOnBackground()
-//
-//        coVerify {
-//            gqlRepository.getReseponse(any(), any())
-//        }
-//
-//        Assert.assertTrue(result.isNotEmpty())
-//    }
+    @Test
+    fun `should success on get category recommendation`() = runBlocking {
+        usecase.params = params
+        val successResponse = createSuccessResponse<GetCategoryRecommendationResponse>(SUCCESS_RESPONSE)
+
+        coEvery {
+            gqlRepository.getReseponse(any(), any())
+        } returns successResponse
+
+        val result = usecase.executeOnBackground()
+
+        coVerify {
+            gqlRepository.getReseponse(any(), any())
+        }
+
+        Assert.assertTrue(result.isNotEmpty())
+    }
 
     fun getJsonFromFile(path: String): String {
         val uri = ClassLoader.getSystemClassLoader().getResource(path)

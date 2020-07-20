@@ -53,30 +53,30 @@ class GetCategoryRecommendationUseCaseTest : Spek({
             AddEditProductDetailViewModel(provider, dispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase)
         }
 
-//        Scenario("success get category recommendation") {
-//            val successResult = listOf(ListItemUnify("", ""), ListItemUnify("", ""), ListItemUnify("", ""))
-//
-//            Given("getCategoryRecommendation return list of category recommendation") {
-//                coEvery {
-//                    getCategoryRecommendationUseCase.executeOnBackground()
-//                } returns successResult
-//            }
-//
-//            When("get category recommendation") {
-//                viewmodel.getCategoryRecommendation("baju")
-//            }
-//
-//            Then("run use case") {
-//                coVerify {
-//                    getCategoryRecommendationUseCase.executeOnBackground()
-//                }
-//            }
-//
-//            Then("get category recommendation result is success") {
-//                val result = viewmodel.productCategoryRecommendationLiveData.value
-//                Assert.assertTrue(result != null && result == Success(successResult))
-//            }
-//        }
+        Scenario("success get category recommendation") {
+            val successResult = listOf(ListItemUnify("", ""), ListItemUnify("", ""), ListItemUnify("", ""))
+
+            Given("getCategoryRecommendation return list of category recommendation") {
+                coEvery {
+                    getCategoryRecommendationUseCase.executeOnBackground()
+                } returns successResult
+            }
+
+            When("get category recommendation") {
+                viewmodel.getCategoryRecommendation("baju")
+            }
+
+            Then("run use case") {
+                coVerify {
+                    getCategoryRecommendationUseCase.executeOnBackground()
+                }
+            }
+
+            Then("get category recommendation result is success") {
+                val result = viewmodel.productCategoryRecommendationLiveData.value
+                Assert.assertTrue(result != null && result == Success(successResult))
+            }
+        }
 
         Scenario("failed get category recommendation") {
 
