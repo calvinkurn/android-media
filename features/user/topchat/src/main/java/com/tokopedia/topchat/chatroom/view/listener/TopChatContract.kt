@@ -172,5 +172,9 @@ interface TopChatContract {
         fun getStickerGroupList(chatRoom: ChatroomViewModel)
 
         fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel)
+
+        fun isStickerTooltipAlreadyShow(): Boolean
+
+        fun toolTipOnBoardingShown()
     }
 }

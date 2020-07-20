@@ -65,7 +65,7 @@ class TopChatViewStateImpl(
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
-    private var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
+    var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
