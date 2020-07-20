@@ -66,4 +66,10 @@ data class PromoStackingData(var typePromo: Int = 0,
                 trackingDetailUiModels
         )
     }
+
+    companion object {
+        val TYPE_VOUCHER = 1
+        val TYPE_COUPON = 2
+        val VALUE_COUPON = 1
+    }
 }

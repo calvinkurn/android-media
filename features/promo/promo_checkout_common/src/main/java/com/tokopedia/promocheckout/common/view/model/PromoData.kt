@@ -48,4 +48,10 @@ data class PromoData(var typePromo: Int = 0,
                 state
         )
     }
+
+    companion object {
+        val TYPE_VOUCHER = 0
+        val TYPE_COUPON = 1
+        val VALUE_COUPON = 1
+    }
 }
