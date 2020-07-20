@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.di.component.DaggerAutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
-import com.tokopedia.withdraw.R
+import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.TestHeadless
 import kotlinx.android.synthetic.main.swd_activity_auto_withdrawal.*
 
 class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawalComponent> {
@@ -27,6 +29,11 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
         const val SCREEN_NAME = "Auto Withdrawal Settings"
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        TestHeadless.addFragmentToActivity(supportFragmentManager)
+    }
+
 
     override fun getLayoutRes() = R.layout.swd_activity_auto_withdrawal
 
@@ -41,5 +48,9 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
                     .baseAppComponent((applicationContext as BaseMainApplication)
                             .baseAppComponent).build()
         return autoWithdrawalComponent
+    }
+
+    fun getHeader(): HeaderUnify {
+        return auto_wd_header
     }
 }

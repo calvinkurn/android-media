@@ -18,7 +18,7 @@ class GQLQueryModule {
     @Provides
     @Named(QUERY_GET_AUTO_WD_STATUS)
     fun provideRawTGetAutoWDStatus(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_auto_wd_status)
+            GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_get_auto_wd_status)
 
     @Provides
     @Named(QUERY_GET_INFO_AUTO_WD)
