@@ -242,7 +242,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.label_title_add_product)
+        toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -873,11 +873,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         val title = getString(R.string.action_pick_photo)
 
         val placeholderDrawableRes = arrayListOf(
-                R.drawable.ic_utama,
-                R.drawable.ic_depan,
-                R.drawable.ic_samping,
-                R.drawable.ic_atas,
-                R.drawable.ic_detail
+                com.tokopedia.product.addedit.R.drawable.ic_utama,
+                com.tokopedia.product.addedit.R.drawable.ic_depan,
+                com.tokopedia.product.addedit.R.drawable.ic_samping,
+                com.tokopedia.product.addedit.R.drawable.ic_atas,
+                com.tokopedia.product.addedit.R.drawable.ic_detail
         )
 
         val imagePickerPickerTabTypeDef = intArrayOf(

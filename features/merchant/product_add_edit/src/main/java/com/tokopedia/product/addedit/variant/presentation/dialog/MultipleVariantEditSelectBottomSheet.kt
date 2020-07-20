@@ -75,7 +75,7 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     override fun onSelectionsDataChanged(selectedCount: Int) {
-        val buttonNextText = getString(R.string.action_variant_next)
+        val buttonNextText = getString(com.tokopedia.product.addedit.R.string.action_variant_next)
         contentView?.apply {
             if (selectedCount > 0) {
                 val numberedText = "$buttonNextText ($selectedCount)"
@@ -124,14 +124,14 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     private fun removeContainerPadding() {
-        val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding)
         val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
     }
 
     private fun addMarginTitle() {
-        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
+        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+        val horizontalMargin = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
         (bottomSheetTitle.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)

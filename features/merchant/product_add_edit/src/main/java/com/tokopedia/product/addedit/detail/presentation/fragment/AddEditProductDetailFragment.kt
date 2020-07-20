@@ -96,8 +96,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         private fun getDurationUnit(type: Int) =
                 when (type) {
-                    UNIT_DAY -> R.string.label_day
-                    UNIT_WEEK -> R.string.label_week
+                    UNIT_DAY -> com.tokopedia.product.addedit.R.string.label_day
+                    UNIT_WEEK -> com.tokopedia.product.addedit.R.string.label_week
                     else -> -1
                 }
     }
@@ -1094,11 +1094,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val title = getString(R.string.action_pick_photo)
 
         val placeholderDrawableRes = arrayListOf(
-                R.drawable.ic_utama,
-                R.drawable.ic_depan,
-                R.drawable.ic_samping,
-                R.drawable.ic_atas,
-                R.drawable.ic_detail
+                com.tokopedia.product.addedit.R.drawable.ic_utama,
+                com.tokopedia.product.addedit.R.drawable.ic_depan,
+                com.tokopedia.product.addedit.R.drawable.ic_samping,
+                com.tokopedia.product.addedit.R.drawable.ic_atas,
+                com.tokopedia.product.addedit.R.drawable.ic_detail
         )
 
         val imagePickerPickerTabTypeDef = intArrayOf(
@@ -1133,13 +1133,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
+        submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_rect_green_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
     }
 
     private fun disableSubmitButton() {
         submitButton?.isClickable = false
-        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
+        submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.rect_grey_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32)) }
     }
 
