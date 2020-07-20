@@ -45,9 +45,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun addThankPageAnalyticFragment() {
-        try {
-            ThanksPageAnalyticsFragment.addFragmentToActivity(supportFragmentManager)
-        }catch (e: Exception){}
+        ThanksPageAnalyticsFragment.addFragmentToActivity(supportFragmentManager)
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
