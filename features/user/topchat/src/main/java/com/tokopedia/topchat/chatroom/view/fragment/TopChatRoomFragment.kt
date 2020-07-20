@@ -369,7 +369,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
-        presenter.getTemplate(getUserSession().shopId == shopId.toString())
+        presenter.getTemplate(chatRoom.isSeller())
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         updateHasNextAfterState(chat)
