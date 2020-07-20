@@ -75,12 +75,13 @@ internal open class BannerView(activity: Activity) {
         setBanner(data)
         setActionButton(data)
         setCloseButton(data)
+        setBannerClicked(data)
     }
 
     private fun viewState(data: CMInApp) {
         when (data.getType()) {
             TYPE_INTERSTITIAL_IMAGE_ONLY -> {
-                fullScreenImageOnly(data)
+                lstActionButton.visibility = View.GONE
             }
         }
     }
@@ -125,8 +126,9 @@ internal open class BannerView(activity: Activity) {
         }
     }
 
-    private fun fullScreenImageOnly(data: CMInApp) {
-        lstActionButton.visibility = View.GONE
+    private fun setBannerClicked(data: CMInApp) {
+        // prevent banner click if has more than one CTA button
+        if (data.getCmLayout().getButton().size > 1) return
 
         imgBanner.setOnClickListener {
             trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
