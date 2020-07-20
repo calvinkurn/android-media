@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.statistic.common.coroutine.DispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,8 +35,8 @@ class StatisticViewModel @Inject constructor(
         private val getTableDataUseCase: GetTableDataUseCase,
         private val getPieChartDataUseCase: GetPieChartDataUseCase,
         private val getBarChartDataUseCase: GetBarChartDataUseCase,
-        @Named("Main") dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: DispatchersProvider
+) : BaseViewModel(dispatcher.main()) {
 
     companion object {
         private const val STATISTIC_PAGE_NAME = "shop-insight"
