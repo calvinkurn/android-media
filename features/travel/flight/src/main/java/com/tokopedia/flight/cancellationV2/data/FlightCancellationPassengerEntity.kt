@@ -103,7 +103,7 @@ data class FlightCancellationPassengerEntity(
     data class RequiredDoc(
             @SerializedName("id")
             @Expose
-            val id: String = "",
+            val id: String = "0",
             @SerializedName("title")
             @Expose
             val title: String = ""

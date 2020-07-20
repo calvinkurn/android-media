@@ -3,8 +3,6 @@ package com.tokopedia.flight.cancellationV2.domain
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.data.cloud.entity.Reason
-import com.tokopedia.flight.cancellation.data.cloud.entity.ReasonRequiredDocs
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationReasonDataCacheSource
@@ -26,7 +24,6 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         @ApplicationContext
         private val context: Context,
         private val useCase: MultiRequestGraphqlUseCase,
-        private val oldCancellationReason: com.tokopedia.flight.cancellation.data.cache.FlightCancellationReasonDataCacheSource,
         private val cancellationReasonsCache: FlightCancellationReasonDataCacheSource) {
 
     suspend fun fetchCancellablePassenger(invoiceId: String): List<FlightCancellationModel> {
@@ -41,7 +38,6 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         val processedData = processIncludedData(flightCancellablePassengerList)
 
         cancellationReasonsCache.saveCache(processedData.formattedReasons)
-        saveReasonsForOldCache(processedData.formattedReasons)
         return transformAllPassengersData(processedData)
     }
 
@@ -108,10 +104,10 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         }
 
         for (item in reasonList) {
-            item.formattedRequiredDocs.toMutableList().addAll(processRequiredDocsData(docsMap, item.requiredDocs))
+            item.formattedRequiredDocs.addAll(processRequiredDocsData(docsMap, item.requiredDocs))
         }
 
-        flightCancellationPassengerEntity.formattedReasons.toMutableList().addAll(reasonList)
+        flightCancellationPassengerEntity.formattedReasons.addAll(reasonList)
         return flightCancellationPassengerEntity
     }
 
@@ -126,18 +122,6 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
             }
         }
         return requiredDocsList
-    }
-
-    private fun saveReasonsForOldCache(formattedReasons: List<FlightCancellationPassengerEntity.Reason>) {
-        oldCancellationReason.saveCache(formattedReasons.map { formattedReason ->
-            Reason().also { newReason ->
-                newReason.id = formattedReason.id
-                newReason.title = formattedReason.title
-                newReason.requiredDocs = formattedReason.formattedRequiredDocs.map { formattedDocs ->
-                    ReasonRequiredDocs(formattedDocs.id.toInt(), formattedDocs.title)
-                }.toList()
-            }
-        }.toList())
     }
 
     private fun getTitleString(typeId: Int): String {

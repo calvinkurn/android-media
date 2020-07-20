@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellationV2.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationChooseReasonActivity
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReasonViewModel
@@ -58,11 +59,63 @@ class FlightCancellationReasonFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         et_saved_passenger.setOnClickListener {
-            startActivityForResult(FlightCancellationChooseReasonActivity.createIntent(requireContext(), cancellationReasonViewModel.selectedReason),
+            startActivityForResult(FlightCancellationChooseReasonActivity.getCallingIntent(requireContext(), cancellationReasonViewModel.selectedReason),
                     REQUEST_CODE_CHOOSE_REASON)
             requireActivity().overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in, com.tokopedia.common.travel.R.anim.travel_anim_stay)
-
         }
+
+        buildAttachmentReasonView()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_CHOOSE_REASON -> {
+                data?.let {
+                    cancellationReasonViewModel.selectedReason = it.getParcelableExtra(FlightCancellationChooseReasonFragment.EXTRA_SELECTED_REASON)
+                    renderSelectedReason()
+//                    setupNextButton()
+                }
+            }
+        }
+    }
+
+    private fun renderSelectedReason() {
+        cancellationReasonViewModel.selectedReason?.let {
+            et_saved_passenger.setText(it.title)
+            buildAttachmentReasonView()
+            deleteAllAttachments()
+            if (it.formattedRequiredDocs.size > 0) {
+                cancellationReasonViewModel.buildViewAttachmentList(it.formattedRequiredDocs[0].id.toInt())
+            } else {
+                cancellationReasonViewModel.buildViewAttachmentList(0)
+            }
+        }
+    }
+
+    private fun deleteAllAttachments() {
+//        adapter.clearAllElement()
+    }
+
+    private fun buildAttachmentReasonView() {
+        val selectedReason = cancellationReasonViewModel.selectedReason
+        val attachments = cancellationReasonViewModel.getAttachments()
+        val viewAttachments = cancellationReasonViewModel.viewAttachmentModelList.value
+        if (selectedReason != null && selectedReason.formattedRequiredDocs.size > 0 &&
+                attachments.isNotEmpty() && viewAttachments != null && viewAttachments.size > 0) {
+            showAttachmentContainer()
+        } else {
+            hideAttachmentContainer()
+        }
+    }
+
+    private fun showAttachmentContainer() {
+        attachment_container.visibility = View.VISIBLE
+    }
+
+    private fun hideAttachmentContainer() {
+        attachment_container.visibility = View.GONE
     }
 
     companion object {

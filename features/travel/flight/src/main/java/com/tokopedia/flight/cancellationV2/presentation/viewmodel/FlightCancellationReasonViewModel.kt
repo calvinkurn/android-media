@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel
+import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationAttachmentModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerAttachmentModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
@@ -22,7 +22,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
     : BaseViewModel(dispatcherProvider.io()) {
 
     lateinit var cancellationWrapperModel: FlightCancellationWrapperModel
-    var selectedReason: FlightCancellationReasonModel? =null
+    var selectedReason: FlightCancellationPassengerEntity.Reason? = null
     private val attachmentModelList: MutableList<FlightCancellationAttachmentModel> = arrayListOf()
 
     private val mutableViewAttachmentModelList = MutableLiveData<MutableList<FlightCancellationAttachmentModel>>()
