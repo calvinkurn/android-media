@@ -229,6 +229,16 @@
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
+    <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
+    <string name="shop_page_share_copy_link">Copy Link</string>
+    <string name="shop_page_share_instagram">Instagram</string>
+    <string name="shop_page_share_facebook">Facebook</string>
+    <string name="shop_page_share_whatsapp">Whatsapp</string>
+    <string name="shop_page_share_line">Line</string>
+    <string name="shop_page_share_twitter">Twitter</string>
+    <string name="shop_page_share_telegram">Telegram</string>
+    <string name="shop_page_share_action_more">Lainnya</string>
+    <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
 
 
 </resources>
