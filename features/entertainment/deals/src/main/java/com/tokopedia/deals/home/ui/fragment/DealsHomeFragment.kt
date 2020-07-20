@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +17,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
@@ -35,7 +35,6 @@ import com.tokopedia.deals.home.ui.adapter.DealsHomeAdapter
 import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,6 +57,8 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
+    @Inject
+    lateinit var analytics: DealsAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
@@ -95,6 +96,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as DealsBaseActivity).searchBarActionListener = this
+        analytics.eventSeeHomePage()
     }
 
     override fun getScreenName(): String = ""
@@ -106,13 +108,44 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun checkCoachMark(homeLayout: List<DealsBaseItemDataView>) {
+        initTrackingSection(homeLayout)
         val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
         if (shouldShowCoachMark && homeLayout.isNotEmpty() && homeLayout.first().isLoaded) {
             recyclerView.smoothScrollToPosition(adapter.lastIndex)
             Handler().postDelayed(
-                { showCoachMark(getCoachMarkPosition(homeLayout)) },
-                COACH_MARK_START_DELAY
+                    { showCoachMark(getCoachMarkPosition(homeLayout)) },
+                    COACH_MARK_START_DELAY
             )
+        }
+    }
+
+    private fun initTrackingSection(homeLayout: List<DealsBaseItemDataView>){
+        homeLayout.forEach { dealsBaseItemDataView ->
+            when (dealsBaseItemDataView) {
+                is CuratedProductCategoryDataView -> {
+                    if (dealsBaseItemDataView.title.contentEquals("Voucher populer")) {
+                        dealsBaseItemDataView.productCards.forEachIndexed { index, productCardDataView ->
+                            analytics.eventSeePopularLandmarkView(productCardDataView, index)
+                        }
+                    }
+                }
+
+                is FavouritePlacesDataView -> {
+                    if (dealsBaseItemDataView.places.size > 0) {
+                        dealsBaseItemDataView.places.forEachIndexed { index, place ->
+                            analytics.eventSeeCuratedSection(place, index)
+                        }
+                    }
+                }
+
+                is BannersDataView -> {
+                    if (!dealsBaseItemDataView.list.isNullOrEmpty()) {
+                        dealsBaseItemDataView.list.forEachIndexed { index, bannerDataView ->
+                            analytics.eventSeeHomePageBanner(bannerId = bannerDataView.bannerId, promotions = bannerDataView , bannerPosition = index)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -136,9 +169,9 @@ class DealsHomeFragment : DealsBaseFragment(),
             }
         }
         coachMark.show(
-            activity,
-            DealsHomeFragment::class.java.simpleName,
-            getCoachMarkItems(coachMarkPosition)
+                activity,
+                DealsHomeFragment::class.java.simpleName,
+                getCoachMarkItems(coachMarkPosition)
         )
         localCacheHandler.apply {
             putBoolean(SHOW_COACH_MARK_KEY, false)
@@ -148,24 +181,24 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     private fun getCoachMarkItems(coachMarkPosition: CoachMarkPositionDataView): ArrayList<CoachMarkItem> {
         val orderListCoachMark = CoachMarkItem(
-            activity?.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
-            getString(R.string.deals_menu_coach_mark_title),
-            getString(R.string.deals_menu_coach_mark_description)
+                activity?.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
+                getString(R.string.deals_menu_coach_mark_title),
+                getString(R.string.deals_menu_coach_mark_description)
         )
 
         val popularPlacesCoachMark = coachMarkPosition.popularPlacesPosition?.let {
             CoachMarkItem(
-                recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                getString(R.string.deals_popular_place_coach_mark_title),
-                getString(R.string.deals_popular_places_coach_mark_description)
+                    recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
+                    getString(R.string.deals_popular_place_coach_mark_title),
+                    getString(R.string.deals_popular_places_coach_mark_description)
             )
         }
 
         val favoriteCategoriesCoachMark = coachMarkPosition.favouriteCategoriesPosition?.let {
             CoachMarkItem(
-                recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                getString(R.string.deals_favorite_categories_coach_mark_title),
-                getString(R.string.deals_favorite_categories_coach_mark_description)
+                    recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
+                    getString(R.string.deals_favorite_categories_coach_mark_title),
+                    getString(R.string.deals_favorite_categories_coach_mark_description)
             )
         }
 
@@ -210,48 +243,64 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onClickSearchBar() {
         startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
+        analytics.eventClickSearchHomePage()
     }
 
     override fun afterSearchBarTextChanged(text: String) {/* do nothing */ }
 
     /* BANNER SECTION ACTION */
-    override fun onBannerClicked(banner: BannersDataView.BannerDataView, position: Int) {
-        RouteManager.route(context, banner.bannerUrl)
+    override fun onBannerClicked(banner: List<BannersDataView.BannerDataView>, position: Int) {
+        RouteManager.route(context, banner[position].bannerUrl)
+        analytics.eventClickHomePageBanner(bannerId = banner[position].bannerId, bannerPosition = position, promotions = banner[position])
     }
 
     override fun onBannerSeeAllClick(bannerSeeAllUrl: String) {
         RouteManager.route(context, bannerSeeAllUrl)
+        analytics.eventClickAllBanner()
     }
 
     /* CATEGORY SECTION ACTION */
     override fun onDealsCategoryClicked(dealsCategory: DealsCategoryDataView, position: Int) {
         val intent = RouteManager.getIntent(requireContext(), dealsCategory.appUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
+        analytics.eventClickCategoryIcon(dealsCategory.title, position)
     }
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
         val categoriesBottomSheet = DealsCategoryBottomSheet(this)
         categoriesBottomSheet.showDealsCategories(categories)
         categoriesBottomSheet.show(requireFragmentManager(), "")
+        analytics.eventClickCategorySectionOne()
     }
 
     /* BRAND SECTION ACTION */
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
+        analytics.eventClickBrandPopular(brand, position, false)
         RouteManager.route(context, brand.brandUrl)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
+        analytics.eventSeeAllBrandPopular()
         startActivityForResult(DealsBrandActivity.getCallingIntent(requireContext(), ""), DEALS_BRAND_REQUEST_CODE)
     }
 
     /* PRODUCT SECTION ACTION */
     override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int) {
+        analytics.curatedProductClick(productCardDataView,productItemPosition)
         RouteManager.route(context, productCardDataView.appUrl)
+        trackLandmarkPopular(productCardDataView, productItemPosition)
+    }
+
+    private fun trackLandmarkPopular(productCardDataView: ProductCardDataView, position: Int) {
+        if (productCardDataView.productCategory?.name.equals("Populer")) {
+            analytics.eventClickLandmarkPopular(productCardDataView, position)
+        }
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
         val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
+        analytics.clickAllCuratedProduct()
     }
 
     /* NEAREST PLACE SECTION ACTION */
@@ -261,19 +310,30 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     /* FAVOURITE CATEGORY SECTION ACTION */
-    override fun onClickFavouriteCategory(url: String) {
+    override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: FavouritePlacesDataView.Place, position: Int) {
         val intent = RouteManager.getIntent(context, url)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
+        analytics.eventClickCuratedSection(favoritePlacesDataView, position)
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
     private fun setCurrentLocation(location: Location) {
+        val previousLocation = (activity as DealsBaseActivity).currentLoc
         (activity as DealsBaseActivity).currentLoc = location
+        analytics.eventChangeLocationHomePage(prevLocation = previousLocation.name, newLocation = location.name)
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
     override fun callInitialLoadAutomatically(): Boolean = false
     override fun hasInitialSwipeRefresh() = true
+
+    override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
+        analytics.eventScrollToBrandPopular(brand,position)
+    }
+
+    override fun onImpressionCuratedProduct(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
+        analytics.impressionCuratedProduct(curatedProductCategoryDataView,position)
+    }
 
     companion object {
         const val DEALS_SEARCH_REQUEST_CODE = 27

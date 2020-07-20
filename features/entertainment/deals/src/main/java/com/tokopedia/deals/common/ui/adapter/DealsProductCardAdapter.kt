@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.adapter.viewholder.ProductCardViewHolder
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 class DealsProductCardAdapter(private val productCardListener: ProductCardListener) :
     RecyclerView.Adapter<ProductCardViewHolder>() {
-
+    var page = 0
     var productCards: List<ProductCardDataView> = mutableListOf()
         set(value) {
             val diff = DiffUtil.calculateDiff(ProductCardDiffCallback(field, value))
@@ -27,7 +28,11 @@ class DealsProductCardAdapter(private val productCardListener: ProductCardListen
     override fun getItemCount(): Int = productCards.size
 
     override fun onBindViewHolder(holder: ProductCardViewHolder, position: Int) {
+        val item = productCards.get(position)
         holder.bindData(productCards[position])
+        holder.itemView.addOnImpressionListener(item, {
+            productCardListener.onImpressionProduct(item, position,page)
+        })
     }
 
     private class ProductCardDiffCallback(

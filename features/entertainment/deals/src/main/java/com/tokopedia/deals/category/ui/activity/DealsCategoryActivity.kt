@@ -7,14 +7,19 @@ import android.util.Log
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.deals.category.di.DealsCategoryComponent
 import com.tokopedia.deals.category.di.DaggerDealsCategoryComponent
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.search.model.response.Category
+import javax.inject.Inject
 
 /**
  * @author by firman on 22/06/20
  */
 
 class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<DealsCategoryComponent> {
+
+    @Inject
+    lateinit var analytics: DealsAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -25,6 +30,7 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
         }
 
         super.onCreate(savedInstanceState)
+        initInjector()
     }
     override fun isSearchAble(): Boolean = false
 
@@ -32,6 +38,16 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
         return DaggerDealsCategoryComponent.builder()
                 .dealsComponent(getDealsComponent())
                 .build()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
+    }
+
+    override fun tabAnalytics(categoryName: String, position: Int) {
+        if(this::analytics.isInitialized) {
+            analytics.eventClickCategoryTabCategoryPage(categoryName)
+        }
     }
 
     override fun getPageTAG(): String = TAG

@@ -15,9 +15,13 @@ import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListe
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.category.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
+import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.listener.DealChipsListActionListener
+import com.tokopedia.deals.common.listener.DealsBrandActionListener
+import com.tokopedia.deals.common.listener.ProductListListener
+import com.tokopedia.deals.common.ui.adapter.viewholder.DealsChipsViewHolder
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
-import com.tokopedia.deals.common.ui.adapter.viewholder.DealsChipsViewHolder
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
@@ -38,10 +42,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
         EmptyStateListener {
 
     private var categoryID: String = ""
-    private var chips: DealsChipsDataView = DealsChipsDataView()
+    private var page : Int = 0
+    private var chips : DealsChipsDataView = DealsChipsDataView()
 
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
+
+    @Inject
+    lateinit var analytics: DealsAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -130,10 +138,12 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
+        analytics.eventClickBrandPopular(brand, position, true)
         RouteManager.route(requireContext(), brand.brandUrl)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
+        analytics.eventSeeAllBrandPopularOnCategoryPage()
         startActivity(DealsBrandActivity.getCallingIntent(requireContext(), null, categoryID))
     }
 
@@ -155,11 +165,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onChipClicked(chips: DealsChipsDataView) {
+        analytics.eventClickChipsCategory()
         applyFilter(chips)
     }
 
     /** DealsCategoryFilterBottomSheetListener **/
     override fun onFilterApplied(chips: DealsChipsDataView) {
+        analytics.eventApplyChipsCategory(chips)
         applyFilter(chips)
     }
 
@@ -208,6 +220,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         getCurrentLocation()
         dealCategoryViewModel.loadFilterShimmering()
         loadData(1)
+        analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
@@ -220,6 +233,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onClickSearchBar() {
+        analytics.eventClickSearchCategoryPage()
         startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
@@ -229,5 +243,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun resetFilter() {
         val chipReseted = DealsChipsDataView(chips.chipList.map { it.copy(isSelected = false) })
         dealCategoryViewModel.updateChips(chipReseted, getCurrentLocation(), categoryID, false)
+    }
+
+    override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
+        analytics.eventScrollToBrandPopular(brand,position)
+    }
+
+    override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page: Int) {
+        analytics.impressionProductCategory(productCardDataView,productItemPosition, page)
     }
 }

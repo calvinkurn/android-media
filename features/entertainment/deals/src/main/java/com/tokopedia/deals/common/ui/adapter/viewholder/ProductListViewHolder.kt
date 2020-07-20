@@ -35,6 +35,7 @@ class ProductListViewHolder(itemView: View, private val productListListener: Pro
             }
         }
         productCardAdapter.productCards = productList.productCards
+        productCardAdapter.page = productList.page
     }
 
     override fun onProductClicked(
@@ -43,6 +44,10 @@ class ProductListViewHolder(itemView: View, private val productListListener: Pro
         position: Int
     ) {
         productListListener.onProductClicked(productCardDataView, position)
+    }
+
+    override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page:Int) {
+        productListListener.onImpressionProduct(productCardDataView, productItemPosition, page)
     }
 
     companion object {

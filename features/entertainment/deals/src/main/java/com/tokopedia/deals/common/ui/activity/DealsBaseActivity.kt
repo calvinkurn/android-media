@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -45,6 +46,9 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
+
+    @Inject
+    lateinit var dealsAnalytics : DealsAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -164,7 +168,9 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setupOrderListMenu() {
-        imgDealsOrderListMenu.setOnClickListener { RouteManager.route(this, ApplinkConst.DEALS_ORDER) }
+        imgDealsOrderListMenu.setOnClickListener {
+            dealsAnalytics.clickOrderListDeals()
+            RouteManager.route(this, ApplinkConst.DEALS_ORDER) }
     }
 
     private fun setupSearchBar() {

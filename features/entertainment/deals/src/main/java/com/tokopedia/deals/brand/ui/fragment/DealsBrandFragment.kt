@@ -225,6 +225,10 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         loadData(1)
     }
 
+    override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
+        analytics.eventScrollToBrandPopular(brand,position)
+    }
+
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
     private fun setCurrentLocation(location: Location) {
         (activity as DealsBaseActivity).currentLoc = location

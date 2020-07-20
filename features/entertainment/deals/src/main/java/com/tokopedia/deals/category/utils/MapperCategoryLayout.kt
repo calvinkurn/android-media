@@ -20,12 +20,12 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
 
     fun mapCategoryLayout(
         chips: CuratedData,
-        brandProduct: SearchData
+        brandProduct: SearchData, page: Int
     ): List<DealsBaseItemDataView> {
         layout.clear()
         mapCuratedtoLayout(chips)
         mapBrandtoLayout(brandProduct)
-        mapProducttoLayout(brandProduct)
+        mapProducttoLayout(brandProduct,page)
         return layout
     }
 
@@ -72,7 +72,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
         layout.add(brandsDataView)
     }
 
-    fun mapProducttoLayout(searchData: SearchData): ProductListDataView {
+    fun mapProducttoLayout(searchData: SearchData, page:Int): ProductListDataView {
         val productsLayout = searchData.eventSearch.products.map {it ->
             ProductCardDataView(
                     id = it.id,
@@ -80,6 +80,9 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                     title = it.displayName,
                     oldPrice = DealsUtils.convertToCurrencyString(it.mrp.toLong()),
                     price = DealsUtils.convertToCurrencyString(it.salesPrice.toLong()),
+                    priceNonCurrency = it.salesPrice,
+                    brand = it.brand.title,
+                    categoryName = it.category.firstOrNull()?.title ?: "",
                     appUrl = it.appUrl,
                     discount = it.savingPercentage,
                     shop = it.brand.title,
@@ -87,7 +90,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                     )
         }
 
-        val productListDataView = ProductListDataView(productsLayout.toMutableList())
+        val productListDataView = ProductListDataView(productsLayout.toMutableList(), page)
         productListDataView.isLoadedAndSuccess()
         layout.add(productListDataView)
 

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_deals_voucher_place_card.view.*
 class DealsFavouriteCategoryViewHolder(itemView: View, private val listener: DealsFavouriteCategoriesListener)
     : BaseViewHolder(itemView) {
 
-    fun bindData(places: FavouritePlacesDataView.Place)  {
+    fun bindData(places: FavouritePlacesDataView.Place, position: Int)  {
         itemView.run {
             img_voucher_place_card.loadImage(places.imageUrl)
 
@@ -26,7 +26,9 @@ class DealsFavouriteCategoryViewHolder(itemView: View, private val listener: Dea
 
             setOnClickListener {
                 listener.onClickFavouriteCategory(
-                        places.url
+                        places.url,
+                        places,
+                        position
                 )
             }
         }
