@@ -49,6 +49,7 @@ dependencies {
     implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.features.resourcesCommon)
 
 }
 

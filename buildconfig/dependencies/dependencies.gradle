@@ -24,10 +24,10 @@ ext {
     runnerVersion = "1.1.0"
     rulesVersion = "1.1.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '2.7.0'
+    lottieVersion = '3.4.1'
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
-    roomVersion = '2.2.1'
+    roomVersion = '2.2.5'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
     constraintLayoutVersion = '2.0.0-beta3'
@@ -37,7 +37,7 @@ ext {
     stfalconVersion = '1.0.0'
 
     playServiceFirebaseConfig = '16.1.3'
-    playServiceBaseVersion = '17.0.0'
+    playServiceBaseVersion = '17.3.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
     playCoreVersion = '1.6.3'
@@ -89,7 +89,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.8'
-    unifyComponentsVersion = '1.1.40'
+    unifyComponentsVersion = '1.1.41'
     unifyCoachMarkVersion = '1.2.6'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -308,9 +308,6 @@ ext {
             chuckNoOp       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
-            //blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
-            blockCanary     : ":libraries:blockcanary",
-            blockCanaryNoOp : "com.github.markzhai:blockcanary-no-op:1.5.0",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
     ]
 

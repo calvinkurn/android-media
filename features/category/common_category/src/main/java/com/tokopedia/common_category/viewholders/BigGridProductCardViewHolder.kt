@@ -3,6 +3,7 @@ package com.tokopedia.common_category.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.common_category.R
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import kotlinx.android.synthetic.main.category_product_card_big_grid.view.*
@@ -18,7 +19,7 @@ class BigGridProductCardViewHolder(itemView: View,productCardListener: ProductCa
     override fun bind(productItem: ProductsItem?) {
         if (productItem == null) return
 
-        itemView.productCardView?.setProductModel(productItem.toProductCardModel(true))
+        itemView.productCardView?.setProductModel(productItem.toProductCardModel(CategoryNavConstants.RecyclerView.GridType.GRID_3))
 
         itemView.productCardView?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)

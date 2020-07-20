@@ -44,7 +44,6 @@ class PromoRecommendationViewHolder(private val view: View,
             lottieButtonApplyPromoRecommendation.progress = 0f
             lottieButtonApplyPromoRecommendation.show()
             buttonApplyPromoRecommendation.setOnClickListener {
-                buttonApplyPromoRecommendation.isLoading = true
                 playAnimation()
                 listener.onClickApplyRecommendedPromo()
             }
@@ -53,7 +52,6 @@ class PromoRecommendationViewHolder(private val view: View,
             buttonApplyPromoRecommendation.text = itemView.context.getString(R.string.label_promo_recommendation_select)
             labelPromoRecommendationTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title, element.uiData.promoCount))
         } else {
-            buttonApplyPromoRecommendation.isLoading = false
             imageCheckPromoRecommendation.show()
             buttonApplyPromoRecommendation.isEnabled = false
             buttonApplyPromoRecommendation.text = itemView.context.getString(R.string.label_promo_recommendation_selected)

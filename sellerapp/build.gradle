@@ -217,7 +217,6 @@ dependencies {
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsWidget)
@@ -247,6 +246,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticorder)
+    implementation project(rootProject.ext.features.editshipping)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
@@ -260,8 +260,6 @@ dependencies {
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.flashsaleManagement)
-    implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.notifCenter)
@@ -382,9 +380,9 @@ dependencies {
     implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
-        implementation project(project.ext.debugToolsDependencies.blockCanary)
+        implementation project(rootProject.ext.libraries.blockCanary)
     } else {
-        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+        implementation rootProject.ext.libraries.blockCanaryNoOp
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary

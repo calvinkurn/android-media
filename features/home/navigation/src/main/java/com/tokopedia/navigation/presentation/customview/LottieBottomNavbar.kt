@@ -3,7 +3,6 @@ package com.tokopedia.navigation.presentation.customview
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Handler
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -16,8 +15,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieListener
 import com.tokopedia.navigation.R
 
 private const val DEFAULT_HEIGHT = 56f
@@ -25,6 +22,7 @@ private const val DEFAULT_ICON_PADDING = 2
 private const val DEFAULT_TEXT_SIZE = 10f
 
 class LottieBottomNavbar : LinearLayout {
+    private val badgeTextViewList: MutableList<TextView>? = mutableListOf()
     private var emptyBadgeLayoutParam: FrameLayout.LayoutParams? = null
     private var badgeLayoutParam: FrameLayout.LayoutParams? = null
     private var menu: MutableList<BottomMenu> = ArrayList()
@@ -59,6 +57,7 @@ class LottieBottomNavbar : LinearLayout {
 
         containerWidth = parentWidth
         resizeContainer()
+        adjustBadgePosition()
     }
 
     fun setBadge(badgeValue: Int = 0, iconPosition: Int, visibility: Int = View.VISIBLE) {
@@ -90,6 +89,40 @@ class LottieBottomNavbar : LinearLayout {
 
         badgeText?.bringToFront()
         badgeText?.visibility = visibility
+    }
+
+    private fun adjustBadgePosition() {
+        if (menu.isEmpty()) return
+        val itemWidthSize = containerWidth/menu.size
+        val badgeRightMargin = itemWidthSize/4
+
+        badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+        badgeLayoutParam?.gravity = Gravity.END
+        badgeLayoutParam?.setMargins(
+                resources.getDimensionPixelOffset(R.dimen.dp_0),
+                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                badgeRightMargin,
+                resources.getDimensionPixelOffset(R.dimen.dp_1)
+        )
+
+        emptyBadgeLayoutParam = FrameLayout.LayoutParams(
+                resources.getDimensionPixelOffset(R.dimen.dp_12),
+                resources.getDimensionPixelOffset(R.dimen.dp_12))
+        emptyBadgeLayoutParam?.gravity = Gravity.END
+        emptyBadgeLayoutParam?.setMargins(
+                resources.getDimensionPixelOffset(R.dimen.dp_0),
+                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                badgeRightMargin,
+                resources.getDimensionPixelOffset(R.dimen.dp_1)
+        )
+
+        badgeTextViewList?.forEach {
+            if (it.text == "") {
+                it.layoutParams = emptyBadgeLayoutParam
+            } else {
+                it.layoutParams = badgeLayoutParam
+            }
+        }
     }
 
     private fun resizeContainer() {
@@ -180,6 +213,7 @@ class LottieBottomNavbar : LinearLayout {
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
             bottomMenu.animName?.let {
                 icon.setAnimation(bottomMenu.animName)
+                icon.speed = bottomMenu.animSpeed
             }
             if (bottomMenu.animName == null) {
                 bottomMenu.imageName?.let {
@@ -219,6 +253,7 @@ class LottieBottomNavbar : LinearLayout {
                         }
                         bottomMenuSelected.animName?.let {
                             iconSelected.setAnimation(it)
+                            iconSelected.speed = bottomMenuSelected.animSpeed
                         }
                     } else {
                         val bottomMenuSelected = bottomMenu
@@ -229,6 +264,7 @@ class LottieBottomNavbar : LinearLayout {
                         }
                         bottomMenuSelected.animToEnabledName?.let {
                             iconSelected.setAnimation(it)
+                            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
                         }
                     }
 
@@ -254,6 +290,7 @@ class LottieBottomNavbar : LinearLayout {
                         .inflate(R.layout.badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
+                badgeTextViewList?.add(badgeTextView)
                 badgeTextView.tag = context.getString(R.string.tag_badge_textview)+bottomMenu.id.toString()
                 badgeTextView.visibility = View.INVISIBLE
                 imageContainer.addView(badge)
@@ -281,6 +318,7 @@ class LottieBottomNavbar : LinearLayout {
             buttonContainer.setOnClickListener {
                 setSelected(index)
             }
+            buttonContainer.id = bottomMenu.id
 
             // add view to container
             navbarContainer?.addView(buttonContainer)
@@ -316,6 +354,7 @@ class LottieBottomNavbar : LinearLayout {
             pair.first.cancelAnimation()
             menu[selectedItem?:0].animToEnabledName?.let {
                 pair.first.setAnimation(it)
+                pair.first.speed = menu[selectedItem?:0].animToEnabledSpeed
             }
 
             iconList[selectedItem?:0] = Pair(pair.first, false)
@@ -324,7 +363,10 @@ class LottieBottomNavbar : LinearLayout {
         selectedItem?.let {
             val selectedIconPair = iconList[it]
             val selectedIcon = selectedIconPair.first
-            if (!selectedIconPair.second) selectedIcon.playAnimation()
+            if (!selectedIconPair.second) {
+                selectedIcon.visibility = View.VISIBLE
+                selectedIcon.playAnimation()
+            }
             iconList[it] = Pair(selectedIcon, true)
             titleList[it].setTextColor(buttonColor)
             selectedIcon.invalidate()
@@ -335,7 +377,10 @@ class LottieBottomNavbar : LinearLayout {
         val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
         val newSelectedItemPair = iconList[newPosition]
         val newSelectedItem = newSelectedItemPair.first
-        if (!newSelectedItemPair.second) newSelectedItem.playAnimation()
+        if (!newSelectedItemPair.second) {
+            newSelectedItem.visibility = View.VISIBLE
+            newSelectedItem.playAnimation()
+        }
 
         iconList[newPosition] = Pair(newSelectedItem, true)
 
@@ -373,17 +418,19 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: Long,
+data class BottomMenu(val id: Int,
                       val title: String,
                       val animName: Int? = null,
                       val animToEnabledName: Int? = null,
                       val imageName: Int? = null,
                       val imageEnabledName: Int? = null,
                       val activeButtonColor: Int,
-                      val useBadge: Boolean = true)
+                      val useBadge: Boolean = true,
+                      val animSpeed: Float = 1f,
+                      val animToEnabledSpeed: Float = 1f)
 interface IBottomClickListener {
-    fun menuClicked(position: Int, id: Long): Boolean
-    fun menuReselected(position: Int, id: Long)
+    fun menuClicked(position: Int, id: Int): Boolean
+    fun menuReselected(position: Int, id: Int)
 }
 
 fun Float.toDp(context: Context): Int {

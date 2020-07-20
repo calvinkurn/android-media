@@ -18,7 +18,7 @@ public interface SearchEventTracking {
 
     interface Category {
         String EVENT_TOP_NAV = "top nav";
-        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search - search result page";
+        String EVENT_TOP_NAV_SEARCH_SRP = "top nav - search result page";
         String SEARCH = "Search";
         String FILTER_PRODUCT = "filter product";
         String SEARCH_RESULT = "search result";

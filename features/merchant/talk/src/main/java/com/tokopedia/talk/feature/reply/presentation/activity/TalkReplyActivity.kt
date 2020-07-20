@@ -23,8 +23,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     private var questionId = ""
     private var shopId = ""
-    private var isFromInbox = false
-    private var productId = ""
+    private var source = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +39,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReplyFragment.createNewInstance(questionId, shopId, productId, isFromInbox)
+        return TalkReplyFragment.createNewInstance(questionId, shopId, source)
     }
 
     override fun getComponent(): TalkComponent {
@@ -58,19 +57,13 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         if (questionIdString.isNotEmpty()) {
             this.questionId = questionIdString
         }
-        val productIdString = uri.getQueryParameter(TalkConstants.PARAM_PRODUCT_ID) ?: ""
-        if (productIdString.isNotEmpty()) {
-            this.productId = productIdString
-        }
         val shopId = uri.getQueryParameter(TalkConstants.PARAM_SHOP_ID) ?: ""
         if (shopId.isNotEmpty()) {
             this.shopId = shopId
         }
-        with(TalkDetailsActivity) {
-            val source = uri.getQueryParameter(TalkConstants.PARAM_SOURCE) ?: ""
-            if (source.isNotEmpty()) {
-                isFromInbox = source == SOURCE_INBOX
-            }
+        val source = uri.getQueryParameter(TalkConstants.PARAM_SOURCE) ?: ""
+        if (source.isNotEmpty()) {
+            this.source = source
         }
     }
 
@@ -128,7 +121,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.let {
-            it.stopPreparePagePerformanceMonitoring()
+            it.stopRenderPerformanceMonitoring()
         }
     }
 }

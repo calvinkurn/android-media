@@ -26,7 +26,6 @@ import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
-import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -39,13 +38,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
-import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -63,6 +66,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -92,6 +96,7 @@ open class HomeViewModel @Inject constructor(
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
         private val declineSalamWIdgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()){
 
@@ -202,6 +207,7 @@ open class HomeViewModel @Inject constructor(
     private var getSalamWidgetJob: Job? = null
     private var declineSalamWidgetJob : Job? = null
     private var injectCouponTimeBasedJob: Job? = null
+    private var getTopAdsBannerDataJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
 
@@ -347,6 +353,7 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
+            newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
@@ -502,6 +509,14 @@ open class HomeViewModel @Inject constructor(
                 it.printStackTrace()
                 _errorEventLiveData.postValue(Event(it.message ?: ""))
             }
+        }
+    }
+
+    fun removeViewHolderAtPosition(position: Int) {
+        val homeViewModel = _homeLiveData.value
+        val detectViewHolder = homeViewModel?.list?.get(position)
+        detectViewHolder?.let {
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
     }
 
@@ -700,6 +715,35 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
+    private fun evaluateTopAdsBannerComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
+            val listData = _homeLiveData.value?.list?.filter {
+                it is HomeTopAdsBannerDataModel
+            }
+            listData?.let {
+                val data: List<HomeTopAdsBannerDataModel> = it as List<HomeTopAdsBannerDataModel>
+
+                if (data.isNotEmpty()) {
+                    val stack: Stack<HomeTopAdsBannerDataModel> = Stack<HomeTopAdsBannerDataModel>()
+                    stack.addAll(data.toMutableList())
+                    stack.reverse()
+
+                    val list = homeViewModel.list.toMutableList()
+                    // find the old data from current list
+                    list.forEachIndexed { pos, data ->
+                        run {
+                            if (data is HomeTopAdsBannerDataModel) {
+                                list[pos] = data
+                            }
+                        }
+                    }
+                    homeViewModel.copy(list = list)
+                }
+            }
+        }
+        return homeDataModel
+    }
+
     fun getRecommendationFeedSectionPosition() = (_homeLiveData.value?.list?.size?:0)-1
 
 // ===========================================================================================
@@ -713,13 +757,13 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
-                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                    val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
+                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataWithoutExternalComponentPair.first))
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    getRechargeRecommendation()
-                    getSalamWidget()
+                    getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -732,6 +776,21 @@ open class HomeViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
+    }
+
+    private fun evaluateInitialTopAdsBannerComponent(homeDataModel: HomeDataModel): Pair<HomeDataModel, Map<Int, HomeTopAdsBannerDataModel>> {
+        val topadsMap = mutableMapOf<Int, HomeTopAdsBannerDataModel>()
+        homeDataModel.list.mapIndexed { index, visitable ->
+            if (visitable is HomeTopAdsBannerDataModel) {
+                topadsMap[index] = visitable
+            }
+        }
+        val data: List<HomeTopAdsBannerDataModel> = ArrayList(topadsMap.values)
+        val mutableNewList = homeDataModel.list.toMutableList()
+        mutableNewList.removeAll(data)
+        val newHomeData = homeDataModel.copy(list = mutableNewList.toList())
+
+        return Pair(newHomeData, topadsMap)
     }
 
     private fun initChannel(){
@@ -948,6 +1007,44 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getTopAdsBannerData(topadsMap: Map<Int, HomeTopAdsBannerDataModel>) {
+        if(topadsMap.isNotEmpty()) {
+            if(getTopAdsBannerDataJob?.isActive == true) return
+                getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
+                val results = topAdsImageViewUseCase.get().getImageData(
+                        topAdsImageViewUseCase.get().getQueryMap(
+                                "",
+                                "1",
+                                "",
+                                topadsMap.size,
+                                3,
+                                ""
+                        )
+                )
+                if (results.isNotEmpty()) {
+                    val stack: Stack<TopAdsImageViewModel> = Stack<TopAdsImageViewModel>()
+                    stack.addAll(results.toMutableList())
+                    stack.reverse()
+
+                    val newHomeData = _homeLiveData.value
+                    val newList = newHomeData?.list?: listOf()
+                    if (newList.isNotEmpty()) {
+                        topadsMap.entries.forEach {
+                            val topAdsImageViewModel = stack.pop()
+                            launch(coroutineContext){
+                                val newTopAdsModel = it.value.copy(topAdsImageViewModel = topAdsImageViewModel)
+                                updateWidget(UpdateLiveDataModel(ACTION_ADD,
+                                        newTopAdsModel, it.key))
+                            }
+                        }
+                    }
+                }
+            }){
+                    it.printStackTrace()
+            }
+        }
+    }
+
     private fun getPopularKeyword() {
         val data = _homeLiveData.value?.list?.find { it is PopularKeywordListDataModel }
         if(data != null && data is PopularKeywordListDataModel) {
@@ -1116,7 +1213,8 @@ open class HomeViewModel @Inject constructor(
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
 
-        getTokopointJob = launchCatchError(coroutineContext, block={
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            getHomeTokopointsDataUseCase.get().setParams("2.0.0")
             val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
             updateHeaderViewModel(
                     isTokoPointDataError = false,

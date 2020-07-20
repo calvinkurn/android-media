@@ -113,8 +113,8 @@ public abstract class MainApplication extends MainRouterApplication{
                 return executeInBackground();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context);
     }
 
     @NotNull

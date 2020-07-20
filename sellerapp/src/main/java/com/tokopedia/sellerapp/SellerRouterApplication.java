@@ -38,8 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
-import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
@@ -54,12 +52,10 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
@@ -117,7 +113,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
+        implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
         ShopModuleRouter,
@@ -128,7 +124,6 @@ public abstract class SellerRouterApplication extends MainApplication
         BroadcastMessageRouter,
         UnifiedOrderListRouter,
         CoreNetworkRouter,
-        FlashSaleRouter,
         LinkerRouter,
         SellerHomeRouter,
         LoginRouter {
@@ -183,14 +178,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public ShopComponent getShopComponent() {
-        if (shopComponent == null) {
-            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return shopComponent;
-    }
-
-    @Override
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
@@ -237,11 +224,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return intent;
         }
-    }
-
-    @Override
-    public Intent getPhoneVerificationActivityIntent(Context context) {
-        return PhoneVerificationActivationActivity.getIntent(context, true, false);
     }
 
     @Override
@@ -436,12 +418,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public ApplinkDelegate applinkDelegate() {
         return null;
-    }
-
-    @Override
-    public @NonNull
-    Intent getFlashSaleDashboardIntent(@NonNull Context context) {
-        return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
     }
 
     @NonNull

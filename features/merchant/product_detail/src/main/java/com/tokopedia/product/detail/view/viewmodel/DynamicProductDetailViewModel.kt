@@ -88,7 +88,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addToCartOccUseCase: AddToCartOccUseCase,
                                                              private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
-                                                             private val sendTopAdsUseCase: SendTopAdsUseCase,
                                                              private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
@@ -240,11 +239,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         discussionMostHelpfulUseCase.cancelJobs()
     }
 
-    fun sendTopAds(url: String) {
-        sendTopAdsUseCase.executeOnBackground(url)
-    }
-
-    fun processInitialVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
+    fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
         launchCatchError(block = {
             withContext(dispatcher.io()) {
                 _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
@@ -357,9 +352,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun addStaticComponent(it: ProductDetailDataModel) {
-        if (isUserSessionActive && !isUserHasShop) {
-            it.listOfLayout.add(ProductOpenShopDataModel())
-        }
         it.listOfLayout.add(ProductLastSeenDataModel())
     }
 
