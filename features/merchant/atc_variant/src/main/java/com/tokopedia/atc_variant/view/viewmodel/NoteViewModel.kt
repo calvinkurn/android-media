@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class NoteViewModel(
-        var note: String,
+        var note: String = "",
         var noteCharMax: Int = 144
 ) : Visitable<AddToCartVariantAdapterTypeFactory>, Parcelable {
 

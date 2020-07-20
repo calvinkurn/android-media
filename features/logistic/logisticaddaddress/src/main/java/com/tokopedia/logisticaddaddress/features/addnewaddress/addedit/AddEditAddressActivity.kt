@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.logisticaddaddress.R
 
@@ -15,7 +16,7 @@ class AddEditAddressActivity: BaseSimpleActivity() {
         var fragment: AddEditAddressFragment? = null
         if (intent.extras != null) {
             val bundle = intent.extras
-            fragment = AddEditAddressFragment.newInstance(bundle)
+            fragment = AddEditAddressFragment.newInstance(bundle?: Bundle())
         }
         return fragment
     }

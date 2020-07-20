@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class InsuranceRecommendationViewModel(
 
-        var cartShopsList: ArrayList<InsuranceCartShopsViewModel>
+        var cartShopsList: ArrayList<InsuranceCartShopsViewModel> = arrayListOf()
 
 ) : Visitable<AddToCartVariantAdapterTypeFactory>, Parcelable {
 
