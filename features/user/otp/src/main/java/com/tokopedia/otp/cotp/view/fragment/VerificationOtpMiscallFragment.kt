@@ -81,9 +81,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
 
-
     private fun parseViewModel(bundle: Bundle): VerificationViewModel {
-        viewModel = bundle.getParcelable(ARGS_PASS_DATA) as VerificationViewModel
+        viewModel = bundle.getParcelable(ARGS_PASS_DATA) ?: VerificationViewModel.createEmpty()
         return viewModel
     }
 
@@ -439,7 +438,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         this.viewModel.imageUrl = methodItem.imageUrl
         this.viewModel.message = methodItem.verificationText
     }
-  
+
     companion object {
         private const val ARGS_DATA = "ARGS_DATA"
         private const val ARGS_PASS_DATA = "pass_data"

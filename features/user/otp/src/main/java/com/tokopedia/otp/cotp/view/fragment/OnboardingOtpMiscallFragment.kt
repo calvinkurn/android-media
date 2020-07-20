@@ -36,7 +36,7 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        passModel = arguments?.getParcelable(ARGS_PASS_DATA) as VerificationViewModel
+        passModel = arguments?.getParcelable(ARGS_PASS_DATA) ?: VerificationViewModel.createEmpty()
         btnCallMe.setOnClickListener {
             fragmentManager?.popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 

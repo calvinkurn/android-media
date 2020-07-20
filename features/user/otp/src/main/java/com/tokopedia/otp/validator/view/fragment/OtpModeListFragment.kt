@@ -60,10 +60,10 @@ class OtpModeListFragment : BaseDaggerFragment(), OtpModeListAdapter.ClickListen
         super.onCreate(savedInstanceState)
         when {
             arguments != null -> {
-                otpParams = arguments?.getParcelable(OtpConstant.OTP_PARAMS) as OtpParams
+                otpParams = arguments?.getParcelable(OtpConstant.OTP_PARAMS) ?: OtpParams()
             }
             savedInstanceState != null -> {
-                otpParams = savedInstanceState.getParcelable(OtpConstant.OTP_PARAMS) as OtpParams
+                otpParams = savedInstanceState.getParcelable(OtpConstant.OTP_PARAMS) ?: OtpParams()
             }
             else -> {
                 activity?.setResult(Activity.RESULT_CANCELED)

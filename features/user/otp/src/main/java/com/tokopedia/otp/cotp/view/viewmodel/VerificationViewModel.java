@@ -3,6 +3,8 @@ package com.tokopedia.otp.cotp.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.otp.cotp.view.viewlistener.Verification;
+
 /**
  * @author by nisie on 11/30/17.
  */
@@ -63,6 +65,10 @@ public class VerificationViewModel implements Parcelable {
         this.imageUrl = imageUrl;
         this.canUseOtherMethod = canUseOtherMethod;
         this.numberOtpDigit = numberOtpDigit;
+    }
+
+    public static VerificationViewModel createEmpty() {
+        return new VerificationViewModel("", "", 0, "", "", "", "", false, 0);
     }
 
     protected VerificationViewModel(Parcel in) {
@@ -166,9 +172,13 @@ public class VerificationViewModel implements Parcelable {
         this.canUseOtherMethod = canUseOtherMethod;
     }
 
-    public int getNumberOtpDigit() { return numberOtpDigit; }
+    public int getNumberOtpDigit() {
+        return numberOtpDigit;
+    }
 
-    public void setNumberOtpDigit(int numberOtpDigit) { this.numberOtpDigit = numberOtpDigit; }
+    public void setNumberOtpDigit(int numberOtpDigit) {
+        this.numberOtpDigit = numberOtpDigit;
+    }
 
     @Override
     public int describeContents() {

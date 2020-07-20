@@ -210,8 +210,8 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     private fun initVar() {
         arguments?.let {
-            otpParams = it.getParcelable(OtpConstant.OTP_PARAMS) as OtpParams
-            modeListData = it.getParcelable(OtpConstant.OTP_MODE_PARAM) as ModeListData
+            otpParams = it.getParcelable(OtpConstant.OTP_PARAMS) ?: OtpParams()
+            modeListData = it.getParcelable(OtpConstant.OTP_MODE_PARAM) ?: ModeListData()
         }
 
         if (!isCountdownFinished()) {
