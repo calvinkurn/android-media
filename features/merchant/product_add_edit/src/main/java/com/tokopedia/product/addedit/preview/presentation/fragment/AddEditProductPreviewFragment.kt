@@ -99,9 +99,7 @@ import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProdu
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
-import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
-import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -330,10 +328,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateProductStatus(isChecked)
-        }
-
         // track switch status on click
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked
@@ -360,22 +354,21 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
                 // when we perform open draft, previous state before we save the product to draft will be the same
-                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                    context?.let {
-                        viewModel.productInputModel.value?.run {
-                            val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
-                            saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
-                            AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
-                            activity?.setResult(RESULT_OK)
-                            activity?.finish()
-                        }
+                if (viewModel.productInputModel.value?.didBackPress != true) {
+                    productStatusSwitch?.isChecked?.let { status -> viewModel.updateProductStatus(status) }
+                }
+                context?.let {
+                    val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
+                    viewModel.productInputModel.value?.run {
+                        saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
                     }
-                } else {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        startProductAddService(productInputModel)
-                        activity?.setResult(RESULT_OK)
-                        activity?.finish()
+                    if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                        AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
+                    } else {
+                        AddEditProductAddService.startService(it, saveInstanceCacheManager.id ?: "")
                     }
+                    activity?.setResult(RESULT_OK)
+                    activity?.finish()
                 }
             }
 
@@ -1062,17 +1055,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
-    }
-
-    private fun startProductAddService(productInputModel: ProductInputModel) {
-        context?.let {
-            val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
-            saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-            AddEditProductAddService.startService(
-                    context = it,
-                    cacheId = saveInstanceCacheManager.id ?: ""
-            )
-        }
     }
 
     private fun showLoading() {
