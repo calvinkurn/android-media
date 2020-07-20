@@ -88,7 +88,7 @@ class ShopHomeAdapter(
         visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
                 .find {
                     it.widgetId == widgetId
-                }?.also {
+                }?.let {
                     it.data?.firstOrNull()?.youTubeVideoDetail = data
                     notifyChangedItem(visitables.indexOf(it))
                 }

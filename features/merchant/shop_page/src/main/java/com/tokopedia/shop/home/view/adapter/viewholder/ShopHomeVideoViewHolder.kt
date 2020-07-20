@@ -58,10 +58,10 @@ class ShopHomeVideoViewHolder(
 
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {
         this.youtubVideoModel = model
-        val highResVideoThumbnailUrl = youtubVideoModel?.data?.first()?.youTubeVideoDetail.getMaxResThumbnailUrl()
+        val highResVideoThumbnailUrl = youtubVideoModel?.data?.firstOrNull()?.youTubeVideoDetail.getMaxResThumbnailUrl()
         when {
-            youtubVideoModel?.data?.first()?.youTubeVideoDetail == null -> {
-                val videoData = model.data?.first()
+            youtubVideoModel?.data?.firstOrNull()?.youTubeVideoDetail == null -> {
+                val videoData = model.data?.firstOrNull()
                 val uri = Uri.parse(videoData?.videoUrl ?: "")
                 videoUrl = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
                 listener.loadYouTubeData(uri.toString(), model.widgetId)
@@ -126,7 +126,9 @@ class ShopHomeVideoViewHolder(
     private fun playYoutube(view: View) {
         view.context?.let {
             youtubVideoModel?.data?.let { videoItemList ->
-                listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(), adapterPosition, 0)
+                videoItemList.firstOrNull()?.run {
+                    listener.onDisplayItemClicked(youtubVideoModel, this, adapterPosition, 0)
+                }
             }
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
