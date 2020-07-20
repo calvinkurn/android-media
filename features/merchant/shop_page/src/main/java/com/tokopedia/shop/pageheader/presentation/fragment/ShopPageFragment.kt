@@ -324,7 +324,7 @@ class ShopPageFragment :
                         if (pathSegments.size > 1) {
                             shopId = pathSegments[1]
                         } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
-                            shopId = getQueryParameter(SHOP_ID)
+                            shopId = getQueryParameter(SHOP_ID)!!
                         }
                     }
                     if (shopDomain.isNullOrEmpty()) {
