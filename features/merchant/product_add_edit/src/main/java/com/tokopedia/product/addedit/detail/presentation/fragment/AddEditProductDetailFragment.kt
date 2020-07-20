@@ -1080,8 +1080,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         val imagePickerPickerTabTypeDef = intArrayOf(
                 ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA,
-                ImagePickerTabTypeDef.TYPE_INSTAGRAM
+                ImagePickerTabTypeDef.TYPE_CAMERA
         )
 
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
