@@ -2,10 +2,10 @@ package com.tokopedia.statistic.presentation.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerhomecommon.domain.usecase.*
+import com.tokopedia.statistic.utils.TestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -58,6 +58,8 @@ class StatisticViewModelTest {
 
         statisticViewModel = StatisticViewModel(userSession, getLayoutUseCase, getCardDataUseCase, getLineGraphDataUseCase,
                 getProgressDataUseCase, getPostDataUseCase, getCarouselDataUseCase, getTableDataUseCase,
-                getPieChartDataUseCase, getBarChartDataUseCase, Dispatchers.Unconfined)
+                getPieChartDataUseCase, getBarChartDataUseCase, TestDispatchersProvider)
     }
+
+
 }
