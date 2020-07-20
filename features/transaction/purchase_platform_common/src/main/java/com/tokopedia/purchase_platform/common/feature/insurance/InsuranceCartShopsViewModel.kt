@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class InsuranceCartShopsViewModel(
 
-        var shopId: Long,
+        var shopId: Long = 0L,
         var shopItemsList: ArrayList<InsuranceCartShopItemsViewModel> = ArrayList()
 
 ) : Parcelable
@@ -14,7 +14,7 @@ data class InsuranceCartShopsViewModel(
 @Parcelize
 data class InsuranceCartShopItemsViewModel(
 
-        var productId: Long,
+        var productId: Long = 0L,
         var digitalProductList: ArrayList<InsuranceCartDigitalProductViewModel> = ArrayList()
 
 ) : Parcelable
@@ -53,27 +53,27 @@ data class InsuranceCartProductInfoViewModel(
 
 @Parcelize
 data class InsuranceProductApplicationDetailsViewModel(
-        var id: Int,
-        var label: String,
-        var placeHolder: String,
-        var type: String,
-        var isRequired: Boolean,
+        var id: Int = 0,
+        var label: String = "",
+        var placeHolder: String = "",
+        var type: String = "",
+        var isRequired: Boolean = false,
         var isError: Boolean = false,
-        var value: String,
+        var value: String = "",
         var valuesList: ArrayList<InsuranceApplicationValueViewModel> = ArrayList(),
         var validationsList: ArrayList<InsuranceApplicationValidationViewModel> = ArrayList()
 ) : Parcelable
 
 @Parcelize
 data class InsuranceApplicationValueViewModel(
-        var valuesId: Int,
-        var value: String
+        var valuesId: Int = 0,
+        var value: String = ""
 ) : Parcelable
 
 @Parcelize
 data class InsuranceApplicationValidationViewModel(
-        var validationId: Int,
-        var type: String,
-        var validationValue: String,
-        var validationErrorMessage: String
+        var validationId: Int = 0,
+        var type: String = "",
+        var validationValue: String = "",
+        var validationErrorMessage: String = ""
 ) : Parcelable
