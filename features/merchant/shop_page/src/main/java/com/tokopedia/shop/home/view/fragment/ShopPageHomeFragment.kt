@@ -53,6 +53,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.exception.ShopPageException
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -106,8 +107,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
         const val BUNDLE_SHOP_ID = "shopId"
         const val BUNDLE = "bundle"
-
-        private const val ERROR_WHEN_GET_YOUTUBE_DATA = "Error when get YouTube data."
 
         fun createInstance(
                 shopId: String,

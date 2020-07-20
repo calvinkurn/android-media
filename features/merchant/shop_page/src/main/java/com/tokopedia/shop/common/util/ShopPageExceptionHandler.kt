@@ -5,6 +5,8 @@ import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.common.exception.ShopPageException
 
 object ShopPageExceptionHandler {
+    const val ERROR_WHEN_GET_YOUTUBE_DATA = "Error when get YouTube data."
+
     fun logExceptionToCrashlytics(message: String, throwable: Throwable) {
         try {
             if (!BuildConfig.DEBUG) {
