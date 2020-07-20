@@ -12,7 +12,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.CalendarPicker
-import com.tokopedia.statistic.utils.DateRangeFormatUtil
+import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_pick.view.*
 import java.util.*
 

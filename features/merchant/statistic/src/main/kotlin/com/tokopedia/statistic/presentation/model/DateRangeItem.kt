@@ -3,7 +3,7 @@ package com.tokopedia.statistic.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.presentation.view.adapter.factory.DateRangeAdapterFactory
-import com.tokopedia.statistic.utils.DateRangeFormatUtil
+import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
 import java.util.*
 
 /**
