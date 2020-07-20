@@ -19,6 +19,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,6 +30,10 @@ import javax.inject.Inject
 class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                       private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
+
+    private val _expandView = MutableLiveData<Boolean>()
+    val expandView: LiveData<Boolean>
+        get() = _expandView
 
     private val _productCatalogItem = MutableLiveData<TelcoProduct>()
     val productCatalogItem: LiveData<TelcoProduct>
@@ -121,6 +127,13 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         }) {
             _loadingProductList.postValue(false)
             _productList.postValue(Fail(it))
+        }
+    }
+
+    fun setExpandInputNumberView(expand: Boolean) {
+        launch {
+            delay(100)
+            _expandView.postValue(expand)
         }
     }
 

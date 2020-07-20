@@ -140,6 +140,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             nestedScrollView.fling(0)
             nestedScrollView.smoothScrollTo(0, it)
         })
+
+        sharedModelPrepaid.expandView.observe(this, Observer {
+            if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
+            else telcoClientNumberWidget.setVisibleResultNumber(true)
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -227,11 +232,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onCollapseAppBar() {
-        telcoClientNumberWidget.setVisibleResultNumber(true)
+        sharedModelPrepaid.setExpandInputNumberView(false)
     }
 
     override fun onExpandAppBar() {
-        telcoClientNumberWidget.setVisibleResultNumber(false)
+        sharedModelPrepaid.setExpandInputNumberView(true)
     }
 
     /**
