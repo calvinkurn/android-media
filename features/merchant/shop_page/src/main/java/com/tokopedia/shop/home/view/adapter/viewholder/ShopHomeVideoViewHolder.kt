@@ -38,10 +38,9 @@ class ShopHomeVideoViewHolder(
         const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
 
-    private var videoUrl: String = ""
     private var youTubeThumbnailShopPageImageUnify: ImageUnify? = null
     private var loaderImageView: LoaderImageView? = null
-    private var youtubVideoModel: ShopHomeDisplayWidgetUiModel? = null
+    private var youTubeVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     private var btnYoutubePlayer: AppCompatImageView? = null
     private var ivVideoNotFound: AppCompatImageView? = null
@@ -57,28 +56,25 @@ class ShopHomeVideoViewHolder(
     }
 
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {
-        this.youtubVideoModel = model
-        val highResVideoThumbnailUrl = youtubVideoModel?.data?.firstOrNull()?.youTubeVideoDetail.getMaxResThumbnailUrl()
-        when {
-            youtubVideoModel?.data?.firstOrNull()?.youTubeVideoDetail == null -> {
-                val videoData = model.data?.firstOrNull()
-                val uri = Uri.parse(videoData?.videoUrl ?: "")
-                videoUrl = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
-                listener.loadYouTubeData(uri.toString(), model.widgetId)
-                btnYoutubePlayer?.setOnClickListener(this)
-                ivVideoNotFound?.setOnClickListener(this)
-                videoData?.let {
-                    youTubeThumbnailShopPageImageUnify?.addOnImpressionListener(it) {
-                        listener.onDisplayItemImpression(
-                                model,
-                                it,
-                                adapterPosition,
-                                0
-                        )
-                    }
+        this.youTubeVideoModel = model
+        if (model.data?.firstOrNull()?.youTubeVideoDetail == null) {
+            val videoData = model.data?.firstOrNull()
+            listener.loadYouTubeData(videoData?.videoUrl.orEmpty(), model.widgetId)
+            btnYoutubePlayer?.setOnClickListener(this)
+            ivVideoNotFound?.setOnClickListener(this)
+            videoData?.let {
+                youTubeThumbnailShopPageImageUnify?.addOnImpressionListener(it) {
+                    listener.onDisplayItemImpression(
+                            model,
+                            it,
+                            adapterPosition,
+                            0
+                    )
                 }
             }
-            highResVideoThumbnailUrl.isNotEmpty() -> {
+        } else {
+            val highResVideoThumbnailUrl = model.data?.firstOrNull()?.youTubeVideoDetail.getMaxResThumbnailUrl()
+            if (highResVideoThumbnailUrl.isNotEmpty()) {
                 youTubeThumbnailShopPageImageUnify?.onUrlLoaded = { isSuccess ->
                     if (isSuccess) {
                         btnYoutubePlayer?.visible()
@@ -91,12 +87,12 @@ class ShopHomeVideoViewHolder(
                     isSuccess
                 }
                 youTubeThumbnailShopPageImageUnify?.urlSrc = highResVideoThumbnailUrl
-            }
-            else -> {
+            } else {
                 groupVideoError?.visible()
                 loaderImageView?.gone()
             }
         }
+
         itemView.textViewTitle?.apply {
             if (model.header.title.isEmpty()) {
                 hide()
@@ -125,17 +121,19 @@ class ShopHomeVideoViewHolder(
 
     private fun playYoutube(view: View) {
         view.context?.let {
-            youtubVideoModel?.data?.let { videoItemList ->
+            youTubeVideoModel?.data?.let { videoItemList ->
                 videoItemList.firstOrNull()?.run {
-                    listener.onDisplayItemClicked(youtubVideoModel, this, adapterPosition, 0)
+                    listener.onDisplayItemClicked(youTubeVideoModel, this, adapterPosition, 0)
                 }
             }
+            val uri = Uri.parse(youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: "")
+            val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
-                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, videoUrl))
+                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, youTubeVideoId))
             } else {
                 it.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + videoUrl)))
+                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + youTubeVideoId)))
             }
         }
     }
