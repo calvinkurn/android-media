@@ -20,6 +20,8 @@
         android:hint="@string/review_create_bottom_sheet_title"
         android:textColor="@color/Neutral_N700_96"
         android:textCursorDrawable="@null"
+        android:textSize="@dimen/fontSize_lvl4"
+        android:gravity="top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

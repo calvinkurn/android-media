@@ -3,16 +3,11 @@ package com.tokopedia.review.feature.historydetails.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.data.Fail
-import com.tokopedia.review.common.data.LoadingView
-import com.tokopedia.review.common.data.ReviewViewState
-import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
-import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetail
-import com.tokopedia.review.feature.historydetails.domain.ProductrevGetReviewDetailUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,16 +17,18 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val productrevGetReviewDetailUseCase: ProductrevGetReviewDetailUseCase)
     : BaseViewModel(coroutineDispatcherProvider.io()) {
 
-    private val feedbackId = MutableLiveData<Int>()
+    private val _feedbackId = MutableLiveData<Int>()
 
     private val _reviewDetails = MediatorLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
 
-    val reviewDetails: LiveData<ReviewViewState<
-            ProductrevGetReviewDetail>>
+    val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
 
+    val feedbackId: Int
+        get() = _feedbackId.value ?: 0
+
     init {
-        _reviewDetails.addSource(feedbackId) {
+        _reviewDetails.addSource(_feedbackId) {
             getReviewDetails(it)
         }
     }
@@ -50,11 +47,11 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun retry() {
-        feedbackId.notifyObserver()
+        _feedbackId.notifyObserver()
     }
 
     fun setFeedbackId(feedbackId: Int) {
-        this.feedbackId.value = feedbackId
+        this._feedbackId.value = feedbackId
     }
 
     fun getUserId(): String {

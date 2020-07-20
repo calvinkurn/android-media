@@ -84,6 +84,7 @@
 
             <com.tokopedia.review.feature.historydetails.presentation.widget.ReviewDetailResponseWidget
                 android:id="@+id/reviewDetailResponse"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedImages"/>
@@ -92,6 +93,7 @@
                 android:id="@+id/review_history_detail_barrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:barrierMargin="@dimen/layout_lvl2"
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="reviewDetailAttachedImages, reviewDetailResponse, reviewDetailContent"/>
 
@@ -99,7 +101,6 @@
                 android:id="@+id/review_history_detail_divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:layout_marginTop="@dimen/layout_lvl2"
                 app:layout_constraintTop_toBottomOf="@id/review_history_detail_barrier"/>
 
             <com.tokopedia.review.feature.historydetails.presentation.widget.ReviewDetailScoreWidget

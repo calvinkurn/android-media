@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.feature.inbox.common.util.OnBackPressedListener
+import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent

@@ -3,14 +3,15 @@ package com.tokopedia.review.feature.createreputation.ui.fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
-import com.tokopedia.review.common.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.createreputation.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,10 +20,11 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcherProvider,
+class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
                                                 private val getProductReputationForm: GetProductReputationForm,
-                                                private val getProductIncentiveOvo: GetProductIncentiveOvo
-) : BaseViewModel(dispatcher.io()) {
+                                                private val getProductIncentiveOvo: GetProductIncentiveOvo,
+                                                private val getReviewDetailUseCase: ProductrevGetReviewDetailUseCase
+) : BaseViewModel(coroutineDispatcherProvider.io()) {
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -35,6 +37,10 @@ class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcherP
     private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
     val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>> = _incentiveOvo
 
+    private val _reviewDetails = MutableLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
+    val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
+        get() = _reviewDetails
+
     fun submitReview(reviewId: String, reputationId: String, productId: String, shopId: String, reviewDesc: String,
                      ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean, utmSource: String) {
 
@@ -42,6 +48,19 @@ class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcherP
             sendReviewWithoutImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, utmSource)
         } else {
             sendReviewWithImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages, utmSource)
+        }
+    }
+
+    fun getReviewDetails(feedbackId: Int) {
+        _reviewDetails.value = LoadingView()
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                getReviewDetailUseCase.setRequestParams(feedbackId)
+                getReviewDetailUseCase.executeOnBackground()
+            }
+            _reviewDetails.postValue(Success(response.productrevGetReviewDetail))
+        }) {
+            _reviewDetails.postValue(Fail(it))
         }
     }
 

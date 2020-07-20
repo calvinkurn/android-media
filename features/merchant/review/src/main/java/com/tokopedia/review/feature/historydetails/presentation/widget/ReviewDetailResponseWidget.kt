@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailResponse
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.widget_review_detail_response.view.*

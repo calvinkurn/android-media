@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.common.util
+package com.tokopedia.review.common.util
 
 interface OnBackPressedListener {
     fun onBackPressed()

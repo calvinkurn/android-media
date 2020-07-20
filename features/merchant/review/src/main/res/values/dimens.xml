@@ -5,9 +5,11 @@
     <dimen name="chips_padding_size">3dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_11">11dp</dimen>
     <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_13">13dp</dimen>
     <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_42">42dp</dimen>
     <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_90">90dp</dimen>
     <dimen name="dp_117">117dp</dimen>

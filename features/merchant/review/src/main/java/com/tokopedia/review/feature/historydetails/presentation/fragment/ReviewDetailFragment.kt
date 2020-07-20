@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.historydetails.presentation.fragment
 
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,25 +20,19 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.data.Fail
-import com.tokopedia.review.common.data.LoadingView
-import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
-import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailProduct
-import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailResponse
-import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailReview
+import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
 import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
-import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
-import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
-import com.tokopedia.review.feature.historydetails.data.ProductrevGetReviewDetailReputation
-import com.tokopedia.review.feature.inbox.common.util.OnBackPressedListener
+import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
-import kotlinx.android.synthetic.main.widget_review_detail_score.*
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickedListener, OnBackPressedListener {
@@ -45,6 +40,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
         const val INDEX_OF_EDIT_BUTTON = 1
+        const val EDIT_FORM_REQUEST_CODE = 420
 
         fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
@@ -219,9 +215,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             reviewConnectionErrorRetryButton.setOnClickListener {
                 retry()
             }
-            reviewConnectionErrorRetryButton.setOnClickListener {
-                goToSettings()
-            }
         }
     }
 
@@ -253,11 +246,13 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     }
 
     private fun goToEditForm() {
-
-    }
-
-    private fun goToSettings() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
+        with((viewModel.reviewDetails.value as Success).data) {
+            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputation.reputationId.toString(), product.productId.toString())
+            val intent = RouteManager.getIntent(context, Uri.parse(uri).buildUpon()
+                    .appendQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE, ReviewConstants.EDIT_MODE.toString())
+                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId.toString()).build().toString())
+            startActivityForResult(intent, EDIT_FORM_REQUEST_CODE)
+        }
     }
 
     private fun goToSharing() {
