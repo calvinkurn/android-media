@@ -19,10 +19,17 @@ import javax.inject.Inject
  * Created by Yoris Prayogo on 08/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
+
 class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     @Inject
     lateinit var viewModel: BottomSheetCheckViewModel
+
+    private val exceptionPage = listOf(
+            "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
+            "LogoutActivity", "LoginActivity"
+    )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
         DaggerAdditionalCheckComponents
@@ -32,16 +39,11 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
                 .build()
                 .inject(this)
+        doChecking(activity)
+    }
 
-        if(!activity.javaClass.simpleName.toString().contains("ConsumerSplashScreen") &&
-                !activity.javaClass.simpleName.toString().contains("AddPinActivity") &&
-                !activity.javaClass.simpleName.toString().contains("AddPhoneActivity") &&
-                !activity.javaClass.simpleName.toString().contains("TwoFactorActivity") &&
-                !activity.javaClass.simpleName.toString().contains("RegisterFingerprintOnboardingActivity") &&
-                !activity.javaClass.simpleName.toString().contains("VerificationActivity") &&
-                !activity.javaClass.simpleName.toString().contains("PinOnboardingActivity")&&
-                !activity.javaClass.simpleName.toString().contains("LogoutActivity")
-                ) {
+    private fun doChecking(activity: Activity){
+        if(!exceptionPage.contains(activity.javaClass.simpleName.toString())) {
             viewModel.check(onSuccess = {
                 handleResponse(activity, twoFactorResult = it)
             }, onError = {
@@ -50,12 +52,9 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
-    }
+    override fun onActivityDestroyed(activity: Activity?) {}
 
-    override fun onActivityPaused(activity: Activity?) {
-
-    }
+    override fun onActivityPaused(activity: Activity?) {}
 
     private fun handleResponse(activity: Activity?, twoFactorResult: TwoFactorResult){
         if(twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN){
@@ -68,17 +67,11 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         }
     }
 
-    override fun onActivityResumed(activity: Activity?) {
-    }
+    override fun onActivityResumed(activity: Activity?) {}
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
 
-    }
+    override fun onActivityStarted(activity: Activity?) {}
 
-    override fun onActivityStarted(activity: Activity?) {
-
-    }
-
-    override fun onActivityStopped(activity: Activity?) {
-    }
+    override fun onActivityStopped(activity: Activity?) {}
 }
