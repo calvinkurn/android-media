@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
@@ -92,6 +93,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var currPage = 1
     private var textChangedJob: Job? = null
     private var isReset = false
+    private var filterStatus = ""
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -99,13 +101,31 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     companion object {
         @JvmStatic
-        fun newInstance(): UohListFragment {
-            return UohListFragment()
+        fun newInstance(bundle: Bundle): UohListFragment {
+            return UohListFragment().apply {
+                arguments = bundle
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        filterStatus = arguments?.getString(SOURCE_FILTER).toString()
+        if (filterStatus.isNotEmpty()) {
+            var status = ""
+            when (filterStatus) {
+                PARAM_DALAM_PROSES -> {
+                    status = DALAM_PROSES
+                }
+                PARAM_E_TIKET -> {
+                    status = E_TIKET
+                }
+                PARAM_SEMUA_TRANSAKSI -> {
+                    status = SEMUA_TRANSAKSI
+                }
+            }
+            paramUohOrder.status = status
+        }
         loadOrderHistoryList()
     }
 

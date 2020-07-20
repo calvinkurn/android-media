@@ -2,6 +2,7 @@ package com.tokopedia.home.account.data.util
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.UnifyOrder.*
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.AccountHomeUrl
@@ -56,7 +57,7 @@ class StaticBuyerModelGenerator private constructor() {
                 uohOrderCount?.activeTickets?.let {
                     count = it.toInt()
                 }
-                applink = ApplinkConstInternalOrder.UNIFY_ORDER
+                applink = UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_E_TIKET)
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_transaction)
             })
@@ -255,7 +256,7 @@ class StaticBuyerModelGenerator private constructor() {
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_menunggu_pembayaran,
                     context.getString(R.string.title_uoh_1),
-                    ApplinkConstInternalOrder.UNIFY_ORDER
+                    ApplinkConst.PMS
                     /*when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
                         true -> ApplinkConst.MARKETPLACE_ORDER
                         else -> ApplinkConst.PURCHASE_HISTORY
@@ -268,7 +269,7 @@ class StaticBuyerModelGenerator private constructor() {
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_belanja,
                     uohOrderCount.onProcessText,
-                    ApplinkConstInternalOrder.UNIFY_ORDER
+                    UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_DALAM_PROSES)
                     /*when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
                         true -> ApplinkConst.MARKETPLACE_ORDER
                         else -> ApplinkConst.PURCHASE_HISTORY
@@ -281,7 +282,7 @@ class StaticBuyerModelGenerator private constructor() {
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_all_transactions,
                     context.getString(R.string.title_uoh_3),
-                    ApplinkConstInternalOrder.UNIFY_ORDER
+                    UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_SEMUA_TRANSAKSI)
                     /*when (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
                         true -> ApplinkConst.MARKETPLACE_ORDER
                         else -> ApplinkConst.PURCHASE_HISTORY
