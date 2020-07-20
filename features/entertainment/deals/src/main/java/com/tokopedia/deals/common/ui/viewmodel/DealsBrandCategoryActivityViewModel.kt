@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.deals.common.domain.GetDealsBrandCategoryActivityUseCase
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.search.model.response.CuratedData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -17,8 +18,8 @@ import javax.inject.Inject
 
 class DealsBrandCategoryActivityViewModel @Inject constructor(
         private val dealsBrandCategoryActivityUseCase: GetDealsBrandCategoryActivityUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: DealsDispatcherProvider
+) : BaseViewModel(dispatcher.io()) {
 
     private val privateCuratedData = MutableLiveData<CuratedData>()
     val curatedData: LiveData<CuratedData>

@@ -11,6 +11,7 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.CuratedData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,11 +25,11 @@ class DealCategoryViewModel @Inject constructor(
         val mapCategoryLayout: MapperCategoryLayout,
         private val chipsCategoryUseCase: GetChipsCategoryUseCase,
         private val brandProductCategoryUseCase: GetBrandProductCategoryUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatcher: DealsDispatcherProvider
+) : BaseViewModel(dispatcher.io()) {
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
+        get() = dispatcher.io() + SupervisorJob()
 
     private val privateObservableChips = MutableLiveData<DealsChipsDataView>()
     val observableChips: LiveData<DealsChipsDataView>
@@ -104,12 +105,12 @@ class DealCategoryViewModel @Inject constructor(
     ): SearchData {
         return try {
             val data = brandProductCategoryUseCase.apply {
-                params = GetBrandProductCategoryUseCase.createParams(
+                useParams(GetBrandProductCategoryUseCase.createParams(
                         category,
                         coordinates,
                         location,
                         page
-                )
+                ))
             }.executeOnBackground()
             data
         } catch (t: Throwable) {

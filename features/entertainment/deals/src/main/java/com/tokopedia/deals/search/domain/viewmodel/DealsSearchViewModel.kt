@@ -12,6 +12,7 @@ import com.tokopedia.deals.search.domain.usecase.DealsSearchInitialLoadUseCase
 import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.model.response.EventSearch
 import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,8 +22,8 @@ import javax.inject.Inject
 class DealsSearchViewModel @Inject constructor (
         private val dealsLoadInitialData: DealsSearchInitialLoadUseCase,
         private val dealsSearchUseCase: DealsSearchUseCase,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        dispatcher: DealsDispatcherProvider
+): BaseViewModel(dispatcher.io()) {
 
     private val _dealsSearchResponse = MutableLiveData<Result<EventSearch>>()
     val dealsSearchResponse: LiveData<Result<EventSearch>>
