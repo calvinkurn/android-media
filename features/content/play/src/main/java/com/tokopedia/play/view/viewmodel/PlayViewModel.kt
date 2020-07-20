@@ -102,7 +102,7 @@ class PlayViewModel @Inject constructor(
         }
     val videoPlayer: VideoPlayerUiModel
         get() {
-            val videoPlayer = _observableCompleteInfo.value?.videoPlayer
+            val videoPlayer = _observableVideoPlayer.value
             return videoPlayer ?: Unknown
         }
     val contentId: Int
