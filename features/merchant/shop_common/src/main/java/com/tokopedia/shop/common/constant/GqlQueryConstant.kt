@@ -79,6 +79,7 @@ object GqlQueryConstant {
             "                fax\n" +
             "            }\n" +
             "            shopHomeType\n" +
+            "            shopSnippetURL" +
             "        }"
 
     const val SHOP_INFO_FOR_TAB_REQUEST_QUERY_STRING = "result {\n" +
