@@ -1,5 +1,7 @@
-query ContentForm($relatedID: [String], $type: String, $id: String, $token: String) {
-  feed_content_form(relatedID: $relatedID, type: $type, ID: $id, token: $token) {
+package com.tokopedia.createpost.data.raw
+
+const val GQL_QUERY_CONTENT_FORM: String = """query ContentForm(${'$'}relatedID: [String], ${'$'}type: String, ${'$'}id: String, ${'$'}token: String) {
+  feed_content_form(relatedID: ${'$'}relatedID, type: ${'$'}type, ID: ${'$'}id, token: ${'$'}token) {
     token
     type
     defaultPlaceholder
@@ -33,4 +35,4 @@ query ContentForm($relatedID: [String], $type: String, $id: String, $token: Stri
     caption
     error
   }
-}
+}"""
