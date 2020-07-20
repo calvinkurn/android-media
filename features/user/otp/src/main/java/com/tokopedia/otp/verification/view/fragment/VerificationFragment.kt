@@ -221,6 +221,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
             }
 
             isFirstSendOtp = false
+            showKeyboard()
         }
     }
 
@@ -245,6 +246,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
             }
 
             isFirstSendOtp = false
+            showKeyboard()
         }
     }
 
