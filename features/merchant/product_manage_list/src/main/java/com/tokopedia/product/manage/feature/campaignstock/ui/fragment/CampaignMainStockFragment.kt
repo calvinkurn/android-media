@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
@@ -83,14 +81,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() {
-        activity?.run {
-            DaggerCampaignStockComponent.builder()
-                    .productManageComponent(ProductManageInstance.getComponent(application))
-                    .build()
-                    .inject(this@CampaignMainStockFragment)
-        }
-    }
+    override fun initInjector() {}
 
     override fun loadData(page: Int) {}
 
