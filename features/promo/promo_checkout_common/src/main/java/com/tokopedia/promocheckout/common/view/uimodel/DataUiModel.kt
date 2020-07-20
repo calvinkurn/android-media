@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.common.view.uimodel
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
