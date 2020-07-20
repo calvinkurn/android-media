@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DataProvider {
     void notificationsDataResult(List<CMInApp> inAppDataList);
+    void sendEventInAppPrepared(List<CMInApp> inAppDataList);
+    void sendEventInAppDelivered(CMInApp cmInApp);
 }
