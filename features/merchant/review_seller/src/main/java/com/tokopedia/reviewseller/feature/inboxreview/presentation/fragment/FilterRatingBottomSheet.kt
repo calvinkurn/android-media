@@ -13,7 +13,7 @@ import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListIte
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class FilterRatingBottomSheet(mActivity: FragmentActivity,
+class FilterRatingBottomSheet(mActivity: FragmentActivity?,
                               private val listener: (List<ListItemRatingWrapper>) -> Unit) : BottomSheetUnify(), RatingListListener {
 
     companion object {

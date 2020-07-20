@@ -336,7 +336,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun initBottomSheetFilterPeriod() {
-        bottomSheet = FilterRatingBottomSheet(::onRatingFilterSelected)
+        bottomSheet = FilterRatingBottomSheet(activity, ::onRatingFilterSelected)
         inboxReviewViewModel.getRatingFilterListUpdated().toList().let { bottomSheet?.setRatingFilterList(it) }
         bottomSheet?.setShowListener { bottomSheet?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED }
         fragmentManager?.let {
