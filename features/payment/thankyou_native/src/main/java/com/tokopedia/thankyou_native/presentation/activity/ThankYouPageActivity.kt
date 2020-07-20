@@ -18,7 +18,6 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
-import java.lang.Exception
 import javax.inject.Inject
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
