@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.util.helper.CoverImagePickerHelper
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -84,8 +85,10 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data))
+        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data)) {
+            (activity as? PlayBroadcastActivity)?.startPreview()
             super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -143,6 +146,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
                         }
                     },
                     intentHandler = { intent, requestCode ->
+                        (activity as? PlayBroadcastActivity)?.stopPreview()
                         startActivityForResult(intent, requestCode)
                     }
             )

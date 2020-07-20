@@ -269,6 +269,13 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun stopPreview() {
+        scope.launchCatchError(block = {
+            playPusher.stopPreview()
+        }) {
+        }
+    }
+
     fun startCountDown() {
         sharedPref.setNotFirstStreaming()
         _observableLiveInfoState.value = Event(BroadcastState.Init)
@@ -325,7 +332,6 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
-                playPusher.stopPreview()
                 playSocket.destroy()
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
