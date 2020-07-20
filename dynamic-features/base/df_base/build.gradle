@@ -63,6 +63,7 @@ dependencies {
 
     //Content
     implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
@@ -85,6 +86,7 @@ dependencies {
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.homeWishlist)
     implementation project(rootProject.ext.features.productCardOptions)
