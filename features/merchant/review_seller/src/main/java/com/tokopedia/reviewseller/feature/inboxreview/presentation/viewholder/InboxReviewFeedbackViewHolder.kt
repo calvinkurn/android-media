@@ -36,11 +36,15 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     override fun bind(element: FeedbackInboxUiModel) {
         with(itemView) {
+            if(adapterPosition == 0) {
+                feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
+            }
             if(element.replyText.isNotBlank()) {
-                containerInboxReview?.setBackgroundColor(Color.TRANSPARENT)
+                containerInboxReview?.setBackgroundColor(Color.WHITE)
             } else {
                 containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.clr_unanswered))
             }
+            tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
 
             tvFeedbackUser?.text = MethodChecker.fromHtml(getString(R.string.label_name_reviewer_builder, element.username))
@@ -135,7 +139,7 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     private fun setActionReply(element: FeedbackInboxUiModel) {
         with(itemView) {
-            if(element.replyText.isBlank()) {
+            if(element.replyText.isNotBlank()) {
                 tvActionReplyReview?.text = getString(R.string.edit_review_label)
             } else {
                 tvActionReplyReview.text = getString(R.string.review_reply_label)

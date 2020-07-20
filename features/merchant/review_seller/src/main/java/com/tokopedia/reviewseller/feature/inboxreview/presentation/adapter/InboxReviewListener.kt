@@ -5,6 +5,7 @@ import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.Feedbac
 interface FeedbackInboxReviewListener {
     fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isReply: Boolean, adapterPosition: Int)
     fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int)
+    fun onBackgroundMarginIsReplied(isNotReplied: Boolean)
 }
 
 interface GlobalErrorStateListener {

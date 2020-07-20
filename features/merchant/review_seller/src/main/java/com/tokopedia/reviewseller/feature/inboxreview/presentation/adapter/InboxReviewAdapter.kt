@@ -20,22 +20,10 @@ class InboxReviewAdapter(
         notifyItemRangeInserted(lastIndex, feedbackInboxList.size)
     }
 
-    fun removeInboxFeedbackError() {
-        if (visitables.getOrNull(lastIndex) is InboxReviewErrorUiModel) {
-            visitables.removeAt(lastIndex)
-        }
-    }
-
     fun addInboxFeedbackError() {
         if (visitables.getOrNull(lastIndex) !is InboxReviewErrorUiModel) {
             visitables.add(InboxReviewErrorUiModel())
             notifyItemInserted(lastIndex)
-        }
-    }
-
-    fun removeInboxFeedbackEmpty() {
-        if (visitables.getOrNull(lastIndex) is InboxReviewEmptyUiModel) {
-            visitables.removeAt(lastIndex)
         }
     }
 

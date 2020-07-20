@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -39,6 +41,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,12 +49,14 @@ import kotlinx.android.synthetic.main.fragment_inbox_review.*
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(), HasComponent<InboxReviewComponent>,
-        FeedbackInboxReviewListener, GlobalErrorStateListener {
+        FeedbackInboxReviewListener, GlobalErrorStateListener, FilterRatingBottomSheet.FilterRatingBottomSheetListener {
 
     companion object {
         fun createInstance(): InboxReviewFragment {
             return InboxReviewFragment()
         }
+
+        private val TAG_FILTER_RATING = FilterRatingBottomSheet::class.java.simpleName
     }
 
     @Inject
@@ -77,9 +82,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private var sortFilterItemInboxReviewWrapper = ArrayList<SortFilterInboxItemWrapper>()
 
-    var itemSortFilterList = ArrayList<SortFilterItem>()
+    private var itemSortFilterList = ArrayList<SortFilterItem>()
 
     private var cacheManager: SaveInstanceCacheManager? = null
+    private var bottomSheet: FilterRatingBottomSheet? = null
+
+    private var feedbackInboxList: MutableList<FeedbackInboxUiModel>? = null
+    private var ratingFilterList: MutableList<ListItemRatingWrapper>? = null
 
     override fun getScreenName(): String {
         return getString(R.string.titlte_inbox_review)
@@ -95,6 +104,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         observeInboxReview()
         observeFeedbackInboxReview()
         initSortFilterInboxReview()
+        initRatingFilterList()
     }
 
     override fun onDestroy() {
@@ -170,7 +180,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isReply)
         })
 
-        activity?.finish()
     }
 
     override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int) {
@@ -182,6 +191,15 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     imageThumbnailUrls = thumbnailsUrl,
                     imagePosition = position
             ))
+        }
+    }
+
+    override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
+        val paramsMargin = sortFilterInboxReview.layoutParams as? LinearLayout.LayoutParams
+        if(isNotReplied) {
+            paramsMargin?.bottomMargin = 16.toPx()
+        } else {
+            paramsMargin?.bottomMargin = 0
         }
     }
 
@@ -217,19 +235,23 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
+    private fun initRatingFilterList() {
+        inboxReviewViewModel.updateRatingFilterData(InboxReviewMapper.mapToItemRatingFilterBottomSheet())
+        ratingFilterList = InboxReviewMapper.mapToItemRatingFilterBottomSheet()
+    }
+
     private fun onSuccessGetFeedbackInboxReview(data: InboxReviewUiModel) {
+        feedbackInboxList = data.feedbackInboxList.toMutableList()
         swipeToRefresh?.isRefreshing = false
         sortFilterInboxReview?.show()
-        if (data.page == 1) {
-            if (data.feedbackInboxList.isEmpty() && isFilter) {
-                sortFilterInboxReview?.show()
-                inboxReviewAdapter.addInboxFeedbackEmpty(true)
-                isFilter = false
-            } else if (data.feedbackInboxList.isEmpty() && !isFilter) {
-                sortFilterInboxReview?.hide()
-                inboxReviewAdapter.clearAllElements()
-                inboxReviewAdapter.addInboxFeedbackEmpty(false)
-            }
+        if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
+            sortFilterInboxReview?.show()
+            inboxReviewAdapter.addInboxFeedbackEmpty(true)
+            isFilter = false
+        } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
+            sortFilterInboxReview?.hide()
+            inboxReviewAdapter.clearAllElements()
+            inboxReviewAdapter.addInboxFeedbackEmpty(false)
         } else {
             inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
         }
@@ -242,8 +264,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun onErrorGetInboxReviewData() {
+        feedbackInboxList?.clear()
         swipeToRefresh?.isRefreshing = false
-        if (inboxReviewAdapter.itemCount.isZero()) {
+        if (feedbackInboxList?.isEmpty() == true) {
             inboxReviewAdapter.clearAllElements()
             inboxReviewAdapter.addInboxFeedbackError()
         } else {
@@ -261,7 +284,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun initSortFilterInboxReview() {
         inboxReviewViewModel.updateStatusFilterData(InboxReviewMapper.mapToItemSortFilterIsEmpty())
-        sortFilterItemInboxReviewWrapper = ArrayList(inboxReviewViewModel.getFilterListUpdated())
+        sortFilterItemInboxReviewWrapper = ArrayList(inboxReviewViewModel.getStatusFilterListUpdated())
         itemSortFilterList.addAll(sortFilterItemInboxReviewWrapper.mapIndexed { index, it ->
             SortFilterItem(
                     title = it.sortFilterItem?.title.toString(),
@@ -272,84 +295,107 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         sortFilterInboxReview?.apply {
             addItem(itemSortFilterList)
-            dismissListener = {
-                resetAllFilterUnselected()
-            }
+        }
+
+        sortFilterInboxReview.sortFilterPrefix.setOnClickListener {
+            sortFilterInboxReview.resetAllFilters()
+            resetAllFiltersUnselected()
         }
 
         itemSortFilterList.forEachIndexed { index, sortFilterItem ->
             if (index == 0) {
-                sortFilterItem.refChipUnify.setChevronClickListener { }
+                sortFilterItem.refChipUnify.setChevronClickListener {
+                    initBottomSheetFilterPeriod()
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
+                }
             }
             sortFilterItem.listener = {
                 if (index == 0) {
                     initBottomSheetFilterPeriod()
+                    sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 } else {
                     updateFilterStatusInboxReview(index)
+                    sortFilterItem.toggle()
                 }
-                sortFilterItem.toggle()
             }
         }
     }
 
-    private fun resetAllFilterUnselected() {
-        sortFilterItemInboxReviewWrapper.map {
-            it.sortFilterItem?.type = ChipsUnify.TYPE_NORMAL
-            it.isSelected = false
+    private fun resetAllFiltersUnselected() {
+        val positionRatingFilter = 0
+        sortFilterInboxReview?.hide()
+        inboxReviewAdapter.clearAllElements()
+        inboxReviewAdapter.showLoading()
+        itemSortFilterList[positionRatingFilter].apply {
+            title = ALL_RATINGS
+            refChipUnify.chip_image_icon.hide()
         }
+        inboxReviewViewModel.resetAllFilter()
+        endlessRecyclerViewScrollListener?.resetState()
     }
 
     private fun initBottomSheetFilterPeriod() {
-        val ratingListWrapper = InboxReviewMapper.mapToItemRatingFilterBottomSheet(inboxReviewViewModel.getRatingFilterListUpdated())
-        inboxReviewViewModel.updateRatingFilterData(ratingListWrapper)
-        val bottomSheet = FilterRatingBottomSheet(activity, ::onRatingFilterSelected, ::dismissFromRatingFilter)
-        inboxReviewViewModel.getRatingFilterListUpdated().let { bottomSheet.setRatingFilterList(it) }
-        bottomSheet.showDialog()
+        bottomSheet = FilterRatingBottomSheet(::onRatingFilterSelected)
+        bottomSheet?.setFilterRatingBottomSheetListener(this)
+        ratingFilterList?.toList()?.let { bottomSheet?.setRatingFilterList(it) }
+        bottomSheet?.setShowListener { bottomSheet?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED }
+        fragmentManager?.let {
+            bottomSheet?.show(it, TAG_FILTER_RATING)
+        }
     }
 
-    private fun dismissFromRatingFilter() {
-        val countSelected = inboxReviewViewModel.getFilterListUpdated().filter { it.isSelected }.count()
-        val isZeroSelected = countSelected == 0
-        if(isZeroSelected) {
-            itemSortFilterList[0].type = ChipsUnify.TYPE_NORMAL
-        } else {
-            itemSortFilterList[0].type = ChipsUnify.TYPE_SELECTED
-        }
+    override fun onBottomSheetDismiss() {
+        val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count().orZero()
+        selectedRatingsFilter(countSelected)
+        bottomSheet?.dismissAllowingStateLoss()
     }
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
         isFilter = true
+        val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
+        sortFilterInboxReview?.hide()
+        inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
-        inboxReviewAdapter.removeInboxFeedbackError()
-        inboxReviewAdapter.removeInboxFeedbackEmpty()
-        updatedSortFilterRatingInboxReview(filterRatingList)
+        updatedFilterRatingInboxReview(filterRatingList)
+        selectedRatingsFilter(countSelected)
         endlessRecyclerViewScrollListener?.resetState()
+        bottomSheet?.dismissAllowingStateLoss()
+    }
+
+    private fun selectedRatingsFilter(countSelected: Int) {
+        val positionSortFilter = 0
+        val isZeroSelected = countSelected == positionSortFilter
+        if (isZeroSelected) {
+            itemSortFilterList[positionSortFilter].type = ChipsUnify.TYPE_NORMAL
+        } else {
+            itemSortFilterList[positionSortFilter].type = ChipsUnify.TYPE_SELECTED
+        }
     }
 
     private fun updateFilterStatusInboxReview(index: Int) {
         isFilter = true
         val updatedState = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
-        sortFilterItemInboxReviewWrapper[index].isSelected = updatedState
+        sortFilterItemInboxReviewWrapper[index].isSelected = !updatedState
 
-        inboxReviewAdapter.removeInboxFeedbackError()
-        inboxReviewAdapter.removeInboxFeedbackEmpty()
+        sortFilterInboxReview?.hide()
+        inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
 
-        inboxReviewViewModel.setFilterAllDataText(sortFilterItemInboxReviewWrapper)
-        inboxReviewViewModel.updateStatusFilterData(ArrayList(sortFilterItemInboxReviewWrapper))
+        inboxReviewViewModel.updateStatusFilterData(sortFilterItemInboxReviewWrapper)
+        inboxReviewViewModel.setFilterStatusDataText(ArrayList(sortFilterItemInboxReviewWrapper))
 
         endlessRecyclerViewScrollListener?.resetState()
     }
 
-    private fun updatedSortFilterRatingInboxReview(filterRatingList: List<ListItemRatingWrapper>) {
+    private fun updatedFilterRatingInboxReview(filterRatingList: List<ListItemRatingWrapper>) {
         val countSelected = filterRatingList.filter { it.isSelected }.count()
-        val ratingOneSelected = filterRatingList.firstOrNull()?.sortValue.orEmpty()
+        val ratingOneSelected = filterRatingList.firstOrNull { it.isSelected }?.sortValue.orEmpty()
         val isAllRating = countSelected == allSelected
         val positionSortFilter = 0
 
         val updatedState = itemSortFilterList[positionSortFilter].type == ChipsUnify.TYPE_SELECTED
-
-        sortFilterItemInboxReviewWrapper[positionSortFilter].isSelected = updatedState
+        sortFilterItemInboxReviewWrapper[positionSortFilter].isSelected = !updatedState
+        itemSortFilterList[positionSortFilter].type = if(updatedState) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
 
         if (isAllRating) {
             itemSortFilterList[positionSortFilter].apply {
@@ -366,17 +412,19 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 itemSortFilterList[positionSortFilter].apply {
                     title = ratingOneSelected
                     refChipUnify.chip_image_icon.show()
-                    refChipUnify.chip_image_icon.setImage(R.drawable.ic_rating_star_item, 0F)
+                    refChipUnify.chip_image_icon.setImage(R.drawable.ic_filter_rating, 0F)
                 }
             } else {
-                itemSortFilterList[positionSortFilter]?.apply {
+                itemSortFilterList[positionSortFilter].apply {
                     title = "($countSelected) Filter"
                     refChipUnify.chip_image_icon.hide()
                 }
             }
         }
 
-        inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
+        this.ratingFilterList = filterRatingList.toMutableList()
+
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
+        inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
     }
 }

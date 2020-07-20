@@ -14,26 +14,28 @@ class RatingListAdapter(private val ratingListListener: RatingListListener) : Re
 
     var ratingFilterList: MutableList<ListItemRatingWrapper> = mutableListOf()
 
-    fun setRatingFilter(ratingFilterList: List<ListItemRatingWrapper>) {
-        this.ratingFilterList = ratingFilterList.toMutableList()
+    fun setRatingFilter(newOptionList: MutableList<ListItemRatingWrapper>) {
+        this.ratingFilterList = newOptionList
+        notifyDataSetChanged()
     }
 
     fun updateRatingFilter(updatedState: Boolean, position: Int) {
-        val isSelected = ratingFilterList?.getOrNull(position)
-        ratingFilterList?.map { filterItemUiModel ->
+        val isSelected = ratingFilterList.getOrNull(position)
+        ratingFilterList.map { filterItemUiModel ->
             if (isSelected == filterItemUiModel) {
-                filterItemUiModel.isSelected = !updatedState
+                filterItemUiModel.isSelected = updatedState
             }
         }
-
         notifyItemChanged(position)
     }
 
     fun resetRatingFilter() {
-        ratingFilterList?.mapIndexed { _, filterItemUiModel ->
-            filterItemUiModel.isSelected = false
+        ratingFilterList.mapIndexed { index, filterItemUiModel ->
+            if (filterItemUiModel.isSelected) {
+                filterItemUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
         }
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatingListViewHolder {
@@ -42,25 +44,24 @@ class RatingListAdapter(private val ratingListListener: RatingListListener) : Re
     }
 
     override fun getItemCount(): Int {
-        return ratingFilterList?.size ?: 0
+        return ratingFilterList.size
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onBindViewHolder(holder: RatingListViewHolder, position: Int) {
-        ratingFilterList?.get(position)?.let { holder.bind(it) }
+        ratingFilterList[position].let { holder.bind(it) }
     }
 
     class RatingListViewHolder(itemView: View, private val ratingListListener: RatingListListener) : RecyclerView.ViewHolder(itemView) {
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
         fun bind(data: ListItemRatingWrapper) {
             with(itemView) {
+                rating_checkbox.setOnCheckedChangeListener(null)
                 rating_checkbox.isChecked = data.isSelected
                 rating_star_label.text = data.sortValue
 
                 rating_checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    if(isChecked != data.isSelected) {
-                        ratingListListener.onItemRatingClicked(isChecked, adapterPosition)
-                    }
+                    ratingListListener.onItemRatingClicked(isChecked, adapterPosition)
                 }
             }
         }

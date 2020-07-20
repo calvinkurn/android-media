@@ -27,7 +27,7 @@
         android:layout_marginLeft="@dimen/dp_18"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:contentDescription="@string/rating_star_icon_content_description"
-        app:layout_constraintDimensionRatio="H, 13:12"
+        android:adjustViewBounds="true"
         app:layout_constraintStart_toEndOf="@+id/rating_checkbox"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_rating_star_item" />
@@ -42,7 +42,7 @@
         android:textColor="@color/typography_black"
         app:layout_constraintStart_toEndOf="@id/rating_star_icon"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="@string/product_rating_bar_value" />
 

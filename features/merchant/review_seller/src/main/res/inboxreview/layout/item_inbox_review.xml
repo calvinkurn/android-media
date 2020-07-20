@@ -3,17 +3,36 @@
     android:id="@+id/containerInboxReview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_lvl4"
     android:background="?selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/clr_f531353b"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Nike Air Force 1 Low White Red Casual Original "/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivRatingFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProductTitle"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         tools:src="@drawable/ic_rating_star_four"/>
@@ -159,7 +178,6 @@
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/tvDividerReplyReview"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -175,6 +193,7 @@
         android:layout_height="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="@id/tvActionReplyReview"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
