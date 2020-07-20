@@ -309,7 +309,8 @@ open class HomeViewModel @Inject constructor(
             }
         }){
             rollbackRemindPlayBanner()
-            _reminderPlayLiveData.postValue(Result.error(it))
+            it.printStackTrace()
+            _reminderPlayLiveData.postValue(Result.error(Throwable()))
         }
     }
 
