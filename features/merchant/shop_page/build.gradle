@@ -51,6 +51,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.youtubeCommon)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
