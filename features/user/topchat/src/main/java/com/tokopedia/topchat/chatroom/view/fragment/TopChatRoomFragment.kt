@@ -996,6 +996,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        toolTip.dismiss()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
