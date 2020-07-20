@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
+import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
@@ -88,11 +89,16 @@ class MultipleVariantEditInputBottomSheet(
         contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
         contentView?.tfuPrice.setModeToNumberInput()
         contentView?.tfuPrice?.textFieldInput?.afterTextChanged {
-            if (enableEditPrice) validatePrice()
-            updateSubmitButtonInput()
+            if (enableEditPrice) {
+                validatePrice()
+                updateSubmitButtonInput()
+            }
         }
         contentView?.tfuStock?.textFieldInput?.afterTextChanged {
             validateStock()
+            updateSubmitButtonInput()
+        }
+        contentView?.tfuSku?.textFieldInput?.afterTextChanged {
             updateSubmitButtonInput()
         }
         contentView?.buttonApply?.setOnClickListener {
@@ -120,36 +126,56 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun validatePrice() {
-        val inputText = contentView?.tfuPrice.getTextBigIntegerOrZero()
-        val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidatePrice(inputText)
-        val isErrorValidating = errorMessage.isNotEmpty()
+        if (contentView?.tfuPrice.getText().isNotEmpty()) {
+            val inputText = contentView?.tfuPrice.getTextBigIntegerOrZero()
+            val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidatePrice(inputText)
+            val isErrorValidating = errorMessage.isNotEmpty()
 
-        contentView?.tfuPrice?.setMessage(errorMessage)
-        contentView?.tfuPrice?.setError(isErrorValidating)
-        isPriceError = isErrorValidating
+            contentView?.tfuPrice?.setMessage(errorMessage)
+            contentView?.tfuPrice?.setError(isErrorValidating)
+            isPriceError = isErrorValidating
+        } else {
+            // ignore validation if field is empty
+            contentView?.tfuPrice?.setMessage("")
+            contentView?.tfuPrice?.setError(false)
+            isPriceError = false
+        }
     }
 
     private fun validateStock() {
-        val inputText = contentView?.tfuStock.getTextBigIntegerOrZero()
-        val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidateStock(inputText)
-        val isErrorValidating = errorMessage.isNotEmpty()
+        if (contentView?.tfuStock.getText().isNotEmpty()) {
+            val inputText = contentView?.tfuStock.getTextBigIntegerOrZero()
+            val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidateStock(inputText)
+            val isErrorValidating = errorMessage.isNotEmpty()
 
-        contentView?.tfuStock?.setMessage(errorMessage)
-        contentView?.tfuStock?.setError(isErrorValidating)
-        isStockError = isErrorValidating
+            contentView?.tfuStock?.setMessage(errorMessage)
+            contentView?.tfuStock?.setError(isErrorValidating)
+            isStockError = isErrorValidating
+        } else {
+            // ignore validation if field is empty
+            contentView?.tfuStock?.setMessage("")
+            contentView?.tfuStock?.setError(false)
+            isStockError = false
+        }
     }
 
     private fun updateSubmitButtonInput() {
-        contentView?.buttonApply?.isEnabled = !isPriceError && !isStockError
+        val isPriceEmpty = contentView?.tfuPrice.getText().isEmpty()
+        val isStockEmpty = contentView?.tfuStock.getText().isEmpty()
+        val isSkuEmpty = contentView?.tfuSku.getText().isEmpty()
+
+        contentView?.buttonApply?.isEnabled = if (isPriceEmpty && isStockEmpty && isSkuEmpty) {
+            false
+        } else {
+            !isPriceError && !isStockError
+        }
     }
 
     private fun submitInput() {
-        if (enableEditPrice) validatePrice()
-        validateStock()
         if (!isPriceError && !isStockError) {
             contentView?.apply {
                 val price = tfuPrice.getText().replace(".", "")
-                val stock = tfuStock.getTextBigIntegerOrZero()
+                val stock = tfuStock.getText()
                 val sku = tfuSku.getText()
                 val inputData = MultipleVariantEditInputModel(
                         price = price,

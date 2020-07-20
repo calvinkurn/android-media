@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:enabled="false"
         android:text="@string/action_variant_apply" />
 
 </LinearLayout>
