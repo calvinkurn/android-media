@@ -30,6 +30,10 @@ class GetBrandProductCategoryUseCase @Inject constructor(
         }
     }
 
+    fun useParams(params: Map<String, Any>) {
+        this.params = params
+    }
+
     companion object{
         fun createParams(category: String, coordinates: String, location: String, page: Int): Map<String, Any> =
                 generateCategoryBrandPopularParams(coordinates, location, category, page)

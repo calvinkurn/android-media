@@ -6,6 +6,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.utils.DealsDispatcherProductionProvider
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -145,4 +147,9 @@ class DealsModule(val context: Context) {
     @Provides
     fun provideDealsAnalytics(irisSession: IrisSession, userSessionInterface: UserSessionInterface): DealsAnalytics =
             DealsAnalytics(irisSession, userSessionInterface)
+
+
+    @DealsScope
+    @Provides
+    fun provideDealsDispatcherProvider(): DealsDispatcherProvider = DealsDispatcherProductionProvider()
 }

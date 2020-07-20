@@ -3,6 +3,7 @@ package com.tokopedia.deals.location_picker.domain.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.location_picker.domain.usecase.*
 import com.tokopedia.deals.location_picker.model.response.EventLocationSearch
 import com.tokopedia.deals.location_picker.model.response.LocationData
@@ -17,8 +18,8 @@ class DealsLocationViewModel @Inject constructor (
         private val dealsPopularCitiesUseCase: DealsPopularCitiesUseCase,
         private val dealsPopularLocationUseCase: DealsPopularLocationUseCase,
         private val dealsLandmarkLocationUseCase: DealsLandmarkLocationUseCase,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        dispatcher: DealsDispatcherProvider
+): BaseViewModel(dispatcher.io()) {
 
     private val _dealsSearchedLocationResponse = MutableLiveData<Result<EventLocationSearch>>()
     val dealsSearchedLocationResponse: LiveData<Result<EventLocationSearch>>

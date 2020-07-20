@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +15,9 @@ import javax.inject.Inject
  * @author by jessica on 15/06/20
  */
 
-class DealsBaseViewModel @Inject constructor(dispatcher: Dispatchers,
-    private val getNearestLocationUseCase: GetNearestLocationUseCase)
-    : BaseViewModel(dispatcher.Main) {
+class DealsBaseViewModel @Inject constructor(dispatcher: DealsDispatcherProvider,
+                                             private val getNearestLocationUseCase: GetNearestLocationUseCase)
+    : BaseViewModel(dispatcher.io()) {
 
     // fragments may also observe location to determined whether the location changes.
     private val _observableCurrentLocation = MutableLiveData<Location>()
@@ -26,9 +27,8 @@ class DealsBaseViewModel @Inject constructor(dispatcher: Dispatchers,
     fun getCurrentLocation(coordinates: String) {
         launch {
             try {
-                val data = getNearestLocationUseCase.apply {
-                    params = GetNearestLocationUseCase.createParams(coordinates, "1")
-                }.executeOnBackground()
+                getNearestLocationUseCase.useParams(GetNearestLocationUseCase.createParams(coordinates, "1"))
+                val data = getNearestLocationUseCase.executeOnBackground()
 
                 if (data.eventLocationSearch.locations.isNotEmpty()) {
                     _observableCurrentLocation.postValue(data.eventLocationSearch.locations.first())

@@ -33,6 +33,11 @@ class GetNearestLocationUseCase @Inject constructor(
         }
     }
 
+    fun useParams(params: Map<String, Any>) {
+        this.params = params
+    }
+
+
     companion object {
         private const val PARAM_SEARCH_PARAM = "params"
 
