@@ -20,11 +20,6 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
             return sessionHandler = new SessionHandler(this) {
 
                 @Override
-                public String getGTMLoginID() {
-                    return mSessionHandler.getGTMLoginID(context);
-                }
-
-                @Override
                 public String getLoginID() {
                     return mSessionHandler.getLoginID();
                 }

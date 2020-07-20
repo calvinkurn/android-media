@@ -1,21 +1,11 @@
-package com.tokopedia.design.text;
+package com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Rect;
-import androidx.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.price.DynamicBackgroundSeekBar;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
