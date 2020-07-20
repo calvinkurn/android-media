@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -40,6 +39,7 @@ import com.tokopedia.reviewseller.feature.inboxreview.presentation.viewmodel.Inb
 import com.tokopedia.reviewseller.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.reviewseller.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -296,11 +296,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         sortFilterInboxReview?.apply {
             addItem(itemSortFilterList)
-        }
-
-        sortFilterInboxReview.sortFilterPrefix.setOnClickListener {
-            sortFilterInboxReview.resetAllFilters()
-            resetAllFiltersUnselected()
+            filterType = SortFilter.TYPE_QUICK
+            dismissListener = {
+                resetAllFiltersUnselected()
+            }
         }
 
         itemSortFilterList.forEachIndexed { index, sortFilterItem ->
@@ -338,7 +337,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private fun initBottomSheetFilterPeriod() {
         bottomSheet = FilterRatingBottomSheet(activity, ::onRatingFilterSelected)
         inboxReviewViewModel.getRatingFilterListUpdated().toList().let { bottomSheet?.setRatingFilterList(it) }
-        bottomSheet?.setShowListener { bottomSheet?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED }
         fragmentManager?.let {
             bottomSheet?.show(it, TAG_FILTER_RATING)
         }

@@ -47,6 +47,8 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if(newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheet.requestLayout()
+                        bottomSheet.invalidate()
                         ratingListFilter?.let { ratingFilterAdapter?.setRatingFilter(it) }
                     }
                 }
