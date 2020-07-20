@@ -205,7 +205,7 @@ class ShopHomeViewModel @Inject constructor(
             }
             _videoYoutube.value = Pair(widgetId, Success(result))
         }, onError = {
-            _videoYoutube.value = Pair(videoUrl, Fail(it))
+            _videoYoutube.value = Pair(widgetId, Fail(it))
         })
     }
 
