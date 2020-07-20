@@ -51,6 +51,17 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is HeaderDateUiModel) {
+            return other.date == this.date
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return date.hashCode()
+    }
+
     companion object {
         private const val RELATIVE_TODAY = "Hari ini"
         private const val RELATIVE_YESTERDAY = "Kemarin"

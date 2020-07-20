@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
@@ -206,10 +205,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
+    private fun onSuccessGetTopChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        rvScrollListener?.finishTopLoadingState()
+        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
+        renderList(chatRoom.listChat)
+        updateHasNextState(chat)
+        loadChatRoomSettings(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+    }
+
+    private fun onErrorGetTopChat(throwable: Throwable) {
+        hideTopLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        rvScrollListener?.finishTopLoadingState()
+    }
+
 
     private fun onSuccessGetBottomChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
-//        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
         rvScrollListener?.finishBottomLoadingState()
+        adapter.removeLatestHeaderDateIfSame(chatRoom.listChat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
 //        loadChatRoomSettings(chatRoom)
@@ -226,12 +240,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 //        hideTopLoading()
 //        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
 //        rvScrollListener?.finishTopLoadingState()
-    }
-
-    private fun onErrorGetTopChat(throwable: Throwable) {
-        hideTopLoading()
-        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
-        rvScrollListener?.finishTopLoadingState()
     }
 
     private fun showBottomLoading() {
@@ -365,7 +373,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                 onSuccessGetShopFollowingStatus())
-        adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
+        adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
@@ -442,15 +450,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
         getViewState().showErrorWebSocket(isWebSocketError)
-    }
-
-    private fun onSuccessGetTopChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
-        rvScrollListener?.finishTopLoadingState()
-        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
-        renderList(chatRoom.listChat)
-        updateHasNextState(chat)
-        loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
     }
 
     private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {

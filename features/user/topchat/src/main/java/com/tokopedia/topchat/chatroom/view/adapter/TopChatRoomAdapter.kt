@@ -84,7 +84,16 @@ class TopChatRoomAdapter(
         }
     }
 
-    fun setFirstHeaderDate(latestHeaderDate: String) {
+    fun removeLatestHeaderDateIfSame(newBottomList: ArrayList<Visitable<*>>) {
+        val newListOldestDate = newBottomList[newBottomList.lastIndex]
+        if (newListOldestDate is HeaderDateUiModel) {
+            if (newListOldestDate == this.bottomMostHeaderDate) {
+                newBottomList.removeAt(newBottomList.lastIndex)
+            }
+        }
+    }
+
+    fun setLatestHeaderDate(latestHeaderDate: String) {
         this.bottomMostHeaderDate = HeaderDateUiModel(latestHeaderDate)
     }
 
