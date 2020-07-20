@@ -89,9 +89,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private static int projectId;
 
     @Inject
-    public RemoteConfigInstance remoteConfigInstance;
-
-    @Inject
     UserIdentificationUploadImage.Presenter presenter;
 
     public static Fragment createInstance(int projectid) {
@@ -280,8 +277,12 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private Boolean isKycSelfie(){
-        if(UserIdentificationFormActivity.isSupportedLiveness) {
-            return !remoteConfigInstance.getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
+        try {
+            if(UserIdentificationFormActivity.isSupportedLiveness) {
+                return !RemoteConfigInstance.getInstance().getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return true;
     }
