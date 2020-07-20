@@ -17,4 +17,5 @@ interface ShopHomeDisplayWidgetListener {
             adapterPosition: Int
     )
 
-    fun loadYouTubeData(videoUrl: String, widgetId: String)}
+    fun loadYouTubeData(videoUrl: String, widgetId: String)
+}
