@@ -107,6 +107,17 @@ class SearchProductFirstPageGqlUseCase(
                                     url
                                     applink
                                     priceStr
+                                    shop {
+                                        city
+                                    }
+                                    badges {
+                                        imageUrl
+                                        show
+                                    }
+                                    freeOngkir {
+                                        isActive
+                                        imgUrl
+                                    }
                                 }
                             }
                         }

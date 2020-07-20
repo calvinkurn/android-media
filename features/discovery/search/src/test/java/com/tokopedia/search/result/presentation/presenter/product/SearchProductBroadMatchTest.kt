@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.*
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
@@ -149,6 +149,15 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         priceString shouldBe otherRelatedProduct.priceString
         position shouldBe expectedPosition
         alternativeKeyword shouldBe expectedAlternativeKeyword
+        shopLocation shouldBe otherRelatedProduct.shop.city
+
+        badgeItemViewModelList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->
+            actual.imageUrl shouldBe expected.imageUrl
+            actual.isShown shouldBe expected.isShown
+        }
+
+        freeOngkirViewModel.isActive shouldBe otherRelatedProduct.freeOngkir.isActive
+        freeOngkirViewModel.imageUrl shouldBe otherRelatedProduct.freeOngkir.imageUrl
     }
 
     private fun `Then assert tracking event impression broad match`(visitableList: List<Visitable<*>>) {

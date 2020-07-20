@@ -12,6 +12,9 @@ data class BroadMatchItemViewModel(
         val url: String = "",
         val applink: String = "",
         val priceString: String = "",
+        val shopLocation: String = "",
+        val badgeItemViewModelList: List<BadgeItemViewModel> = listOf(),
+        val freeOngkirViewModel: FreeOngkirViewModel = FreeOngkirViewModel(),
         val position: Int = 0,
         val alternativeKeyword: String = ""
 ) {
