@@ -127,7 +127,5 @@ class TableViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener {
-
-    }
+    interface Listener : BaseViewHolderListener
 }

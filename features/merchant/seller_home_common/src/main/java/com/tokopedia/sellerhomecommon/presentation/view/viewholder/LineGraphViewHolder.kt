@@ -190,7 +190,6 @@ class LineGraphViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getLineGraphData() {}
 
         fun sendLineGraphImpressionEvent(dataKey: String, cardValue: String) {}
 

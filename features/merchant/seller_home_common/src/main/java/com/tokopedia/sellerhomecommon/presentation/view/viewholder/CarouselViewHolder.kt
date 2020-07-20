@@ -135,7 +135,6 @@ class CarouselViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getCarouselData() {}
 
         fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
 

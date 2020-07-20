@@ -88,4 +88,31 @@ class SellerHomeUseCaseModule {
     ): GetShopInfoUseCase {
         return GetShopInfoUseCase(gqlRepository, mapper)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTableDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: TableMapper
+    ): GetTableDataUseCase {
+        return GetTableDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetPieChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: PieChartMapper
+    ): GetPieChartDataUseCase {
+        return GetPieChartDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetBarChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: BarChartMapper
+    ): GetBarChartDataUseCase {
+        return GetBarChartDataUseCase(gqlRepository, mapper)
+    }
 }

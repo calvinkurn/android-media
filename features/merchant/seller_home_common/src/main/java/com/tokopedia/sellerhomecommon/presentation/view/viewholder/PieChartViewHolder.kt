@@ -115,7 +115,5 @@ class PieChartViewHolder(
         }.orEmpty()
     }
 
-    interface Listener : BaseViewHolderListener {
-
-    }
+    interface Listener : BaseViewHolderListener
 }

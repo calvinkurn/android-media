@@ -198,7 +198,6 @@ class PostListViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getPostData() {}
 
         fun sendPosListItemClickEvent(dataKey: String, title: String) {}
 
