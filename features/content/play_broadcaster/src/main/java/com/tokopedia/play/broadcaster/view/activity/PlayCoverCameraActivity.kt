@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
+import com.tokopedia.play.broadcaster.view.custom.PlayCameraView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -47,7 +48,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     @Inject
     lateinit var analytic: PlayBroadcastAnalytic
 
-    private val cvCamera by lazy { findViewById<CameraView>(R.id.cv_camera) }
+    private val cvCamera by lazy { findViewById<PlayCameraView>(R.id.cv_camera) }
     private val tvCancel by lazy { findViewById<TextView>(R.id.tv_cancel) }
     private val ivShutter by lazy { findViewById<ImageView>(R.id.iv_shutter) }
     private val ivFlash by lazy { findViewById<ImageView>(R.id.iv_flash) }
@@ -85,7 +86,6 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         setLayoutFullScreen()
-        if (isRequiredPermissionGranted()) cvCamera.open()
     }
 
     override fun onStart() {
@@ -112,6 +112,12 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        cvCamera.setListener(object : PlayCameraView.Listener{
+            override fun onCameraInstantiated() {
+                if (isRequiredPermissionGranted()) cvCamera.open()
+            }
+        })
+
         tvCancel.setOnClickListener {
             analytic.clickCancelOnCameraPage()
             setResult(Activity.RESULT_CANCELED)

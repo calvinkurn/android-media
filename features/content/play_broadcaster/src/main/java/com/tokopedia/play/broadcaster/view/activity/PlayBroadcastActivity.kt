@@ -145,6 +145,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         super.onStop()
     }
 
+    override fun onDestroy() {
+        viewModel.destroyPushStream()
+        super.onDestroy()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(CHANNEL_ID, viewModel.channelId)
@@ -381,6 +386,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 surfaceStatus != SurfaceStatus.DESTROYED) {
             viewModel.startPreview(surfaceView)
         }
+    }
+
+    fun stopPreview() {
+        viewModel.stopPreview()
     }
 
     fun checkAllPermission() {

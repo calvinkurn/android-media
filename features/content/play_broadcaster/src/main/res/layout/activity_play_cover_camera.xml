@@ -6,7 +6,7 @@
     android:background="@color/Neutral_N700_96"
     android:fitsSystemWindows="false">
 
-    <com.otaliastudios.cameraview.CameraView
+    <com.tokopedia.play.broadcaster.view.custom.PlayCameraView
         android:id="@+id/cv_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

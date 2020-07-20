@@ -37,6 +37,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
@@ -177,8 +178,10 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data))
+        if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data)) {
+            (activity as? PlayBroadcastActivity)?.startPreview()
             super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onDestroyView() {
@@ -401,6 +404,7 @@ class PlayCoverSetupFragment @Inject constructor(
                         }
                     },
                     intentHandler = { intent, requestCode ->
+                        (activity as? PlayBroadcastActivity)?.stopPreview()
                         startActivityForResult(intent, requestCode)
                     }
             )
