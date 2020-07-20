@@ -156,6 +156,7 @@ class PartialSnapshotView(private val view: View,
 
     private fun renderFlashSaleNewUserAbove24H(campaign: CampaignModular, stockWording: String) = with(view) {
         renderStockBarFlashSale(campaign, stockWording)
+        text_title_discount_timer.text = campaign.campaignTypeName
         count_down.hide()
         discount_timer_holder.show()
     }
