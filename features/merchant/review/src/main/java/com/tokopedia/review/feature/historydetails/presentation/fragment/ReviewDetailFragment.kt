@@ -162,9 +162,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     show()
                 }
             }
-            if(editable) {
-                addEditHeaderIcon()
-            }
+            addHeaderIcons(editable)
             reviewDetailAttachedImages.setImages(attachments, productName, this@ReviewDetailFragment)
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             if(reviewText.isEmpty()) {
@@ -202,10 +200,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun initHeader() {
         reviewDetailHeader.apply {
-            addRightIcon(R.drawable.ic_share)
-            rightIcons?.firstOrNull()?.setOnClickListener {
-                goToSharing()
-            }
+
             title = getString(R.string.review_history_details_toolbar)
         }
     }
@@ -218,8 +213,15 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         }
     }
 
-    private fun addEditHeaderIcon() {
+    private fun addHeaderIcons(editable: Boolean) {
         reviewDetailHeader.apply {
+            addRightIcon(R.drawable.ic_share)
+            rightIcons?.firstOrNull()?.setOnClickListener {
+                goToSharing()
+            }
+            if(!editable) {
+                return
+            }
             addRightIcon(R.drawable.ic_edit_review_history_detail)
             rightIcons?.let {
                 it[INDEX_OF_EDIT_BUTTON].setOnClickListener {

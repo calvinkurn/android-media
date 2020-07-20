@@ -115,14 +115,18 @@
 
     <include layout="@layout/partial_review_connection_error"
         android:id="@+id/reviewDetailConnectionError"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone" />
 
     <include layout="@layout/partial_review_details_shimmering"
         android:id="@+id/reviewDetailShimmer"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
