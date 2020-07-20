@@ -728,7 +728,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_add_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
     }
 
     override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
@@ -739,7 +739,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_remove_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
     }
 
     private fun enableWishlistButton(productId: String) {

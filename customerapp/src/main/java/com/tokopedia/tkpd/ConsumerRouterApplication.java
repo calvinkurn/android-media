@@ -64,6 +64,7 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.editshipping.ui.EditShippingActivity;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -82,13 +83,11 @@ import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -117,7 +116,6 @@ import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -712,11 +710,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
         return OfficialHomeContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public Intent getManageAddressIntent(Context context) {
-        return new Intent(context, ManagePeopleAddressActivity.class);
     }
 
     @Override

@@ -7,13 +7,8 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.request.DataRequest;
-import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombinedRequestData;
-import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse;
-import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;
-import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
 import com.tokopedia.network.data.model.response.DataResponse;
 
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -34,15 +29,6 @@ import rx.Observable;
  */
 
 public interface FlightApi {
-
-    @Headers({"Content-Type: application/json"})
-    @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
-    Observable<Response<String>> searchFlightSingle(@Body DataRequest<FlightSearchSingleRequestData> flightSearchRequest);
-
-    @Headers({"Content-Type: application/json"})
-    @POST(FlightUrl.FLIGHT_SEARCH_COMBINED)
-    Observable<Response<FlightDataResponse<List<FlightSearchCombinedResponse>>>> searchFlightCombined(
-            @Body DataRequest<FlightSearchCombinedRequestData> flightSearchCombinedRequestDataDataRequest);
 
     @GET(FlightUrl.FLIGHT_CANCELLATION_PASSENGER)
     Observable<Response<String>> getCancellablePassenger(@Query("invoice_id") String invoiceId);

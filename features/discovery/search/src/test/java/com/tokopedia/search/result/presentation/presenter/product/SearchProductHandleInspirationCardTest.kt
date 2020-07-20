@@ -9,18 +9,17 @@ import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-private const val inspirationCardResponseFirstPage = "searchproduct/inspirationcard/response-inspiration-card-first-page.json"
-private const val inspirationCardResponseOnlyPosition9 = "searchproduct/inspirationcard/response-inspiration-card-only-position-9.json"
-private const val inspirationCardResponseWithoutTopAds = "searchproduct/inspirationcard/response-inspiration-card-without-topads.json"
-private const val inspirationCardResponseSamePosition = "searchproduct/inspirationcard/response-inspiration-card-same-position.json"
-private const val inspirationCardResponseSamePositionWithCarousel = "searchproduct/inspirationcard/response-inspiration-card-same-position-with-carousel.json"
+private const val inspirationCardResponseFirstPage = "searchproduct/inspirationcard/in-first-page.json"
+private const val inspirationCardResponseOnlyPosition9 = "searchproduct/inspirationcard/in-position-9.json"
+private const val inspirationCardResponseWithoutTopAds = "searchproduct/inspirationcard/without-topads.json"
+private const val inspirationCardResponseSamePosition = "searchproduct/inspirationcard/same-position.json"
+private const val inspirationCardResponseSamePositionWithCarousel = "searchproduct/inspirationcard/same-position-with-carousel.json"
 
 internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestFixtures() {
     private val visitableListSlot = slot<List<Visitable<*>>>()
@@ -48,7 +47,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         }
 
         every { searchProductLoadMoreUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelCommon)
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductCommonResponseJSON.jsonToObject<SearchProductModel>())
         }
     }
 
