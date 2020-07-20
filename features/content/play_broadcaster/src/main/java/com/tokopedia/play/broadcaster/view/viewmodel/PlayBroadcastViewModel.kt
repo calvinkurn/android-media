@@ -6,8 +6,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.HydraSetupData
 import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
@@ -164,12 +164,12 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun getHydraSetupData(): HydraSetupData {
-        return mDataStore.getAllData()
+    fun getHydraSetupData(): SerializableHydraSetupData {
+        return mDataStore.getSerializableData()
     }
 
-    fun setHydraSetupData(setupData: HydraSetupData) {
-        mDataStore.setAllData(setupData)
+    fun setHydraSetupData(setupData: SerializableHydraSetupData) {
+        mDataStore.setSerializableData(setupData)
     }
 
     suspend fun getChannelDetail() = getChannelById(channelId)

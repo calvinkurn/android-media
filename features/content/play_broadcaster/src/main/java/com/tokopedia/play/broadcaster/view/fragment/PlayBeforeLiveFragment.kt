@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.HydraSetupData
+import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -228,7 +228,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun populateSavedData(savedInstanceState: Bundle) {
         val setupDataString = savedInstanceState.getString(KEY_SETUP_DATA)
-        val setupData = GsonSingleton.instance.fromJson<HydraSetupData>(setupDataString, HydraSetupData::class.java)
+        val setupData = GsonSingleton.instance.fromJson<SerializableHydraSetupData>(setupDataString, SerializableHydraSetupData::class.java)
         setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 

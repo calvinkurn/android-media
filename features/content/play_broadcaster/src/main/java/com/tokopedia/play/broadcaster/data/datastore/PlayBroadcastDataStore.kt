@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
-import com.tokopedia.play.broadcaster.data.model.HydraSetupData
+import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 
 /**
  * Created by jegul on 22/06/20
@@ -11,7 +11,7 @@ interface PlayBroadcastDataStore {
 
     fun getSetupDataStore(): PlayBroadcastSetupDataStore
 
-    fun getAllData(): HydraSetupData
+    fun getSerializableData(): SerializableHydraSetupData
 
-    fun setAllData(data: HydraSetupData)
+    fun setSerializableData(data: SerializableHydraSetupData)
 }
