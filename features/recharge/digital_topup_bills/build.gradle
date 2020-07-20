@@ -56,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -71,21 +72,24 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 
     // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
+    androidTestImplementation(project(rootProject.ext.libraries.instrumentation_test)) {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
     artifactId = 'topup-bills'
-    groupId = 'com.tokopedia.digital'
+    groupId = 'com.tokopedia.topupbills'
     versionName = "1.0.0"
     artifactName ="digital_topup_bills-release"
 }
