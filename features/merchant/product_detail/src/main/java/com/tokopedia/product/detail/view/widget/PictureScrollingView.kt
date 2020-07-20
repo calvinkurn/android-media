@@ -11,12 +11,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import com.tokopedia.product.detail.view.adapter.VideoPicturePagerAdapter
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -41,17 +43,15 @@ class PictureScrollingView @JvmOverloads constructor(
         (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.pauseVideo()
     }
 
-    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
+    fun renderData(media: List<MediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
                    componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null,
                    lifecycle: Lifecycle) {
-        val mediaList = processMedia(media)
-
         if (!::pagerAdapter.isInitialized) {
             pdp_view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 var lastPosition = 0
                 override fun onPageSelected(position: Int) {
-                    pdp_page_control.setCurrentIndicator(position)
                     val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                    imageSliderCounter?.setCurrentCounter(position + 1)
                     onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
                     (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                     (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
@@ -64,7 +64,8 @@ class PictureScrollingView @JvmOverloads constructor(
         }
 
         if (!::pagerAdapter.isInitialized || shouldRenderViewPager) {
-            pdp_page_control.setIndicator(mediaList.size)
+            val mediaList = processMedia(media)
+            imageSliderCounter?.setView(1, mediaList.size)
             pagerAdapter = VideoPicturePagerAdapter(mediaList, onPictureClickListener, fragmentManager, componentTrackData
                     ?: ComponentTrackDataModel(), onPictureClickTrackListener, lifecycle)
             pdp_view_pager.adapter = pagerAdapter
@@ -74,28 +75,18 @@ class PictureScrollingView @JvmOverloads constructor(
         }
     }
 
-    fun updateImage(listOfImage: List<ProductMediaDataModel>?) {
-        pagerAdapter.setData(listOfImage ?: listOf())
-        resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
+    fun showImageReview(shouldShow:Boolean, onReviewMediaClicked : () -> Unit) {
+        imageFromUser?.shouldShowWithAction(shouldShow) {
+            imageFromUser?.setOnClickListener {
+                onReviewMediaClicked.invoke()
+            }
+            imageFromUser?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_chevron_right_black_24dp), null)
+        }
     }
 
-    fun renderShopStatus(shopInfo: ShopInfo.StatusInfo, productStatus: String, productStatusTitle: String = "",
-                         productStatusMessage: String = "") {
-        when {
-            shopInfo.shopStatus != SHOP_STATUS_ACTIVE -> {
-                error_product_container.visible()
-                error_product_title.text = MethodChecker.fromHtml(shopInfo.statusTitle)
-                error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusMessage)
-            }
-            productStatus != ProductStatusTypeDef.ACTIVE -> {
-                error_product_container.visible()
-                error_product_title.text = productStatusTitle
-                error_product_descr.text = productStatusMessage
-            }
-            else -> {
-                error_product_container.gone()
-            }
-        }
+    fun updateImage(listOfImage: List<MediaDataModel>?) {
+        pagerAdapter.setData(listOfImage ?: listOf())
+        resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
     }
 
     fun renderShopStatusDynamicPdp(shopStatus: Int, statusTitle: String, statusMessage: String, productStatus: String, productStatusTitle: String = "", productStatusMessage: String = "") {
@@ -118,7 +109,7 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    private fun processMedia(media: List<ProductMediaDataModel>?): List<ProductMediaDataModel> {
+    private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
         return if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
@@ -126,14 +117,13 @@ class PictureScrollingView @JvmOverloads constructor(
                     + "://" + res.getResourcePackageName(resId)
                     + '/'.toString() + res.getResourceTypeName(resId)
                     + '/'.toString() + res.getResourceEntryName(resId))
-            mutableListOf(ProductMediaDataModel(urlOriginal = uriNoPhoto.toString()))
+            mutableListOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
         } else
             media.toMutableList()
     }
 
     private fun resetViewPagerToFirstPosition(countIndicator: Int) {
-        pdp_page_control.setIndicator(countIndicator)
-        pdp_page_control.setCurrentIndicator(0)
+        imageSliderCounter?.setView(1, countIndicator)
         pdp_view_pager.setCurrentItem(0, false)
     }
 

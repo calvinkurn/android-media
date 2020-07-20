@@ -23,6 +23,8 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.elevation = 0.0f
+
+        setTitle(R.string.hotel_review_title)
     }
 
     override fun getNewFragment(): Fragment =
@@ -33,7 +35,7 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = "Ulasan"
+    override fun getScreenName(): String = ""
 
     companion object {
         fun getCallingIntent(context: Context, propertyId: Long): Intent = Intent(context, HotelReviewActivity::class.java)

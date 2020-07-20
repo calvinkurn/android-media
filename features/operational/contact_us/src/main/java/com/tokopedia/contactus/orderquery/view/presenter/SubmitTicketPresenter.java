@@ -8,15 +8,15 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
-import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.contactus.orderquery.data.ContactUsPass;
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.QueryTicket;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.contactus.orderquery.domain.SubmitTicketUseCase;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -142,7 +142,8 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         pass.setSolutionId(String.valueOf(submitTicketInvoiceData.getQueryTicket().getId()));
         pass.setMessageBody(getView().getDescription());
         pass.setAttachment(getView().getImageList());
-        pass.setName(SessionHandler.getLoginName(context));
+        UserSessionInterface userSession = new UserSession(context);
+        pass.setName(userSession.getName());
 
 
 

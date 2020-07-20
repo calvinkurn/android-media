@@ -14,7 +14,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:gravity="center_vertical"
         android:paddingEnd="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
@@ -70,12 +69,6 @@
                     android:hint="@string/shop_menu_search_placeholder_text"
                     android:lines="1" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/searchBarSort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_shop_sort" />
-
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </FrameLayout>
@@ -108,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:elevation="0dp"
-                android:background="@color/Neutral_N0">
+                android:background="@null">
 
                 <include
                     layout="@layout/partial_new_shop_page_header"
@@ -157,7 +150,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="@color/sticky_bg_color"
                 android:visibility="gone"
                 app:sticky_highlight_color="@color/g_500"
                 app:sticky_left_icon="@drawable/ic_toped_widget_login"

@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 
 /**
@@ -19,6 +19,11 @@ class RoomDurationView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     init {
         View.inflate(context, R.layout.widget_hotel_room_duration, this)
+    }
+
+    fun setViewLabel(checkInLabel: String, checkOutLabel: String) {
+        hotel_check_in_label.text = checkInLabel
+        hotel_check_out_label.text = checkOutLabel
     }
 
     fun setRoomDates(checkInDate: String, checkOutDate: String) {

@@ -1,0 +1,79 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+    mavenCentral()
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    // Features
+    implementation project(rootProject.ext.features.sessioncommon)
+
+    // Libraries
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    // Unify Dependencies
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
+    // Internal Dependencies
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
+    // Support Library
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
+    // Misc Dependencies
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    // Test Dependencies
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.kotlinMockito2
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.powerMockito
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+
+    // Debug tools
+    implementation rootProject.ext.debugToolsDependencies.chuck
+}
+
+project.ext {
+    artifactId = 'managename'
+    groupId = 'com.tokopedia.managename'
+    versionName = "0.0.1"
+    artifactName = "managename-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

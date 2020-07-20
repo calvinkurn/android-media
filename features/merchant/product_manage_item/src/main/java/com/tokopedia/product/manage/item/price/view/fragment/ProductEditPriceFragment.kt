@@ -4,30 +4,30 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AlertDialog
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tkpd.library.utils.CommonUtils
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils.removeComma
-import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.gm.common.constant.GM_TITLE
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.main.base.data.model.ProductWholesaleViewModel
-import com.tokopedia.product.manage.item.price.model.ProductPrice
-import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_HAS_VARIANT
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.price.model.ProductPrice
+import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.product.manage.item.variant.dialog.ProductChangeVariantPriceDialogFragment
 import com.tokopedia.product.manage.item.wholesale.activity.ProductAddWholesaleActivity
 import com.tokopedia.product.manage.item.wholesale.fragment.ProductAddWholesaleFragment.EXTRA_PRODUCT_WHOLESALE
@@ -197,23 +197,6 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         return true
     }
 
-    private fun showDialogGoToGM(){
-        val builder = AlertDialog.Builder(context!!,
-                R.style.AppCompatAlertDialogStyle)
-        val gm = getString(GMConstant.getGMTitleResource(context))
-        builder.setTitle(getString(R.string.add_product_title_alert_dialog_dollar_dynamic, gm))
-        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video,
-                getString(R.string.product_add_label_alert_dialog_dollar, gm)))
-        builder.setCancelable(true)
-        builder.setPositiveButton(R.string.change) { dialog, _ ->
-            dialog.cancel()
-            setResult(true)
-        }
-        builder.setNegativeButton(R.string.close) { dialog, _ -> dialog.cancel() }
-        val alert = builder.create()
-        alert.show()
-    }
-
     private fun showEditPriceDialog() {
         if (wholesalePrice.size>0) {
             val builder = AlertDialog.Builder(context!!,
@@ -253,7 +236,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 }
                 val view = activity!!.currentFocus
                 if (view != null) {
-                    CommonUtils.hideSoftKeyboard(view)
+                    KeyboardHandler.hideSoftKeyboard(activity)
                     view.clearFocus()
                 }
             })

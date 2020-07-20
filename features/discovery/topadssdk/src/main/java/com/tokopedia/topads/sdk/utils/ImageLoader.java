@@ -16,16 +16,17 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.imageutils.ImageCache;
-import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
-import com.tokopedia.topads.sdk.imageutils.ImageWorker;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 
 import java.util.List;
@@ -39,18 +40,11 @@ public class ImageLoader {
     private static final String IMAGE_CACHE_DIR = "images";
 
     private Context context;
-    private ImageCache.ImageCacheParams cacheParams;
-    private ImageFetcher imageFetcher;
     private final String PATH_VIEW = "views";
+    private static final String className = "com.tokopedia.topads.sdk.utils.ImageLoader";
 
     public ImageLoader(Context context) {
         this.context = context;
-        cacheParams = new ImageCache.ImageCacheParams(context, IMAGE_CACHE_DIR);
-        cacheParams.setMemCacheSizePercent(0.25f);
-        imageFetcher = new ImageFetcher(context,
-                context.getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size));
-        imageFetcher.setLoadingImage(R.drawable.loading_page);
-        imageFetcher.addImageCache(cacheParams);
     }
 
     public void loadImage(String ecs, ImageView imageView) {
@@ -73,7 +67,7 @@ public class ImageLoader {
                         imageView.setImageBitmap(resource);
                         if (!product.isLoaded()) {
                             product.setLoaded(true);
-                            new ImpresionTask().execute(product.getImage().getS_url());
+                            new ImpresionTask(className).execute(product.getImage().getS_url());
                             if(impressionListener!=null){
                                 impressionListener.onImpressionProductAdsItem(pos, product);
                             }
@@ -98,7 +92,7 @@ public class ImageLoader {
                         imageView.setImageBitmap(resource);
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                            new ImpresionTask(className).execute(shop.getImageShop().getsUrl());
                         }
                     }
 
@@ -119,7 +113,7 @@ public class ImageLoader {
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
                         if (url!=null && url.contains(PATH_VIEW)) {
-                            new ImpresionTask().execute(url);
+                            new ImpresionTask(className).execute(url);
                         }
                     }
 
@@ -128,10 +122,6 @@ public class ImageLoader {
 
                     }
                 });
-    }
-
-    public void loadImageWithMemoryCache(String url, ImageView imageView){
-        imageFetcher.loadImage(url, imageView);
     }
 
     public void loadCircle(Shop shop, final ImageView imageView) {
@@ -150,7 +140,7 @@ public class ImageLoader {
 
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                            new ImpresionTask(className).execute(shop.getImageShop().getsUrl());
                         }
                     }
                 });
@@ -162,14 +152,18 @@ public class ImageLoader {
             if(badge.isShow()) {
                 final View view = LayoutInflater.from(context).inflate(R.layout.layout_badge, null);
                 final ImageView imageView = (ImageView) view.findViewById(R.id.badge);
-                imageFetcher.loadImage(badge.getImageUrl(), imageView, new ImageWorker.OnImageLoadedListener() {
+                Glide.with(context).load(badge.getImageUrl()).listener(new RequestListener<Drawable>() {
                     @Override
-                    public void onImageLoaded(boolean success) {
-                        if (success) {
-                            container.addView(view);
-                        }
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
                     }
-                }, true);
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        container.addView(view);
+                        return true;
+                    }
+                }).into(imageView);
             }
         }
     }
@@ -193,25 +187,5 @@ public class ImageLoader {
             return AppCompatResources.getDrawable(context, resId);
         }
     }
-
-    public static int getRatingDrawable(int param) {
-        switch (param) {
-            case 0:
-                return R.drawable.ic_star_none;
-            case 1:
-                return R.drawable.icon_star_one;
-            case 2:
-                return R.drawable.icon_star_two;
-            case 3:
-                return R.drawable.icon_star_three;
-            case 4:
-                return R.drawable.icon_star_four;
-            case 5:
-                return R.drawable.icon_star_five;
-            default:
-                return R.drawable.ic_star_none;
-        }
-    }
-
 
 }

@@ -92,6 +92,9 @@ public class MyApplication extends BaseMainApplication
         PersistentCacheManager.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
         FpmLogger.init(this);
+
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+
         super.onCreate();
         initCacheApi();
 
@@ -99,6 +102,7 @@ public class MyApplication extends BaseMainApplication
             Timber.plant(new Timber.DebugTree());
         }
     }
+
 
     private void upgradeSecurityProvider() {
         try {
@@ -116,6 +120,11 @@ public class MyApplication extends BaseMainApplication
         } catch (Throwable t) {
             // Do nothing
         }
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
+
     }
 
     public static class GTMAnalytics extends DummyAnalytics {

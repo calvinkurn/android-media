@@ -22,14 +22,15 @@ object ShopPageProductListMapper {
 
     fun mapToShopProductEtalaseListDataModel(
             listShopEtalaseModel: List<ShopEtalaseModel>
-    ): List<ShopProductEtalaseChipItemViewModel>{
+    ): List<ShopEtalaseItemDataModel>{
         return listShopEtalaseModel.map { mapToShopEtalaseViewModel(it) }
     }
 
-    private fun mapToShopEtalaseViewModel(shopEtalaseModel: ShopEtalaseModel): ShopProductEtalaseChipItemViewModel {
+    private fun mapToShopEtalaseViewModel(shopEtalaseModel: ShopEtalaseModel): ShopEtalaseItemDataModel {
         val id = if (shopEtalaseModel.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) shopEtalaseModel.alias else shopEtalaseModel.id
-        return ShopProductEtalaseChipItemViewModel(
+        return ShopEtalaseItemDataModel(
                 id,
+                shopEtalaseModel.alias,
                 shopEtalaseModel.name,
                 shopEtalaseModel.type,
                 shopEtalaseModel.badge,

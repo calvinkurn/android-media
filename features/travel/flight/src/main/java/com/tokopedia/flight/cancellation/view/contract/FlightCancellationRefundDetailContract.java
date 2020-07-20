@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 
 /**
  * Created by alvarisi on 4/9/18.
@@ -15,7 +15,7 @@ public interface FlightCancellationRefundDetailContract {
 
         void showLoading();
 
-        FlightCancellationWrapperViewModel getCancellationViewModel();
+        FlightCancellationWrapperModel getCancellationViewModel();
 
         void hideLoading();
 

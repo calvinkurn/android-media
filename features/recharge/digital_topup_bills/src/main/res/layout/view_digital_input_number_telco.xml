@@ -13,12 +13,16 @@
 
         <include layout="@layout/view_digital_input_number" />
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_next_enquiry"
-            style="@style/Button.Submit.Orange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/digital_btn_check_bill"
-            android:background="@drawable/grey_button_rounded"
-            android:textColor="@color/digital_text_enquiry_non_active"
+            android:enabled="true"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="transaction"
+            android:layout_margin="@dimen/layout_lvl1"
             android:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography

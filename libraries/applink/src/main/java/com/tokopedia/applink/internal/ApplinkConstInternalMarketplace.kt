@@ -89,7 +89,7 @@ object ApplinkConstInternalMarketplace {
 
     // SetCashbackActivity
     @JvmField
-    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/{productName}/"
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
 
     // CreateReviewActivity
     @JvmField
@@ -128,6 +128,9 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_REVIEW = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/review"
 
     @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
@@ -176,6 +179,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
+    @JvmField
+    val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
+
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
@@ -202,6 +208,8 @@ object ApplinkConstInternalMarketplace {
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
+    @JvmField
+    val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
     // ShopScoreDetailActivity
     @JvmField
@@ -234,9 +242,14 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
+
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    // OrderHistoryActivity
+    @JvmField
+    val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
 
     // DashboardActivity
     @JvmField
@@ -281,5 +294,23 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
+
+    //SellerReviewListActivity
+    @JvmField
+    val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/seller-review-page"
+
+    //InboxReputationReportActivity
+    @JvmField
+    val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
+
+    //ShopFavouriteListActivity
+    @JvmField
+    val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
+    @JvmField
+    val ARGS_SHOP_ID = "ARGS_SHOP_ID"
+
+    @JvmField
+    val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
 
 }

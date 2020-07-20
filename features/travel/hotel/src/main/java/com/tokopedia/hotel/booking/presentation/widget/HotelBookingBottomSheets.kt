@@ -1,44 +1,43 @@
 package com.tokopedia.hotel.booking.presentation.widget
 
-import android.util.DisplayMetrics
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * @author by resakemal on 15/05/19
  */
-class HotelBookingBottomSheets : BottomSheets() {
+class HotelBookingBottomSheets : BottomSheetUnify() {
 
-    var contentViewList: ArrayList<View> = arrayListOf()
-    var title = ""
+    private var contentViewList: ArrayList<View> = arrayListOf()
 
-    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_booking
+    init {
+        isFullpage = false
+        setTitle("")
+        isDragable = false
+    }
 
-    override fun initView(view: View) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        val view = View.inflate(context, R.layout.bottom_sheets_hotel_booking, null)
+        setChild(view)
+        initView(view)
+    }
+
+    fun initView(view: View) {
         val contentView: LinearLayout = view.findViewById(R.id.hotel_booking_container)
         for (viewItem in contentViewList) contentView.addView(viewItem)
     }
 
-    override fun configView(parentView: View?) {
-        super.configView(parentView)
-
-
-        val displaymetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
-        parentView?.post {
-            parentView.measure(widthSpec, 0)
-            updateHeight(parentView.measuredHeight)
-        }
-    }
-
-    override fun title() = title
-
     fun addContentView(view: View) {
         contentViewList.add(view)
     }
-
-    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 }

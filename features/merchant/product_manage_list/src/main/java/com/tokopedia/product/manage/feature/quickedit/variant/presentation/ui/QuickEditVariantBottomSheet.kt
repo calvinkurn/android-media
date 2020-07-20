@@ -16,18 +16,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.di.DaggerQuickEditVariantComponent
 import com.tokopedia.product.manage.feature.quickedit.variant.di.QuickEditVariantComponent
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel.QuickEditVariantViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage_quick_edit_variant.*
@@ -102,11 +97,12 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         variantList.apply {
             adapter = this@QuickEditVariantBottomSheet.adapter
             layoutManager = LinearLayoutManager(this@QuickEditVariantBottomSheet.context)
+            itemAnimator = null
         }
     }
 
     private fun setupBottomSheet() {
-        val padding = context?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl4).orZero()
+        val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
         bottomSheetHeader.setPadding(padding, padding, padding, padding)
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }

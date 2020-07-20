@@ -61,7 +61,7 @@
                     app:typographyType="body_2"
                     tools:text="Semuanya ada di balik peti ini. Ayo cek apa yang baru di TokoPoints 2020!" />
 
-                <com.tokopedia.design.component.ButtonCompat
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_route"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_40"

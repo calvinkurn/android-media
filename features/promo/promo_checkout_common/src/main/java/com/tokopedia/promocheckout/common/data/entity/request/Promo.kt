@@ -3,7 +3,6 @@ package com.tokopedia.promocheckout.common.data.entity.request
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData
 
 /**
  * Created by Irfan Khoirul on 19/03/19.
@@ -35,10 +34,7 @@ data class Promo(
         var isTradeInDropOff: Int? = 0,
 
         @SerializedName("state")
-        var state: String = "",
-
-        @SerializedName("tokopedia_corner_data")
-        var tokopediCornerData: TokopediaCornerData? = null
+        var state: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             arrayListOf<String>().apply {
@@ -53,8 +49,7 @@ data class Promo(
             },
             parcel.readValue(Int::class.java.classLoader) as? Int,
             parcel.readValue(Int::class.java.classLoader) as? Int,
-            parcel.readString() ?: "",
-            parcel.readParcelable(TokopediaCornerData::class.java.classLoader)) {
+            parcel.readString() ?: "") {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -67,7 +62,6 @@ data class Promo(
         parcel.writeValue(isTradeIn)
         parcel.writeValue(isTradeInDropOff)
         parcel.writeString(state)
-        parcel.writeParcelable(tokopediCornerData, flags)
     }
 
     override fun describeContents(): Int {

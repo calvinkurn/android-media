@@ -37,7 +37,7 @@
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_1"
                 android:layout_gravity="bottom|center"
-                android:src="@drawable/bg_light_reward"
+                android:src="@drawable/gami_bg_light_reward"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -47,7 +47,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_gravity="bottom|center"
                 android:visibility="gone"
-                tools:src="@drawable/ic_empty_egg"
+                tools:src="@drawable/gami_ic_empty_egg"
                 tools:visibility="visible" />
 
         </FrameLayout>
@@ -101,30 +101,33 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/button_return"
-                    style="@style/Button.Submit.Green.Rounded"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_45"
                     android:layout_marginStart="@dimen/dp_24"
                     android:layout_marginLeft="@dimen/dp_24"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
                     android:layout_weight="1"
+                    android:background="@drawable/gf_bg_button_green_rounded_enabled"
+                    android:gravity="center"
                     android:paddingLeft="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
+                    android:textColor="@color/white"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     tools:text="Cek dan Gunakan " />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/button_cta"
-                    style="@style/Button.Submit.GreyRounded"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_45"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_24"
                     android:layout_weight="1"
+                    android:background="@drawable/gf_bg_button_grey_rounded"
+                    android:gravity="center"
                     android:textColor="@color/black_40"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"

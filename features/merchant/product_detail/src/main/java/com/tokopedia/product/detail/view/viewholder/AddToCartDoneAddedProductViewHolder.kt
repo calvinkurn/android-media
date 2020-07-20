@@ -8,6 +8,8 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import kotlinx.android.synthetic.main.add_to_cart_done_added_product_layout.view.*
 
 class AddToCartDoneAddedProductViewHolder(
@@ -21,19 +23,9 @@ class AddToCartDoneAddedProductViewHolder(
 
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
-            if (element.isFreeOngkir && element.freeOngkirImg.isNotBlank()) {
-                img_free_ongkir.visible()
-                img_free_ongkir.loadImageRounded(element.freeOngkirImg)
-            } else {
-                img_free_ongkir.gone()
+            element.productImageUr?.let {
+                image_view_added_product.loadImageRounded(it, resources.getDimension(R.dimen.dp_8))
             }
-            text_view_product_name.text = element.productName
-            ImageHandler.loadImage(
-                    itemView.context,
-                    image_view_added_product,
-                    element.productImageUr,
-                    R.drawable.loading_page
-            )
             button_go_to_cart.setOnClickListener {
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()
             }
@@ -42,5 +34,6 @@ class AddToCartDoneAddedProductViewHolder(
 
     interface AddToCartDoneAddedProductListener {
         fun onButtonGoToCartClicked()
+        fun onRecommendationItemSelected(item: AddToCartDoneRecommendationItemDataModel, position: Int)
     }
 }

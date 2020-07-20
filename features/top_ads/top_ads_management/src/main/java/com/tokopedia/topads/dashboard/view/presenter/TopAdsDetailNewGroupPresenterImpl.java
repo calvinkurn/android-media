@@ -123,7 +123,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     @Override
     public void saveAdNew(final String groupName,
                           final TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                          final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source) {
+                          final List<TopAdsProductViewModel> topAdsProductViewModelList, final String source, String shopId) {
 
         topAdsGetSourceTaggingUseCase.execute(new Subscriber<TopAdsSourceTaggingModel>() {
             @Override
@@ -145,7 +145,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                 topAdsCreateNewGroupUseCase.execute(
                         TopAdsCreateNewGroupUseCase.createRequestParams(groupName,
                                 topAdsDetailProductViewModel, topAdsProductViewModelList,
-                                source),
+                                source, shopId),
                         new Subscriber<TopAdsDetailGroupViewModel>() {
                             @Override
                             public void onCompleted() {

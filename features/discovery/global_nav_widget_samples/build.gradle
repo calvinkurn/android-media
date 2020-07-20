@@ -30,7 +30,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl

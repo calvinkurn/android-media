@@ -184,13 +184,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         cacheManagerId?.run {
             viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                     ?: ProductInputModel()
-          
+
             var pictureIndex = 0
             viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
                 else urlOrPath
             }.toMutableList()
-          
+
             viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java)
                     ?: false
             viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
@@ -426,7 +426,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // do the validation first
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
-                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                            InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                    charSequence.length, count,this)
                         }
                     }
                 }
@@ -1008,7 +1009,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productCategoryRecommendationLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
-                is Fail -> onGetCategoryRecommendationFailed()
+                is Fail -> {
+                    onGetCategoryRecommendationFailed()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         })
     }
@@ -1112,7 +1116,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                 selectedImagePathList,
                 placeholderDrawableRes,
-                R.string.label_primary,
+                com.tokopedia.product.addedit.R.string.label_primary,
                 MAX_PRODUCT_PHOTOS, false)
 
         return ImagePickerBuilder(
@@ -1129,14 +1133,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.rect_green_solid)
+        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
     }
 
     private fun disableSubmitButton() {
         submitButton?.isClickable = false
         submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N700_32)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32)) }
     }
 
     private fun showDurationUnitOption() {
@@ -1209,6 +1213,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecLoader?.hide()
                     productNameRecShimmering?.hide()
                     productNameRecView?.hide()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }
@@ -1245,7 +1250,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (itemSize > 0) {
                 setSelected(items, 0) {
                     val categoryId = it.getCategoryId().toString()
+                    val categoryName = it.getCategoryName()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                    viewModel.productInputModel.detailInputModel.categoryName = categoryName
                     true
                 }
             }
@@ -1255,23 +1262,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
             setSelected(items, position) {
-                onCategoryRecommendationSelected(it.getCategoryId().toString())
+                onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
                 setSelected(items, index) {
-                    onCategoryRecommendationSelected(it.getCategoryId().toString())
+                    onCategoryRecommendationSelected(it.getCategoryId().toString(), it.getCategoryName())
                 }
             }
         }
     }
 
-    private fun onCategoryRecommendationSelected(categoryId: String) {
+    private fun onCategoryRecommendationSelected(categoryId: String, categoryName: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
-        if (viewModel.isAdding) {
+        if(viewModel.isAdding) {
             ProductAddMainTracking.clickProductCategoryRecom(shopId)
         }
     }

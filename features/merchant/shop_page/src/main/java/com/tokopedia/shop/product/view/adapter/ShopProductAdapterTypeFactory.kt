@@ -25,7 +25,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val shopProductImpressionListener: ShopProductImpressionListener?,
                                     private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
                                     private val emptyProductOnClickListener: BaseEmptyViewHolder.Callback?,
-                                    private val shopProductEtalaseListViewHolderListener: ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener?,
+                                    private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener?,
                                     private val onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?,
                                     private val shopProductAddViewHolderListener: ShopProductAddViewHolder.ShopProductAddViewHolderListener?,
                                     private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
@@ -79,8 +79,8 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ErrorNetworkWrapViewHolder.LAYOUT
     }
 
-    fun type(etalaseLabelViewModel: ShopProductEtalaseListViewModel): Int {
-        return ShopProductEtalaseListViewHolder.LAYOUT
+    fun type(etalaseLabelViewModel: ShopProductSortFilterUiModel): Int {
+        return ShopProductSortFilterViewHolder.LAYOUT
     }
 
     fun type(viewModel: HideViewModel): Int {
@@ -106,7 +106,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
             ErrorNetworkWrapViewHolder.LAYOUT -> return ErrorNetworkWrapViewHolder(parent)
             ShopProductEtalaseTitleViewHolder.LAYOUT -> return ShopProductEtalaseTitleViewHolder(parent)
-            ShopProductEtalaseListViewHolder.LAYOUT -> return ShopProductEtalaseListViewHolder(parent, shopProductEtalaseListViewHolderListener)
+            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
             ShopProductAddViewHolder.LAYOUT -> return ShopProductAddViewHolder(parent, shopProductAddViewHolderListener)
             ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT -> return ShopProductSellerAllEtalaseEmptyViewHolder(parent)
             ShopMerchantVoucherViewHolder.LAYOUT -> return ShopMerchantVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)

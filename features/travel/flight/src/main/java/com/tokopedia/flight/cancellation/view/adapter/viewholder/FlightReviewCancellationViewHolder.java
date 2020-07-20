@@ -13,23 +13,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.ADULT;
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.CHILDREN;
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.INFANT;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 29/03/18.
  */
 
-public class FlightReviewCancellationViewHolder extends AbstractViewHolder<FlightCancellationViewModel> {
+public class FlightReviewCancellationViewHolder extends AbstractViewHolder<FlightCancellationModel> {
 
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_review;
@@ -61,7 +61,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
     }
 
     @Override
-    public void bind(FlightCancellationViewModel element) {
+    public void bind(FlightCancellationModel element) {
         String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode().isEmpty() ||
                 element.getFlightCancellationJourney().getDepartureCityCode().length() == 0) ?
                 element.getFlightCancellationJourney().getDepartureAiportId() :
@@ -121,7 +121,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
 
     private class PassengerAdapter extends RecyclerView.Adapter<PassengerViewHolder> {
 
-        List<FlightCancellationPassengerViewModel> passengerViewModelList;
+        List<FlightCancellationPassengerModel> passengerViewModelList;
         List<PassengerViewHolder> passengerViewHolderList = new ArrayList<>();
 
         public PassengerAdapter() {
@@ -146,7 +146,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
             return passengerViewModelList.size();
         }
 
-        public void addData(List<FlightCancellationPassengerViewModel> passengerViewModelList) {
+        public void addData(List<FlightCancellationPassengerModel> passengerViewModelList) {
             this.passengerViewModelList.clear();
             this.passengerViewModelList.addAll(passengerViewModelList);
             notifyDataSetChanged();
@@ -158,7 +158,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
 
         private TextView txtPassengerName;
         private TextView txtPassengerType;
-        private FlightCancellationPassengerViewModel passengerViewModel;
+        private FlightCancellationPassengerModel passengerViewModel;
 
         public PassengerViewHolder(View itemView) {
             super(itemView);
@@ -166,7 +166,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
             txtPassengerType = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_type);
         }
 
-        public void bindData(FlightCancellationPassengerViewModel passengerViewModel, int adapterPosition) {
+        public void bindData(FlightCancellationPassengerModel passengerViewModel, int adapterPosition) {
             this.passengerViewModel = passengerViewModel;
 
             txtPassengerName.setText(String.format("%s %s %s", passengerViewModel.getTitleString(),
@@ -187,7 +187,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
             }
         }
 
-        public FlightCancellationPassengerViewModel getPassengerViewModel() {
+        public FlightCancellationPassengerModel getPassengerViewModel() {
             return passengerViewModel;
         }
     }

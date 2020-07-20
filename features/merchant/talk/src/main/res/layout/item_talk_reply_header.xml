@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/replyUserImage"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        tools:src="@tools:sample/avatars"
+        app:unify_image_type="circle"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:textColor="@color/light_N700_68"
+        app:layout_constraintStart_toEndOf="@+id/replyUserImage"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        tools:text="Jevon" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyHeaderDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintStart_toEndOf="@+id/replyUserName"
+        app:layout_constraintTop_toTopOf="@+id/replyUserName"
+        app:typographyType="body_3"
+        tools:text="• 30 Feb 2020" />
+
+    <ImageView
+        android:id="@+id/replyHeaderKebab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/talk_ic_kebab"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/replyHeaderBarrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="replyUserName,replyHeaderKebab,replyUserImage, replyHeaderDate"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyHeaderMessage"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/replyHeaderBarrier"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Ini barangnya anti air gak yah gan?" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/replyHeaderFollowButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:gravity="center"
+        android:minWidth="@dimen/dp_104"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/replyHeaderMessage"
+        app:layout_constraintTop_toBottomOf="@+id/replyHeaderMessage"
+        app:unifyButtonSize="micro"
+        app:unifyButtonVariant="ghost"
+        tools:text="Follow"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/replyHeaderTNC"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_32"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/replyHeaderFollowButton"
+        app:typographyType="small"
+        tools:text="QA adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa baca SK." />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

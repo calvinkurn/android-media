@@ -16,7 +16,9 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHol
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 
-class InitialStateAdapterTypeFactory(private val clickListener: InitialStateItemClickListener) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
+class InitialStateAdapterTypeFactory(
+        private val clickListener: InitialStateItemClickListener
+) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(viewModel: PopularSearchTitleViewModel): Int {
         return PopularSearchTitleViewHolder.LAYOUT
     }

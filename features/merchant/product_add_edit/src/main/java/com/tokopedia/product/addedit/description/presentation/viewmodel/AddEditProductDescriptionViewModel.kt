@@ -97,13 +97,18 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private fun getIdYoutubeUrl(videoUrl: String): String? {
         return try {
             // add https:// prefix to videoUrl
-            val webVideoUrl =
-                    if (videoUrl.startsWith(WEB_PREFIX_HTTP) ||
-                            videoUrl.startsWith(WEB_PREFIX_HTTPS)) videoUrl else WEB_YOUTUBE_PREFIX + videoUrl
+            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                videoUrl
+            } else {
+                WEB_YOUTUBE_PREFIX + videoUrl
+            }
+            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
+
             val uri = Uri.parse(webVideoUrl)
-            when (uri.host) {
-                "youtu.be" -> uri.lastPathSegment
-                "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+            when {
+                uri.host == "youtu.be" -> uri.lastPathSegment
+                uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("")
             }
         } catch (e: NullPointerException) {

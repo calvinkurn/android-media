@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellation.view.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public class FlightCancellationChooseReasonContract {
 
     public interface View extends CustomerView {
 
-        void renderReasonList(ArrayList<FlightCancellationReasonViewModel> reasonViewModelList);
+        void renderReasonList(ArrayList<FlightCancellationReasonModel> reasonViewModelList);
 
     }
 

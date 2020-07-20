@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+        android:layout_weight="1" />
 
+    <View
+        android:id="@+id/line_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_line_bottom_nav"/>
+
+    <com.tokopedia.navigation.presentation.customview.LottieBottomNavbar android:id="@+id/bottom_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        tools:layout_height="100dp"
+        android:elevation="15dp"
+        android:orientation="vertical"
+        app:buttonColor="#525A67"
+        app:buttonContainerBackgroundColor="@android:color/white"
+        app:buttonsHeight="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:offscreenPageLimit="4"
+        app:setViewPagerSwipeable="false"
+        app:navbarElevation="15dp"
+        app:viewPagerBackground="@android:color/white"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" />
 </LinearLayout>

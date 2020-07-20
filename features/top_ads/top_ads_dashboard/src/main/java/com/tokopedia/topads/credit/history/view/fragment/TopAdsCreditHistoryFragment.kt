@@ -1,33 +1,34 @@
 package com.tokopedia.topads.credit.history.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
-import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
-import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
-import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.credit.history.view.adapter.TopAdsCreditHistoryTypeFactory
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
+import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_topads_credit_history.*
@@ -112,7 +113,10 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     }
 
     private fun showToastSuccess() {
-        ToasterNormal.make(view, getString(R.string.auto_topup_success_changed), ToasterNormal.LENGTH_SHORT).show()
+        view?.let {
+            Toaster.make(it, getString(R.string.auto_topup_success_changed), Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL)
+        }
     }
 
     private fun gotoAutoTopUp() {

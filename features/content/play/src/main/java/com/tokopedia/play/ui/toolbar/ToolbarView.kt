@@ -55,7 +55,6 @@ class ToolbarView(
 
     override val containerId: Int = view.id
 
-
     override fun show() {
         view.show()
     }
@@ -85,11 +84,11 @@ class ToolbarView(
             }
         }
 
-        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.gone()
+        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.hide()
         else {
-            clPartner.visible()
-            if (!partnerInfo.isFollowable) groupFollowable.gone()
-            else groupFollowable.visible()
+            clPartner.show()
+            if (!partnerInfo.isFollowable) groupFollowable.hide()
+            else groupFollowable.show()
 
             tvPartnerName.setOnClickListener {
                 listener.onPartnerNameClicked(this, partnerInfo.id, partnerInfo.type)
@@ -105,9 +104,9 @@ class ToolbarView(
     }
 
     fun setCartInfo(cartUiModel: CartUiModel) {
-        if (cartUiModel.isShow) rlCart.visible() else rlCart.invisible()
+        if (cartUiModel.isShow) rlCart.show() else rlCart.invisible()
         if (cartUiModel.count > 0) {
-            tvBadgeCart.visible()
+            tvBadgeCart.show()
             tvBadgeCart.text =  if (cartUiModel.count > 99) container.context.getString(R.string.play_mock_cart) else cartUiModel.count.toString()
         } else {
             tvBadgeCart.invisible()

@@ -5,14 +5,9 @@ import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.search.data.model.Filter
-import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.model.PropertySearch
-import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.TYPE_CITY
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.TYPE_DISTRICT
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.TYPE_REGION
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 26/03/20
@@ -72,17 +68,18 @@ class HotelSearchResultViewModelTest {
     fun initSearchParam_typeCity_shouldInitSearchParam() {
         //given
         val destinationId = 100.toLong()
-        val type = TYPE_CITY
+        val type = HotelTypeEnum.CITY.value
         val latitude = 0.0f
         val longitude = 0.0f
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
         val totalAdult = 4
+        val cityName = "lalala"
 
         //when
-        hotelSearchResultViewModel.initSearchParam(destinationId, type,
-                latitude, longitude, checkIn, checkOut, totalRoom, totalAdult)
+        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
+        , type, totalRoom, totalAdult, latitude, longitude, "", ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == destinationId)
@@ -93,24 +90,24 @@ class HotelSearchResultViewModelTest {
         assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
         assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
         assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
-
     }
 
     @Test
     fun initSearchParam_typeDistrict_shouldInitSearchParam() {
         //given
-        val destinationId = 100
-        val type = TYPE_DISTRICT
+        val destinationId = 100.toLong()
+        val type = HotelTypeEnum.DISTRICT.value
         val latitude = 0.0f
         val longitude = 0.0f
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
         val totalAdult = 4
+        val cityName = "lala"
 
         //when
-        hotelSearchResultViewModel.initSearchParam(destinationId.toLong(), type,
-                latitude, longitude, checkIn, checkOut, totalRoom, totalAdult)
+        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
+                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -127,18 +124,19 @@ class HotelSearchResultViewModelTest {
     @Test
     fun initSearchParam_typeRegion_shouldInitSearchParam() {
         //given
-        val destinationId = 100
-        val type = TYPE_REGION
+        val destinationId = 100.toLong()
+        val type = HotelTypeEnum.REGION.value
         val latitude = 0.0f
         val longitude = 0.0f
         val checkIn = "2020-12-20"
         val checkOut = "2020-12-22"
         val totalRoom = 2
         val totalAdult = 4
+        val cityName = "name"
 
         //when
-        hotelSearchResultViewModel.initSearchParam(destinationId.toLong(), type,
-                latitude, longitude, checkIn, checkOut, totalRoom, totalAdult)
+        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
+                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -154,12 +152,43 @@ class HotelSearchResultViewModelTest {
     }
 
     @Test
+    fun initSearchParam_typeCoordinate_shouldInitSearchParam() {
+        //given
+        val destinationId = 100.toLong()
+        val latitude = 3.0f
+        val longitude = 4.0f
+        val checkIn = "2020-12-20"
+        val checkOut = "2020-12-22"
+        val totalRoom = 2
+        val totalAdult = 4
+        val cityName = "name"
+        val searchType = HotelTypeEnum.COORDINATE.value
+
+        //when
+        hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
+                , "", totalRoom, totalAdult, latitude, longitude, searchType, ""))
+
+        //then
+        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
+        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0.toLong())
+        assert(hotelSearchResultViewModel.searchParam.location.regionID == 0.toLong())
+        assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
+        assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
+        assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
+        assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
+        assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
+        assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
+        assert(hotelSearchResultViewModel.searchParam.location.searchType == searchType)
+
+    }
+
+    @Test
     fun searchProperty_shouldBeSuccessWithData() {
         //given
         val properties = listOf(Property(1), Property(2), Property(3))
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PropertySearch.Response::class.java to PropertySearch.Response(PropertySearch(properties))),
-                mapOf(),
+                mapOf<Type, Any>(PropertySearch.Response::class.java to PropertySearch.Response(PropertySearch(properties))),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -178,8 +207,8 @@ class HotelSearchResultViewModelTest {
         //given
         val properties = listOf(Property(1), Property(2), Property(3))
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(PropertySearch.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(PropertySearch.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -274,6 +303,23 @@ class HotelSearchResultViewModelTest {
         assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
         assert(!hotelSearchResultViewModel.searchParam.sort.star)
         assert(hotelSearchResultViewModel.searchParam.sort.reviewScore)
+        assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
+    }
+
+    @Test
+    fun addSort_sortByElse_shouldAssignedToSelectedSort() {
+        //given
+        val sort = Sort(name = "review")
+
+        //when
+        hotelSearchResultViewModel.addSort(sort)
+
+        //then
+        assert(!hotelSearchResultViewModel.searchParam.sort.popularity)
+        assert(!hotelSearchResultViewModel.searchParam.sort.price)
+        assert(!hotelSearchResultViewModel.searchParam.sort.ranking)
+        assert(!hotelSearchResultViewModel.searchParam.sort.star)
+        assert(!hotelSearchResultViewModel.searchParam.sort.reviewScore)
         assert(hotelSearchResultViewModel.searchParam.sort.sortDir == "desc")
     }
 

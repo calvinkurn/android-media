@@ -73,10 +73,6 @@ public class ActivitiesLifecycleCallbacks {
         return getLiveActivityOrNull() == null;
     }
 
-    Application getApplication() {
-        return application;
-    }
-
     public Context getContext(){
         return context;
     }

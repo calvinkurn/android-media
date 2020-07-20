@@ -430,4 +430,52 @@
         <key>android_async_checkappsignature</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_async_hansel_init</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_async_home_dagger</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_cmpushnotif_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_iris_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteconfig_mainapp_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_applink_delegate_creation</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_remoteresource_init</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>excluded_amp</key>
+        <value>stories</value>
+    </entry>
+    <entry>
+        <key>android_mainapp_enable_pdp_event</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_mainapp_enable_seller_migration</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_addgaid_to_branch</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_branch_utm_support</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

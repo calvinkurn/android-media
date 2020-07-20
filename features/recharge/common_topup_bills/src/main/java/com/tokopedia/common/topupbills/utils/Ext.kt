@@ -1,5 +1,7 @@
 package com.tokopedia.common.topupbills.utils
 
+import android.content.res.Resources
+import android.util.TypedValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -33,19 +35,4 @@ private fun md5(s: String): String {
         return ""
     }
 
-}
-
-fun <T> debounce(
-        waitMs: Long = 300L,
-        coroutineScope: CoroutineScope,
-        destinationFunction: (T) -> Unit
-): (T) -> Unit {
-    var debounceJob: Job? = null
-    return { param: T ->
-        debounceJob?.cancel()
-        debounceJob = coroutineScope.launch {
-            delay(waitMs)
-            destinationFunction(param)
-        }
-    }
 }

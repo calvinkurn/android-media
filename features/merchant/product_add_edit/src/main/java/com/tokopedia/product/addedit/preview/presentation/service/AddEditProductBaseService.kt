@@ -184,13 +184,13 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 result.uploadId
             }
             is UploadResult.Error -> {
-                val message = "Error upload image %s because %s".format(filePath, result.reason.name)
+                val message = "Error upload image %s because %s".format(filePath, result.message)
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
 
-                notificationManager?.onFailedUpload(result.reason.name)
+                notificationManager?.onFailedUpload(result.message)
                 ""
             }
         }

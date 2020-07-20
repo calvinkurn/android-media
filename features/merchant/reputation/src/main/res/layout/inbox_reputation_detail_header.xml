@@ -41,7 +41,7 @@
                 tools:text="Pretty Sugar Shop"
                 />
 
-            <com.tokopedia.design.reputation.UserReputationView
+            <com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView
                 android:id="@+id/user_reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 app:usv_show_tooltip="true"
                 android:layout_marginTop="@dimen/dp_4"/>
 
-            <com.tokopedia.design.reputation.ShopReputationView
+            <com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView
                 android:id="@+id/shop_reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,6 +86,15 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ovoPointsTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:tickerType="announcement" />
 
     <View
         android:layout_width="match_parent"

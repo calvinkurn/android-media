@@ -66,3 +66,7 @@ internal fun ListItemUnify.setPrimarySelected(context: Context?, isChecked: Bool
         }
     }
 }
+
+internal fun ListItemUnify.getCategoryName() = run {
+    listTitleText.replace(" / ", "/")
+}
