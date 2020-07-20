@@ -52,10 +52,10 @@ class TotalStockEditorViewHolder(itemView: View?,
                 ProductManageTracking.eventClickAllocationInputStock(isVariant = false)
             }
         }
-        addButton.setOnClickListener {
+        setAddClickListener {
             ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = false)
         }
-        subtractButton.setOnClickListener {
+        setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
         }
     }
