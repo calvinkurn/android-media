@@ -236,7 +236,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if (widget.widgetType == WidgetType.CARD) {
                     visibleWidgets.add(widget)
                 } else {
-                    if (index in firstVisible..lastVisible && !widget.isLoaded) {
+                    if (index in firstVisible..lastVisible) {
                         visibleWidgets.add(widget)
                     }
                 }
