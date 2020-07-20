@@ -9,9 +9,9 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class UserFollowingResultViewModel(
-        override val isCanLoadMore: Boolean,
-        override val followingViewModelList: List<UserFollowingViewModel>,
-        val lastCursor: String,
-        val buttonText: String,
-        val buttonApplink: String
+        override val isCanLoadMore: Boolean = false,
+        override val followingViewModelList: List<UserFollowingViewModel> = emptyList(),
+        val lastCursor: String = "",
+        val buttonText: String = "",
+        val buttonApplink: String = ""
 ) : FollowingResultViewModel<UserFollowingViewModel>, Parcelable
