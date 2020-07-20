@@ -341,7 +341,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
-        InstallmentDetailBottomSheet().show(fragment)
+        InstallmentDetailBottomSheet().show(fragment, emptyList())
     }
 
     companion object {

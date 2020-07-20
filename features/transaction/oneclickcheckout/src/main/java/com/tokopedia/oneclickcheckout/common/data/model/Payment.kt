@@ -26,5 +26,31 @@ data class Payment(
         @SerializedName("wallet_amount")
         val walletAmount: Long = 0,
         @SerializedName("metadata")
-        val metadata: String = ""
+        val metadata: String = "",
+        @SerializedName("mdr")
+        val mdr: Float = 0f
+)
+
+data class PaymentCreditCard(
+        @SerializedName("total_cards")
+        val totalCards: Int = 0,
+        @SerializedName("bank_code")
+        val bankCode: String = "",
+        @SerializedName("card_type")
+        val cardType: String = "",
+        @SerializedName("is_expired")
+        val isExpired: Boolean = false
+)
+
+data class InstallmentTerm(
+        @SerializedName("term")
+        val term: Int = 0,
+        @SerializedName("mdr")
+        val mdr: Float = 0f,
+        @SerializedName("mdr_subsidize")
+        val mdrSubsidize: Float = 0f,
+        @SerializedName("min_amount")
+        val minAmount: Long = 0,
+        @SerializedName("is_selected")
+        val isSelected: Boolean = false
 )

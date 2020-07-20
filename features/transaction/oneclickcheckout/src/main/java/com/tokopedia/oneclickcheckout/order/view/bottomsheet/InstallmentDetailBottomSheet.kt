@@ -3,20 +3,21 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.order.view.model.InstallmentDetailItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class InstallmentDetailBottomSheet {
 
     private var bottomSheetUnify: BottomSheetUnify? = null
 
-    fun show(fragment: OrderSummaryPageFragment) {
+    fun show(fragment: OrderSummaryPageFragment, installmentDetails: List<InstallmentDetailItem>) {
         fragment.fragmentManager?.let {
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
@@ -26,7 +27,7 @@ class InstallmentDetailBottomSheet {
                 setTitle("Pilih Jenis Pembayaran")
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_installment, null)
-                setupChild(child, fragment)
+                setupChild(child, fragment, installmentDetails)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -36,25 +37,26 @@ class InstallmentDetailBottomSheet {
         }
     }
 
-    private fun setupChild(child: View, fragment: OrderSummaryPageFragment) {
-        setupInstallments(child, fragment)
+    private fun setupChild(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<InstallmentDetailItem>) {
+        setupInstallments(child, fragment, installmentDetails)
         setupTerms(child, fragment)
     }
 
-    private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment) {
+    private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<InstallmentDetailItem>) {
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
         for (i in 0..5) {
             val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)
             val tvInstallmentDetailName = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name)
             val tvInstallmentDetailServiceFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee)
             val tvInstallmentDetailFinalFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee)
-            val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
+            val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButton>(R.id.rb_installment_detail)
             rbInstallmentDetail.setOnClickListener {
                 // callback listener
                 dismiss()
             }
             ll.addView(viewInstallmentDetailItem, 0)
         }
+        val installmentMessage = child.findViewById<Typography>(R.id.tv_installment_message)
     }
 
     private fun setupTerms(child: View, fragment: OrderSummaryPageFragment) {

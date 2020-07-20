@@ -1414,6 +1414,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return subTotal * (mdr / 100) - subsidize * (mdrSubsidize / 100)
     }
 
+    fun generateInstallmentDetails(): List<InstallmentDetailItem> {
+        calculateTotal()
+        val orderCost = orderTotal.value.orderCost
+        val subTotal = orderCost.totalPrice - orderCost.paymentFee
+        val installmentDetails: ArrayList<InstallmentDetailItem> = ArrayList()
+        for (i in 0..5) {
+            if (subTotal > 0) {
+                installmentDetails.add(InstallmentDetailItem())
+            }
+        }
+        return installmentDetails
+    }
+
     override fun onCleared() {
         super.onCleared()
         compositeSubscription.clear()
