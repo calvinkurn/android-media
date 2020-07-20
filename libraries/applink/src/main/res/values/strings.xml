@@ -41,6 +41,7 @@
     <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
+    <string name="title_recent_view">Terakhir Dilihat</string>
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>

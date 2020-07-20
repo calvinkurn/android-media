@@ -295,6 +295,11 @@
     <string name="kol_title_video_detail">Video Detail</string>
     <string name="kol_title_post_youtube">Post Youtube</string>
     <string name="kol_title_report">Laporan Konten</string>
+    <string name="cp_title_create_post">Create Post</string>
+    <string name="cp_title_edit">Edit</string>
+    <string name="cp_title_image_picker">Tambah Foto</string>
+    <string name="cp_title_image_video">Tambah Video</string>
+    <string name="cp_title_image_editor">Edit</string>
 
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
