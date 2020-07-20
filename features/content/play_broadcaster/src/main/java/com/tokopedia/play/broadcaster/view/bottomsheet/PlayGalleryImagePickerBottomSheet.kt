@@ -26,6 +26,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
@@ -53,6 +54,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     private var albumTitle: String = DEFAULT_ALBUM_TITLE
     private var selectedAlbumItem: AlbumItem? = null
     private var selectedAlbumPosition: Int = 0
+
+    private var toasterBottomMargin = 0
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -281,29 +284,52 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         // check if file exists
         val file = File(mediaItem.realPath)
         if (!file.exists()) {
-            showError(getString(R.string.play_prepare_cover_gallery_error_not_found_label))
+            showToaster(
+                    message = getString(R.string.play_prepare_cover_gallery_error_not_found_label),
+                    type = Toaster.TYPE_ERROR,
+                    actionLabel = getString(R.string.play_ok)
+            )
             return false
         }
 
         // check image resolution
         if ((file.length() / BYTES_IN_KB) > MAXIMUM_COVER_SIZE) {
-            showError(getString(R.string.play_prepare_cover_gallery_error_size_label, MAXIMUM_COVER_SIZE / BYTES_IN_KB))
+            showToaster(
+                    message = getString(R.string.play_prepare_cover_gallery_error_size_label, MAXIMUM_COVER_SIZE / BYTES_IN_KB),
+                    type = Toaster.TYPE_ERROR,
+                    actionLabel = getString(R.string.play_ok)
+            )
             return false
         }
         if (mediaItem.width < MINIMUM_COVER_WIDTH || mediaItem.height < MINIMUM_COVER_HEIGHT) {
-            showError(getString(R.string.play_prepare_cover_gallery_error_pixel_label, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT))
+            showToaster(
+                    message = getString(R.string.play_prepare_cover_gallery_error_pixel_label, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT),
+                    type = Toaster.TYPE_ERROR,
+                    actionLabel = getString(R.string.play_ok)
+            )
             return false
         }
 
         return true
     }
 
-    private fun showError(errorMessage: String) {
-        Toaster.make(mChildView.rootView,
-                errorMessage,
-                Toaster.LENGTH_INDEFINITE,
-                Toaster.TYPE_ERROR,
-                getString(R.string.play_ok))
+    private fun showToaster(
+            message: String,
+            type: Int = Toaster.TYPE_NORMAL,
+            actionLabel: String = ""
+    ) {
+        if (!::mChildView.isInitialized) return
+
+        if (toasterBottomMargin == 0) {
+            toasterBottomMargin = mChildView.rootView.bottom - mChildView.bottom
+        }
+
+        mChildView.rootView.showToaster(
+                message = message,
+                actionLabel = actionLabel,
+                type = type,
+                bottomMargin = toasterBottomMargin
+        )
     }
 
     interface Listener {
