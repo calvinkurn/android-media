@@ -1,8 +1,12 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
 import android.net.Uri
-import com.tokopedia.play.broadcaster.data.model.HydraSetupData
+import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableCoverData
+import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
+import com.tokopedia.play.broadcaster.data.model.SerializableProductData
+import com.tokopedia.play.broadcaster.type.OutOfStock
+import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -24,7 +28,7 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         return mSetupDataStore
     }
 
-    override fun getAllData(): HydraSetupData {
+    override fun getSerializableData(): SerializableHydraSetupData {
         val cover = mSetupDataStore.getSelectedCover()
         requireNotNull(cover)
         val (coverImage, coverSource) = when(val cropState = cover.croppedCover) {
@@ -32,8 +36,17 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
             else -> throw IllegalStateException("Cover in this state should have been cropped")
         }
 
-        return HydraSetupData(
-                selectedProduct = mSetupDataStore.getSelectedProducts(),
+        return SerializableHydraSetupData(
+                selectedProduct = mSetupDataStore.getSelectedProducts().map {
+                    SerializableProductData(
+                            id = it.id,
+                            name = it.name,
+                            imageUrl = it.imageUrl,
+                            originalImageUrl = it.originalImageUrl,
+                            hasStock = it.stock is StockAvailable,
+                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0
+                    )
+                },
                 selectedCoverData = SerializableCoverData(
                         coverImageUriString = coverImage.toString(),
                         coverTitle = cover.title,
@@ -43,8 +56,16 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         )
     }
 
-    override fun setAllData(data: HydraSetupData) {
-        mSetupDataStore.setSelectedProducts(data.selectedProduct)
+    override fun setSerializableData(data: SerializableHydraSetupData) {
+        mSetupDataStore.setSelectedProducts(data.selectedProduct.map {
+            ProductData(
+                    id = it.id,
+                    name = it.name,
+                    imageUrl = it.imageUrl,
+                    originalImageUrl = it.originalImageUrl,
+                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock
+            )
+        })
         mSetupDataStore.setFullCover(
                 PlayCoverUiModel(
                         croppedCover = CoverSetupState.Cropped.Uploaded(
