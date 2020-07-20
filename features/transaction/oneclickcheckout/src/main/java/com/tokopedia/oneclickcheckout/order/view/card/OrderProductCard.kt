@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -41,7 +42,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
-    private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
+    private val ivFreeShipping by lazy { view.findViewById<ImageView>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
 
     private var quantityTextWatcher: QuantityTextWatcher? = null
@@ -215,8 +216,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         }
 
         if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
-            ivFreeShipping?.setImageUrl(product.freeOngkirImg)
-            ivFreeShipping?.visible()
+            ivFreeShipping?.let {
+                ImageHandler.LoadImage(it, product.freeOngkirImg)
+                it.visible()
+            }
         } else {
             ivFreeShipping?.gone()
         }
