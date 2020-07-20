@@ -24,5 +24,5 @@
     <string name="path_finished" translatable="false">/finished</string>
     <string name="path_invoice" translatable="false">/invoice</string>
 
-    <string name="path_order_unified" translatable="false">/order-unified</string>
+    <string name="path_order_unified" translatable="false">/unified</string>
 </resources>
