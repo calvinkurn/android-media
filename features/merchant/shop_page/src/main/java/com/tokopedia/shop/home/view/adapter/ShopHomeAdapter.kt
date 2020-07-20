@@ -85,13 +85,13 @@ class ShopHomeAdapter(
     }
 
     fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
-        visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().onEach {
-            if (it.widgetId == widgetId) {
-                it.data?.firstOrNull()?.youTubeVideoDetail = data
-                notifyItemChanged(visitables.indexOf(it))
-                return
-            }
-        }
+        visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
+                .find {
+                    it.widgetId == widgetId
+                }?.also {
+                    it.data?.firstOrNull()?.youTubeVideoDetail = data
+                    notifyChangedItem(visitables.indexOf(it))
+                }
     }
 
     override fun hideLoading() {
