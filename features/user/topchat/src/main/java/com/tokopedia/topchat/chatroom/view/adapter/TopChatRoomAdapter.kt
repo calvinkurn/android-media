@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,6 +14,7 @@ import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
@@ -52,6 +54,10 @@ class TopChatRoomAdapter(
         return productCarouselState[position]
     }
 
+    override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
+        addTopData(visitables)
+    }
+
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
         val position = visitables.indexOf(model)
         if (position < 0) return
@@ -73,6 +79,7 @@ class TopChatRoomAdapter(
         if (this.lastHeaderDate?.date == latestHeaderDate) {
             lastHeaderDateIndex?.let {
                 visitables.removeAt(it)
+                notifyItemRemoved(it)
             }
         }
     }
@@ -149,7 +156,23 @@ class TopChatRoomAdapter(
     }
 
     fun addBottomData(listChat: List<Visitable<*>>) {
-        visitables.addAll(0, listChat)
-        notifyItemRangeInserted(0, listChat.size)
+        val oldList = ArrayList(this.visitables)
+        val newList = this.visitables.apply {
+            addAll(0, listChat)
+        }
+        val diffUtil = ChatRoomDiffUtil(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    private fun addTopData(listChat: MutableList<out Visitable<Any>>?) {
+        if (listChat == null || listChat.isEmpty()) return
+        val oldList = ArrayList(this.visitables)
+        val newList = this.visitables.apply {
+            addAll(listChat)
+        }
+        val diffUtil = ChatRoomDiffUtil(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        diffResult.dispatchUpdatesTo(this)
     }
 }
