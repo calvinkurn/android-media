@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.banklist.v2.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
+import com.tokopedia.settingbank.banklist.v2.di.SettingBankModule
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_ACCOUNT_TYPE
 import com.tokopedia.settingbank.banklist.v2.view.fragment.ARG_BANK_ACCOUNT_DATA
@@ -18,8 +19,9 @@ import com.tokopedia.settingbank.banklist.v2.view.fragment.AccountDocumentFragme
 class AccountDocumentActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent> {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication)
-                    .baseAppComponent).build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .settingBankModule(SettingBankModule(this))
+            .build()
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()

@@ -32,7 +32,7 @@ ext {
     roomVersion = '2.2.1'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    guavaVersion = '21.0'
+    guavaVersion = '20.0'
     constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.0.0'
 
@@ -94,6 +94,7 @@ ext {
     unifyCoachMarkVersion = '1.2.6'
     unifyPrinciplesVersion = '1.1.8'
     unifyComponentsVersion = '1.1.40'
+    unifyCoachMarkVersion = '1.2.5'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.3'

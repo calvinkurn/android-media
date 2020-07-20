@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.fragment
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
@@ -87,10 +88,20 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
 
             txt_product_descr.text = descFormatted
 
-            txt_product_descr.autoLinkMask = 0
-            Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)
-            txt_product_descr.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
+            setSelectClickableTextView()
         }
+    }
+
+    private fun setSelectClickableTextView(){
+        txt_product_descr.autoLinkMask = 0
+        Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)
+
+        val selectable = when (Build.VERSION.SDK_INT) {
+            Build.VERSION_CODES.O -> false
+            else -> true
+        }
+        txt_product_descr.setTextIsSelectable(selectable)
+        txt_product_descr.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
     }
 
     private fun gotoVideoPlayer(vids: List<Video>, index: Int) {

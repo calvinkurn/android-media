@@ -30,7 +30,11 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
             intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_NAME, showcaseName)
             return intent
         }
+
         const val DEFAULT_SHOWCASE_ID = "0"
+
+        val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_product_add
+        val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
     private var isActionEdit: Boolean = false
@@ -47,7 +51,11 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_showcase_add
+        return ACTIVITY_LAYOUT
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return PARENT_VIEW_ACTIVITY
     }
 
     override fun getParentViewResourceID(): Int {

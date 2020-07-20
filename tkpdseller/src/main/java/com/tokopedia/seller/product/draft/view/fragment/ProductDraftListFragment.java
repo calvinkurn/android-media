@@ -20,19 +20,23 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
+import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.draft.analytic.ProductDraftListTracker;
@@ -216,7 +220,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 .build()
                 .toString();
         Intent intent = RouteManager.getIntent(getContext(), uri);
-        tracker.sendEventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
+        eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
     }
 
@@ -336,10 +340,18 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        tracker.sendEventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
+        eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
         ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT);
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PRODUCT_ADD);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
+    }
+
+    public void eventDraftProductClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
+                AppEventTracking.Category.DRAFT_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                label);
     }
 
     @Override

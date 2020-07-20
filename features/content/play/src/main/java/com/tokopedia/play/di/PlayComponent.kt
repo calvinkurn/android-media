@@ -19,11 +19,15 @@ interface PlayComponent {
 
     fun inject(playVideoFragment: PlayVideoFragment)
 
-    fun inject(playInteractionFragment: PlayInteractionFragment)
+    fun inject(playUserInteractionFragment: PlayUserInteractionFragment)
+
+    fun inject(playMiniInteractionFragment: PlayMiniInteractionFragment)
 
     fun inject(playErrorFragment: PlayErrorFragment)
 
     fun inject(playBottomSheetFragment: PlayBottomSheetFragment)
+
+    fun inject(playYouTubeFragment: PlayYouTubeFragment)
 
     fun inject(playActivity: PlayActivity)
 }

@@ -33,12 +33,10 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
 
     return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
-
         forEach { productCardModel ->
             val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
-
-            val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+            val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
             val contentHeight = productCardModel.getContentHeight(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)

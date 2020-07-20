@@ -36,9 +36,7 @@ class GetRatesApiUseCase @Inject constructor(
                             graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
                     response?.let {
                         converter.convertModel(it.ratesData)
-                    } ?: throw MessageErrorException(
-                            graphqlResponse.getError(RatesApiGqlResponse::class.java)[0].message
-                    )
+                    } ?: throw MessageErrorException(context.getString(R.string.default_request_error_unknown))
                 }
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
