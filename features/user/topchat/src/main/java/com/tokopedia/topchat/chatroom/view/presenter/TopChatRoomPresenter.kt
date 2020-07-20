@@ -122,7 +122,6 @@ class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
-    private var paramBeforeReplyTime = "0"
 
     init {
         mSubscription = CompositeSubscription()
@@ -778,10 +777,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
-    }
-
-    override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
-        paramBeforeReplyTime = chatRoom.minReplyTime
     }
 
     override fun clearText() {}

@@ -362,7 +362,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.updateMinReplyTime(chatRoom)
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                 onSuccessGetShopFollowingStatus())
@@ -379,7 +378,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
         showStickerOnBoardingTooltip()
 
-//        fpm.stopTrace()
+        fpm.stopTrace()
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
@@ -451,7 +450,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.updateMinReplyTime(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
     }
 
