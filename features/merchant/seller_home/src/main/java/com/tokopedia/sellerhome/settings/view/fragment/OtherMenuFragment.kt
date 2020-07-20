@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
@@ -56,7 +57,7 @@ import kotlinx.android.synthetic.main.fragment_other_menu.*
 import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.view.*
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
+class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
         const val URL_KEY = "url"
@@ -96,6 +97,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
+    private var statisticDashboardAppLink = ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -136,6 +138,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOffset()
+        fetchStatisticAbTestRemoteConfig()
         setupView(view)
         observeLiveData()
         observeFreeShippingStatus()
@@ -233,6 +236,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private fun fetchStatisticAbTestRemoteConfig() {
+        val statisticVariantName = "StatsOverApp"
+        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(statisticVariantName, "")
+        if (variant == statisticVariantName) {
+            statisticDashboardAppLink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+        }
+    }
+
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
         var bottomSheetInfix = ""
         var bottomSheetDescription = ""
@@ -293,7 +304,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_shop_statistic),
                         R.drawable.ic_statistic_setting,
-                        ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
+                        statisticDashboardAppLink,
                         eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),
@@ -438,7 +449,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
         //Offset Alpha is not actually needed for changing the status bar color (only needed the offset),
         //but we will preserve the variable in case the stakeholders need to change the status bar alpha according to the scroll position
-        val offsetAlpha = (MAXIMUM_ALPHA/maxTransitionOffset).times(offset - startToTransitionOffset)
+        val offsetAlpha = (MAXIMUM_ALPHA / maxTransitionOffset).times(offset - startToTransitionOffset)
         if (offsetAlpha >= ALPHA_CHANGE_THRESHOLD) {
             if (isInitialStatusBar) {
                 setDarkStatusBar()
@@ -454,7 +465,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun setLightStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!isDefaultDarkStatusBar){
+            if (!isDefaultDarkStatusBar) {
                 activity?.requestStatusBarLight()
             }
             setStatusBarStateInitialIsLight(true)
