@@ -187,6 +187,7 @@ public class FCMCacheManager {
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'%s';","FCMCacheManager saveIncomingNotification");
         boolean isExist = false;
         List<NotificationEntity> notificationEntities = getHistoryPushNotification();
         for (int i = 0; i < notificationEntities.size(); i++) {
