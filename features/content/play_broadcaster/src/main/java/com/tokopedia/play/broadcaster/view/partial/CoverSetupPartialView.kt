@@ -172,10 +172,12 @@ class CoverSetupPartialView(
         )
     }
 
-    private fun updateTitleCounter(text: String) {
+    private fun updateCounterCount(text: String) {
         tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
                 text.length, mMaxTitleChars)
+    }
 
+    private fun updateCounterColor(text: String) {
         tvCoverTitleCounter.setTextColor(
                 MethodChecker.getColor(
                         tvCoverTitleCounter.context,
@@ -191,12 +193,14 @@ class CoverSetupPartialView(
         if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
     }
 
-    private fun updateTextField(text: String) {
+    private fun updateTextField(text: String, isFirstFocus: Boolean) {
+        val isValid = dataSource.isValidCoverTitle(text)
+        val hasFocus = etCoverTitle.hasFocus()
         etCoverTitle.setTextFieldColor(
                 when {
-                    !etCoverTitle.hasFocus() -> com.tokopedia.unifyprinciples.R.color.Neutral_N0
-                    !dataSource.isValidCoverTitle(text) -> com.tokopedia.unifyprinciples.R.color.Red_R500
-                    else -> com.tokopedia.unifyprinciples.R.color.Green_G400
+                    isValid && hasFocus -> com.tokopedia.unifyprinciples.R.color.Green_G400
+                    !isValid && hasFocus && !isFirstFocus -> com.tokopedia.unifyprinciples.R.color.Red_R500
+                    else -> com.tokopedia.unifyprinciples.R.color.Neutral_N0
                 }
         )
     }
@@ -212,8 +216,9 @@ class CoverSetupPartialView(
 
             override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
                 setupTitleLabel(text)
-                updateTitleCounter(text.toString())
-                updateTextField(text.toString())
+                updateCounterCount(text.toString())
+                updateCounterColor(text.toString())
+                updateTextField(text.toString(), isFirstFocus = false)
                 updateButtonState()
             }
         })
@@ -222,11 +227,13 @@ class CoverSetupPartialView(
             false
         }
         etCoverTitle.setOnFocusChangeListener { _, hasFocus ->
-            updateTitleCounter(coverTitle)
-            updateTextField(coverTitle)
+            if (hasFocus) listener.onTitleAreaHasFocus()
+            else updateCounterColor(coverTitle)
+
+            updateTextField(coverTitle, isFirstFocus = hasFocus)
+            updateCounterCount(coverTitle)
             showHint(!hasFocus)
             showCounter(hasFocus)
-            if (hasFocus) listener.onTitleAreaHasFocus()
         }
         etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(mMaxTitleChars))
     }
