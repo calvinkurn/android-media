@@ -72,7 +72,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
             currentPosition = -1
             itemView.section_layout.hide()
             itemView.shimmering.show()
-            onItemBindListener.onDestinationItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
+            onItemBindListener.onDestinationItemBind(element.layoutData, element.isLoadFromCloud)
         }
 
     }

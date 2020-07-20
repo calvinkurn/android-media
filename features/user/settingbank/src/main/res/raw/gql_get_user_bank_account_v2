@@ -14,7 +14,6 @@ query {
         accNumber
         bankID
         bankName
-        fsp
 		statusFraud
 		bankImageUrl
 		copyWriting

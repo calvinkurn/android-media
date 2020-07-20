@@ -58,12 +58,12 @@ class TravelHomepageViewModelTest {
         viewModel.getListFromCloud("", true)
 
         // then
-        viewModel.travelItemList.value!!.size shouldBe 2
-        viewModel.travelItemList.value!!.forEach {
+        viewModel.travelItemList.size shouldBe 2
+        viewModel.travelItemList.forEach {
             it.isLoaded shouldBe false
             it.isLoadFromCloud shouldBe true
         }
-        viewModel.isAllError.value shouldBe false
+        viewModel.isAllError.value shouldBe null
     }
 
     @Test
@@ -77,8 +77,8 @@ class TravelHomepageViewModelTest {
         viewModel.getListFromCloud("", true)
 
         // then
-        viewModel.travelItemList.value shouldBe null
-        viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.size shouldBe 0
+        viewModel.isAllError.value shouldBe true
     }
 
     @Test
@@ -99,15 +99,10 @@ class TravelHomepageViewModelTest {
 
         // when
         viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(),true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
 
-        // then
-//        viewModel.travelItemList.value!!.forEach {
-//            it.isLoaded shouldBe true
-//            it.isSuccess shouldBe true
-//        }
-        viewModel.isAllError.value shouldBe false
+        viewModel.isAllError.value shouldBe null
     }
 
     @Test
@@ -128,15 +123,15 @@ class TravelHomepageViewModelTest {
 
         // when
         viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
 
         // then
 //        viewModel.travelItemList.value!!.forEach {
 //            it.isLoaded shouldBe false
 //            it.isSuccess shouldBe false
 //        }
-//        viewModel.isAllError.value shouldBe true
+        viewModel.isAllError.value shouldBe null
     }
 
     @Test
@@ -157,23 +152,23 @@ class TravelHomepageViewModelTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
 
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[GraphqlError::class.java] = listOf(GraphqlError())
         val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
 
         // then
-        viewModel.travelItemList.value!!.let {
+        viewModel.travelItemList.let {
             it[0].isLoaded shouldBe true
             it[1].isLoaded shouldBe false
 
-            it[0].isSuccess shouldBe false
+            it[0].isSuccess shouldBe true
             it[1].isSuccess shouldBe false
         }
-        viewModel.isAllError.value shouldBe false
+        viewModel.isAllError.value shouldBe null
     }
 
     @Test
@@ -182,22 +177,22 @@ class TravelHomepageViewModelTest {
         val list = mutableListOf<TravelHomepageItemModel>()
         list.add(TravelHomepageProductCardModel())
         list.add(TravelHomepageLegoBannerModel())
-        viewModel.travelItemList.value = list
+        viewModel.travelItemList = list
 
         val result = HashMap<Type, Any>()
         result[TravelUnifiedSubhomepageData.Response::class.java] = TravelUnifiedSubhomepageData.Response()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
 
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[GraphqlError::class.java] = listOf(GraphqlError())
         val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true)
 
         // then
-        viewModel.isAllError.value shouldBe false
+        viewModel.isAllError.value shouldBe null
     }
 }

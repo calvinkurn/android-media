@@ -54,6 +54,7 @@ import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartExecutors
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -118,7 +119,7 @@ open class WishlistFragment: Fragment(), WishlistListener {
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
-
+        private const val className = "com.tokopedia.home_wishlist.view.fragment.WishlistFragment"
         fun newInstance() = WishlistFragment()
     }
 
@@ -398,7 +399,13 @@ open class WishlistFragment: Fragment(), WishlistListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                viewModel.sendTopAds(dataModel.recommendationItem.clickUrl)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        dataModel.recommendationItem.clickUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -407,7 +414,13 @@ open class WishlistFragment: Fragment(), WishlistListener {
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                viewModel.sendTopAds(dataModel.recommendationItem.clickUrl)
+                TopAdsUrlHitter(context).hitClickUrl(
+                        className,
+                        dataModel.recommendationItem.clickUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
                 viewModel.onProductClick(
                         dataModel.recommendationItem.productId,
                         parentPosition,
@@ -452,11 +465,23 @@ open class WishlistFragment: Fragment(), WishlistListener {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
             is RecommendationItemDataModel -> {
-                viewModel.sendTopAds(dataModel.recommendationItem.trackerImageUrl)
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        className,
+                        dataModel.recommendationItem.trackerImageUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
                 WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
             is RecommendationCarouselItemDataModel -> {
-                viewModel.sendTopAds(dataModel.recommendationItem.trackerImageUrl)
+                TopAdsUrlHitter(context).hitImpressionUrl(
+                        className,
+                        dataModel.recommendationItem.trackerImageUrl,
+                        dataModel.recommendationItem.productId.toString(),
+                        dataModel.recommendationItem.name,
+                        dataModel.recommendationItem.imageUrl
+                )
                 WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
         }

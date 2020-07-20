@@ -43,6 +43,7 @@ public interface ApplinkConst {
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
+    String ATC_EXTERNAL = "tokopedia://cart?product_id={product_id}";
     String CHECKOUT = "tokopedia://checkout";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -191,6 +192,7 @@ public interface ApplinkConst {
     String SETTING_PROFILE = "tokopedia://setting/profile";
 
     String NOTIFICATION = "tokopedia://notification";
+    String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
@@ -230,13 +232,10 @@ public interface ApplinkConst {
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
     String CONTENT_CREATE_POST = "tokopedia://content/create_post/";
-    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}/";
+    String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
     String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
-    String KOL_CONTENT_REPORT = "tokopedia://content-report/{content_id}";
-    String KOL_VIDEO_DETAIL = "tokopedia://video-detail/{PARAM_ID}";
-    String KOL_MEDIA_PREVIEW = "tokopedia://media-preview/{post_id}";
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
@@ -304,6 +303,8 @@ public interface ApplinkConst {
 
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
+
+    String MERCHANT_VOUCHER_LIST = "tokopedia://merchant-voucher/list";
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
@@ -377,8 +378,13 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
-        String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
+        String VOUCHER_LIST = "sellerapp://voucher-list";
+        String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
+        String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
+        String VOUCHER_DETAIL = "sellerapp://voucher-detail";
+        String CREATE_VOUCHER = "sellerapp://create-voucher";
+        String SELLER_SEARCH = "sellerapp://seller-search";
     }
 
     interface Query {
@@ -442,7 +448,6 @@ public interface ApplinkConst {
     }
 
     interface AttachVoucher {
-        String PARAM_SHOP_ID = "shop_id";
         String PARAM_VOUCHER_PREVIEW = "voucher_preview";
     }
 

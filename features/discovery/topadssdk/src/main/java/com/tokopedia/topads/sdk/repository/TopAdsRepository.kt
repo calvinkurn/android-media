@@ -12,7 +12,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
-private const val BASE_URL = "https://ta-staging.tokopedia.com/v1.3/display"
+private const val BASE_URL = "https://ta.tokopedia.com/v1.3/display"
 
 class TopAdsRepository {
 
