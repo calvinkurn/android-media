@@ -1,4 +1,6 @@
-package com.tokopedia.flight.cancellation.view.viewmodel
+package com.tokopedia.flight.cancellationV2.presentation.model
+
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel
 
 /**
  * @author by furqan on 17/06/2020

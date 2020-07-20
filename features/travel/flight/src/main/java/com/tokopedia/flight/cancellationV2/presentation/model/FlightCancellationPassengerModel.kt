@@ -19,6 +19,7 @@ data class FlightCancellationPassengerModel(
         var status: Int = 0,
         var statusString: String = ""
 ) : Parcelable {
+
     override fun equals(other: Any?): Boolean {
         var isEquals: Boolean = false
 
