@@ -293,6 +293,16 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         })
     }
 
+    private fun removeTemporaryShopImage(uri: String) {
+        if(uri.isNotEmpty()) {
+            File(uri).apply {
+                if(exists()) {
+                    delete()
+                }
+            }
+        }
+    }
+
     private fun showShopInfo() {
         shopInfo?.let {
             setToolbarTitle(it.name)
@@ -413,6 +423,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun onClickShareShop() {
+        removeTemporaryShopImage(shopPageImageFilePath)
         shopInfo?.let {
             trackClickShareButton(it)
             getWriteReadStoragePermission(it)
