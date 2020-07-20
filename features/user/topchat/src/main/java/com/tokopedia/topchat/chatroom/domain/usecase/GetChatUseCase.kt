@@ -159,12 +159,14 @@ class GetChatUseCase @Inject constructor(
           status
           chatReplies(msgId: $$PARAM_MESSAGE_ID, isTextOnly: true%s) {
             minReplyTime
+            maxReplyTime
             block {
               blockedUntil
               isBlocked
               isPromoBlocked
             }
             hasNext
+            hasNextAfter
             textareaReply
             attachmentIDs
             contacts {
