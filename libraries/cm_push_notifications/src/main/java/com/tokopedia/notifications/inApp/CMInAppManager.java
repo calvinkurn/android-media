@@ -41,7 +41,7 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_
  */
 public class CMInAppManager implements CmInAppListener, DataProvider {
 
-    @Inject private UserSessionInterface userSession;
+    @Inject UserSessionInterface userSession;
 
     private static CMInAppManager inAppManager;
     private Application application;
