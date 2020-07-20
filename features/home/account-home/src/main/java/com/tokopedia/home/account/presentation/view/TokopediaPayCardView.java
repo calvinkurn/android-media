@@ -20,7 +20,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 
@@ -76,9 +75,11 @@ public class TokopediaPayCardView extends BaseCustomView {
         iconLeft = view.findViewById(R.id.card_icon_left);
         iconCentre = view.findViewById(R.id.card_icon_centre);
         iconRight = view.findViewById(R.id.card_icon_right);
+    }
 
+    public void setBackgroundImage(String url){
         ImageHandler.loadImageBitmap2(getContext(),
-                getBackgroundImageUri(),
+                url + TOKOPEDIA_PAY_BG_NAME,
                 new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -91,17 +92,6 @@ public class TokopediaPayCardView extends BaseCustomView {
 
                     }
                 });
-    }
-
-    private String getBackgroundImageUri() {
-        String imageUrl = AccountHomeUrl.IMAGE_URL;
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            imageUrl = ((AccountHomeRouter) getContext().getApplicationContext())
-                    .getStringRemoteConfig(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
-            imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
-        }
-
-        return imageUrl + TOKOPEDIA_PAY_BG_NAME;
     }
 
     public void setActionText(@NonNull String text) {

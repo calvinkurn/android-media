@@ -1554,7 +1554,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCheckoutValidationResult(boolean result, Object shipmentData,
                                            int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
-            if (shipmentPresenter.isIneligbilePromoDialogEnabled()) {
+            if (shipmentPresenter.isIneligiblePromoDialogEnabled()) {
                 ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
                 ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
                 if (validateUsePromoRevampUiModel != null) {
@@ -1577,10 +1577,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel = voucherOrdersItemUiModels.get(i);
                             if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                                 NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
-                                notEligiblePromoHolderdata.setPromoTitle(voucherOrdersItemUiModel.getTitleDescription() != null ? voucherOrdersItemUiModel.getTitleDescription() : "");
-                                if (validateUsePromoRevampUiModel.getPromoUiModel().getCodes().size() > 0) {
-                                    notEligiblePromoHolderdata.setPromoCode(validateUsePromoRevampUiModel.getPromoUiModel().getCodes().get(0));
-                                }
+                                notEligiblePromoHolderdata.setPromoTitle(voucherOrdersItemUiModel.getTitleDescription());
+                                notEligiblePromoHolderdata.setPromoCode(voucherOrdersItemUiModel.getCode());
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                         notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());

@@ -61,9 +61,7 @@ include "features:travel:flight_orderlist"
 include "features:travel:hotel"
 include "features:travel:common_travel"
 
-include "features:entertainment:event_home"
-include "features:entertainment:event_search"
-include "features:entertainment:event_pdp"
+include "features:entertainment:event"
 include "features:entertainment:digital_deals"
 
 include "features:salam:umrah"
@@ -116,7 +114,6 @@ include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
 
 include "features:merchant:gold_merchant_common"
-include "features:merchant:gold_merchant_resource"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:reputation_common"
 include "features:merchant:reputation"

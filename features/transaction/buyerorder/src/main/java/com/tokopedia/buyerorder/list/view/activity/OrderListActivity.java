@@ -227,6 +227,7 @@ public class OrderListActivity extends BaseSimpleActivity
 
     @Override
     public void renderTabs(List<OrderLabelList> orderLabelList, String orderCategory) {
+        tabLayout.removeAllTabs();
         int position = 0;
         for (int i = 0; i < orderLabelList.size(); i++) {
             if (orderCategory.equals(orderLabelList.get(i).getOrderCategory())) {

@@ -33,14 +33,10 @@ class CouponDetailUseCaseTest {
     fun `check function invokation of Gql wrapper`() {
         runBlockingTest {
             val couponIdList = emptyList<String>()
-            val map: Map<*, *> = mockk()
+            val map: Map<*, *> = HashMap<Any,Any>()
             coEvery { gqlWrapper.getResponse(Map::class.java, any(), emptyMap()) } returns map
-            every { couponDetailUseCase.prepareCouponDetailList(map) } returns arrayListOf<GetCouponDetail>()
             couponDetailUseCase.getResponse(couponIdList)
-
             coVerify { gqlWrapper.getResponse(Map::class.java, any(), emptyMap()) }
-            verify(exactly = 1) { couponDetailUseCase.prepareQueryBuilder(couponIdList) }
-            verify(exactly = 1) { couponDetailUseCase.prepareCouponDetailList(any()) }
         }
     }
 }

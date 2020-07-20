@@ -16,7 +16,8 @@ import java.util.HashMap
 
 object OptionHelper {
 
-    val VALUE_SEPARATOR = ","
+    const val VALUE_SEPARATOR = ","
+    const val OPTION_SEPARATOR = "#"
 
     @JvmStatic
     fun saveOptionShownInMainState(option: Option,

@@ -19,6 +19,13 @@ query get_occ_cart_page($source: String) {
         ErrorProductMaxQuantity
         ErrorProductMinQuantity
       }
+      ticker_message {
+        message
+        replacement {
+            identifier
+            value
+        }
+      }
       occ_main_onboarding {
         force_show_coachmark
         show_onboarding_ticker

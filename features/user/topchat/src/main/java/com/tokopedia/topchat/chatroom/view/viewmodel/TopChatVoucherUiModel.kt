@@ -29,7 +29,7 @@ constructor(
         messageId: String, fromUid: String, from: String, fromRole: String,
         attachmentId: String, attachmentType: String, replyTime: String, message: String,
         isRead: Boolean, isDummy: Boolean, isSender: Boolean, var voucherModel: MerchantVoucherModel,
-        var replyId: String, var blastId: String, source: String
+        var replyId: String, var blastId: String, source: String, val isPublic: Int
 ) : SendableViewModel(
         messageId, fromUid, from, fromRole,
         attachmentId, attachmentType, replyTime, "",
@@ -39,5 +39,9 @@ constructor(
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasCtaCopy(): Boolean {
+        return isPublic == 0
     }
 }
