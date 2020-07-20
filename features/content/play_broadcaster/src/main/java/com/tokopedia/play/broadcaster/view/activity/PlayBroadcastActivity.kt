@@ -91,7 +91,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private val permissions = arrayOf(Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO)
-
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -377,11 +376,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         )
     }
 
-    private fun startPreview() {
+    fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
                 surfaceStatus != SurfaceStatus.DESTROYED) {
             viewModel.startPreview(surfaceView)
         }
+    }
+
+    fun checkAllPermission() {
+        if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+        else showPermissionPage()
     }
 
     private fun openBroadcastSetupPage() {

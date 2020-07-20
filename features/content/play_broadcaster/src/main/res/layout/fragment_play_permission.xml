@@ -98,7 +98,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_permit_check_camera"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
             android:text="@string/play_permit_active"
             android:textColor="@color/dark_G500"
             android:textSize="@dimen/fontSize_lvl2"
@@ -141,7 +141,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_permit_check_mic"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
             android:text="@string/play_permit_active"
             android:textColor="@color/dark_G500"
             android:textSize="@dimen/fontSize_lvl2"

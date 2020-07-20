@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
-import android.Manifest
+import android.Manifest.permission
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,9 +11,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
+import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
+import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity.Companion.RESULT_PERMISSION_CODE
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -55,6 +57,11 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
         configurePermission()
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     override fun onBackPressed(): Boolean {
         return false
     }
@@ -69,11 +76,27 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
 
     private fun setupView() {
         broadcastCoordinator.setupTitle("")
-        tvCheckCamera?.setOnClickListener { goToDeviceSetting() }
-        tvCheckMic?.setOnClickListener { goToDeviceSetting() }
+        tvCheckCamera?.setOnClickListener { requestPermission(permission.CAMERA, CAMERA_PERMISSION_CODE) }
+        tvCheckMic?.setOnClickListener {requestPermission(permission.RECORD_AUDIO, MICROPHONE_PERMISSION_CODE) }
         ivClose.setOnClickListener { activity?.finish() }
+    }
 
-        configurePermission()
+    private fun requestPermission(permission: String, requestCode: Int) {
+        permissionHelper.requestPermissionFullFlow(permission, requestCode, object : PermissionResultListener {
+            override fun onRequestPermissionResult(): PermissionStatusHandler {
+                return {
+                    if (!isAllGranted()) {
+                        if (!shouldShowRequestPermissionRationale(permission)) goToDeviceSetting()
+                    } else {
+                        (activity as? PlayBroadcastActivity)?.checkAllPermission()
+                    }
+                }
+            }
+
+            override fun onShouldShowRequestPermissionRationale(permissions: Array<String>, requestCode: Int): Boolean {
+                return false
+            }
+        })
     }
 
     private fun setupInsets(view: View) {
@@ -87,24 +110,13 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
         }
     }
 
-    private fun goToDeviceSetting() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
-        intent.data = uri
-        activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
-    }
-
     private fun configurePermission() {
-        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) setPermissionGranted(Manifest.permission.CAMERA)
-        if (permissionHelper.isPermissionGranted(Manifest.permission.RECORD_AUDIO)) setPermissionGranted(Manifest.permission.RECORD_AUDIO)
-    }
-
-    private fun setPermissionGranted(permission: String) {
-        if (permission == Manifest.permission.CAMERA) {
+        if (permissionHelper.isPermissionGranted(permission.CAMERA)) {
+            (activity as? PlayBroadcastActivity)?.startPreview()
             setPermissionGranted(tvCheckCamera)
-        } else if (permission == Manifest.permission.RECORD_AUDIO) {
-            setPermissionGranted(tvCheckMic)
         }
+        if (permissionHelper.isPermissionGranted(permission.RECORD_AUDIO))
+            setPermissionGranted(tvCheckMic)
     }
 
     private fun setPermissionGranted(textView: AppCompatTextView?) {
@@ -116,6 +128,18 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
                 0
         )
         textView?.setOnClickListener(null)
+    }
+
+    private fun goToDeviceSetting() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
+        intent.data = uri
+        activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
+    }
+
+    companion object {
+        private const val CAMERA_PERMISSION_CODE = 3297
+        private const val MICROPHONE_PERMISSION_CODE = 3296
     }
 
 }
