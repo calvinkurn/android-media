@@ -73,17 +73,7 @@ data class ThanksPageData(
         val isMonthlyNewUser: Boolean,
         @SerializedName("custom_data")
         val thanksCustomization: ThanksCustomization
-) : Parcelable {
-    companion object {
-        fun createEmpty(): ThanksPageData {
-            return ThanksPageData(0, "", 0, "", "", 0L, 0L,
-                    "", arrayListOf(), AdditionalInfo("", "", "", "", "", "", "", 0F, 0F),
-                    "", false, "", "", "", null, null, null,
-                    "", "", "", "", "", "", "", false,
-                    "", false, false, ThanksCustomization("", "", "", "", "", "", ""))
-        }
-    }
-}
+) : Parcelable
 
 data class PaymentDetail(
         @SerializedName("gateway_code")
