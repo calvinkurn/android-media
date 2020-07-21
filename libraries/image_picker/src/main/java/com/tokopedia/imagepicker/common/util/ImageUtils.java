@@ -42,8 +42,10 @@ import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRE
 
 /**
  * Created by hendry on 24/04/18.
+ * Use ImageUtil in common library instead.
+ * If there is no function in common lib, add the function in common lib
  */
-
+@Deprecated
 public class ImageUtils {
     private static final int IMAGE_WIDTH_MIN_HD = 1280;
 

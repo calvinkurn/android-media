@@ -171,7 +171,7 @@
     <string name="title_logout" translatable="false">logout</string>
 
     <!--Talk-->
-    <string name="title_reading_page">Q&amp;A</string>
+    <string name="title_reading_page">Diskusi</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
 
 </resources>
