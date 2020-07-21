@@ -83,16 +83,17 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         setupInsets()
     }
 
-    override fun onResume() {
-        super.onResume()
-        setLayoutFullScreen()
-    }
-
     override fun onStart() {
         super.onStart()
         tvCancel.requestApplyInsetsWhenAttached()
         ivFlash.requestApplyInsetsWhenAttached()
         analytic.openCameraScreenToAddCover()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setLayoutFullScreen()
+        openCamera()
     }
 
     override fun onPause() {
@@ -114,7 +115,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private fun initView() {
         cvCamera.setListener(object : PlayCameraView.Listener{
             override fun onCameraInstantiated() {
-                if (isRequiredPermissionGranted()) cvCamera.open()
+                openCamera()
             }
         })
 
@@ -188,6 +189,10 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    }
+
+    private fun openCamera() {
+        if (isRequiredPermissionGranted()) cvCamera.open()
     }
 
     private fun takePicture() {
