@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.model.InstallmentDetailItem
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -17,7 +17,7 @@ class InstallmentDetailBottomSheet {
 
     private var bottomSheetUnify: BottomSheetUnify? = null
 
-    fun show(fragment: OrderSummaryPageFragment, installmentDetails: List<InstallmentDetailItem>) {
+    fun show(fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
         fragment.fragmentManager?.let {
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
@@ -37,12 +37,12 @@ class InstallmentDetailBottomSheet {
         }
     }
 
-    private fun setupChild(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<InstallmentDetailItem>) {
+    private fun setupChild(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
         setupInstallments(child, fragment, installmentDetails)
         setupTerms(child, fragment)
     }
 
-    private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<InstallmentDetailItem>) {
+    private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
         for (i in 0..5) {
             val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)

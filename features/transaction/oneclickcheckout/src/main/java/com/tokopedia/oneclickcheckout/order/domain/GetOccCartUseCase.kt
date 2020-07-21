@@ -8,6 +8,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
+import com.tokopedia.oneclickcheckout.common.data.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.domain.mapper.LastApplyMapper
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -52,7 +53,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                     kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
                 return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation,
-                        response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
+                        mapProfile(response.response.data.profileResponse), LastApplyMapper.mapPromo(response.response.data.promo))
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
@@ -173,6 +174,44 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
 
     private fun mapProductTickerMessage(tickerMessage: OccTickerMessage): ProductTickerMessage {
         return ProductTickerMessage(tickerMessage.message, tickerMessage.replacement.map { ProductTickerMessageReplacement(it.identifier, it.value) })
+    }
+
+    private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
+        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference, profileResponse.isChangedProfile,
+                profileResponse.profileId, profileResponse.status, profileResponse.enable, profileResponse.message, mapAddress(profileResponse.address),
+                mapPayment(profileResponse.payment), mapShipment(profileResponse.shipment))
+    }
+
+    private fun mapShipment(shipment: Shipment): OrderProfileShipment {
+        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration)
+    }
+
+    private fun mapPayment(payment: Payment): OrderProfilePayment {
+        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image, payment.description,
+                payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount, payment.metadata, payment.mdr,
+                mapPaymentCreditCard(payment.creditCard), mapPaymentErrorMessage(payment.errorMessage)
+        )
+    }
+
+    private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
+        return OrderPaymentErrorMessage(errorMessage.message,
+                OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
+        )
+    }
+
+    private fun mapPaymentCreditCard(creditCard: PaymentCreditCard): OrderPaymentCreditCard {
+        return OrderPaymentCreditCard(creditCard.totalCards, mapPaymentInstallmentTerm(creditCard.availableTerms), creditCard.bankCode, creditCard.cardType,
+                creditCard.isExpired, creditCard.tncInfo)
+    }
+
+    private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
+        return availableTerms.map { OrderPaymentInstallmentTerm(it.term, it.mdr, it.mdrSubsidize, it.minAmount, it.isSelected) }
+    }
+
+    private fun mapAddress(address: Address): OrderProfileAddress {
+        return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
+                address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
+                address.latitude, address.postalCode)
     }
 
     companion object {

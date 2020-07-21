@@ -48,7 +48,6 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.data.model.Address
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
@@ -488,6 +487,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             ivSubheader?.gone()
         }
         tickerPreferenceInfo?.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
+        tickerPreferenceInfo?.setHtmlDescription(preference.message)
+        tickerPreferenceInfo?.visibility = if (preference.message.isNotBlank()) View.VISIBLE else View.GONE
 
         if (orderPreference.onboarding.isShowOnboardingTicker) {
             lblOnboardingHeader?.text = orderPreference.onboarding.onboardingTicker.title
@@ -589,7 +590,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun goToPinpoint(address: Address) {
+    private fun goToPinpoint(address: OrderProfileAddress) {
         val locationPass = LocationPass()
         locationPass.cityName = address.cityName
         locationPass.districtName = address.districtName

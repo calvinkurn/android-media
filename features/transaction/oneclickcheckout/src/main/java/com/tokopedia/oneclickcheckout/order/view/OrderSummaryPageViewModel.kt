@@ -18,7 +18,6 @@ import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
-import com.tokopedia.oneclickcheckout.common.data.model.Shipment
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
@@ -72,6 +71,7 @@ import org.json.JSONException
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
+import kotlin.math.ceil
 import kotlin.math.max
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
@@ -474,7 +474,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return list.firstOrNull { it.serviceData.serviceId == serviceId }
     }
 
-    private fun setupShippingError(selectedShippingDurationViewModel: ShippingDurationUiModel?, shippingRecommendationData: ShippingRecommendationData, shipping: OrderShipment?, curShip: Shipment): OrderShipment? {
+    private fun setupShippingError(selectedShippingDurationViewModel: ShippingDurationUiModel?, shippingRecommendationData: ShippingRecommendationData, shipping: OrderShipment?, curShip: OrderProfileShipment): OrderShipment? {
         if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return OrderShipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
@@ -1384,9 +1384,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
         }
-        val fee = payment.fee.toDouble()
         val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
-        val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
+        var fee = payment.fee.toDouble()
+        var subtotal = totalProductPrice + finalShippingPrice + insurancePrice - productDiscount
+        if (payment.creditCard.availableTerms.isNotEmpty()) {
+            calculateInstallmentDetails(subtotal, payment.creditCard.availableTerms)
+            fee = payment.creditCard.getSelectedAvailableTerms().fee
+        }
+        subtotal += fee
         val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
         var currentState = orderTotal.value.buttonState
         if (currentState == ButtonBayarState.NORMAL && (!shipping?.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
@@ -1410,21 +1415,56 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun calculateMdrFee(subTotal: Double, mdr: Double, subsidize: Double, mdrSubsidize: Double): Double {
+    private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Long, mdrSubsidize: Float): Double {
         return subTotal * (mdr / 100) - subsidize * (mdrSubsidize / 100)
     }
 
-    fun generateInstallmentDetails(): List<InstallmentDetailItem> {
+    private fun calculateInstallmentDetails(subTotal: Double, installments: List<OrderPaymentInstallmentTerm>): List<OrderPaymentInstallmentTerm> {
+        var shouldChooseNextInstallment = false
+        for (i in installments.lastIndex downTo 0) {
+            val installment = installments[i]
+            if (shouldChooseNextInstallment) {
+                installment.isSelected = true
+            }
+            if (installment.isSelected && installment.minAmount > subTotal && i > 0) {
+                installment.isSelected = false
+                shouldChooseNextInstallment = true
+            }
+            installment.fee = calculateMdrFee(subTotal, installment.mdr, installment.minAmount, installment.mdrSubsidize)
+            installment.monthlyAmount = ceil((subTotal + installment.fee) / installment.term)
+        }
+        _orderPreference = _orderPreference?.copy(preference = _orderPreference?.preference?.updateInstallment(installments)!!)
+        orderPreference.value = OccState.Success(_orderPreference!!)
+        return installments
+    }
+
+    fun generateInstallmentDetails(): List<OrderPaymentInstallmentTerm> {
         calculateTotal()
         val orderCost = orderTotal.value.orderCost
         val subTotal = orderCost.totalPrice - orderCost.paymentFee
-        val installmentDetails: ArrayList<InstallmentDetailItem> = ArrayList()
+        val monthlyAmount = ceil(subTotal / 3)
+        val installmentDetails: ArrayList<OrderPaymentInstallmentTerm> = ArrayList()
         for (i in 0..5) {
             if (subTotal > 0) {
-                installmentDetails.add(InstallmentDetailItem())
+                installmentDetails.add(OrderPaymentInstallmentTerm())
             }
         }
         return installmentDetails
+    }
+
+    fun updateInstallment(term: String) {
+        var param = generateUpdateCartParam()
+        if (param != null) {
+            val parse = JsonParser().parse(param.profile.metadata)
+            parse.asJsonObject.getAsJsonObject("express_checkout_param").addProperty("installment_term", term)
+            param = param.copy(profile = param.profile.copy(metadata = parse.toString()))
+            updateCartOccUseCase.execute(param, {
+                // do nothing
+            }, {
+                // do nothing
+            })
+            // todo: loop and update selected installment
+        }
     }
 
     override fun onCleared() {

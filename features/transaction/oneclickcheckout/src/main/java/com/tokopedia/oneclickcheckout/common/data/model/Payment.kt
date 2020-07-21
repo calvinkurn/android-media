@@ -28,18 +28,40 @@ data class Payment(
         @SerializedName("metadata")
         val metadata: String = "",
         @SerializedName("mdr")
-        val mdr: Float = 0f
+        val mdr: Float = 0f,
+        @SerializedName("credit_card")
+        val creditCard: PaymentCreditCard = PaymentCreditCard(),
+        @SerializedName("error_message")
+        val errorMessage: PaymentErrorMessage = PaymentErrorMessage()
+)
+
+data class PaymentErrorMessage(
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("button")
+        val button: PaymentErrorMessageButton = PaymentErrorMessageButton()
+)
+
+data class PaymentErrorMessageButton(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("link")
+        val link: String = ""
 )
 
 data class PaymentCreditCard(
         @SerializedName("total_cards")
         val totalCards: Int = 0,
+        @SerializedName("available_terms")
+        val availableTerms: List<InstallmentTerm> = emptyList(),
         @SerializedName("bank_code")
         val bankCode: String = "",
         @SerializedName("card_type")
         val cardType: String = "",
         @SerializedName("is_expired")
-        val isExpired: Boolean = false
+        val isExpired: Boolean = false,
+        @SerializedName("tnc_info")
+        val tncInfo: String = ""
 )
 
 data class InstallmentTerm(
