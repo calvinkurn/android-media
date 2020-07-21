@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -18,6 +19,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet
@@ -85,7 +88,6 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         rv_attachments.isNestedScrollingEnabled = false
         rv_attachments.adapter = attachmentAdapter
 
-        renderView()
         showLoading()
     }
 
@@ -95,10 +97,24 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         flightCancellationReviewViewModel.estimateRefundFinish.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data) renderView()
+                    if (it.data) {
+                        renderView()
+                        renderRefundableView()
+                    }
                 }
                 is Fail -> {
-                    showRedSnackbarError(FlightErrorUtil.getTitleFromFlightError(requireContext(), it.throwable))
+                    showErrorFetchEstimateRefund(FlightErrorUtil.getTitleFromFlightError(requireContext(), it.throwable))
+                }
+            }
+        })
+
+        flightCancellationReviewViewModel.requestCancel.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data) showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description)
+                }
+                is Fail -> {
+                    showCancellationError(it.throwable)
                 }
             }
         })
@@ -109,7 +125,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
         when (requestCode) {
             REQUEST_CANCELLATION_TNC -> {
-//                flightCancellationReviewViewModel.requestCancellation()
+                if (resultCode == Activity.RESULT_OK) flightCancellationReviewViewModel.requestCancellation()
             }
         }
     }
@@ -133,6 +149,16 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
+    override fun showLoading() {
+        sv_review_container.visibility = View.GONE
+        full_page_loading.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        sv_review_container.visibility = View.VISIBLE
+        full_page_loading.visibility = View.GONE
+    }
+
     private fun renderView() {
         val cancellationModel = flightCancellationReviewViewModel.cancellationWrapperModel
 
@@ -145,12 +171,34 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
             container_additional_reason.visibility = View.GONE
         }
 
+        if (cancellationModel.cancellationReasonAndAttachmentModel.attachmentList.isNotEmpty()) {
+            attachmentAdapter.clearAllElements()
+            attachmentAdapter.addElement(cancellationModel.cancellationReasonAndAttachmentModel.attachmentList)
+        } else {
+            container_additional_documents.visibility = View.GONE
+        }
+
         if (cancellationModel.cancellationReasonAndAttachmentModel.reason.isEmpty() ||
                 cancellationModel.cancellationReasonAndAttachmentModel.attachmentList.size == 0) {
             container_additional_data.visibility = View.GONE
         }
 
         tv_total_refund.text = cancellationModel.cancellationReasonAndAttachmentModel.estimateFmt
+    }
+
+    private fun renderRefundableView() {
+        if (flightCancellationReviewViewModel.isRefundable()) {
+            if (flightCancellationReviewViewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.showEstimateRefund) {
+                showEstimateValue()
+                hideRefundDetail()
+            } else {
+                hideEstimateValue()
+                showRefundDetail(R.string.flight_cancellation_review_refund_to_email_detail)
+            }
+        } else {
+            hideEstimateValue()
+            showRefundDetail(R.string.flight_cancellation_review_no_refund_detail)
+        }
     }
 
     private fun descriptionText(): SpannableString {
@@ -186,8 +234,49 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         activity?.finish()
     }
 
-    private fun showRedSnackbarError(message: String) {
-        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+    private fun showErrorFetchEstimateRefund(message: String) {
+        NetworkErrorHelper.showEmptyState(requireContext(),
+                requireView(),
+                message
+        ) { flightCancellationReviewViewModel.fetchRefundEstimation() }
+    }
+
+    private fun showSuccessDialog(resId: Int) {
+        val dialog = Dialog(activity, Dialog.Type.RETORIC)
+        dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title))
+        dialog.setDesc(Html.fromHtml(getString(resId)))
+        dialog.setBtnOk("OK")
+        dialog.setOnOkClickListener {
+            dialog.dismiss()
+            closeCancellationReviewPage()
+        }
+        dialog.show()
+    }
+
+    private fun showEstimateValue() {
+        container_estimate_refund.visibility = View.VISIBLE
+        container_estimate_notes.visibility = View.VISIBLE
+    }
+
+    private fun hideEstimateValue() {
+        container_estimate_refund.visibility = View.GONE
+        container_estimate_notes.visibility = View.GONE
+    }
+
+    private fun showRefundDetail(resId: Int) {
+        tv_refund_detail.text = getString(resId)
+        tv_refund_detail.visibility = View.VISIBLE
+    }
+
+    private fun hideRefundDetail() {
+        tv_refund_detail.visibility = View.GONE
+    }
+
+    private fun showCancellationError(t: Throwable) {
+        Toaster.make(requireView(),
+                FlightErrorUtil.getTitleFromFlightError(requireContext(), t),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR)
     }
 
     companion object {

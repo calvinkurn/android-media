@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
+import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,6 +19,7 @@ import javax.inject.Inject
  */
 class FlightCancellationReviewViewModel @Inject constructor(
         private val estimateUseCase: FlightCancellationEstimateRefundUseCase,
+        private val requestUseCase: FlightCancellationRequestCancelUseCase,
         private val userSession: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -29,16 +31,24 @@ class FlightCancellationReviewViewModel @Inject constructor(
     val estimateRefundFinish: LiveData<Result<Boolean>>
         get() = mutableEstimateRefundFinish
 
+    private val mutableRequestCancel = MutableLiveData<Result<Boolean>>()
+    val requestCancel: LiveData<Result<Boolean>>
+        get() = mutableRequestCancel
+
     init {
+        mutableRequestCancel.value = Success(false)
         mutableEstimateRefundFinish.value = Success(false)
     }
 
     fun onInit() {
-        for ((index, item) in cancellationWrapperModel.cancellationList.withIndex()) {
+        val iterator = cancellationWrapperModel.cancellationList.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
             if (item.passengerModelList.size == 0) {
-                cancellationWrapperModel.cancellationList.removeAt(index)
+                iterator.remove()
             }
         }
+
         fetchRefundEstimation()
     }
 
@@ -61,6 +71,34 @@ class FlightCancellationReviewViewModel @Inject constructor(
         }) {
             it.printStackTrace()
             mutableEstimateRefundFinish.postValue(Fail(it))
+        }
+    }
+
+    fun isRefundable(): Boolean {
+        var isRefundable = false
+
+        for (cancellation in cancellationWrapperModel.cancellationList) {
+            if (cancellation.flightCancellationJourney.isRefundable) {
+                isRefundable = true
+                break
+            }
+        }
+
+        return isRefundable
+    }
+
+    fun requestCancellation() {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            val cancellationResponse = requestUseCase.execute(requestUseCase.createRequestParams(
+                    cancellationWrapperModel.invoiceId,
+                    cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason,
+                    cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId,
+                    cancellationWrapperModel.cancellationList)
+            )
+            mutableRequestCancel.postValue(Success(true))
+        }) {
+            it.printStackTrace()
+            mutableRequestCancel.postValue(Fail(it))
         }
     }
 

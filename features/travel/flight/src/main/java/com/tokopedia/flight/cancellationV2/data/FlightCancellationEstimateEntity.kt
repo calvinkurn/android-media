@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class FlightCancellationEstimateEntity(
         @SerializedName("details")
         @Expose
-        val details: List<Detail> = arrayListOf(),
+        val details: List<FlightCancellationEstimateDetail> = arrayListOf(),
         @SerializedName("totalValue")
         @Expose
         val totalValue: String = "",
@@ -22,13 +22,14 @@ class FlightCancellationEstimateEntity(
                    val flightEstimated: FlightCancellationEstimateEntity = FlightCancellationEstimateEntity())
 }
 
-class Detail(@SerializedName("journeyID")
-             @Expose
-             val journeyId: Long = 0,
-             @SerializedName("passengerID")
-             @Expose
-             val passengerId: Long = 0,
-             @SerializedName("estimatedRefund")
-             @Expose
-             val estimatedRefund: Long = 0
+class FlightCancellationEstimateDetail(
+        @SerializedName("journeyID")
+        @Expose
+        val journeyId: Long = 0,
+        @SerializedName("passengerID")
+        @Expose
+        val passengerId: Long = 0,
+        @SerializedName("estimatedRefund")
+        @Expose
+        val estimatedRefund: Long = 0
 )
