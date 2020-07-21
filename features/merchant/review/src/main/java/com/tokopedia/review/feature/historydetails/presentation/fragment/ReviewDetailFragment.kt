@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -20,15 +21,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.*
-import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
 import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
-import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_detail.*
@@ -41,6 +41,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         const val KEY_FEEDBACK_ID = "feedbackID"
         const val INDEX_OF_EDIT_BUTTON = 1
         const val EDIT_FORM_REQUEST_CODE = 420
+        const val SHARE_TYPE_PLAIN_TEXT = "text/plain"
 
         fun createNewInstance(feedbackId: Int) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
@@ -271,7 +272,14 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     }
 
     private fun goToSharing() {
-
+        val sendIntent = Intent()
+        sendIntent.apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, getReviewLink())
+            type = SHARE_TYPE_PLAIN_TEXT
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
@@ -284,6 +292,10 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun retry() {
         viewModel.retry()
+    }
+
+    private fun getReviewLink() : String {
+        return UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, (viewModel.reviewDetails.value as Success).data.product.productId.toString())
     }
 
     private fun onSuccessEditForm() {
