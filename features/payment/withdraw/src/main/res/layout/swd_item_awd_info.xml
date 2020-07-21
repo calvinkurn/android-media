@@ -3,63 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/top_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/spacing_lvl5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/right_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/spacing_lvl4" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/left_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/spacing_lvl4" />
-
-    <ImageView
-        android:id="@+id/info_type_img"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:contentDescription="Tokopedia"
-        app:layout_constraintStart_toEndOf="@id/left_guideline"
-        app:layout_constraintTop_toBottomOf="@id/top_guideline" />
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivInfoIcon"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/info_title"
+        android:id="@+id/tvAutoWDInfoTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        app:layout_constraintEnd_toStartOf="@id/right_guideline"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/info_type_img"
-        app:layout_constraintTop_toBottomOf="@id/top_guideline"
+        android:layout_marginStart="@dimen/swp_dp_12"
+        android:layout_marginLeft="@dimen/swp_dp_12"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivInfoIcon"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Jadwal penarikan" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/info_description"
+        android:id="@+id/tvAutoWDInfoDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:text="Saldo akan dicairkan otomatis sesuai jadwal yang dipilih (harian, mingguan atau bulanan)."
-        android:textColor="#AD31353B"
-        app:layout_constraintEnd_toStartOf="@id/right_guideline"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/info_type_img"
-        app:layout_constraintTop_toBottomOf="@id/info_title"
-        app:typographyType="body_2" />
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvAutoWDInfoTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvAutoWDInfoTitle"
+        app:typographyType="body_2"
+        tools:text="Saldo akan dicairkan" />
 </androidx.constraintlayout.widget.ConstraintLayout>

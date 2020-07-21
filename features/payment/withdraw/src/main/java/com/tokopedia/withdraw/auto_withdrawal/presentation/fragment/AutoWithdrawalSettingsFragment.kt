@@ -31,6 +31,7 @@ import com.tokopedia.withdraw.auto_withdrawal.domain.model.GetInfoAutoWD
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.Schedule
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
 import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
+import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ScheduleTimingFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModel
 import kotlinx.android.synthetic.main.swd_fragment_awd_settings.*
@@ -149,7 +150,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         groupAutoWDSaveSetting.gone()
         this.autoWDStatusData = autoWDStatusData
         autoWDStatusData.apply {
-            setScheduleData(this)
+            setCurrentWithdrawalSchedule(this)
             if (isOwner) {
                 setAutoWdCheckBoxListener(this)
                 tickerAutoWD.gone()
@@ -167,18 +168,27 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
     }
 
-    private fun setScheduleData(autoWDStatusData: AutoWDStatusData) {
+    private fun setScheduleData() {
+        requestedSchedule?.apply {
+            tvAutoWDScheduleType.text = title
+            tvScheduleTiming.text = desc
+        } ?: run {
+            currentSchedule?.apply {
+                tvAutoWDScheduleType.text = title
+                tvScheduleTiming.text = desc
+                checkboxAutoWD.isChecked = status == 1
+            }
+        }
+    }
+
+    private fun setCurrentWithdrawalSchedule(autoWDStatusData: AutoWDStatusData) {
         currentSchedule = autoWDStatusData.scheduleList[0]
         autoWDStatusData.scheduleList.forEach {
             if (it.status == 1) {
                 currentSchedule = it
             }
         }
-        currentSchedule?.apply {
-            tvAutoWDScheduleType.text = title
-            tvScheduleTiming.text = desc
-            checkboxAutoWD.isChecked = status == 1
-        }
+        setScheduleData()
     }
 
     private fun setAutoWdCheckBoxListener(autoWDStatusData: AutoWDStatusData) {
@@ -194,8 +204,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 && autoWDStatusData?.isOwner == true) {
             if ((checkboxAutoWD.isChecked && currentSchedule?.status != 1)
                     || (!checkboxAutoWD.isChecked && currentSchedule?.status == 1)
-                    //todo equals
-                    || (requestedSchedule != null && requestedSchedule != currentSchedule)) {
+                    || (requestedSchedule != null && currentSchedule?.equals(requestedSchedule) == false)) {
                 setSaveSettingBottomViewVisibility(true)
                 btnAutoWDSaveSettings.isEnabled = isPrimaryAccountActive()
             } else
@@ -345,7 +354,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                //todo openTermsAndConditionBottomSheet()
+                //todo Exclusive RP
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -383,30 +392,38 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     private fun openInfoBottomSheet() {
-        //todo...
+        activity?.let {
+            getInfoAutoWD?.apply {
+                val bottomSheet = AutoWDInfoFragment.getInstance(this)
+                bottomSheet.setTitle(getString(R.string.swd_auto_wd_info_title))
+                bottomSheet.show(it.supportFragmentManager, "AutoWDInfoFragment")
+            }
+        }
     }
 
     companion object {
-        fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment().apply {
-            arguments = bundle
-        }
+        fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment()
+                .apply {
+                    arguments = bundle
+                }
     }
 
     override fun onScheduleSelected(schedule: Schedule) {
         if (currentSchedule?.equals(schedule) == false)
             requestedSchedule = schedule
+        else {
+            requestedSchedule = null
+        }
+        setScheduleData()
+        showSaveButton()
     }
 }
 
 
 /*
-tomorrow dev ----add Tamba Rekening
---> change schedule actions
+tomorrow dev ----add Tamba Rekening - Full Flow settle
 ---> Open Info Bottomsheet---> TNC bottom Sheet
 ---> Non Rekening Try to set bottomsheet
 ---->Final Api Integration ---> Refresh Data...
-
-
-
-
+- Auto Info
     */

@@ -17,6 +17,7 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
     private var scheduleArrayList: ArrayList<Schedule>? = null
     private var scheduleChangeListener: ScheduleChangeListener? = null
     private var adapter: ScheduleAdapter? = null
+    private var recyclerView : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +32,8 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
         rootView.apply {
             setChild(this)
             findViewById<View>(R.id.btnUpdateSchedule).setOnClickListener { updateSchedule() }
-            val recyclerView = findViewById<RecyclerView>(R.id.rvScheduleTiming)
-            initRecyclerAdapter(recyclerView)
+            recyclerView = findViewById<RecyclerView>(R.id.rvScheduleTiming)
+            initRecyclerAdapter()
         }
     }
 
@@ -60,7 +61,7 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
         scheduleChangeListener = null
     }
 
-    private fun initRecyclerAdapter(recyclerView: RecyclerView?) {
+    private fun initRecyclerAdapter() {
         recyclerView?.apply {
             scheduleArrayList?.let {
                 this@ScheduleTimingFragment.adapter = ScheduleAdapter(it,
@@ -85,11 +86,13 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
     }
 
     override fun onScheduleSelected(schedule: Schedule) {
-        scheduleArrayList?.forEach {
-            if (it == schedule)
-                schedule.status = 1
-            else
-                schedule.status = 0
+        recyclerView?.post {
+            scheduleArrayList?.forEach {
+                if (it == schedule)
+                    it.status = 1
+                else
+                    it.status = 0
+            }
             adapter?.notifyDataSetChanged()
         }
     }

@@ -251,13 +251,14 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWDBankName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:text="@string/swd_withdrawal_schedule"
                 android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivDestinationAccount"
                 app:layout_constraintTop_toBottomOf="@+id/tvDestinationAccountTitle"
@@ -266,13 +267,14 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWdBankAccountDetail"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:text="@string/swd_withdrawal_schedule"
                 android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDBankName"
@@ -281,13 +283,14 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWdBankNote"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:text="@string/swd_withdrawal_schedule"
                 android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWdBankAccountDetail"

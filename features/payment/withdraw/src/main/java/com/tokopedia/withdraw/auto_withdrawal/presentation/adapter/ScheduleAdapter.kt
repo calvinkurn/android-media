@@ -33,6 +33,7 @@ class ScheduleAdapter(private val scheduleList: ArrayList<Schedule>,
         private val rbScheduleStatus: RadioButtonUnify = itemView.findViewById(R.id.rbScheduleStatus)
 
         fun bind(schedule: Schedule, scheduleChangeListener: ScheduleChangeListener?) {
+            rbScheduleStatus.setOnCheckedChangeListener{_, _ ->  }
             tvScheduleType.text = schedule.title
             tvScheduleTiming.text = schedule.desc
             rbScheduleStatus.isChecked = schedule.status == 1

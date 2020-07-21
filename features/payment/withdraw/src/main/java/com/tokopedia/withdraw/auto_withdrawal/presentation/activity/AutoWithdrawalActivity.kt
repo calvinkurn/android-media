@@ -12,7 +12,6 @@ import com.tokopedia.withdraw.auto_withdrawal.di.component.DaggerAutoWithdrawalC
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.Schedule
 import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
 import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
-import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActivity
 import kotlinx.android.synthetic.main.swd_activity_auto_withdrawal.*
 
 class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawalComponent>,
@@ -46,7 +45,7 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
     }
 
     override fun onScheduleSelected(schedule: Schedule) {
-        supportFragmentManager.findFragmentByTag(WithdrawActivity.TAG_SUCCESS_FRAGMENT)?.let { fragment ->
+        supportFragmentManager.findFragmentByTag(TAG_AUTO_WITHDRAWAL_FRAGMENT)?.let { fragment ->
             if (fragment is ScheduleChangeListener)
                 fragment.onScheduleSelected(schedule)
         }

@@ -2,37 +2,37 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:layout_height="wrap_content">
 
-    <!--        android:text="@string/saldo_pengh"-->
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/info_cta"
+        android:id="@+id/btnMoreInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl5"
-        android:textColor="#03AC0E"
-        app:typographyType="body_2"
+        android:text="@string/swd_more_info"
+        android:textColor="@color/Green_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewDivider"
+        app:typographyType="body_2" />
 
     <View
-        android:id="@+id/divider_view"
+        android:id="@+id/viewDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E5E7E9"
-        app:layout_constraintBottom_toTopOf="@id/info_cta" />
+        android:background="@color/Neutral_N75"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@+id/rvAutoWDInfo" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/info_recycler_view"
+        android:id="@+id/rvAutoWDInfo"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/divider_view"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
