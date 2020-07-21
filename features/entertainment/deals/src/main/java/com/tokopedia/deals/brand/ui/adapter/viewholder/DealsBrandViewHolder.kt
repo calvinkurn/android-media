@@ -37,7 +37,7 @@ class DealsBrandViewHolder (
         itemView.rv_brands?.adapter = adapter
         itemView.rv_brands?.layoutManager = object : GridLayoutManager(itemView.context,4) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
-                lp?.width = (width / 4)
+                lp?.width = (width / BRAND_SPAN_COUNT)
                 return true
             }
         }
@@ -46,5 +46,6 @@ class DealsBrandViewHolder (
 
     companion object {
         val LAYOUT = R.layout.item_deals_brand_page
+        private const val BRAND_SPAN_COUNT = 4
     }
 }
