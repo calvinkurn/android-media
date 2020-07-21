@@ -64,8 +64,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         getComponent(DigitalTelcoComponent::class.java).inject(this)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
+        subscribeUi()
+    }
+
+    private fun subscribeUi() {
         viewModel.selectedRecentNumber.observe(this, Observer {
             onClickItemRecentNumber(it)
         })

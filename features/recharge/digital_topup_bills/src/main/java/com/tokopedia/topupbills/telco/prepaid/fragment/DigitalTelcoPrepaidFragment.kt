@@ -101,8 +101,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return telcoProduct.id != ID_PRODUCT_EMPTY
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
+        subscribeUi()
+    }
+
+    private fun subscribeUi() {
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             if (isProductExist(it)) {
                 sharedModelPrepaid.setVisibilityTotalPrice(true)

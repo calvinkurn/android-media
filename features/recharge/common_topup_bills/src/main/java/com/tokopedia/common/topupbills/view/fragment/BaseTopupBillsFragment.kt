@@ -84,8 +84,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
+        subscribeUi()
+    }
+
+    private fun subscribeUi() {
         topupBillsViewModel.enquiryData.observe(this, Observer {
             it.run {
                 when (it) {
