@@ -425,14 +425,6 @@ class PlayViewModel @Inject constructor(
             if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
 
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
-
-            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
-            launch { getIsLike(channel.contentId, channel.contentType) }
-            launch { getBadgeCart(channel.isShowCart) }
-            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
-
-            startWebSocket(channelId, channel.gcToken, channel.settings)
-
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
             else if (it !is CancellationException) {
