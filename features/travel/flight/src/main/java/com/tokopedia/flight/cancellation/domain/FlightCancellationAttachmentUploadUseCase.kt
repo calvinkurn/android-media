@@ -34,9 +34,10 @@ class FlightCancellationAttachmentUploadUseCase @Inject constructor(
         val imageFile = File(requestParams.getString(PARAM_DOC, ""))
         val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
         val imageRequestToUpload = MultipartBody.Part.createFormData("doc", imageFile.name, requestFile)
+        val requestBody: Map<String, RequestBody> = requestParams.getObject(PARAM_MAPS) as Map<String, RequestBody>
 
         return flightRepository.uploadCancellationAttachmentCoroutine(
-                requestParams.getObject(PARAM_MAPS) as Map<String, RequestBody>,
+                requestBody,
                 imageRequestToUpload)
     }
 
