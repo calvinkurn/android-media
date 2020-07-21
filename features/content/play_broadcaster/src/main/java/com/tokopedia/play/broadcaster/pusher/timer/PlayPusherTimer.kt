@@ -53,6 +53,7 @@ class PlayPusherTimer(val context: Context) {
 
     fun restart(duration: Long) {
         this.mDuration = duration
+        this.mRemainingMillis = duration
         start(duration)
     }
 
