@@ -394,6 +394,7 @@ class SearchProductFirstPageGqlUseCase(
                         title
                         type
                         position
+                        layout
                         options {
                             title
                             url
@@ -408,6 +409,7 @@ class SearchProductFirstPageGqlUseCase(
                                 count_review
                                 url
                                 applink
+                                description
                             }
                         }
                     }

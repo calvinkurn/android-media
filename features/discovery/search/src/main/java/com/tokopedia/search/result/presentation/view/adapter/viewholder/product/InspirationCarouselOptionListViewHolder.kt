@@ -1,24 +1,24 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import kotlinx.android.synthetic.main.search_inspiration_carousel_option.view.*
+import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
 
-class InspirationCarouselProductViewHolder(
+class InspirationCarouselOptionListViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : RecyclerView.ViewHolder(itemView) {
+) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.search_inspiration_carousel_option
+        val LAYOUT = R.layout.search_inspiration_carousel_option_list
     }
 
-    internal fun bind(item: InspirationCarouselViewModel.Option) {
+    override fun bind(item: InspirationCarouselViewModel.Option) {
         bindOptionTitle(item.title)
         bindOnClickListener(item)
 
@@ -52,8 +52,9 @@ class InspirationCarouselProductViewHolder(
         itemView.viewAllOption?.setOnClickListener { _ ->
             inspirationCarouselListener.onInspirationCarouselSeeAllClicked(item)
         }
-        itemView.optionCardView?.setOnClickListener { _ ->
-            inspirationCarouselListener.onInspirationCarouselProductClicked(item.product[0])
+        itemView.optionListCardView?.setOnClickListener { _ ->
+            val product = item.product.getOrNull(0) ?: return@setOnClickListener
+            inspirationCarouselListener.onInspirationCarouselListProductClicked(product)
         }
     }
 

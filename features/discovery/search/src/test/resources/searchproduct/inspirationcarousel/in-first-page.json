@@ -963,6 +963,7 @@
         "title": "Cek kategori berikut - should not be shown (position error)",
         "type": "category",
         "position": 0,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -1021,61 +1022,52 @@
         ]
       },
       {
-        "title": "Cek kategori berikut",
-        "type": "category",
+        "title": "Mainan bayi sesuai umur perkembangan",
+        "type": "information",
         "position": 4,
+        "layout": "info",
         "options": [
           {
-            "title": "Android OS",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "1 - 6 bulan",
+            "url": "",
+            "applink": "",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": "",
+                "name": "Rattle Stick",
+                "price": 0,
+                "image_url": "http://ecs7.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d.jpg",
+                "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
+                "rating" : 0,
+                "count_review": 0,
+                "applink": "tokopedia://search?st=product&q=rattle%20stick",
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
               }
             ]
           },
           {
-            "title": "Handphone",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "7 - 12 bulan",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": "",
+                "name": "Susun Donat",
+                "image_url": "http://ecs7.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d-b051.jpg",
+                "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
+                "applink": "tokopedia://search?st=product&q=rattle%20stick",
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
               }
             ]
           },
           {
-            "title": "Handphone 2",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "1 tahun keatas",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": "",
+                "name": "Baby Walker",
+                "image_url": "http://ecs7.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb.jpg",
+                "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
+                "applink": "tokopedia://search?st=product&q=rattle%20stick",
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
               }
             ]
           }
@@ -1085,6 +1077,7 @@
         "title": "Cek kategori berikut",
         "type": "category",
         "position": 8,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -1146,6 +1139,7 @@
         "title": "Cek kategori berikut",
         "type": "category",
         "position": 12,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -1207,6 +1201,7 @@
         "title": "Cek kategori berikut",
         "type": "category",
         "position": 16,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -1265,61 +1260,52 @@
         ]
       },
       {
-        "title": "Cek kategori berikut",
-        "type": "category",
+        "title": "Mainan bayi sesuai umur perkembangan",
+        "type": "information",
         "position": 20,
+        "layout": "info",
         "options": [
           {
-            "title": "Android OS",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "1 - 6 bulan",
+            "url": "",
+            "applink": "",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": "",
+                "name": "Rattle Stick",
+                "price": 0,
+                "image_url": "http://ecs7.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d.jpg",
+                "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
+                "rating" : 0,
+                "count_review": 0,
+                "applink": "tokopedia://search?st=product&q=rattle%20stick",
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
               }
             ]
           },
           {
-            "title": "Handphone",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "7 - 12 bulan",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": "",
+                "name": "Susun Donat",
+                "image_url": "http://ecs7.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb-4e98-4a9d-b051.jpg",
+                "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
+                "applink": "tokopedia://search?st=product&q=rattle%20stick",
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
               }
             ]
           },
           {
-            "title": "Handphone 2",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "1 tahun keatas",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": "",
+                "name": "Baby Walker",
+                "image_url": "http://ecs7.tokopedia.net/img/cache-p/200-square/product-1/2017/3/6/339822/339822_627adbfb.jpg",
+                "url": "https://www.tokopedia.com/search?st=product&amp;q=rattle%20stick",
+                "applink": "tokopedia://search?st=product&q=rattle%20stick",
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
               }
             ]
           }

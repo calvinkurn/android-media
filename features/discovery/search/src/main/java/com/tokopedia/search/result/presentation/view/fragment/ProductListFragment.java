@@ -110,15 +110,12 @@ import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.ChipsUnify;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,6 +127,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
+import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
+import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -1720,12 +1719,21 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+    public void onInspirationCarouselListProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
         List<Object> products = new ArrayList<>();
-        products.add(product.getProductAsObjectDataLayer());
-        SearchTracking.trackEventClickInspirationCarouselOptionProduct(product.getInspirationCarouselType(), getQueryKey(), products);
+        products.add(product.getInspirationCarouselListProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselListProduct(product.getInspirationCarouselType(), getQueryKey(), products);
+    }
+    
+    @Override
+    public void onInspirationCarouselInfoProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselInfoProduct(product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
@@ -1744,10 +1752,19 @@ public class ProductListFragment
 
         for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
             for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
-                products.add(object.getProductImpressionAsObjectDataLayer());
+                if (option.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
+                    products.add(object.getInspirationCarouselListProductImpressionAsObjectDataLayer());
+                } else if (option.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
+                    products.add(object.getInspirationCarouselInfoProductAsObjectDataLayer());
+                }
             }
         }
-        SearchTracking.trackImpressionInspirationCarousel(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+
+        if (inspirationCarouselViewModel.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
+            SearchTracking.trackImpressionInspirationCarouselList(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+        } else if (inspirationCarouselViewModel.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
+            SearchTracking.trackImpressionInspirationCarouselInfo(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+        }
     }
 
     @Override

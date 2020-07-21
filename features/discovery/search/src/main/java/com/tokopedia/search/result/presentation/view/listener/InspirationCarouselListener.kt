@@ -5,7 +5,9 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselViewMod
 
 interface InspirationCarouselListener {
 
-    fun onInspirationCarouselProductClicked(product: InspirationCarouselViewModel.Option.Product)
+    fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product)
 
     fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option)
+
+    fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product)
 }

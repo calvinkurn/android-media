@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselProductAdapter
+import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
+import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.utils.getHorizontalShadowOffset
 import com.tokopedia.search.utils.getVerticalShadowOffset
@@ -58,10 +59,12 @@ class InspirationCarouselViewHolder(
     }
 
     private fun createAdapter(
-            inspirationCarouselProductList: List<InspirationCarouselViewModel.Option>
-    ): RecyclerView.Adapter<InspirationCarouselProductViewHolder> {
-        val inspirationCarouselProductAdapter = InspirationCarouselProductAdapter(inspirationCarouselListener)
-        inspirationCarouselProductAdapter.setItemList(inspirationCarouselProductList)
+            inspirationCarouselOptionList: List<InspirationCarouselViewModel.Option>
+    ): RecyclerView.Adapter<AbstractViewHolder<*>> {
+        val typeFactory = InspirationCarouselOptionAdapterTypeFactory(inspirationCarouselListener)
+        val inspirationCarouselProductAdapter = InspirationCarouselOptionAdapter(typeFactory)
+        inspirationCarouselProductAdapter.clearData()
+        inspirationCarouselProductAdapter.addAll(inspirationCarouselOptionList)
 
         return inspirationCarouselProductAdapter
     }

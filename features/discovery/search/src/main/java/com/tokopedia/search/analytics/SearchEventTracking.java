@@ -68,8 +68,10 @@ public interface SearchEventTracking {
         String CLICK_PROFILE_RESULT = "click - profile result";
         String CLICK_TOP_PROFILE_IN_NO_RESULT_PROFILE = "click - top profile in no result profile";
         String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
+        String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";
