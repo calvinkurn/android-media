@@ -5,9 +5,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -186,7 +191,11 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     show()
                 }
             } else {
-                reviewDetailContent.setTextAndCheckShow(reviewText)
+                reviewDetailContent.apply {
+                    text = HtmlLinkHelper(context, reviewText).spannedString
+                    movementMethod = this@ReviewDetailFragment.getMovementMethod()
+                    show()
+                }
             }
         }
     }
@@ -196,7 +205,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             reviewDetailResponse.hide()
             return
         }
-        reviewDetailResponse.setContent(response)
+        reviewDetailResponse.setContent(response, getMovementMethod())
     }
 
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
@@ -206,7 +215,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     reviewHistoryDetailReputation.setFinalScore(score, shopName)
                 }
                 else -> {
-                    // Later
+                    reviewHistoryDetailReputation.hide()
                 }
             }
         }
@@ -300,5 +309,38 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun onSuccessEditForm() {
         view?.let { Toaster.build(it, getString(R.string.review_history_detail_toaster_edit_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
+    }
+
+    private fun getMovementMethod(): LinkMovementMethod {
+        return object : LinkMovementMethod() {
+            override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
+                val action = event.action
+
+                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                    var x = event.x
+                    var y = event.y.toInt()
+
+                    x -= widget.totalPaddingLeft
+                    y -= widget.totalPaddingTop
+
+                    x += widget.scrollX
+                    y += widget.scrollY
+
+                    val layout = widget.layout
+                    val line = layout.getLineForVertical(y)
+                    val off = layout.getOffsetForHorizontal(line, x)
+
+                    val link = buffer.getSpans(off, off, URLSpan::class.java)
+                    if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                        return onUrlClicked(link.first().url.toString())
+                    }
+                }
+                return super.onTouchEvent(widget, buffer, event)
+            }
+        }
+    }
+
+    private fun onUrlClicked(url: String): Boolean {
+        return RouteManager.route(context, url)
     }
 }

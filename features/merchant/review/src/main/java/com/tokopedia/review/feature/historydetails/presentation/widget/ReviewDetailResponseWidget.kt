@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.historydetails.presentation.widget
 
 import android.content.Context
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -28,7 +29,7 @@ class ReviewDetailResponseWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_review_detail_response, this)
     }
 
-    fun setContent(response: ProductrevGetReviewDetailResponse) {
+    fun setContent(response: ProductrevGetReviewDetailResponse, customMovementMethod: LinkMovementMethod) {
         with(response) {
             if(shopName.isNotEmpty()) {
                 reviewDetailResponderName.apply {
@@ -42,7 +43,11 @@ class ReviewDetailResponseWidget : BaseCustomView {
                     show()
                 }
             }
-            reviewDetailResponseContent.setTextAndCheckShow(responseText)
+            reviewDetailResponseContent.apply {
+                text = HtmlLinkHelper(context, responseText).spannedString
+                movementMethod = customMovementMethod
+                show()
+            }
         }
     }
 }
