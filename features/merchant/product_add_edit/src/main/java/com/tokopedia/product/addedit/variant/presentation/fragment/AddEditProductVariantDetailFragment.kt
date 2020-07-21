@@ -136,8 +136,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         observeSelectedVariantSize()
         observeInputStatus()
         observeHasWholesale()
-        observeHasSku()
 
+        enableSkuIfExist()
         setupToolbarActions()
     }
 
@@ -240,17 +240,16 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observeHasSku() {
-        viewModel.hasSku.observe(this, Observer {
-            switchUnifySku.isChecked = it
-        })
+    private fun enableSkuIfExist() {
+        switchUnifySku.isChecked = viewModel.hasSku
     }
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
         // without variant unit values combination
         selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
+            val isSkuVisible = switchUnifySku.isChecked // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                    productVariantIndex, 0, unitValue.value)
+                    productVariantIndex, 0, unitValue.value, isSkuVisible)
             val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
             fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
         }
@@ -276,8 +275,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateHeaderVisitablePositionMap(headerPosition, headerPosition)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
+                val isSkuVisible = switchUnifySku.isChecked // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                        productVariantIndex, headerPosition, level2Value.value)
+                        productVariantIndex, headerPosition, level2Value.value, isSkuVisible)
                 val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
                 fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
                 productVariantIndex++

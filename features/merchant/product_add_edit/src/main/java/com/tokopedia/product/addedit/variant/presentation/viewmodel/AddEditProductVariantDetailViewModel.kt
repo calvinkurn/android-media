@@ -42,10 +42,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
-    val hasSku = Transformations.map(productInputModel) { productInputModel ->
-        productInputModel.variantInputModel.products.any {
-            it.sku.isNotEmpty()
-        }
+    val hasSku: Boolean get () {
+        return productInputModel.value?.variantInputModel?.products?.any {
+             it.sku.isNotEmpty()
+        } ?: false
     }
 
     val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
@@ -180,11 +180,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     if (inputModel.price.isNotEmpty()) {
                         price = inputModel.price.toBigIntegerOrNull().orZero()
                     }
+                    // assign new value if input stock is not empty
+                    if (inputModel.stock.isNotEmpty()) {
+                        stock = inputModel.stock.toIntOrZero()
+                    }
                     // assign new value if input sku is not empty
                     if (inputModel.sku.isNotEmpty()) {
                         sku = inputModel.sku
                     }
-                    stock = inputModel.stock.toInt()
                 }
             }
         }
@@ -354,8 +357,9 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun generateVariantDetailInputModel(
             productVariantIndex: Int,
             headerPosition: Int,
-            unitValueLabel: String
-    ): VariantDetailInputLayoutModel {
+            unitValueLabel: String,
+            isSkuFieldVisible: Boolean
+    ): VariantDetailInputLayoutModel{
         val productVariants = productInputModel.value?.variantInputModel?.products.orEmpty()
         val productVariant = productVariants
                 .getOrElse(productVariantIndex) { ProductVariantInputModel() }
@@ -367,7 +371,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 sku = productVariant.sku,
                 stock = productVariant.stock.toString(),
                 headerPosition = headerPosition,
-                isSkuFieldVisible = hasSku.value ?: false,
+                isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel)
     }
 

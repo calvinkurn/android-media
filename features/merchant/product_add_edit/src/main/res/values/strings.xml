@@ -216,7 +216,7 @@
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
 
     <!-- Variant -->
-    <string name="title_variant_activity">Variant</string>
+    <string name="title_variant_activity">Varian</string>
     <string name="action_variant_apply">Terapkan</string>
     <string name="action_variant_next">Lanjut</string>
     <string name="action_variant_save">Simpan</string>
@@ -252,7 +252,7 @@
     <string name="label_variant_multiple_stock">Stok</string>
     <string name="label_variant_multiple_sku">SKU (Stock Keeping Unit)</string>
     <string name="label_variant_multiple_select_all">Semua</string>
-    <string name="label_variant_multiple_select_bottom_sheet_title">Pilih variant yang ingin diatur</string>
+    <string name="label_variant_multiple_select_bottom_sheet_title">Pilih varian yang ingin diatur</string>
     <string name="label_variant_multiple_input_bottom_sheet_title">Atur sekaligus di sini</string>
     <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
     <string name="label_question_mark">\?</string>
