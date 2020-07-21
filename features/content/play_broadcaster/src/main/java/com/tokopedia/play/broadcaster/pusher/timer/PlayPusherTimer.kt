@@ -13,9 +13,8 @@ class PlayPusherTimer(val context: Context) {
 
     constructor(context: Context,
                 duration: Long) : this(context) {
-        this.mDuration = duration
-        this.mRemainingMillis = duration
-        this.mMaxDuration = duration
+        setupDuration(duration)
+        this.mMaxDuration = mDuration
     }
 
     var callback: PlayPusherTimerListener? = null
@@ -52,8 +51,7 @@ class PlayPusherTimer(val context: Context) {
     }
 
     fun restart(duration: Long) {
-        this.mDuration = duration
-        this.mRemainingMillis = duration
+        setupDuration(duration)
         start(duration)
     }
 
@@ -78,6 +76,12 @@ class PlayPusherTimer(val context: Context) {
     fun destroy() {
         mCountDownTimer?.cancel()
         mCountDownTimer = null
+    }
+
+    private fun setupDuration(duration: Long) {
+        this.mDuration = duration
+        this.mDuration += 1000
+        this.mRemainingMillis = mDuration
     }
 
     private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
