@@ -812,6 +812,10 @@ class TopChatRoomPresenter @Inject constructor(
         sharedPref.edit().putBoolean(STICKER_TOOLTIP_ONBOARDING, true).apply()
     }
 
+    override fun setBeforeReplyTime(createTime: String) {
+        getChatUseCase.minReplyTime = createTime
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)

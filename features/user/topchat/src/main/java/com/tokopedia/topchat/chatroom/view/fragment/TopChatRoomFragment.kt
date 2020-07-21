@@ -132,6 +132,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
     private var sourcePage: String = ""
+    private var createTime: String = ""
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -185,8 +186,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupAttachmentsPreview(savedInstanceState)
         setupAlertDialog()
         setupAnalytic()
+        setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+    }
+
+    private fun setupBeforeReplyTime() {
+        if (createTime.isNotEmpty()) {
+            presenter.setBeforeReplyTime(createTime)
+        }
     }
 
     private fun initLoadMoreListener() {
@@ -237,6 +245,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun onErrorGetBottomChat(throwable: Throwable) {
+        rvScrollListener?.finishBottomLoadingState()
 //        hideTopLoading()
 //        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
 //        rvScrollListener?.finishTopLoadingState()
@@ -329,6 +338,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
         sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
+        createTime = getParamString(ApplinkConst.Chat.CREATE_TIME, arguments, savedInstanceState)
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {

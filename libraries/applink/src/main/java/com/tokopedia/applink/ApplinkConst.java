@@ -436,6 +436,7 @@ public interface ApplinkConst {
 
         String SOURCE_ASK_SELLER = "tx_ask_seller";
         String SOURCE_PAGE = "source_page";
+        String CREATE_TIME = "create_time_str";
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";

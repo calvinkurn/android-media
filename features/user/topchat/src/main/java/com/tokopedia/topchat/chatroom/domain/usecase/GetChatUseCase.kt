@@ -22,8 +22,8 @@ class GetChatUseCase @Inject constructor(
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
-    var minReplyTime = "-1" // for param beforeReplyTime for top
-    var maxReplyTime = "-1" // for param afterReplyTime for bottom
+    var minReplyTime = "" // for param beforeReplyTime for top
+    var maxReplyTime = "" // for param afterReplyTime for bottom
     var hasNext = false // has next top
     var hasNextAfter = false // has next bottom
 
@@ -38,6 +38,7 @@ class GetChatUseCase @Inject constructor(
         val params = generateFirstPageParam(messageId)
         getChat(topQuery, params, onSuccess, onErrorGetChat) { _, chat ->
             updateMinReplyTime(chat)
+            updateMaxReplyTime(chat)
         }
     }
 
@@ -95,9 +96,13 @@ class GetChatUseCase @Inject constructor(
     }
 
     private fun generateFirstPageParam(messageId: String): Map<String, Any> {
-        return mapOf(
+        return mutableMapOf<String, Any>(
                 PARAM_MESSAGE_ID to messageId.toInt()
-        )
+        ).apply {
+            if (minReplyTime.isNotEmpty()) {
+                put(PARAM_BEFORE_REPLY_TIME, minReplyTime)
+            }
+        }
     }
 
     private fun generateBottomParam(messageId: String): Map<String, Any> {
@@ -108,7 +113,11 @@ class GetChatUseCase @Inject constructor(
     }
 
     private fun generateFirstPageQuery(): String {
-        return requestQuery.format("", "")
+        return if (minReplyTime.isNotEmpty()) {
+            generateTopQuery()
+        } else {
+            requestQuery.format("", "")
+        }
     }
 
     private fun generateBottomQuery(): String {

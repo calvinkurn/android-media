@@ -181,5 +181,7 @@ interface TopChatContract {
         fun isStickerTooltipAlreadyShow(): Boolean
 
         fun toolTipOnBoardingShown()
+
+        fun setBeforeReplyTime(createTime: String)
     }
 }
