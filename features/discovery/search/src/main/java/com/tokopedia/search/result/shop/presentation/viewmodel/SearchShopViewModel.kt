@@ -22,10 +22,13 @@ import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocal
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.createDefaultQuickFilter
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlin.Error
 
 internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
@@ -71,6 +74,7 @@ internal class SearchShopViewModel(
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val bottomNavigationVisibilityEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val sortFilterItemListLiveData = MutableLiveData<State<List<SortFilterItem>>>()
 
     init {
         setSearchParameterUniqueId()
@@ -142,14 +146,7 @@ internal class SearchShopViewModel(
 
     private fun updateSearchShopLiveDataStateToLoading() {
         searchShopLiveData.postValue(Loading())
-    }
-
-    private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
-        processSearchShopFirstPageSuccess(searchShopModel)
-
-        endSearchShopFirstPagePerformanceMonitoring()
-
-        getDynamicFilter()
+        sortFilterItemListLiveData.postValue(Loading())
     }
 
     private fun createSearchShopParam(): RequestParams {
@@ -170,6 +167,14 @@ internal class SearchShopViewModel(
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
     }
 
+    private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
+        processSearchShopFirstPageSuccess(searchShopModel)
+
+        endSearchShopFirstPagePerformanceMonitoring()
+
+        getDynamicFilter()
+    }
+
     private fun processSearchShopFirstPageSuccess(searchShopModel: SearchShopModel?) {
         if(searchShopModel == null) return
 
@@ -181,6 +186,11 @@ internal class SearchShopViewModel(
         updateSearchShopLiveDataStateToSuccess()
 
         postLiveDataEventsAfterSearchShop(searchShopModel, visitableList)
+
+        if (searchShopModel.getFilterList().size <= 2)
+            searchShopModel.quickFilter.data = createDefaultQuickFilter()
+
+        processQuickFilter(searchShopModel)
     }
 
     private fun updateSearchShopStatus(searchShopModel: SearchShopModel) {
@@ -425,11 +435,26 @@ internal class SearchShopViewModel(
         searchShopFirstPagePerformanceMonitoringEventLiveData.postValue(Event(false))
     }
 
+    private fun processQuickFilter(searchShopModel: SearchShopModel) {
+        val sortFilterItemList = mutableListOf<SortFilterItem>()
+
+        val quickFilterOptionList = searchShopModel.getFilterList().map { it.options }.flatten()
+        quickFilterOptionList.forEach {
+            val sortFilterItem = SortFilterItem(it.name)
+            sortFilterItem.typeUpdated = false
+
+            sortFilterItemList.add(sortFilterItem)
+        }
+
+        sortFilterItemListLiveData.value = Success(sortFilterItemList)
+    }
+
     private fun catchSearchShopException(e: Throwable?) {
         e?.printStackTrace()
 
         hasNextPage = false
         searchShopLiveData.postValue(Error("", searchShopMutableList))
+        sortFilterItemListLiveData.value = State.Error("")
     }
 
     private fun getDynamicFilter() {
@@ -730,4 +755,7 @@ internal class SearchShopViewModel(
 
     fun getBottomNavigationVisibilityEventLiveData(): LiveData<Event<Boolean>> =
             bottomNavigationVisibilityEventLiveData
+
+    fun getSortFilterItemListLiveData(): LiveData<State<List<SortFilterItem>>> =
+            sortFilterItemListLiveData
 }

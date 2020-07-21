@@ -25,6 +25,8 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
@@ -40,8 +42,10 @@ import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFac
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import kotlinx.android.synthetic.main.search_result_shop_fragment_layout.*
 
 internal class ShopListFragment:
         TkpdBaseV4Fragment(),
@@ -175,6 +179,7 @@ internal class ShopListFragment:
         observeTrackingClickProductItem()
         observeTrackingClickProductRecommendation()
         observeBottomNavigationVisibilityEvent()
+        observeQuickFilterLiveData()
     }
 
     private fun observeSearchShopLiveData() {
@@ -436,6 +441,44 @@ internal class ShopListFragment:
         searchShopViewModel?.getBottomNavigationVisibilityEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isVisible ->
             searchViewModel?.changeBottomNavigationVisibility(isVisible)
         })
+    }
+
+    private fun observeQuickFilterLiveData() {
+        searchShopViewModel?.getSortFilterItemListLiveData()?.observe(viewLifecycleOwner, Observer {
+            updateQuickFilterView(it)
+        })
+    }
+
+    private fun updateQuickFilterView(quickFilterState: State<List<SortFilterItem>>) {
+        when(quickFilterState) {
+            is State.Success -> {
+                showQuickFilterView(quickFilterState.data)
+                shimmeringViewShopQuickFilter?.hide()
+            }
+            is State.Loading -> {
+                shimmeringViewShopQuickFilter?.visible()
+                searchShopQuickSortFilter?.hide()
+            }
+            is State.Error -> {
+                shimmeringViewShopQuickFilter?.hide()
+                searchShopQuickSortFilter?.hide()
+            }
+        }
+    }
+
+    private fun showQuickFilterView(sortFilterItemList: List<SortFilterItem>?) {
+        if (sortFilterItemList == null) return
+
+        searchShopQuickSortFilter?.let {
+            it.sortFilterItems.removeAllViews()
+            it.visible()
+            it.sortFilterHorizontalScrollView.scrollX = 0
+            it.addItem(sortFilterItemList as ArrayList<SortFilterItem>)
+            it.textView.text = getString(R.string.search_filter)
+            it.parentListener = {
+                searchShopViewModel?.onViewOpenFilterPage()
+            }
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
