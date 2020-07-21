@@ -211,15 +211,17 @@ class TopChatRoomPresenter @Inject constructor(
             EVENT_TOPCHAT_TYPING -> view?.onReceiveStartTypingEvent()
             EVENT_TOPCHAT_END_TYPING -> view?.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view?.onReceiveReadEvent()
-            EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                var temp = mapToVisitable(pojo)
-                view?.onReceiveMessageEvent(temp)
-                if (!pojo.isOpposite) {
-                    checkDummyAndRemove(temp)
-                } else {
-                    readMessage()
-                }
-            }
+            EVENT_TOPCHAT_REPLY_MESSAGE -> onReplyMessage(pojo)
+        }
+    }
+
+    private fun onReplyMessage(pojo: ChatSocketPojo) {
+        val temp = mapToVisitable(pojo)
+        view?.onReceiveMessageEvent(temp)
+        if (!pojo.isOpposite) {
+            checkDummyAndRemove(temp)
+        } else {
+            readMessage()
         }
     }
 
