@@ -1,11 +1,7 @@
 package com.tokopedia.topupbills
 
 import android.Manifest
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
 import android.provider.ContactsContract
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -53,9 +49,12 @@ class DigitalSearchNumberActivityTest {
 
     @Before
     fun stubAllExternalIntents() {
+        val telcoContactHelper = TelcoContactHelper()
+        val contentResolver = mActivityRule.activity.contentResolver
+
         Intents.intending(AllOf.allOf(hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
                 hasAction(Intent.ACTION_PICK))
-        ).respondWith(createUriContact())
+        ).respondWith(telcoContactHelper.createUriContact(contentResolver))
     }
 
     @Test
@@ -73,30 +72,9 @@ class DigitalSearchNumberActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).check(matches(ViewMatchers.withText(VALID_PHONE_BOOK)))
     }
 
-    private fun createUriContact(): Instrumentation.ActivityResult {
-        val resultData = Intent()
-        resultData.data = getContactUriByName("Tes")
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
+    @Test
+    fun choose_fav_number_from_list() {
 
-    /**
-     * @param contactName should set based on contact in device test
-     */
-    private fun getContactUriByName(contactName: String): Uri? {
-        val cursor: Cursor? = mActivityRule.activity.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null, null, null, null)
-        cursor?.let {
-            if (cursor.count > 0) {
-                while (cursor.moveToNext()) {
-                    val id: String = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID))
-                    val name: String = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                    if (name == contactName) {
-                        return Uri.withAppendedPath(ContactsContract.Data.CONTENT_URI, id)
-                    }
-                }
-            }
-        }
-        return null
     }
 
     companion object {
