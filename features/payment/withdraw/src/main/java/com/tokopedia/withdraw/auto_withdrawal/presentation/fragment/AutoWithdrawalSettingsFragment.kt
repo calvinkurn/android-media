@@ -194,6 +194,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 && autoWDStatusData?.isOwner == true) {
             if ((checkboxAutoWD.isChecked && currentSchedule?.status != 1)
                     || (!checkboxAutoWD.isChecked && currentSchedule?.status == 1)
+                    //todo equals
                     || (requestedSchedule != null && requestedSchedule != currentSchedule)) {
                 setSaveSettingBottomViewVisibility(true)
                 btnAutoWDSaveSettings.isEnabled = isPrimaryAccountActive()
@@ -392,7 +393,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     override fun onScheduleSelected(schedule: Schedule) {
-        if(currentSchedule!= null && currentSchedule?.autoWithdrawalScheduleId)
+        if (currentSchedule?.equals(schedule) == false)
+            requestedSchedule = schedule
     }
 }
 

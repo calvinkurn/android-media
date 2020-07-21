@@ -47,6 +47,14 @@ data class Schedule(
         parcel.writeString(title)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is Schedule && other.title == title
+                && other.desc == desc && other.scheduleType == scheduleType) {
+            return true
+        }
+        return super.equals(other)
+    }
+
     override fun describeContents(): Int {
         return 0
     }
