@@ -102,4 +102,18 @@ class FlightCancellationReviewViewModel @Inject constructor(
         }
     }
 
+    fun shouldShowAttachments(): Boolean {
+        var shouldShow = true
+
+        if (cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size > 0) {
+            for (attachment in cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList) {
+                if (attachment.filepath.isEmpty()) shouldShow = false
+            }
+        } else {
+            shouldShow = false
+        }
+
+        return shouldShow
+    }
+
 }

@@ -171,7 +171,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
             container_additional_reason.visibility = View.GONE
         }
 
-        if (cancellationModel.cancellationReasonAndAttachmentModel.attachmentList.isNotEmpty()) {
+        if (flightCancellationReviewViewModel.shouldShowAttachments()) {
             attachmentAdapter.clearAllElements()
             attachmentAdapter.addElement(cancellationModel.cancellationReasonAndAttachmentModel.attachmentList)
         } else {

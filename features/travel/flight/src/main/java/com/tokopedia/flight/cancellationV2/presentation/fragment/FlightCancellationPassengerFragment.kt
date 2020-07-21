@@ -1,5 +1,7 @@
 package com.tokopedia.flight.cancellationV2.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -83,6 +85,18 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onSaveInstanceState(outState)
 
         outState.putBoolean(EXTRA_FIRST_CHECK, isFirstRelationCheck)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_REASON_AND_PROOF_CANCELLATION -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    closeCancellationPage()
+                }
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): FlightCancellationAdapterTypeFactory =
@@ -214,6 +228,11 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     private fun showShouldChooseAtLeastOnePassengerError() {
         Toaster.make(requireView(), getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error),
                 Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+    }
+
+    private fun closeCancellationPage() {
+        requireActivity().setResult(Activity.RESULT_OK)
+        requireActivity().finish()
     }
 
     companion object {
