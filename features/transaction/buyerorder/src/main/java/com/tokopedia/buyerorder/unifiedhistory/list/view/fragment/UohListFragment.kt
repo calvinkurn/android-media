@@ -251,13 +251,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val type = if (isReset || filterStatus.isNotEmpty()) {
+        val typeDate = if (isReset || filterStatus.isNotEmpty()) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
         }
 
-        filter1 = SortFilterItem(UohConsts.ALL_DATE, type, ChipsUnify.SIZE_MEDIUM)
+        filter1 = SortFilterItem(UohConsts.ALL_DATE, typeDate, ChipsUnify.SIZE_MEDIUM)
         filter1?.let {
             it.listener = {
                 uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
@@ -280,7 +280,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             chips.add(it)
         }
 
-        filter2 = SortFilterItem(UohConsts.ALL_STATUS, type, ChipsUnify.SIZE_MEDIUM)
+        val typeStatus = if (filterStatus.isEmpty()) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
+        }
+
+        filter2 = SortFilterItem(UohConsts.ALL_STATUS, typeStatus, ChipsUnify.SIZE_MEDIUM)
         filter2?.let {
             it.listener = {
                 uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
