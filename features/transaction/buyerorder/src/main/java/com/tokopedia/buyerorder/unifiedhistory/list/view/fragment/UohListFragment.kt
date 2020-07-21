@@ -430,9 +430,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     ic_empty?.loadImageDrawable(R.drawable.uoh_empty_order_list)
                     title_empty?.text = resources.getString(R.string.uoh_no_order)
                     desc_empty?.text = resources.getString(R.string.uoh_no_order_desc)
-                    btn_empty?.visible()
-                    btn_empty?.text = resources.getString(R.string.uoh_no_order_btn)
-                    // TODO : larinya kemana klo mulai belanja? answ : home
+                    btn_empty?.apply {
+                        visible()
+                        text = resources.getString(R.string.uoh_no_order_btn)
+                        setOnClickListener {
+                            RouteManager.route(context, ApplinkConst.HOME)
+                        }
+                    }
                 }
             }
         }
