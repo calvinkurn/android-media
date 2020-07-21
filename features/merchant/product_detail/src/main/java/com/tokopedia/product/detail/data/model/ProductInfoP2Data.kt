@@ -1,0 +1,90 @@
+package com.tokopedia.product.detail.data.model
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
+import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
+import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
+import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
+import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
+import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopChatSpeedQuery
+import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopPackSpeedQuery
+import com.tokopedia.variant_common.model.WarehouseInfo
+
+/**
+ * Created by Yehezkiel on 20/07/20
+ */
+data class ProductInfoP2Data(
+        @SerializedName("error")
+        @Expose
+        var error: P2Error = P2Error(),
+
+        @SerializedName("productView")
+        @Expose
+        var productView: String = "",
+
+        @SerializedName("wishlistCount")
+        @Expose
+        var wishlistCount: String = "",
+
+        @SerializedName("shopCommitment")
+        @Expose
+        var shopCommitment: ShopCommitment = ShopCommitment(),
+
+        @SerializedName("ppGetItemDetailPage")
+        @Expose
+        var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
+
+        @SerializedName("shopTopChatSpeed")
+        @Expose
+        var shopChatSpeed: ProductShopChatSpeedQuery = ProductShopChatSpeedQuery(),
+
+        @SerializedName("shopRatingsQuery")
+        @Expose
+        var shopRating: ProductShopRatingQuery = ProductShopRatingQuery(),
+
+        @SerializedName("shopPackSpeed")
+        @Expose
+        var shopSpeed: ProductShopPackSpeedQuery = ProductShopPackSpeedQuery(),
+
+        @SerializedName("shopFeature")
+        @Expose
+        var shopFeature: ShopFeatureP2 = ShopFeatureP2(),
+
+        @SerializedName("reputationShop")
+        @Expose
+        var shopBadge: ShopBadge = ShopBadge(),
+
+        @SerializedName("validateTradeIn")
+        @Expose
+        var validateTradeIn: ValidateTradeIn = ValidateTradeIn(),
+
+        @SerializedName("cartRedirection")
+        @Expose
+        var cartRedirection: CartRedirection = CartRedirection(),
+
+        @SerializedName("cartRedirection")
+        @Expose
+        var nearestWarehouseInfo: List<WarehouseInfo> = listOf(),
+
+        @SerializedName("upcomingCampaigns")
+        @Expose
+        var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
+
+        @SerializedName("installmentRecommendation")
+        @Expose
+        var productFinancingRecommendationData: PDPInstallmentRecommendationData = PDPInstallmentRecommendationData(),
+
+        @SerializedName("installmentCalculation")
+        @Expose
+        var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse()
+
+
+        //TODO image review shop info
+
+)

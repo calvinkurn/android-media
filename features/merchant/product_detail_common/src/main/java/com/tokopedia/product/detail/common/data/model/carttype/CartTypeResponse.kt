@@ -9,18 +9,18 @@ data class CartRedirectionResponse(
 )
 
 data class CartTypeData(
-        @SerializedName("available_buttons")
+        @SerializedName("availableButtons")
         val availableButtons: List<AvailableButton> = listOf(),
-        @SerializedName("config_name")
+        @SerializedName("configName")
         val configName: String = "",
-        @SerializedName("unavailable_buttons")
+        @SerializedName("unavailableButtons")
         val unavailableButtons: List<String> = listOf()
 )
 
 data class CartRedirection(
-        @SerializedName("data")
+        @SerializedName("cartRedirectionData")
         val data: List<CartTypeData> = listOf(),
-        @SerializedName("error_message")
+        @SerializedName("errorMessage")
         val errorMessage: List<Any> = listOf(),
         @SerializedName("status")
         val status: String = ""
@@ -32,14 +32,14 @@ data class CartRedirection(
 }
 
 data class AvailableButton(
-        @SerializedName("cart_type")
+        @SerializedName("cartType")
         val cartType: String = "",
         @SerializedName("color")
         val color: String = "",
         @SerializedName("text")
         val text: String = "",
-        @SerializedName("show_recommendation")
+        @SerializedName("showRecommendation")
         val showRecommendation: Boolean = false,
-        @SerializedName("onboarding_message")
+        @SerializedName("onBoardingMessage")
         val onboardingMessage: String = ""
 )

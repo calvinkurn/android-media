@@ -172,20 +172,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
+
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
-    private val isUserHasShop: Boolean
-        get() = userSessionInterface.hasShop()
 
-    fun hasShopAuthority(): Boolean {
-        return isShopOwner() || shopInfo?.allowManage == true
-    }
-
+    fun hasShopAuthority(): Boolean = isShopOwner() || shopInfo?.allowManage == true
     fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
+
     val userId: String
         get() = userSessionInterface.userId
+
     var deviceId: String = userSessionInterface.deviceId
 
     init {

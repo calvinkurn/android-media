@@ -1,0 +1,327 @@
+{
+  pdpGetData(productID: "15389731", pdpSession: "{\"ioc\":false,\"shop_id\":6550394,\"shop_domain\":\"thngs\",\"category_id\":36,\"parent_id\":0,\"campaign\":{\"id\":0,\"type\":0,\"status\":false},\"price\":1000,\"product_ids_variant\":null,\"wh_id\":0,\"minimum_order\":1,\"product_name\":\"slashprice-02\",\"stock\":1000,\"is_preorder\":true}") {
+    error {
+      Code
+      Message
+      DevMessage
+    }
+    ppGetItemDetailPage{
+      program{
+        protectionAvailable
+        title
+        subTitle
+        titlePDP
+        subTitlePDP
+      }
+      error {
+        error
+        code
+        errorMsg
+      }
+    }
+    upcomingCampaign {
+      campaignID
+      campaignType
+      campaignTypeName
+      startDate
+      endDate
+      notifyMe
+      ribbonCopy
+      upcomingType
+    }
+    productView
+    wishlistCount
+    shopCommitment {
+      result {
+        isNowActive
+        staticMessages {
+          pdpMessage
+        }
+      }
+      error {
+        message
+      }
+    }
+    reputationShop {
+      badge
+      badgeHD
+      score
+      scoreMap
+    }
+    shopInfo {
+      closedInfo {
+        closedNote
+        reason
+        until
+        detail {
+          openDateUTC
+        }
+      }
+      shipmentInfo {
+        code
+        isAvailable
+        shipmentID
+        image
+        name
+        isPickup
+        maxAddFee
+        awbStatus
+        product {
+          isAvailable
+          productName
+          shipProdID
+          additionalFee
+          minimumWeight
+          uiHidden
+        }
+      }
+      favoriteData {
+        totalFavorite
+        alreadyFavorited
+      }
+      activeProduct
+      createInfo {
+        shopCreated
+        epochShopCreated
+        openSince
+        epochShopCreatedUTC
+      }
+      shopTerms
+      shopAssets {
+        avatar
+        cover
+
+      }
+      shopCore {
+        description
+        domain
+        shopID
+        name
+        tagLine
+        url
+      }
+      shopLastActive
+      location
+      statusInfo {
+        shopStatus
+        statusMessage
+        statusTitle
+        isIdle
+      }
+      isAllowManage
+      isFreeReturns
+      shippingLoc {
+        districtID
+        districtName
+        postalCode
+        addressStreet
+        latitude
+        longitude
+        provinceID
+        cityID
+        cityName
+        countryName
+        provinceName
+      }
+      statsData {
+        productSold
+        totalTx
+        totalShowcase
+      }
+      shopType
+    }
+    merchantVoucher {
+      merchantVoucherData {
+        voucherID
+        voucherName
+        type {
+          type
+          identifier
+        }
+        voucherCode
+        voucherAmount {
+          amount
+          type
+          amountFormatted
+        }
+        minimumSpend
+        voucherOwner {
+          ownerID
+          identifier
+        }
+        validThru
+        tnc
+        voucherBanner {
+          desktopURL
+          mobileURL
+        }
+        voucherStatus {
+          status
+          identifier
+        }
+        inUseExpiry
+      }
+      errorMessageTitle
+      errorMessage
+    }
+    nearestWarehouse {
+      warehouse_info {
+        warehouse_id
+        is_fulfillment
+        district_id
+        postal_code
+        geolocation
+      }
+    }
+    installmentRecommendation {
+      message
+      data {
+        term
+        mdr_value
+        mdr_type
+        interest_rate
+        minimum_amount
+        maximum_amount
+        monthly_price
+        os_monthly_price
+        partner_code
+        partner_name
+        partner_icon
+      }
+    }
+    installmentCalculation {
+      message
+      data {
+        credit_card {
+          partner_code
+          partner_name
+          partner_icon
+          partner_url
+          tnc_id
+          installment_list {
+            term
+            mdr_value
+            mdr_type
+            interest_rate
+            minimum_amount
+            maximum_amount
+            monthly_price
+            os_monthly_price
+            partner_code
+            partner_name
+            partner_icon
+          }
+          instruction_list {
+            order
+            description
+            ins_image_url
+          }
+        }
+        non_credit_card {
+          partner_code
+          partner_name
+          partner_icon
+          partner_url
+          tnc_id
+          installment_list {
+            term
+            mdr_value
+            mdr_type
+            interest_rate
+            minimum_amount
+            maximum_amount
+            monthly_price
+            os_monthly_price
+            partner_code
+            partner_name
+            partner_icon
+          }
+          instruction_list {
+            order
+            description
+            ins_image_url
+          }
+        }
+        tnc {
+          tnc_id
+          tnc_list {
+            order
+            description
+          }
+        }
+      }
+    }
+    validateTradeIn {
+      isEligible
+      isDiagnosed
+      useKyc
+      usedPrice
+      remainingPrice
+      message
+      widgetString
+    }
+    cartRedirection {
+      errorMessage
+      status
+      cartRedirectionData {
+        configName
+        availableButtons {
+          text
+          color
+          cartType
+          onBoardingMessage
+          showRecommendation
+        }
+        unavailableButtons
+      }
+    }
+    upcomingCampaigns {
+       campaignID
+       campaignType
+       campaignTypeName
+       startDate
+       endDate
+       notifyMe
+       ribbonCopy
+       upcomingType
+     }
+    reviewImage{
+      list {
+        imageID
+        reviewID
+        imageSibling
+      }
+      detailReviewImage{
+        images {
+          imageAttachmentID
+          description
+          uriThumbnail
+          uriLarge
+          reviewID
+        }
+        reviews {
+          reviewID
+          message
+          ratingDescription
+          rating
+          updateTime
+          timeFormat {
+            dateTimeFmt1
+          }
+        }
+      }
+    }
+    shopTopChatSpeed {
+      messageResponseTime
+    }
+    shopRatingsQuery {
+      ratingScore
+    }
+    shopPackSpeed {
+      speedFmt
+    }
+    shopFeature{
+      IsGoApotik
+    }
+  }
+}

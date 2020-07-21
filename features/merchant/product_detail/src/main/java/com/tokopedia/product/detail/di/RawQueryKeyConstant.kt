@@ -6,6 +6,7 @@ object RawQueryKeyConstant {
     const val QUERY_SHOP_CHAT_SPEED = "query_shop_chat_speed"
     const val QUERY_SHOP_RATING = "query_shop_rating"
     const val QUERY_SHOP_BADGE = "query_shop_badge"
+    const val QUERY_P2_DATA = "query_p2_data"
     const val QUERY_SHOP_COMMITMENT = "query_shop_commitment"
     const val QUERY_PRODUCT_INFO = "query_product_info"
     const val QUERY_TRADE_IN = "query_trade_in"

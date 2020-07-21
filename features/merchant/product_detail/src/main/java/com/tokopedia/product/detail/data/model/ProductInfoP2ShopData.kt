@@ -10,7 +10,6 @@ import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 
 data class ProductInfoP2ShopData(
         var shopInfo: ShopInfo? = null,
-        var shopCod: Boolean = false,
         var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse(),
         var tradeinResponse: TradeinResponse? = null,
         var cartRedirectionResponse: CartRedirectionResponse = CartRedirectionResponse(),

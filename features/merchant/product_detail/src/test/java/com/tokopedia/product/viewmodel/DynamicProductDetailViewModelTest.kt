@@ -506,7 +506,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
-        Assert.assertEquals(viewModel.p2ShopDataResp.value?.shopCod, anyBoolean())
         Assert.assertTrue(viewModel.p2ShopDataResp.value?.cartRedirectionResponse?.cartRedirection?.data?.size != 0)
 
         coVerify {
@@ -632,7 +631,6 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.shopInfo)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
-        Assert.assertEquals(viewModel.p2ShopDataResp.value?.shopCod, anyBoolean())
         //Make sure not called
         coVerify(inverse = true) {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -660,7 +658,7 @@ class DynamicProductDetailViewModelTest {
      */
     @Test
     fun `process initial variant`() {
-        viewModel.processInitialVariant(ProductVariantCommon(), mutableMapOf())
+        viewModel.processVariant(ProductVariantCommon(), mutableMapOf())
 
         Assert.assertTrue(viewModel.initialVariantData.value != null)
     }

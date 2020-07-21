@@ -2,11 +2,20 @@ package com.tokopedia.product.detail.data.model.purchaseprotection
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.data.model.P2Error
 
-class ProductPurchaseProtectionInfo{
+data class ProductPurchaseProtectionInfo(
+        @SerializedName("program")
+        @Expose
+        var ppItemDetailPage: PPItemDetailPage = PPItemDetailPage(),
 
-    @SerializedName("ppGetItemDetailPage")
-    @Expose
-    var ppItemDetailPage: PPItemDetailPage? = PPItemDetailPage(false,"","","","")
-
+        @SerializedName("error")
+        @Expose
+        var ppError: P2Error = P2Error()
+) {
+    data class Response(
+            @SerializedName("ppGetItemDetailPage")
+            @Expose
+            var response: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo()
+    )
 }

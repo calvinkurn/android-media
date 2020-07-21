@@ -106,7 +106,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val productPPParams = mapOf("param" to PPItemDetailRequest(productId = productId, shopId = shopId, userId = userId, categoryId = categoryId,
                 condition = condition.toLowerCase(), productTitle = productTitle, price = productPrice))
         val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
-                ProductPurchaseProtectionInfo::class.java, productPPParams)
+                ProductPurchaseProtectionInfo.Response::class.java, productPPParams)
 
 
         val helpfulReviewParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId)
@@ -118,9 +118,9 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 TalkList.Response::class.java, latestTalkParams)
 
         val discussionMostHelpfulParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString(),
-            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString())
+                ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString())
         val discussionMostHelpfulRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
-            DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
+                DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
 
         val shopFeatureParam = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString())
         val shopFeatureRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
@@ -196,9 +196,12 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 productInfoP2.discussionMostHelpful = DiscussionMostHelpful()
             }
 
-            if (gqlResponse.getError(ProductPurchaseProtectionInfo::class.java)?.isNotEmpty() != true) {
-                productInfoP2.productPurchaseProtectionInfo =
-                        gqlResponse.getData(ProductPurchaseProtectionInfo::class.java)
+            if (gqlResponse.getError(ProductPurchaseProtectionInfo.Response::class.java)?.isNotEmpty() != true) {
+                val data = gqlResponse.getData<ProductPurchaseProtectionInfo.Response>(ProductPurchaseProtectionInfo.Response::class.java).response
+                if (!data.ppError.isError) {
+                    productInfoP2.productPurchaseProtectionInfo = data
+                }
+
             }
 
             if (gqlResponse.getError(ShopFeatureResponse::class.java)?.isNotEmpty() != true) {

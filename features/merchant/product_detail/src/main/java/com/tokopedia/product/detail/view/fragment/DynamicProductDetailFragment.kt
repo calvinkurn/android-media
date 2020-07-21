@@ -2108,7 +2108,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1
-        val shopInfo = viewModel.shopInfo
 
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
