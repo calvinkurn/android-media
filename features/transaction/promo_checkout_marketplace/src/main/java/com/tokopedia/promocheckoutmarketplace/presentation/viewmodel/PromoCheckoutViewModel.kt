@@ -809,7 +809,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     private fun setApplyPromoStateSuccess(request: ValidateUsePromoRequest, response: ValidateUsePromoRevamp) {
         applyPromoResponseAction.value?.let {
-            it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
+            it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE
             it.data = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response)
             it.lastValidateUseRequest = request
             _applyPromoResponseAction.value = it
