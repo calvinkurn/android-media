@@ -40,5 +40,6 @@
     <string name="label_oops">Oopppsss..</string>
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
     <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
+    <string name="label_button_change_search">Ganti Pencarian</string>
 
 </resources>
