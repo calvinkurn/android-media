@@ -8,4 +8,8 @@ sealed class PlayPusherNetworkState {
     object Poor : PlayPusherNetworkState()
     object Loss : PlayPusherNetworkState()
     object Recover : PlayPusherNetworkState()
+    object ConnectFailed : PlayPusherNetworkState()
+    object ReconnectFailed : PlayPusherNetworkState()
+    object ReConnectStart : PlayPusherNetworkState()
+    object ReConnectSucceed : PlayPusherNetworkState()
 }

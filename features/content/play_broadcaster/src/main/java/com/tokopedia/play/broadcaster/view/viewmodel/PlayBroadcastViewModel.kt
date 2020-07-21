@@ -233,23 +233,18 @@ class PlayBroadcastViewModel @Inject constructor(
                 override fun onTimerActive(remainingTime: String) {
                     _observableLiveDuration.value = Event(BroadcastTimerState.Active(remainingTime))
                 }
-
                 override fun onTimerAlmostFinish(minutesUntilFinished: Long) {
                     _observableLiveDuration.value = Event(BroadcastTimerState.AlmostFinish(minutesUntilFinished))
                 }
-
                 override fun onTimerFinish() {
                     _observableLiveDuration.value = Event(BroadcastTimerState.Finish)
                 }
-
                 override fun onReachMaximumPauseDuration() {
                     _observableLiveDuration.value = Event(BroadcastTimerState.ReachMaximumPauseDuration)
                 }
-
                 override fun onStop(timeElapsed: String) {
                     retrievedReportDuration(timeElapsed)
                 }
-
             })
         }) {
         }
@@ -332,6 +327,7 @@ class PlayBroadcastViewModel @Inject constructor(
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
+                playPusher.stopPreview()
                 playSocket.destroy()
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
