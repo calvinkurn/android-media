@@ -26,6 +26,7 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.price.model.ProductPrice
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.product.manage.item.variant.dialog.ProductChangeVariantPriceDialogFragment
@@ -41,15 +42,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
 
     private var productPrice = ProductPrice()
-    private val isOfficialStore by lazy {
-        activity?.intent?.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) ?: false
-    }
-    private val hasVariant by lazy {
-        activity?.intent?.getBooleanExtra(EXTRA_HAS_VARIANT, false) ?: false
-    }
-    private val isGoldMerchant by lazy {
-        activity?.intent?.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) ?: false
-    }
+    private var productStock = 0
+    private val isOfficialStore by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) ?: false }
+    private val hasVariant by lazy { activity?.intent?.getBooleanExtra(EXTRA_HAS_VARIANT, false) ?: false }
+    private val isGoldMerchant by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) ?: false}
 
     private var wholesalePrice: ArrayList<ProductWholesaleViewModel> = ArrayList()
 
@@ -59,14 +55,16 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         activity?.run {
-            if (intent.hasExtra(EXTRA_PRICE)) {
-                productPrice = intent.getParcelableExtra(EXTRA_PRICE) ?: ProductPrice()
+            if(intent.hasExtra(EXTRA_PRICE)) {
+                productPrice = intent.getParcelableExtra(EXTRA_PRICE)
+            }
+            if(intent.hasExtra(EXTRA_STOCK)) {
+                productStock = intent.getIntExtra(EXTRA_STOCK, 0)
             }
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_PRICE)) {
                 productPrice = savedInstanceState.getParcelable(SAVED_PRODUCT_PRICE)
-                        ?: ProductPrice()
             }
         }
     }
@@ -83,14 +81,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             }
         }
         showDataPrice(productPrice)
-        texViewMenu?.run {
-            text = getString(R.string.label_save)
+        texViewMenu?.run {  text = getString(R.string.label_save)
             setOnClickListener {
-                if (isDataValid()) {
+                if(isDataValid()){
                     setResult(false)
                 }
-            }
-        }
+            }}
 
         editTextMinOrder.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(editable: Editable) {
@@ -108,7 +104,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             }
         })
 
-        textAddMaksimumBuy.setOnClickListener { showOrderMaxForm() }
+        textAddMaksimumBuy.setOnClickListener{showOrderMaxForm()}
 
         counterEditText.textFieldIcon1.setOnClickListener { showEditPriceDialog() }
 
@@ -116,15 +112,14 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             startActivityForResult(ProductAddWholesaleActivity
                     .getIntent(context, wholesalePrice, selectedCurrencyType, counterEditText
                             .textFieldInput.text.toString().replace(",", "").toDouble(),
-                            isOfficialStore, hasVariant), REQUEST_CODE_GET_WHOLESALE)
-        }
+                            isOfficialStore, hasVariant), REQUEST_CODE_GET_WHOLESALE) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_WHOLESALE -> {
-                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE) ?: arrayListOf()
+                    wholesalePrice = data.getParcelableArrayListExtra(EXTRA_PRODUCT_WHOLESALE)
                     setEditTextPriceState(wholesalePrice)
                     setLabelViewWholesale(wholesalePrice)
                 }
@@ -140,7 +135,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         showDataPrice(productPrice)
     }
 
-    private fun showDataPrice(productPrice: ProductPrice) {
+    private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
         setPriceTextChangedListener()
         counterEditText.textFieldInput.setText(String.format("%.0f", productPrice.price))
@@ -149,13 +144,13 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
 
-        editTextMinOrder.text = if (productPrice.minOrder > 0)
+        editTextMinOrder.text = if(productPrice.minOrder > 0)
             productPrice.minOrder.toString()
         else
             MIN_ORDER
 
         editTextMaxOrder.text = productPrice.maxOrder.toString()
-        if (productPrice.maxOrder > 0) {
+        if(productPrice.maxOrder > 0) {
             editTextMaxOrder.text = productPrice.maxOrder.toString()
             showOrderMaxForm()
         }
@@ -173,7 +168,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         if (!ProductPriceRangeUtils.isPriceValid(getPriceValue(), selectedCurrencyType, isOfficialStore) || getPriceValue() == DEFAULT_PRICE) {
             counterEditText.setError(true)
             counterEditText.setMessage(
-                    getString(R.string.product_error_product_price_not_valid,
+                            getString(R.string.product_error_product_price_not_valid,
                             ProductPriceRangeUtils.getMinPriceString(selectedCurrencyType, isOfficialStore),
                             ProductPriceRangeUtils.getMaxPriceString(selectedCurrencyType, isOfficialStore)))
             labelViewWholesale.visibility = View.GONE
@@ -193,12 +188,16 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid, MIN_ORDER, MAX_ORDER))
             return false
         }
+        else if (getMinOrderValue() > productStock) {
+            editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid_3))
+            return false
+        }
         editTextMinOrder.setError(null)
         return true
     }
 
     private fun isMaxOrderValid(): Boolean {
-        if (getMinOrderValue() > 0) {
+        if(getMinOrderValue() > 0) {
             if (MIN_ORDER.removeCommaToInt() > getMinOrderValue() || getMinOrderValue() > MAX_ORDER.removeCommaToInt()) {
                 editTextMaxOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid, MIN_ORDER, MAX_ORDER))
                 return false
@@ -209,7 +208,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     }
 
     private fun showEditPriceDialog() {
-        if (wholesalePrice.size > 0) {
+        if (wholesalePrice.size>0) {
             val builder = AlertDialog.Builder(context!!,
                     R.style.AppCompatAlertDialogStyle)
             builder.setTitle(R.string.product_title_confirmation_change_wholesale_price)
@@ -232,7 +231,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun showEditPriceWhenHasVariantDialog() {
+    private fun showEditPriceWhenHasVariantDialog(){
         val dialogFragment = ProductChangeVariantPriceDialogFragment.newInstance(selectedCurrencyType,
                 isGoldMerchant,
                 getPriceValue(),
@@ -254,12 +253,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun showOrderMaxForm() {
+    private fun showOrderMaxForm(){
         editTextMaxOrder.visibility = View.VISIBLE
         textAddMaksimumBuy.visibility = View.GONE
     }
 
-    private fun setPriceTextChangedListener() {
+    private fun setPriceTextChangedListener(){
         if (selectedCurrencyType == CurrencyTypeDef.TYPE_IDR) {
             counterEditText.textFieldInput.addTextChangedListener(idrTextWatcher)
         } else {
@@ -267,11 +266,11 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun setLabelViewWholesale(wholesaleList: ArrayList<ProductWholesaleViewModel>) {
+    private fun setLabelViewWholesale(wholesaleList: ArrayList<ProductWholesaleViewModel>){
         labelViewWholesale.setContent(if (wholesaleList.size == 0) getString(R.string.label_add) else getString(R.string.product_count_wholesale, wholesaleList.size))
     }
 
-    private fun setEditTextPriceState(wholesaleList: ArrayList<ProductWholesaleViewModel>) {
+    private fun setEditTextPriceState(wholesaleList: ArrayList<ProductWholesaleViewModel>){
         if (wholesaleList.size == 0 && !hasVariant) {
             setEnablePriceForm(true)
             counterEditText.textFieldInput.setSelection(
@@ -281,26 +280,26 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun setEnablePriceForm(isEnabled: Boolean) {
+    private fun setEnablePriceForm(isEnabled : Boolean){
         counterEditText.textFieldInput.isEnabled = isEnabled
-        counterEditText.textFieldIcon1.visibility = if (isEnabled) View.GONE else View.VISIBLE
+        counterEditText.textFieldIcon1.visibility = if(isEnabled) View.GONE else View.VISIBLE
     }
 
     private fun saveData(productPrice: ProductPrice) = productPrice.apply {
-        currencyType = selectedCurrencyType
-        price = getPriceValue()
-        wholesalePrice = this@ProductEditPriceFragment.wholesalePrice
-        minOrder = getMinOrderValue().toInt()
-        maxOrder = getMaxOrderValue().toInt()
-    }
+            currencyType = selectedCurrencyType
+            price = getPriceValue()
+            wholesalePrice = this@ProductEditPriceFragment.wholesalePrice
+            minOrder = getMinOrderValue().toInt()
+            maxOrder = getMaxOrderValue().toInt()
+        }
 
-    private fun isDataValid(): Boolean {
-        if (!isPriceValid()) {
+    private fun isDataValid(): Boolean{
+        if(!isPriceValid()){
             counterEditText.requestFocus()
             UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
             return false
         }
-        if (!isMinOrderValid()) {
+        if(!isMinOrderValid()){
             editTextMinOrder.requestFocus()
             UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
             return false
@@ -308,7 +307,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         return true
     }
 
-    private fun setResult(isMoveToGm: Boolean) {
+    private fun setResult(isMoveToGm: Boolean){
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_PRICE, saveData(productPrice))

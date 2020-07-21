@@ -1,14 +1,15 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationDetail;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationDetailsAttribute;
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.JourneyEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PassengerEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.RefundDetailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderJourneyMapper;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderPassengerViewModelMapper;
@@ -67,7 +68,14 @@ public class FlightOrderEntityToCancellationListMapper {
         cancellationItem.setStatusStr(cancellation.getStatusStr());
         cancellationItem.setStatusType(cancellation.getStatusType());
         cancellationItem.setRefundInfo(cancellation.getRefundInfo());
-        cancellationItem.setRefundDetail(cancellation.getRefundDetail());
+        if (cancellation.getRefundDetail() != null &&
+                cancellation.getRefundDetail().getTopInfo() != null &&
+                cancellation.getRefundDetail().getMiddleInfo() != null &&
+                cancellation.getRefundDetail().getBottomInfo() != null) {
+            cancellationItem.setRefundDetail(cancellation.getRefundDetail());
+        } else {
+            cancellationItem.setRefundDetail(new RefundDetailEntity());
+        }
 
         return cancellationItem;
     }
