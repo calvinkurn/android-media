@@ -18,9 +18,12 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.MixLeftViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -40,7 +43,13 @@ private const val TAG = "DynamicChannelComponentAnalyticsTest"
 class DynamicChannelComponentAnalyticsTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
+    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponse(HomeMockResponseConfig())
+        }
+    }
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 

@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
+import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -45,6 +47,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -173,15 +176,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel.getDiscoveryData()
     }
 
-    private fun sendOpenScreenAnalytics(identifier: String?) {
-        if (identifier.isNullOrEmpty()) {
-            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, isUserLoggedIn())
-        } else {
-            getDiscoveryAnalytics().trackOpenScreen(identifier, isUserLoggedIn())
-        }
-        openScreenStatus = true
-    }
-
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -229,6 +223,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                         globalError.setType(GlobalError.NO_CONNECTION)
                     } else {
                         globalError.setType(GlobalError.SERVER_ERROR)
+                        Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
                     }
                     globalError.show()
                     globalError.setOnClickListener {
@@ -384,27 +379,23 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             if (!openScreenStatus) {
                 when (it) {
                     is Success -> {
-                        sendOpenScreenAnalytics(it.data.identifier)
+                        sendOpenScreenAnalytics(it.data.identifier, it.data.additionalInfo)
                     }
-
-                    is Fail -> {
-                        sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
-                    }
+                    else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
             }
         })
-
-        if (!openScreenStatus) {
-            when (val discoPageInfo = discoveryViewModel.getDiscoveryPageInfo().value) {
-                is Success -> {
-                    sendOpenScreenAnalytics(discoPageInfo.data.identifier)
-                }
-                is Fail -> {
-                    sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
-                }
-            }
-        }
     }
+
+    private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
+        if (identifier.isNullOrEmpty()) {
+            getDiscoveryAnalytics().trackOpenScreen(discoveryViewModel.pageIdentifier, additionalInfo, isUserLoggedIn())
+        } else {
+            getDiscoveryAnalytics().trackOpenScreen(identifier, additionalInfo, isUserLoggedIn())
+        }
+        openScreenStatus = true
+    }
+
 
     override fun onStop() {
         super.onStop()

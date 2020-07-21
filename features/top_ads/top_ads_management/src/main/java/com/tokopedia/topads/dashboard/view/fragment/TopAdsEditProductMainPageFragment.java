@@ -2,22 +2,23 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.R;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleProductActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -41,7 +42,7 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductPresenterImpl<ProductAd>(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity())),
+                new TopAdsManagementService(new UserSession(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 
