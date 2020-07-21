@@ -13,6 +13,7 @@ import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellation
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import javax.inject.Inject
@@ -30,6 +31,20 @@ class FlightCancellationReasonViewModel @Inject constructor(
     var editedAttachmentPosition: Int = -1
 
     private val attachmentModelList: MutableList<FlightCancellationAttachmentModel> = arrayListOf()
+    private val attachmentMandatory: Boolean
+        get() {
+            return selectedReason?.let {
+                it.formattedRequiredDocs.size > 0 && attachmentModelList.size > 0
+            } ?: false
+        }
+
+    private val mutableCanNavigateToNextStep = MutableLiveData<Boolean>()
+    val canNavigateToNextStep: LiveData<Boolean>
+        get() = mutableCanNavigateToNextStep
+
+    private val mutableAttachmentErrorString = MutableLiveData<Pair<Int, Any>>()
+    val attachmentErrorString: LiveData<Pair<Int, Any>>
+        get() = mutableAttachmentErrorString
 
     private val mutableAttachmentErrorStringRes = MutableLiveData<Int>()
     val attachmentErrorStringRes: LiveData<Int>
@@ -40,6 +55,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
         get() = mutableViewAttachmentModelList
 
     init {
+        mutableCanNavigateToNextStep.value = false
         mutableAttachmentErrorStringRes.value = DEFAULT_STRING_RES_ERROR
     }
 
@@ -79,6 +95,35 @@ class FlightCancellationReasonViewModel @Inject constructor(
             attachmentModel.isUploaded = false
 
             buildViewAttachmentList(attachmentModel.docType)
+        }
+    }
+
+    fun onNextButtonClicked() {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            if (attachmentMandatory) {
+                val totalPassenger = calculateTotalPassenger()
+                val attachmentToUpload = buildAttachmentForUpload()
+
+                val isValidAttachment = !attachmentMandatory || (attachmentMandatory && attachmentToUpload.isNotEmpty())
+                if (!isValidAttachment) mutableAttachmentErrorStringRes.postValue(R.string.flight_cancellation_attachment_required_error_message)
+
+                val isValidAttachmentLength = !attachmentMandatory || (attachmentMandatory && totalPassenger > 0)
+                if (!isValidAttachmentLength) {
+                    mutableAttachmentErrorString.postValue(Pair(
+                            R.string.flight_cancellation_attachment_more_than_max_error_message,
+                            totalPassenger + 1
+                    ))
+                }
+
+                if (attachmentMandatory && isValidAttachmentLength) {
+//                    uploadAttachmentAndBuildModel()
+                }
+
+            } else {
+                mutableCanNavigateToNextStep.postValue(true)
+            }
+        }) {
+            it.printStackTrace()
         }
     }
 
@@ -124,6 +169,43 @@ class FlightCancellationReasonViewModel @Inject constructor(
             true
         }
     }
+
+    private fun buildAttachmentForUpload(): List<FlightCancellationAttachmentModel> {
+        val attachmentsToUpload = arrayListOf<FlightCancellationAttachmentModel>()
+
+        viewAttachmentModelList.value?.let {
+            for (attachment in attachmentModelList) {
+                val indexInView = it.indexOf(attachment)
+                if (indexInView != -1) {
+                    val selectedViewAttachment = it[indexInView]
+                    attachment.filename = selectedViewAttachment.filename
+                    attachment.filepath = selectedViewAttachment.filepath
+                    attachment.docType = selectedViewAttachment.docType
+                    attachment.isUploaded = selectedViewAttachment.isUploaded
+
+                    attachmentsToUpload.add(attachment)
+                }
+            }
+        }
+
+        return attachmentsToUpload
+    }
+
+    private fun calculateTotalPassenger(): Int {
+        val uniquePassenger = arrayListOf<String>()
+
+        for (cancellation in cancellationWrapperModel.cancellationList) {
+            for (passenger in cancellation.passengerModelList) {
+                if (!uniquePassenger.contains(passenger.passengerId) &&
+                        passenger.type == FlightBookingPassenger.ADULT) {
+                    uniquePassenger.add(passenger.passengerId)
+                }
+            }
+        }
+
+        return uniquePassenger.size
+    }
+
 
     companion object {
         const val DEFAULT_STRING_RES_ERROR = -1

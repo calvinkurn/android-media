@@ -90,6 +90,20 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
                 showErrorSnackbar(it)
             }
         })
+
+        cancellationReasonViewModel.attachmentErrorString.observe(viewLifecycleOwner, Observer {
+            try {
+                showErrorSnackbar(String.format(getString(it.first), it.second))
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+
+        cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                hideProgressBar()
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -154,7 +168,8 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         rv_attachments.adapter = adapter
 
         btn_next.setOnClickListener {
-            //            onNextButtonClicked()
+            showProgressBar()
+            cancellationReasonViewModel.onNextButtonClicked()
         }
 
         buildAttachmentReasonView()
@@ -238,6 +253,10 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     private fun showErrorSnackbar(resId: Int) {
         Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+    }
+
+    private fun showErrorSnackbar(message: String) {
+        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
     }
 
     private fun showImageInFragment(filePath: String) {
