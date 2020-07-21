@@ -5,13 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;

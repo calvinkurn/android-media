@@ -11,6 +11,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private val adapterPosition = 1
     private val userId = "12345678"
+    private val className = "SearchClassName"
     private val capturedProductItemViewModel = slot<ProductItemViewModel>()
 
     @Test
@@ -34,6 +35,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.productID = "12345"
             it.productName = "Pixel 4"
             it.price = "Rp100.000.000"
+            it.imageUrl = imageUrl
             it.categoryID = 13
             it.isTopAds = true
             it.topadsImpressionUrl = topAdsImpressionUrl
@@ -41,15 +43,30 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
             it.position = 1
         }
 
+        `Given className from view`()
+
         `When handle product click`(productItemViewModel)
 
         `Then verify view interaction for Top Ads Product`(productItemViewModel)
         `Then verify position is correct`(productItemViewModel)
     }
 
+    private fun `Given className from view`() {
+        every { productListView.className } returns className
+    }
+
     private fun `Then verify view interaction for Top Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
+            productListView.className
+
+            topAdsUrlHitter.hitClickUrl(
+                    className,
+                    productItemViewModel.topadsClickUrl,
+                    productItemViewModel.productID,
+                    productItemViewModel.productName,
+                    productItemViewModel.imageUrl
+            )
+
             productListView.sendTopAdsGTMTrackingProductClick(capture(capturedProductItemViewModel))
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }
@@ -98,6 +115,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         val productItemViewModel = ProductItemViewModel().also {
             it.productID = "12345"
             it.productName = "Pixel 4"
+            it.imageUrl = imageUrl
             it.price = "Rp100.000.000"
             it.categoryID = 13
             it.isTopAds = false
@@ -107,6 +125,7 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
         }
 
         `Given user session data`()
+        `Given className from view`()
 
         `When handle product click`(productItemViewModel)
 
@@ -115,7 +134,16 @@ internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixt
 
     private fun `Then verify view interaction is correct for organic Ads Product`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsClickUrl)
+            productListView.className
+
+            topAdsUrlHitter.hitClickUrl(
+                    className,
+                    productItemViewModel.topadsClickUrl,
+                    productItemViewModel.productID,
+                    productItemViewModel.productName,
+                    productItemViewModel.imageUrl
+            )
+
             productListView.sendGTMTrackingProductClick(productItemViewModel, userId)
             productListView.routeToProductDetail(productItemViewModel, adapterPosition)
         }

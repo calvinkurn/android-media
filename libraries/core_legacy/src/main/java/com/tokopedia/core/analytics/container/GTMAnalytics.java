@@ -1008,6 +1008,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
+            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
+                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
