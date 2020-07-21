@@ -57,7 +57,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
 
     private fun handleResponse(activity: Activity?, twoFactorResult: TwoFactorResult){
-        if(twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN){
+        if(twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_BOTH){
             val i = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER).apply {
                 putExtras(Bundle().apply {
                     putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
