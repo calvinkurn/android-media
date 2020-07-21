@@ -138,7 +138,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOffset()
-        fetchStatisticAbTestRemoteConfig()
         setupView(view)
         observeLiveData()
         observeFreeShippingStatus()
@@ -299,6 +298,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun populateAdapterData() {
+        fetchStatisticAbTestRemoteConfig()
+
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(
