@@ -11,7 +11,10 @@ import com.tokopedia.statistic.utils.TestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -345,5 +348,128 @@ class StatisticViewModelTest {
         }
 
         assert(viewModel.carouselWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get table widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(TableDataUiModel(), TableDataUiModel())
+
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        coVerify {
+            getTableDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.tableWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get table widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        coVerify {
+            getTableDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.tableWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get pie chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
+
+        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getPieChartDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getPieChartWidgetData(dataKeys)
+
+        coVerify {
+            getPieChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get pie chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getPieChartDataUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+
+        viewModel.getPieChartWidgetData(dataKeys)
+
+        coVerify {
+            getPieChartDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.pieChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get bar chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
+
+        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getBarChartDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getBarChartWidgetData(dataKeys)
+
+        coVerify {
+            getBarChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get bar chart widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getBarChartDataUseCase.executeOnBackground()
+        } throws MessageErrorException("error")
+
+        viewModel.getBarChartWidgetData(dataKeys)
+
+        coVerify {
+            getBarChartDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.barChartWidgetData.value is Fail)
     }
 }
