@@ -1747,24 +1747,29 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendImpressionInspirationCarousel(InspirationCarouselViewModel inspirationCarouselViewModel) {
+    public void sendImpressionInspirationCarouselList(InspirationCarouselViewModel inspirationCarouselViewModel) {
         List<Object> products = new ArrayList<>();
 
         for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
             for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
-                if (option.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
-                    products.add(object.getInspirationCarouselListProductImpressionAsObjectDataLayer());
-                } else if (option.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
-                    products.add(object.getInspirationCarouselInfoProductAsObjectDataLayer());
-                }
+                products.add(object.getInspirationCarouselListProductImpressionAsObjectDataLayer());
             }
         }
 
-        if (inspirationCarouselViewModel.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
-            SearchTracking.trackImpressionInspirationCarouselList(inspirationCarouselViewModel.getType(), getQueryKey(), products);
-        } else if (inspirationCarouselViewModel.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
-            SearchTracking.trackImpressionInspirationCarouselInfo(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+        SearchTracking.trackImpressionInspirationCarouselList(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+    }
+
+    @Override
+    public void sendImpressionInspirationCarouselInfo(InspirationCarouselViewModel inspirationCarouselViewModel) {
+        List<Object> products = new ArrayList<>();
+
+        for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
+            for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
+                products.add(object.getInspirationCarouselInfoProductAsObjectDataLayer());
+            }
         }
+
+        SearchTracking.trackImpressionInspirationCarouselInfo(inspirationCarouselViewModel.getType(), getQueryKey(), products);
     }
 
     @Override

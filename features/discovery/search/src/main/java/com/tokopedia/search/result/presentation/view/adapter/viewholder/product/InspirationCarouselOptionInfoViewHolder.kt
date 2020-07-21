@@ -51,13 +51,8 @@ class InspirationCarouselOptionInfoViewHolder(
 
     private fun bindProductDesc(descriptions: List<String>) {
         itemView.optionInfoDesc?.shouldShowWithAction(descriptions.isNotEmpty()) {
-            descriptions.forEachIndexed { index, desc ->
-                when (index) {
-                    0 -> itemView.optionInfoDesc?.text = desc + "\n"
-                    descriptions .lastIndex -> itemView.optionInfoDesc?.append(desc)
-                    else -> itemView.optionInfoDesc?.append(desc + "\n")
-                }
-            }
+            val desc = descriptions.joinToString(separator = "\n")
+            itemView.optionInfoDesc?.text = desc
         }
     }
 
