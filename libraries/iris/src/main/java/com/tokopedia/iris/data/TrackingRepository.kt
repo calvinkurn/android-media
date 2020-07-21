@@ -106,11 +106,11 @@ class TrackingRepository(
             val response = apiService.sendSingleEventAsync(requestBody)
             val isSuccessFul = response.isSuccessful
             if (!isSuccessFul) {
-                Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
+                Timber.e("P1#IRIS_REALTIME_ERROR#sendSingleEventNotSuccess %s", data.take(ERROR_MAX_LENGTH).trim())
             }
             return isSuccessFul
         } catch (e: Exception) {
-            Timber.e("P1#IRIS_REALTIME_ERROR#%s %s", data, Log.getStackTraceString(e))
+            Timber.e("P1#IRIS_REALTIME_ERROR#'${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
             return false
         }
     }
@@ -171,5 +171,9 @@ class TrackingRepository(
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    companion object {
+        const val ERROR_MAX_LENGTH = 1000
     }
 }
