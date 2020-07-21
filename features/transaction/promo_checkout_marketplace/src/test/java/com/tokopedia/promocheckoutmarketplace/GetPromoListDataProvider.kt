@@ -208,4 +208,48 @@ object GetPromoListDataProvider {
         return promoListUiModelList
     }
 
+    fun provideCurrentDisabledExpandedGlobalPromoData(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val selectedPromo = provideGetPromoListResponseSuccessAllExpanded().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
+        val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
+        selectedPromoUiModel.uiState.isSelected = false
+        selectedPromoUiModel.uiState.isDisabled = true
+        promoListUiModelList.add(selectedPromoUiModel)
+
+        return promoListUiModelList
+    }
+
+    fun provideCurrentDisabledExpandedMerchantPromoData(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val selectedPromo = provideGetPromoListResponseSuccessAllExpanded().couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
+        val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
+        selectedPromoUiModel.uiState.isSelected = false
+        selectedPromoUiModel.uiState.isDisabled = true
+        promoListUiModelList.add(selectedPromoUiModel)
+
+        return promoListUiModelList
+    }
+
+    fun provideCurrentDisabledCollapsedGlobalPromoData(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val selectedPromo = provideGetPromoListResponseSuccessAllCollapsed().couponListRecommendation.data.couponSections[0].subSections[0].coupons[0]
+        val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
+        selectedPromoUiModel.uiState.isSelected = false
+        selectedPromoUiModel.uiState.isDisabled = true
+        promoListUiModelList.add(selectedPromoUiModel)
+
+        return promoListUiModelList
+    }
+
+    fun provideCurrentDisabledCollapsedMerchantPromoData(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val selectedPromo = provideGetPromoListResponseSuccessAllCollapsed().couponListRecommendation.data.couponSections[0].subSections[1].coupons[0]
+        val selectedPromoUiModel = uiModelmapper.mapPromoListItemUiModel(selectedPromo, 0, true, emptyList())
+        selectedPromoUiModel.uiState.isSelected = false
+        selectedPromoUiModel.uiState.isDisabled = true
+        promoListUiModelList.add(selectedPromoUiModel)
+
+        return promoListUiModelList
+    }
+
 }

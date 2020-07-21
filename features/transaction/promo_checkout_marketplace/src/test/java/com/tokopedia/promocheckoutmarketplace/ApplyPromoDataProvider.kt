@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace
 
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
@@ -8,8 +9,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 object ApplyPromoDataProvider {
 
     private val gson = Gson()
-    private val uiModelmapper = PromoCheckoutUiModelMapper()
+    private val uiModelMapper = PromoCheckoutUiModelMapper()
     private val fileUtil = UnitTestFileUtils()
+
+    fun provideApplyPromoEmptyRequest(): ValidateUsePromoRequest {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_empty_request.json"), ValidateUsePromoRequest::class.java)
+    }
 
     fun provideApplyPromoGlobalRequest(): ValidateUsePromoRequest {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_global_request.json"), ValidateUsePromoRequest::class.java)

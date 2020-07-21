@@ -4,10 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantResponseSuccess
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseApplyManualFailed
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateBlacklisted
@@ -884,6 +889,82 @@ class TmpAllTest {
     }
 
     @Test
+    fun `WHEN apply promo global from expanded selected promo THEN promo request should contain promo global`() {
+        //given
+        val request = provideApplyPromoEmptyRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.codes.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN apply promo global and promo is disabled and expanded THEN promo request should not contain disabled promo global`() {
+        //given
+        val request = provideApplyPromoGlobalRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentDisabledExpandedGlobalPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.codes.isEmpty())
+    }
+
+    @Test
+    fun `WHEN apply promo global from collapsed selected promo THEN promo request should contain promo global`() {
+        //given
+        val request = provideApplyPromoEmptyRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.codes.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN apply promo global and promo is disabled and collapsed THEN promo request should not contain disabled promo global`() {
+        //given
+        val request = provideApplyPromoGlobalRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentDisabledCollapsedGlobalPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.codes.isEmpty())
+    }
+
+    @Test
     fun `WHEN apply promo merchant and get success result THEN apply promo response action is not null`() {
         //given
         val request = provideApplyPromoMerchantRequest()
@@ -899,6 +980,82 @@ class TmpAllTest {
 
         //then
         assertNotNull(viewModel.applyPromoResponseAction.value)
+    }
+
+    @Test
+    fun `WHEN apply promo merchant from expanded selected promo THEN promo request should contain promo merchant`() {
+        //given
+        val request = provideApplyPromoEmptyRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoMerchantResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentSelectedExpandedMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.orders[0]?.codes?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `WHEN apply promo merchant and promo is disabled and expanded THEN promo request should not contain disabled promo global`() {
+        //given
+        val request = provideApplyPromoMerchantRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoMerchantResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentDisabledExpandedMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.orders[0]?.codes?.isEmpty() == true)
+    }
+
+    @Test
+    fun `WHEN apply promo merchant from collapsed selected promo THEN promo request should contain promo merchant`() {
+        //given
+        val request = provideApplyPromoEmptyRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoMerchantResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentSelectedCollapsedMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.orders[0]?.codes?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `WHEN apply promo merchant and promo is disabled and collapsed THEN promo request should not contain disabled promo global`() {
+        //given
+        val request = provideApplyPromoMerchantRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoMerchantResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentDisabledCollapsedMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assert(request.orders[0]?.codes?.isEmpty() == true)
     }
 
 }
