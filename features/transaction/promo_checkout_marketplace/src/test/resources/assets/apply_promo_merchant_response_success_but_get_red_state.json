@@ -1,0 +1,96 @@
+{
+  "validate_use_promo_revamp": {
+    "status": "OK",
+    "message": [],
+    "error_code": "200",
+    "code": "200000",
+    "promo": {
+      "global_success": true,
+      "message": {
+        "state": "",
+        "color": "",
+        "text": ""
+      },
+      "success": true,
+      "codes": [],
+      "promo_code_id": 0,
+      "title_description": "Promo ",
+      "discount_amount": 0,
+      "cashback_wallet_amount": 0,
+      "cashback_advocate_referral_amount": 0,
+      "cashback_voucher_description": "",
+      "invoice_description": "",
+      "gateway_id": "",
+      "is_coupon": 0,
+      "coupon_description": "",
+      "is_tokopedia_gerai": false,
+      "voucher_orders": [
+        {
+          "code": "POMA3A96FB",
+          "success": false,
+          "unique_id": "239594-0-301643",
+          "cart_id": 0,
+          "order_id": 0,
+          "shop_id": 239594,
+          "is_po": 0,
+          "duration": "0",
+          "warehouse_id": 8100659,
+          "address_id": 0,
+          "type": "merchant",
+          "cashback_wallet_amount": 20000,
+          "discount_amount": 0,
+          "invoice_description": "",
+          "title_description": "Promo Cashback POMA3A96FB",
+          "message": {
+            "state": "red",
+            "color": "#ade3af",
+            "text": "Gagal menggunakan promo"
+          },
+          "benefit_details": []
+        }
+      ],
+      "benefit_details": [],
+      "clashing_info_detail": {
+        "clash_message": "",
+        "clash_reason": "",
+        "is_clashed_promos": false,
+        "options": []
+      },
+      "tracking_details": [
+        {
+          "product_id": 775172855,
+          "promo_codes_tracking": "POMA3A96FB",
+          "promo_details_tracking": "M:1:20000:red"
+        }
+      ],
+      "tokopoints_detail": {
+        "conversion_rate": {
+          "rate": 0,
+          "points_coefficient": 0,
+          "external_currency_coefficient": 0
+        }
+      },
+      "ticker_info": {
+        "unique_id": "",
+        "status_code": 0,
+        "message": ""
+      },
+      "additional_info": {
+        "message_info": {
+          "message": "",
+          "detail": ""
+        },
+        "error_detail": {
+          "message": ""
+        },
+        "empty_cart_info": {
+          "image_url": "",
+          "message": "",
+          "detail": ""
+        },
+        "usage_summaries": [],
+        "sp_ids": []
+      }
+    }
+  }
+}

@@ -117,6 +117,12 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         _promoListUiModel.value = value
     }
 
+    // Used for mocking _promoRecommendationUiModel value.
+    // Called from unit test.
+    fun setPromoRecommendationValue(value: PromoRecommendationUiModel) {
+        _promoRecommendationUiModel.value = value
+    }
+
 
     //---------------------------------------//
     /* Network Call Section : Get Promo List */
@@ -718,6 +724,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
 
         // Check all promo merchant is success
+        // Update : This section might be unnecessary
         var successCount = 0
         responseValidatePromo.voucherOrders.forEach { voucherOrder ->
             if (voucherOrder.success) {
@@ -727,6 +734,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 throw PromoErrorException(voucherOrder.message.text)
             }
         }
+
         if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrders.size) {
             var selectedRecommendationCount = 0
             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {

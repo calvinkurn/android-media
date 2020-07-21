@@ -5,10 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequest
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantResponseSuccess
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantSuccessButGetRedState
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
@@ -41,6 +44,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePr
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -869,6 +873,63 @@ class TmpAllTest {
 
 
     /* APPLY PROMO / Validate Use */
+
+    @Test
+    fun `WHEN apply promo and get success result THEN apply promo response action is not null`() {
+        //given
+        val request = provideApplyPromoGlobalAndMerchantRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalAndMerchantResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+                uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
+                uiState = PromoRecommendationUiModel.UiState())
+        )
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value)
+    }
+
+    @Test
+    fun `WHEN apply promo and get success result THEN apply promo response action state should be navigate to caller page`() {
+        //given
+        val request = provideApplyPromoGlobalAndMerchantRequest()
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalAndMerchantResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", request, ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE)
+    }
+
+    @Test
+    fun `WHEN apply promo success but have red state on voucher order THEN promo response action state should be error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoMerchantSuccessButGetRedState()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assert(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
 
     @Test
     fun `WHEN apply promo global and get success result THEN apply promo response action is not null`() {

@@ -40,4 +40,7 @@ object ApplyPromoDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_global_and_merchant_response_success.json"), ValidateUseResponse::class.java)
     }
 
+    fun provideApplyPromoMerchantSuccessButGetRedState(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_merchant_response_success_but_get_red_state.json"), ValidateUseResponse::class.java)
+    }
 }
