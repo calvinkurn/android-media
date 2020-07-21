@@ -96,8 +96,8 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                 if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
                     activity?.let {
                         val contactURI = data.data
-                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        searchInputNumber.searchText = contact.contactNumber
+                        val contact = contactURI?.covertContactUriToContactData(it.contentResolver)
+                        searchInputNumber.searchText = contact?.contactNumber ?: ""
                     }
                 }
             }
