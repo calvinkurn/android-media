@@ -18,7 +18,6 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
-import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
 import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
@@ -225,7 +224,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     fun changeLocationBasedOnCache(): Boolean {
         val location = dealsLocationUtils.getLocation()
-        if (location != currentLoc) {
+        if (location != currentLoc && !location.locType.name.equals("landmark", true)) {
             currentLoc = location
             renderLocationName(location.name)
             return true

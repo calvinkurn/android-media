@@ -73,7 +73,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
     }
 
     fun mapProducttoLayout(searchData: SearchData, page:Int): ProductListDataView {
-        val productsLayout = searchData.eventSearch.products.map {it ->
+        val productsLayout = searchData.eventSearch.products.map {
             ProductCardDataView(
                     id = it.id,
                     imageUrl = it.thumbnailApp,
