@@ -129,6 +129,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     private fun renderNotFound() {
         clearAllData()
+        hideTitleShimmering()
         renderList(listOf(DealsEmptyDataView(getString(R.string.deals_category_empty_title), getString(R.string.deals_category_empty_description))), false)
     }
 
@@ -249,12 +250,17 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     override fun showTitle(brands: DealsBrandsDataView) {
         if(!brands.title.isNullOrEmpty()) {
-            shimmering_title.hide()
+            hideTitleShimmering()
             tv_brand_title.show()
             unused_line.show()
             tv_brand_title.text = brands.title
         }
     }
+
+    private fun hideTitleShimmering(){
+        shimmering_title.hide()
+    }
+
 
     companion object {
         const val TAG = "DealsBrandFragment"
