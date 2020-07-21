@@ -148,35 +148,35 @@ class ChannelInfoViewModel() : Parcelable {
     }
 
     protected constructor(`in`: Parcel): this() {
-        this.channelId = `in`.readString()
-        this.title = `in`.readString()
-        this.channelUrl = `in`.readString()
-        this.bannerUrl = `in`.readString()
-        this.blurredBannerUrl = `in`.readString()
-        this.adsImageUrl = `in`.readString()
-        this.adsLink = `in`.readString()
-        this.adsId = `in`.readString()
-        this.adsName = `in`.readString()
-        this.bannerName = `in`.readString()
-        this.groupChatToken = `in`.readString()
-        this.adminName = `in`.readString()
-        this.image = `in`.readString()
-        this.adminPicture = `in`.readString()
-        this.description = `in`.readString()
-        this.totalView = `in`.readString()
-        this.channelPartnerViewModels = `in`.createTypedArrayList(ChannelPartnerViewModel.CREATOR)
-        this.bannedMessage = `in`.readString()
-        this.kickedMessage = `in`.readString()
+        this.channelId = `in`.readString() ?: ""
+        this.title = `in`.readString() ?: ""
+        this.channelUrl = `in`.readString() ?: ""
+        this.bannerUrl = `in`.readString() ?: ""
+        this.blurredBannerUrl = `in`.readString() ?: ""
+        this.adsImageUrl = `in`.readString() ?: ""
+        this.adsLink = `in`.readString() ?: ""
+        this.adsId = `in`.readString() ?: ""
+        this.adsName = `in`.readString() ?: ""
+        this.bannerName = `in`.readString() ?: ""
+        this.groupChatToken = `in`.readString() ?: ""
+        this.adminName = `in`.readString() ?: ""
+        this.image = `in`.readString() ?: ""
+        this.adminPicture = `in`.readString() ?: ""
+        this.description = `in`.readString() ?: ""
+        this.totalView = `in`.readString() ?: ""
+        this.channelPartnerViewModels = `in`.createTypedArrayList(ChannelPartnerViewModel.CREATOR) ?: arrayListOf()
+        this.bannedMessage = `in`.readString() ?: ""
+        this.kickedMessage = `in`.readString() ?: ""
         this.isFreeze = `in`.readByte().toInt() != 0
-        this.videoId = `in`.readString()
-        this.settingGroupChat = `in`.readParcelable(SettingGroupChat::class.java.classLoader)
-        this.overlayViewModel = `in`.readParcelable(OverlayViewModel::class.java.classLoader)
-        this.voteInfoViewModel = `in`.readParcelable(VoteInfoViewModel::class.java.classLoader)
-        this.sprintSaleViewModel = `in`.readParcelable(SprintSaleViewModel::class.java.classLoader)
-        this.groupChatPointsViewModel = `in`.readParcelable(GroupChatPointsViewModel::class.java.classLoader)
-        this.pinnedMessageViewModel = `in`.readParcelable(PinnedMessageViewModel::class.java.classLoader)
-        this.exitMessage = `in`.readParcelable(ExitMessage::class.java.classLoader)
-        this.quickRepliesViewModel = `in`.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR)
+        this.videoId = `in`.readString() ?: ""
+        this.settingGroupChat = `in`.readParcelable(SettingGroupChat::class.java.classLoader) ?: SettingGroupChat()
+        this.overlayViewModel = `in`.readParcelable(OverlayViewModel::class.java.classLoader) ?: OverlayViewModel()
+        this.voteInfoViewModel = `in`.readParcelable(VoteInfoViewModel::class.java.classLoader) ?: VoteInfoViewModel()
+        this.sprintSaleViewModel = `in`.readParcelable(SprintSaleViewModel::class.java.classLoader) ?: SprintSaleViewModel()
+        this.groupChatPointsViewModel = `in`.readParcelable(GroupChatPointsViewModel::class.java.classLoader) ?: GroupChatPointsViewModel()
+        this.pinnedMessageViewModel = `in`.readParcelable(PinnedMessageViewModel::class.java.classLoader) ?: PinnedMessageViewModel()
+        this.exitMessage = `in`.readParcelable(ExitMessage::class.java.classLoader) ?: ExitMessage()
+        this.quickRepliesViewModel = `in`.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR) ?: arrayListOf()
     }
 
     companion object {
