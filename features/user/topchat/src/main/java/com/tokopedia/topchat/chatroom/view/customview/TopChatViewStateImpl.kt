@@ -198,7 +198,7 @@ class TopChatViewStateImpl(
         sendListener.onEmptyProductPreview()
     }
 
-    private fun hideProductPreviewLayout() {
+    override fun hideProductPreviewLayout() {
         attachmentPreviewContainer.hide()
         setChatTemplatesBottomPadding(0)
     }

@@ -66,7 +66,7 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
         }
     }
 
-    protected fun isValidReply(message: String) = message.isNotBlank()
+    fun isValidReply(message: String) = message.isNotBlank()
 
     abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String)
 

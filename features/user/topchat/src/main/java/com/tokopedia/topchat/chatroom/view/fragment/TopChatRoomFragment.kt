@@ -133,6 +133,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var remoteConfig: RemoteConfig? = null
     private var sourcePage: String = ""
     private var createTime: String = ""
+    private var delaySendMessage: String = ""
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -379,24 +380,30 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        setupFirstTimeOnly(chatRoom, chat)
+        setupFirstPage(chatRoom, chat)
+        fpm.stopTrace()
+    }
+
+    private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
-                onSuccessGetShopFollowingStatus())
-        adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
+        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(), onSuccessGetShopFollowingStatus())
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
+        presenter.getStickerGroupList(chatRoom)
+        showStickerOnBoardingTooltip()
+    }
+
+    private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.getStickerGroupList(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
-        showStickerOnBoardingTooltip()
-
-        fpm.stopTrace()
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
@@ -646,15 +653,55 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = composeArea?.text.toString()
+        val message = getComposedMessage()
+        if (presenter.isInTheMiddleOfThePage() && presenter.isValidReply(message)) {
+            rvScrollListener?.reset()
+            adapter.reset()
+            presenter.resetChatUseCase()
+            showLoading()
+            delaySendMessage()
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+        } else {
+            sendMessage()
+        }
+    }
+
+    private fun onErrorResetChatToFirstPage(throwable: Throwable) {
+        hideLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        clearAttachmentPreviews()
+        delaySendMessage = ""
+    }
+
+    private fun getComposedMessage(message: String? = null): String {
+        return if (message != null && message.isNotEmpty()) {
+            message
+        } else {
+            composeArea?.text?.toString() ?: ""
+        }
+    }
+
+    private fun sendMessage(message: String? = null) {
+        val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
-                messageId,
-                sendMessage,
-                startTime,
-                opponentId,
-                onSendingMessage()
+                messageId, sendMessage, startTime, opponentId, onSendingMessage()
         )
+    }
+
+    private fun delaySendMessage() {
+        getViewState().scrollToBottom()
+        getViewState().hideProductPreviewLayout()
+        delaySendMessage = getComposedMessage()
+        clearEditText()
+    }
+
+    private fun onSuccessResetChatToFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
+        sendMessage(delaySendMessage)
+        setupFirstPage(chatRoom, chat)
+        delaySendMessage = ""
     }
 
     override fun onClickSticker(sticker: Sticker) {

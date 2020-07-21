@@ -157,6 +157,17 @@ class GetChatUseCase @Inject constructor(
         }
     }
 
+    fun isInTheMiddleOfThePage(): Boolean {
+        return hasNextAfter
+    }
+
+    fun reset() {
+        minReplyTime = ""
+        maxReplyTime = ""
+        hasNext = false
+        hasNextAfter = false
+    }
+
     companion object {
         private const val PARAM_MESSAGE_ID: String = "msgId"
         private const val PARAM_BEFORE_REPLY_TIME: String = "beforeReplyTime"

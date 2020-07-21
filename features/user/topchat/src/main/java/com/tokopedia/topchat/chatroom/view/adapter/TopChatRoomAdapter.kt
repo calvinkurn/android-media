@@ -184,4 +184,12 @@ class TopChatRoomAdapter(
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         diffResult.dispatchUpdatesTo(this)
     }
+
+    fun reset() {
+        visitables.clear()
+        bottomMostHeaderDate = null
+        topMostHeaderDate = null
+        topMostHeaderDateIndex = null
+        notifyDataSetChanged()
+    }
 }

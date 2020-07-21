@@ -183,5 +183,9 @@ interface TopChatContract {
         fun toolTipOnBoardingShown()
 
         fun setBeforeReplyTime(createTime: String)
+
+        fun isInTheMiddleOfThePage(): Boolean
+
+        fun resetChatUseCase()
     }
 }

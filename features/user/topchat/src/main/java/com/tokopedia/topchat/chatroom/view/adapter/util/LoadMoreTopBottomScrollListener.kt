@@ -74,4 +74,11 @@ abstract class LoadMoreTopBottomScrollListener(
     fun finishBottomLoadingState() {
         isLoadingBottom = false
     }
+
+    fun reset() {
+        hasNextPage = false
+        hasNextAfterPage = false
+        isLoadingTop = false
+        isLoadingBottom = false
+    }
 }

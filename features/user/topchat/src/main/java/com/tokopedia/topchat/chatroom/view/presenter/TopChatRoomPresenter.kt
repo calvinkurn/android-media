@@ -815,6 +815,14 @@ class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.minReplyTime = createTime
     }
 
+    override fun isInTheMiddleOfThePage(): Boolean {
+        return getChatUseCase.isInTheMiddleOfThePage()
+    }
+
+    override fun resetChatUseCase() {
+        getChatUseCase.reset()
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)
