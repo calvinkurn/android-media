@@ -31,4 +31,9 @@ class PropertyDetailData(@SerializedName("property")
                          @SerializedName("propertyPolicy")
                          @Expose
                          val propertyPolicy: List<PropertyPolicyData> = listOf())
-    : Parcelable
+    : Parcelable {
+    class Response(
+            @SerializedName("propertyDetail")
+            @Expose
+            val propertyDetailData: PropertyDetailData = PropertyDetailData())
+}
