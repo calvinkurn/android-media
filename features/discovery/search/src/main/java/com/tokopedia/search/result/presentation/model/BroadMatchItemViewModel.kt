@@ -15,6 +15,7 @@ data class BroadMatchItemViewModel(
         val shopLocation: String = "",
         val badgeItemViewModelList: List<BadgeItemViewModel> = listOf(),
         val freeOngkirViewModel: FreeOngkirViewModel = FreeOngkirViewModel(),
+        var isWishlisted: Boolean = false,
         val position: Int = 0,
         val alternativeKeyword: String = ""
 ) {

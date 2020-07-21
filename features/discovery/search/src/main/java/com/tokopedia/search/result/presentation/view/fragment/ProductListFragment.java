@@ -1870,7 +1870,7 @@ public class ProductListFragment
 
         productCardOptionsModel.setHasWishlist(true);
         productCardOptionsModel.setHasSimilarSearch(true);
-        productCardOptionsModel.setWishlisted(false);
+        productCardOptionsModel.setWishlisted(item.isWishlisted());
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
         productCardOptionsModel.setProductId(item.getId());
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);

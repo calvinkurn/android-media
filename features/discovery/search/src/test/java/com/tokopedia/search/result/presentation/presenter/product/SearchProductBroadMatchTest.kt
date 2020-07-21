@@ -16,6 +16,7 @@ import rx.Subscriber
 
 private const val broadMatchResponseCode1EmptySearch = "searchproduct/broadmatch/response-code-1-empty-search.json"
 private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadmatch/response-code-1-not-empty-search.json"
+private const val broadMatchResponseCode1Page2NotEmptySearch = "searchproduct/broadmatch/response-code-1-page-2-not-empty-search.json"
 private const val broadMatchResponseCode4 = "searchproduct/broadmatch/response-code-4.json"
 private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/response-code-4-but-no-broadmatch.json"
 private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/response-code-4-no-suggestion.json"
@@ -205,7 +206,16 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             productListView.setProductList(capture(visitableListSlot))
         }
 
-        visitableListSlot.captured.find { it is BroadMatchViewModel } shouldBe null
+        visitableListSlot.captured.assertNotContainBroadMatch()
+    }
+
+    private fun List<Visitable<*>>.assertNotContainBroadMatch() {
+        val broadMatchIndex = indexOfFirst { it is BroadMatchViewModel }
+
+        broadMatchIndex.shouldBe(
+                -1,
+                "Broad match is found on visitable list index $broadMatchIndex"
+        )
     }
 
     @Test
@@ -316,5 +326,21 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage2 = broadMatchResponseCode5Page2WithResponseLowerThanCount.jsonToObject<SearchProductModel>()
 
         `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    @Test
+    fun `DO NOT show broad match in load more when response code is NOT 4 or 5`() {
+        val visitableList = mutableListOf<Visitable<*>>()
+        val searchProductModelPage1 = broadMatchResponseCode1NotEmptySearch.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode1Page2NotEmptySearch.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+        `Given Product List Presenter already load data`(visitableList)
+
+        `When Load More Data`()
+
+        `Then assert view will add product list`(visitableList)
+        visitableList.assertNotContainBroadMatch()
     }
 }
