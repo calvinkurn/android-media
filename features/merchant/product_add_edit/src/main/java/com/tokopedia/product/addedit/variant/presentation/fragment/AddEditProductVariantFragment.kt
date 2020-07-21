@@ -230,6 +230,9 @@ class AddEditProductVariantFragment :
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
 
+        // clear photo data if have new level structure
+        variantPhotoAdapter?.clearImageData()
+
         // track selected variant type
         viewModel.isEditMode.value?.let { isEditMode ->
             val variantTypeName = variantDetail.name
@@ -312,6 +315,9 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
+        // clear photo data if have new level structure
+        variantPhotoAdapter?.clearImageData()
+
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
         // if deselected variant type contain unit values show confirmation dialog
