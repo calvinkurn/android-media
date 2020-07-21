@@ -2,7 +2,7 @@ package com.tokopedia.flight.cancellationV2.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 /**

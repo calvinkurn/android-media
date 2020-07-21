@@ -45,14 +45,14 @@ class FlightCancellationReasonViewModel @Inject constructor(
     }
 
     fun buildViewAttachmentList(docType: Int) {
-        viewAttachmentModelList.value?.let {
-            for (attachment in attachmentModelList) {
-                attachment.docType = docType
-                if (!it.contains(attachment)) {
-                    it.add(attachment)
-                }
+        val viewAttachments = arrayListOf<FlightCancellationAttachmentModel>()
+        for (attachment in attachmentModelList) {
+            attachment.docType = docType
+            if (!viewAttachments.contains(attachment)) {
+                viewAttachments.add(attachment)
             }
         }
+        mutableViewAttachmentModelList.postValue(viewAttachments)
     }
 
     fun getAttachments(): List<FlightCancellationAttachmentModel> = attachmentModelList
