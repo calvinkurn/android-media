@@ -1,7 +1,7 @@
 
-query tokopointsCouponList($input : CouponListRequest!){
+query tokopointsCouponList($input : CouponListRequest!, $apiVersion : String){
     status
-    tokopointsCouponList(input: $input){
+    tokopointsCouponList(input: $input, apiVersion : $apiVersion){
           tokopointsCouponData{
                   id
                   promoID

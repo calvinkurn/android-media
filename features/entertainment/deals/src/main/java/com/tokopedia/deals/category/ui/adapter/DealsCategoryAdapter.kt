@@ -7,6 +7,7 @@ import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.ProductListListener
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandAdapterDelegate
+import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandGridAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonChipsAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonProductAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.LoadingMoreUnifyAdapterDelegate
@@ -24,7 +25,7 @@ class DealsCategoryAdapter(
     init {
         delegatesManager
             .addDelegate(DealsCommonChipsAdapterDelegate(chipsActionListener))
-            .addDelegate(DealsCommonBrandAdapterDelegate(brandActionListener))
+            .addDelegate(DealsCommonBrandGridAdapterDelegate(brandActionListener))
             .addDelegate(DealsCommonProductAdapterDelegate(productListListener))
             .addDelegate(DealsBrandEmptyAdapterDelegate(emptyStateListener))
             .addDelegate(LoadingMoreUnifyAdapterDelegate())

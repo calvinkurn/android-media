@@ -54,7 +54,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
 
 
     private fun mapBrandtoLayout(searchData: SearchData) {
-        val brandLayout = searchData.eventSearch.brands.map { brand ->
+        val brandLayout = searchData.eventSearch.brands.subList(0, MAX_BRAND_SHOWING).map { brand ->
             DealsBrandsDataView.Brand(
                 brand.id,
                 brand.title,
@@ -115,6 +115,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
     }
 
     companion object {
+        private const val MAX_BRAND_SHOWING = 4
         private const val MAX_SIZE_CHIP = 5
         private val BRAND_POPULAR_TITLE = R.string.deals_homepage_brand_popular_section_title
         private val BRAND_SEE_ALL_TEXT = R.string.deals_homepage_banner_see_all

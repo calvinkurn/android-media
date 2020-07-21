@@ -83,7 +83,7 @@ class DealCategoryViewModel @Inject constructor(
         privateObservablDealsCategoryLayout.value?.let {
             val layouts = it.toMutableList()
             layouts.subList(0, 1)
-            layouts.add(BRAND_POPULAR, DealsBrandsDataView())
+            layouts.add(BRAND_POPULAR, DealsBrandsDataView(oneRow = true))
             layouts.add(PRODUCT_LIST, ProductListDataView())
             privateObservablDealsCategoryLayout.value = layouts
         }
@@ -121,7 +121,7 @@ class DealCategoryViewModel @Inject constructor(
     private fun getInitialData() {
         val layouts = mutableListOf<DealsBaseItemDataView>()
         layouts.add(CHIPS_CATEGORIES, DealsChipsDataView())
-        layouts.add(BRAND_POPULAR, DealsBrandsDataView())
+        layouts.add(BRAND_POPULAR, DealsBrandsDataView(oneRow = true))
         layouts.add(PRODUCT_LIST, ProductListDataView())
 
         privateObservablDealsCategoryLayout.postValue(layouts)
