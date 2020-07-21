@@ -417,11 +417,9 @@ class AddEditProductVariantFragment :
 
         if (variantData.variantID == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoLayout.show()
-            val variantPhotoList = mutableListOf<VariantPhoto>()
             selectedVariantUnitValues.forEach {
-                variantPhotoList.add(VariantPhoto(it.value, ""))
+                variantPhotoAdapter?.addDataIfNotExist(VariantPhoto(it.value, ""))
             }
-            variantPhotoAdapter?.setData(variantPhotoList)
         }
 
         // update sizechart visibility based on variant selected type

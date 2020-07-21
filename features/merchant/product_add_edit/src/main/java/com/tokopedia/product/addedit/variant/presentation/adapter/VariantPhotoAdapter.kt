@@ -39,9 +39,14 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
         notifyDataSetChanged()
     }
 
-    fun addData(item: VariantPhoto) {
-        this.items.add(item)
-        notifyDataSetChanged()
+    fun addDataIfNotExist(item: VariantPhoto) {
+        val isDataExist = items.any {
+            it.variantUnitValueName == item.variantUnitValueName
+        }
+        if (!isDataExist) {
+            this.items.add(item)
+            notifyDataSetChanged()
+        }
     }
 
     fun removeData(position: Int) {
