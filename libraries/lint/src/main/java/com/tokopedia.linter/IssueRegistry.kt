@@ -14,9 +14,9 @@ class IssueRegistry : IssueRegistry() {
                 TypographyDetector.ISSUE
         )
 
-    override val minApi: Int
+  /*  override val minApi: Int
         get() = 1
 
     override val api: Int = CURRENT_API
-
+*/
 }
