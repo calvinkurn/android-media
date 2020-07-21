@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellationV2.presentation.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -114,7 +115,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
             if (it) {
-                Toaster.make(requireView(), "Can Navigate to Next Step", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                navigateToReviewPage()
             }
         })
     }
@@ -142,6 +143,11 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
                         cancellationReasonViewModel.onSuccessChangeAttachment(imagePath)
                     }
                     setupNextButton()
+                }
+            }
+            REQUEST_CODE_REVIEW -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    closeReasonPage()
                 }
             }
         }
@@ -277,12 +283,25 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         dialogFragment.show(requireFragmentManager(), TAG_DIALOG_FRAGMENT)
     }
 
+    private fun navigateToReviewPage() {
+        startActivityForResult(FlightCancellationReasonActivity.getCallingIntent(
+                requireContext(),
+                cancellationReasonViewModel.cancellationWrapperModel),
+                REQUEST_CODE_REVIEW)
+    }
+
+    private fun closeReasonPage() {
+        requireActivity().setResult(Activity.RESULT_OK)
+        requireActivity().finish()
+    }
+
     companion object {
 
         private const val TAG_DIALOG_FRAGMENT = "TAG_DIALOG_FRAGMENT"
 
         private const val REQUEST_CODE_IMAGE = 1001
         private const val REQUEST_CODE_CHOOSE_REASON = 1111
+        private const val REQUEST_CODE_REVIEW = 2112
 
         fun newInstance(cancellationWrapperModel: FlightCancellationWrapperModel): FlightCancellationReasonFragment =
                 FlightCancellationReasonFragment().also {
