@@ -422,6 +422,7 @@ class PlayViewModel @Inject constructor(
             _observableEvent.value = completeInfoUiModel.event
 
             if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
+            else playVideoManager.release()
 
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
