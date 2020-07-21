@@ -159,7 +159,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
-        createPlayCarouselWidget(DynamicHomeChannel.Channels())
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
