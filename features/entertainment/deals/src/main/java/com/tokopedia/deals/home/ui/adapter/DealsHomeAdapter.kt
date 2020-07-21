@@ -5,6 +5,7 @@ import com.tokopedia.deals.common.listener.CuratedProductCategoryListener
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.adapter.delegate.CuratedProductCategoryAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandAdapterDelegate
+import com.tokopedia.deals.common.ui.adapter.delegate.LoadingMoreUnifyAdapterDelegate
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.listener.DealsCategoryListener
@@ -33,6 +34,7 @@ class DealsHomeAdapter(dealsVoucherPlaceCardListener: DealsVoucherPlaceCardListe
                 .addDelegate(CuratedProductCategoryAdapterDelegate(curatedProductCategoryListener))
                 .addDelegate(DealsCommonBrandAdapterDelegate(brandActionListener))
                 .addDelegate(DealsFavouriteCategoriesAdapterDelegate(favouriteCategoriesActionListener))
+                .addDelegate(LoadingMoreUnifyAdapterDelegate())
     }
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {

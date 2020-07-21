@@ -28,8 +28,11 @@ import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_deals_brand.*
 import javax.inject.Inject
 
 class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
@@ -238,6 +241,19 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     override fun resetFilter() {
 
+    }
+
+    override fun isBrandLayout(): Boolean {
+        return true
+    }
+
+    override fun showTitle(brands: DealsBrandsDataView) {
+        if(!brands.title.isNullOrEmpty()) {
+            shimmering_title.hide()
+            tv_brand_title.show()
+            unused_line.show()
+            tv_brand_title.text = brands.title
+        }
     }
 
     companion object {
