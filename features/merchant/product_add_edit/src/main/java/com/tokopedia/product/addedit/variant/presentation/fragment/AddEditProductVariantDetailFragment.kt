@@ -31,10 +31,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
@@ -160,6 +157,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
 
+        // change primary variant if primary position equals adapter position
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel?.products
+        variantInputModel?.forEachIndexed { position, variant ->
+            if(variant.isPrimary && adapterPosition == position) {
+                variant.isPrimary = isChecked
+                return@forEachIndexed
+            }
+        }
+
         // tracking
         ProductAddVariantDetailTracking.clickVariantStatusToggle(
                 if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
@@ -198,6 +204,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
         viewModel.updatePrimaryVariant(combination)
+
+        // update switch status to be true if primary selected
+        val position = combination[0]
+        val updatedInputModel = viewModel.updateSwitchStatus(true, position)
+        viewModel.editVariantDetailInputMap(position, updatedInputModel)
+        variantDetailFieldsAdapter?.updateDetailInputField(position, updatedInputModel)
 
         // tracking
         ProductAddVariantDetailTracking.saveMainVariant(
