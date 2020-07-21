@@ -9,6 +9,7 @@ import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.home.di.DaggerDealsHomeComponent
 import com.tokopedia.deals.home.di.DealsHomeComponent
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
+import com.tokopedia.deals.location_picker.DealsLocationConstants
 import com.tokopedia.deals.location_picker.model.response.Location
 
 /**
@@ -33,7 +34,7 @@ class DealsHomeActivity : DealsBaseActivity(), HasComponent<DealsHomeComponent> 
         if (location.name.isEmpty()) {
             baseViewModel.getCurrentLocation(location.coordinates)
         } else {
-            if (location.locType.name.equals("landmark", true)) {
+            if (location.locType.name.equals(DealsLocationConstants.LANDMARK, true)) {
                 dealsLocationUtils.updateLocation(location)
                 startActivityForResult(DealsCategoryActivity.getCallingIntent(this, ""), DEALS_LANDMARK_CATEGORY_REQ_CODE)
             } else {

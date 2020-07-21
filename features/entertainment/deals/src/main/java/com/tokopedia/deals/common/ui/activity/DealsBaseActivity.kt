@@ -224,7 +224,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     fun changeLocationBasedOnCache(): Boolean {
         val location = dealsLocationUtils.getLocation()
-        if (location != currentLoc && !location.locType.name.equals("landmark", true)) {
+        if (location != currentLoc) {
             currentLoc = location
             renderLocationName(location.name)
             return true
