@@ -78,9 +78,8 @@ internal class SearchProductTrackingTest {
     fun testTracking() {
         performUserJourney()
 
-        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
-            it.assertStatus()
-        }
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+                hasAllSuccess())
     }
 
     private fun performUserJourney() {
@@ -104,7 +103,8 @@ internal class SearchProductTrackingTest {
         return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
     }
 
-    private fun tearDown() {
+    @After
+    fun tearDown() {
         gtmLogDBSource.deleteAll().subscribe()
 
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
