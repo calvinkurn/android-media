@@ -22,14 +22,6 @@
             android:visibility="gone"
             app:tickerType="announcement" />
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/ovoPointsTicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            app:tickerType="announcement"/>
-
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/search"
             android:layout_width="match_parent"
