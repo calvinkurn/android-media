@@ -733,8 +733,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderErrorOrderList(title: String, desc: String) {
-        filterButton.showWithCondition(isUserRoleFetched())
-        rl_search_filter.showWithCondition(isUserRoleFetched())
+        val isUserRoleFetched = isUserRoleFetched()
+        filterButton.showWithCondition(isUserRoleFetched)
+        rl_search_filter.showWithCondition(isUserRoleFetched)
         refreshHandler?.finishRefresh()
         order_list_rv?.visibility = View.GONE
         quick_filter?.visibility = View.GONE

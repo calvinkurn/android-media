@@ -1461,10 +1461,5 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 
-    private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean {
-        return when (value) {
-            is Success -> true
-            else -> false
-        }
-    }
+    private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean = value is Success
 }
