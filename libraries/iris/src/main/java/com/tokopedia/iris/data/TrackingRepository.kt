@@ -3,6 +3,7 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.util.Log
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.IrisAnalytics
@@ -109,7 +110,7 @@ class TrackingRepository(
             }
             return isSuccessFul
         } catch (e: Exception) {
-            Timber.e("P1#IRIS_REALTIME_ERROR#%s", e.toString())
+            Timber.e("P1#IRIS_REALTIME_ERROR#%s %s", data, Log.getStackTraceString(e))
             return false
         }
     }
