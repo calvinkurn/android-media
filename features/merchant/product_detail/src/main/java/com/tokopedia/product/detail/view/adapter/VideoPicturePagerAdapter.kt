@@ -17,7 +17,7 @@ class VideoPicturePagerAdapter(var media: List<MediaDataModel>,
                                val lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private val registeredFragment = SparseArrayCompat<Fragment>()
-    private fun mediaId() = media.mapIndexed { index, it -> it.hashCode().toLong()}
+    private var mediaId = media.map { it.hashCode().toLong() }
 
     override fun getItemCount(): Int = media.size
 
@@ -37,18 +37,20 @@ class VideoPicturePagerAdapter(var media: List<MediaDataModel>,
     }
 
     override fun getItemId(position: Int): Long {
-        return mediaId()[position]
+        return mediaId[position]
     }
 
     override fun containsItem(itemId: Long): Boolean {
-        return mediaId().contains(itemId)
+        return mediaId.contains(itemId)
     }
 
     fun getRegisteredFragment(pos: Int): Fragment? = registeredFragment.get(pos)
 
     fun setData(data: List<MediaDataModel>) {
         media = data
+        mediaId = media.map {
+            it.hashCode().toLong()
+        }
         notifyItemChanged(0)
     }
-
 }
