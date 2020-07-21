@@ -3,11 +3,11 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
@@ -16,6 +16,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBin
 import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsEtalaseListPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
     private int selectedEtalaseId;
     private String shopId;
+    private String userId;
+    private String deviceId;
+    private TopAdsEtalaseListPresenter topAdsEtalaseListPresenter;
 
     public static TopAdsFilterEtalaseFragment createInstance(int etalaseID) {
         TopAdsFilterEtalaseFragment fragment = new TopAdsFilterEtalaseFragment();
@@ -40,29 +44,37 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
+    public void setArguments(Bundle bundle) {
+        super.setArguments(bundle);
         selectedEtalaseId = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, selectedEtalaseId);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = SessionHandler.getShopID(getActivity());
+        UserSession userSession = new UserSession(getActivity());
+        shopId = userSession.getShopId();
+        userId = userSession.getUserId();
+        deviceId = userSession.getDeviceId();
         RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
-                presenter.populateEtalaseList(shopId);
+                topAdsEtalaseListPresenter.populateEtalaseList(shopId, userId, deviceId);
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
     @Override
-    protected void initialPresenter() {
-        presenter = TopAdsGetEtalaseListDI.createPresenter();
-        presenter.attachView(this);
+    protected void initInjector() {
+
+    }
+
+    @Override
+    public void initialPresenter() {
+        topAdsEtalaseListPresenter = TopAdsGetEtalaseListDI.createPresenter();
+        topAdsEtalaseListPresenter.attachView(this);
     }
 
     @Override
@@ -159,12 +171,17 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     @Override
     public void onResume() {
         super.onResume();
-        presenter.populateEtalaseList(shopId);
+        topAdsEtalaseListPresenter.populateEtalaseList(shopId, userId, deviceId);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.detachView();
+        topAdsEtalaseListPresenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

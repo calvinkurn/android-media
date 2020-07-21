@@ -1,143 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fmParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="@dimen/dp_24"
     android:paddingLeft="@dimen/dp_24"
     android:paddingEnd="@dimen/dp_24"
-    android:paddingRight="@dimen/dp_24"
-    tools:background="@color/colorPrimary">
+    android:paddingRight="@dimen/dp_24">
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="80dp"
-            android:background="@drawable/gf_bg_round_white"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvSummary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_30"
-                android:gravity="center"
-                android:textColor="@color/gf_box_hint_color"
-                app:typographyType="heading_3"
-                app:typographyWeight="bold"
-                tools:text="Hadiah yang didapatkan" />
-
-            <ViewFlipper
-                android:id="@+id/viewFlipper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvRewards"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="67dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/image"
-                        android:layout_width="224dp"
-                        android:layout_height="168dp"
-                        android:background="@color/colorPrimary" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tvTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="17dp"
-                        android:layout_marginLeft="17dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="17dp"
-                        android:layout_marginRight="17dp"
-                        android:ellipsize="end"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/gf_loader_title_color"
-                        app:typographyType="heading_4"
-                        app:typographyWeight="bold"
-                        tools:text="Kamu melewatkan hadiahnya" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tvMessage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_22"
-                        android:layout_marginLeft="@dimen/dp_22"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="@dimen/dp_22"
-                        android:layout_marginRight="@dimen/dp_22"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/gf_loader_title_color"
-                        app:typographyType="body_2"
-                        app:typographyWeight="reguler"
-                        tools:text="Kamu ga tap sih, jadi ga ada hadiahnya. asasd" />
-                </LinearLayout>
-
-
-            </ViewFlipper>
-
-            <LinearLayout
-                android:id="@+id/llButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:orientation="horizontal">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/btnFirst"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="@dimen/dp_12"
-                    android:layout_marginRight="@dimen/dp_12"
-                    android:layout_weight="1"
-                    android:background="@drawable/gf_bg_orange_3d"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    app:typographyType="heading_5"
-                    app:typographyWeight="bold"
-                    tools:text="Cek Hadiah" />
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btnSecond"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/gami_ke_pengaturan"
-                    app:unifyButtonSize="large"
-                    app:unifyButtonVariant="ghost"
-                    tools:text="Kelur" />
-            </LinearLayout>
-        </LinearLayout>
+        android:id="@+id/container_gami_gift_result"
+        style="@style/RewardSummary">
+        <include layout="@layout/gami_gift_result" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="102dp"
-            android:layout_height="79dp"
+            android:id="@+id/imageBox"
+            android:layout_width="@dimen/gami_reward_summary_box_w"
+            android:layout_height="@dimen/gami_reward_summary_box_h"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="44dp"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/gf_ic_reward_summary_box" />
+            android:layout_marginTop="@dimen/gami_reward_summary_margin_top"
+            android:scaleType="centerCrop" />
     </FrameLayout>
 
 </FrameLayout>

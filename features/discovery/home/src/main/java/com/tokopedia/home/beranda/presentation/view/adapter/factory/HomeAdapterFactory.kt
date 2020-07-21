@@ -145,6 +145,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PopularKeywordViewHolder.LAYOUT
     }
 
+    override fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int {
+        return TopadsBannerViewHolder.LAYOUT
+    }
+
     //Home-Component
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
@@ -243,6 +247,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
              */
             DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> MixTopBannerViewHolder.LAYOUT
+            /**
+             * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
+             */
+            DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> TopadsBannerViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -315,6 +323,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
+            TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

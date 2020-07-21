@@ -84,9 +84,6 @@
 
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
-    <string name="app_widget_label_today">Hari ini</string>
-    <string name="app_widget_label_tomorrow">Besok</string>
-    <string name="app_widget_label_left_day">%d Hari Lagi</string>
     <string name="product_instagram_draft_error_save_unknown">Terjadi kesalahan ketika mengupload draft instagram.</string>
     <string name="product_instagram_draft_error_save_resolution">Gambar instagram memiliki resolusi di bawah 300 pixel.</string>
     <string name="product_draft_instagram_save_success">%1$d Produk Instagram Anda berhasil ditambahkan di draft.</string>
@@ -342,6 +339,6 @@
 
     <!--Charge BO-->
     <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
-    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan siCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
+    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
 
 </resources>

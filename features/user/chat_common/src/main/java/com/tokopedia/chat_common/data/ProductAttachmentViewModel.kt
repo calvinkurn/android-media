@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
+import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import java.util.*
 
@@ -57,6 +58,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     var remainingStock: Int = 1
     var status: Int = 0
     var wishList: Boolean = false
+    var rating: TopchatProductRating = TopchatProductRating()
     var images: List<String> = emptyList()
         get() {
             return if (field.isNotEmpty()) {
@@ -65,12 +67,10 @@ open class ProductAttachmentViewModel : SendableViewModel,
                 listOf(productImage)
             }
         }
-
     val hasDiscount: Boolean
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
-
     val stringBlastId: String get() = blastId.toString()
 
     override fun updateData(attribute: Any?) {
@@ -94,6 +94,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             status = attribute.productProfile.status
             wishList = attribute.productProfile.wishList
             images = attribute.productProfile.images
+            rating = attribute.productProfile.rating
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
@@ -145,7 +146,8 @@ open class ProductAttachmentViewModel : SendableViewModel,
             blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
-            status: Int, wishList: Boolean, images: List<String>, source: String
+            status: Int, wishList: Boolean, images: List<String>, source: String,
+            rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, "",
@@ -171,6 +173,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.minOrder = minOrder
         this.remainingStock = remainingStock
         this.status = status
+        this.rating = rating
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
@@ -205,7 +208,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             blastId: Int, productPriceInt: Int, category: String, variants: List<AttachmentVariant>,
             dropPercentage: String, priceBefore: String, shopId: Int, freeShipping: FreeShipping,
             categoryId: Int, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
-            source: String
+            source: String, rating: TopchatProductRating
     ) : super(
             messageId, fromUid, from, fromRole,
             attachmentId, attachmentType, replyTime, startTime,
@@ -230,6 +233,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.playStoreData = playStoreData
         this.remainingStock = remainingStock
         this.status = status
+        this.rating = rating
         if (variants.isNotEmpty()) {
             this.variants = variants
             setupVariantsField()
@@ -355,6 +359,14 @@ open class ProductAttachmentViewModel : SendableViewModel,
             ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
             else -> "/chat - 0"
         }
+    }
+
+    fun hasReview(): Boolean {
+        return rating.count > 0
+    }
+
+    fun fromBroadcast(): Boolean {
+        return blastId != 0
     }
 
     companion object {

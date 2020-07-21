@@ -118,9 +118,8 @@
 
     <string name="product_manage_menu_edit_price">Ubah Harga</string>
     <string name="product_manage_menu_edit_stock">Ubah Stok</string>
-    <string name="product_manage_menu_edit_variant">Ubah Detail Varian</string>
     <string name="product_manage_stock_format">Stok:</string>
-    <string name="product_manage_contact_cs">Hubungi CS</string>
+    <string name="product_manage_contact_cs">Bantuan</string>
     <string name="product_manage_active">Aktif</string>
     <string name="product_manage_variant">Varian</string>
     <string name="product_manage_banned">Pelanggaran</string>
@@ -224,8 +223,8 @@
     <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
     <string name="product_manage_add_etalase">Tambah Etalase</string>
     <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
-    <string name="product_manage_stock_info_description">Produkmu tidak bisa dilihat calon pembeli karena stok 0.</string>
-    <string name="product_manage_stock_information">Stok Habis</string>
+    <string name="product_manage_stock_info_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="product_manage_stock_information">Informasi Stok</string>
 
     <string name="add_product_text_description">Tambah Produk</string>
     <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
@@ -237,4 +236,11 @@
     <string name="product_manage_label_supervision">Pengawasan</string>
     <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
     <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
+
+    <string name="product_manage_close">>Tutup</string>
+    <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="product_manage_more_menu">Lainnya</string>
+    <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
+    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
+    <string name="power_merchant_stock_warning_ticker_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
 </resources>

@@ -355,7 +355,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             navigateToPMSubscribe()
         }
         iv_power_merchant_logo.visibility = View.VISIBLE
-        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.resource.R.drawable.ic_power_merchant)
+        iv_power_merchant_logo.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
         tv_shop_membership_title.text = getString(com.tokopedia.design.R.string.label_power_merchant)
         tv_shop_status.visibility = View.VISIBLE
         tv_shop_status.text = getString(if (shopStatusModel.isPowerMerchantActive()) {

@@ -527,4 +527,13 @@ class ShopPageHomeTracking(
                 CLICK_SHOWCASE_LIST, String.format(ETALASE_X, selectedEtalaseName),
                 customDimensionShopPage)
     }
+
+    fun clickClearFilter(isOwner: Boolean, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_CLOSE_FILTER,
+                "",
+                customDimensionShopPage
+        )
+    }
 }
