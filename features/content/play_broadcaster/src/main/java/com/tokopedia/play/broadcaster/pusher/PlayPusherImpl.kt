@@ -238,7 +238,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onReconnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
+            _observableNetworkState.postValue(PlayPusherNetworkState.ReconnectFailed)
         }
 
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
@@ -246,14 +246,15 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
+            _observableNetworkState.postValue(PlayPusherNetworkState.ConnectFailed)
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
+            _observableNetworkState.postValue(PlayPusherNetworkState.ReConnectStart)
         }
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
-            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
+            _observableNetworkState.postValue(PlayPusherNetworkState.ReConnectSucceed)
         }
 
         override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {

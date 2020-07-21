@@ -303,12 +303,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
         when(pusherNetworkState) {
-            is PlayPusherNetworkState.Recover -> {
-                showToaster(message = getString(R.string.play_live_broadcast_network_recover),
-                        type = Toaster.TYPE_NORMAL)
-            }
             is PlayPusherNetworkState.Poor -> {
-                val errorMessage = getString(R.string.play_live_broadcast_network_loss)
+                val errorMessage = getString(R.string.play_live_broadcast_network_poor)
                 showToaster(message = errorMessage,
                         type = Toaster.TYPE_ERROR)
                 analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
@@ -323,6 +319,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                             parentViewModel.restartPushStream()
                         })
                 analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
+            }
+            is PlayPusherNetworkState.ConnectFailed, PlayPusherNetworkState.ReconnectFailed -> {
+                val errorMessage = getString(R.string.play_live_broadcast_connect_fail)
+                showToaster(message = getString(R.string.play_live_broadcast_connect_fail),
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = View.OnClickListener {
+                            parentViewModel.restartPushStream()
+                        })
+                analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, errorMessage)
+            }
+            is PlayPusherNetworkState.ReConnectSucceed -> {
+                showToaster(message = getString(R.string.play_live_broadcast_network_recover),
+                        type = Toaster.TYPE_NORMAL)
             }
         }
     }
