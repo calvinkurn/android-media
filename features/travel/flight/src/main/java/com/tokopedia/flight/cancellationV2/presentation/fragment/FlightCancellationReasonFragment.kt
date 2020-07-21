@@ -17,6 +17,7 @@ import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancella
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReasonActivity
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReviewActivity
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapter
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationAttachmentModel
@@ -284,8 +285,9 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToReviewPage() {
-        startActivityForResult(FlightCancellationReasonActivity.getCallingIntent(
+        startActivityForResult(FlightCancellationReviewActivity.getCallingIntent(
                 requireContext(),
+                cancellationReasonViewModel.cancellationWrapperModel.invoiceId,
                 cancellationReasonViewModel.cancellationWrapperModel),
                 REQUEST_CODE_REVIEW)
     }

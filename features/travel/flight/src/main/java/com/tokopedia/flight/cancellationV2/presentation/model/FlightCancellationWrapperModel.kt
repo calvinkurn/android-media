@@ -8,6 +8,6 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class FlightCancellationWrapperModel(var cancellationReasonAndAttachmentModel: FlightCancellationReasonAndAttachmentModel = FlightCancellationReasonAndAttachmentModel(),
-                                          var cancellationList: List<FlightCancellationModel> = arrayListOf(),
+                                          var cancellationList: MutableList<FlightCancellationModel> = arrayListOf(),
                                           var invoiceId: String = "") : Parcelable {
 }

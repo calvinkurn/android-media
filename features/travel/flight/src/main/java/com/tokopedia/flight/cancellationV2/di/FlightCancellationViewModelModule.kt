@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationChooseReasonViewModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationPassengerViewModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReasonViewModel
+import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReviewViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -39,5 +40,11 @@ abstract class FlightCancellationViewModelModule {
     @IntoMap
     @ViewModelKey(FlightCancellationChooseReasonViewModel::class)
     abstract fun flightCancellationChooseReasonViewModel(viewModel: FlightCancellationChooseReasonViewModel): ViewModel
+
+    @FlightCancellationScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlightCancellationReviewViewModel::class)
+    abstract fun flightCancellationReviewViewModel(viewModel: FlightCancellationReviewViewModel): ViewModel
 
 }

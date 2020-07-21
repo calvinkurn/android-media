@@ -23,7 +23,11 @@ class FlightCancellationReasonDataCacheSource @Inject constructor() {
     fun getCache(): List<FlightCancellationPassengerEntity.Reason> {
         val jsonString = PersistentCacheManager.instance.getString(FLIGHT_CANCELLATION_REASON_CACHE_KEY)
         val type = object : TypeToken<List<FlightCancellationPassengerEntity.Reason>>() {}.type
-        return CacheUtil.convertStringToListModel(jsonString, type)
+        return if (jsonString != null && type != null) {
+            CacheUtil.convertStringToListModel(jsonString, type)
+        } else {
+            arrayListOf()
+        }
     }
 
     companion object {
