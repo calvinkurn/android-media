@@ -563,10 +563,12 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         // Set request data
         setApplyPromoRequestData(validateUsePromoRequest)
 
-        // Get all selected promo
+        // Get all current selected promo (highlighted as green)
         val selectedPromoList = getSelectedPromoList()
 
         // Remove invalid promo code
+        // Invalid promo code is promo code from outside promo page (cart/checkout) which previously selected,
+        // but become invalid or not selected on promo page, except promo BBO
         removeInvalidPromoCode(validateUsePromoRequest, selectedPromoList, bboPromoCodes)
 
         validateUsePromoRequest.skipApply = 0
