@@ -44,8 +44,8 @@ public class ProductDigitalMapper {
             categoryData.icon = categoryDetail.getIcon();
             categoryData.iconUrl = categoryDetail.getIconUrl();
             categoryData.name = categoryDetail.getName();
-            categoryData.setInstantCheckout(categoryDetail.getInstantCheckout());
-            categoryData.setNew(categoryDetail.getIsNew());
+            categoryData.isInstantCheckout = (categoryDetail.getInstantCheckout());
+            categoryData.isNew = (categoryDetail.getIsNew());
             categoryData.slug = categoryDetail.getSlug();
             categoryData.operatorStyle = categoryDetail.getOperatorStyle();
             categoryData.operatorLabel = categoryDetail.getOperatorLabel();
@@ -66,9 +66,9 @@ public class ProductDigitalMapper {
                         .recentClientNumberList(getOrderList(entity.getRechargeFavoritNumberResponseEntity()))
                         .build())
                 .categoryData(categoryData)
-                .bannerDataList(categoryData.bannerDataListIncluded)
-                .otherBannerDataList(categoryData.otherBannerDataListIncluded)
-                .guideDataList(categoryData.guideDataList)
+                .bannerDataList((List<BannerData>) categoryData.bannerDataListIncluded)
+                .otherBannerDataList((List<BannerData>) categoryData.otherBannerDataListIncluded)
+                .guideDataList((List<GuideData>) categoryData.guideDataList)
                 .build();
     }
 

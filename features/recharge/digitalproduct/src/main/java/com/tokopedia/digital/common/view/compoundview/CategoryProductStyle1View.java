@@ -149,7 +149,7 @@ public class CategoryProductStyle1View extends
                 digitalProductChooserView.renderUpdateDataSelected(productSelectedState);
             }
         }
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             cbInstantCheckout.setChecked(isInstantCheckoutChecked);
         }
     }
@@ -163,7 +163,7 @@ public class CategoryProductStyle1View extends
      * apakah mendukung instant instantCheckout ?
      */
     private void renderInstantCheckoutOption() {
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(

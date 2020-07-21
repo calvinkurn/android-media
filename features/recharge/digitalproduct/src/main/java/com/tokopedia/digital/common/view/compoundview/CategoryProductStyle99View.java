@@ -162,7 +162,7 @@ public class CategoryProductStyle99View extends
                 digitalProductChooserView.renderUpdateDataSelected(productSelectedState);
             }
         }
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             cbInstantCheckout.setChecked(isInstantCheckoutChecked);
         }
     }
