@@ -26,7 +26,10 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_cancellation_refundable_step_two.*
 import javax.inject.Inject
 
@@ -92,16 +95,26 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         })
 
         cancellationReasonViewModel.attachmentErrorString.observe(viewLifecycleOwner, Observer {
-            try {
-                showErrorSnackbar(String.format(getString(it.first), it.second))
-            } catch (t: Throwable) {
-                t.printStackTrace()
+            when (it) {
+                is Success -> {
+                    try {
+                        hideProgressBar()
+                        showErrorSnackbar(String.format(getString(it.data.first), it.data.second))
+                    } catch (t: Throwable) {
+                        t.printStackTrace()
+                    }
+                }
+                is Fail -> {
+                    hideProgressBar()
+                    showErrorSnackbar(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
+                }
             }
         })
 
         cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
+            hideProgressBar()
             if (it) {
-                hideProgressBar()
+                Toaster.make(requireView(), "Can Navigate to Next Step", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
             }
         })
     }

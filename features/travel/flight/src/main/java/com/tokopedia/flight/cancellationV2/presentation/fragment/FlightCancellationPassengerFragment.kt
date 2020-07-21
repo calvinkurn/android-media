@@ -11,13 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAdapterTypeFactory
 import com.tokopedia.flight.cancellationV2.presentation.adapter.viewholder.FlightCancellationViewHolder
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationPassengerViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney

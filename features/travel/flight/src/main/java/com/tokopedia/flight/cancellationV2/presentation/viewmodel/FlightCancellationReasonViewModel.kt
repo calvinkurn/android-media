@@ -7,14 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.R
+import com.tokopedia.flight.cancellation.domain.FlightCancellationAttachmentUploadUseCase
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationAttachmentModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerAttachmentModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
-import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
+import com.tokopedia.flight.cancellationV2.presentation.model.*
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import java.io.File
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ import javax.inject.Inject
  * @author by furqan on 17/07/2020
  */
 class FlightCancellationReasonViewModel @Inject constructor(
-        private val userSession: UserSessionInterface,
+        private val attachmentUploadUseCase: FlightCancellationAttachmentUploadUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -42,8 +42,8 @@ class FlightCancellationReasonViewModel @Inject constructor(
     val canNavigateToNextStep: LiveData<Boolean>
         get() = mutableCanNavigateToNextStep
 
-    private val mutableAttachmentErrorString = MutableLiveData<Pair<Int, Any>>()
-    val attachmentErrorString: LiveData<Pair<Int, Any>>
+    private val mutableAttachmentErrorString = MutableLiveData<Result<Pair<Int, Any>>>()
+    val attachmentErrorString: LiveData<Result<Pair<Int, Any>>>
         get() = mutableAttachmentErrorString
 
     private val mutableAttachmentErrorStringRes = MutableLiveData<Int>()
@@ -109,22 +109,52 @@ class FlightCancellationReasonViewModel @Inject constructor(
 
                 val isValidAttachmentLength = !attachmentMandatory || (attachmentMandatory && totalPassenger > 0)
                 if (!isValidAttachmentLength) {
-                    mutableAttachmentErrorString.postValue(Pair(
+                    mutableAttachmentErrorString.postValue(Success(Pair(
                             R.string.flight_cancellation_attachment_more_than_max_error_message,
                             totalPassenger + 1
-                    ))
+                    )))
                 }
 
                 if (attachmentMandatory && isValidAttachmentLength) {
-//                    uploadAttachmentAndBuildModel()
+                    uploadAttachmentAndBuildModel()
+                    mutableCanNavigateToNextStep.postValue(true)
+                } else {
+                    mutableCanNavigateToNextStep.postValue(false)
                 }
-
             } else {
+                buildCancellationWrapperModel()
                 mutableCanNavigateToNextStep.postValue(true)
             }
         }) {
             it.printStackTrace()
+            mutableAttachmentErrorString.postValue(Fail(it))
         }
+    }
+
+    private suspend fun uploadAttachmentAndBuildModel() {
+        val unUploadedAttachmentList = buildUnUploadedAttachments(buildAttachmentForUpload())
+        val invoiceId = cancellationWrapperModel.invoiceId
+
+        unUploadedAttachmentList.map {
+            val attachmentUpload = attachmentUploadUseCase.executeCoroutine(
+                    attachmentUploadUseCase.createRequestParams(
+                            it.filepath,
+                            invoiceId,
+                            it.journeyId,
+                            it.passengerId,
+                            it.docType
+                    )
+            )
+
+            it.isUploaded = attachmentUpload.attributes.isUploaded
+
+            val indexOfAttachment = attachmentModelList.indexOf(it)
+            if (indexOfAttachment != -1) {
+                attachmentModelList[indexOfAttachment].isUploaded = attachmentUpload.attributes.isUploaded
+            }
+        }.toList()
+
+        buildCancellationWrapperModel()
     }
 
     private fun getUniquePassenger(): List<FlightCancellationPassengerAttachmentModel> {
@@ -191,6 +221,19 @@ class FlightCancellationReasonViewModel @Inject constructor(
         return attachmentsToUpload
     }
 
+    private fun buildUnUploadedAttachments(attachmentToUploads: List<FlightCancellationAttachmentModel>)
+            : List<FlightCancellationAttachmentModel> {
+        val unUploadedAttachments = arrayListOf<FlightCancellationAttachmentModel>()
+
+        for (attachment in attachmentToUploads) {
+            if (!attachment.isUploaded) {
+                unUploadedAttachments.add(attachment)
+            }
+        }
+
+        return unUploadedAttachments
+    }
+
     private fun calculateTotalPassenger(): Int {
         val uniquePassenger = arrayListOf<String>()
 
@@ -206,6 +249,14 @@ class FlightCancellationReasonViewModel @Inject constructor(
         return uniquePassenger.size
     }
 
+    private fun buildCancellationWrapperModel() {
+        cancellationWrapperModel.cancellationReasonAndAttachmentModel =
+                FlightCancellationReasonAndAttachmentModel(
+                        attachmentList = attachmentModelList,
+                        reason = selectedReason?.title ?: "",
+                        reasonId = selectedReason?.id ?: "0"
+                )
+    }
 
     companion object {
         const val DEFAULT_STRING_RES_ERROR = -1
