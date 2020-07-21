@@ -44,7 +44,6 @@ class WholeSaleInputViewHolder(itemView: View,
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // prevent any operation when viewholder not yet attached to a new layout after dataset changed
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     val wholeSaleQuantityInput = charSequence?.toString()
                     wholeSaleQuantityInput?.let { textChangedListener.onWholeSaleQuantityItemTextChanged(adapterPosition, it) }
@@ -62,7 +61,6 @@ class WholeSaleInputViewHolder(itemView: View,
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // prevent any operation when viewholder not yet attached to a new layout after dataset changed
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     // clean any kind of number formatting here
                     val wholeSalePriceInput = charSequence?.toString()?.replace(".", "")
@@ -83,7 +81,6 @@ class WholeSaleInputViewHolder(itemView: View,
         })
 
         deleteButton?.setOnClickListener {
-            // prevent any operation when viewholder not yet attached to a new layout after dataset changed
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 clickListener.onDeleteButtonClicked(adapterPosition)
             }
