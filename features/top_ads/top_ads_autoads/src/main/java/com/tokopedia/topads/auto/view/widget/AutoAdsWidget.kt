@@ -54,8 +54,7 @@ private const val CLICK_CEK_STATUS = "click - cek status"
 private const val CLICK_TINGA_KATLAN = "click - tingkatkan"
 private const val CLICK_SETTING_ICON = "click - settings icon"
 
-class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
-
+class AutoAdsWidget(context: Context, attrs: AttributeSet?) : CardUnify(context, attrs) {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -325,10 +324,13 @@ class AutoAdsWidget(context: Context, attrs: AttributeSet) : CardUnify(context, 
     }
 
     private fun initView(context: Context) {
-        getComponent(context).inject(this)
-        View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
-        baseLayout = findViewById(R.id.base_layout)
-
+        try {
+            getComponent(context).inject(this)
+            View.inflate(context, R.layout.topads_autoads_edit_base_widget, this)
+            baseLayout = findViewById(R.id.base_layout)
+        }catch(e:Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
