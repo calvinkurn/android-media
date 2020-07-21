@@ -40,24 +40,11 @@ class DealsBrandsViewHolder(itemView: View, private val brandActionListener: Dea
                 rvDealsBrandPopular.adapter = adapter
                 rvDealsBrandPopular.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
-                disallowInterceptTouchEvent(rvDealsBrandPopular)
                 adapter.brandList = categories.brands
             }
 
             ViewCompat.setNestedScrollingEnabled(rvDealsBrandPopular, false)
         }
-    }
-
-    private fun disallowInterceptTouchEvent(recyclerview: RecyclerView) {
-        recyclerview.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                rv.parent.requestDisallowInterceptTouchEvent(e.action == MotionEvent.ACTION_MOVE)
-                return false
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-        })
     }
 
     companion object {

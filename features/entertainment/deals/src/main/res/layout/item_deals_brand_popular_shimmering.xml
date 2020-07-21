@@ -12,7 +12,6 @@
         android:layout_height="wrap_content">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            app:corners="16"
             android:id="@+id/tv_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/deals_dp_72"

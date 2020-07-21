@@ -70,8 +70,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
                 tabNameList.add(ALL_ITEM_PAGE)
             }
 
-            childCategoryList = ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
-                    .map { category -> category.id })
+            childCategoryList.addAll(ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
+                    .map { category -> category.id }))
 
             val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID) ?: ""
             val position = findCategoryPosition(categoryId)
