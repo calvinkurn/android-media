@@ -36,13 +36,9 @@ class VideoPicturePagerAdapter(var media: List<MediaDataModel>,
         return f
     }
 
-    override fun getItemId(position: Int): Long {
-        return mediaId[position]
-    }
+    override fun getItemId(position: Int): Long = mediaId[position]
 
-    override fun containsItem(itemId: Long): Boolean {
-        return mediaId.contains(itemId)
-    }
+    override fun containsItem(itemId: Long): Boolean = mediaId.contains(itemId)
 
     fun getRegisteredFragment(pos: Int): Fragment? = registeredFragment.get(pos)
 
@@ -53,4 +49,5 @@ class VideoPicturePagerAdapter(var media: List<MediaDataModel>,
         }
         notifyItemChanged(0)
     }
+
 }
