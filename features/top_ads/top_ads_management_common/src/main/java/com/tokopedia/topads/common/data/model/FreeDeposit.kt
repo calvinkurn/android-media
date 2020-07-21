@@ -28,4 +28,8 @@ data class FreeDeposit(
         @SerializedName("usage_fmt")
         @Expose
         val usageFmt: String = ""
-): Parcelable
+) : Parcelable {
+    companion object {
+        const val DEPOSIT_ACTIVE = 1
+    }
+}
