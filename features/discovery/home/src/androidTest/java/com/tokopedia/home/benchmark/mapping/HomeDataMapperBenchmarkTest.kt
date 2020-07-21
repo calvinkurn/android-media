@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,7 +28,8 @@ class HomeDataMapperBenchmarkTest {
     fun benchmark_homedatamapper() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val userSessionInterface: UserSessionInterface = UserSession(context)
-        val visitableFactory: HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val visitableFactory: HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface, remoteConfig)
         val trackingQueue = TrackingQueue(context)
         val dataMapper = HomeDataMapper(context, visitableFactory, trackingQueue)
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.full_json_home)

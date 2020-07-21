@@ -95,6 +95,7 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity(), HasCom
         }
 
         returnToHome.setOnClickListener {
+            analytics.eventClickButtonMainPage()
             RouteManager.route(this, ApplinkConst.HOME)
             finish()
         }

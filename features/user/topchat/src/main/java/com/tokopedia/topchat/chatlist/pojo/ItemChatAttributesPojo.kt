@@ -8,6 +8,9 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
  * @author : Steven 2019-08-08
  */
 data class ItemChatAttributesPojo(
+        @SerializedName("isReplyByTopbot")
+        @Expose
+        var isReplyByTopbot: Boolean = false,
         @SerializedName("lastReplyMessage")
         @Expose
         var lastReplyMessage: String = "",

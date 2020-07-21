@@ -53,6 +53,7 @@ class DynamicChannelMixLeftViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
+            dcEventHandler.onMixLeftBannerImpressed(dynamicChannelData, 1)
             setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
@@ -106,7 +107,7 @@ class DynamicChannelMixLeftViewHolder(
         channel.banner?.let{ banner ->
             setGradientBackground(bannerBackground, banner.gradientColor)
             image.loadImage(banner.imageUrl)
-            image.setOnClickListener { dcEventHandler.onClickMixLeftBannerImage(banner.applink) }
+            image.setOnClickListener { dcEventHandler.onClickMixLeftBannerImage(channel, 1) }
         }
     }
 

@@ -5,7 +5,7 @@ import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
@@ -54,7 +54,7 @@ class PlayBottomSheetViewModelTest {
                 dispatchers
         )
 
-        coEvery { mockGetProductVariantUseCase.executeOnBackground() } returns modelBuilder.buildProductVariant()
+        coEvery { mockGetProductVariantUseCase.executeOnBackground() } returns mockProductVariantResponse
     }
 
     @After
@@ -87,7 +87,7 @@ class PlayBottomSheetViewModelTest {
     }
 
     @Test
-    fun `test add to cart success`() {
+    fun `when add to cart is success, then it should return the the correct feedback`() {
 
         coEvery { mockPostAddToCartUseCase.executeOnBackground() } returns modelBuilder.buildAddToCartModelResponseSuccess()
 
@@ -96,6 +96,9 @@ class PlayBottomSheetViewModelTest {
                 product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
                 bottomInsetsType = BottomInsetsType.VariantSheet
         )
+        val expectedResult = PlayResult.Success(
+                Event(expectedModel)
+        )
 
         playBottomSheetViewModel.addToCart(
                 product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
@@ -103,13 +106,19 @@ class PlayBottomSheetViewModelTest {
                 type = BottomInsetsType.VariantSheet
         )
 
+        val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
+
         Assertions
-                .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue())
-                .isEqualTo(expectedModel)
+                .assertThat(actualValue)
+                .isInstanceOf(PlayResult.Success::class.java)
+
+        Assertions
+                .assertThat((actualValue as PlayResult.Success).data)
+                .isEqualToComparingFieldByField(expectedResult.data)
     }
 
     @Test
-    fun `test add to cart fail`() {
+    fun `when add to cart is error, then it should return the same error`() {
         coEvery { mockPostAddToCartUseCase.executeOnBackground() } returns modelBuilder.buildAddToCartModelResponseFail()
 
         val expectedModel = modelBuilder.buildCartUiModel(
@@ -120,6 +129,9 @@ class PlayBottomSheetViewModelTest {
                 errorMessage = "error message ",
                 cartId = ""
         )
+        val expectedResult = PlayResult.Success(
+                Event(expectedModel)
+        )
 
         playBottomSheetViewModel.addToCart(
                 product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
@@ -127,9 +139,15 @@ class PlayBottomSheetViewModelTest {
                 type = BottomInsetsType.VariantSheet
         )
 
+        val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
+
         Assertions
-                .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue())
-                .isEqualTo(expectedModel)
+                .assertThat(actualValue)
+                .isInstanceOf(PlayResult.Success::class.java)
+
+        Assertions
+                .assertThat((actualValue as PlayResult.Success).data)
+                .isEqualToComparingFieldByField(expectedResult.data)
     }
 
     @Test
@@ -163,6 +181,40 @@ class PlayBottomSheetViewModelTest {
         val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventProductAction))
 
         playBottomSheetViewModel.doInteractionEvent(eventProductAction)
+
+        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
+    fun `when logged in, should be allowed to open product detail`() {
+        val eventProductDetail = InteractionEvent.OpenProductDetail(
+                product = modelBuilder.buildProductLineUiModel(),
+                position = 0
+        )
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventProductDetail))
+
+        playBottomSheetViewModel.doInteractionEvent(eventProductDetail)
+
+        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
+    fun `when not logged in, should be allowed to open product detail`() {
+        val eventProductDetail = InteractionEvent.OpenProductDetail(
+                product = modelBuilder.buildProductLineUiModel(),
+                position = 0
+        )
+
+        coEvery { userSession.isLoggedIn } returns false
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventProductDetail))
+
+        playBottomSheetViewModel.doInteractionEvent(eventProductDetail)
 
         Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
                 .isEqualToComparingFieldByFieldRecursively(expectedResult)

@@ -19,7 +19,7 @@
         android:layout_width="@dimen/dp_topchat_144"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:gravity="end"
+        android:gravity="end|center_vertical"
         android:orientation="horizontal">
 
         <include layout="@layout/item_chatcommon_chat_read_status_attachment" />

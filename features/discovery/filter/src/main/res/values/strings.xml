@@ -21,6 +21,16 @@
     <string name="title_sort_but">Urutkan</string>
     <string name="title_close">Tutup</string>
     <string name="see_all">Lihat Semua</string>
-    <string name="filter">Filter</string>
+    <string name="filter">Filters</string> <!-- Don't rename this, can break other module using "filter" string -->
+    <string name="discovery_filter">Filter</string>
     <string name="sort">Sort</string>
+    <string name="search_icon">search icon</string>
+    <string name="sort_filter_new_notification">BARU</string>
+
+    <string name="price_filter_title">Harga</string>
+    <string name="price_filter_pmin_label">Terendah</string>
+    <string name="price_filter_pmax_label">Tertinggi</string>
+    <string name="price_filter_min_value">1.000</string>
+    <string name="price_filter_max_value">100.000.000</string>
+    <string name="price_filter_chips_item">Rp350 rb - Rp750 rb</string>
 </resources>

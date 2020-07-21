@@ -1,11 +1,10 @@
 package com.tokopedia.graphql.data.source.cloud;
 
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.google.gson.JsonElement;
 import com.akamai.botman.CYFMonitor;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
 import com.tokopedia.graphql.GraphqlConstant;
@@ -17,6 +16,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal;
 import com.tokopedia.graphql.data.source.GraphqlDataStore;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.util.CacheHelper;
+import com.tokopedia.graphql.util.Const;
+import com.tokopedia.graphql.util.LoggingUtils;
 
 import java.io.InterruptedIOException;
 import java.net.SocketException;
@@ -37,7 +38,9 @@ import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
+ * Use kotlin version
  */
+@Deprecated
 public class GraphqlCloudDataStore implements GraphqlDataStore {
     private GraphqlApi mApi;
     private GraphqlCacheManager mCacheManager;
@@ -52,10 +55,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     }
 
     /*
-    * akamai wrapper for generating a sensor data
-    * the hash will be passing into header of
-    * X-acf-sensor-data;
-    * */
+     * akamai wrapper for generating a sensor data
+     * the hash will be passing into header of
+     * X-acf-sensor-data;
+     * */
     private Observable<Response<JsonArray>> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
         if (isAkamai(requests.get(0).getQuery())) {
@@ -79,35 +82,45 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             !(throwable instanceof SocketException) &&
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
-                        Timber.w("P1#GQL_ERROR#java;err='%s';req='%s'", Log.getStackTraceString(throwable), requests);
+                        LoggingUtils.logGqlError("java", requests.toString(), throwable);
                     }
                 }).map(httpResponse -> {
-                    if (httpResponse == null || httpResponse.code() != 200) {
+                    if (httpResponse == null) {
+                        return null;
+                    }
+                    if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
+                        LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());
                         return null;
                     }
                     if (httpResponse.body() != null) {
-                        logGqlSize(requests.toString(), httpResponse.body().toString());
+                        LoggingUtils.logGqlSize("java", requests.toString(), httpResponse.body().toString());
                     }
                     return new GraphqlResponseInternal(httpResponse.body(), false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
-                    if (caches == null || caches.isEmpty()) {
-                        return;
-                    }
+                    if (caches != null && !caches.isEmpty()) {
+                        int size = requests.size();
+                        for (int i = 0; i < size; i++) {
+                            GraphqlRequest request = requests.get(i);
+                            if (request == null || request.isNoCache() || caches.get(request.getMd5()) == null) {
+                                continue;
+                            }
 
-                    int size = requests.size();
-                    for (int i = 0; i < size; i++) {
+                            BackendCache cache = caches.get(request.getMd5());
 
-                        if (requests.get(i) == null || requests.get(i).isNoCache() || caches.get(requests.get(i).getMd5()) == null) {
-                            continue;
-                        }
+                            JsonElement rawResp = graphqlResponseInternal.getOriginalResponse().get(i);
+                            if (rawResp == null
+                                    || rawResp.getAsJsonObject() == null
+                                    || rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA) == null) {
+                                continue;
+                            }
 
-                        //TODO need to save response of individual query
-                        BackendCache cache = caches.get(requests.get(i).getMd5());
-                        JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                        if (object != null && cache != null) {
-                            mCacheManager.save(requests.get(i).cacheKey(), object.toString(), cache.getMaxAge() * 1000);
+                            JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
+                            if (childResp != null) {
+                                mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
+                                Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
+                            }
                         }
                     }
 
@@ -144,29 +157,5 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
     public GraphqlCacheManager getCacheManager() {
         return mCacheManager;
-    }
-
-    private void logGqlSize(String request, String response) {
-        if (response == null) {
-            return;
-        }
-        try {
-            String startSampleText = "[GraphqlRequest{query='";
-            int sampleResponseLength = 100;
-            int startSampleLength = startSampleText.length();
-            int startIndex = request.indexOf(startSampleText);
-            if (startIndex < 0) {
-                startIndex = 0;
-            } else {
-                startIndex += startIndex + startSampleLength;
-            }
-            String sampleResponse = request.substring(startIndex);
-            if (sampleResponse.length() > sampleResponseLength) {
-                sampleResponse = sampleResponse.substring(0, sampleResponseLength);
-            }
-            Timber.w("P1#GQL_SIZE#java;req_size=%s;resp_size=%s;req='%s'", request.length(), response.length(), sampleResponse);
-        } catch (Exception e) {
-            Timber.e(e);
-        }
     }
 }

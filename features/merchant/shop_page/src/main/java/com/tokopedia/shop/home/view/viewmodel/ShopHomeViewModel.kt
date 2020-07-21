@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -26,9 +27,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.async
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -40,16 +44,21 @@ class ShopHomeViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-    val productListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
-        get() = _productListData
-    private val _productListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+    val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _initialProductListData
+    private val _initialProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+
+    val newProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _newProductListData
+    private val _newProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -59,6 +68,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
 
+    val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
+        get() = _videoYoutube
+    private val _videoYoutube = MutableLiveData<Pair<String, Result<YoutubeVideoDetailModel>>>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -66,7 +79,10 @@ class ShopHomeViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    fun getShopPageHomeData(shopId: String) {
+    fun getShopPageHomeData(
+            shopId: String,
+            sortId: Int
+    ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
                     dispatcherProvider.io(),
@@ -80,30 +96,31 @@ class ShopHomeViewModel @Inject constructor(
             )
             val productList = asyncCatchError(
                     dispatcherProvider.io(),
-                    block = { getProductList(shopId, 1) },
+                    block = { getProductListData(shopId, sortId, 1) },
                     onError = { null }
             )
             shopLayoutWidget.await()?.let {
                 _shopHomeLayoutData.postValue(Success(it))
                 productList.await()?.let { productListData ->
-                    _productListData.postValue(Success(productListData))
+                    _initialProductListData.postValue(Success(productListData))
                 }
             }
         }) {
         }
     }
 
-    fun getNextProductList(
+    fun getNewProductList(
             shopId: String,
+            sortId: Int,
             page: Int
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io()) {
-                getProductList(shopId, page)
+                getProductListData(shopId,sortId, page)
             }
-            _productListData.postValue(Success(listProductData))
+            _newProductListData.postValue(Success(listProductData))
         }) {
-            _productListData.postValue(Fail(it))
+            _newProductListData.postValue(Fail(it))
         }
     }
 
@@ -130,48 +147,6 @@ class ShopHomeViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun removeWishList(
-            productId: String,
-            onSuccessRemoveWishList: () -> Unit,
-            onErrorRemoveWishList: (errorMessage: String?) -> Unit
-    ) {
-        removeWishlistUseCase.createObservable(productId, userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessAddWishlist(productId: String?) {}
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                onErrorRemoveWishList.invoke(errorMessage)
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                onSuccessRemoveWishList.invoke()
-            }
-
-        })
-    }
-
-    fun addWishList(
-            productId: String,
-            onSuccessAddWishList: () -> Unit,
-            onErrorAddWishList: (errorMessage: String?) -> Unit
-    ) {
-        addWishListUseCase.createObservable(productId, userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                onErrorAddWishList.invoke(errorMessage)
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                onSuccessAddWishList.invoke()
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-
-        })
-    }
-
     fun getWishlistStatus(shopHomeCarousellProductUiModel: List<ShopHomeCarousellProductUiModel>) {
         launchCatchError(block = {
             val listResultCheckWishlist = shopHomeCarousellProductUiModel.map {
@@ -196,8 +171,9 @@ class ShopHomeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getProductList(
+    private suspend fun getProductListData(
             shopId: String,
+            sortId: Int,
             page: Int
     ): Pair<Boolean, List<ShopHomeProductViewModel>> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
@@ -205,6 +181,7 @@ class ShopHomeViewModel @Inject constructor(
                 ShopProductFilterInput().apply {
                     etalaseMenu = ALL_SHOWCASE_ID
                     this.page = page
+                    sort = sortId
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -218,6 +195,22 @@ class ShopHomeViewModel @Inject constructor(
                     )
                 }
         )
+    }
+
+    fun getVideoYoutube(videoUrl: String, widgetId: String) {
+        launchCatchError(block = {
+            getYoutubeVideoUseCase.setVideoUrl(videoUrl)
+            val result = withContext(Dispatchers.IO) {
+                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+            }
+            _videoYoutube.value = Pair(widgetId, Success(result))
+        }, onError = {
+            _videoYoutube.value = Pair(widgetId, Fail(it))
+        })
+    }
+
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {

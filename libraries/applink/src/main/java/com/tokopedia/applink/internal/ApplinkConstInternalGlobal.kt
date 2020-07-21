@@ -88,10 +88,19 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
 
-    // ForgotPasswordActivity
-    // tokopedia-android-internal://global/add-name-register
+    /**
+     * ForgotPasswordAcitivity
+     * @applink : tokopedia-android-internal://global/forgot-password
+     * @param
+     * required : [PARAM_EMAIL]
+     * optional : [PARAM_AUTO_RESET]
+     * optional : [PARAM_REMOVE_FOOTER]
+     **/
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
+    @JvmField
+    val PARAM_AUTO_RESET = "auto_reset"
+    val PARAM_REMOVE_FOOTER = "remove_footer"
 
     // AddPasswordActivity
     // tokopedia-android-internal://global/add-password
@@ -133,6 +142,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/user-identification-info
     @JvmField
     val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
+
+    // AddNameActivity
+    // tokopedia-android-internal://global/manage-name
+    @JvmField
+    val MANAGE_NAME = "$INTERNAL_GLOBAL/manage-name"
 
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
@@ -377,6 +391,19 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
+    // InstantDebitBcaActivity
+    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
+    @JvmField
+    val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
+
+    // BcaEditLimitActivity
+    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
+    @JvmField
+    val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
+
+    @JvmField
+    val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
+
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
@@ -413,10 +440,17 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
+    @JvmField
+    val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // AccountSettingActivity
+    // tokopedia-android-internal://global/account-setting
+    @JvmField
+    val ACCOUNT_SETTING = "$INTERNAL_GLOBAL/account-setting"
 
     // GeneralSettingActivity
     // tokopedia-android-internal://global/general-setting
@@ -450,10 +484,16 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    val GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
     //ManageNotificationActivity
     @JvmField
     val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
+
+    // ScreenRecorderActivity
+    // tokopedia-android-internal://global/screen-recorder
+    @JvmField
+    val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
 
     //SeamlessActivity
     @JvmField

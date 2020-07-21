@@ -1,0 +1,49 @@
+query getProductQuery($menuID: Int!, $operatorID: String!) {
+  rechargeCatalogProductInputMultiTab(menuID: $menuID, platformID: 5, operator: $operatorID) {
+    productInputs {
+      label
+      needEnquiry
+      isShowingProduct
+      enquiryFields {
+        id
+        param_name
+        name
+      }
+      product {
+        name
+        text
+        placeholder
+        validations {
+          rule
+        }
+        dataCollections {
+          name
+          products {
+            id
+            attributes {
+              product_labels
+              desc
+              detail
+              detail_url
+              detail_url_text
+              info
+              price
+              price_plain
+              status
+              detail_compact
+              category_id
+              operator_id
+              promo {
+                id
+                bonus_text
+                new_price
+                new_price_plain
+                value_text
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

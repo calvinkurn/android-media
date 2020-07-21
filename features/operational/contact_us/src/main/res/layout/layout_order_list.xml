@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_invoice_msg" />
 
-        <com.tkpd.library.viewpagerindicator.CirclePageIndicator
+        <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
             android:id="@+id/pager_indicator"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"

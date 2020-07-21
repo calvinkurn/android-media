@@ -2,18 +2,22 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.*
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
+private const val inFirstPage = "searchproduct/inspirationcarousel/in-first-page.json"
+private const val inFirstPageNoTopads = "searchproduct/inspirationcarousel/in-first-page-no-topads.json"
+private const val inPosition9 = "searchproduct/inspirationcarousel/in-position-9.json"
+private const val samePosition = "searchproduct/inspirationcarousel/same-position.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
@@ -21,7 +25,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     @Test
     fun `Show inspiration carousel general cases`() {
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModelInspirationCarouselFirstPage)
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(inFirstPage.jsonToObject())
         `Given Mechanism to save and get product position from cache`()
 
         `When Load Data`()
@@ -41,7 +45,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         }
 
         every { searchProductLoadMoreUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelCommon)
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductCommonResponseJSON.jsonToObject())
         }
     }
 
@@ -162,7 +166,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     @Test
     fun `Show inspiration carousel only at position 9 (edge cases)`() {
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModelInspirationCarouselOnlyPosition9)
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(inPosition9.jsonToObject())
         `Given Mechanism to save and get product position from cache`()
 
         `When Load Data`()
@@ -236,7 +240,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     @Test
     fun `Show inspiration carousel without TopAds Products`() {
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModelInspirationCarouselFirstPageNoTopAds)
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(inFirstPageNoTopads.jsonToObject())
         `Given Mechanism to save and get product position from cache`()
 
         `When Load Data`()
@@ -318,7 +322,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     @Test
     fun `Show two inspiration carousel with same position`() {
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModelInspirationCarouselSamePosition)
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(samePosition.jsonToObject())
         `Given Mechanism to save and get product position from cache`()
 
         `When Load Data`()

@@ -3,21 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_lvl1"
     android:background="@drawable/bg_shadow_attach_product"
-    android:paddingStart="@dimen/dp_topchat_12"
-    android:paddingLeft="@dimen/dp_topchat_12"
-    android:paddingTop="@dimen/dp_topchat_12"
-    android:paddingEnd="@dimen/dp_topchat_12"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/dp_topchat_12"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingLeft="@dimen/dp_topchat_12"
+        android:paddingTop="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/dp_topchat_12"
+        android:paddingRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -180,22 +179,79 @@
             app:typographyWeight="bold"
             tools:text="Rp7.999.000" />
 
-        <ImageView
-            android:id="@+id/iv_free_shipping"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_topchat_20"
+        <LinearLayout
+            android:id="@+id/ll_status_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:scaleType="fitStart"
+            android:orientation="horizontal"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_price"
             app:layout_constraintTop_toBottomOf="@+id/tv_price"
-            tools:src="@drawable/ic_close_default"
-            tools:visibility="visible" />
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_review_star"
+                android:layout_width="@dimen/dp_topchat_14"
+                android:layout_height="@dimen/dp_topchat_13"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_topchat_star"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_review_score"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_topchat_13"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_topchat_5"
+                android:layout_marginLeft="@dimen/dp_topchat_5"
+                android:includeFontPadding="false"
+                android:textColor="@color/Neutral_N700_68"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="4.7"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_review_count"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_topchat_13"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_topchat_3"
+                android:layout_marginLeft="@dimen/dp_topchat_3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:includeFontPadding="false"
+                android:textColor="@color/light_N700_44"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                tools:text="(60)"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/iv_free_shipping"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_topchat_20"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                tools:src="@drawable/ic_close_default"
+                tools:visibility="visible" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingLeft="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/dp_topchat_12"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -262,7 +318,7 @@
             android:layout_marginStart="@dimen/dp_topchat_12"
             android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:gravity="end"
+            android:gravity="end|center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -272,4 +328,15 @@
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/iv_attachment_shimmer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"
+        tools:visibility="gone" />
 </merge>

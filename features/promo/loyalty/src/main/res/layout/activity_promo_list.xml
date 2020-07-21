@@ -1,33 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:elevation="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:elevation="0dp"
             android:elevation="0dp"
             android:theme="?toolbarTheme"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
+            app:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            app:titleTextAppearance="?titleTextAppearance">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/shimmer_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:gravity="center_vertical"
+                android:text="@string/title_activity_promo"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/shimmer_back"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_2"
+                tools:layout_height="@dimen/dp_56" />
+        </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.tabs.TabLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="@dimen/dp_75"
             android:background="@color/white"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabIndicatorHeight="3dp"
@@ -35,24 +53,29 @@
             app:tabSelectedTextColor="@color/tkpd_main_green"
             app:tabTextAppearance="@style/CustomTitlePageIndicatorLoyalty"
             app:tabTextColor="@color/grey_600"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/unify_N75" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.design.component.ticker.TouchViewPager2
+    <com.tokopedia.loyalty.view.widget.TouchViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <FrameLayout
-        android:id="@+id/container_error"
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:background="@color/medium_green"
-        tools:visibility="visible"/>
+        android:gravity="center"
+        android:visibility="gone" />
 
+    <include
+        android:id="@+id/shimmer_layout"
+        layout="@layout/loyalty_shimmer" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

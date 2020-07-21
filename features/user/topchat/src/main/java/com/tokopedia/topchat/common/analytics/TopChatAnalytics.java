@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
@@ -36,6 +37,8 @@ import timber.log.Timber;
  */
 
 public class TopChatAnalytics {
+
+    private String sourcePage = "";
 
     @Inject
     public TopChatAnalytics() {
@@ -124,6 +127,7 @@ public class TopChatAnalytics {
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
+        String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
     }
 
     public interface Label {
@@ -131,6 +135,10 @@ public class TopChatAnalytics {
         public static final String FOLLOW_SHOP = "follow shop";
         public static final String UNFOLLOW_SHOP = "unfollow shop";
         String BUYER = "buyer";
+    }
+
+    public void setSourcePage(String sourcePage) {
+        this.sourcePage = sourcePage;
     }
 
     public void eventClickInboxChannel() {
@@ -291,14 +299,14 @@ public class TopChatAnalytics {
                 null,
                 product.getPriceInt(),
                 null,
-                "/chat",
+                getItemDimension40(product),
                 PRODUCT_INDEX,
                 new HashMap<>()
         );
         products.add(topChatProduct);
 
         Bundle bundle = ProductListClickBundler.getBundle(
-                getField(String.valueOf(product.getBlastId())),
+                getItemList(product),
                 products,
                 Category.CHAT_DETAIL,
                 Action.CLICK_PRODUCT_IMAGE,
@@ -370,8 +378,8 @@ public class TopChatAnalytics {
                 product.getPriceInt() + 0.0,
                 null,
                 PRODUCT_INDEX,
-                getField(String.valueOf(product.getBlastId())),
-                getField(String.valueOf(product.getBlastId())),
+                getItemList(product),
+                getItemDimension40(product),
                 null,
                 null
         );
@@ -393,6 +401,23 @@ public class TopChatAnalytics {
         );
     }
 
+    private String getItemList(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "/chat - search chat";
+        } else {
+            return getField(blastId);
+        }
+    }
+
+    private String getItemDimension40(ProductAttachmentViewModel product) {
+        String blastId = product.getStringBlastId();
+        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+            return "/chat - search chat";
+        } else {
+            return getField(blastId);
+        }
+    }
 
     public void trackProductAttachmentClicked() {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -603,6 +628,16 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.CLICK_OP_ORDER_HISTORY,
                 Label.BUYER
+        );
+    }
+
+    // #OP9
+    public void eventViewOrderProgress(@NotNull ChatOrderProgress chatOrder) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.VIEW_CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.VIEW_ORDER_PROGRESS_WIDGET,
+                "buyer - " + chatOrder.getStatus()
         );
     }
 }

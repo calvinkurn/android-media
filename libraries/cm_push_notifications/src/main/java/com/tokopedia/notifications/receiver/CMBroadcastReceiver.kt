@@ -11,6 +11,8 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.ATC
+import com.tokopedia.notifications.common.CMConstant.PreDefineActionType.OCC
 import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
 import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
@@ -271,7 +273,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     ) {
         intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
-                handleShareActionButtonClick(context, it, notificationData)
+                if (it.type == ATC || it.type == OCC) {
+                    handleProductPurchaseClick(context, notificationData, this)
+                } else {
+                    handleShareActionButtonClick(context, it, notificationData)
+                }
             }?: let {
                 // validate if the action button is ATC
                 it.type?.let { type ->
@@ -285,19 +291,50 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         context.applicationContext,
                         it.appLink?: ApplinkConst.HOME
                 )
-                intent.extras?.let { bundle -> appLinkIntent.putExtras(bundle) }
+                intent.extras?.let { bundle ->
+                    appLinkIntent.putExtras(bundle)
+                }
                 startActivity(context, appLinkIntent)
                 sendElementClickPushEvent(
                         context,
-                        IrisAnalyticsEvents.PUSH_CLICKED,
                         notificationData,
-                        CMConstant.NotificationType.GENERAL,
                         it.element_id
                 )
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+    }
+
+    private fun handleProductPurchaseClick(
+            context: Context,
+            notificationData: BaseNotificationModel,
+            actionButton: ActionButton
+    ) {
+        actionButton.let {
+            val intent = RouteManager.getIntent(context.applicationContext, it.appLink)
+            startActivity(context, intent)
+
+            sendElementClickPushEvent(
+                    context,
+                    notificationData,
+                    it.pdActions?.element_id
+            )
+        }
+    }
+
+    private fun sendElementClickPushEvent(
+            context: Context,
+            notificationData: BaseNotificationModel,
+            elementId: String?
+    ) {
+        sendElementClickPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_CLICKED,
+                notificationData,
+                CMConstant.NotificationType.GENERAL,
+                elementId
+        )
     }
 
     private fun handleAddToCartProduct(data: BaseNotificationModel?, addToCart: AddToCart?) {
