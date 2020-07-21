@@ -9,10 +9,14 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.di.component.DaggerAutoWithdrawalComponent
+import com.tokopedia.withdraw.auto_withdrawal.domain.model.Schedule
+import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
 import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
+import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActivity
 import kotlinx.android.synthetic.main.swd_activity_auto_withdrawal.*
 
-class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawalComponent> {
+class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawalComponent>,
+        ScheduleChangeListener {
 
     private lateinit var autoWithdrawalComponent: AutoWithdrawalComponent
 
@@ -22,19 +26,12 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
         return AutoWithdrawalSettingsFragment.getInstance(bundle)
     }
 
-    override fun getScreenName(): String = SCREEN_NAME
-
-    companion object {
-        const val SCREEN_NAME = "Auto Withdrawal Settings"
-    }
-
 
     override fun getLayoutRes() = R.layout.swd_activity_auto_withdrawal
 
     override fun getToolbarResourceID() = R.id.auto_wd_header
 
     override fun getParentViewResourceID(): Int = R.id.auto_wd_view
-
 
     override fun getComponent(): AutoWithdrawalComponent {
         if (!::autoWithdrawalComponent.isInitialized)
@@ -46,5 +43,23 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
 
     fun getHeader(): HeaderUnify {
         return auto_wd_header
+    }
+
+    override fun onScheduleSelected(schedule: Schedule) {
+        supportFragmentManager.findFragmentByTag(WithdrawActivity.TAG_SUCCESS_FRAGMENT)?.let { fragment ->
+            if (fragment is ScheduleChangeListener)
+                fragment.onScheduleSelected(schedule)
+        }
+    }
+
+    override fun getTagFragment(): String {
+        return TAG_AUTO_WITHDRAWAL_FRAGMENT
+    }
+
+    override fun getScreenName(): String = SCREEN_NAME
+
+    companion object {
+        const val SCREEN_NAME = "Auto Withdrawal Settings"
+        const val TAG_AUTO_WITHDRAWAL_FRAGMENT = "tag_auto_withdrawal_fragment"
     }
 }

@@ -30,11 +30,13 @@ import com.tokopedia.withdraw.auto_withdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.GetInfoAutoWD
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.Schedule
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
+import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
+import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ScheduleTimingFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModel
 import kotlinx.android.synthetic.main.swd_fragment_awd_settings.*
 import javax.inject.Inject
 
-class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
+class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -166,8 +168,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
     }
 
     private fun setScheduleData(autoWDStatusData: AutoWDStatusData) {
-        currentSchedule = autoWDStatusData.schedule[0]
-        autoWDStatusData.schedule.forEach {
+        currentSchedule = autoWDStatusData.scheduleList[0]
+        autoWDStatusData.scheduleList.forEach {
             if (it.status == 1) {
                 currentSchedule = it
             }
@@ -179,7 +181,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setAutoWdCheckBoxListener(autoWDStatusData: AutoWDStatusData){
+    private fun setAutoWdCheckBoxListener(autoWDStatusData: AutoWDStatusData) {
         checkboxAutoWD.setOnCheckedChangeListener { _, isChecked ->
             updateBankAccountSectionState()
             enableScheduleSection(isChecked && autoWDStatusData.isOwner)
@@ -275,6 +277,17 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
                 tvScheduleTiming.setTextColor(textDisabledColor)
                 tvChangeAutoWDSchedule.gone()
             }
+            tvChangeAutoWDSchedule.setOnClickListener { openSchedulingTimings() }
+        }
+    }
+
+    private fun openSchedulingTimings() {
+        autoWDStatusData?.apply {
+            activity?.let {
+                val bottomSheet = ScheduleTimingFragment.getInstance(scheduleList)
+                bottomSheet.setTitle(getString(R.string.swd_withdrawal_schedule))
+                bottomSheet.show(it.supportFragmentManager, "ScheduleTimingFragment")
+            }
         }
     }
 
@@ -332,7 +345,6 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 //todo openTermsAndConditionBottomSheet()
-
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -377,6 +389,10 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment() {
         fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment().apply {
             arguments = bundle
         }
+    }
+
+    override fun onScheduleSelected(schedule: Schedule) {
+        if(currentSchedule!= null && currentSchedule?.autoWithdrawalScheduleId)
     }
 }
 
