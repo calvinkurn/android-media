@@ -165,10 +165,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
 
         // tracking
-        ProductAddVariantDetailTracking.clickVariantStatusToggle(
-                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                userSession.shopId
-        )
+        sendClickVariantStatusToggleData(isChecked)
     }
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -323,6 +320,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             }
+        }
+    }
+
+    private fun sendClickVariantStatusToggleData(isChecked: Boolean) {
+        if (!viewModel.isEditMode) {
+            ProductAddVariantDetailTracking.clickVariantStatusToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
         }
     }
 
