@@ -915,7 +915,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         btn.text = data.buttonText
         ImageHandler.loadImageFitCenter(context, boxImageView, data.imageURL)
         val alertDialog = adb.create()
-        alertDialog.window.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         alertDialog.setCancelable(false)
         alertDialog.setCanceledOnTouchOutside(false)
         btn.setOnClickListener { v: View? ->

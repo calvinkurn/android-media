@@ -10,4 +10,8 @@ class StickyComponentsViewModel(var list :List<StickyComponentViewModel>) : Visi
     override fun type(typeFactory: Any?): Int {
         return 0
     }
+
+    companion object {
+        const val TYPE = "sticky_components"
+    }
 }
