@@ -158,7 +158,7 @@ public class CategoryProductStyle2View extends
     }
 
     private void renderInstantCheckoutOptions() {
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
