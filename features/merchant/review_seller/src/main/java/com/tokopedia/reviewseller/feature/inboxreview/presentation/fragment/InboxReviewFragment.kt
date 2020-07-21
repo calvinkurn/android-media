@@ -60,6 +60,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
 
         private val TAG_FILTER_RATING = FilterRatingBottomSheet::class.java.simpleName
+        private val positionRating = 0
+        private val positionUnAnswered = 1
+        private val positionAnswered = 2
     }
 
     @Inject
@@ -198,7 +201,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
         val paramsMargin = sortFilterInboxReview.layoutParams as? LinearLayout.LayoutParams
-        if(isNotReplied) {
+        if (isNotReplied) {
             paramsMargin?.bottomMargin = 16.toPx()
         } else {
             paramsMargin?.bottomMargin = 0
@@ -248,12 +251,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
             sortFilterInboxReview?.show()
             inboxReviewAdapter.addInboxFeedbackEmpty(true)
-            isFilter = false
         } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
             sortFilterInboxReview?.hide()
             inboxReviewAdapter.clearAllElements()
             inboxReviewAdapter.addInboxFeedbackEmpty(false)
         } else {
+            isFilter = true
             inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
         }
         updateScrollListenerState(data.hasNext)
@@ -303,14 +306,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
 
         itemSortFilterList.forEachIndexed { index, sortFilterItem ->
-            if (index == 0) {
+            if (index == positionRating) {
                 sortFilterItem.refChipUnify.setChevronClickListener {
                     initBottomSheetFilterPeriod()
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 }
             }
             sortFilterItem.listener = {
-                if (index == 0) {
+                if (index == positionRating) {
                     initBottomSheetFilterPeriod()
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 } else {
@@ -356,19 +359,26 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun selectedRatingsFilter(countSelected: Int) {
-        val positionSortFilter = 0
-        val isZeroSelected = countSelected == positionSortFilter
+        val isZeroSelected = countSelected == positionRating
         if (isZeroSelected) {
-            itemSortFilterList[positionSortFilter].type = ChipsUnify.TYPE_NORMAL
+            itemSortFilterList[positionRating].type = ChipsUnify.TYPE_NORMAL
         } else {
-            itemSortFilterList[positionSortFilter].type = ChipsUnify.TYPE_SELECTED
+            itemSortFilterList[positionRating].type = ChipsUnify.TYPE_SELECTED
         }
     }
 
     private fun updateFilterStatusInboxReview(index: Int) {
         isFilter = true
-        val updatedState = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
-        sortFilterItemInboxReviewWrapper[index].isSelected = !updatedState
+
+        if (index == positionUnAnswered) {
+            val unAnsweredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
+            sortFilterItemInboxReviewWrapper[index].isSelected = !unAnsweredSelected
+            sortFilterItemInboxReviewWrapper[positionAnswered].isSelected = false
+        } else {
+            val answeredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
+            sortFilterItemInboxReviewWrapper[index].isSelected = !answeredSelected
+            sortFilterItemInboxReviewWrapper[positionUnAnswered].isSelected = false
+        }
 
         sortFilterInboxReview?.hide()
         inboxReviewAdapter.clearAllElements()
@@ -384,31 +394,30 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val countSelected = filterRatingList.filter { it.isSelected }.count()
         val ratingOneSelected = filterRatingList.firstOrNull { it.isSelected }?.sortValue.orEmpty()
         val isAllRating = countSelected == allSelected
-        val positionSortFilter = 0
 
-        val updatedState = itemSortFilterList[positionSortFilter].type == ChipsUnify.TYPE_SELECTED
-        sortFilterItemInboxReviewWrapper[positionSortFilter].isSelected = !updatedState
-        itemSortFilterList[positionSortFilter].type = if(updatedState) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+        val updatedState = itemSortFilterList[positionRating].type == ChipsUnify.TYPE_SELECTED
+        sortFilterItemInboxReviewWrapper[positionRating].isSelected = !updatedState
+        itemSortFilterList[positionRating].type = if (updatedState) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
 
         if (isAllRating) {
-            itemSortFilterList[positionSortFilter].apply {
+            itemSortFilterList[positionRating].apply {
                 title = ALL_RATINGS
                 refChipUnify.chip_image_icon.hide()
             }
         } else {
             if (countSelected == 0) {
-                itemSortFilterList[positionSortFilter].apply {
+                itemSortFilterList[positionRating].apply {
                     title = ALL_RATINGS
                     refChipUnify.chip_image_icon.hide()
                 }
             } else if (countSelected == 1) {
-                itemSortFilterList[positionSortFilter].apply {
+                itemSortFilterList[positionRating].apply {
                     title = ratingOneSelected
                     refChipUnify.chip_image_icon.show()
                     refChipUnify.chip_image_icon.setImage(R.drawable.ic_filter_rating, 0F)
                 }
             } else {
-                itemSortFilterList[positionSortFilter].apply {
+                itemSortFilterList[positionRating].apply {
                     title = "($countSelected) Filter"
                     refChipUnify.chip_image_icon.hide()
                 }

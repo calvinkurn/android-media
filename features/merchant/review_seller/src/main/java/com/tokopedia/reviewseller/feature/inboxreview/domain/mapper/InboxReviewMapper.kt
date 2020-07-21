@@ -15,10 +15,11 @@ import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxRe
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 
 object InboxReviewMapper {
 
@@ -161,5 +162,51 @@ object InboxReviewMapper {
         }
         return statusList
     }
+
+    fun mapToUnSelectedRatingList(data: List<ListItemRatingWrapper>): ArrayList<ListItemRatingWrapper> {
+        return ArrayList(data.map {
+            it.isSelected = false
+            it
+        })
+    }
+
+    fun mapToUnSelectedStatusList(data: List<SortFilterInboxItemWrapper>): List<SortFilterInboxItemWrapper> {
+        return data.map {
+            it.isSelected = false
+            it
+        }
+    }
+
+    fun mapToUnSelectedSortAndFilter(data: Pair<List<SortFilterItemWrapper>, String>): Pair<List<SortFilterItemWrapper>, String> {
+        val updatedData =  data.first.map {
+            if (it.count == 0) {
+                it.isSelected = false
+            }
+            it
+        }
+        return Pair(updatedData, data.second)
+    }
+
+    fun mapToUnSelectedFilterTopic(data: List<SortFilterItemWrapper>): List<SortFilterItemWrapper> {
+        val updatedData = data.map {
+            if (it.count == 0) {
+                it.isSelected = false
+            }
+            it
+        }
+        return updatedData
+    }
+
+    fun mapToUnSelectedFilterRating(data: List<RatingBarUiModel>): List<RatingBarUiModel> {
+        val updatedData = data.map {
+            if (it.ratingCount == 0) {
+                it.ratingIsChecked = false
+            }
+            it
+        }
+        return updatedData
+    }
+
+
 
 }

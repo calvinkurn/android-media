@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -149,3 +150,27 @@ fun Map<String, List<Any>>.getValueListByKey(key: String?): List<Any>? {
 fun Map<String, Map<String, Any>>.geValueMapByKey(key: String?): Map<String, Any>? {
     return this.filterKeys { it == key }.values.firstOrNull()
 }
+
+val MutableList<String>.getGeneratedFilterByText: String
+    get() {
+        return if (size == 1) {
+            firstOrNull().toString()
+        } else {
+            joinToString(separator = ";")
+        }
+    }
+
+fun MutableList<String>.removeFilterElement(regex: String) {
+    this.removeAll {
+        it.contains(regex)
+    }
+}
+
+fun MutableList<String>.getGeneratedTimeFilterByText(prefixTime: String): String {
+    return this.find { it.contains(prefixTime) } ?: ""
+}
+
+val List<SortItemUiModel>.getSortBy: String
+    get() {
+        return this.firstOrNull { it.isSelected }?.title.orEmpty()
+    }

@@ -8,6 +8,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixRating
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
+import com.tokopedia.reviewseller.common.util.getGeneratedFilterByText
+import com.tokopedia.reviewseller.common.util.removeFilterElement
 import com.tokopedia.reviewseller.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.reviewseller.feature.inboxreview.domain.usecase.GetInboxReviewUseCase
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewUiModel
@@ -40,18 +42,12 @@ class InboxReviewViewModel @Inject constructor(
     private val _ratingFilterData = MutableLiveData<List<ListItemRatingWrapper>>()
     private val _allFilterInboxReviewData = MutableLiveData<List<SortFilterInboxItemWrapper>>()
 
-    private val _feedbackInboxReview = MediatorLiveData<Result<InboxReviewUiModel>>()
+    val feedbackInboxReviewMediator = MediatorLiveData<Result<InboxReviewUiModel>>()
     val feedbackInboxReview: LiveData<Result<InboxReviewUiModel>>
-        get() = _feedbackInboxReview
+        get() = feedbackInboxReviewMediator
 
     init {
         setupFeedBackInboxReview()
-    }
-
-    private fun removeFilterElement(regex: String) {
-        filterByList.removeAll {
-            it.contains(regex)
-        }
     }
 
     fun updateRatingFilterData(data: ArrayList<ListItemRatingWrapper>) {
@@ -78,25 +74,9 @@ class InboxReviewViewModel @Inject constructor(
         return filterRatingList
     }
 
-    private fun getGeneratedFilterByText(): String {
-        return if (filterByList.size == 1) {
-            filterByList.firstOrNull() ?: ""
-        } else if (filterByList.size > 1) {
-            filterByList.joinToString(separator = ";")
-        } else {
-            ""
-        }
-    }
-
     fun resetAllFilter() {
-        allFilterList.map {
-            it.isSelected = false
-            it
-        }
-        filterRatingList.map {
-            it.isSelected = false
-            it
-        }
+        allFilterList = InboxReviewMapper.mapToUnSelectedStatusList(allFilterList)
+        filterRatingList = InboxReviewMapper.mapToUnSelectedRatingList(filterRatingList)
         filterByList.clear()
         getInboxReview()
     }
@@ -105,7 +85,7 @@ class InboxReviewViewModel @Inject constructor(
         launchCatchError(block = {
             val inboxReviewResult = withContext(dispatcherProvider.io()) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
-                        getGeneratedFilterByText(),
+                        filterByList.getGeneratedFilterByText,
                         page
                 )
 
@@ -119,12 +99,12 @@ class InboxReviewViewModel @Inject constructor(
     }
 
     private fun setupFeedBackInboxReview() {
-        _feedbackInboxReview.addSource(_ratingFilterData) { data ->
+        feedbackInboxReviewMediator.addSource(_ratingFilterData) { data ->
             val ratingFilterText = data.filter { it.isSelected }
             val ratingFilterTextGenerated = if (ratingFilterText.isEmpty()) "" else ratingFilterText.joinToString(prefix = prefixRating, separator = ",") {
                 it.sortValue
             }
-            removeFilterElement(prefixRating)
+            filterByList.removeFilterElement(prefixRating)
 
             if (ratingFilterTextGenerated.isNotBlank()) {
                 filterByList.add(ratingFilterTextGenerated)
@@ -132,14 +112,14 @@ class InboxReviewViewModel @Inject constructor(
             getInboxReview()
         }
 
-        _feedbackInboxReview.addSource(_allFilterInboxReviewData) { data ->
+        feedbackInboxReviewMediator.addSource(_allFilterInboxReviewData) { data ->
             val statusFilterText = InboxReviewMapper.mapToStatusFilterList(data).filter { it.isSelected }
 
             val statusFilterTextGenerated = if (statusFilterText.isEmpty()) "" else statusFilterText.joinToString(prefix = prefixStatus, separator = ",") {
                 it.sortValue
             }
 
-            removeFilterElement(prefixStatus)
+            filterByList.removeFilterElement(prefixStatus)
 
             if (statusFilterTextGenerated.isNotBlank()) {
                 filterByList.add(statusFilterTextGenerated)
@@ -152,16 +132,16 @@ class InboxReviewViewModel @Inject constructor(
         launchCatchError(block = {
             val feedbackInboxReviewList = withContext(dispatcherProvider.io()) {
                 getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
-                        getGeneratedFilterByText(),
+                        filterByList.getGeneratedFilterByText,
                         page
                 )
 
                 val productFeedbackInboxReviewResponse = getInboxReviewUseCase.executeOnBackground()
                 InboxReviewMapper.mapToInboxReviewUiModel(productFeedbackInboxReviewResponse, userSession = userSession)
             }
-            _feedbackInboxReview.postValue(Success(feedbackInboxReviewList))
+            feedbackInboxReviewMediator.postValue(Success(feedbackInboxReviewList))
         }, onError = {
-            _feedbackInboxReview.postValue(Fail(it))
+            feedbackInboxReviewMediator.postValue(Fail(it))
         })
     }
 

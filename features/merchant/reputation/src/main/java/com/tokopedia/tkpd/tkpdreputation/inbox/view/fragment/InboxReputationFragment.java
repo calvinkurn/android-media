@@ -3,27 +3,29 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking;
@@ -52,7 +54,9 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 
@@ -193,7 +197,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void setupSellerMigrationTicker() {
-        if(getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+        if(getTab() == InboxReputationActivity.TAB_BUYER_REVIEW && !GlobalConfig.isSellerApp()) {
             sellerMigrationTicker.setTickerTitle(getResources().getString(com.tokopedia.seller_migration_common.R.string.seller_migration_review_ticker_title));
             sellerMigrationTicker.setHtmlDescription(getResources().getString(com.tokopedia.seller_migration_common.R.string.seller_migration_review_ticker_description));
             sellerMigrationTicker.setDescriptionClickEvent(new TickerCallback() {
