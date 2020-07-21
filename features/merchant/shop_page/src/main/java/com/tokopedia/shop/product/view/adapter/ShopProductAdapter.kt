@@ -387,7 +387,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun addEmptyDataModel(emptyDataViewModel: Visitable<*>) {
         visitables.add(emptyDataViewModel)
-        notifyInsertedItem(visitables.indexOf(emptyDataViewModel))
+        notifyChangedDataSet()
         mapDataModel()
     }
 
@@ -441,6 +441,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, position)) {
                 notifyItemChanged(position)
+            } else {
+                notifyChangedDataSet()
             }
         }
     }
@@ -449,6 +451,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, position)) {
                 notifyItemRemoved(position)
+            } else {
+                notifyChangedDataSet()
             }
         }
     }
@@ -457,6 +461,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeRemoved(startPosition, totalItem)
+            } else {
+                notifyChangedDataSet()
             }
         }
     }
@@ -465,6 +471,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeInserted(startPosition, totalItem)
+            } else {
+                notifyChangedDataSet()
             }
         }
     }
@@ -473,7 +481,15 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         recyclerView?.isComputingLayout?.let {
             if (isAllowedNotify(it, position)) {
                 notifyItemInserted(position)
+            } else {
+                notifyChangedDataSet()
             }
+        }
+    }
+
+    private fun notifyChangedDataSet(){
+        Handler().post {
+            notifyDataSetChanged()
         }
     }
 

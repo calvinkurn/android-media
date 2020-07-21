@@ -2,6 +2,7 @@ package com.tokopedia.withdraw.saldowithdrawal.domain.model
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class GetWDBannerResponse(
         @SerializedName("RichieGetWDBanner")
@@ -18,6 +19,8 @@ data class RichieGetWDBanner(
 )
 
 data class BannerData(
+        @SerializedName("ID")
+        val id: Int,
         @SerializedName("BGURL")
         val bgURL: String,
         @SerializedName("CTA")
@@ -32,4 +35,4 @@ data class BannerData(
         val text2: String,
         @SerializedName("Title")
         val title: String
-)
+): ImpressHolder()

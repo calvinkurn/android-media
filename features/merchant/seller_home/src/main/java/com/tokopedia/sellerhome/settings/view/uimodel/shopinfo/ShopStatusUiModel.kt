@@ -2,8 +2,9 @@ package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
 
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.*
+import com.tokopedia.user.session.UserSessionInterface
 
-class ShopStatusUiModel(val shopType: ShopType) :
+class ShopStatusUiModel(val shopType: ShopType, val user: UserSessionInterface?) :
         SettingShopInfoImpressionTrackable,
         SettingShopInfoClickTrackable
 {
@@ -13,6 +14,19 @@ class ShopStatusUiModel(val shopType: ShopType) :
 
     override val clickEventAction: String
         get() = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_STATE} - ${shopType.mapToEventCategory()}"
+
+    override val clickEventShopId: String
+        get() = user?.shopId.toString()
+
+    override val clickEventUserId: String
+        get() = user?.userId.toString()
+
+    override val clickEventShopType: String
+        get() = when(shopType) {
+            is RegularMerchant -> SettingTrackingConstant.SHOP_REGULAR_MERCHANT
+            is PowerMerchantStatus -> SettingTrackingConstant.SHOP_POWER_MERCHANT
+            is ShopType.OfficialStore -> SettingTrackingConstant.SHOP_OFFICIAL_STORE
+        }
 
     private fun ShopType.mapToEventCategory(): String {
         val shopType = when(this) {

@@ -210,6 +210,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
+    public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
+    public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
+
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
