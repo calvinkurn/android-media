@@ -160,7 +160,10 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             reviewDetailProductImage.loadImage(productImageUrl)
             reviewDetailProductName.text = productName
             if(productVariantName.isNotBlank()) {
-                reviewDetailProductVariant.text = getString(R.string.review_pending_variant, productVariantName)
+                reviewDetailProductVariant.apply {
+                    text = getString(R.string.review_pending_variant, productVariantName)
+                    show()
+                }
             }
         }
     }
@@ -210,22 +213,30 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
-            when {
-                !editable && isLocked && score != 0  -> {
-                    reviewHistoryDetailReputation.setFinalScore(score, shopName)
-                }
-                else -> {
-                    reviewHistoryDetailReputation.hide()
+            reviewHistoryDetailReputation.apply {
+                setShopName(shopName)
+                when {
+                    !editable && isLocked && score != 0  -> {
+                        setFinalScore(score)
+                        show()
+                    }
+                    editable && !isLocked -> {
+                        setDeadline(lockTime)
+                        setEditableScore(score)
+                    }
+                    isLocked && score == 0 -> {
+                        setExpired()
+                    }
+                    else -> {
+                        hide()
+                    }
                 }
             }
         }
     }
 
     private fun initHeader() {
-        reviewDetailHeader.apply {
-
-            title = getString(R.string.review_history_details_toolbar)
-        }
+        reviewDetailHeader.title = getString(R.string.review_history_details_toolbar)
     }
 
     private fun initErrorPage() {

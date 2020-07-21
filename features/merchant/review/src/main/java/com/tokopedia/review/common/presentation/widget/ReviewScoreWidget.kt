@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.historydetails.presentation.widget
+package com.tokopedia.review.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,7 +11,7 @@ import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_review_detail_score.view.*
 
-class ReviewDetailScoreWidget : BaseCustomView {
+class ReviewScoreWidget : BaseCustomView {
 
     companion object {
         const val REPUTATION_SCORE_BAD = -1
@@ -34,8 +34,25 @@ class ReviewDetailScoreWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_review_detail_score, this)
     }
 
-    fun setFinalScore(score: Int, shopName: String) {
-        reviewDetailScoreShopName.setTextAndCheckShow(shopName)
+    fun setShopName(shopName: String) {
+        this.reviewDetailScoreShopName.setTextAndCheckShow(shopName)
+    }
+
+    fun setExpired() {
+        this.reviewDetailScoreTitle.text = context.getString(R.string.review_detail_score_expired)
+    }
+
+    fun setDeadline(deadline: String) {
+        if(deadline.isNotBlank()) {
+            this.reviewScoreDeadline.apply {
+                text = deadline
+                show()
+            }
+            this.reviewScoreDeadlineLabel.show()
+        }
+    }
+
+    fun setFinalScore(score: Int) {
         when(score) {
             REPUTATION_SCORE_BAD -> {
                 this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_active)
@@ -61,6 +78,20 @@ class ReviewDetailScoreWidget : BaseCustomView {
         }
         reviewDetailScoreSmiley.show()
         reviewDetailScoreText.show()
+    }
+
+    fun setEditableScore(score: Int) {
+        when(score) {
+            REPUTATION_SCORE_BAD -> {
+                this.reviewEditableBadSmiley
+            }
+            REPUTATION_SCORE_MEDIOCRE -> {
+                this.reviewEditableMediocreSmiley
+            }
+            else -> {
+                this.reviewEditableGreatSmiley
+            }
+        }
     }
 
 }
