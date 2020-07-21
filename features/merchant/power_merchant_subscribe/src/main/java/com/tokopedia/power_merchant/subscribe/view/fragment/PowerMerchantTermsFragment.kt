@@ -14,6 +14,7 @@ import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
@@ -198,7 +199,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
     }
 
     private fun showShopScoreBottomSheet() {
-        val shopScore = arguments?.getInt(EXTRA_SHOP_SCORE) ?: 0
+        val shopScore = arguments?.getInt(EXTRA_SHOP_SCORE).orZero()
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
             getString(R.string.power_merchant_bottom_sheet_score_title),
             getString(R.string.power_merchant_bottom_sheet_score_description),
