@@ -73,16 +73,7 @@ class ChatRatingViewHolder(itemView: View,
             date.visibility = View.GONE
         }
 
-
-        var hourTime: String?
-
-        try {
-            hourTime = ChatTimeConverter.formatTime(java.lang.Long.parseLong(element.replyTime))
-        } catch (e: NumberFormatException) {
-            hourTime = element.replyTime
-        }
-
-        hour.text = hourTime
+        hour.text = getHourTime(element.replyTime)
 
         when (element.ratingStatus) {
             ChatRatingViewModel.RATING_NONE -> {
