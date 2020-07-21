@@ -125,6 +125,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             }
             paramUohOrder.status = status
+            currFilterType = UohConsts.TYPE_FILTER_STATUS
+            currFilterKey = filterStatus
         }
         loadOrderHistoryList()
     }
@@ -148,12 +150,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-        defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
-        defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
-        defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
-        paramUohOrder.createTimeStart = defaultStartDate
-        paramUohOrder.createTimeEnd = defaultEndDate
+        if (filterStatus.isEmpty()) {
+            defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+            defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+            defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
+            defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
+            paramUohOrder.createTimeStart = defaultStartDate
+            paramUohOrder.createTimeEnd = defaultEndDate
+        }
         paramUohOrder.page = 1
 
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
