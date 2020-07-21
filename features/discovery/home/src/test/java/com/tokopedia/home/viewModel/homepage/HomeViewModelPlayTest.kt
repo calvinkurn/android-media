@@ -170,18 +170,15 @@ class HomeViewModelPlayTest{
 
         // simulate play data returns success
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
-                channel = PlayChannel()
+                channel = PlayChannel(coverUrl = "tidak kosong")
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         // simulate view want load play data with position
         homeViewModel.getPlayBanner(1)
 
-        // expect function load from network called
-        coVerify { getPlayLiveDynamicUseCase.executeOnBackground() }
-
         // Expect the event on live data available and check image
         homeViewModel.requestImageTestLiveData.observeOnce {
-            assert(it == null)
+            assert(it != null)
         }
 
         // Image valid but the network error when try get image

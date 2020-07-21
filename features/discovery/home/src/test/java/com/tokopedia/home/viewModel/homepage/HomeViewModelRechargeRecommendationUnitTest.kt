@@ -100,6 +100,36 @@ class HomeViewModelRechargeRecommendationUnitTest{
         }
 
     }
+    @Test
+    fun `Remove recharge recommendation`(){
+        val rechargeDataModel = ReminderWidgetModel(source=ReminderEnum.RECHARGE)
+        val rechargeRecommendation = RechargeRecommendation(
+                "",
+                listOf()
+        )
+
+        // Add Recharge Recommendation to HomeDataModel
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf()
+                )
+        )
+
+        homeViewModel = createHomeViewModel(
+                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                getHomeUseCase = getHomeUseCase,
+                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+        )
+
+        // insert null recharge to home data
+        homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
+
+        // Expect the reminder recharge not available in home live data
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
+        }
+
+    }
 
     @Test
     fun `Recharge Recommendation Available`(){

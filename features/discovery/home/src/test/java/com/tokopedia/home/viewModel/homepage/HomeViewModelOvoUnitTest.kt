@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.junit.Rule
@@ -70,6 +71,37 @@ class HomeViewModelOvoUnitTest{
             })
         }
         confirmVerified(observerHome)
+    }
+
+    @Test
+    fun `Test refresh data`(){
+        val headerDataModel = HeaderDataModel()
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getHomeTokopointsDataUseCase.executeOnBackground() } returns TokopointsDrawerHomeData()
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(headerDataModel)
+                )
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+        ).apply{
+            setNeedToShowGeolocationComponent(true)
+            setGeolocationPermission(true)
+        }
+
+        homeViewModel.refresh(true)
+
+        homeViewModel.isRequestNetworkLiveData.observeOnce {
+            assert(it != null)
+        }
+
+        homeViewModel.sendLocationLiveData.observeOnce {
+            assert(it != null)
+        }
     }
 
     @Test
@@ -435,7 +467,7 @@ class HomeViewModelOvoUnitTest{
     fun `Test Refresh Tokocash Get success data Tokocash login`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
         every { userSessionInterface.isLoggedIn } returns true
-        coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel()
+        coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel(isShowAnnouncement = true, applinks = "asd")
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf(headerDataModel)
@@ -449,6 +481,7 @@ class HomeViewModelOvoUnitTest{
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoCash()
+        homeViewModel.popupIntroOvoLiveData.observeOnce { assert(it != null) }
         verifyOrder {
             // check on home data initial first channel is header data model
             observerHome.onChanged(match {

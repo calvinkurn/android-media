@@ -65,6 +65,34 @@ class HomeViewModelReviewUnitTest {
     }
 
     @Test
+    fun `Test Review is not visible when geolocation show`(){
+        val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+
+        // Populate data view model
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(review)
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).also {
+            it.setNeedToShowGeolocationComponent(true)
+        }
+        homeViewModel.homeLiveData.observeForever(observerHome)
+
+        // Expect Review widget will show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } == null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+
+    @Test
     fun `Test Review is not visible`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 

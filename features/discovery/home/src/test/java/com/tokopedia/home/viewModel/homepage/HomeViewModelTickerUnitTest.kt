@@ -64,12 +64,47 @@ class HomeViewModelTickerUnitTest {
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.onCloseTicker()
 
         // Expect ticker not show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.contains(ticker)
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} != null
+            })
+            // check data is not available cause removed
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+
+    @Test
+    fun `Test Remove Ticke`(){
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val ticker = TickerDataModel()
+        // Data with ticker
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(ticker)
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.removeViewHolderAtPosition(0)
+
+        // Expect ticker not show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} != null
+            })
+            // check data is not available cause removed
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
             })
         }
         confirmVerified(observerHome)

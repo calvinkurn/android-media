@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home_component.model.ChannelModel
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
@@ -160,6 +161,44 @@ class HomeViewModelDynamicChannelTest{
     }
 
     @Test
+    fun `Get dynamic channel data with visitable but data empty`() {
+        val dataModel = DynamicChannelDataModel()
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        dataModel.channel = DynamicHomeChannel.Channels(id = "1")
+
+        // dynamic banner almost expired time
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(dataModel)
+                )
+        )
+
+        // dynamic data returns success
+        getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
+                dynamicChannelDataModels = listOf()
+        )
+
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+
+        // viewModel load request update dynamic channel data
+        homeViewModel.homeLiveData.value?.list?.find { it::class.java == dataModel::class.java }?.let {
+            homeViewModel.getDynamicChannelData(it, ChannelModel(groupId = "1", id="1"), 0)
+        }
+
+        // Expect channel updated
+        verifyOrder {
+            observerHome.onChanged(match {homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
+            })
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+
+    @Test
     fun `Get dynamic channel data error`() {
         val dataModel = DynamicChannelDataModel()
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
@@ -180,6 +219,8 @@ class HomeViewModelDynamicChannelTest{
 
         // viewModel load request update dynamic channel data
         homeViewModel.getDynamicChannelData(dataModel, 0)
+
+        homeViewModel.trackingLiveData.observeForever { assert(it != null) }
 
         // Expect channel updated
         verifyOrder {

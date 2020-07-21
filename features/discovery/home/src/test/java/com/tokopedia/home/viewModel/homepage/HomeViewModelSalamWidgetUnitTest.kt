@@ -196,6 +196,27 @@ class HomeViewModelSalamWidgetUnitTest {
             assert(it.list.find {it::class.java == salamDataModel::class.java} == null)
         }
     }
+    @Test
+    fun `SalamWidget Not Available and remove it`(){
+        val salamDataModel = ReminderWidgetModel(source=ReminderEnum.SALAM)
+        val salamWidget = SalamWidget()
+
+        // Add SalamWidget to HomeDataModel
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf()
+                )
+        )
+
+        // insert null salam to home data
+        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.insertSalamWidget(salamWidget)
+
+        // Expect the reminder salam not available in home live data
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert(homeDataModel.list.find {it::class.java == salamDataModel::class.java} == null)
+        }
+    }
 
     @Test
     fun `Salam Decline`(){

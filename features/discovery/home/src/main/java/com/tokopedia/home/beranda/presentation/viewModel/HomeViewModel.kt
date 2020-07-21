@@ -308,9 +308,6 @@ open class HomeViewModel @Inject constructor(
             cashBackData?.let {
                 headerDataModel = headerDataModel?.copy(cashBackData = it)
             }
-            tokopointHomeDrawerData?.let {
-                headerDataModel = headerDataModel?.copy(tokoPointDrawerData = it)
-            }
             isPendingTokocashChecked?.let {
                 headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
             }
