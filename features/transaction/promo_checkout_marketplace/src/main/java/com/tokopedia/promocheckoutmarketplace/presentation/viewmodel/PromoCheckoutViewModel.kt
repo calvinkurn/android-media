@@ -706,6 +706,41 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
+    private fun handleApplyPromoSuccess(selectedPromoList: ArrayList<String>,
+                                        response: ValidateUsePromoRevamp,
+                                        request: ValidateUsePromoRequest) {
+        val responseValidatePromo = response.promo
+
+        // Check promo global is success
+        var isGlobalSuccess = false
+        if (responseValidatePromo.message.state != "red") {
+            isGlobalSuccess = true
+        }
+
+        // Check all promo merchant is success
+        var successCount = 0
+        responseValidatePromo.voucherOrders.forEach { voucherOrder ->
+            if (voucherOrder.success) {
+                successCount++
+            } else {
+                // If one of promo merchant is error, then show error message
+                throw PromoErrorException(voucherOrder.message.text)
+            }
+        }
+        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrders.size) {
+            var selectedRecommendationCount = 0
+            promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
+                if (selectedPromoList.contains(it)) selectedRecommendationCount++
+            }
+            val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size
+                    ?: 0
+            val status = if (selectedPromoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
+            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), selectedPromoList)
+            // If all promo merchant are success, then navigate to cart
+            setApplyPromoStateSuccess(request, response)
+        }
+    }
+
     private fun handleApplyPromoFailed(responseValidateUse: ValidateUsePromoRevamp) {
         val responseValidatePromo = responseValidateUse.promo
         val redStateMap = HashMap<String, String>()
@@ -755,41 +790,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                     ?: ""
             it.uiState.isDisabled = true
             _tmpUiModel.value = Update(it)
-        }
-    }
-
-    private fun handleApplyPromoSuccess(selectedPromoList: ArrayList<String>,
-                                        response: ValidateUsePromoRevamp,
-                                        request: ValidateUsePromoRequest) {
-        val responseValidatePromo = response.promo
-
-        // Check promo global is success
-        var isGlobalSuccess = false
-        if (responseValidatePromo.message.state != "red") {
-            isGlobalSuccess = true
-        }
-
-        // Check all promo merchant is success
-        var successCount = 0
-        responseValidatePromo.voucherOrders.forEach { voucherOrder ->
-            if (voucherOrder.success) {
-                successCount++
-            } else {
-                // If one of promo merchant is error, then show error message
-                throw PromoErrorException(voucherOrder.message.text)
-            }
-        }
-        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrders.size) {
-            var selectedRecommendationCount = 0
-            promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
-                if (selectedPromoList.contains(it)) selectedRecommendationCount++
-            }
-            val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size
-                    ?: 0
-            val status = if (selectedPromoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
-            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), selectedPromoList)
-            // If all promo merchant are success, then navigate to cart
-            setApplyPromoStateSuccess(request, response)
         }
     }
 
