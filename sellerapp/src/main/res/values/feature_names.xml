@@ -209,7 +209,7 @@
 
     <!-- Dynamic feature for user talk-->
     <string name="write_new_talk">Kirim Pertanyaan</string>
-    <string name="title_product_discussion">Q&amp;A</string>
+    <string name="title_product_discussion">Diskusi</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>

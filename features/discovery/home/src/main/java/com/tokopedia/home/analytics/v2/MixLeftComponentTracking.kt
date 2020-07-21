@@ -147,7 +147,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             userId = userId,
             promotions = listOf(
                     Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryPersona),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
                             creative = channel.channelBanner.attribution,
                             name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
                             position = position.toString()
@@ -172,7 +172,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             userId = userId,
             promotions = listOf(
                     Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.channelBanner.attribution, channel.trackingAttributionModel.categoryPersona),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
                             creative = channel.channelBanner.attribution,
                             name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
                             position = position.toString()
