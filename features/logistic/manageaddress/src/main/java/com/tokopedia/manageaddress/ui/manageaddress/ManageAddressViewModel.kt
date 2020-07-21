@@ -15,7 +15,7 @@ import javax.inject.Inject
 class ManageAddressViewModel @Inject constructor(
         private val getPeopleAddressUseCase: GetAddressCornerUseCase,
         private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase,
-        private val setDeletePeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
+        private val setDefaultPeopleAddressUseCase: SetDefaultPeopleAddressUseCase) : ViewModel() {
 
     private val token: Token = Token()
     var savedQuery: String = ""
@@ -74,16 +74,14 @@ class ManageAddressViewModel @Inject constructor(
     }
 
     fun setDefaultPeopleAddress(id: String) {
-        val value = _addressList.value
-        if (value is ManageAddressState.Success) {
-            _result.value = ManageAddressState.Loading
-            setDeletePeopleAddressUseCase.execute(id.toInt(), {
-                _result.value = ManageAddressState.Success("Success")
-                searchAddress("")
-            },  {
-                _addressList.value  = ManageAddressState.Fail(it, "")
-            })
-        }
+        _result.value = ManageAddressState.Loading
+        setDefaultPeopleAddressUseCase.execute(id.toInt(), {
+            _result.value = ManageAddressState.Success("Success")
+            searchAddress("")
+        },  {
+            _addressList.value  = ManageAddressState.Fail(it, "")
+        })
+
     }
 
     override fun onCleared() {
