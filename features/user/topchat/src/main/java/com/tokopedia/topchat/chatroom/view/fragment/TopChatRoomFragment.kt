@@ -290,6 +290,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun loadInitialData() {
+        showLoading()
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(
                     messageId,

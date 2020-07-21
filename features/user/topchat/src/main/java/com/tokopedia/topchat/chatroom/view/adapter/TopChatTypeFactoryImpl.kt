@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
@@ -117,8 +118,12 @@ open class TopChatTypeFactoryImpl(
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: LoadingMoreModel?): Int {
+    override fun type(viewModel: LoadingMoreModel): Int {
         return TopchatLoadingMoreViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingModel): Int {
+        return TopchatLoadingModelViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -147,6 +152,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
             TopchatLoadingMoreViewHolder.LAYOUT -> TopchatLoadingMoreViewHolder(parent)
             StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)
             HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
