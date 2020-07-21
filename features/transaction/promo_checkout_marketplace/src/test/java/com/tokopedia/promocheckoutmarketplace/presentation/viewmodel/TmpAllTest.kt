@@ -6,12 +6,17 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequest
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseError
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantSuccessButGetRedState
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseClashing
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
@@ -929,6 +934,93 @@ class TmpAllTest {
 
         //then
         assert(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
+
+    @Test
+    fun `WHEN apply promo and get error result THEN apply promo response action state should be show error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoResponseError()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
+
+    @Test
+    fun `WHEN apply promo and get global failed result THEN apply promo response action state should be show error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoGlobalResponseFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
+
+    @Test
+    fun `WHEN apply promo and get merchant failed result THEN apply promo response action state should be show error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoMerchantResponseFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
+
+    @Test
+    fun `WHEN apply promo and get global and merchant failed result THEN apply promo response action state should be show error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoResponseFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
+    }
+
+    @Test
+    fun `WHEN apply promo and get clashing result THEN apply promo response action state should be show error and reload promo list`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ValidateUseResponse::class.java] = provideApplyPromoResponseClashing()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO)
     }
 
     @Test

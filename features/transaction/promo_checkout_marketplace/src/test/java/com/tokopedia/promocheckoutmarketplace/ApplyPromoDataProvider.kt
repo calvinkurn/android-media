@@ -1,7 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace
 
 import com.google.gson.Gson
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
@@ -38,6 +37,26 @@ object ApplyPromoDataProvider {
 
     fun provideApplyPromoGlobalAndMerchantResponseSuccess(): ValidateUseResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_global_and_merchant_response_success.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideApplyPromoResponseError(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_response_error.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideApplyPromoResponseFailed(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_response_failed.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideApplyPromoGlobalResponseFailed(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_global_response_failed.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideApplyPromoMerchantResponseFailed(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_merchant_response_failed.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideApplyPromoResponseClashing(): ValidateUseResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_response_clashing.json"), ValidateUseResponse::class.java)
     }
 
     fun provideApplyPromoMerchantSuccessButGetRedState(): ValidateUseResponse {
