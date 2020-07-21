@@ -42,9 +42,8 @@ class HomeViewModelTickerUnitTest {
 
         // Expect ticker not show on user screen
         verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty()
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.none { it::class.java == TickerDataModel::class.java }
             })
         }
         confirmVerified(observerHome)

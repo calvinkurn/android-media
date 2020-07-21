@@ -39,13 +39,13 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
         // dynamic data returns success
         getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf(dynamicChannelViewModel)
         )
+
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
 
         // viewModel load request update dynamic channel data
         homeViewModel.getDynamicChannelData(dataModel, 0)
@@ -53,19 +53,17 @@ class HomeViewModelDynamicChannelTest{
         // Expect channel updated
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
+            observerHome.onChanged(match { homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
             })
             // check on second update data liveData is removed old dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
             })
 
             // check after removed is must add new channel from list of channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "2"
+            observerHome.onChanged(match { homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "2"
             })
         }
         confirmVerified(observerHome)
@@ -90,13 +88,13 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
         // dynamic data returns success
         getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
         )
+
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
 
         // viewModel load request update dynamic channel data") {
         homeViewModel.getDynamicChannelData(dataModel, 0)
@@ -104,25 +102,22 @@ class HomeViewModelDynamicChannelTest{
         // Expect channel updated
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
+            observerHome.onChanged(match {homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
             })
             // check on second update data liveData is removed old dynamic channel
             observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
+                it.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
             })
 
             // check after removed is must add new channel from list of channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "3"
+            observerHome.onChanged(match {homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "3"
             })
 
             // check the second new channel from list of channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "2"
+            observerHome.onChanged(match {homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "2"
             })
         }
         confirmVerified(observerHome)
@@ -141,25 +136,24 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
         // dynamic data returns success
         getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
                 dynamicChannelDataModels = listOf()
         )
+
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
 
         // viewModel load request update dynamic channel data
         homeViewModel.getDynamicChannelData(dataModel, 0)
 
         // Expect channel updated
         verifyOrder {
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
+            observerHome.onChanged(match {homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
             })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
             })
         }
         confirmVerified(observerHome)
@@ -178,23 +172,22 @@ class HomeViewModelDynamicChannelTest{
                 )
         )
 
-        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
         // dynamic data returns success
         getDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn()
+
+        homeViewModel = createHomeViewModel(getDynamicChannelsUseCase = getDynamicChannelsUseCase, getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
 
         // viewModel load request update dynamic channel data
         homeViewModel.getDynamicChannelData(dataModel, 0)
 
         // Expect channel updated
         verifyOrder {
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
+            observerHome.onChanged(match {homeDataModel ->
+                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
             })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty()
+            observerHome.onChanged(match {homeDataModel ->
+                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
             })
         }
         confirmVerified(observerHome)

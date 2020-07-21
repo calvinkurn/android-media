@@ -72,9 +72,8 @@ class HomeViewModelSalamWidgetUnitTest {
         homeViewModel.insertSalamWidget(salamWidget)
 
         // Expect the reminder salam available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.contains(salamDataModel) &&
-                    (it.list.find { it == salamDataModel } as? ReminderWidgetModel)?.source == ReminderEnum.SALAM)
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == salamDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.SALAM)
         }
     }
 
@@ -97,8 +96,8 @@ class HomeViewModelSalamWidgetUnitTest {
         homeViewModel.getSalamWidget()
 
         // Expect the reminder salam not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(salamDataModel))
+        homeViewModel.homeLiveData.observeOnce {homeDataModel ->
+            assert(homeDataModel.list.find{it::class.java == salamDataModel::class.java} == null)
         }
     }
 
@@ -118,8 +117,8 @@ class HomeViewModelSalamWidgetUnitTest {
         homeViewModel.getSalamWidget()
 
         // Expect the reminder salam not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(salamDataModel))
+        homeViewModel.homeLiveData.observeOnce {homeDataModel ->
+            assert(homeDataModel.list.find{it::class.java == salamDataModel::class.java} == null)
         }
     }
 
@@ -169,10 +168,9 @@ class HomeViewModelSalamWidgetUnitTest {
         homeViewModel.insertSalamWidget(salamWidget)
 
         // salam data available in home data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.contains(salamDataModel) &&
-                    (it.list.find { it == salamDataModel } as? ReminderWidgetModel)?.source == ReminderEnum.SALAM &&
-                    (it.list.find { it == salamDataModel } as? ReminderWidgetModel)?.data?.reminders == reminderWidget.reminders
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == salamDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.SALAM &&
+                    (homeDataModel.list.find { it::class.java == salamDataModel::class.java } as? ReminderWidgetModel)?.data?.reminders?.size == reminderWidget.reminders.size
             )
         }
     }
@@ -195,7 +193,7 @@ class HomeViewModelSalamWidgetUnitTest {
 
         // Expect the reminder salam not available in home live data
         homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(salamDataModel))
+            assert(it.list.find {it::class.java == salamDataModel::class.java} == null)
         }
     }
 
@@ -231,8 +229,8 @@ class HomeViewModelSalamWidgetUnitTest {
         homeViewModel.declineSalamItem(requestParams)
 
         // Expect the reminder salam not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(salamDataModel))
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert(homeDataModel.list.find{it::class.java == salamDataModel::class.java} == null)
         }
     }
 }

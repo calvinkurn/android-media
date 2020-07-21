@@ -29,30 +29,36 @@ class HomeViewModelReviewUnitTest {
 
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase =  getHomeReviewSuggestedUseCase)
+    private lateinit var homeViewModel: HomeViewModel
 
     @Test
     fun `Test Review is visible`(){
         val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
-        // Populate data viewmodel
+        // Populate data view model
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
                         list = listOf(review)
                 )
         )
-
+        coEvery { getHomeReviewSuggestedUseCase.executeOnBackground() } returns SuggestedProductReview(
+                suggestedProductReview = SuggestedProductReviewResponse(
+                        title = "Suggested Title"
+                )
+        )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase).apply {
+            setNeedToShowGeolocationComponent(false)
+        }
         homeViewModel.homeLiveData.observeForever(observerHome)
-
 
         // Expect Review widget will show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.find { it is ReviewDataModel } != null
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is ReviewDataModel } != null
             })
         }
         confirmVerified(observerHome)
@@ -70,14 +76,15 @@ class HomeViewModelReviewUnitTest {
         )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase =  getHomeReviewSuggestedUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
 
         // Expect Review widget will show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.find { it is ReviewDataModel } == null
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } == null
             })
         }
         confirmVerified(observerHome)
@@ -105,6 +112,7 @@ class HomeViewModelReviewUnitTest {
         )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase =  getHomeReviewSuggestedUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Expect review widget will show on user screen
@@ -138,6 +146,7 @@ class HomeViewModelReviewUnitTest {
         )
 
         // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase =  getHomeReviewSuggestedUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Close widget pressed
@@ -146,12 +155,12 @@ class HomeViewModelReviewUnitTest {
         // Expect Review widget will show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.find { it is ReviewDataModel } != null
-                        && (it.list.find { it is ReviewDataModel } as ReviewDataModel)?.suggestedProductReview?.suggestedProductReview?.title == "Suggested Title"
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } != null
+                        && (homeDataModel.list.find { it is ReviewDataModel } as ReviewDataModel)?.suggestedProductReview?.suggestedProductReview?.title == "Suggested Title"
             })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.find { it is ReviewDataModel } == null
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } == null
             })
         }
         confirmVerified(observerHome)

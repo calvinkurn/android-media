@@ -30,32 +30,6 @@ class HomeViewModelPopularKeywordUnitTest {
     private lateinit var homeViewModel: HomeViewModel
 
     @Test
-    fun `Test Popular is visible`(){
-        val popular = PopularKeywordListDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-
-        // Data with popular keyword
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(popular)
-                )
-        )
-
-        // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
-
-        // Expect popular keyword will show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is PopularKeywordListDataModel } != null
-            })
-        }
-        confirmVerified(observerHome)
-    }
-
-    @Test
     fun `Test Popular with data keyword`(){
         val popular = PopularKeywordListDataModel()
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
@@ -80,7 +54,7 @@ class HomeViewModelPopularKeywordUnitTest {
         )
 
         // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPopularKeywordUseCase = getPopularKeywordUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Load popular keyword
@@ -89,8 +63,8 @@ class HomeViewModelPopularKeywordUnitTest {
         // Expect popular keyword will show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.find { it is PopularKeywordListDataModel } != null
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is PopularKeywordListDataModel } != null
             })
             observerHome.onChanged(match { homeDataModel ->
                 homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is PopularKeywordListDataModel } != null
@@ -120,7 +94,7 @@ class HomeViewModelPopularKeywordUnitTest {
         verifyOrder {
             // check on home data initial first channel is dynamic channel
             observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is PopularKeywordListDataModel } == null
+                homeDataModel.list.find { it is PopularKeywordListDataModel } == null
             })
         }
         confirmVerified(observerHome)

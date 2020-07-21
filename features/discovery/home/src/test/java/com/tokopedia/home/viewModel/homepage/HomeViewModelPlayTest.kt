@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,6 +23,7 @@ import org.junit.Test
 class HomeViewModelPlayTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
@@ -52,15 +52,14 @@ class HomeViewModelPlayTest{
         // Expect the event on live data available and check image
         homeViewModel.requestImageTestLiveData.observeOnce {
             assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+            // Image valid should submit the data on live data home
+            homeViewModel.setPlayBanner(it.peekContent())
         }
 
-        // Image valid should submit the data on live data home
-        homeViewModel.setPlayBanner(playDataModel)
-
         // Expect the event on live data available
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.contains(playDataModel) && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome != null
-                    && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
             )
         }
 
@@ -68,7 +67,11 @@ class HomeViewModelPlayTest{
         homeViewModel.updateBannerTotalView("0")
 
         // Expect the view updated
-        assert(true)
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "0"
+            )
+        }
     }
 
     @Test
@@ -96,10 +99,10 @@ class HomeViewModelPlayTest{
         homeViewModel.requestImageTestLiveData.observeOnce {
             assert(it == null)
         }
-
+        Thread.sleep(1000)
         // Expect the event on live data empty
         homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.isEmpty())
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
 
@@ -123,16 +126,16 @@ class HomeViewModelPlayTest{
 
         // Expect the event on live data available and check image
         homeViewModel.requestImageTestLiveData.observeOnce {
-            assert(it == null)
+            assert(it != null)
+            // Image valid but the network error when try get image
+            homeViewModel.clearPlayBanner()
         }
 
-        // Image valid but the network error when try get image
-        homeViewModel.clearPlayBanner()
-
+        Thread.sleep(1000)
 
         // Expect the event on live data not available
         homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.isEmpty())
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
 
@@ -147,7 +150,7 @@ class HomeViewModelPlayTest{
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
         // Expect the event on live data not available
         homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.isEmpty())
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
 
@@ -186,7 +189,7 @@ class HomeViewModelPlayTest{
 
         // Expect the event on live data not available
         homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.isEmpty())
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
 
@@ -210,15 +213,14 @@ class HomeViewModelPlayTest{
         // Expect the event on live data available and check image
         homeViewModel.requestImageTestLiveData.observeOnce {
             assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+            // Image valid should submit the data on live data home
+            homeViewModel.setPlayBanner(it.peekContent())
         }
 
-        // Image valid should submit the data on live data home
-        homeViewModel.setPlayBanner(playDataModel)
-
         // Expect the event on live data available
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.contains(playDataModel) && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome != null
-                    && (it.list.find { it == playDataModel } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
             )
         }
     }
@@ -260,7 +262,7 @@ class HomeViewModelPlayTest{
 
         // Expect the event on live data not available
         homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.isEmpty())
+            assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
 }

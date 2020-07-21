@@ -110,6 +110,9 @@ class HomeViewModelGeolocationUnitTest {
             observerHome.onChanged(match {
                 it.list.isNotEmpty()
             })
+            observerHome.onChanged(match {
+                it.list.isEmpty()
+            })
         }
         confirmVerified(observerHome)
     }

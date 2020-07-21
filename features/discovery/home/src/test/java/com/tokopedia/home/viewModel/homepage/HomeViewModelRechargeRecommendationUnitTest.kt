@@ -65,8 +65,8 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.declineRechargeRecommendationItem(requestParams)
 
         // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(rechargeDataModel))
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
     }
 
@@ -95,8 +95,8 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
 
         // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(!it.list.contains(rechargeDataModel))
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
 
     }
@@ -155,10 +155,9 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
 
         // recharge data available in home data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.contains(rechargeDataModel) &&
-                    (it.list.find { it == rechargeDataModel } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE &&
-                    (it.list.find { it == rechargeDataModel } as? ReminderWidgetModel)?.data?.reminders == reminderWidget.reminders
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE &&
+                    (homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.data?.reminders?.size == reminderWidget.reminders.size
             )
         }
     }
@@ -268,9 +267,8 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
 
         // Expect the reminder recharge available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.contains(rechargeDataModel) &&
-                    (it.list.find { it == rechargeDataModel } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE)
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE)
         }
 
     }

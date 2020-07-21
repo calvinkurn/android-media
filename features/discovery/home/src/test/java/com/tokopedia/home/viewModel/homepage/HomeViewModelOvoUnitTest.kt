@@ -39,7 +39,7 @@ class HomeViewModelOvoUnitTest{
     fun `Test Tokopoint Only Get success data tokopoint`(){
         val headerDataModel = HeaderDataModel()
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        every { userSessionInterface.isLoggedIn } returns false
+        every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsDataUseCase.executeOnBackground() } returns TokopointsDrawerHomeData()
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -123,7 +123,8 @@ class HomeViewModelOvoUnitTest{
         homeViewModel = createHomeViewModel(
                 userSessionInterface = userSessionInterface,
                 getHomeUseCase = getHomeUseCase,
-                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.getTokocashPendingBalance()
@@ -183,7 +184,7 @@ class HomeViewModelOvoUnitTest{
         homeViewModel = createHomeViewModel(
                 userSessionInterface = userSessionInterface,
                 getHomeUseCase = getHomeUseCase,
-                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+                getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.refresh(true)
@@ -443,7 +444,8 @@ class HomeViewModelOvoUnitTest{
         homeViewModel = createHomeViewModel(
                 userSessionInterface = userSessionInterface,
                 getHomeUseCase = getHomeUseCase,
-                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
+                getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
+                getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase
         )
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.onRefreshTokoCash()

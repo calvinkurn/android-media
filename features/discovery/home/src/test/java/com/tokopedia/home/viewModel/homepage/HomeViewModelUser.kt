@@ -1,9 +1,11 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -11,13 +13,16 @@ import org.junit.Test
  */
 
 class HomeViewModelUser{
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    private val homeViewModel: HomeViewModel = createHomeViewModel(userSessionInterface = userSessionInterface)
+    private lateinit var homeViewModel: HomeViewModel
     @Test
     fun `Get user session with non login`(){
         // Set user session data with null
-        every { userSessionInterface.userId } returns null
-
+        every { userSessionInterface.userId } returns ""
+        homeViewModel = createHomeViewModel(userSessionInterface = userSessionInterface)
         // Check data from viewModel
         assert(homeViewModel.getUserId().isEmpty())
     }
@@ -26,8 +31,8 @@ class HomeViewModelUser{
     fun `Get user session with login user`(){
         // Set user session data with id
         every { userSessionInterface.userId } returns "234"
-
+        homeViewModel = createHomeViewModel(userSessionInterface = userSessionInterface)
         // Check data from viewModel
-        assert(homeViewModel.getUserId().isNotEmpty() && homeViewModel.getUserId() == "234")
+        assert( homeViewModel.getUserId() == "234")
     }
 }

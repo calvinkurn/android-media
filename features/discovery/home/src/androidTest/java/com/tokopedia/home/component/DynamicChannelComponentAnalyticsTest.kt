@@ -19,10 +19,9 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.MixLeftViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
-import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
