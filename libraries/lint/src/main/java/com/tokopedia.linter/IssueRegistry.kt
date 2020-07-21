@@ -10,7 +10,8 @@ class IssueRegistry : IssueRegistry() {
     override val issues: List<Issue>
         get() = listOf(
                 SetColourDetector.ISSUE,
-                CoreResourcesDetector.ISSUE
+                CoreResourcesDetector.ISSUE,
+                TypographyDetector.ISSUE
         )
 
     override val minApi: Int
