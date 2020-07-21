@@ -692,10 +692,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun delaySendMessage() {
-        getViewState().scrollToBottom()
         getViewState().hideProductPreviewLayout()
         delaySendMessage = getComposedMessage()
         clearEditText()
+        getViewState().scrollToBottom()
     }
 
     private fun onSuccessResetChatToFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
