@@ -1557,9 +1557,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPromoScrolled(bannerSlidesModel: BannerSlidesModel) {
         HomeTrackingUtils.homeSlidingBannerImpression(context, bannerSlidesModel, bannerSlidesModel.position)
-        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
+        if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
-        } else if (!bannerSlidesModel.isInvoke) {
+        } else {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
                 TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
                         bannerSlidesModel.id.toString(),
