@@ -188,10 +188,10 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
 
     private fun initModelFromSavedInstanceState(data: Bundle?) {
         stepperModel = data?.let {
-            data.getParcelable(STEPPER_MODEL_EXTRA) as PMCancellationQuestionnaireStepperModel
+            data.getParcelable(STEPPER_MODEL_EXTRA) ?: PMCancellationQuestionnaireStepperModel()
         } ?: PMCancellationQuestionnaireStepperModel()
         pmCancellationQuestionnaireData = data?.let {
-            data.getParcelable(QUESTIONNAIRE_DATA_EXTRA) as PMCancellationQuestionnaireData
+            data.getParcelable(QUESTIONNAIRE_DATA_EXTRA) ?: PMCancellationQuestionnaireData()
         } ?: PMCancellationQuestionnaireData()
     }
 
