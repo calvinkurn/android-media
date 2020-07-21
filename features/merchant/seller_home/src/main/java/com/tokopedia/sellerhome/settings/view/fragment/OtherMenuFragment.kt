@@ -97,7 +97,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
-    private var statisticDashboardAppLink = ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -235,11 +234,13 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
-    private fun fetchStatisticAbTestRemoteConfig() {
+    private fun getStatisticPageApplink(): String {
         val statisticVariantName = "StatsOverApp"
         val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(statisticVariantName, "")
-        if (variant == statisticVariantName) {
-            statisticDashboardAppLink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+        return if (variant == statisticVariantName) {
+            ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+        } else {
+            ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
         }
     }
 
@@ -298,14 +299,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun populateAdapterData() {
-        fetchStatisticAbTestRemoteConfig()
+        val statisticPageAppLink = getStatisticPageApplink()
 
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_shop_statistic),
                         R.drawable.ic_statistic_setting,
-                        statisticDashboardAppLink,
+                        statisticPageAppLink,
                         eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),
