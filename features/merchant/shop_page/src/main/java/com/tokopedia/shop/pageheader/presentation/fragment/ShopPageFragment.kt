@@ -831,14 +831,6 @@ class ShopPageFragment :
                 refreshData()
             }
         }
-//        else if (requestCode == REQUEST_CODE_SORT) {
-//            data?.let {
-//                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-//                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
-//                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
-//                redirectToShopSearchProductResultPage(sortValue)
-//            }
-//        }
         else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
