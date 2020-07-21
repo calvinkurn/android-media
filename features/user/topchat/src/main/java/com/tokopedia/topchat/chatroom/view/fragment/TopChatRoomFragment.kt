@@ -381,7 +381,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                 onSuccessGetShopFollowingStatus())
         adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
