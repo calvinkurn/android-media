@@ -221,11 +221,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     orderList = it.data
                     currPage += 1
-                    if (currFilterKey.isEmpty() && currFilterType == -1) {
+                    // if (currFilterKey.isEmpty() && currFilterType == -1) {
                         if (orderList.filters.isNotEmpty() && orderList.categories.isNotEmpty()) {
                             renderChipsFilter()
                         }
-                    }
+                    // }
 
                     if (orderList.orders.isNotEmpty()) {
                         renderOrderList()
