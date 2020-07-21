@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.Unit
@@ -45,11 +46,14 @@ class VariantDataValuePicker : LinearLayout {
         View.inflate(context, R.layout.add_edit_product_variant_value_picker_layout, this)
     }
 
-    fun setupVariantDataValuesPicker(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>, addedCustomVariantUnitValue: UnitValue) {
+    fun setupVariantDataValuesPicker(selectedVariantUnit: Unit,
+                                     selectedVariantUnitValues: MutableList<UnitValue>,
+                                     addedCustomVariantUnitValue: UnitValue,
+                                     unConfirmedSelection: List<UnitValue>) {
         // setup unit picker
         setupVariantUnitPicker(layoutPosition, variantData.name, selectedVariantUnit)
         // setup unit value picker
-        setupVariantUnitValuePicker(layoutPosition, variantData, selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue)
+        setupVariantUnitValuePicker(layoutPosition, variantData, selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue, unConfirmedSelection)
         // setup and configure save button
         setupSaveButton(layoutPosition, selectedVariantUnitValues)
         // count and enable/disable save button
@@ -75,7 +79,8 @@ class VariantDataValuePicker : LinearLayout {
                                             variantData: VariantDetail,
                                             selectedVariantUnit: Unit,
                                             selectedVariantUnitValues: MutableList<UnitValue>,
-                                            addedCustomVariantUnitValue: UnitValue) {
+                                            addedCustomVariantUnitValue: UnitValue,
+                                            unConfirmedSelection: List<UnitValue>) {
 
         // list of listItemUnifyList
         val listItemUnifyList = ArrayList<ListItemUnify>()
@@ -101,20 +106,26 @@ class VariantDataValuePicker : LinearLayout {
 
         listUnifyVariantUnitValues.onLoadFinish {
             // set selected values
-            setSelectedValues(listItemUnifyList, selectedVariantUnitValues)
+            setSelectedValues(listItemUnifyList, selectedVariantUnitValues, unConfirmedSelection)
             // setup add custom button
             setupAddCustomVariantUnitValueButton(addCustomVariantUnitValueButton)
             // setup item click handler
-            setupListUnifyItemClickHandler(listItemUnifyList, layoutPosition, variantData, selectedVariantUnit, variantUnitValues)
+            setupListUnifyItemClickHandler(listItemUnifyList, layoutPosition, variantData, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
             // setup checked change listener
             setupCheckBoxCheckedChangeListener(listItemUnifyList, variantUnitValues, selectedVariantUnitValues)
             // set added custom variant unit value
             setAddedCustomVariantUnitValue(listItemUnifyList, addedCustomVariantUnitValue)
+
+            listItemUnifyList.forEach {
+                it.listRightCheckbox?.setPadding(0, 0, 0, 0)
+                it.listRightCheckbox?.setMargin(0, 0, 0, 0)
+            }
         }
     }
 
     private fun setSelectedValues(listItemUnifyList: List<ListItemUnify>,
-                                  selectedVariantUnitValues: MutableList<UnitValue>) {
+                                  selectedVariantUnitValues: MutableList<UnitValue>,
+                                  unConfirmedSelection: List<UnitValue>) {
         // set selected values to check box
         selectedVariantUnitValues.forEach { unitValue ->
             // comparing the title with unit value name to find the selected item(s)
@@ -124,6 +135,16 @@ class VariantDataValuePicker : LinearLayout {
             // set the ListItemUnify state
             selectedListItemUnify?.listRightCheckbox?.isChecked = true
             selectedListItemUnify?.listRightCheckbox?.isEnabled = false
+        }
+        // set unconfirmed selection to check box
+        unConfirmedSelection.forEach { unitValue ->
+            // comparing the title with unit value name to find the selected item(s)
+            val selectedListItemUnify = listItemUnifyList.find { listItemUnify ->
+                listItemUnify.listTitleText == unitValue.value
+            }
+            // set the ListItemUnify state
+            selectedListItemUnify?.listRightCheckbox?.isChecked = true
+            selectedListItemUnify?.listRightCheckbox?.isEnabled = true
         }
     }
 
@@ -136,7 +157,8 @@ class VariantDataValuePicker : LinearLayout {
                                                layoutPosition: Int,
                                                variantData: VariantDetail,
                                                selectedVariantUnit: Unit,
-                                               variantUnitValues: List<UnitValue>) {
+                                               variantUnitValues: List<UnitValue>,
+                                               selectedVariantUnitValues: MutableList<UnitValue>) {
         // setup ListUnify item click handler
         listUnifyVariantUnitValues.setOnItemClickListener { _, _, position, _ ->
             // last position is reserved for add custom variant unit value button
@@ -152,7 +174,7 @@ class VariantDataValuePicker : LinearLayout {
                 onVariantUnitValuePickListener?.onVariantUnitValuePickListener(variantData.name, selectedItem.listTitleText)
             } else {
                 // add custom variant unit value
-                onAddCustomVariantUnitValueListener?.onAddCustomButtonClicked(layoutPosition, selectedVariantUnit, variantUnitValues)
+                onAddCustomVariantUnitValueListener?.onAddCustomButtonClicked(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
             }
         }
     }
@@ -177,15 +199,17 @@ class VariantDataValuePicker : LinearLayout {
         val customListItemUnify = listItemUnifyList.find { listItemUnify ->
             listItemUnify.listTitleText == addedCustomVariantUnitValue.value
         }
-        customListItemUnify?.listRightCheckbox?.performClick()
-        // scroll to the bottom
-        val top = listUnifyVariantUnitValues.getChildAt(listItemUnifyList.lastIndex).top
-        scrollViewVariantUnitValues.smoothScrollTo(0, top)
+        customListItemUnify?.run {
+            customListItemUnify.listRightCheckbox?.performClick()
+            // scroll to the bottom
+            val top = listUnifyVariantUnitValues.getChildAt(listItemUnifyList.lastIndex).top
+            scrollViewVariantUnitValues.smoothScrollTo(0, top)
+        }
     }
 
     private fun setupSaveButton(layoutPosition: Int, selectedVariantUnitValues: MutableList<UnitValue>) {
         buttonSave.setOnClickListener {
-            if (selectedVariantUnitValues.size >= MAX_SELECTED_VARIANT_UNIT_VALUES) {
+            if (selectedVariantUnitValues.size > MAX_SELECTED_VARIANT_UNIT_VALUES) {
                 Toaster.make(this, context.getString(R.string.error_variant_unit_value_selection_exceed), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 return@setOnClickListener
             }
@@ -194,7 +218,7 @@ class VariantDataValuePicker : LinearLayout {
     }
 
     private fun configureSaveButton(isEmpty: Boolean, size: Int) {
-        if (size >= MAX_SELECTED_VARIANT_UNIT_VALUES) {
+        if (size > MAX_SELECTED_VARIANT_UNIT_VALUES) {
             val stringSave = context.getText(R.string.action_variant_save).toString()
             val stringMax = context.getText(R.string.label_variant_max).toString()
             buttonSave.text = "$stringSave($MAX_SELECTED_VARIANT_UNIT_VALUES)$stringMax"
@@ -218,7 +242,7 @@ class VariantDataValuePicker : LinearLayout {
     }
 
     interface OnAddCustomVariantUnitValueListener {
-        fun onAddCustomButtonClicked(layoutPosition: Int, selectedVariantUnit: Unit, variantUnitValues: List<UnitValue>)
+        fun onAddCustomButtonClicked(layoutPosition: Int, selectedVariantUnit: Unit, variantUnitValues: List<UnitValue>, selectedVariantUnitValues: MutableList<UnitValue>)
     }
 
     interface OnButtonSaveClickListener {

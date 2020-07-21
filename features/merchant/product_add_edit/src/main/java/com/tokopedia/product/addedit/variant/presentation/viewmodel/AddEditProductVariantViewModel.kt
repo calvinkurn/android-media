@@ -268,10 +268,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValues?.remove(removedUnitValue)
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                mSelectedVariantUnitValuesLevel1.value?.remove(removedUnitValue)
+                val selectedVariants = mSelectedVariantUnitValuesLevel1.value
+                selectedVariants?.remove(removedUnitValue)
+                mSelectedVariantUnitValuesLevel1.value =  selectedVariants
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                mSelectedVariantUnitValuesLevel2.value?.remove(removedUnitValue)
+                val selectedVariants = mSelectedVariantUnitValuesLevel2.value
+                selectedVariants?.remove(removedUnitValue)
+                mSelectedVariantUnitValuesLevel2.value = selectedVariants
             }
         }
     }

@@ -30,12 +30,15 @@ class CustomVariantUnitValueForm : LinearLayout {
         View.inflate(context, R.layout.add_edit_product_variant_custom_input_layout, this)
     }
 
-    fun setupVariantCustomInputLayout(selectedVariantUnit: Unit) {
-        setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues)
+    fun setupVariantCustomInputLayout(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
+        setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
     }
 
     @SuppressLint("DefaultLocale")
-    private fun setupButtonSaveClickListener(layoutPosition: Int, selectedVariantUnit: Unit, variantUnitValues: List<UnitValue>) {
+    private fun setupButtonSaveClickListener(layoutPosition: Int,
+                                             selectedVariantUnit: Unit,
+                                             variantUnitValues: List<UnitValue>,
+                                             selectedVariantUnitValues: MutableList<UnitValue>) {
         buttonSave.setOnClickListener {
             val customVariantUnitValueName = textFieldUnifyCustomValue.getText()
             val isVariantUnitValueExist = variantUnitValues.any { variantUnitValue ->
@@ -48,12 +51,15 @@ class CustomVariantUnitValueForm : LinearLayout {
                 return@setOnClickListener
             } else {
                 val customVariantUnitValue = UnitValue(value = customVariantUnitValueName)
-                onCustomVariantUnitAddListener?.onCustomVariantUnitValueAdded(layoutPosition, selectedVariantUnit, customVariantUnitValue)
+                onCustomVariantUnitAddListener?.onCustomVariantUnitValueAdded(layoutPosition, selectedVariantUnit, customVariantUnitValue, selectedVariantUnitValues)
             }
         }
     }
 
     interface OnCustomVariantUnitAddListener {
-        fun onCustomVariantUnitValueAdded(layoutPosition: Int, selectedVariantUnit: Unit, customVariantUnitValue: UnitValue)
+        fun onCustomVariantUnitValueAdded(layoutPosition: Int,
+                                          selectedVariantUnit: Unit,
+                                          customVariantUnitValue: UnitValue,
+                                          currentSelectedVariantUnitValues: MutableList<UnitValue>)
     }
 }

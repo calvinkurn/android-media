@@ -10,13 +10,8 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.Vari
 
 class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHeaderClickListener) : AbstractViewHolder<VariantDetailHeaderViewModel>(itemView) {
 
-    interface OnCollapsibleHeaderClickListener {
-        fun onHeaderClicked(adapterPosition: Int): Boolean
-    }
-
     private var unitValueHeader: AppCompatTextView? = null
     private var accordionIndicator: AppCompatImageView? = null
-
     private var headerPosition = 0
 
     init {
@@ -24,7 +19,8 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
         accordionIndicator = itemView?.findViewById(R.id.iv_accordion_indicator)
 
         itemView?.setOnClickListener {
-            val isCollapsed = listener.onHeaderClicked(headerPosition)
+            val headerName = unitValueHeader?.text.toString()
+            val isCollapsed = listener.onHeaderClicked(headerName)
             if (isCollapsed) accordionIndicator?.setImageResource(R.drawable.ic_chevron_up)
             else accordionIndicator?.setImageResource(R.drawable.ic_chevron_down)
         }
@@ -40,5 +36,9 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.product_variant_detail_header_layout
+    }
+
+    interface OnCollapsibleHeaderClickListener {
+        fun onHeaderClicked(headerName: String): Boolean
     }
 }
