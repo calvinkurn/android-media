@@ -5,7 +5,8 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseF
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class ShopEtalaseViewModel(val shopEtalaseModel: ShopEtalaseModel, val primaryEtalase: Boolean) : BaseShopEtalaseViewModel(shopEtalaseModel, primaryEtalase) {
+class ShopEtalaseViewModel(var shopEtalaseModel: ShopEtalaseModel = ShopEtalaseModel(),
+                           var primary: Boolean = false) : BaseShopEtalaseViewModel(shopEtalaseModel, primary) {
 
     override fun type(typeFactory: BaseShopEtalaseFactory): Int {
         return typeFactory.type(this)
