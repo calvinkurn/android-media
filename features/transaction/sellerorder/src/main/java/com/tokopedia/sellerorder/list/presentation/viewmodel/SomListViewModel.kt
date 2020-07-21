@@ -53,28 +53,36 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private var getUserRolesJob: Job? = null
 
     fun loadTickerList(tickerQuery: String) {
-        val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
-        launch {
+        launchCatchError(block = {
+            val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
             _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams, tickerQuery))
-        }
+        }, onError = {
+            _tickerListResult.postValue(Fail(it))
+        })
     }
 
     fun loadStatusOrderList(rawQuery: String) {
-        launch {
+        launchCatchError(block = {
             _statusOrderListResult.postValue(getOrderStatusListUseCase.execute(rawQuery))
-        }
+        }, onError = {
+            _statusOrderListResult.postValue(Fail(it))
+        })
     }
 
     fun loadFilterList(filterQuery: String) {
-        launch {
+        launchCatchError(block =  {
             _filterListResult.postValue(getFilterListUseCase.execute(filterQuery))
-        }
+        }, onError = {
+            _filterListResult.postValue(Fail(it))
+        })
     }
 
     fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
-        launch {
+        launchCatchError(block =  {
             _orderListResult.postValue(getOrderListUseCase.execute(paramOrder, orderQuery))
-        }
+        }, onError = {
+            _orderListResult.postValue(Fail(it))
+        })
     }
 
     fun loadUserRoles(userId: Int) {

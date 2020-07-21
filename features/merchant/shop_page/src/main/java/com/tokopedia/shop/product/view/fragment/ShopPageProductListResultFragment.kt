@@ -304,12 +304,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductAdapter.clearProductList()
             endlessRecyclerViewScrollListener.resetState()
         }
-        shopProductAdapter.setProductListDataModel(productList)
-        updateScrollListenerState(hasNextPage)
 
-        if (shopProductAdapter.shopProductViewModelList.size == 0) {
+        if (productList.isEmpty()) {
             shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
         } else {
+            shopProductAdapter.setProductListDataModel(productList)
+            updateScrollListenerState(hasNextPage)
             isLoadingInitialData = false
         }
     }
