@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
+private const val TAB_START_PADDING = 20
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TabLayout.OnTabSelectedListener {
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
@@ -49,7 +50,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
             it.forEach {
                 val tab = tabsHolder.tabLayout.newTab()
-                ViewCompat.setPaddingRelative(tab.view, 20, 0, 0, 0)
+                ViewCompat.setPaddingRelative(tab.view, TAB_START_PADDING, 0, 0, 0)
                 tab.customView = CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.TabsItem, it, fragment)
                 tabsHolder.tabLayout.addTab(tab, it.data?.get(0)?.isSelected ?: false)
             }
