@@ -12,7 +12,7 @@
     },
     "success": true,
     "codes": [
-      "MZTLTBBLIF1895QLP4A"
+      "THIRX598GSA7MADK2X7"
     ],
     "promo_code_id": 0,
     "title_description": "catalog testing loadtest",
@@ -27,12 +27,12 @@
     "is_tokopedia_gerai": false,
     "voucher_orders": [
       {
-        "code": "OSTAYQPPSO",
+        "code": "POMA3A96FB",
         "success": true,
-        "unique_id": "7307032-0-7515958",
+        "unique_id": "239594-0-301643",
         "cart_id": 0,
         "order_id": 0,
-        "shop_id": 7307032,
+        "shop_id": 239594,
         "is_po": 0,
         "duration": "0",
         "warehouse_id": 7515958,
@@ -41,7 +41,7 @@
         "cashback_wallet_amount": 0,
         "discount_amount": 44444,
         "invoice_description": "",
-        "title_description": "Promo Gratis Ongkir OSTAYQPPSO",
+        "title_description": "Promo Gratis Ongkir POMA3A96FB",
         "message": {
           "state": "green",
           "color": "#ade3af",
@@ -49,10 +49,10 @@
         },
         "benefit_details": [
           {
-            "code": "OSTAYQPPSO",
+            "code": "POMA3A96FB",
             "type": "",
             "order_id": 1,
-            "unique_id": "7307032-0-7515958",
+            "unique_id": "239594-0-301643",
             "discount_amount": 0,
             "discount_details": [],
             "cashback_amount": 0,
@@ -83,10 +83,10 @@
         "benefit_product_details": []
       },
       {
-        "code": "MZTLTBBLIF1895QLP4A",
+        "code": "THIRX598GSA7MADK2X7",
         "type": "",
         "order_id": 1,
-        "unique_id": "7307032-0-7515958",
+        "unique_id": "239594-0-301643",
         "discount_amount": 0,
         "discount_details": [],
         "cashback_amount": 10000,
@@ -163,7 +163,7 @@
     "tracking_details": [
       {
         "product_id": 618078867,
-        "promo_codes_tracking": "MZTLT|OSTAYQPPSO",
+        "promo_codes_tracking": "THIRX|POMA3A96FB",
         "promo_details_tracking": "G:1:10000:green|M:3:0:green"
       }
     ],

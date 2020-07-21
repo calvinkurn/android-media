@@ -26,12 +26,12 @@
       "is_tokopedia_gerai": false,
       "voucher_orders": [
         {
-          "code": "TXOSV69115",
+          "code": "POMA3A96FB",
           "success": true,
-          "unique_id": "7897230-0-8100659",
+          "unique_id": "239594-0-301643",
           "cart_id": 0,
           "order_id": 0,
-          "shop_id": 7897230,
+          "shop_id": 239594,
           "is_po": 0,
           "duration": "0",
           "warehouse_id": 8100659,
@@ -40,7 +40,7 @@
           "cashback_wallet_amount": 20000,
           "discount_amount": 0,
           "invoice_description": "",
-          "title_description": "Promo Cashback TXOSV69115",
+          "title_description": "Promo Cashback POMA3A96FB",
           "message": {
             "state": "green",
             "color": "#ade3af",
@@ -48,10 +48,10 @@
           },
           "benefit_details": [
             {
-              "code": "TXOSV69115",
+              "code": "POMA3A96FB",
               "type": "",
               "order_id": 1,
-              "unique_id": "7897230-0-8100659",
+              "unique_id": "239594-0-301643",
               "discount_amount": 0,
               "discount_details": [],
               "cashback_amount": 20000,
@@ -115,7 +115,7 @@
       "tracking_details": [
         {
           "product_id": 775172855,
-          "promo_codes_tracking": "TXOSV69115",
+          "promo_codes_tracking": "POMA3A96FB",
           "promo_details_tracking": "M:1:20000:green"
         }
       ],

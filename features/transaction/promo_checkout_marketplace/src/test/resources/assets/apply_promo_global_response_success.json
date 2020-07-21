@@ -13,7 +13,7 @@
       },
       "success": true,
       "codes": [
-        "MZTLTBBLIF1895QLP4A"
+        "THIRX598GSA7MADK2X7"
       ],
       "promo_code_id": 0,
       "title_description": "catalog testing loadtest",
@@ -44,10 +44,10 @@
           "benefit_product_details": []
         },
         {
-          "code": "MZTLTBBLIF1895QLP4A",
+          "code": "THIRX598GSA7MADK2X7",
           "type": "",
           "order_id": 1,
-          "unique_id": "7307032-0-7515958",
+          "unique_id": "239594-0-301643",
           "discount_amount": 0,
           "discount_details": [],
           "cashback_amount": 1000,
@@ -115,7 +115,7 @@
       "tracking_details": [
         {
           "product_id": 618078867,
-          "promo_codes_tracking": "MZTLT",
+          "promo_codes_tracking": "THIRX",
           "promo_details_tracking": "G:1:1000:green"
         }
       ],
