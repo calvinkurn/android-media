@@ -163,8 +163,6 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item")
                 }
-                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
-                if (pojo.msgId.toString() != messageId) return
                 mappingEvent(webSocketResponse, messageId)
             }
 
@@ -208,7 +206,6 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun mappingEvent(response: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
-
         if (pojo.msgId.toString() != messageId) return
         when (response.code) {
             EVENT_TOPCHAT_TYPING -> view?.onReceiveStartTypingEvent()
