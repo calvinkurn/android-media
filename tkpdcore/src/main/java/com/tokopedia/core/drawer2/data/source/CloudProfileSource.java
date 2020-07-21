@@ -1,6 +1,8 @@
 package com.tokopedia.core.drawer2.data.source;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
@@ -10,7 +12,7 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -27,18 +29,18 @@ public class CloudProfileSource {
     private final PeopleService peopleService;
     private final ProfileMapper profileMapper;
     private final GlobalCacheManager peopleCache;
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
 
     public CloudProfileSource(Context context,
                               PeopleService peopleService,
                               ProfileMapper profileMapper,
                               GlobalCacheManager peopleCache,
-                              SessionHandler sessionHandler) {
+                              UserSessionInterface userSessionInterface) {
         this.context = context;
         this.peopleService = peopleService;
         this.profileMapper = profileMapper;
         this.peopleCache = peopleCache;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSessionInterface;
     }
 
 
@@ -64,14 +66,18 @@ public class CloudProfileSource {
 
                     if (profileModel.getProfileData().getShopInfo() != null &&
                             profileModel.getProfileData().getShopInfo().getShopId() != null) {
-                        sessionHandler.setShopId(profileModel.getProfileData().getShopInfo().getShopId());
-                        sessionHandler.setShopName(profileModel.getProfileData().getShopInfo().getShopName());
+                        userSession.setShopId(profileModel.getProfileData().getShopInfo().getShopId());
+                        userSession.setShopName(profileModel.getProfileData().getShopInfo().getShopName());
                     }
                     if (profileModel.getProfileData().getShopInfo() != null &&
-                            profileModel.getProfileData().getShopInfo().getShopDomain() != null)
-                        sessionHandler.setShopDomain(context, profileModel.getProfileData().getShopInfo().getShopDomain());
+                            profileModel.getProfileData().getShopInfo().getShopDomain() != null) {
+                        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(context);
+                        SharedPreferences.Editor editor = mSettings.edit();
+                        editor.putString("shopDomain", profileModel.getProfileData().getShopInfo().getShopDomain());
+                        editor.apply();
+                    }
 
-                    sessionHandler.setProfilePicture(profileModel.getProfileData().getUserInfo().getUserImage());
+                    userSession.setProfilePicture(profileModel.getProfileData().getUserInfo().getUserImage());
                 }
             }
         };

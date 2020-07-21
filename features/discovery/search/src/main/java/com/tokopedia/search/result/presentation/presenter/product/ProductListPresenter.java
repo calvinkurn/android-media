@@ -54,6 +54,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.unifycomponents.ChipsUnify;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -110,6 +111,7 @@ final class ProductListPresenter
     private LocalCacheHandler searchOnBoardingLocalCache;
     private UseCase<DynamicFilterModel> getDynamicFilterUseCase;
     private UseCase<String> getProductCountUseCase;
+    private TopAdsUrlHitter topAdsUrlHitter;
     private SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
@@ -150,6 +152,7 @@ final class ProductListPresenter
             UseCase<DynamicFilterModel> getDynamicFilterUseCase,
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
             UseCase<String> getProductCountUseCase,
+            TopAdsUrlHitter topAdsUrlHitter,
             SearchLocalCacheHandler searchLocalCacheHandler,
             RemoteConfig remoteConfig
     ) {
@@ -162,6 +165,7 @@ final class ProductListPresenter
         this.searchOnBoardingLocalCache = searchOnBoardingLocalCache;
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
+        this.topAdsUrlHitter = topAdsUrlHitter;
         this.searchLocalCacheHandler = searchLocalCacheHandler;
 
         this.enableBottomSheetFilterRevampFirebase = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER_REVAMP, true);
@@ -1506,12 +1510,26 @@ final class ProductListPresenter
     }
 
     private void getViewToTrackImpressedTopAdsProduct(ProductItemViewModel item) {
-        getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+        topAdsUrlHitter.hitImpressionUrl(
+                getView().getClassName(),
+                item.getTopadsImpressionUrl(),
+                item.getProductID(),
+                item.getProductName(),
+                item.getImageUrl()
+        );
+
         getView().sendTopAdsGTMTrackingProductImpression(item);
     }
 
     private void getViewToTrackImpressedOrganicProduct(ProductItemViewModel item) {
-        if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+        if (item.isOrganicAds())
+            topAdsUrlHitter.hitImpressionUrl(
+                    getView().getClassName(),
+                    item.getTopadsImpressionUrl(),
+                    item.getProductID(),
+                    item.getProductName(),
+                    item.getImageUrl()
+            );
 
         getView().sendProductImpressionTrackingEvent(item);
     }
@@ -1529,12 +1547,26 @@ final class ProductListPresenter
     }
 
     private void getViewToTrackOnClickTopAdsProduct(ProductItemViewModel item) {
-        getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+        topAdsUrlHitter.hitClickUrl(
+                getView().getClassName(),
+                item.getTopadsClickUrl(),
+                item.getProductID(),
+                item.getProductName(),
+                item.getImageUrl()
+        );
+
         getView().sendTopAdsGTMTrackingProductClick(item);
     }
 
     private void getViewToTrackOnClickOrganicProduct(ProductItemViewModel item) {
-        if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+        if (item.isOrganicAds())
+            topAdsUrlHitter.hitClickUrl(
+                    getView().getClassName(),
+                    item.getTopadsClickUrl(),
+                    item.getProductID(),
+                    item.getProductName(),
+                    item.getImageUrl()
+            );
 
         getView().sendGTMTrackingProductClick(item, getUserId());
     }

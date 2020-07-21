@@ -12,9 +12,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -102,7 +100,7 @@ public class SplashScreenActivity extends SplashScreen {
                 // Means it is a Seller
                 startActivity(SellerHomeActivity.createIntent(this));
             }
-        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(this))) {
+        } else if (!TextUtils.isEmpty(userSession.getUserId())) {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);
         } else {

@@ -31,6 +31,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
@@ -85,6 +86,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    @Inject
+    lateinit var sellerHomeConfig: SellerHomeRemoteConfig
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -128,7 +131,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? SellerHomeActivity)?.attachCallback(this)
+        if(sellerHomeConfig.isNewSellerHomeDisabled()) {
+            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.attachCallback(this)
+        } else {
+            (activity as? SellerHomeActivity)?.attachCallback(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -199,11 +206,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
-        (activity as? Activity)?.run {
-            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
-                requestStatusBarLight()
-            } else {
-                requestStatusBarDark()
+        if(isVisible) {
+            (activity as? Activity)?.run {
+                if (isInitialStatusBar && !isDefaultDarkStatusBar) {
+                    requestStatusBarLight()
+                } else {
+                    requestStatusBarDark()
+                }
             }
         }
     }
@@ -410,10 +419,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDefaultDarkStatusBar) {
-                activity?.requestStatusBarDark()
-            } else {
-                activity?.requestStatusBarLight()
+            if(isVisible) {
+                if (isDefaultDarkStatusBar) {
+                    activity?.requestStatusBarDark()
+                } else {
+                    activity?.requestStatusBarLight()
+                }
             }
             observeRecyclerViewScrollListener()
         }
@@ -458,7 +469,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setLightStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isVisible) {
             if (!isDefaultDarkStatusBar){
                 activity?.requestStatusBarLight()
             }
