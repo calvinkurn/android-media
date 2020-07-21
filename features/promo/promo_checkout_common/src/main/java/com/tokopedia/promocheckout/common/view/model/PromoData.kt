@@ -50,8 +50,11 @@ data class PromoData(var typePromo: Int = 0,
     }
 
     companion object {
+        @JvmField
         val TYPE_VOUCHER = 0
+        @JvmField
         val TYPE_COUPON = 1
+        @JvmField
         val VALUE_COUPON = 1
     }
 }

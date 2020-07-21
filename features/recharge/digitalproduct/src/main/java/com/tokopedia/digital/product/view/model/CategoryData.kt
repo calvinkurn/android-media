@@ -11,23 +11,41 @@ import java.util.*
  */
 @Parcelize
 class CategoryData(
+        @JvmField
         var categoryId: String? = null,
+        @JvmField
         private var categoryType: String? = null,
+        @JvmField
         var titleText: String? = null,
+        @JvmField
         var name: String? = null,
+        @JvmField
         var icon: String? = null,
+        @JvmField
         var iconUrl: String? = null,
+        @JvmField
         var isNew: Boolean = false,
+        @JvmField
         var isInstantCheckout: Boolean = false,
+        @JvmField
         var slug: String? = null,
+        @JvmField
         var defaultOperatorId: String? = null,
+        @JvmField
         var operatorStyle: String? = null,
+        @JvmField
         var operatorLabel: String? = null,
+        @JvmField
         var additionalFeature: AdditionalFeature? = null,
+        @JvmField
         var clientNumberList: List<ClientNumber>? = ArrayList(),
+        @JvmField
         var operatorList: List<Operator>? = ArrayList(),
+        @JvmField
         var bannerDataListIncluded: List<BannerData>? = ArrayList(),
+        @JvmField
         var otherBannerDataListIncluded: List<BannerData>? = ArrayList(),
+        @JvmField
         var guideDataList: List<GuideData>? = ArrayList()) : Parcelable {
 
     constructor(builder: Builder) : this() {
