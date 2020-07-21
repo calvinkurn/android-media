@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.historydetails.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -14,10 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.*
@@ -31,6 +30,7 @@ import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
@@ -103,6 +103,17 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            EDIT_FORM_REQUEST_CODE -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    onSuccessEditForm()
+                }
+            }
+        }
+    }
+
     private fun getDataFromArguments() {
         arguments?.let {
             viewModel.setFeedbackId(it.getInt(KEY_FEEDBACK_ID))
@@ -119,7 +130,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                         setProduct(product, review.feedbackId)
                         setReview(review, product.productName)
                         setResponse(response)
-                        setReputation(reputation)
+                        setReputation(reputation, response.shopName)
                     }
                 }
                 is Fail -> {
@@ -136,12 +147,14 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Int) {
         with(product) {
-            reviewDetailProductCard.apply {
-                setItem(ReviewProductUiModel(productId, productImageUrl, productName, productVariantName))
-                setOnClickListener {
-                    ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
-                    goToPdp(productId)
-                }
+            reviewDetailProductCard.setOnClickListener {
+                ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
+                goToPdp(productId)
+            }
+            reviewDetailProductImage.loadImage(productImageUrl)
+            reviewDetailProductName.text = productName
+            if(productVariantName.isNotBlank()) {
+                reviewDetailProductVariant.text = getString(R.string.review_pending_variant, productVariantName)
             }
         }
     }
@@ -185,11 +198,11 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         reviewDetailResponse.setContent(response)
     }
 
-    private fun setReputation(reputation: ProductrevGetReviewDetailReputation) {
+    private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
             when {
                 !editable && isLocked && score != 0  -> {
-                    reviewHistoryDetailReputation.setFinalScore(score)
+                    reviewHistoryDetailReputation.setFinalScore(score, shopName)
                 }
                 else -> {
                     // Later
@@ -271,5 +284,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
 
     private fun retry() {
         viewModel.retry()
+    }
+
+    private fun onSuccessEditForm() {
+        view?.let { Toaster.build(it, getString(R.string.review_history_detail_toaster_edit_success), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke)).show() }
     }
 }

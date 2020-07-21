@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -33,7 +34,8 @@ class ReviewDetailScoreWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_review_detail_score, this)
     }
 
-    fun setFinalScore(score: Int) {
+    fun setFinalScore(score: Int, shopName: String) {
+        reviewDetailScoreShopName.setTextAndCheckShow(shopName)
         when(score) {
             REPUTATION_SCORE_BAD -> {
                 this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_active)

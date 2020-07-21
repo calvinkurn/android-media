@@ -13,13 +13,11 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        android:visibility="gone"
+        android:text="@string/review_history_details_score_title"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"
-        tools:text="@string/review_history_details_score_title"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewDetailScoreShopName"
@@ -28,6 +26,7 @@
         android:textColor="@color/Neutral_N700_96"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:visibility="gone"
+        app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@id/review_detail_score_title"
         app:layout_constraintTop_toBottomOf="@id/review_detail_score_title" />
 

@@ -36,6 +36,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
                   productName
                   productPageURL
                   productImageURL
+                  productStatus
                   productVariant {
                     variantID
                     variantName
@@ -44,6 +45,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
                 shopData{
                   shopID
                   shopOpen
+                  shopName
                 }
                 userData{
                   userID

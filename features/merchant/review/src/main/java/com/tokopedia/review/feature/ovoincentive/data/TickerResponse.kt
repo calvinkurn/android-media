@@ -7,7 +7,6 @@ data class TickerResponse(
         @SerializedName("title")
         @Expose
         var title: String = "",
-
         @SerializedName("subtitle")
         @Expose
         var subtitle: String = ""

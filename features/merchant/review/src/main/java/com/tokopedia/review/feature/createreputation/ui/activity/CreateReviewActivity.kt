@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.createreputation.ui.activity
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewConstants
@@ -79,6 +82,20 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        createReviewFragment?.onBackPressed()
+        createReviewFragment?.let {
+            ReviewTracking.reviewOnCloseTracker(it.getOrderId, productId)
+            if(it.getIsEditMode) {
+                it.showCancelDialog()
+            } else {
+                if (isTaskRoot) {
+                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                    setResult(Activity.RESULT_OK, intent)
+                    startActivity(intent)
+                } else {
+                    super.onBackPressed()
+                }
+                finish()
+            }
+        }
     }
 }

@@ -118,6 +118,12 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     private var isEditMode: Boolean = false
     private var feedbackId: Int = 0
 
+    val getOrderId
+    get() = orderId
+
+    val getIsEditMode
+    get() = isEditMode
+
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
 
@@ -301,19 +307,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     }
 
     override fun onBackPressed() {
-        ReviewTracking.reviewOnCloseTracker(orderId, productId.toString())
-        if(isEditMode) {
-            showCancelDialog()
-        } else {
-            if (activity?.isTaskRoot == true) {
-                val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-                activity?.setResult(Activity.RESULT_OK, intent)
-                startActivity(intent)
-            } else {
-                activity?.onBackPressed()
-            }
-            activity?.finish()
-        }
+
     }
 
     private fun getReviewData() {
@@ -669,7 +663,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
         }
     }
 
-    private fun showCancelDialog() {
+    fun showCancelDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.review_edit_dialog_title))
