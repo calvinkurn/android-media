@@ -15,4 +15,9 @@ class SellerHomeRemoteConfig @Inject constructor(
     fun isNewSellerHomeDisabled(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.NEW_SELLER_HOME_DISABLED, false)
     }
+
+    fun isNotificationTrayClear(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR, false)
+    }
+
 }

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
@@ -153,4 +154,3 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
-apply from: "../../../compile-instrument-test.gradle"
