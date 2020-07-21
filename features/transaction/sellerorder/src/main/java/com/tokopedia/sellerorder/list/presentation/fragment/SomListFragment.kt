@@ -226,17 +226,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         else if (!isVisibleToUser && isUserRoleFetched()) somListViewModel.clearUserRoles()
     }
 
-    private fun isUserRoleFetched(): Boolean {
-        if (::viewModelFactory.isInitialized) {
-            somListViewModel.userRoleResult.value?.run {
-                return when (this) {
-                    is Success -> true
-                    else -> false
-                }
-            }
-        }
-        return false
-    }
+    private fun isUserRoleFetched(): Boolean = ::viewModelFactory.isInitialized && somListViewModel.userRoleResult.value is Success
 
     private fun checkUserRole() {
         toggleSomLayout(true)
