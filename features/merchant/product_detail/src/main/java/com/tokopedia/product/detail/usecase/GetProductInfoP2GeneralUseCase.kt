@@ -19,7 +19,6 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRe
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
-import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.talk.Talk
@@ -31,7 +30,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -126,10 +124,6 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val shopFeatureRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
                 ShopFeatureResponse::class.java, shopFeatureParam)
 
-        val productCatalogParams = mapOf(ProductDetailCommonConstant.PARAM_CATALOG_ID to catalogId)
-        val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
-                ProductSpecificationResponse::class.java, productCatalogParams)
-
         val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
                 ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minOrder)
         val pdpFinancingRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION],
@@ -142,7 +136,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
 
         val requests = mutableListOf(ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
+                helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest, productPurchaseProtectionRequest, shopFeatureRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
@@ -208,11 +202,6 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 val shopFeatureResponse =
                         gqlResponse.getData<ShopFeatureResponse>(ShopFeatureResponse::class.java)
                 productInfoP2.shopFeature = shopFeatureResponse.shopFeature.data
-            }
-
-            if (gqlResponse.getError(ProductSpecificationResponse::class.java)?.isNotEmpty() != true) {
-                val productSpesification: ProductSpecificationResponse = gqlResponse.getData(ProductSpecificationResponse::class.java)
-                productInfoP2.productSpecificationResponse = productSpesification
             }
 
             if (gqlResponse.getError(PDPInstallmentRecommendationResponse::class.java)?.isNotEmpty() != true) {

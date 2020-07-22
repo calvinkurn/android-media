@@ -49,13 +49,11 @@ class ProductInfoViewHolder(private val view: View,
 
             val bottomData = data.find { it.row == "bottom" } ?: return
             renderDescriptionData(bottomData.listOfContent, element.shopName, element.dynamicProductInfoP1
-                    ?: DynamicProductInfoP1(),
-                    element.productSpecification ?: ProductSpecificationResponse(),
-                    getComponentTrackData(element))
+                    ?: DynamicProductInfoP1(), getComponentTrackData(element))
         }
     }
 
-    private fun renderDescriptionData(listOfData: List<Content>, shopName: String, infoData: DynamicProductInfoP1, productSpecificationResponse: ProductSpecificationResponse, componentTrackData: ComponentTrackDataModel) {
+    private fun renderDescriptionData(listOfData: List<Content>, shopName: String, infoData: DynamicProductInfoP1, componentTrackData: ComponentTrackDataModel) {
         with(itemView.base_info_and_description) {
             val productInfo = infoData
             if (productInfo.data.videos.isNotEmpty()) {
@@ -98,8 +96,6 @@ class ProductInfoViewHolder(private val view: View,
                                 basicDescription = listOfData.firstOrNull()?.subtitle ?: "",
                                 videoUrlList = productInfo.data.videos.map { it.url },
                                 isOfficial = productInfo.data.isOS),
-
-                        productSpecificationResponse.productCatalogQuery.data.catalog.specification,
                         componentTrackData
                 )
 

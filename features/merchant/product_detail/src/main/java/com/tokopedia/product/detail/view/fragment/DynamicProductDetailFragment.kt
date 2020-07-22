@@ -570,10 +570,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun gotoDescriptionTab(data: DescriptionData, componentTrackDataModel: ComponentTrackDataModel) {
         context?.let {
             startActivity(ProductFullDescriptionTabActivity.createIntent(it,
-                    data, listOfCatalog))
+                    data, viewModel.getDynamicProductInfoP1?.basic?.catalogID ?: ""))
             activity?.overridePendingTransition(R.anim.pull_up, 0)
             DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         }

@@ -14,8 +14,7 @@ data class ProductInfoDataModel(
         val type: String = "",
         val name: String = "",
         var shopName: String = "",
-        var dynamicProductInfoP1: DynamicProductInfoP1? = null,
-        var productSpecification: ProductSpecificationResponse? = null
+        var dynamicProductInfoP1: DynamicProductInfoP1? = null
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

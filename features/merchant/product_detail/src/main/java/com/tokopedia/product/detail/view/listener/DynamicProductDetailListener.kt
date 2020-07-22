@@ -36,7 +36,7 @@ interface DynamicProductDetailListener {
      * ProductInfoViewHolder
      */
     fun gotoVideoPlayer(videos: List<Video>, index: Int)
-    fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>, componentTrackDataModel: ComponentTrackDataModel)
+    fun gotoDescriptionTab(data: DescriptionData, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)

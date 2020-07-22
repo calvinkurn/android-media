@@ -29,7 +29,6 @@ data class ProductInfoP2General(
         var discussionMostHelpful: DiscussionMostHelpful? = null,
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var shopFeature: ShopFeatureData = ShopFeatureData(),
-        var productSpecificationResponse: ProductSpecificationResponse = ProductSpecificationResponse(),
         var productFinancingRecommendationData: PDPInstallmentRecommendationResponse = PDPInstallmentRecommendationResponse(),
         var productFinancingCalculationData: FinancingDataResponse = FinancingDataResponse()
 )

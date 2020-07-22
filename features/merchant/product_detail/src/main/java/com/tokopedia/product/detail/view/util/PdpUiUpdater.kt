@@ -323,10 +323,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shouldShowImageReview = it.imageReviews.isNotEmpty()
             }
 
-            productInfoMap?.run {
-                productSpecification = it.productSpecificationResponse
-            }
-
             orderPriorityMap?.run {
                 data.first().subtitle = it.shopCommitment.staticMessages.pdpMessage
             }

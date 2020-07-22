@@ -6,13 +6,11 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP3Variant
-import com.tokopedia.product.detail.data.model.UserCodStatus
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantMultiOriginResponse
 import timber.log.Timber
 import javax.inject.Inject
 
