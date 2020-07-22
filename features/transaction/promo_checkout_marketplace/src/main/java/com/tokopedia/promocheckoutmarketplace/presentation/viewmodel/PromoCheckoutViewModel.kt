@@ -31,7 +31,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -66,7 +65,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = _promoInputUiModel
 
     // Promo Section UI Model (Eligible / Ineligible based on API response)
-    val _promoListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
+    private val _promoListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
     val promoListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _promoListUiModel
 
@@ -964,36 +963,40 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Last Seen Promo */
     //--------------------------------------------//
 
-    fun loadPromoLastSeen(query: String) {
-        launch { getPromoLastSeen(query) }
-    }
-
-    private suspend fun getPromoLastSeen(query: String) {
+    fun getPromoLastSeen(query: String) {
         launchCatchError(block = {
-            // Initialize response action state
-            if (getPromoLastSeenResponse.value == null) {
-                _getPromoLastSeenResponse.value = GetPromoLastSeenAction()
-            }
-
-            // Get response
-            val response = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
-                graphqlRepository.getReseponse(listOf(request))
-                        .getSuccessData<GetPromoSuggestionResponse>()
-            }
-
-            if (response.promoSuggestion.promoHistory.isNotEmpty()) {
-                // Remove promo code on validate use params after clear promo success
-                getPromoLastSeenResponse.value?.let {
-                    it.state = GetPromoLastSeenAction.ACTION_SHOW
-                    it.data = uiModelMapper.mapPromoLastSeenResponse(response)
-                    _getPromoLastSeenResponse.value = it
-                }
-            } else {
-                throw PromoErrorException()
-            }
+            doGetPromoLastSeen(query)
         }) {
             // no-op
+        }
+    }
+
+    private suspend fun doGetPromoLastSeen(query: String) {
+        // Get response
+        val response = withContext(dispatcher) {
+            val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
+            graphqlRepository.getReseponse(listOf(request))
+                    .getSuccessData<GetPromoSuggestionResponse>()
+        }
+
+        handleGetPromoLastSeenResponse(response)
+    }
+
+    private fun handleGetPromoLastSeenResponse(response: GetPromoSuggestionResponse) {
+        // Initialize response action state
+        if (getPromoLastSeenResponse.value == null) {
+            _getPromoLastSeenResponse.value = GetPromoLastSeenAction()
+        }
+
+        if (response.promoSuggestion.promoHistory.isNotEmpty()) {
+            // Remove promo code on validate use params after clear promo success
+            getPromoLastSeenResponse.value?.let {
+                it.state = GetPromoLastSeenAction.ACTION_SHOW
+                it.data = uiModelMapper.mapPromoLastSeenResponse(response)
+                _getPromoLastSeenResponse.value = it
+            }
+        } else {
+            throw PromoErrorException()
         }
     }
 

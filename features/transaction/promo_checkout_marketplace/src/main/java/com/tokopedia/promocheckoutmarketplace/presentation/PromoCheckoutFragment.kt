@@ -816,7 +816,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         view?.let {
             if (promoCheckoutLastSeenBottomsheet?.state == BottomSheetBehavior.STATE_HIDDEN) {
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
-                viewModel.loadPromoLastSeen(query)
+                viewModel.getPromoLastSeen(query)
             } else {
                 viewModel.promoLastSeenUiModel.value?.let {
                     showPromoCheckoutLastSeenBottomsheet(it)
