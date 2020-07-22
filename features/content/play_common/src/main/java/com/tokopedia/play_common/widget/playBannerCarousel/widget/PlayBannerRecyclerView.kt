@@ -322,7 +322,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     }
 
     fun setAutoPlay(isAutoPlay: Boolean, autoPlayAmount: Int){
-        this.isAutoPlay = true
+        this.isAutoPlay = isAutoPlay
 
         // clear old players
         for (videoPlayer in videoPlayers) {
