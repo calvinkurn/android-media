@@ -7,29 +7,43 @@ interface BuyerCardContract {
     interface View {
         void setName(String name);
 
-        void setAvatarImageUrl(int progress, String imageUrl);
-
         void showCompletedAvatar(String imageUrl);
-
-        void showIncompleteAvatar(String imageUrl);
 
         void setTokopoint(String tokopoint);
 
+        void setTokopointTitle(String title);
+
+        void setTokopointImageUrl(String imageUrl);
+
         void setCoupon(String coupons);
 
-        void showProfileProgress(int progress);
+        void setCouponTitle(String title);
 
-        void hideProfileProgress();
-
-        void setProfileStatusCompleted();
-
-        void setProfileStatusIncomplete(int progress);
+        void setCouponImageUrl(String imageUrl);
 
         void showBymeIcon();
 
         void setTokoMemberAmount(String tokoMemberAmount);
 
+        void setTokoMemberTitle(String title);
+
+        void setTokomemberImageUrl(String imageUrl);
+
+        void setCardVisibility(int visibility);
+
+        void setVisibilityCenterLayout(int visibility);
+
+        void setVisibilityRightLayout(int visibility);
+
+        void setVisibilityDividerFirst(int visibility);
+
+        void setVisibilityDividerSecond(int visibility);
+
+        void setWidgetVisibility(int visibility);
+
         void setEggImage(String eggImageUrl);
+
+        void setMemberStatus(String status);
     }
 
     interface Presenter {

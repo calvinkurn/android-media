@@ -68,8 +68,10 @@ class InstallReferral {
                 val localCacheHandler = LocalCacheHandler(applicationContext, KEY_INSTALL_REF_SHARED_PREF_FILE_NAME)
                 val installRefInitialised = localCacheHandler.getBoolean(KEY_INSTALL_REF_INITIALISED)
 
-                if (!installRefInitialised)
+                if (!installRefInitialised) {
                     localCacheHandler.putBoolean(KEY_INSTALL_REF_INITIALISED, true)
+                    localCacheHandler.applyEditor()
+                }
             }
 
             override fun onInstallReferrerServiceDisconnected() {
