@@ -128,13 +128,20 @@ internal open class BannerView(activity: Activity) {
 
     private fun setBannerClicked(data: CMInApp) {
         // prevent banner click if has more than one CTA button
-        if (data.getCmLayout().getButton().size > 1) return
+        with(data.getCmLayout()) {
+            if (getButton().size > 1) return
 
-        imgBanner.setOnClickListener {
-            trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
-            RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
-            analytics.click(data)
-            dialog?.dismiss()
+            imgBanner.setOnClickListener {
+                if (getAppLink().isNullOrEmpty()) {
+                    RouteManager.route(mActivity.get(), getButton().first().getAppLink())
+                } else {
+                    RouteManager.route(mActivity.get(), getAppLink())
+                }
+
+                trackAppLinkClick(data, getAppLink(), ElementType(ElementType.MAIN))
+                analytics.click(data)
+                dialog?.dismiss()
+            }
         }
     }
 
