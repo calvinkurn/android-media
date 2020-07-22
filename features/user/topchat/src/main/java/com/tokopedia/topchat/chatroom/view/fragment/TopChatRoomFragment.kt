@@ -134,6 +134,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var sourcePage: String = ""
     private var createTime: String = ""
     private var delaySendMessage: String = ""
+    private var delaySendSticker: Sticker? = null
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -653,12 +654,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onSendButtonClicked() {
-        val message = getComposedMessage()
-        if (presenter.isInTheMiddleOfThePage() && presenter.isValidReply(message)) {
-            rvScrollListener?.reset()
-            adapter.reset()
-            presenter.resetChatUseCase()
-            showLoading()
+        if (presenter.isInTheMiddleOfThePage() && isValidComposedMessage()) {
+            resetItemList()
             delaySendMessage()
             presenter.getExistingChat(
                     messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
@@ -666,6 +663,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         } else {
             sendMessage()
         }
+    }
+
+    private fun resetItemList() {
+        rvScrollListener?.reset()
+        adapter.reset()
+        presenter.resetChatUseCase()
+        showLoading()
+        getViewState().hideProductPreviewLayout()
+        getViewState().scrollToBottom()
+    }
+
+
+    private fun isValidComposedMessage(): Boolean {
+        val message = getComposedMessage()
+        return presenter.isValidReply(message)
     }
 
     private fun onErrorResetChatToFirstPage(throwable: Throwable) {
@@ -692,19 +704,36 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun delaySendMessage() {
-        getViewState().hideProductPreviewLayout()
         delaySendMessage = getComposedMessage()
         clearEditText()
-        getViewState().scrollToBottom()
     }
 
     private fun onSuccessResetChatToFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         sendMessage(delaySendMessage)
+        sendSticker(delaySendSticker)
         setupFirstPage(chatRoom, chat)
         delaySendMessage = ""
+        delaySendSticker = null
     }
 
     override fun onClickSticker(sticker: Sticker) {
+        if (presenter.isInTheMiddleOfThePage()) {
+            resetItemList()
+            delaySendSticker(sticker)
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+        } else {
+            sendSticker(sticker)
+        }
+    }
+
+    private fun delaySendSticker(sticker: Sticker) {
+        delaySendSticker = sticker
+    }
+
+    private fun sendSticker(sticker: Sticker?) {
+        if (sticker == null) return
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,
