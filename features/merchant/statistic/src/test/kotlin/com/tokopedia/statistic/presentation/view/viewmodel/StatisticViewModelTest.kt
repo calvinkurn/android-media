@@ -17,6 +17,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -103,6 +104,8 @@ class StatisticViewModelTest {
 
         viewModel.getWidgetLayout()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             userSession.shopId
         }
@@ -130,6 +133,8 @@ class StatisticViewModelTest {
 
         viewModel.getWidgetLayout()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             userSession.shopId
         }
@@ -154,6 +159,8 @@ class StatisticViewModelTest {
 
         viewModel.getCardWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getCardDataUseCase.executeOnBackground()
         }
@@ -176,6 +183,8 @@ class StatisticViewModelTest {
 
         viewModel.getCardWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         val result = viewModel.cardWidgetData.value
         assert(result is Fail)
     }
@@ -192,6 +201,8 @@ class StatisticViewModelTest {
         } returns lineGraphDataResult
 
         viewModel.getLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
@@ -215,6 +226,8 @@ class StatisticViewModelTest {
 
         viewModel.getLineGraphWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -235,6 +248,8 @@ class StatisticViewModelTest {
         } returns progressDataList
 
         viewModel.getProgressWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getProgressDataUseCase.executeOnBackground()
@@ -259,6 +274,8 @@ class StatisticViewModelTest {
 
         viewModel.getProgressWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -278,6 +295,8 @@ class StatisticViewModelTest {
         } returns postList
 
         viewModel.getPostWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getPostDataUseCase.executeOnBackground()
@@ -301,6 +320,8 @@ class StatisticViewModelTest {
 
         viewModel.getPostWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostDataUseCase.executeOnBackground()
         }
@@ -320,6 +341,8 @@ class StatisticViewModelTest {
         } returns carouselList
 
         viewModel.getCarouselWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
@@ -343,6 +366,8 @@ class StatisticViewModelTest {
 
         viewModel.getCarouselWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }
@@ -362,6 +387,8 @@ class StatisticViewModelTest {
         } returns result
 
         viewModel.getTableWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getTableDataUseCase.executeOnBackground()
@@ -384,6 +411,8 @@ class StatisticViewModelTest {
 
         viewModel.getTableWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getTableDataUseCase.executeOnBackground()
         }
@@ -403,6 +432,8 @@ class StatisticViewModelTest {
         } returns result
 
         viewModel.getPieChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getPieChartDataUseCase.executeOnBackground()
@@ -425,6 +456,8 @@ class StatisticViewModelTest {
 
         viewModel.getPieChartWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPieChartDataUseCase.executeOnBackground()
         }
@@ -444,6 +477,8 @@ class StatisticViewModelTest {
         } returns result
 
         viewModel.getBarChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getBarChartDataUseCase.executeOnBackground()
@@ -465,6 +500,8 @@ class StatisticViewModelTest {
         } throws MessageErrorException("error")
 
         viewModel.getBarChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getBarChartDataUseCase.executeOnBackground()
