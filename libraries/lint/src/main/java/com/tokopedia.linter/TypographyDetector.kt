@@ -27,7 +27,7 @@ class TypographyDetector : Detector(), XmlScanner {
     }
 
 
-    override fun getApplicableMethodNames(): List<String>? {
+    override fun getApplicableElements(): Collection<String>? {
         return listOf(
                 TEXT_VIEW)
     }
