@@ -35,6 +35,9 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -127,7 +130,7 @@ public class MyApplication extends BaseMainApplication
 
     }
 
-    public static class GTMAnalytics extends DummyAnalytics {
+    /*public static class GTMAnalytics extends DummyAnalytics {
 
         public GTMAnalytics(Context context) {
             super(context);
@@ -146,7 +149,7 @@ public class MyApplication extends BaseMainApplication
         public MoengageAnalytics(Context context) {
             super(context);
         }
-    }
+    }*/
 
     public static abstract class DummyAnalytics extends ContextAnalytics {
 
