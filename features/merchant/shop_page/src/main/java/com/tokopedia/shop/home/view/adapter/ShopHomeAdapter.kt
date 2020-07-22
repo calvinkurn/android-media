@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.adapter
 
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +14,6 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewH
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel

@@ -265,7 +265,6 @@ class HomeVisitableFactoryImpl(
                     createTopAdsBannerModel(channel)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel) }
-                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
             }
         }
 

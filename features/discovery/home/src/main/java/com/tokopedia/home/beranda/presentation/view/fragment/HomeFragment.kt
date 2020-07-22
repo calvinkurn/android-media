@@ -16,10 +16,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -147,9 +144,6 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
-import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutine
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -791,7 +785,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observePlayReminder(){
-        viewModel?.reminderPlayLiveData?.observe(this, Observer {
+        getHomeViewModel().reminderPlayLiveData.observe(this, Observer {
             if(it.isSuccess()){
                 showToaster(
                         if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
@@ -970,9 +964,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
     private val floatingEggButtonFragment: FloatingEggButtonFragment?
-        private get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+        get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
             if (activity != null && isAdded && childsFragmentManager != null) {
-                getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
+                childFragmentManager.findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
             } else null
 
     private fun initAdapter() {
@@ -1508,11 +1502,11 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
-        viewModel?.getPlayBannerCarousel(position)
+        getHomeViewModel().getPlayBannerCarousel(position)
     }
 
     override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+        getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -1864,7 +1858,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun hideStickyLogin() {
-        stickyLoginView!!.visibility = View.GONE
+        stickyLoginView.visibility = View.GONE
     }
 
     private fun updateStickyState() {
@@ -1883,11 +1877,11 @@ open class HomeFragment : BaseDaggerFragment(),
                 hideStickyLogin()
                 return
             }
-            stickyLoginView?.setContent(tickerDetail!!)
-            stickyLoginView?.show(StickyLoginConstant.Page.HOME)
-            if (stickyLoginView?.isShowing()) {
+            stickyLoginView.setContent(tickerDetail)
+            stickyLoginView.show(StickyLoginConstant.Page.HOME)
+            if (stickyLoginView.isShowing()) {
                 positionSticky = stickyLoginView?.getLocation()
-                stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+                stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
             }
         }
     }
@@ -1910,12 +1904,12 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView!!.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginView!!.height)
+        if (stickyLoginView.isShowing()) {
+            params.setMargins(0, 0, 0, stickyLoginView.height)
             val positionEgg = IntArray(2)
             val eggHeight = floatingEggButtonFragment.egg.height
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > positionSticky!![1]) {
+            if (positionEgg[1] + eggHeight > positionSticky?.get(1) ?: 0) {
                 floatingEggButtonFragment.moveEgg(positionSticky!![1] - eggHeight)
             }
         } else {
@@ -1973,7 +1967,7 @@ open class HomeFragment : BaseDaggerFragment(),
         make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
     }
 
-    fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {
+    private fun addRecyclerViewScrollImpressionListener(dynamicChannelDataModel: DynamicChannelDataModel, adapterPosition: Int) {
         if (!impressionScrollListeners.containsKey(dynamicChannelDataModel.channel?.id)) {
             val listener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

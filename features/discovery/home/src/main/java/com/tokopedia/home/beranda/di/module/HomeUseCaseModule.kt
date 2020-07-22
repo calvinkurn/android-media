@@ -26,9 +26,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
 import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
-import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -319,17 +317,6 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
         useCase.setGraphqlQuery(query)
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
-
-    @Provides
-    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
-                                 graphqlUseCase: GraphqlUseCase?,
-                                 feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
-        return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
     }
 
     @Provides

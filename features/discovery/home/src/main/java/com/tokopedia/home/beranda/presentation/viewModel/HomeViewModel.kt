@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,6 +42,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -70,6 +70,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -694,7 +695,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
                         ?: return
         if (findRechargeRecommendationViewModel is ReminderWidgetModel && findRechargeRecommendationViewModel.source==ReminderEnum.RECHARGE) {
-            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
         }
     }
 
@@ -703,7 +704,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.SALAM)}
                         ?: return
         if (findSalamWidgetModel is ReminderWidgetModel && findSalamWidgetModel.source==ReminderEnum.SALAM) {
-            launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findSalamWidgetModel)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findSalamWidgetModel)) }
         }
     }
 
@@ -832,15 +833,11 @@ open class HomeViewModel @Inject constructor(
 
     private fun evaluateTopAdsBannerComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
-            val listData = _homeLiveData.value?.list?.filter {
-                it is HomeTopAdsBannerDataModel
-            }
+            val listData = _homeLiveData.value?.list?.filterIsInstance<HomeTopAdsBannerDataModel>()
             listData?.let {
-                val data: List<HomeTopAdsBannerDataModel> = it as List<HomeTopAdsBannerDataModel>
-
-                if (data.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     val stack: Stack<HomeTopAdsBannerDataModel> = Stack<HomeTopAdsBannerDataModel>()
-                    stack.addAll(data.toMutableList())
+                    stack.addAll(it.toMutableList())
                     stack.reverse()
 
                     val list = homeViewModel.list.toMutableList()
@@ -1008,7 +1005,7 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.get().setParams(channelModel.groupId ?: "")
+            getDynamicChannelsUseCase.get().setParams(channelModel.groupId)
             val data = getDynamicChannelsUseCase.get().executeOnBackground()
             if(data.isEmpty()){
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
@@ -1278,7 +1275,7 @@ open class HomeViewModel @Inject constructor(
                                                 ATC to it,
                                                 CHANNEL to channel,
                                                 GRID to grid,
-                                                QUANTITIY to quantity,
+                                                QUANTITY to quantity,
                                                 POSITION to position
 
                                         )
@@ -1389,15 +1386,15 @@ open class HomeViewModel @Inject constructor(
                                     newList[data.position] = homeVisitable
                                 } else {
                                     newList.withIndex().find {
-                                        it::class.java == Visitable::class.java }?.let {
+                                        it.value::class.java == homeVisitable::class.java && getVisitableId(it.value) == getVisitableId(homeVisitable) }?.let {
                                         newList[it.index] = homeVisitable
                                     }
                                 }
                             }
                             ACTION_DELETE -> {
-                                logChannelUpdate("Update channel: (Remove widget ${homeVisitable.javaClass.simpleName} | ${homeVisitable.visitableId()})")
+                                logChannelUpdate("Update channel: (Remove widget ${homeVisitable.javaClass.simpleName} | ${getVisitableId(homeVisitable)})")
                                 newList.find { it::class.java == homeVisitable::class.java
-                                        && (it as HomeVisitable).visitableId() == homeVisitable.visitableId() }?.let {
+                                        && getVisitableId(it) == getVisitableId(homeVisitable)}?.let {
                                     newList.remove(it)
                                 }
                             }
@@ -1406,6 +1403,14 @@ open class HomeViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun getVisitableId(visitable: Visitable<*>): Any?{
+        return when (visitable) {
+            is HomeVisitable -> visitable.visitableId()
+            is HomeComponentVisitable -> visitable.visitableId()
+            else -> null
         }
     }
 
@@ -1459,7 +1464,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun logChannelUpdate(message: String){
-        if(GlobalConfig.DEBUG) Log.e(this.javaClass.simpleName, message)
+        if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
     }
 
 }

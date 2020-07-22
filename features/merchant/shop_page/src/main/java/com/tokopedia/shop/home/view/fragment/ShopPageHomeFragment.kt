@@ -158,7 +158,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this)
+        ShopHomeAdapterTypeFactory(this, this, this, this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
