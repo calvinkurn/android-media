@@ -7,6 +7,10 @@
     <string name="deals_homepage_layout_topdeals_tag">topdeals</string>
     <string name="deals_homepage_popular_tag">Populer</string>
     <string name="deals_homepage_new_deals_tag">Terbaru</string>
+    <string name="deals_homepage_new_halal_tag">Halal</string>
+    <string name="deals_homepage_new_hot_deals_tag">Hot Deals</string>
+    <string name="deals_homepage_new_only_grab_driver_tag">Khusus Grab Driver</string>
+    <string name="deals_homepage_new_only_for_grab_tag">Khusus Pengguna Grab</string>
     <string name="deals_homepage_food_section_title">Pilih jenis kuliner kesukaanmu</string>
     <string name="deals_homepage_food_section_subtitle">Mau makan apa aja, ada!</string>
     <string name="deals_homepage_place_popular_section_title">Voucher di tempat populer</string>

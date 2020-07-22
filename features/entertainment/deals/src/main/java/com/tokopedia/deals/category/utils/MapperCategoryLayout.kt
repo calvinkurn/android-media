@@ -11,6 +11,7 @@ import com.tokopedia.deals.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.model.response.CuratedData
 import javax.inject.Inject
@@ -89,7 +90,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                     appUrl = it.appUrl,
                     discount = it.savingPercentage,
                     shop = it.brand.title,
-                    productCategory = ProductCategoryDataView(it.displayTags, com.tokopedia.unifyprinciples.R.color.Yellow_Y500)
+                    productCategory = getLabelColor(context, it.displayTags)
                     )
         }
 
