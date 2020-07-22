@@ -868,54 +868,46 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         val toBeRemovedPromoCodes = ArrayList<String>()
 
         // Add unselected promo
-        val unSelectedPromoCodes = getUnSelectedPromoCodes()
-        toBeRemovedPromoCodes.addAll(unSelectedPromoCodes)
+        addUnSelectedPromoCodes(toBeRemovedPromoCodes)
 
         // Add invalid promo
-        val invalidPromoCodes = getInvalidPromo(validateUsePromoRequest, bboPromoCodes)
-        toBeRemovedPromoCodes.addAll(invalidPromoCodes)
+        addInvalidPromo(validateUsePromoRequest, bboPromoCodes, toBeRemovedPromoCodes)
 
         return toBeRemovedPromoCodes
     }
 
-    private fun getInvalidPromo(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>): ArrayList<String> {
-        val invalidPromoCodes = ArrayList<String>()
-
+    private fun addInvalidPromo(validateUsePromoRequest: ValidateUsePromoRequest,
+                                bboPromoCodes: ArrayList<String>,
+                                toBeRemovedPromoCodes: ArrayList<String>) {
         validateUsePromoRequest.codes.forEach { promoGlobalCode ->
             promoGlobalCode?.let {
-                if (!bboPromoCodes.contains(it) && !invalidPromoCodes.contains(it)) {
-                    invalidPromoCodes.add(it)
+                if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
+                    toBeRemovedPromoCodes.add(it)
                 }
             }
         }
 
         validateUsePromoRequest.orders.forEach { order ->
             order?.codes?.forEach {
-                if (!bboPromoCodes.contains(it) && !invalidPromoCodes.contains(it)) {
-                    invalidPromoCodes.add(it)
+                if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
+                    toBeRemovedPromoCodes.add(it)
                 }
             }
         }
-
-        return invalidPromoCodes
     }
 
-    private fun getUnSelectedPromoCodes(): ArrayList<String> {
-        val unSelectedPromoCodes = ArrayList<String>()
-
+    private fun addUnSelectedPromoCodes(toBeRemovedPromoCodes: ArrayList<String>) {
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled) {
-                unSelectedPromoCodes.add(visitable.uiData.promoCode)
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled && !toBeRemovedPromoCodes.contains(visitable.uiData.promoCode)) {
+                toBeRemovedPromoCodes.add(visitable.uiData.promoCode)
             } else if (visitable is PromoListHeaderUiModel && visitable.uiState.isEnabled && visitable.uiData.tmpPromoItemList.isNotEmpty()) {
                 visitable.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
-                    if (promoListItemUiModel.uiState.isParentEnabled) {
-                        unSelectedPromoCodes.add(promoListItemUiModel.uiData.promoCode)
+                    if (promoListItemUiModel.uiState.isParentEnabled && !toBeRemovedPromoCodes.contains(promoListItemUiModel.uiData.promoCode)) {
+                        toBeRemovedPromoCodes.add(promoListItemUiModel.uiData.promoCode)
                     }
                 }
             }
         }
-
-        return unSelectedPromoCodes
     }
 
     private fun handleClearPromoResponse(response: ClearPromoResponse, validateUsePromoRequest: ValidateUsePromoRequest, toBeRemovedPromoCodes: ArrayList<String>) {
