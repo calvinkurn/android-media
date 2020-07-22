@@ -79,9 +79,9 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNlp: Boolean = false) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNpl: Boolean = false) = with(view) {
         setTextCampaignActive(campaign)
-        if (!isNlp) {
+        if (!isNpl) {
             renderFlashSale(campaign, stockWording)
         }
     }
