@@ -447,8 +447,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         };
         SpannableString spannableString = new SpannableString(getString(messageStringId));
         if(messageStringId == R.string.money_in_need_permission) {
-            spannableString.setSpan(foregroundColorSpan, 67, 87, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(clickableSpan, 67, 87, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(foregroundColorSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(clickableSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } else {
             spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
