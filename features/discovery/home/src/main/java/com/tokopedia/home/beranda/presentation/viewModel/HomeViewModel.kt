@@ -481,13 +481,23 @@ open class HomeViewModel @Inject constructor(
 
     // Logic get play carousel and should load from API
     fun getPlayBannerCarousel(position: Int = 0) {
-        val visitable = _homeLiveData.value?.list?.get(position)
-        if(visitable != null && visitable is PlayCarouselCardDataModel){
-            getPlayBannerV2(visitable)
+        if(position != -1 && position < _homeLiveData.value?.list?.size ?: 0) {
+            val visitable = _homeLiveData.value?.list?.get(position)
+            if (visitable != null && visitable is PlayCarouselCardDataModel) {
+                getPlayBannerV2(visitable)
+            } else {
+                val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
+                logChannelUpdate("find play banner ${playBannerCarousel?.javaClass?.simpleName}")
+                if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
+                    getPlayBannerV2(playBannerCarousel)
+                } else {
+                    logChannelUpdate("Null find playbanner listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
+                }
+            }
         } else {
             val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
             logChannelUpdate("find play banner ${playBannerCarousel?.javaClass?.simpleName}")
-            if(playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel){
+            if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
                 getPlayBannerV2(playBannerCarousel)
             } else {
                 logChannelUpdate("Null find playbanner listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
