@@ -1,0 +1,93 @@
+{
+  "data": {
+    "fetchBarChartWidgetData": {
+      "data": [
+        {
+          "dataKey": "orderRejectByCategorization",
+          "data": {
+            "summary": {
+              "value": 21,
+              "valueFmt": "21 penjualan",
+              "diffPercentage": -38,
+              "diffPercentageFmt": "<span style=color:#EF144A;><b>-38.24%</b></span> dengan 7 hari sebelumnya"
+            },
+            "metrics": [
+              {
+                "name": "Ditolak oleh",
+                "value": [
+                  {
+                    "value": 14,
+                    "valueFmt": "14"
+                  },
+                  {
+                    "value": 5,
+                    "valueFmt": "5"
+                  },
+                  {
+                    "value": 2,
+                    "valueFmt": "2"
+                  }
+                ]
+              }
+            ],
+            "axes": {
+              "yLabel": [
+                {
+                  "value": 0,
+                  "valueFmt": "0"
+                },
+                {
+                  "value": 2,
+                  "valueFmt": "2"
+                },
+                {
+                  "value": 4,
+                  "valueFmt": "4"
+                },
+                {
+                  "value": 6,
+                  "valueFmt": "6"
+                },
+                {
+                  "value": 8,
+                  "valueFmt": "8"
+                },
+                {
+                  "value": 10,
+                  "valueFmt": "10"
+                },
+                {
+                  "value": 12,
+                  "valueFmt": "12"
+                },
+                {
+                  "value": 14,
+                  "valueFmt": "14"
+                },
+                {
+                  "value": 16,
+                  "valueFmt": "16"
+                }
+              ],
+              "xLabel": [
+                {
+                  "value": 1,
+                  "valueFmt": "Dibatalkan otomatis"
+                },
+                {
+                  "value": 2,
+                  "valueFmt": "Ditolak seller"
+                },
+                {
+                  "value": 3,
+                  "valueFmt": "Permintaan pembeli"
+                }
+              ]
+            }
+          },
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}
