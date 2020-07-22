@@ -54,7 +54,10 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
 
 
     private fun mapBrandtoLayout(searchData: SearchData) {
-        val brandLayout = searchData.eventSearch.brands.subList(0, MAX_BRAND_SHOWING).map { brand ->
+        var maxValue = 0
+        if(searchData.eventSearch.brands.size >= MAX_BRAND_SHOWING) maxValue = MAX_BRAND_SHOWING
+        else maxValue = searchData.eventSearch.brands.size
+        val brandLayout = searchData.eventSearch.brands.subList(0, maxValue).map { brand ->
             DealsBrandsDataView.Brand(
                 brand.id,
                 brand.title,

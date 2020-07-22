@@ -150,7 +150,9 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     fun showLoading() { if (::adapter.isInitialized) adapter.showPageLoad() }
     fun showLoadMoreLoading() { if (::adapter.isInitialized) showLoadingMoreUnify() }
 
-    private fun getRecyclerView(view: View): RecyclerView = view.findViewById(com.tokopedia.baselist.R.id.recycler_view)
+    private fun getRecyclerView(view: View): RecyclerView =
+            if(isBrandLayout()) view.findViewById(com.tokopedia.deals.R.id.recycler_view)
+            else view.findViewById(com.tokopedia.baselist.R.id.recycler_view)
     private fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
         return if (hasInitialSwipeRefresh()) view.findViewById(com.tokopedia.baselist.R.id.swipe_refresh_layout)
         else null
