@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ll_meta"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingStart="@dimen/layout_lvl2"
@@ -19,7 +19,6 @@
         android:paddingBottom="@dimen/play_dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/overflow"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -30,19 +29,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tickerShapeType="loose"
-            tools:visibility="visible" />
+            app:tickerShapeType="loose" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_cover"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginBottom="@dimen/play_dp_12"
-            android:background="@drawable/bg_play_dark_gray_rounded_corner"
-            android:minWidth="@dimen/play_summary_cover_weight"
-            android:minHeight="@dimen/play_summary_cover_weight"
+            android:layout_width="@dimen/play_summary_cover_width"
+            android:layout_height="@dimen/play_summary_cover_height"
             android:scaleType="centerInside"
-            app:layout_constraintBottom_toTopOf="@+id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,12 +44,12 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/play_summary_margin"
             android:gravity="center"
             android:textColor="@color/Neutral_N0"
-            app:layout_constraintBottom_toTopOf="@+id/tv_duration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover"
             app:typographyType="heading_5"
             tools:text="Sneakers Hypebeast with Cashback 10%" />
 
@@ -64,7 +57,7 @@
             android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/play_dp_12"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:background="@drawable/bg_play_dark_gray_rounded_corner"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:paddingStart="@dimen/play_dp_6"
@@ -73,9 +66,9 @@
             android:paddingBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N0"
             app:drawableLeftCompat="@drawable/ic_play_duration_white"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             app:typographyType="body_3"
             tools:text="28:42" />
 
@@ -86,10 +79,9 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/Neutral_N700_68"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_meta" />
 
     <FrameLayout
         android:id="@+id/fl_info"
