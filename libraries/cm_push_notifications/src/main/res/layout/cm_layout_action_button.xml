@@ -72,8 +72,6 @@
             android:id="@+id/img_big"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/tv_extra_text"
-            android:layout_below="@+id/layout_collapsed"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="@dimen/dp_10"
             android:visibility="gone"
@@ -83,7 +81,6 @@
             android:id="@+id/tv_extra_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/ll_action"
             android:visibility="gone" />
 
         <LinearLayout

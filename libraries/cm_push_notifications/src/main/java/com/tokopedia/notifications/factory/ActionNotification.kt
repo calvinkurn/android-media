@@ -91,21 +91,11 @@ internal class ActionNotification internal constructor(context: Context, baseNot
         remoteView.setOnClickPendingIntent(if (isCollapsed) R.id.collapseMainView else R.id.status_bar_latest_event_content, createMainPendingIntent(baseNotificationModel,
                 requestCode))
         if (baseNotificationModel.media == null || baseNotificationModel.media?.mediumQuality == null
-                || baseNotificationModel.media?.mediumQuality!!.isBlank()) {
-            if (isCollapsed) {
-                remoteView.setViewVisibility(R.id.tv_collapsed_message, View.VISIBLE)
-                remoteView.setViewVisibility(R.id.tv_expanded_message, View.GONE)
-                remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
-                remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
-            } else {
-                remoteView.setViewVisibility(R.id.tv_collapsed_message, View.GONE)
-                remoteView.setViewVisibility(R.id.tv_expanded_message, View.VISIBLE)
-                remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
-                remoteView.setTextViewText(R.id.tv_expanded_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
-            }
-        } else {
-            remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
-            remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
+                || baseNotificationModel.media?.mediumQuality!!.isBlank() && !TextUtils.isEmpty(baseNotificationModel.detailMessage)) {
+            remoteView.setViewVisibility(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message, View.VISIBLE)
+            remoteView.setViewVisibility(if (isCollapsed) R.id.tv_expanded_message else R.id.tv_collapsed_message, View.GONE)
+            remoteView.setTextViewText(if (isCollapsed) R.id.tv_collapsed_message else R.id.tv_expanded_message,
+                    CMNotificationUtils.getSpannedTextFromStr(if (isCollapsed) baseNotificationModel.message else baseNotificationModel.detailMessage))
         }
     }
 
