@@ -25,7 +25,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
 
     @Test
     fun `Search Shop First Page Successful`() {
-        `Given search shop API call will be successful and return search shop data`()
+        `Given search shop API call will be successful`()
         `Given search shop first page performance monitoring observer`()
 
         `When handle view is visible and added`()
@@ -36,11 +36,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert get dynamic filter API called once`()
         `Then assert bottom navigation visibility event is true (visible)`()
         `Then assert quick filter is shown`(searchShopModel.getQuickFilterList())
-    }
-
-    private fun `Given search shop API call will be successful and return search shop data`() {
-        searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
-        getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
     }
 
     private fun `Given search shop first page performance monitoring observer`() {
@@ -113,19 +108,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
 
         val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
         bottomNavigationVisibilityEvent shouldBe true
-    }
-
-    private fun `Then assert quick filter is shown`(filterList: List<Filter>) {
-        val searchShopQuickFilterLiveData = searchShopViewModel.getSortFilterItemListLiveData().value!!
-        searchShopQuickFilterLiveData.shouldBeInstanceOf<State.Success<*>>()
-
-        val sortFilterItemList = searchShopQuickFilterLiveData.data!!
-        sortFilterItemList.shouldHaveSize(filterList.size)
-        sortFilterItemList.forEachIndexed { index, sortFilterItem ->
-            val option = filterList.map { it.options }.flatten()[index]
-            sortFilterItem.title shouldBe option.name
-            sortFilterItem.typeUpdated shouldBe false
-        }
     }
 
     @Test

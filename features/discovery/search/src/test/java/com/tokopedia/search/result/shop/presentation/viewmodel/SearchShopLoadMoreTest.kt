@@ -205,6 +205,7 @@ internal class SearchShopLoadMoreTest: SearchShopViewModelTestFixtures() {
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then verify has next page is false`()
+        `Then assert quick filter is shown`(searchShopModel.getQuickFilterList())
     }
 
     private fun `Given impression tracking already consumed by the View`() {

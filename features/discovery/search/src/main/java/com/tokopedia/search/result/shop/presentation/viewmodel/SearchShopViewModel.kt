@@ -25,6 +25,7 @@ import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.createDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,6 +48,7 @@ internal class SearchShopViewModel(
         const val START_ROW_FIRST_TIME_LOAD = 0
         const val SHOP_TAB_TITLE = "Toko"
         const val SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab"
+        const val QUICK_FILTER_MINIMUM_SIZE = 2
     }
 
     private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
@@ -186,9 +188,6 @@ internal class SearchShopViewModel(
         updateSearchShopLiveDataStateToSuccess()
 
         postLiveDataEventsAfterSearchShop(searchShopModel, visitableList)
-
-        if (searchShopModel.getFilterList().size <= 2)
-            searchShopModel.quickFilter.data = createDefaultQuickFilter()
 
         processQuickFilter(searchShopModel)
     }
@@ -436,17 +435,42 @@ internal class SearchShopViewModel(
     }
 
     private fun processQuickFilter(searchShopModel: SearchShopModel) {
-        val sortFilterItemList = mutableListOf<SortFilterItem>()
+        if (searchShopModel.getFilterList().size < QUICK_FILTER_MINIMUM_SIZE)
+            searchShopModel.quickFilter.data = createDefaultQuickFilter()
 
+        filterController.initFilterController(searchParameter.convertValuesToString(), searchShopModel.getFilterList())
+
+        val sortFilterItemList = createSortFilterItemList(searchShopModel)
+        sortFilterItemListLiveData.postValue(Success(sortFilterItemList))
+    }
+
+    private fun createSortFilterItemList(searchShopModel: SearchShopModel): List<SortFilterItem> {
         val quickFilterOptionList = searchShopModel.getFilterList().map { it.options }.flatten()
-        quickFilterOptionList.forEach {
-            val sortFilterItem = SortFilterItem(it.name)
-            sortFilterItem.typeUpdated = false
 
-            sortFilterItemList.add(sortFilterItem)
+        return quickFilterOptionList.map(this::optionToSortFilterItem)
+    }
+
+    private fun optionToSortFilterItem(option: Option): SortFilterItem {
+        val isSelected = filterController.getFilterViewState(option)
+        val sortFilterItem = createSortFilterItem(option, isSelected)
+
+        sortFilterItem.typeUpdated = false
+
+        return sortFilterItem
+    }
+
+    private fun createSortFilterItem(option: Option, isSelected: Boolean): SortFilterItem {
+        val type = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
+        return SortFilterItem(title = option.name, type = type) {
+            filterController.setFilter(
+                    option,
+                    isFilterApplied = !isSelected,
+                    isCleanUpExistingFilterWithSameKey = option.isCategoryOption
+            )
+
+            onViewApplyFilter(filterController.getParameter())
         }
-
-        sortFilterItemListLiveData.value = Success(sortFilterItemList)
     }
 
     private fun catchSearchShopException(e: Throwable?) {
@@ -454,7 +478,9 @@ internal class SearchShopViewModel(
 
         hasNextPage = false
         searchShopLiveData.postValue(Error("", searchShopMutableList))
-        sortFilterItemListLiveData.value = State.Error("")
+
+        if (searchShopMutableList.isEmpty())
+            sortFilterItemListLiveData.value = State.Error("")
     }
 
     private fun getDynamicFilter() {
@@ -495,8 +521,9 @@ internal class SearchShopViewModel(
     }
 
     private fun processFilterData(dynamicFilterModel: DynamicFilterModel) {
+        processFilterIntoFilterController(dynamicFilterModel)
+
         if (isEmptySearchShop) {
-            processFilterIntoFilterController(dynamicFilterModel)
             updateEmptySearchViewModelWithFilter()
         }
     }
@@ -504,7 +531,7 @@ internal class SearchShopViewModel(
     private fun processFilterIntoFilterController(dynamicFilterModel: DynamicFilterModel) {
         dynamicFilterModel.data.filter.let { filterList ->
             val initializedFilterList = FilterHelper.initializeFilterList(filterList)
-            filterController.initFilterController(searchParameter.convertValuesToString(), initializedFilterList)
+            filterController.appendFilterList(searchParameter.convertValuesToString(), initializedFilterList)
         }
     }
 
