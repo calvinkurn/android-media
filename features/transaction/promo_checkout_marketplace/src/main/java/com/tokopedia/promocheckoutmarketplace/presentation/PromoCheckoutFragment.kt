@@ -458,11 +458,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeGetCouponRecommendationResult() {
         viewModel.getPromoListResponseAction.observe(this, Observer {
-            when {
-                it.state == GetPromoListResponseAction.ACTION_CLEAR_DATA -> {
+            when (it.state) {
+                GetPromoListResponseAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
                 }
-                it.state == GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     it.exception?.let {
                         showToastMessage(it)
                     }
@@ -473,8 +473,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeApplyPromoResult() {
         viewModel.applyPromoResponseAction.observe(this, Observer {
-            when {
-                it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE -> {
+            when (it.state) {
+                ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE -> {
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
@@ -485,7 +485,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
                     buttonApplyPromo?.let {
                         setButtonLoading(it, false)
                     }
@@ -494,7 +494,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                     reloadData()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     buttonApplyPromo?.let {
                         setButtonLoading(it, false)
                     }
@@ -509,11 +509,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
-            buttonApplyNoPromo?.let {
-                setButtonLoading(it, false)
-            }
-            when {
-                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
+            when (it.state) {
+                ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_CLEAR_PROMO_RESULT, it.data)
@@ -524,7 +521,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
+                ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
                     showToastMessage(it)
                 }
             }
