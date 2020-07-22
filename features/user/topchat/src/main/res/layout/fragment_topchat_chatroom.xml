@@ -9,15 +9,37 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/rv_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
         android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:descendantFocusability="beforeDescendants"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/footer"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:descendantFocusability="beforeDescendants"
+            android:scrollbars="vertical" />
+
+        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+            android:id="@+id/fb_new_unread_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            app:fbType="group"
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+            app:layout_scrollFlags="scroll|enterAlways"
+            tools:visibility="visible" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
         android:id="@+id/ll_transaction_progress"

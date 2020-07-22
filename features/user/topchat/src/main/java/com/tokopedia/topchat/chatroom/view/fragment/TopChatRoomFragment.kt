@@ -92,6 +92,7 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -151,6 +152,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var chatMenu: ChatMenuView? = null
     private var rvLayoutManager: LinearLayoutManager? = null
     private var rvScrollListener: LoadMoreTopBottomScrollListener? = null
+    private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var rv: RecyclerView? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -167,7 +169,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
             initStickerView()
+            initFbNewUnreadMessage()
         }
+    }
+
+    private fun initFbNewUnreadMessage() {
+        val customView = layoutInflater.inflate(R.layout.custom_fb_new_unread_message, null)
+        fbNewUnreadMessage?.setMargins(0, 0, 0, 0)
+        fbNewUnreadMessage?.addItem(customView)
     }
 
     private fun bindView(view: View?) {
@@ -175,6 +184,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
+        fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
     }
 
     private fun initStickerView() {
