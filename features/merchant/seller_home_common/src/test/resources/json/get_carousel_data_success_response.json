@@ -1,6 +1,6 @@
 {
   "data": {
-    "getCarouselWidgetData": {
+    "fetchCarouselWidgetData": {
       "data": [
         {
           "dataKey": "home",
