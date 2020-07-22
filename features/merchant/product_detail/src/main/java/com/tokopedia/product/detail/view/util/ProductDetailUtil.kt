@@ -111,6 +111,22 @@ internal fun Int.getRelativeDateByHours(context: Context): String {
     }
 }
 
+internal fun String.isGivenDateIsBelowThan24H(): Boolean {
+    return try {
+        val endDate = Date(this.toLongOrZero() * 1000)
+        val now = System.currentTimeMillis()
+        val diff = (endDate.time - now).toFloat()
+        if (diff < 0) {
+            //End date is out dated
+            false
+        } else {
+            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
+        }
+    } catch (e: Throwable) {
+        false
+    }
+}
+
 internal fun String.getRelativeDate(context: Context): String {
     if (this.isEmpty()) return ""
 

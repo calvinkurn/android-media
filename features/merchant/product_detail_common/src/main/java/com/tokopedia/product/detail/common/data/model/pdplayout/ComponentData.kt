@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.product.*
 
 data class ComponentData(
