@@ -6,5 +6,6 @@ data class OrderPreference(
         val onboarding: OccMainOnboarding = OccMainOnboarding(),
         val profileIndex: String? = null,
         val profileRecommendation: String? = null,
-        val preference: OrderProfile = OrderProfile()
+        val preference: OrderProfile = OrderProfile(),
+        val isValid: Boolean = false
 )

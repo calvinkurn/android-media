@@ -28,6 +28,10 @@ data class OrderShipment(
         val insuranceData: InsuranceData? = null,
         val isCheckInsurance: Boolean = false
 ) {
+    fun isValid(): Boolean {
+        return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
+    }
+
     fun getRealShipperProductId(): Int {
         return logisticPromoShipping?.productData?.shipperProductId
                 ?: shipperProductId.toZeroIfNull()

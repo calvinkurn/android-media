@@ -14,11 +14,7 @@ data class OrderProfile(
         val address: OrderProfileAddress = OrderProfileAddress(),
         val payment: OrderProfilePayment = OrderProfilePayment(),
         val shipment: OrderProfileShipment = OrderProfileShipment()
-) {
-    fun updateInstallment(installments: List<OrderPaymentInstallmentTerm>): OrderProfile {
-        return this.copy(payment = payment.copy(creditCard = payment.creditCard.copy(availableTerms = installments)))
-    }
-}
+)
 
 data class OrderProfileAddress(
         val addressId: Int = 0,
