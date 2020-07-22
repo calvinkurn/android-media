@@ -4,22 +4,22 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/reviewEditableBadSmiley"
+    <ImageView
+        android:id="@+id/reviewEditableSmiley"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/reviewEditableBadText"
+        android:id="@+id/reviewEditableText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
         app:typographyType="body_2"
-        app:layout_constraintStart_toStartOf="@id/reviewEditableBadSmiley"
-        app:layout_constraintEnd_toEndOf="@id/reviewEditableBadSmiley"
-        app:layout_constraintTop_toBottomOf="@id/reviewEditableBadSmiley"/>
+        app:layout_constraintStart_toStartOf="@id/reviewEditableSmiley"
+        app:layout_constraintEnd_toEndOf="@id/reviewEditableSmiley"
+        app:layout_constraintTop_toBottomOf="@id/reviewEditableSmiley"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

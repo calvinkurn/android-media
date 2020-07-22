@@ -213,18 +213,20 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
             reviewHistoryDetailReputation.apply {
-                setShopName(shopName)
                 when {
                     !editable && isLocked && score != 0  -> {
                         setFinalScore(score)
+                        setShopName(shopName)
                         show()
                     }
                     editable && !isLocked -> {
-                        setDeadline(lockTime)
-                        setEditableScore(score)
+                        setShopName(shopName)
+                        setEditableScore(score, lockTime)
+                        show()
                     }
                     isLocked && score == 0 -> {
                         setExpired()
+                        show()
                     }
                     else -> {
                         hide()

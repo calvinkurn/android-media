@@ -64,8 +64,11 @@
         android:layout_marginStart="@dimen/layout_lvl7"
         android:layout_marginLeft="@dimen/layout_lvl7"
         android:visibility="gone"
+        app:isSelected="false"
+        app:score="bad"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"/>
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:visibility="visible"/>
 
     <com.tokopedia.review.common.presentation.widget.ReviewSmileyWidget
         android:id="@+id/reviewEditableMediocreSmiley"
@@ -73,9 +76,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
+        app:isSelected="false"
+        app:score="mediocre"
         app:layout_constraintStart_toEndOf="@id/reviewEditableBadSmiley"
         app:layout_constraintEnd_toStartOf="@id/reviewEditableGreatSmiley"
-        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName" />
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:visibility="visible"/>
 
     <com.tokopedia.review.common.presentation.widget.ReviewSmileyWidget
         android:id="@+id/reviewEditableGreatSmiley"
@@ -85,8 +91,11 @@
         android:layout_marginEnd="@dimen/layout_lvl7"
         android:layout_marginRight="@dimen/layout_lvl7"
         android:visibility="gone"
+        app:isSelected="false"
+        app:score="excellent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"/>
+        app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewScoreDeadlineLabel"
@@ -106,8 +115,8 @@
         android:id="@+id/reviewScoreDeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/reviewScoreDeadlineLabel"
         app:layout_constraintTop_toTopOf="@id/reviewScoreDeadlineLabel"
         app:typographyType="body_3"

@@ -77,6 +77,11 @@ object ReviewConstants {
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
     const val EDIT_MODE = true
+
+    const val REPUTATION_SCORE_BAD = -1
+    const val REPUTATION_SCORE_MEDIOCRE = 1
+    const val REPUTATION_SCORE_EXCELLENT = 2
+    const val REPUTATION_SCORE_EMPTY = 0
 }
 
 

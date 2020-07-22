@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ReviewSmileyWidget">
+        <attr name="isSelected" format="boolean" />
+        <attr name="score" format="enum">
+            <enum name="bad" value="-1" />
+            <enum name="mediocre" value="1" />
+            <enum name="excellent" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>
