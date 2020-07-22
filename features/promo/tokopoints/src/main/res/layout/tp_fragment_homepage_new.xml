@@ -112,11 +112,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/img_egg"
-                                android:layout_marginStart="@dimen/tp_margin_regular"
-                                android:layout_marginLeft="@dimen/tp_margin_regular"
                                 android:layout_marginTop="@dimen/dp_9"
-                                android:layout_marginEnd="@dimen/tp_margin_medium"
-                                android:layout_marginRight="@dimen/tp_margin_medium">
+                                android:layout_marginLeft="@dimen/dp_10"
+                                android:layout_marginStart="@dimen/dp_10"
+                                android:layout_marginEnd="@dimen/tp_margin_normal"
+                                android:layout_marginRight="@dimen/tp_margin_normal">
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/container_target"
@@ -164,13 +164,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/card_hightier_info"
-                                android:layout_marginStart="@dimen/dp_12"
-                                android:layout_marginLeft="@dimen/dp_12"
+                                android:layout_marginStart="@dimen/dp_10"
+                                android:layout_marginLeft="@dimen/dp_10"
                                 android:layout_marginTop="@dimen/dp_9"
-                                android:layout_marginEnd="@dimen/dp_16"
-                                android:layout_marginRight="@dimen/dp_16"
-                                android:background="@color/white"
-                                app:cardCornerRadius="@dimen/dp_8">
+                                android:layout_marginEnd="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
+                                android:background="@color/white">
 
                                 <com.tokopedia.tokopoints.view.customview.DynamicItemActionView
                                     android:id="@+id/dynamic_widget"
