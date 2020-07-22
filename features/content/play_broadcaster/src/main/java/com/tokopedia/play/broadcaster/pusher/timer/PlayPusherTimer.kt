@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
+import kotlin.math.max
 
 
 /**
@@ -101,7 +102,7 @@ class PlayPusherTimer(val context: Context) {
 
     fun getTimeElapsed(): String = getTimeElapsedInMillis().convertMillisToMinuteSecond()
 
-    private fun getTimeElapsedInMillis(): Long = mMaxDuration - mRemainingMillis
+    private fun getTimeElapsedInMillis(): Long = max(0, mMaxDuration - mRemainingMillis)
 
     private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
         val currentMillis = System.currentTimeMillis()
