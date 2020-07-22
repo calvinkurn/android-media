@@ -185,7 +185,8 @@ class InboxReviewViewModel @Inject constructor(
 
             val countStatusIsZero = statusFilterText.count().isZero()
             if(countStatusIsZero) {
-                getInitInboxReview()
+                filterByList.removeFilterElement(prefixStatus)
+                getInitInboxReview(1, "")
             } else {
                 getInboxReview()
             }
