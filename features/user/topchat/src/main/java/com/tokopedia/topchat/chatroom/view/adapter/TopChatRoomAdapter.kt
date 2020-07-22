@@ -74,9 +74,9 @@ class TopChatRoomAdapter(
         notifyItemRangeInserted(currentLastPosition, widgets.size)
     }
 
-    fun removeLastHeaderDateIfSame(latestHeaderDate: String) {
+    fun removeLastHeaderDateIfSame(responseLatestHeaderDate: String) {
         assignLastHeaderDate()
-        if (this.topMostHeaderDate?.date == latestHeaderDate) {
+        if (this.topMostHeaderDate?.date == responseLatestHeaderDate) {
             topMostHeaderDateIndex?.let {
                 visitables.removeAt(it)
                 notifyItemRemoved(it)
