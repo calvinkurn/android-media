@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.deals.R
@@ -13,9 +14,13 @@ import com.tokopedia.deals.common.ui.adapter.DealsFragmentPagerAdapter
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.getCustomText
 import kotlinx.android.synthetic.main.activity_base_brand_category_deals.*
+import kotlinx.android.synthetic.main.content_base_deals_search_bar.*
+import kotlinx.android.synthetic.main.content_base_toolbar.*
+import java.lang.Math.abs
 
 open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
@@ -34,6 +39,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         dealBrandCategoryActivityViewModel.getCategoryCombindedData()
 
         observerLayout()
+        setUpScrollView()
     }
 
     private fun observerLayout() {
@@ -130,6 +136,25 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     open fun tabAnalytics(categoryName: String, position: Int) {
         //no-op
     }
+
+    private fun setUpScrollView() {
+        appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -searchBarDealsBaseSearch.height) {
+                //collapse
+                viewSpacing.hide()
+                imgDealsSearchIcon.show()
+            } else {
+                viewSpacing.show()
+                imgDealsSearchIcon.hide()
+            }
+        })
+
+        imgDealsSearchIcon.setOnClickListener {
+            searchBarActionListener?.onClickSearchBar()
+        }
+    }
+
+    override fun getParentViewResourceID(): Int = R.id.ll_main
 
     companion object {
         private const val ALL_ITEM_PAGE = "Semua"
