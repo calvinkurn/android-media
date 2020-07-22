@@ -4,13 +4,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -69,7 +68,7 @@ class SummaryInfoPartialView(
     }
 
     fun setChannelCover(coverUrl: String) {
-        ivCover.loadImage(coverUrl)
+        ivCover.loadImageRounded(coverUrl)
     }
 
     fun setLiveDuration(duration: String) {
