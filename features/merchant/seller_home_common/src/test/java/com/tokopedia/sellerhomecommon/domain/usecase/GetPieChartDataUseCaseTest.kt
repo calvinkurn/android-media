@@ -61,13 +61,13 @@ class GetPieChartDataUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        val postList = getPieChartDataUseCase.executeOnBackground()
+        val result = getPieChartDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assert.assertTrue(!postList.isNullOrEmpty())
+        Assert.assertTrue(!result.isNullOrEmpty())
     }
 
     @Test
@@ -80,12 +80,12 @@ class GetPieChartDataUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
-        val postList = getPieChartDataUseCase.executeOnBackground()
+        val result = getPieChartDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assert.assertTrue(postList.isNullOrEmpty())
+        Assert.assertTrue(result.isNullOrEmpty())
     }
 }
