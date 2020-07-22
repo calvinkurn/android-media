@@ -50,10 +50,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
 
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
-    private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
+    private val adapter: BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
@@ -117,8 +115,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 GraphqlClient.init(it)
                 getData()
             }
-        }
-        else {
+        } else {
             shouldRefreshOnResume = true
         }
     }
@@ -134,14 +131,15 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             model.items?.let {
                 adapter.clearAllElements()
                 adapter.setElement(it)
-                try{
+                try {
                     Toaster.snackBar.dismiss()
-                } catch (e: Exception){}
+                } catch (e: Exception) {
+                }
             }
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, remoteConfig))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig()))
             }
         }
 
@@ -210,7 +208,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
         sendProductClickTracking(product, adapterPosition, widgetTitle)
-        if (product.isTopAds) ImpresionTask().execute(product.clickUrl)
+        activity?.let {
+            if (product.isTopAds) ImpresionTask(it::class.qualifiedName).execute(product.clickUrl)
+        }
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString()).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, adapterPosition)
@@ -220,8 +220,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
         sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
-        if (product.isTopAds) {
-            ImpresionTask().execute(product.trackerImageUrl)
+        activity?.let {
+            if (product.isTopAds) ImpresionTask(it::class.qualifiedName).execute(product.trackerImageUrl)
         }
     }
 
@@ -278,7 +278,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             }
         }
 
-        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
             }
@@ -295,7 +295,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel ?: return
+        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel
+                ?: return
         recommendationItem.product.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
         if (productCardOptionsModel.wishlistResult.isAddWishlist)
@@ -347,8 +348,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         context?.let {
             val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
                     .new_query_saldo_balance)
+
+            val rewardQuery = GraphqlHelper.loadRawString(it.resources, R.raw.query_user_rewardshorcut)
+
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_buyer_account_home), saldoQuery)
+                    .query_buyer_account_home), saldoQuery, rewardQuery)
         }
     }
 
@@ -371,7 +375,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
-        if(adapter.list.get(position) is RecommendationProductViewModel){
+        if (adapter.list.get(position) is RecommendationProductViewModel) {
             (adapter.list.get(position) as RecommendationProductViewModel).product.isWishlist = wishlistStatusFromPdp
             adapter.notifyItemChanged(position)
         }
@@ -393,6 +397,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
+        private const val className: String = "com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment"
 
         private val DEFAULT_SPAN_COUNT = 2
 

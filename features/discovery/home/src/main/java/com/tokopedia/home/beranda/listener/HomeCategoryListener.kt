@@ -27,7 +27,7 @@ interface HomeCategoryListener {
 
     val eggListener: HomeEggListener
 
-    var trackingQueue: TrackingQueue?
+    fun getTrackingQueueObj(): TrackingQueue?
 
     val childsFragmentManager: FragmentManager
 
@@ -99,6 +99,8 @@ interface HomeCategoryListener {
 
     fun refreshHomeData()
 
+    fun isShowSeeAllCard(): Boolean
+
     fun getTabBusinessWidget(position: Int)
 
     fun getBusinessUnit(tabId: Int, position: Int)
@@ -110,6 +112,8 @@ interface HomeCategoryListener {
     fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
 
     fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
+
+    fun removeViewHolderAtPosition(position: Int)
 
     fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
 

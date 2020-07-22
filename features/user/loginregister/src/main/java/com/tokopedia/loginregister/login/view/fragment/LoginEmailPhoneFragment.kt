@@ -14,6 +14,7 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
 import android.text.format.DateFormat
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -45,8 +46,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -100,6 +99,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
@@ -114,7 +115,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var mIris: Iris
 
     private lateinit var callbackManager: CallbackManager
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -150,6 +150,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var bannerLogin: ImageView
+    private lateinit var callTokopediaCare: Typography
     private lateinit var sharedPrefs: SharedPreferences
 
     override fun getScreenName(): String {
@@ -244,10 +245,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
 
-        context?.run {
-            mIris = IrisAnalytics.getInstance(this)
-        }
-
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
     }
@@ -263,6 +260,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         passwordEditText = partialRegisterInputView.findViewById(R.id.password)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
+        callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
         return view
     }
 
@@ -350,6 +348,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     private fun prepareView() {
+
+        initTokopediaCareText()
 
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
         socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
@@ -452,6 +452,28 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
+    private fun initTokopediaCareText() {
+        val message = getString(R.string.need_help_call_tokopedia_care)
+        val spannable = SpannableString(message)
+        spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        goToTokopediaCareWebview()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    }
+                },
+                message.indexOf(getString(R.string.call_tokopedia_care)),
+                message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
+                0
+        )
+        callTokopediaCare.movementMethod = LinkMovementMethod.getInstance()
+        callTokopediaCare.setText(spannable, TextView.BufferType.SPANNABLE)
+    }
+
     private fun onChangeButtonClicked() {
         analytics.trackChangeButtonClicked()
 
@@ -472,6 +494,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     }
 
+    private fun goToTokopediaCareWebview() {
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
+    }
 
     override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>) {
 
@@ -617,7 +643,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
-            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
+            var intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+            if (GlobalConfig.isSellerApp()) {
+                intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
+            }
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             startActivity(intent)
@@ -721,11 +750,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
                 loginEventAppsFlyer(userSession.userId, userSession.email)
-            }
-
-            if (::mIris.isInitialized) {
-                mIris.setUserId(userId)
-                mIris.setDeviceId(userSession.deviceId)
             }
 
             TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
@@ -948,15 +972,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             dismissLoadingLogin()
             onErrorLogin(ErrorHandler.getErrorMessage(context, it))
 
-        }
-    }
-
-    override fun onGoToCreatePassword(): (String, String) -> Unit {
-        return { fullName: String, userId: String ->
-            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_PASSWORD)
-            intent.putExtra("name", fullName)
-            intent.putExtra("user_id", userId)
-            startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
         }
     }
 
@@ -1324,17 +1339,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
         dismissLoadingLogin()
+        onSuccessLogin()
         if (!data.isValid && isFromAccountPage()) {
             goToFingerprintRegisterPage()
-        } else {
-            onSuccessLogin()
         }
     }
 
     override fun goToFingerprintRegisterPage() {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
-        activity?.finish()
+        context?.run {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
+            startActivity(intent)
+        }
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {
@@ -1548,6 +1563,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_LOGIN_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
+
+        private const val TOKOPEDIA_CARE_PATH = "help"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()

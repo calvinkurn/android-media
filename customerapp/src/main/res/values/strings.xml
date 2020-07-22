@@ -2,6 +2,8 @@
     <string name="app_name">Tokopedia</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
+    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+
     <!-- Push Notif -->
     <string name="purchase_finish">Pesanan Selesai</string>
     <string name="purchase_confirm">Konfirmasi Pesanan</string>
@@ -167,4 +169,9 @@
     <string name="saldo_webview_title">Tokopedia</string>
   
     <string name="title_logout" translatable="false">logout</string>
+
+    <!--Talk-->
+    <string name="title_reading_page">Diskusi</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
+
 </resources>

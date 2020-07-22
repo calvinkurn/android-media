@@ -15,6 +15,7 @@
             android:layout_width="@dimen/dp_340"
             android:layout_height="@dimen/dp_220"
             android:layout_gravity="center"
+            app:cameraAudio="off"
             app:cameraPlaySounds="true"/>
 
     </FrameLayout>

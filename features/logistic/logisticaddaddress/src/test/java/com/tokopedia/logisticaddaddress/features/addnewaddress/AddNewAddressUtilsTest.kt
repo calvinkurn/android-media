@@ -1,31 +1,34 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import org.junit.Test
+import org.junit.Assert
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.gherkin.Feature
 
-import org.junit.Assert.*
+object AddNewAddressUtilsTest: Spek ({
 
-class AddNewAddressUtilsTest {
+    Feature("execute given value") {
 
-    @Test
-    fun givenExactValue_whenExecuted_thenReturnTrue() {
-        // Default Monas
-        val tLat = AddressConstants.DEFAULT_LAT
-        val tLong = AddressConstants.DEFAULT_LONG
+        Scenario("givenExactValue_whenExecuted") {
+            val tLat = AddressConstants.DEFAULT_LAT
+            val tLong = AddressConstants.DEFAULT_LONG
 
-        val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
+            val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
 
-        assertTrue(actual)
+            Then("return true") {
+                Assert.assertTrue(actual)
+            }
+        }
+
+        Scenario("givenSlightlyMiss_whenExecuted") {
+            val tLat = AddressConstants.DEFAULT_LAT - 0.000009
+            val tLong = AddressConstants.DEFAULT_LONG + 0.000006
+
+            val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
+
+            Then("return true") {
+                Assert.assertTrue(actual)
+            }
+        }
     }
-
-    @Test
-    fun givenSlightlyMiss_whenExecuted_thenReturnTrue() {
-        val tLat = AddressConstants.DEFAULT_LAT - 0.000009
-        val tLong = AddressConstants.DEFAULT_LONG + 0.000006
-
-        val actual = AddNewAddressUtils.hasDefaultCoordinate(tLat, tLong)
-
-        assertTrue(actual)
-    }
-
-}
+})

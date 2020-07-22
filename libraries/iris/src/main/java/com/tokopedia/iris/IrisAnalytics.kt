@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
@@ -89,6 +90,10 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
     }
 
+    override fun saveEvent(bundle: Bundle) {
+        saveEvent(Utils.bundleToMap(bundle))
+    }
+
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
@@ -119,14 +124,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 trackingRepository.sendSingleEvent(gson.toJson(map), session)
             }
         }
-    }
-
-    override fun setUserId(userId: String) {
-        session.setUserId(userId)
-    }
-
-    override fun setDeviceId(deviceId: String) {
-        session.setDeviceId(deviceId)
     }
 
     override fun setAlarm(isTurnOn: Boolean, force: Boolean) {

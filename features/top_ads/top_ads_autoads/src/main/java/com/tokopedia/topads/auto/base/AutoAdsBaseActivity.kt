@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 
 /**
  * Author errysuprayogi on 20,May,2019
@@ -15,7 +16,8 @@ import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 abstract class AutoAdsBaseActivity : BaseSimpleActivity(), HasComponent<AutoAdsComponent> {
 
     override fun getComponent(): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(this))
+            .build()
 
     fun gotoCreateProductAd() {
         if (GlobalConfig.isSellerApp()) {

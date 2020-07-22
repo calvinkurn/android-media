@@ -77,6 +77,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
     public static final String VIEW_WIDGET_BROADCAST = "view widget broadcast";
     public static final String CLICK_WIDGET_BROADCAST = "click widget broadcast";
+    public static final String CLICK_CLOSE_FILTER = "click close filter";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -157,7 +158,7 @@ public class ShopPageTrackingConstant {
     public static final String USER_ID = "userId";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "pageType";
-    public static final String PRODUCT_ID = "product_id";
+    public static final String PRODUCT_ID = "productId";
     public static final String ECOMMERCE = "ecommerce";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE = "/shoppage";

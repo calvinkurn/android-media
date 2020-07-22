@@ -26,4 +26,6 @@ object TopAdsDashboardConstant {
 
     const val URL_ONECLICKPROMO = "https://ta.tokopedia.com/v2/manage/oneclickpromo"
     const val AUTO_TOPUP_INACTIVE: Int = 0
+    const val SELLER_PACKAGENAME = "com.tokopedia.sellerapp"
+
 }

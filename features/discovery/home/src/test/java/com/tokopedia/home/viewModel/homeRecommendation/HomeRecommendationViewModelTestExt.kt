@@ -1,7 +1,6 @@
 package com.tokopedia.home.viewModel.homeRecommendation
 
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendTopAdsUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
@@ -15,13 +14,11 @@ import java.util.concurrent.TimeoutException
 
 fun TestBody.createHomeRecommendationViewModel(): HomeRecommendationViewModel{
     val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase>()
-    val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
-    return HomeRecommendationViewModel(getHomeRecommendationUseCase, sendTopAdsUseCase, TestDispatcherProvider())
+    return HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
 }
 
 fun FeatureBody.createHomeRecommendationViewModelTestInstance() {
     val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase> { mockk(relaxed = true) }
-    val sendTopAdsUseCase by memoized<SendTopAdsUseCase> { mockk(relaxed = true) }
 }
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel) {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categoryLevel_nav_catalog_count">%s Katalog</string>
+    <string name="categoryLevel_nav_catalog_no_data_title">Oops, Katalog Nggak Ditemukan</string>
+    <string name="categoryLevel_nav_catalog_no_data_description">Tapi kamu mungkin bisa coba rekomendasi di bawah ini</string>
+    <string name="categoryLevel_result_count_template_text">%s Produk</string>
+    <string name="categoryLevel_empty_state_selected_filter_price_name">Filter Harga</string>
+    <string name="label_category">category</string>
+</resources>

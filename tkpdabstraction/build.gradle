@@ -47,6 +47,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     api rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

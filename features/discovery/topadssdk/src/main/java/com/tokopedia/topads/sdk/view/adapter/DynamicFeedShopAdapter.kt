@@ -10,8 +10,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.gm.resource.GMConstant.getGMDrawableResource
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener
 import com.tokopedia.topads.sdk.utils.ImageLoader
 import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter.DynamicFeedShopViewHolder
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
 /**
@@ -70,7 +69,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
         private val ivProfile: ImageView = itemView.findViewById(R.id.ivProfile)
         private val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
         private val tvName: TextView = itemView.findViewById(R.id.tvName)
-        private val btnFollow: ButtonCompat = itemView.findViewById(R.id.btnFollow)
+        private val btnFollow: UnifyButton = itemView.findViewById(R.id.btnFollow)
         private val imageLoader: ImageLoader = ImageLoader(itemView.context)
 
         internal fun bind(data: Data?) {
@@ -119,7 +118,8 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
             itemView.setOnClickListener { itemClickListener.onShopItemClicked(adapterPosition, data) }
             btnFollow.setOnClickListener {
                 if (!data.isFavorit) {
-                    btnFollow.buttonCompatType = ButtonCompat.SECONDARY
+                    btnFollow.buttonVariant = UnifyButton.Variant.GHOST
+                    btnFollow.buttonType = UnifyButton.Type.ALTERNATE
                     btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
                 }
                 itemClickListener.onAddFavorite(adapterPosition, data)
@@ -143,10 +143,12 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
 
         private fun bindFavorite(data: Data) {
             if (data.isFavorit) {
-                btnFollow.buttonCompatType = ButtonCompat.SECONDARY
+                btnFollow.buttonVariant = UnifyButton.Variant.GHOST
+                btnFollow.buttonType = UnifyButton.Type.ALTERNATE
                 btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
             } else {
-                btnFollow.buttonCompatType = ButtonCompat.PRIMARY
+                btnFollow.buttonVariant = UnifyButton.Variant.FILLED
+                btnFollow.buttonType = UnifyButton.Type.MAIN
                 btnFollow.text = btnFollow.context.getString(R.string.topads_follow)
             }
         }
@@ -166,7 +168,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                     ivBadge.setImageDrawable(
                             ImageLoader.getDrawable(
                                     ivBadge.context,
-                                    getGMDrawableResource(ivBadge.context)
+                                    R.drawable.ic_power_merchant
                             )
                     )
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()

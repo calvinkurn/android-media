@@ -174,7 +174,7 @@ class CatalogDetailPageActivity : BaseActivity(),
             toolbar.elevation = 10f
             toolbar.setBackgroundResource(com.tokopedia.abstraction.R.color.white)
         } else {
-            toolbar.setBackgroundResource(com.tokopedia.transaction.R.drawable.bg_white_toolbar_drop_shadow)
+            toolbar.setBackgroundResource(com.tokopedia.buyerorder.R.drawable.bg_white_toolbar_drop_shadow)
         }
         img_share_button.setOnClickListener {
             if (shareData != null) {
@@ -211,16 +211,16 @@ class CatalogDetailPageActivity : BaseActivity(),
 
                 STATE_GRID -> {
                     img_display_button.tag = STATE_LIST
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
                     img_display_button.tag = STATE_BIG
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
                     img_display_button.tag = STATE_GRID
-                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, com.tokopedia.common_category.R.drawable.ic_grid_display))
                 }
             }
         }

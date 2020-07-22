@@ -89,6 +89,7 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.I
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationProductBottomSheet
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -166,7 +167,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupBottomSheet()
         setupMultiSelect()
         setupSelectAll()
-        setupTicker()
         renderCheckedView()
 
         observeShopInfo()
@@ -208,17 +208,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if (item.itemId == R.id.add_product_menu) {
             val subMenu = item.subMenu
             val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
-            val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
             addProductMenu.setOnMenuItemClickListener {
                 RouteManager.route(requireContext(), ApplinkConst.PRODUCT_ADD)
                 true
-            }
-
-            importFromInstagramMenu.setOnMenuItemClickListener {
-                val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
-                startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
-                false
             }
 
             ProductManageTracking.eventAddProduct()
@@ -379,28 +372,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 onClickProductCheckBox(isChecked, index)
             }
             productManageListAdapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun setupTicker() {
-        productManageSellerMigrationTicker.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_title)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    openSellerMigrationBottomSheet()
-                }
-                override fun onDismiss() {
-                    // No Op
-                }
-            })
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            val sellerMigrationBottomSheet = SellerMigrationProductBottomSheet.createNewInstance(it)
-            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
         }
     }
 

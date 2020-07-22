@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.liveness.utils.LivenessConstants
 
 class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetectionComponent> {
 
@@ -32,7 +33,9 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        bundle.putInt(FAILED_TYPE, intent.getIntExtra(FAILED_TYPE, DEFAULT_FAILED))
+        bundle.putInt(LivenessConstants.ARG_FAILED_TYPE, intent.getIntExtra(LivenessConstants.ARG_FAILED_TYPE, DEFAULT_FAILED_TYPE))
+        val errorCode = intent.getIntExtra(LivenessConstants.ARG_ERROR_CODE, DEFAULT_ERROR_CODE)
+        bundle.putInt(LivenessConstants.ARG_ERROR_CODE, errorCode)
         val fragment = LivenessErrorFragment.newInstance()
         fragment.arguments = bundle
 
@@ -40,7 +43,7 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
     }
 
     companion object {
-        const val FAILED_TYPE = "failed_type"
-        const val DEFAULT_FAILED = -1
+        const val DEFAULT_FAILED_TYPE = -1
+        const val DEFAULT_ERROR_CODE = 99
     }
 }

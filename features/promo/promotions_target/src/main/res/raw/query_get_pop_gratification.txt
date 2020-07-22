@@ -6,6 +6,7 @@ query GetPopGratification($campaignSlug:String!, $page:String!){
       reason
     }
     isShow
+    isAutoClaim
     popGratificationBenefits {
       benefitType
       referenceID

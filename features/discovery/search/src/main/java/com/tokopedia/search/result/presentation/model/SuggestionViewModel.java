@@ -8,9 +8,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 
 public class SuggestionViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
     private String suggestionText = "";
-    private String suggestionCurrentKeyword = "";
     private String suggestedQuery = "";
-    private String formattedResultCount = "";
     private String suggestion = "";
 
     public String getSuggestionText() {
@@ -21,28 +19,12 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
         this.suggestionText = suggestionText;
     }
 
-    public String getSuggestionCurrentKeyword() {
-        return suggestionCurrentKeyword;
-    }
-
-    public void setSuggestionCurrentKeyword(String suggestionCurrentKeyword) {
-        this.suggestionCurrentKeyword = suggestionCurrentKeyword;
-    }
-
     public String getSuggestedQuery() {
         return suggestedQuery;
     }
 
     public void setSuggestedQuery(String suggestedQuery) {
         this.suggestedQuery = suggestedQuery;
-    }
-
-    public String getFormattedResultCount() {
-        return formattedResultCount;
-    }
-
-    public void setFormattedResultCount(String formattedResultCount) {
-        this.formattedResultCount = formattedResultCount;
     }
 
     public void setSuggestion(String suggestion) {
@@ -69,17 +51,13 @@ public class SuggestionViewModel implements Parcelable, Visitable<ProductListTyp
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.suggestionText);
-        dest.writeString(this.suggestionCurrentKeyword);
         dest.writeString(this.suggestedQuery);
-        dest.writeString(this.formattedResultCount);
         dest.writeString(this.suggestion);
     }
 
     protected SuggestionViewModel(Parcel in) {
         this.suggestionText = in.readString();
-        this.suggestionCurrentKeyword = in.readString();
         this.suggestedQuery = in.readString();
-        this.formattedResultCount = in.readString();
         this.suggestion = in.readString();
     }
 

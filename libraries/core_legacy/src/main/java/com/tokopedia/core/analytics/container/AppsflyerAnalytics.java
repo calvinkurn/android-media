@@ -46,7 +46,6 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
     private static boolean isAppsflyerCallbackHandled = false;
     private static final String KEY_INSTALL_SOURCE = "install_source";
-    public static final String GCM_PROJECT_NUMBER = "692092518182";
 
     private static String deferredDeeplinkPath = "";
 
@@ -76,14 +75,14 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    String isFirstLaunch = null;
+                    boolean isFirstLaunch = false;
                     String deeplink = null;
                     if (conversionData.containsKey("is_first_launch"))
-                        isFirstLaunch = (String) conversionData.get("is_first_launch");
+                        isFirstLaunch = (boolean) conversionData.get("is_first_launch");
                     if (conversionData.containsKey("af_dp"))
                         deeplink = (String) conversionData.get("af_dp");
 
-                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
+                    if (isFirstLaunch && !TextUtils.isEmpty(deeplink)) {
                         setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {

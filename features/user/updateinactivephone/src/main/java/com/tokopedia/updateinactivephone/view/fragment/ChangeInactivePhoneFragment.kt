@@ -14,18 +14,21 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity
@@ -49,8 +52,8 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     private var buttonContinue: Button? = null
     private var errorText: TextView? = null
     private var phoneHintTextView: TextView? = null
-
-    private var tkpdProgressDialog: TkpdProgressDialog? = null
+    private var loader: LoaderUnify? = null
+    private var mainLayout: LinearLayout? = null
 
     @Inject
     lateinit var analytics: UpdateInactivePhoneAnalytics
@@ -79,11 +82,12 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_change_inactive_phone, parent, false)
-
         inputMobileNumber = view.findViewById(R.id.phone_number)
         buttonContinue = view.findViewById(R.id.button_continue)
         phoneHintTextView = view.findViewById(R.id.phone_hint_text_view)
         errorText = view.findViewById(R.id.error)
+        loader = view.findViewById(R.id.progress_bar)
+        mainLayout = view.findViewById(R.id.main_layout)
         prepareView()
         return view
     }
@@ -91,6 +95,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.changeInactiveFormRequestResponse.observe(viewLifecycleOwner, Observer {
+            dismissLoading()
             when(it){
                 is Success -> {
                     when(it.data.isSuccess) {
@@ -101,7 +106,6 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
                     }
                 }
                 is Fail -> {
-                    dismissLoading()
                     showErrorPhoneNumber(getString(R.string.error_general))
                 }
             }
@@ -138,6 +142,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
             setErrorText("")
             hideKeyboard(v)
             analytics.eventInactivePhoneClick()
+            analytics.eventClickButtonSubmission()
             val status = viewModel.isValidPhoneNumber(inputMobileNumber?.text.toString())
             if(status == 0) {
                 showLoading()
@@ -165,7 +170,9 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun showErrorPhoneNumber(resId: Int) {
-        setErrorText(getString(resId))
+        val message = getString(resId)
+        analytics.eventFailedClickButtonSubmission(message)
+        setErrorText(message)
     }
 
     override fun showErrorPhoneNumber(errorMessage: String) {
@@ -173,19 +180,19 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun dismissLoading() {
-        tkpdProgressDialog?.dismiss()
+        loader?.hide()
+        mainLayout?.show()
     }
 
     override fun showLoading() {
-        if (tkpdProgressDialog == null){
-            tkpdProgressDialog = TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS)
-        }
-        tkpdProgressDialog?.showDialog()
+        loader?.show()
+        mainLayout?.hide()
     }
 
     override fun onForbidden() {}
 
     override fun onPhoneStatusSuccess(userid: String) {
+        analytics.eventSuccessClickButtonSubmission()
         setErrorText("")
         val bundle = Bundle()
         bundle.putString(USER_ID, userid)
@@ -244,6 +251,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     private fun resolveError(error: String) {
+        analytics.eventFailedClickButtonSubmission(error)
         when {
             UpdateInactivePhoneConstants.ResponseConstants.INVALID_PHONE.equals(error, ignoreCase = true) -> onPhoneInvalid()
             UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_SHORT.equals(error, ignoreCase = true) -> onPhoneTooShort()

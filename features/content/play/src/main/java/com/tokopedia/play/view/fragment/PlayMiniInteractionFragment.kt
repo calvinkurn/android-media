@@ -50,6 +50,7 @@ import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
@@ -119,6 +120,9 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
 
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
+
+    private val playNavigation: PlayNavigation
+        get() = requireActivity() as PlayNavigation
 
     private var channelId: String = ""
 
@@ -647,7 +651,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     private fun doLeaveRoom() {
-        activity?.onBackPressed()
+        playNavigation.onBackPressed(isSystemBack = false)
     }
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {

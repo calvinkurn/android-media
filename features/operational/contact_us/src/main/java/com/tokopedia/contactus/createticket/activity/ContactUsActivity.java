@@ -4,8 +4,12 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
@@ -15,16 +19,14 @@ import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.ContactUsFaqListener;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by nisie on 8/12/16.
  */
-public class ContactUsActivity extends BasePresenterActivity implements
+public class ContactUsActivity extends BaseSimpleActivity implements
         ContactUsFaqListener,
         CreateTicketFormFragment.FinishContactUsListener,
         ContactUsConstant {
@@ -36,18 +38,15 @@ public class ContactUsActivity extends BasePresenterActivity implements
     public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
     private static final String CURRENT_FRAGMENT_BACKSTACK = "CURRENT_FRAGMENT_BACKSTACK";
     private static final String PARAM_BUNDLE = "PARAM_BUNDLE";
+    public static final String PARAM_URL = "PARAM_URL";
     String url;
     Bundle bundleCreateTicket;
     private BackButtonListener listener;
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initView();
     }
 
     @Override
@@ -77,8 +76,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
     }
 
     @Override
-    protected void initialPresenter() {
-
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override
@@ -87,12 +86,11 @@ public class ContactUsActivity extends BasePresenterActivity implements
     }
 
     @Override
-    protected int getLayoutId() {
+    protected int getLayoutRes() {
         return R.layout.activity_contact_us;
     }
 
-    @Override
-    protected void initView() {
+    private void initView() {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null)
             bundle = new Bundle();
@@ -120,26 +118,11 @@ public class ContactUsActivity extends BasePresenterActivity implements
         } else if (getIntent().getExtras() == null || (
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
-                        .getString(InboxRouter.PARAM_URL, "").equals(""))) {
-            toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
+                        .getString(PARAM_URL, "").equals(""))) {
+            toolbar.setTitle(R.string.title_help);
         } else {
             toolbar.setTitle(R.string.title_activity_contact_us);
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -170,7 +153,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
 
     @Override
     public void onFinishCreateTicket() {
-        CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
+        Toast.makeText(this, getString(R.string.title_contact_finish), Toast.LENGTH_LONG).show();
         UserSessionInterface userSession = new UserSession(this);
         if (GlobalConfig.isSellerApp() && userSession.isLoggedIn()) {
             Intent intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
@@ -193,9 +176,10 @@ public class ContactUsActivity extends BasePresenterActivity implements
         super.onSaveInstanceState(outState);
     }
 
+    @Nullable
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        return null;
     }
 
     public interface BackButtonListener {

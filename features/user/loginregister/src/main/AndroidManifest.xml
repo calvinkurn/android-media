@@ -20,6 +20,7 @@
         <activity
             android:name=".registerinitial.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"
+            android:configChanges="orientation|keyboard|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
@@ -149,6 +150,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
+
+        <service android:name=".seamlesslogin.RemoteService">
+            <intent-filter>
+                <action android:name="com.tokopedia.loginregister.seamlesslogin.RemoteService" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

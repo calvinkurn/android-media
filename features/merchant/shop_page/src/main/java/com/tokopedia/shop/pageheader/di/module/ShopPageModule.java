@@ -54,12 +54,6 @@ public class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    public DeleteShopNoteUseCase provideDeleteShopNoteUseCase(@ApplicationContext Context context) {
-        return new DeleteShopNoteUseCase(context);
-    }
-
-    @ShopPageScope
-    @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }

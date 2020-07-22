@@ -7,7 +7,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 
 class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
-    private var searchParameterHashMap = URLParser(deepLinkUri).paramKeyValueMap
+    private var searchParameterHashMap = URLParser(deepLinkUri).paramKeyValueMapDecoded
 
     constructor(parcel: Parcel) : this(parcel.readString() ?: "") {
         parcel.readMap(searchParameterHashMap, String::class.java.classLoader)

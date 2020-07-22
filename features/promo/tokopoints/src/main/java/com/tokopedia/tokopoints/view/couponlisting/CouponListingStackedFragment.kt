@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +20,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
@@ -33,6 +33,8 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
 import javax.inject.Inject
@@ -177,10 +179,6 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         if (view == null || errors == null) {
             return
         }
-
-        (view!!.findViewById<View>(R.id.img_error2) as ImageView).setImageResource(R.drawable.ic_tp_empty_pages)
-        (view!!.findViewById<View>(R.id.text_title_error2) as TextView).text = errors[CommonConstant.CouponMapKeys.TITLE]
-        (view!!.findViewById<View>(R.id.text_label_error2) as TextView).text = errors[CommonConstant.CouponMapKeys.SUB_TITLE]
         view!!.findViewById<View>(R.id.button_continue).visibility = View.VISIBLE
 
         container.displayedChild = CONTAINER_EMPTY
@@ -215,10 +213,16 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
-        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
+        val closeableBottomSheetDialog = BottomSheetUnify()
+
+        closeableBottomSheetDialog.setShowListener {
+            val sideMargin = 8.toPx()
+            closeableBottomSheetDialog.bottomSheetWrapper.setPadding(sideMargin, sideMargin, sideMargin, 0)
+            (closeableBottomSheetDialog.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, 0)
+        }
+
         val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
-
         if (mItemDecoration != null) {
             recyclerView.addItemDecoration(mItemDecoration!!)
         }
@@ -229,7 +233,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             }
 
             override fun onEmptyList(rawObject: Any) {
-
+                closeableBottomSheetDialog.dismiss()
             }
 
             override fun onStartFirstPageLoad() {
@@ -237,7 +241,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             }
 
             override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-                closeableBottomSheetDialog.show()
+                closeableBottomSheetDialog.show(childFragmentManager, "")
             }
 
             override fun onStartPageLoad(pageNumber: Int) {
@@ -249,12 +253,24 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             }
 
             override fun onError(pageNumber: Int) {
-
+                closeableBottomSheetDialog.dismiss()
             }
         }, data)
 
         recyclerView.adapter = mStackedInadapter
-        closeableBottomSheetDialog.setContentView(view)
+        closeableBottomSheetDialog.apply {
+            setChild(view)
+            isDragable = true
+            isHideable = true
+            showCloseIcon = false
+            showHeader = false
+            isFullpage = false
+            showKnob = true
+            this@CouponListingStackedFragment.view?.height?.div(2)?.let { height ->
+                customPeekHeight = height
+            }
+        }
+        closeableBottomSheetDialog.show(childFragmentManager, "")
         mStackedInadapter.startDataLoading()
 
     }
@@ -329,15 +345,15 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        recycler_view_coupons.viewTreeObserver
-                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        recycler_view_coupons?.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (pageLoadTimePerformanceMonitoring != null) {
                             stopRenderPerformanceMonitoring()
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        recycler_view_coupons.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        recycler_view_coupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }

@@ -1,22 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
-
-android {
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-    }
-}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -29,7 +13,12 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled true
     }
 }
 
@@ -41,7 +30,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
@@ -56,6 +44,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePreview)
+    implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.websocket)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.analytics)
@@ -96,8 +85,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.parcelerApi
     kapt rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -106,13 +94,11 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
 
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+
     // spek
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
@@ -124,3 +110,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

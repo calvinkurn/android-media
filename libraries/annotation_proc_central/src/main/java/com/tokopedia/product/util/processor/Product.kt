@@ -30,6 +30,7 @@ object ProductTrackingConstant {
                 const val KEY_DIMENSION_54 = "dimension54"
                 const val KEY_DIMENSION_55 = "dimension55"
                 const val KEY_DIMENSION_38 = "dimension38"
+            const val KEY_DIMENSION_98 = "dimension98"
         }
 
 
@@ -76,6 +77,8 @@ data class Product(
         val dimension83: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_81)
         val dimension81: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
+        val dimension98: String,
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long

@@ -54,6 +54,7 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
@@ -555,14 +556,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         onErrorRegister(errorMessage)
     }
 
-    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
-        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-
-        if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-            onGoToChangeName()
+    private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
+        if(profileInfoData.isCreatePin) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+            startActivityForResult(intent, REQUEST_ADD_PIN)
         } else {
-            onSuccessRegister()
+            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+            if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+                onGoToChangeName()
+            } else {
+                onSuccessRegister()
+            }
         }
+
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
@@ -798,8 +805,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                registerInitialViewModel.getUserInfo(isCreatePin = true)
+            } else if (requestCode == REQUEST_ADD_PIN && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
+            }
+            else if (requestCode == REQUEST_ADD_PIN && resultCode == Activity.RESULT_CANCELED) {
+                dismissProgressBar()
+                it.setResult(Activity.RESULT_CANCELED)
+            }
+            else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
@@ -887,12 +901,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
             startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
-        }
-    }
-
-    private fun goToProfileCompletionPage() {
-        activity?.let {
-            (it.applicationContext as ApplinkRouter).goToApplinkActivity(activity, ApplinkConst.PROFILE_COMPLETION)
         }
     }
 
@@ -1117,19 +1125,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         ForbiddenActivity.startActivity(activity)
     }
 
-    fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
-        return { fullName: String, userId: String ->
-
-            activity?.let {
-                val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                intent.putExtra("name", fullName)
-                intent.putExtra("user_id", userId)
-                startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
-            }
-
-        }
-    }
-
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
             "#cde4c3" -> {
@@ -1193,12 +1188,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     partialRegisterInputView.setAdapterInputEmailPhone(
                             ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
                     ) { v, hasFocus ->
-                        activity?.isFinishing?.let { isFinishing ->
-                            if(!isFinishing) {
-                                if (hasFocus && this::emailPhoneEditText.isInitialized) {
-                                    emailPhoneEditText.showDropDown()
-                                } else {
-                                    emailPhoneEditText.dismissDropDown()
+                        if(v.windowVisibility == View.VISIBLE) {
+                            activity?.isFinishing?.let { isFinishing ->
+                                if (!isFinishing) {
+                                    if (hasFocus && this::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
+                                        emailPhoneEditText.showDropDown()
+                                    } else {
+                                        emailPhoneEditText.dismissDropDown()
+                                    }
                                 }
                             }
                         }
@@ -1332,6 +1329,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private val REQUEST_LOGIN_GOOGLE = 112
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
+        private val REQUEST_ADD_PIN = 115
 
         private const val OTP_TYPE_ACTIVATE = 143
         private const val OTP_TYPE_REGISTER = 126

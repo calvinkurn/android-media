@@ -7,9 +7,10 @@ object MultipleProductCardMapper {
 
     fun map(notification: NotificationItemViewBean): List<MultipleProductCardViewBean> {
         val multiProductCards = arrayListOf<MultipleProductCardViewBean>()
-        notification.products.forEach {
+        notification.products.forEachIndexed { index, product ->
             val multiProductCardItem = MultipleProductCardViewBean()
-            multiProductCardItem.product = it
+            multiProductCardItem.indexId = index
+            multiProductCardItem.product = product
             multiProductCardItem.userInfo = notification.userInfo
             multiProductCardItem.templateKey = notification.templateKey
             multiProductCardItem.notificationId = notification.notificationId
@@ -20,6 +21,7 @@ object MultipleProductCardMapper {
 
     fun map(notification: MultipleProductCardViewBean): NotificationItemViewBean {
         return NotificationItemViewBean().apply {
+            indexId = notification.indexId
             notificationId = notification.notificationId
             products = listOf(notification.product)
             templateKey = notification.templateKey

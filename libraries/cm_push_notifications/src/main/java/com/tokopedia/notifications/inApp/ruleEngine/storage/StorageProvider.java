@@ -16,7 +16,7 @@ public class StorageProvider implements InterfaceDataStore {
     private InAppDataDao inAppDataDao;
     private ElapsedTimeDao elapsedTimeDao;
 
-    public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao){
+    public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao) {
         this.inAppDataDao = inAppDataDao;
         this.elapsedTimeDao = elapsedTimeDao;
     }
@@ -26,7 +26,9 @@ public class StorageProvider implements InterfaceDataStore {
         Completable.fromAction(new Action0() {
             @Override
             public void call() {
-                inAppDataDao.insert(value);
+                List<CMInApp> dataFromParentID = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
+                if (dataFromParentID == null || dataFromParentID.isEmpty())
+                    inAppDataDao.insert(value);
             }
         }).subscribeOn(Schedulers.io())
                 .subscribe();
@@ -61,7 +63,7 @@ public class StorageProvider implements InterfaceDataStore {
 
     @Override
     public ElapsedTime getElapsedTimeFromStore() {
-        return  elapsedTimeDao.getLastElapsedTime();
+        return elapsedTimeDao.getLastElapsedTime();
     }
 
     @Override
@@ -103,11 +105,22 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public void viewDismissed(final long id){
+    public void viewDismissed(final long id) {
         Completable.fromAction(new Action0() {
             @Override
             public void call() {
                 inAppDataDao.updateVisibleState(id);
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    @Override
+    public void interactedWithView(final long id) {
+        Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                inAppDataDao.updateFreqWithPerst(id);
             }
         }).subscribeOn(Schedulers.io())
                 .subscribe();

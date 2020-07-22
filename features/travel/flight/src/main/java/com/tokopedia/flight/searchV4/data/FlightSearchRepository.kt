@@ -1,16 +1,12 @@
 package com.tokopedia.flight.searchV4.data
 
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
-import com.tokopedia.flight.search.data.db.FlightComboTable
-import com.tokopedia.flight.search.data.db.FlightJourneyTable
-import com.tokopedia.flight.search.data.db.JourneyAndRoutes
-import com.tokopedia.flight.search.data.repository.JourneyAndRoutesModel
-import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.search.presentation.model.FlightAirportModel
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.data.cache.FlightSearchCombineDataDbSource
+import com.tokopedia.flight.searchV4.data.cache.FlightSearchDataCacheSource
 import com.tokopedia.flight.searchV4.data.cache.FlightSearchSingleDataDbSource
+import com.tokopedia.flight.searchV4.data.cache.db.FlightComboTable
+import com.tokopedia.flight.searchV4.data.cache.db.FlightJourneyTable
+import com.tokopedia.flight.searchV4.data.cache.db.JourneyAndRoutes
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.single.*
@@ -19,6 +15,9 @@ import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.createJ
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.getAirlineById
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.getAirlines
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.getAirports
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirportModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import javax.inject.Inject
 
 /**
@@ -168,6 +167,16 @@ class FlightSearchRepository @Inject constructor(
         flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, TravelSortOption.CHEAPEST).let {
             flightSearchSingleDataDbSource.deleteSearchReturnData(it)
         }
+    }
+
+    suspend fun getSearchCount(filterModel: FlightFilterModel): Int {
+        return flightSearchSingleDataDbSource.getSearchCount(filterModel)
+    }
+
+    suspend fun getSearchFilterStatistic(@TravelSortOption sortOption: Int, filterModel: FlightFilterModel):
+            JourneyAndRoutesModel {
+        return JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneysStatistic(filterModel, sortOption),
+                flightSearchDataCacheSource.cacheCoroutine)
     }
 
     private fun generateJourneyAndRoutes(journeyResponse: FlightSearchData,

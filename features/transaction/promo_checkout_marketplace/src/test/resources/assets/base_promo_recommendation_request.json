@@ -1,0 +1,57 @@
+{
+  "attempted_codes": [],
+  "cart_type": "default",
+  "codes": [],
+  "is_suggested": 0,
+  "is_trade_in": 0,
+  "is_trade_in_drop_off": 0,
+  "orders": [
+    {
+      "codes": [],
+      "is_checked": true,
+      "is_insurance_price": 0,
+      "product_details": [
+        {
+          "product_id": 77443260,
+          "quantity": 1
+        }
+      ],
+      "shipping_id": 0,
+      "shop_id": 1290473,
+      "sp_id": 0,
+      "unique_id": "1290473-0-3989716"
+    },
+    {
+      "codes": [],
+      "is_checked": true,
+      "is_insurance_price": 0,
+      "product_details": [
+        {
+          "product_id": 35261833,
+          "quantity": 1
+        }
+      ],
+      "shipping_id": 0,
+      "shop_id": 915523,
+      "sp_id": 0,
+      "unique_id": "915523-0-1132285"
+    },
+    {
+      "codes": [],
+      "is_checked": true,
+      "is_insurance_price": 0,
+      "product_details": [
+        {
+          "product_id": 23152195,
+          "quantity": 21
+        }
+      ],
+      "shipping_id": 0,
+      "shop_id": 239594,
+      "sp_id": 0,
+      "unique_id": "239594-0-301643"
+    }
+  ],
+  "skip_apply": 1,
+  "state": "cart"
+}

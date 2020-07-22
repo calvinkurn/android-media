@@ -2,9 +2,8 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.SELLER_HISTORY
-import com.tokopedia.notifcenter.GlobalNavConstant.PENJUALAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PENJUALAN
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.viewbean.SellerNotificationViewBean
 import com.tokopedia.notifcenter.listener.TransactionMenuListener

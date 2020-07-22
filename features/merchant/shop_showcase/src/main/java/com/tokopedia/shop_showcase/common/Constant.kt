@@ -26,6 +26,8 @@ object PageNameConstant {
 object ShopShowcaseListParam {
     const val EXTRA_SHOP_ID = "SHOP_ID"
     const val EXTRA_ETALASE_ID = "ETALASE_ID"
+    const val EXTRA_ETALASE_NAME = "ETALASE_NAME"
+    const val EXTRA_ETALASE_BADGE = "ETALASE_BADGE"
     const val EXTRA_SELECTED_ETALASE_ID = "EXTRA_SELECTED_ETALASE_ID"
     const val EXTRA_EDIT_SHOWCASE_RESULT = "IS_EDIT_SHOWCASE_SUCCESS"
     const val EXTRA_IS_SHOW_DEFAULT = "IS_SHOW_DEFAULT"
@@ -33,7 +35,7 @@ object ShopShowcaseListParam {
     const val EXTRA_IS_MY_SHOP = "IS_MY_SHOP"
     const val EXTRA_SHOP_TYPE = "EXTRA_SHOP_TYPE"
     const val EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE = "EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE"
-//    const val EXTRA_TOTAL_PRODUCT = "EXTRA_TOTAL_PRODUCT"
+    const val EXTRA_IS_NEED_TO_RELOAD_DATA = "EXTRA_IS_NEED_TO_RELOAD_DATA"
 }
 
 object ShopShowcaseEditParam {
