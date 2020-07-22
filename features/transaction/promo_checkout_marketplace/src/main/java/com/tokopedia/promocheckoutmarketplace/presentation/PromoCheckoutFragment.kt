@@ -530,8 +530,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeGetPromoLastSeenResult() {
         viewModel.getPromoLastSeenResponse.observe(this, Observer {
-            when {
-                it.state == GetPromoLastSeenAction.ACTION_SHOW -> {
+            when (it.state) {
+                GetPromoLastSeenAction.ACTION_SHOW -> {
                     it.data?.let {
                         showPromoCheckoutLastSeenBottomsheet(it)
                     }
