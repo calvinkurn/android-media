@@ -1,6 +1,13 @@
 {
   "readme": "Telco revamp product with filter and cluster",
+  "mode": "exact",
   "query": [
+    {
+      "screenName": "/digital/pasca bayar"
+    },
+    {
+      "screenName": "/digital/pra bayar"
+    },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
