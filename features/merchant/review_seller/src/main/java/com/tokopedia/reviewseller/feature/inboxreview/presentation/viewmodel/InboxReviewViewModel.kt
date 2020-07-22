@@ -124,7 +124,7 @@ class InboxReviewViewModel @Inject constructor(
         })
     }
 
-    fun getInitFeedbackInboxReviewListNext(page: Int, statusFilter: String = UNANSWERED_VALUE) {
+    fun getInitFeedbackInboxReviewListNext(page: Int, statusFilter: String) {
         launchCatchError(block = {
             val statusFilterTextGenerated = "$prefixStatus$statusFilter"
             filterByList.removeFilterElement(prefixStatus)

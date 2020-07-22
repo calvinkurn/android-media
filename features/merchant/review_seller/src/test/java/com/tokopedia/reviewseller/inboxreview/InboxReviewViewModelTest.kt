@@ -294,7 +294,7 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
             Assert.assertNotNull(viewModel.inboxReview.value)
 
 
-            viewModel.getInitFeedbackInboxReviewListNext(2, statusFilter = ANSWERED_VALUE)
+            viewModel.getInitFeedbackInboxReviewListNext(2, ANSWERED_VALUE)
             verifySuccessGetInboxReviewUseCaseCalled()
             Assert.assertTrue(viewModel.feedbackInboxReview.value is Success)
             Assert.assertNotNull(viewModel.feedbackInboxReview.value)
@@ -310,16 +310,12 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
             add(ListItemRatingWrapper(isSelected = true, sortValue = "4"))
         }
 
-        viewModel.apply {
-            feedbackInboxReviewMediator.observe( {lifecycle}) {}
-            updateRatingFilterData(ratingFilter)
-            setFilterRatingDataText(ratingFilter)
-            getInitFeedbackInboxReviewListNext(3, ANSWERED_VALUE)
-        }
+        viewModel.updateRatingFilterData(ratingFilter)
+        viewModel.getInitFeedbackInboxReviewListNext(2, ANSWERED_VALUE)
 
         verifySuccessGetInboxReviewUseCaseCalled()
-        Assert.assertTrue(viewModel.feedbackInboxReview.value is Success)
-        Assert.assertNotNull(viewModel.feedbackInboxReview.value)
+        Assert.assertTrue(viewModel.feedbackInboxReviewMediator.value is Success)
+        Assert.assertNotNull(viewModel.feedbackInboxReviewMediator.value)
     }
 
     private fun onGetInboxReview_thenReturn() {
