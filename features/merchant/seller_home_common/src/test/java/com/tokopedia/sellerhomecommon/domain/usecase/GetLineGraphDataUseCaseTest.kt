@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -42,8 +43,7 @@ class GetLineGraphDataUseCaseTest {
 
     private val params = GetLineGraphDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
-            startDate = ArgumentMatchers.anyString(),
-            endDate = ArgumentMatchers.anyString()
+            dynamicParameter = WidgetDataParameterModel()
     )
 
     @Before
