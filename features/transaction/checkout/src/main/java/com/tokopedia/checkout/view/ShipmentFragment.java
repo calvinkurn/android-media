@@ -1226,6 +1226,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private void clearPromoTrackingData() {
+        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
+        if (dataList == null) return;
+        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                if (cartItemModel.getAnalyticsProductCheckoutData() != null) {
+                    cartItemModel.getAnalyticsProductCheckoutData().setPromoCode("");
+                    cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails("");
+                }
+            }
+        }
+    }
+
     private void onResultFromRequestCodeCourierOptions(int requestCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CHOOSE_PICKUP_POINT:
@@ -1488,6 +1501,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (stillHasPromo) {
             shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest());
         } else {
+            clearPromoTrackingData();
             sendEEStep3();
         }
     }
@@ -2776,6 +2790,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.resetPromoCheckoutData();
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
         resetPromoBenefit();
+        clearPromoTrackingData();
     }
 
     @Override
