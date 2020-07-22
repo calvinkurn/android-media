@@ -3,10 +3,44 @@
   "mode": "exact",
   "query": [
     {
-      "screenName": "/digital/pasca bayar"
+      "event": "openScreen",
+      "screenName": "/digital/pulsa",
+      "isLoggedInStatus": "{{.* - .* - true|false}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": "{{.*}}",
+      "businessUnit": "top up and tagihan",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}"
     },
     {
-      "screenName": "/digital/pra bayar"
+      "event": "openScreen",
+      "screenName": "/digital/paket data",
+      "isLoggedInStatus": "{{.* - .* - true|false}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": "{{.*}}",
+      "businessUnit": "top up and tagihan",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}"
+    },
+    {
+      "event": "openScreen",
+      "screenName": "/digital/roaming",
+      "isLoggedInStatus": "{{.* - .* - true|false}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": "{{.*}}",
+      "businessUnit": "top up and tagihan",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}"
+    },
+    {
+      "event": "openScreen",
+      "screenName": "/digital/pascabayar",
+      "isLoggedInStatus": "{{.* - .* - true|false}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": "{{.*}}",
+      "businessUnit": "top up and tagihan",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}"
     },
     {
       "event": "clickHomepage",
@@ -47,12 +81,6 @@
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
-      "eventAction": "click on telco tab",
-      "eventLabel": "{{.*}}"
-    },
-    {
-      "event": "clickHomepage",
-      "eventCategory": "digital - homepage",
       "eventAction": "user click back button",
       "eventLabel": "{{.*}}"
     },
@@ -65,7 +93,7 @@
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
-      "eventAction": "user x on detail product",
+      "eventAction": "click x on detail product",
       "eventLabel": "{{.*}}"
     },
     {
@@ -87,7 +115,7 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab promo",
-      "eventLabel": "{{.* - .* - .*}}",
+      "eventLabel": "{{.*}}",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
       "businessUnit": "top up and tagihan"
@@ -96,7 +124,7 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab recent",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": "{{.*}}",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",
       "businessUnit": "top up and tagihan"

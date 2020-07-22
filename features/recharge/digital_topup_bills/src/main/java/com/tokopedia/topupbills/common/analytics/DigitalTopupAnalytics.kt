@@ -119,7 +119,7 @@ class DigitalTopupAnalytics {
 
     fun eventClickCopyPromoCode(promoName: String, position: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                DigitalTopupEventTracking.Event.PROMO_CLICK,
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.COPY_PROMO_DIGITAL,
                 "$promoName - $position"
@@ -292,6 +292,7 @@ class DigitalTopupAnalytics {
                         "event", DigitalTopupEventTracking.Event.ADD_TO_CART,
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_DETAIL_CLUSTER,
+                        "screenName", getCategoryName(itemProduct.attributes.categoryId),
                         "eventLabel", "${getCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}",
                         DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE,
                         DigitalTopupEventTracking.Additional.USER_ID, userId,
