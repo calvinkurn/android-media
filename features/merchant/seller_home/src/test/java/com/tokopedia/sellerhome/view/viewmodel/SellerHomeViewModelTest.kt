@@ -21,12 +21,11 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.mockito.Matchers.anyString
@@ -116,6 +115,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getTicker()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getTickerUseCase.executeOnBackground()
         }
@@ -139,6 +140,8 @@ class SellerHomeViewModelTest {
         } returns shopStatus
 
         viewModel.getShopStatus()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             userSession.shopId
@@ -166,6 +169,8 @@ class SellerHomeViewModelTest {
         } throws throwable
 
         viewModel.getShopStatus()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             userSession.shopId
@@ -196,6 +201,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             userSession.shopId
         }
@@ -223,6 +230,8 @@ class SellerHomeViewModelTest {
         } throws throwable
 
         viewModel.getWidgetLayout()
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             userSession.shopId
@@ -252,6 +261,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getShopLocation()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             userSession.shopId
         }
@@ -279,6 +290,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getShopLocation()
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             userSession.shopId
         }
@@ -302,6 +315,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getCardWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getCardDataUseCase.executeOnBackground()
         }
@@ -323,7 +338,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getCardWidgetData(dataKeys)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         val result = viewModel.cardWidgetData.value
         assert(result is Fail)
     }
@@ -340,6 +356,8 @@ class SellerHomeViewModelTest {
         } returns lineGraphDataResult
 
         viewModel.getLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
@@ -363,6 +381,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getLineGraphWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -384,6 +404,8 @@ class SellerHomeViewModelTest {
         } returns progressDataList
 
         viewModel.getProgressWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getProgressDataUseCase.executeOnBackground()
@@ -408,6 +430,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getProgressWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -427,6 +451,8 @@ class SellerHomeViewModelTest {
         } returns postList
 
         viewModel.getPostWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getPostDataUseCase.executeOnBackground()
@@ -450,6 +476,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getPostWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostDataUseCase.executeOnBackground()
         }
@@ -468,8 +496,9 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         } returns carouselList
 
-
         viewModel.getCarouselWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
@@ -493,6 +522,8 @@ class SellerHomeViewModelTest {
 
         viewModel.getCarouselWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }
@@ -513,13 +544,15 @@ class SellerHomeViewModelTest {
 
         viewModel.getTableWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getTableDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.tableWidgetData.value)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.tableWidgetData.value)
     }
 
     @Test
@@ -533,6 +566,8 @@ class SellerHomeViewModelTest {
         } throws MessageErrorException("error")
 
         viewModel.getTableWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getTableDataUseCase.executeOnBackground()
@@ -554,13 +589,15 @@ class SellerHomeViewModelTest {
 
         viewModel.getPieChartWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPieChartDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
     }
 
     @Test
@@ -574,6 +611,8 @@ class SellerHomeViewModelTest {
         } throws MessageErrorException("error")
 
         viewModel.getPieChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getPieChartDataUseCase.executeOnBackground()
@@ -595,13 +634,15 @@ class SellerHomeViewModelTest {
 
         viewModel.getBarChartWidgetData(dataKeys)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getBarChartDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.barChartWidgetData.value)
     }
 
     @Test
@@ -615,6 +656,8 @@ class SellerHomeViewModelTest {
         } throws MessageErrorException("error")
 
         viewModel.getBarChartWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getBarChartDataUseCase.executeOnBackground()
