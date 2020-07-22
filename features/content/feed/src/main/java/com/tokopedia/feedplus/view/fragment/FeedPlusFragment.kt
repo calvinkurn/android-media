@@ -1047,6 +1047,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if(data.isFavorit) {
                         trackRecommendationFollowClick(tracking, FeedAnalytics.Element.UNFOLLOW)
                     } else {
+                        trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
                         trackRecommendationFollowClick(tracking, FeedAnalytics.Element.FOLLOW)
                     }
 
