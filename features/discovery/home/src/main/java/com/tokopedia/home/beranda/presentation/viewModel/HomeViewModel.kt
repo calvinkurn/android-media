@@ -186,6 +186,9 @@ open class HomeViewModel @Inject constructor(
     private val _rechargeRecommendationLiveData = MutableLiveData<Event<RechargeRecommendation>>()
     val rechargeRecommendationLiveData: LiveData<Event<RechargeRecommendation>> get() = _rechargeRecommendationLiveData
 
+    private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
+    val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
+
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -234,6 +237,7 @@ open class HomeViewModel @Inject constructor(
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
+            _isNeedRefresh.value = Event(true)
         }
         if (needSendGeolocationRequest && hasGeoLocationPermission) {
             _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))

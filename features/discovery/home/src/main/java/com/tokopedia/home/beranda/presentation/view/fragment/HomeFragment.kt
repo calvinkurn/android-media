@@ -666,6 +666,16 @@ open class HomeFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observeViewModelInitialized();
         observeHomeRequestNetwork();
+        observeIsNeedRefresh()
+    }
+
+    private fun observeIsNeedRefresh() {
+        getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isNeedRefresh = data.peekContent()
+            if (isNeedRefresh) {
+                adapter?.resetImpressionHomeBanner()
+            }
+        })
     }
 
     private fun observeHomeRequestNetwork() {
