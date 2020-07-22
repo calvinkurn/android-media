@@ -7,11 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.EmptyReputationSearchViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.InboxReputationOvoIncentiveViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.InboxReputationViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.LoadingInboxReputationViewholder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.EmptySearchModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationOvoIncentiveViewModel;
 
 /**
  * @author by nisie on 8/19/17.
@@ -39,6 +41,11 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(InboxReputationOvoIncentiveViewModel viewModel) {
+        return InboxReputationOvoIncentiveViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public int type(LoadingModel viewModel) {
         return LoadingInboxReputationViewholder.LAYOUT;
     }
@@ -53,6 +60,8 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyReputationSearchViewHolder(view);
         } else if (type == LoadingInboxReputationViewholder.LAYOUT) {
             viewHolder = new LoadingInboxReputationViewholder(view);
+        } else if (type == InboxReputationOvoIncentiveViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new InboxReputationOvoIncentiveViewHolder(view, viewListener);
         } else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

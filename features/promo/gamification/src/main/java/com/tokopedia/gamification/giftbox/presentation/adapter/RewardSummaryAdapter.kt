@@ -22,7 +22,7 @@ class RewardSummaryAdapter(val dataList: ArrayList<RewardSummaryItem>) : Recycle
 
     override fun getItemViewType(position: Int): Int {
         val item = dataList[position]
-        if (item.benfit.isBigPrize) {
+        if (item.benfit.isBigPrize && item.benfit.benefitType == com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType.COUPON) {
             return TYPE_SPECIAL
         }
         return TYPE_NORMAL
