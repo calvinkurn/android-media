@@ -32,7 +32,6 @@ class EditProductInputMapper @Inject constructor() {
         const val IS_INACTIVE = 0
         const val IS_ACTIVE_STRING = "ACTIVE"
         const val IS_INACTIVE_STRING = "INACTIVE"
-        const val VALUE_TRUE = "true"
 
         fun getActiveStatus(status: Int) =
                 when (status) {
@@ -128,7 +127,7 @@ class EditProductInputMapper @Inject constructor() {
                 it.fileName,
                 it.filePath,
                 it.picID,
-                it.isFromIG == VALUE_TRUE,
+                it.isFromIG == "true",
                 it.width.toInt(),
                 it.height.toInt(),
                 it.uploadId
@@ -144,7 +143,7 @@ class EditProductInputMapper @Inject constructor() {
                     sizecharts.fileName,
                     sizecharts.filePath,
                     sizecharts.picID,
-                    sizecharts.isFromIG == VALUE_TRUE,
+                    sizecharts.isFromIG == "true",
                     sizecharts.width.toInt(),
                     sizecharts.height.toInt(),
                     sizecharts.uploadId
@@ -201,7 +200,7 @@ class EditProductInputMapper @Inject constructor() {
                             fileName,
                             filePath,
                             picID,
-                            isFromIG.contains(VALUE_TRUE)
+                            isFromIG.contains("true")
                     ))
                 }
             } else {
