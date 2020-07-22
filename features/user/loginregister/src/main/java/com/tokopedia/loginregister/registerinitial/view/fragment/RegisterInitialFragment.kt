@@ -115,6 +115,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private var isPending: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
+    private var activityShouldEnd: Boolean = true
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -202,7 +203,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         super.onResume()
 
         activity?.run {
-            if (userSession.isLoggedIn && activity != null) {
+            if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
@@ -558,6 +559,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
         if(profileInfoData.isCreatePin) {
+            activityShouldEnd = false
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
             startActivityForResult(intent, REQUEST_ADD_PIN)
@@ -569,7 +571,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 onSuccessRegister()
             }
         }
-
     }
 
     private fun onFailedGetUserInfo(throwable: Throwable) {
@@ -1086,6 +1087,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onSuccessRegister() {
+        activityShouldEnd = true
         activity?.let {
             registerAnalytics.trackSuccessRegister(
                     userSession.loginMethod,
