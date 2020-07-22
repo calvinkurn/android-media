@@ -12,7 +12,7 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
     fun addUnitValueHeader(unitValueHeader: String, position: Int): Int {
         visitables.add(VariantDetailHeaderViewModel(unitValueHeader, position))
         notifyItemInserted(this.lastIndex)
-        return position
+        return this.lastIndex
     }
 
     fun addVariantDetailField(variantDetailInputLayoutModel: VariantDetailInputLayoutModel): Int {
@@ -22,25 +22,20 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         return position
     }
 
-    fun collapseUnitValueHeader(adapterPosition: Int, fieldSize: Int) {
-        val targetPosition = adapterPosition + 1
+    fun collapseUnitValueHeader(visitablePosition: Int, fieldSize: Int) {
+        val targetPosition = visitablePosition + 1
         for (i in 1..fieldSize) {
             visitables.removeAt(targetPosition)
             notifyItemRemoved(targetPosition)
         }
     }
 
-    fun expandDetailFields(adapterPosition: Int, inputLayoutModels: List<VariantDetailInputLayoutModel>) {
-        val targetPosition = adapterPosition + 1
+    fun expandDetailFields(visitablePosition: Int, inputLayoutModels: List<VariantDetailInputLayoutModel>) {
+        val targetPosition = visitablePosition + 1
         val viewModels = mutableListOf<VariantDetailFieldsViewModel>()
         inputLayoutModels.forEach { viewModels.add(VariantDetailFieldsViewModel(it)) }
         visitables.addAll(targetPosition, viewModels)
         notifyItemRangeInserted(targetPosition, viewModels.size)
-    }
-
-    fun updateDetailInputField(adapterPosition: Int, variantDetailInputModel: VariantDetailInputLayoutModel) {
-        val variantDetailFieldsViewModel = VariantDetailFieldsViewModel(variantDetailInputModel)
-        notifyElement(adapterPosition, variantDetailFieldsViewModel)
     }
 
     fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {
