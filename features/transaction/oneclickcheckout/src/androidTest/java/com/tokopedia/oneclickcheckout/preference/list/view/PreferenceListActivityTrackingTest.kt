@@ -25,7 +25,9 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockIntercept
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Assert.assertThat
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -68,7 +70,8 @@ class PreferenceListActivityTrackingTest {
         }
     }
 
-    private fun setup() {
+    @Before
+    fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
         setupGraphqlMockResponse()
@@ -80,7 +83,8 @@ class PreferenceListActivityTrackingTest {
         InstrumentationRegistry.getInstrumentation().addMonitor(activityMonitor)
     }
 
-    private fun cleanup() {
+    @After
+    fun cleanup() {
         gtmLogDBSource.deleteAll().subscribe()
 
         IdlingRegistry.getInstance().unregister(idlingResource)
@@ -90,8 +94,6 @@ class PreferenceListActivityTrackingTest {
 
     @Test
     fun testTracking() {
-        setup()
-
         // perform click add button
         onView(withId(R.id.btn_preference_list_action)).perform(click())
 
@@ -121,7 +123,5 @@ class PreferenceListActivityTrackingTest {
         }
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
-
-        cleanup()
     }
 }

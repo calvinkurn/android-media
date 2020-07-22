@@ -20,7 +20,9 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
@@ -35,51 +37,45 @@ class PreferenceListActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
-    private val interceptor = PreferenceListActivityTestInterceptor()
+    private val interceptor = PreferenceListInterceptor.interceptor
 
     private fun setupGraphqlMockResponse() {
         val testInterceptors = listOf(interceptor)
         GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
     }
 
-    private fun setupIdlingResource() {
+    @Before
+    fun setupIdlingResource() {
+        setupGraphqlMockResponse()
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
-        activityRule.launchActivity(null)
     }
 
-    private fun cleanup() {
+    @After
+    fun cleanup() {
         IdlingRegistry.getInstance().unregister(idlingResource)
         activityRule.finishActivity()
     }
 
     @Test
-    fun test() {
-        setupGraphqlMockResponse()
-        getPreferenceListFailed()
-        getPreferenceListSuccess()
-        changeDefaultProfileSuccess()
-        changeDefaultProfileFailed()
-    }
-
-    private fun getPreferenceListFailed() {
+    fun getPreferenceListFailed() {
         interceptor.customGetPreferenceListThrowable = IOException()
 
-        setupIdlingResource()
+        activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             assertEquals(View.GONE, view.visibility)
         }
         onView(withId(R.id.global_error)).check(matches(isDisplayed()))
-
-        cleanup()
     }
 
-    private fun getPreferenceListSuccess() {
+    @Test
+    fun getPreferenceListSuccess() {
         interceptor.customGetPreferenceListThrowable = null
+        interceptor.customGetPreferenceListResponseString = null
 
-        setupIdlingResource()
+        activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_preference_list)).check(matches(isDisplayed()))
@@ -130,38 +126,40 @@ class PreferenceListActivityTest {
                 assertEquals(View.VISIBLE, lblMain.visibility)
             }
         }))
-
-        cleanup()
     }
 
-    private fun changeDefaultProfileSuccess() {
-        setupIdlingResource()
+    @Test
+    fun changeDefaultProfileSuccess() {
+        interceptor.customGetPreferenceListThrowable = null
+        interceptor.customGetPreferenceListResponseString = null
+        activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_preference_list)).check { view, _ -> (view as RecyclerView).adapter!!.itemCount > 1 }
 
+        interceptor.customSetDefaultPreferenceThrowable = null
+        interceptor.customSetDefaultPreferenceResponseString = null
         interceptor.customGetPreferenceListResponseString = GET_PREFERENCE_LIST_CHANGED_RESPONSE
 
         onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, SetDefaultProfileAction()))
         onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, DefaultProfileAssertion()))
         onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(1, NotDefaultProfileAssertion()))
-
-        cleanup()
     }
 
-    private fun changeDefaultProfileFailed() {
-        setupIdlingResource()
+    @Test
+    fun changeDefaultProfileFailed() {
+        interceptor.customGetPreferenceListThrowable = null
+        interceptor.customGetPreferenceListResponseString = null
+        activityRule.launchActivity(null)
 
         onView(withId(R.id.main_content)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_preference_list)).check { view, _ -> (view as RecyclerView).adapter!!.itemCount > 1 }
 
         interceptor.customSetDefaultPreferenceThrowable = IOException()
 
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(1, SetDefaultProfileAction()))
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, DefaultProfileAssertion()))
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(1, NotDefaultProfileAssertion()))
-
-        cleanup()
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, SetDefaultProfileAction()))
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(0, NotDefaultProfileAssertion()))
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(1, DefaultProfileAssertion()))
     }
 
     inner class SetDefaultProfileAction : ViewAction {
