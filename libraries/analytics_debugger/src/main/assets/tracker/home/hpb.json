@@ -1,0 +1,26 @@
+{
+  "readme": "Home Page Banner, view, click, and click all",
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "homepage",
+      "event": "view_item",
+      "eventAction": "slider banner impression",
+      "promotions": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "select_content",
+      "eventAction": "slider banner click",
+      "promotions": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "clickHomepage",
+      "eventAction": "slider banner click view all",
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

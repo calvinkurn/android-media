@@ -27,7 +27,6 @@
       "channelId": "{{.*}}"
     },
     {
-      "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "clickHomepage",
@@ -36,18 +35,14 @@
       "channelId": "{{.*}}"
     },
     {
-      "businessUnit": "home & browse",
       "eventCategory": "homepage",
-      "screenName": "/",
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel left carousel",
       "eventLabel": "{{.*}}"
     },
     {
-      "businessUnit": "home & browse",
       "eventCategory": "homepage",
-      "screenName": "/",
       "eventAction": "click on banner dynamic channel left carousel",
       "eventLabel": "{{.*}}",
       "affinityLabel": "{{.*}}",
