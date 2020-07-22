@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import kotlin.Error
 
 internal class SearchShopViewModel(
         dispatcher: DispatcherProvider,
@@ -75,7 +74,6 @@ internal class SearchShopViewModel(
     private val routePageEventLiveData = MutableLiveData<Event<String>>()
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
-    private val bottomNavigationVisibilityEventLiveData = MutableLiveData<Event<Boolean>>()
     private val sortFilterItemListLiveData = MutableLiveData<State<List<SortFilterItem>>>()
 
     init {
@@ -358,7 +356,6 @@ internal class SearchShopViewModel(
         postImpressionTrackingEvent(searchShopModel, visitableList)
         postEmptySearchTrackingEvent()
         postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
-        postBottomNavigationVisibilityEvent()
     }
 
     private fun postImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
@@ -421,15 +418,6 @@ internal class SearchShopViewModel(
         return dataLayerShopItemProductList
     }
 
-    private fun postBottomNavigationVisibilityEvent() {
-        if (isEmptySearchShop) {
-            bottomNavigationVisibilityEventLiveData.postValue(Event(false))
-        }
-        else {
-            bottomNavigationVisibilityEventLiveData.postValue(Event(true))
-        }
-    }
-
     private fun endSearchShopFirstPagePerformanceMonitoring() {
         searchShopFirstPagePerformanceMonitoringEventLiveData.postValue(Event(false))
     }
@@ -480,7 +468,7 @@ internal class SearchShopViewModel(
         searchShopLiveData.postValue(Error("", searchShopMutableList))
 
         if (searchShopMutableList.isEmpty())
-            sortFilterItemListLiveData.value = State.Error("")
+            sortFilterItemListLiveData.value = Error("")
     }
 
     private fun getDynamicFilter() {
@@ -779,9 +767,6 @@ internal class SearchShopViewModel(
 
     fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> =
             clickProductRecommendationItemTrackingEventLiveData
-
-    fun getBottomNavigationVisibilityEventLiveData(): LiveData<Event<Boolean>> =
-            bottomNavigationVisibilityEventLiveData
 
     fun getSortFilterItemListLiveData(): LiveData<State<List<SortFilterItem>>> =
             sortFilterItemListLiveData
