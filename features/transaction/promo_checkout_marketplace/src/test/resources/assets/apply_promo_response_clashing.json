@@ -6,11 +6,6 @@
     "code": "200000",
     "promo": {
       "global_success": true,
-      "message": {
-        "state": "",
-        "color": "",
-        "text": ""
-      },
       "success": true,
       "codes": [],
       "promo_code_id": 0,
@@ -24,35 +19,11 @@
       "is_coupon": 1,
       "coupon_description": "",
       "is_tokopedia_gerai": false,
-      "voucher_orders": [],
-      "benefit_details": [],
       "clashing_info_detail": {
         "clash_message": "Clash message",
         "clash_reason": "Clash reason",
         "is_clashed_promos": true,
         "options": []
-      },
-      "tracking_details": [],
-      "ticker_info": {
-        "unique_id": "",
-        "status_code": 0,
-        "message": ""
-      },
-      "additional_info": {
-        "message_info": {
-          "message": "",
-          "detail": ""
-        },
-        "error_detail": {
-          "message": ""
-        },
-        "empty_cart_info": {
-          "image_url": "",
-          "message": "",
-          "detail": ""
-        },
-        "usage_summaries": [],
-        "sp_ids": []
       }
     }
   }

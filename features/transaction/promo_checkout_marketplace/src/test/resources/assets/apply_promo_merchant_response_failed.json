@@ -6,11 +6,6 @@
     "code": "200000",
     "promo": {
       "global_success": false,
-      "message": {
-        "state": "",
-        "color": "",
-        "text": ""
-      },
       "success": true,
       "codes": [],
       "promo_code_id": 0,
@@ -49,48 +44,13 @@
           "benefit_details": []
         }
       ],
-      "benefit_details": [],
-      "clashing_info_detail": {
-        "clash_message": "",
-        "clash_reason": "",
-        "is_clashed_promos": false,
-        "options": []
-      },
       "tracking_details": [
         {
           "product_id": 618078867,
           "promo_codes_tracking": "POMA3A96FB",
           "promo_details_tracking": "M:3:0:red"
         }
-      ],
-      "tokopoints_detail": {
-        "conversion_rate": {
-          "rate": 0,
-          "points_coefficient": 0,
-          "external_currency_coefficient": 0
-        }
-      },
-      "ticker_info": {
-        "unique_id": "",
-        "status_code": 0,
-        "message": ""
-      },
-      "additional_info": {
-        "message_info": {
-          "message": "",
-          "detail": ""
-        },
-        "error_detail": {
-          "message": ""
-        },
-        "empty_cart_info": {
-          "image_url": "",
-          "message": "",
-          "detail": ""
-        },
-        "usage_summaries": [],
-        "sp_ids": []
-      }
+      ]
     }
   }
 }

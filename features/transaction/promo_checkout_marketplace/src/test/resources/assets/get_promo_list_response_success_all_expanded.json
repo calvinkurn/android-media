@@ -11,13 +11,6 @@
         ],
         "reason": "OK"
       },
-      "empty_state": {
-        "title": "",
-        "description": "",
-        "image_url": ""
-      },
-      "title": "",
-      "sub_title": "",
       "promo_recommendation": {
         "codes": [
           "THIRX598GSA7MADK2X7",
@@ -132,19 +125,7 @@
             }
           ]
         }
-      ],
-      "attempted_promo_code_error": {
-        "code": "",
-        "message": ""
-      },
-      "additional_message": "Kamu bisa hemat",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
-      }
+      ]
     }
   }
 }

@@ -15,25 +15,6 @@
         "title": "Terjadi kesalahan pada server",
         "description": "Ulangi beberapa saat lagi",
         "image_url": "https://ecs7.tokopedia.net/microsite-production/tokopoints/noHp@3x.png"
-      },
-      "title": "",
-      "sub_title": "",
-      "promo_recommendation": {
-        "codes": [],
-        "message": ""
-      },
-      "coupon_sections": [],
-      "attempted_promo_code_error": {
-        "code": "",
-        "message": ""
-      },
-      "additional_message": "",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
       }
     }
   }

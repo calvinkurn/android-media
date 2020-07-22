@@ -155,12 +155,6 @@
           }
         ]
       },
-      "clashing_info_detail": {
-        "clash_message": "",
-        "clash_reason": "",
-        "is_clashed_promos": false,
-        "options": []
-      },
       "tracking_details": [
         {
           "product_id": 618078867,
@@ -168,30 +162,10 @@
           "promo_details_tracking": "G:1:10000:green|M:3:0:green"
         }
       ],
-      "tokopoints_detail": {
-        "conversion_rate": {
-          "rate": 0,
-          "points_coefficient": 0,
-          "external_currency_coefficient": 0
-        }
-      },
-      "ticker_info": {
-        "unique_id": "",
-        "status_code": 0,
-        "message": ""
-      },
       "additional_info": {
         "message_info": {
           "message": "Kamu bisa hemat Rp54.444",
           "detail": "2 promo dipakai"
-        },
-        "error_detail": {
-          "message": ""
-        },
-        "empty_cart_info": {
-          "image_url": "",
-          "message": "",
-          "detail": ""
         },
         "usage_summaries": [
           {

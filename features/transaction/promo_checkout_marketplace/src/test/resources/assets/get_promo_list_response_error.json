@@ -10,20 +10,6 @@
           "Error"
         ],
         "reason": "ERROR"
-      },
-      "empty_state": {
-        "title": "",
-        "description": "",
-        "image_url": ""
-      },
-      "title": "",
-      "sub_title": "",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
       }
     }
   }

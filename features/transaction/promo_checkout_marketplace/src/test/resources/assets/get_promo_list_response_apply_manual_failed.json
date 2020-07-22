@@ -11,13 +11,6 @@
         ],
         "reason": "OK"
       },
-      "empty_state": {
-        "title": "",
-        "description": "",
-        "image_url": ""
-      },
-      "title": "",
-      "sub_title": "",
       "promo_recommendation": {
         "codes": [
           "NU30K62BBLKMW4435JX"
@@ -69,14 +62,7 @@
         "code": "TEST",
         "message": "Kode promo yang kamu masukkan salah"
       },
-      "additional_message": "Kamu bisa hemat",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
-      }
+      "additional_message": "Kamu bisa hemat"
     }
   }
 }
