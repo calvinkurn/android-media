@@ -41,7 +41,8 @@ import kotlin.collections.HashMap
 class PromoCheckoutViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
-                                                 private val analytics: PromoCheckoutAnalytics)
+                                                 private val analytics: PromoCheckoutAnalytics,
+                                                 private val gson: Gson)
     : BaseViewModel(dispatcher) {
 
     // Fragment UI Model. Store UI model and state on fragment level
@@ -794,8 +795,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     private fun setPromoItemDisabled(redStateMap: HashMap<String, String>, it: PromoListItemUiModel) {
         if (redStateMap.containsKey(it.uiData.promoCode)) {
             it.uiState.isSelected = false
-            it.uiData.errorMessage = redStateMap[it.uiData.promoCode]
-                    ?: ""
+            it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
             it.uiState.isDisabled = true
             _tmpUiModel.value = Update(it)
         }
@@ -839,86 +839,130 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
         launch { doClearPromo(mutation, validateUsePromoRequest, bboPromoCodes) }
+
+        launchCatchError(block = {
+            doClearPromo(mutation, validateUsePromoRequest, bboPromoCodes)
+        }) { throwable ->
+            setClearPromoStateFailed(throwable)
+        }
     }
 
     private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
-        launchCatchError(block = {
-            // Initialize response action state
-            if (clearPromoResponse.value == null) {
-                _clearPromoResponse.value = ClearPromoResponseAction()
-            }
 
-            // Add unselected promo
-            val toBeRemovedPromoCodes = ArrayList<String>()
-            var tmpMutation = mutation
-            promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiState.isParentEnabled) {
-                    toBeRemovedPromoCodes.add(it.uiData.promoCode)
-                } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
-                    it.uiData.tmpPromoItemList.forEach {
-                        if (it.uiState.isParentEnabled) {
-                            toBeRemovedPromoCodes.add(it.uiData.promoCode)
-                        }
+        val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
+
+        var tmpMutation = mutation
+        val promoCodesJson = gson.toJson(toBeRemovedPromoCodes)
+        tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
+        tmpMutation = tmpMutation.replace("#isOCC", (validateUsePromoRequest.cartType == "occ").toString())
+
+        // Get response
+        val response = withContext(Dispatchers.IO) {
+            val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
+            graphqlRepository.getReseponse(listOf(request))
+                    .getSuccessData<ClearPromoResponse>()
+        }
+
+        handleClearPromoResponse(response, validateUsePromoRequest, toBeRemovedPromoCodes)
+    }
+
+    private fun getToBeClearedPromoCodes(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>): ArrayList<String> {
+        val toBeRemovedPromoCodes = ArrayList<String>()
+
+        // Add unselected promo
+        val unSelectedPromoCodes = getUnSelectedPromoCodes()
+        toBeRemovedPromoCodes.addAll(unSelectedPromoCodes)
+
+        // Add invalid promo
+        val invalidPromoCodes = getInvalidPromo(validateUsePromoRequest, bboPromoCodes)
+        toBeRemovedPromoCodes.addAll(invalidPromoCodes)
+
+        return toBeRemovedPromoCodes
+    }
+
+    private fun getInvalidPromo(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>): ArrayList<String> {
+        val invalidPromoCodes = ArrayList<String>()
+
+        validateUsePromoRequest.codes.forEach { promoGlobalCode ->
+            promoGlobalCode?.let {
+                if (!bboPromoCodes.contains(it) && !invalidPromoCodes.contains(it)) {
+                    invalidPromoCodes.add(it)
+                }
+            }
+        }
+
+        validateUsePromoRequest.orders.forEach { order ->
+            order?.codes?.forEach {
+                if (!bboPromoCodes.contains(it) && !invalidPromoCodes.contains(it)) {
+                    invalidPromoCodes.add(it)
+                }
+            }
+        }
+
+        return invalidPromoCodes
+    }
+
+    private fun getUnSelectedPromoCodes(): ArrayList<String> {
+        val unSelectedPromoCodes = ArrayList<String>()
+
+        promoListUiModel.value?.forEach { visitable ->
+            if (visitable is PromoListItemUiModel && visitable.uiState.isParentEnabled) {
+                unSelectedPromoCodes.add(visitable.uiData.promoCode)
+            } else if (visitable is PromoListHeaderUiModel && visitable.uiState.isEnabled && visitable.uiData.tmpPromoItemList.isNotEmpty()) {
+                visitable.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
+                    if (promoListItemUiModel.uiState.isParentEnabled) {
+                        unSelectedPromoCodes.add(promoListItemUiModel.uiData.promoCode)
                     }
                 }
             }
+        }
 
-            // Add invalid promo
-            validateUsePromoRequest.codes.forEach { promoGlobalCode ->
-                promoGlobalCode?.let {
-                    if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
-                        toBeRemovedPromoCodes.add(it)
+        return unSelectedPromoCodes
+    }
+
+    private fun handleClearPromoResponse(response: ClearPromoResponse, validateUsePromoRequest: ValidateUsePromoRequest, toBeRemovedPromoCodes: ArrayList<String>) {
+        // Initialize response action state
+        initClearPromoResponseAction()
+
+        if (response.successData.success) {
+            // Remove promo code on validate use params after clear promo success
+            toBeRemovedPromoCodes.forEach { promo ->
+                if (validateUsePromoRequest.codes.contains(promo)) {
+                    validateUsePromoRequest.codes.remove(promo)
+                }
+
+                validateUsePromoRequest.orders.forEach {
+                    if (it?.codes?.contains(promo) == true) {
+                        it.codes.remove(promo)
                     }
                 }
             }
-            validateUsePromoRequest.orders.forEach { order ->
-                order?.codes?.forEach {
-                    if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
-                        toBeRemovedPromoCodes.add(it)
-                    }
-                }
-            }
+            setClearPromoStateSuccess(response, validateUsePromoRequest)
+        } else {
+            throw PromoErrorException()
+        }
+    }
 
-            val promoCodesJson = Gson().toJson(toBeRemovedPromoCodes)
-            tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
+    private fun setClearPromoStateSuccess(response: ClearPromoResponse, tmpValidateUsePromoRequest: ValidateUsePromoRequest) {
+        clearPromoResponse.value?.let {
+            it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
+            it.data = uiModelMapper.mapClearPromoResponse(response)
+            it.lastValidateUseRequest = tmpValidateUsePromoRequest
+            _clearPromoResponse.value = it
+        }
+    }
 
-            tmpMutation = tmpMutation.replace("#isOCC", validateUsePromoRequest.cartType.equals("occ").toString())
-            // Get response
-            val response = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
-                graphqlRepository.getReseponse(listOf(request))
-                        .getSuccessData<ClearPromoResponse>()
-            }
+    private fun initClearPromoResponseAction() {
+        if (clearPromoResponse.value == null) {
+            _clearPromoResponse.value = ClearPromoResponseAction()
+        }
+    }
 
-            if (response.successData.success) {
-                // Remove promo code on validate use params after clear promo success
-                val tmpValidateUsePromoRequest = validateUsePromoRequest
-                toBeRemovedPromoCodes.forEach { promo ->
-                    if (tmpValidateUsePromoRequest.codes.contains(promo)) {
-                        tmpValidateUsePromoRequest.codes.remove(promo)
-                    }
-
-                    tmpValidateUsePromoRequest.orders.forEach {
-                        if (it?.codes?.contains(promo) == true) {
-                            it.codes.remove(promo)
-                        }
-                    }
-                }
-                clearPromoResponse.value?.let {
-                    it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
-                    it.data = uiModelMapper.mapClearPromoResponse(response)
-                    it.lastValidateUseRequest = tmpValidateUsePromoRequest
-                    _clearPromoResponse.value = it
-                }
-            } else {
-                throw PromoErrorException()
-            }
-        }) { throwable ->
-            clearPromoResponse.value?.let {
-                it.state = ClearPromoResponseAction.ACTION_STATE_ERROR
-                it.exception = throwable
-                _clearPromoResponse.value = it
-            }
+    private fun setClearPromoStateFailed(throwable: Throwable) {
+        clearPromoResponse.value?.let {
+            it.state = ClearPromoResponseAction.ACTION_STATE_ERROR
+            it.exception = throwable
+            _clearPromoResponse.value = it
         }
     }
 
@@ -955,8 +999,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             } else {
                 throw PromoErrorException()
             }
-        }) { throwable ->
-
+        }) {
+            // no-op
         }
     }
 
