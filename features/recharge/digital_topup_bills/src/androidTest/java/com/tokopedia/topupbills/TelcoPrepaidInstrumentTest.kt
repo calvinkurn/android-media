@@ -1,31 +1,32 @@
 package com.tokopedia.topupbills
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
-import android.os.SystemClock
 import android.provider.ContactsContract
-import android.view.View
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.PerformException
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.ViewPagerActions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.google.android.material.tabs.TabLayout
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
-import org.hamcrest.Matcher
+import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import org.hamcrest.core.AllOf
+import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,6 +56,19 @@ class TelcoPrepaidInstrumentTest {
         Intents.intending(AllOf.allOf(IntentMatchers.hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
                 IntentMatchers.hasAction(Intent.ACTION_PICK))
         ).respondWith(telcoContactHelper.createUriContact(contentResolver))
+
+        Intents.intending(AllOf.allOf(IntentMatchers.hasComponent(
+                ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberFragment"))))
+                .respondWith(createOrderNumberTypeManual())
+    }
+
+    private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
+        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
+        val resultData = Intent()
+        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
+        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
+                TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
+        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
     /**
@@ -67,7 +81,7 @@ class TelcoPrepaidInstrumentTest {
 //        onView(withText(R.string.Telco_title_showcase_client_number)).perform(click())
 //        onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
 //        onView(withText(R.string.telco_title_showcase_promo)).perform(click())
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         onView(withId(R.id.page_container)).check(matches(isDisplayed()))
         onView(withId(R.id.telco_input_number)).check(matches(isDisplayed()))
         onView(withId(R.id.view_pager)).check(matches(isDisplayed()))
@@ -75,7 +89,7 @@ class TelcoPrepaidInstrumentTest {
 
     @Test
     fun interaction_menu() {
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         onView(withId(R.id.action_overflow_menu)).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.menu_promo)).check(matches(isDisplayed()))
@@ -87,49 +101,122 @@ class TelcoPrepaidInstrumentTest {
 
     @Test
     fun click_done_keyboard_fav_number() {
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         onView(withId(R.id.telco_input_number)).perform(click())
         onView(withId(R.id.edit_text_search)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
         onView(withId(R.id.ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
     }
 
     @Test
-    fun click_phonebook() {
-        Thread.sleep(1000)
+    fun click_on_contact_picker_and_list_fav_number() {
+        Thread.sleep(2000)
+        onView(withId(R.id.telco_input_number)).perform(click())
+        onView(withId(R.id.edit_text_search)).check(matches(withText("")))
+        onView(withId(R.id.btnContactPicker)).perform(click())
+        onView(withId(R.id.edit_text_search)).check(matches(isDisplayed()))
+        onView(withId(R.id.edit_text_search)).check(matches(withText(VALID_PHONE_BOOK)))
+        val viewInteraction = onView(withId(R.id.rvNumberList)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
+        onView(withId(R.id.ac_input_number)).check(matches(withText(VALID_PHONE_BOOK)))
+    }
+
+    @Test
+    fun choose_fav_number_from_list_fav_number() {
+        Thread.sleep(2000)
+        onView(withId(R.id.telco_input_number)).perform(click())
+        onView(withId(R.id.edit_text_search)).check(matches(withText("")))
+        onView(withId(R.id.edit_text_search)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.edit_text_search)).check(matches(withText(VALID_PHONE_NUMBER)))
+        val viewInteraction = onView(withId(R.id.rvNumberList)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
+        onView(withId(R.id.ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+    }
+
+    private fun pick_phone_number_from_phonebook() {
+        Thread.sleep(2000)
         onView(withId(R.id.ac_input_number)).check(matches(withText("")))
         onView(withId(R.id.btn_contact_picker)).perform(click())
         onView(withId(R.id.ac_input_number)).check(matches(isDisplayed()))
         onView(withId(R.id.ac_input_number)).check(matches(withText(VALID_PHONE_BOOK)))
-
-        Thread.sleep(1000)
-        onView(withId(R.id.view_pager)).check(matches(isDisplayed()))
-        onView(withId(R.id.tab_layout)).perform(selectTabLayoutPosition(2))
-        Thread.sleep(1000)
     }
 
-    private fun selectTabLayoutPosition(tabIndex: Int): ViewAction {
-        return object : ViewAction {
-            override fun getDescription(): String {
-                return "with tab at index $tabIndex"
-            }
+    @Test
+    fun click_phonebook_and_clear() {
+        Thread.sleep(2000)
+        pick_phone_number_from_phonebook()
+        onView(withId(R.id.btn_clear_input_number)).perform(click())
+        onView(withId(R.id.ac_input_number)).check(matches(withText("")))
+    }
 
-            override fun getConstraints(): Matcher<View> {
-                return AllOf.allOf(isDisplayed(), isAssignableFrom(TabLayout::class.java))
-            }
+    @Test
+    fun interaction_product_not_login() {
+        Thread.sleep(2000)
+        pick_phone_number_from_phonebook()
 
-            override fun perform(uiController: UiController, view: View) {
-                val tabLayout = view as TabLayout
-                val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabIndex) ?: throw PerformException.Builder()
-                        .withCause(Throwable("No tab at index $tabIndex"))
-                        .build()
-                tabAtIndex.select()
-            }
-        }
+        Thread.sleep(3000)
+        onView(withId(R.id.view_pager)).check(matches(isDisplayed()))
+
+        // click on product item on pulsa
+        Thread.sleep(2000)
+        onView(withId(R.id.telco_product_view)).check(matches(isDisplayed()))
+        val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(R.id.product_recycler_view))).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(1, click()))
+        onView(withId(R.id.buy_widget)).check(matches(isDisplayed()))
+
+        //click tab roaming
+        Thread.sleep(1000)
+        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(2))
+
+        //click tab paket data, click lihat detail and close bottom sheet
+        Thread.sleep(2000)
+        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(1))
+        onView(withId(R.id.buy_widget)).check(matches(IsNot.not(isDisplayed())))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(1,
+                TelcoViewAction.clickChildViewWithId(R.id.telco_see_more_btn)))
+        Thread.sleep(1000)
+        onView(withId(R.id.button_select_item)).check(matches(isDisplayed()))
+        onView(withId(R.id.bottom_sheet_close)).perform(click())
+
+        //click product cluster on paket data
+        onView(withId(R.id.buy_widget)).check(matches(IsNot.not(isDisplayed())))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(1, click()))
+        onView(withId(R.id.buy_widget)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun interaction_product_filter() {
+        Thread.sleep(2000)
+        pick_phone_number_from_phonebook()
+
+        Thread.sleep(3000)
+        onView(withId(R.id.view_pager)).check(matches(isDisplayed()))
+
+        //click tab paket data
+        Thread.sleep(1000)
+        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(1))
+        onView(withId(R.id.sort_filter)).check(matches(isDisplayed()))
+
+        //click Feature filter and choose 1 subfilter
+        onView(withText("Feature")).perform(click())
+        Thread.sleep(1000)
+        onView(withId(R.id.filter_recycler_view)).check(matches(isDisplayed()))
+        onView(withText(R.string.telco_reset_filter)).check(matches(isDisplayed()))
+        val viewInteraction = onView(AllOf.allOf(isDisplayed(), withId(R.id.filter_recycler_view))).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
+        onView(withId(R.id.btn_filter)).perform(click())
+        onView(withId(R.id.sort_filter)).check(matches(isDisplayed()))
+        Thread.sleep(5000)
+
+        //click on Feature filter and reset subfilter
+        onView(withText("Feature")).perform(click())
+        Thread.sleep(1000)
+        onView(withText(R.string.telco_reset_filter)).check(matches(isDisplayed()))
+        onView(withText(R.string.telco_reset_filter)).perform(click())
+        onView(withId(R.id.btn_filter)).perform(click())
     }
 
     companion object {
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val VALID_PHONE_BOOK = "087821212121"
     }
-
 }

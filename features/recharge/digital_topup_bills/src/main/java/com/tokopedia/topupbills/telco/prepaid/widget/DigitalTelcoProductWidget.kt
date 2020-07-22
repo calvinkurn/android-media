@@ -34,7 +34,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     init {
         val view = View.inflate(context, R.layout.view_digital_product_list, this)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.product_recycler_view)
     }
 
     fun setListener(listener: ActionListener) {

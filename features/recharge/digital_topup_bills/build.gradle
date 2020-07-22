@@ -91,6 +91,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+        exclude group: 'com.google.android.gms'
     }
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting

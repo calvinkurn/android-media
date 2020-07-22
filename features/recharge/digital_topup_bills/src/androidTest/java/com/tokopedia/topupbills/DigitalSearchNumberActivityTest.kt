@@ -64,21 +64,7 @@ class DigitalSearchNumberActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).check(matches(ViewMatchers.withText("")))
     }
 
-    @Test
-    fun click_on_contact_picker() {
-        Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).check(matches(ViewMatchers.withText("")))
-        Espresso.onView(ViewMatchers.withId(R.id.btnContactPicker)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).check(matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).check(matches(ViewMatchers.withText(VALID_PHONE_BOOK)))
-    }
-
-    @Test
-    fun choose_fav_number_from_list() {
-
-    }
-
     companion object {
         private const val VALID_PHONE_NUMBER = "08123232323"
-        private const val VALID_PHONE_BOOK = "087821212121"
     }
 }
