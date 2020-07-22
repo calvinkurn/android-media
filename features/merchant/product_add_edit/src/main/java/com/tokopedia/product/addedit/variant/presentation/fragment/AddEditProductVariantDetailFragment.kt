@@ -158,11 +158,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
 
         // change primary variant if primary position equals adapter position
-        val variantInputModel = viewModel.productInputModel.value?.variantInputModel?.products
-        variantInputModel?.forEachIndexed { position, variant ->
-            if(variant.isPrimary && adapterPosition == position) {
+        viewModel.productInputModel.value?.variantInputModel?.products?.let { variants ->
+            val variant = variants[adapterPosition]
+            if(variant.isPrimary) {
                 variant.isPrimary = isChecked
-                return@forEachIndexed
             }
         }
 
@@ -206,10 +205,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.updatePrimaryVariant(combination)
 
         // update switch status to be true if primary selected
-        val position = combination[0]
-        val updatedInputModel = viewModel.updateSwitchStatus(true, position)
-        viewModel.editVariantDetailInputMap(position, updatedInputModel)
-        variantDetailFieldsAdapter?.updateDetailInputField(position, updatedInputModel)
+        val position = combination.getOrNull(0)
+        position?.let {
+            val updatedInputModel = viewModel.updateSwitchStatus(true, it)
+            viewModel.editVariantDetailInputMap(it, updatedInputModel)
+            variantDetailFieldsAdapter?.updateDetailInputField(it, updatedInputModel)
+        }
 
         // tracking
         ProductAddVariantDetailTracking.saveMainVariant(
