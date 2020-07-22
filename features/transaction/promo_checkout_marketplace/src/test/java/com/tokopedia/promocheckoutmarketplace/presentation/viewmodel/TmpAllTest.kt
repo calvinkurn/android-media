@@ -21,6 +21,8 @@ import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideAppl
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
+import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessEmpty
+import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessWithData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
@@ -54,6 +56,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePr
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedMerchantPromo
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
@@ -1235,7 +1238,6 @@ class TmpAllTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
@@ -1254,7 +1256,6 @@ class TmpAllTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
@@ -1272,7 +1273,6 @@ class TmpAllTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
 
-        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
@@ -1290,7 +1290,6 @@ class TmpAllTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
 
-        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
@@ -1300,22 +1299,71 @@ class TmpAllTest {
         assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
     }
 
-/*
+
+    /* GET PROMO LAST SEEN */
+
     @Test
-    fun `WHEN clear promo and BBO promo code exist THEN should not include BBO promo code to be cleared`() {
+    fun `WHEN get promo last seen and success THEN get promo last seen response should not be null`() {
+        //given
         val result = HashMap<Type, Any>()
-        result[ClearPromoResponse::class.java] = provideClearPromoResponseFailed()
+        result[GetPromoSuggestionResponse::class.java] = provideGetPromoLastSeenSuccessWithData()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
 
-        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
+        viewModel.getPromoLastSeen("")
 
         //then
-        assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
+        assertNotNull(viewModel.getPromoLastSeenResponse.value)
     }
-*/
+
+    @Test
+    fun `WHEN get promo last seen and success with not empty data THEN get promo last seen response state should be show promo last seen`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[GetPromoSuggestionResponse::class.java] = provideGetPromoLastSeenSuccessWithData()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoLastSeen("")
+
+        //then
+        assert(viewModel.getPromoLastSeenResponse.value?.state == GetPromoLastSeenAction.ACTION_SHOW)
+    }
+
+    @Test
+    fun `WHEN get promo last seen and success with not empty data THEN promo last seen data should not be empty`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[GetPromoSuggestionResponse::class.java] = provideGetPromoLastSeenSuccessWithData()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoLastSeen("")
+
+        //then
+        assert(viewModel.getPromoLastSeenResponse.value?.data?.uiData?.promoLastSeenItemUiModelList?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `WHEN get promo last seen and success with empty data THEN get promo last seen response state should not be show promo last seen`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[GetPromoSuggestionResponse::class.java] = provideGetPromoLastSeenSuccessEmpty()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getPromoLastSeen("")
+
+        //then
+        assert(viewModel.getPromoLastSeenResponse.value?.state != GetPromoLastSeenAction.ACTION_SHOW)
+    }
+
 }
