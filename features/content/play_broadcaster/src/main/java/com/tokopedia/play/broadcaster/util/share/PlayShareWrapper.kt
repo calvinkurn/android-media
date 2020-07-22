@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.net.Uri
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
@@ -71,7 +72,8 @@ object PlayShareWrapper {
             .setImgUri(shareData.imageUrl)
             .setOgImageUrl(shareData.imageUrl)
             .setOgTitle(shareData.title)
-            .setUri(shareData.redirectUrl)
-            .setType(LinkerData.GROUPCHAT_TYPE)
+            .setUri(Uri.parse(shareData.redirectUrl).toString())
+            .setShareUrl(shareData.redirectUrl)
+            .setType(LinkerData.APP_SHARE_TYPE)
             .build()
 }

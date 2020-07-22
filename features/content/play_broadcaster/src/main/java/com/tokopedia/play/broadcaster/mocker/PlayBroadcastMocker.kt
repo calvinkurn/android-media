@@ -151,11 +151,11 @@ object PlayBroadcastMocker {
 
     fun getMockShare() = ShareUiModel(
             id = "1234",
-            title = "Klarififikasi Bisa Tebak Siapa?",
-            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            title = "Tokopedia PLAY seru!",
+            description = "Nonton siaran seru di Tokopedia PLAY!",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            redirectUrl = "https://www.tokopedia.com/play/channels/1234",
-            textContent = "\"test meyta staging status 0\"\nYuk, nonton siaran dari  di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
+            redirectUrl = "https://beta.tokopedia.com/play/channel/10140",
+            textContent =  "\"testing\"\nYuk, nonton siaran dari MRG Audio di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
             shortenUrl = true
     )
 
