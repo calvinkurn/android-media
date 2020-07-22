@@ -28,6 +28,7 @@ class AddProductInputMapper @Inject constructor() {
         const val UNIT_DAY = "DAY"
         const val UNIT_WEEK = "WEEK"
         const val UNIT_MONTH = "MONTH"
+        const val VALUE_TRUE = "true"
     }
 
     fun mapInputToParam(shopId: String,
@@ -109,7 +110,7 @@ class AddProductInputMapper @Inject constructor() {
                 it.fileName,
                 it.filePath,
                 it.picID,
-                it.isFromIG == "true",
+                it.isFromIG == VALUE_TRUE,
                 it.width.toInt(),
                 it.height.toInt(),
                 it.uploadId
@@ -125,7 +126,7 @@ class AddProductInputMapper @Inject constructor() {
                     sizecharts.fileName,
                     sizecharts.filePath,
                     sizecharts.picID,
-                    sizecharts.isFromIG == "true",
+                    sizecharts.isFromIG == VALUE_TRUE,
                     sizecharts.width.toInt(),
                     sizecharts.height.toInt(),
                     sizecharts.uploadId
@@ -180,7 +181,7 @@ class AddProductInputMapper @Inject constructor() {
                             fileName,
                             filePath,
                             "",
-                            isFromIG.contains("true"),
+                            isFromIG.contains(VALUE_TRUE),
                             width,
                             height
                     ))
