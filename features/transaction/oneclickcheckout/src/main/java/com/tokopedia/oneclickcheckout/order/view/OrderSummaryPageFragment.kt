@@ -46,6 +46,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -99,6 +100,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
     }
+
+    private var orderPreference: OrderPreference? = null
 
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
@@ -246,6 +249,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun initViewModel(savedInstanceState: Bundle?) {
         viewModel.orderPreference.observe(viewLifecycleOwner, Observer {
             if (it is OccState.FirstLoad) {
+                orderPreference = it.data
                 swipeRefreshLayout?.isRefreshing = false
                 globalError?.gone()
                 mainContent?.visible()
@@ -265,6 +269,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
             } else if (it is OccState.Success) {
+                orderPreference = it.data
                 swipeRefreshLayout?.isRefreshing = false
                 globalError?.gone()
                 mainContent?.visible()
@@ -284,15 +289,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             showEmptyPreferenceCard()
                         }
                     }
-                    if (it.data.preference.address.addressId > 0) {
-                        orderPreferenceCard.setPreference(it.data)
-                    }
-                    setupInsurance(it)
-                    if (it.data.shipping?.needPinpoint == true) {
-                        goToPinpoint(it.data.preference.address)
-                    } else {
-                        forceShowOnboarding(it.data.onboarding)
-                    }
                 }
             } else if (it is OccState.Loading) {
                 swipeRefreshLayout?.isRefreshing = true
@@ -301,6 +297,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 it.getFailure()?.let { failure ->
                     handleError(failure.throwable)
                 }
+            }
+        })
+
+        viewModel.orderShipment.observe(viewLifecycleOwner, Observer {
+            orderPreferenceCard.setShipment(it)
+            setupInsurance(it?.insuranceData)
+            if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
+                goToPinpoint(orderPreference!!.preference.address)
+            } else if (orderPreference != null) {
+                forceShowOnboarding(orderPreference?.onboarding)
             }
         })
 
@@ -547,8 +553,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun forceShowOnboarding(onboarding: OccMainOnboarding) {
-        if (onboarding.isForceShowCoachMark) {
+    private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
+        if (onboarding?.isForceShowCoachMark == true) {
             showOnboarding(onboarding)
             viewModel.consumeForceShowOnboarding()
         }
@@ -603,8 +609,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.changePinpoint()
     }
 
-    private fun setupInsurance(it: OccState.Success<OrderPreference>) {
-        val insuranceData = it.data.shipping?.insuranceData
+    private fun setupInsurance(insuranceData: InsuranceData?) {
         val productId = viewModel.orderProduct.productId
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {
@@ -836,7 +841,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun chooseCourier() {
             orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
-            if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
+            if (viewModel.orderTotal.value.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
             }
         }
@@ -845,7 +850,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (isDurationError) {
                 orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
             }
-            if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
+            if (viewModel.orderTotal.value.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
         }

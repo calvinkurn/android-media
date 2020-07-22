@@ -32,6 +32,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var preference: OrderPreference
+    private var shipment: OrderShipment? = null
 
     private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_card_header) }
     private val lblMainPreference by lazy { view.findViewById<Label>(R.id.lbl_main_preference) }
@@ -62,6 +63,13 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     fun setPreference(preference: OrderPreference) {
         this.preference = preference
         showPreference()
+    }
+
+    fun setShipment(shipment: OrderShipment?) {
+        if (::preference.isInitialized) {
+            this.shipment = shipment
+            showShipping()
+        }
     }
 
     private fun showPreference() {
@@ -103,7 +111,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private fun showShipping() {
         val shipmentModel = preference.preference.shipment
 
-        val shipping = preference.shipping
+        val shipping = shipment
         tvShippingName?.text = view.context.getString(R.string.lbl_shipping_with_name, shipmentModel.serviceName.capitalize())
 
         if (shipping == null) {
@@ -305,7 +313,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
-        val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+        val shippingRecommendationData = shipment?.shippingRecommendationData
         if (shippingRecommendationData != null) {
             val list: ArrayList<RatesViewModelType> = ArrayList()
             for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
@@ -344,7 +352,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
-        val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+        val shippingRecommendationData = shipment?.shippingRecommendationData
         if (shippingRecommendationData != null) {
             val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
             if (shippingRecommendationData.logisticPromo != null) {
