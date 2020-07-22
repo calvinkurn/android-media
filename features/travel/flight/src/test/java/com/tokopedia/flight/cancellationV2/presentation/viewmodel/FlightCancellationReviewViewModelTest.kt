@@ -72,6 +72,7 @@ class FlightCancellationReviewViewModelTest {
     fun onInit_successToFetchRefund_RefundIsSuccessAndContainsDummyData() {
         // given
         viewmodel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER
+        viewmodel.invoiceId = "1234567890"
         coEvery { estimateUseCase.createRequestParams(any(), any(), any(), any()) } returns mapOf()
         coEvery { userSession.userId } returns "12345"
         coEvery { estimateUseCase.execute(any()) } returns DUMMY_ESTIMATE_REFUND
@@ -82,6 +83,8 @@ class FlightCancellationReviewViewModelTest {
         // then
         assert(viewmodel.estimateRefundFinish.value is Success)
         (viewmodel.estimateRefundFinish.value as Success).data shouldBe true
+
+        viewmodel.invoiceId shouldBe "1234567890"
 
         viewmodel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateRefund shouldBe DUMMY_ESTIMATE_REFUND.totalValueNumeric
         viewmodel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.estimateFmt shouldBe DUMMY_ESTIMATE_REFUND.totalValue
