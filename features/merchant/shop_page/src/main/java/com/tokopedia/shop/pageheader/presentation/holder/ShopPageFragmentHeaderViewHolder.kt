@@ -1,13 +1,8 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
-import android.graphics.Typeface.BOLD
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.RelativeSizeSpan
-import android.text.style.StyleSpan
+import android.text.Html
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,7 +23,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.extension.formatToSimpleNumber
-import com.tokopedia.shop.pageheader.util.RoundedBackgroundColorSpan
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -84,20 +78,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun setupTextContentSgcWidget(){
         if(view.shop_page_sgc_title.text.isBlank()) {
             val text = context.getString(R.string.shop_page_play_widget_title)
-            val spannable = SpannableString(text)
-            spannable.setSpan(
-                    StyleSpan(BOLD),
-                    11, 25,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannable.setSpan(
-                    RelativeSizeSpan(0.9f),
-                    26, 30,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannable.setSpan(
-                    RoundedBackgroundColorSpan(ContextCompat.getColor(context, R.color.color_beta_badge), 4f, 10f),
-                    26, 30,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            view.shop_page_sgc_title.text = spannable
+            view.shop_page_sgc_title.text = Html.fromHtml(text)
         }
     }
 
