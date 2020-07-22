@@ -15,7 +15,7 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.features.commonCategory)
+    api project(rootProject.ext.features.commonCategory)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.buyerorder)

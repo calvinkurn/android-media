@@ -16,12 +16,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/flightBookingTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="full"
+                tools:visibility="visible" />
+
             <com.tokopedia.common.travel.widget.CountdownTimeView
                 android:id="@+id/countdown_timeout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/flightBookingTicker" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_flight_booking_route_summary"
@@ -34,7 +45,7 @@
                 android:paddingTop="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_10"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/flightBookingTicker" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_traveller_info_title"

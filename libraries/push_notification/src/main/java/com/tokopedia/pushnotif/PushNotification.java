@@ -241,6 +241,8 @@ public class PushNotification {
         long prevTime = cache.getLong(Constant.PREV_TIME);
         long currTIme = System.currentTimeMillis();
         if (currTIme - prevTime > 15000) {
+            cache.putLong(Constant.PREV_TIME, currTIme);
+            cache.applyEditor();
             return true;
         }
         return false;

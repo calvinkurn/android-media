@@ -10,18 +10,8 @@ import java.io.InputStreamReader
 object MockResponseList {
     fun create(context: Context): HashMap<String, String> {
         val responseList = HashMap<String, String>()
-
-        //home channel
-        responseList.put("dynamicHomeChannel", getRawString(context, R.raw.response_mock_data_dynamic_home_channel))
-        responseList.put("widget_tab", getRawString(context, R.raw.response_mock_data_home_widget_tab))
-        responseList.put("widget_grid", getRawString(context, R.raw.response_mock_data_home_widget_grid))
-        responseList.put("suggestedProductReview", getRawString(context, R.raw.response_mock_data_suggested_review))
-        responseList.put("playGetLiveDynamicChannels", getRawString(context, R.raw.response_mock_data_play_widget))
-        responseList.put("rechargeRecommendation", getRawString(context, R.raw.response_mock_data_recharge_recommendation))
-
         //official store
         responseList.put("slides", getRawString(context, R.raw.response_mock_data_official_store_banners))
-
         responseList.put("pdpGetLayout", getRawString(context, R.raw.response_mock_data_pdp_get_layout))
         return responseList
     }

@@ -28,10 +28,7 @@ import javax.inject.Inject
  * @author : Steven 02/01/19
  */
 
-open class TopChatRoomGetExistingChatMapper @Inject constructor(
-        private val useNewCard: Boolean,
-        private val useCarousel: Boolean
-) : GetExistingChatMapper() {
+open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
 
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
@@ -47,7 +44,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
                     val chatDateTime = chatItemPojoByDate.replies[index]
                     if (hasAttachment(chatDateTime)) {
                         val nextItem = chatItemPojoByDate.replies.getOrNull(index + 1)
-                        if (useNewCard && useCarousel && chatDateTime.isMultipleProductAttachment(nextItem)) {
+                        if (chatDateTime.isMultipleProductAttachment(nextItem)) {
                             val products = mergeProduct(index, chatItemPojoByDate.replies)
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
@@ -81,7 +78,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
                     attachmentId = attachment?.id ?: "",
                     attachmentType = attachment?.type.toString(),
                     replyTime = replyTime,
-                    message = msg
+                    message = msg,
+                    source = chatDateTime.source
             )
         }
     }
@@ -148,7 +146,9 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
                 !item.isOpposite,
                 voucherModel,
                 item.replyId.toString(),
-                item.blastId.toString()
+                item.blastId.toString(),
+                item.source,
+                voucher.isPublic
         )
     }
 
@@ -156,19 +156,20 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
         val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
                 ImageDualAnnouncementPojo::class.java)
         return ImageDualAnnouncementUiModel(
-                item.msgId.toString(),
-                item.senderId.toString(),
-                item.senderName,
-                item.role,
-                item.attachment?.id ?: "",
-                item.attachment?.type.toString(),
-                item.replyTime,
-                item.msg,
-                pojoAttribute.imageUrl,
-                pojoAttribute.url,
-                pojoAttribute.imageUrl2,
-                pojoAttribute.url2,
-                item.blastId
+                messageId = item.msgId.toString(),
+                fromUid = item.senderId.toString(),
+                from = item.senderName,
+                fromRole = item.role,
+                attachmentId = item.attachment?.id ?: "",
+                attachmentType = item.attachment?.type.toString(),
+                replyTime = item.replyTime,
+                message = item.msg,
+                imageUrlTop = pojoAttribute.imageUrl,
+                redirectUrlTop = pojoAttribute.url,
+                imageUrlBottom = pojoAttribute.imageUrl2,
+                redirectUrlBottom = pojoAttribute.url2,
+                blastId = item.blastId,
+                source = item.source
         )
     }
 
@@ -190,7 +191,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
                 replyTime = message.replyTime,
                 isSender = !message.isOpposite,
                 message = message.msg,
-                isRead = message.isRead
+                isRead = message.isRead,
+                source = message.source
         )
     }
 
@@ -213,7 +215,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
                 isRead = message.isRead,
                 isDummy = false,
                 isSender = !message.isOpposite,
-                sticker = stickerAttributes.stickerProfile
+                sticker = stickerAttributes.stickerProfile,
+                source = message.source
         )
     }
 }

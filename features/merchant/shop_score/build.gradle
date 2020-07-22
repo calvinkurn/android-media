@@ -30,7 +30,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error

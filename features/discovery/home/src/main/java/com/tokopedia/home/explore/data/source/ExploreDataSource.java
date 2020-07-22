@@ -1,7 +1,9 @@
 package com.tokopedia.home.explore.data.source;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -12,7 +14,6 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.constant.ConstantKey;
@@ -212,7 +213,10 @@ public class ExploreDataSource {
                 if (cache != null) {
                     DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
                     String cachedShopDomain = data.getShopInfo().getData().getDomain();
-                    if (!SessionHandler.getShopDomain(context).equals(cachedShopDomain)) {
+
+                    SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(context);
+                    String shopDomainPreference = mSettings.getString("shopDomain","");
+                    if (!shopDomainPreference.equals(cachedShopDomain)) {
                         throw new RuntimeException("Cached data shopInfo mismatch!!");
                     }
                     GraphqlResponse<DataResponseModel> graphqlResponse = new GraphqlResponse<>();

@@ -25,6 +25,9 @@ internal constructor() : Func1<TopAdsLogDB, Observable<Visitable<*>>> {
         viewModel.previewUrl = formatDataExcerpt(topAdsLogDB.url)
         viewModel.eventType = topAdsLogDB.eventType
         viewModel.sourceName = topAdsLogDB.sourceName
+        viewModel.productId = topAdsLogDB.productId
+        viewModel.productName = topAdsLogDB.productName
+        viewModel.imageUrl = topAdsLogDB.imageUrl
         viewModel.eventStatus = topAdsLogDB.eventStatus
         viewModel.timestamp = dateFormat.format(Date(topAdsLogDB.timestamp))
         viewModel.fullResponse = topAdsLogDB.fullResponse

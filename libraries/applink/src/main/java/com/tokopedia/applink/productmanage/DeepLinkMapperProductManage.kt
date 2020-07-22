@@ -1,6 +1,7 @@
 package com.tokopedia.applink.productmanage
 
 import android.net.Uri
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -43,7 +44,7 @@ object DeepLinkMapperProductManage {
 
     /**
      * @param deepLink : tokopedia://seller/product/manage?filter=isEmptyStockOnly
-     * @return if seller app : tokopedia-android-internal://sellerapp/sellerhome-product-list?filter=isEmptyStockOnly
+     * @return if seller app or shouldRedirectToSellerApp : tokopedia-android-internal://sellerapp/sellerhome-product-list?filter=isEmptyStockOnly
      * @return if seller app with param search : tokopedia-android-internal://marketplace/product-manage-list?search=baju bagus
      * @return if not seller app : tokopedia-android-internal://marketplace/product-manage-list?filter=isEmptyStockOnly
      * */
@@ -53,8 +54,9 @@ object DeepLinkMapperProductManage {
             return applink
         }
         val filterId = uri.getQueryParameter(QUERY_PARAM_FILTER).orEmpty()
+        val shouldRedirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp) {
             val param: HashMap<String, String> = hashMapOf()
             when {
                 filterId.isNotBlank() -> {

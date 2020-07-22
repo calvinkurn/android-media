@@ -31,6 +31,7 @@ import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -214,8 +215,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     abstract fun processTagIntent(intent: Intent)
 
     protected fun isDigitalSmartcardEnabled(): Boolean {
-        return true
-//        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
     }
 
     protected fun navigateToNFCSettings() {

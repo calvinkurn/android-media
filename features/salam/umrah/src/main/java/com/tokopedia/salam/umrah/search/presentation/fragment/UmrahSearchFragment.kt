@@ -231,8 +231,11 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
             }
         })
-        umrah_search_bottom_action_view.setButton1OnClickListener { openSortBottomSheets() }
-        umrah_search_bottom_action_view.setButton2OnClickListener { openFilterFragment() }
+        umrah_search_bottom_action_view.setDefault()
+        umrah_search_bottom_action_view.sortItem.title = context?.getString(
+                com.tokopedia.common.travel.R.string.travel_title_sort_search) ?: "Urutkan"
+        umrah_search_bottom_action_view.sortItem.listener = { openSortBottomSheets() }
+        umrah_search_bottom_action_view.filterItem.listener = { openFilterFragment() }
     }
 
     private fun setHideFAB() {

@@ -2,8 +2,8 @@ package com.tokopedia.flight.bookingV3.data
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 
 /**
  * @author by jessica on 2019-11-05

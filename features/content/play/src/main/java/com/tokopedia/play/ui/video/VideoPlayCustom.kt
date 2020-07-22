@@ -5,15 +5,15 @@ import android.content.Context
 import android.graphics.Matrix
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.TextureView
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
 import com.tokopedia.play.R
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
+
 
 @SuppressLint("SyntheticAccessor")
 class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
@@ -26,7 +26,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var textureViewRotation = 0
-    private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
     constructor(context: Context) : this(context, null, 0)
 
@@ -36,14 +35,12 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         get() = surfaceView
 
     init{
-
         LayoutInflater.from(context).inflate(playerLayoutId, this)
         componentListener = ComponentListener()
         descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
 
         // Content frame.
         contentFrame = findViewById(com.google.android.exoplayer2.ui.R.id.exo_content_frame)
-        contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
         surfaceView?.id = R.id.fl_texture_view
@@ -116,7 +113,23 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         }
     }
 
+    fun setOrientation(screen: ScreenOrientation, video: VideoOrientation) {
+        contentFrame?.let {
+            setResizeModeRaw(it, if (video.isHorizontal) {
+                when {
+                    screen.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    else -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+                }
+            } else AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
 
+            val lParams = it.layoutParams as FrameLayout.LayoutParams
+            lParams.gravity =
+                    if (video.isHorizontal && !screen.isLandscape) Gravity.NO_GRAVITY
+                    else Gravity.CENTER
+
+            it.layoutParams = lParams
+        }
+    }
 
     fun release(){
         player?.removeListener(componentListener)
@@ -154,7 +167,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         }
 
         override fun onRenderedFirstFrame() {
-
         }
 
         override fun onSurfaceSizeChanged(width: Int, height: Int) {

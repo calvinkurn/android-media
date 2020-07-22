@@ -97,6 +97,11 @@ object Utils {
     fun getEndDate(): Date? {
         val endCalendar = Calendar.getInstance()
         return endCalendar.time
+    }
 
+    fun convertMoneyToValue(price: String):Int {
+        return price.replace("Rp", "").
+        replace(".", "").
+        replace(",","").trim().toInt()
     }
 }

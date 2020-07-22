@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewFlipper
@@ -24,8 +25,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
@@ -112,7 +114,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-      it?.let {
+        it?.let {
             stopNetworkRequestPerformanceMonitoring()
             startRenderPerformanceMonitoring()
             refreshCatalog(it)
@@ -173,6 +175,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onEmptyCatalog() {
         mContainer!!.displayedChild = CONTAINER_EMPTY
+        view?.findViewById<TextView>(R.id.text_title_error2)?.text = getString(R.string.tp_catalog_empty_title)
+        view?.findViewById<TextView>(R.id.text_label_error2)?.text = getString(R.string.tp_catalog_empty_description)
+        val btnCOntinue = view?.findViewById<TextView>(R.id.button_continue)
+        btnCOntinue?.text = getString(R.string.tp_catalog_empty_button)
+        btnCOntinue?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+        view?.findViewById<Button>(R.id.text_empty_action)?.hide()
     }
 
     override fun openWebView(url: String) {
@@ -335,7 +345,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,

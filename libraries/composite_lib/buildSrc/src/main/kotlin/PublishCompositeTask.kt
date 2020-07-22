@@ -235,11 +235,15 @@ open class PublishCompositeTask : DefaultTask() {
 
         val outputFile = File("$module/build/outputs/aar/$module.aar")
         val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
+        val outputFile3 = File("$module/build/outputs/aar/$module-release.aar")
         if (outputFile.exists()) {
             outputFile.delete()
         }
         if (outputFile2.exists()) {
             outputFile2.delete()
+        }
+        if (outputFile3.exists()) {
+            outputFile3.delete()
         }
 
         var gitCommandAssembleString = ""
@@ -257,6 +261,7 @@ open class PublishCompositeTask : DefaultTask() {
         }
         if (outputFile2.exists()) {
             outputFile2.copyTo(outputFile, true)
+            outputFile2.copyTo(outputFile3, true)
         }
 
         var gitCommandString = ""

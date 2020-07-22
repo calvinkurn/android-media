@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.sortfilter.SortFilter xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sort_filter"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="-12dp"
+    android:layout_marginRight="-12dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8" />

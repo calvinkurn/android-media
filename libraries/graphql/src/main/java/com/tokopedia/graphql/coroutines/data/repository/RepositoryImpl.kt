@@ -1,6 +1,9 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
@@ -11,6 +14,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.util.CacheHelper
+import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
 import kotlin.Exception
@@ -21,21 +26,24 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
     private val mResults = mutableMapOf<Type, Any>()
     private val mRefreshRequests = mutableListOf<GraphqlRequest>()
     private val mIsCachedData = mutableMapOf<Type, Boolean>()
-    private val mGson = Gson()
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
+        mResults.clear()
+
+        val originalRequests = requests.toMutableList();
+
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                getCloudResponse(requests.toMutableList(), cacheStrategy)
+                getCloudResponse(originalRequests, cacheStrategy)
             }
-            CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(requests, cacheStrategy)
+            CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
             else -> {
                 try {
-                    val responseCache = graphqlCacheDataStore.getResponse(requests, cacheStrategy)
+                    val responseCache = graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
                     val tempRequestCloud = ArrayList<GraphqlRequest>()
                     responseCache.indexOfEmptyCached.forEachIndexed { index, i ->
-                        tempRequestCloud.add(requests.get(i))
+                        tempRequestCloud.add(originalRequests?.get(i))
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
@@ -47,10 +55,10 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    getCloudResponse(requests.toMutableList(), cacheStrategy)
+                    getCloudResponse(originalRequests.toMutableList(), cacheStrategy)
                 }
             }
-        }.toGraphqlResponse(requests)
+        }.toGraphqlResponse(originalRequests)
     }
 
     private fun List<GraphqlRequest>.regroup(indexOfEmptyCached: List<Int>?): MutableList<GraphqlRequest> {
@@ -69,7 +77,6 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
     fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
-        mResults.clear()
 
         originalResponse?.forEachIndexed { index, jsonElement ->
             try {
@@ -78,14 +85,17 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
 
-                    mResults.put(typeOfT, mGson.fromJson(data, typeOfT))
+                    mResults[typeOfT] = CommonUtils.fromJson(data, typeOfT)
                     mIsCachedData.put(typeOfT, false)
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors.put(typeOfT, mGson.fromJson(error, Array<GraphqlError>::class.java).toList())
+                    errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
+            } catch (jse: JsonSyntaxException) {
+                Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+                jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -103,14 +113,20 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
         return graphqlResponse
     }
 
+    /**
+     * Helper method to merge the partial caches response with lived response of network
+     */
     private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         try {
-            for (i in 0 until requests.size) {
-                if (requests[i].isNoCache) {
+            val copyRequests = mutableListOf<GraphqlRequest>()
+            copyRequests.addAll(requests);
+
+            for (i in 0 until copyRequests.size) {
+                if (copyRequests[i].isNoCache) {
                     continue
                 }
 
-                val cKey = requests[i].cacheKey()
+                val cKey = copyRequests[i].cacheKey()
                 val cachesResponse = graphqlCloudDataStore.cacheManager
                         .get(cKey)
 
@@ -119,15 +135,21 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 }
 
                 //Lookup for data
-                mResults[requests[i].typeOfT] = mGson.fromJson(cachesResponse, requests[i].typeOfT)
-                mIsCachedData[requests[i].typeOfT] = true
-                requests[i].isNoCache = true
-                mRefreshRequests.add(requests[i])
-                requests.remove(requests[i])
+                mResults[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                mIsCachedData[copyRequests[i].typeOfT] = true
+                copyRequests[i].isNoCache = true
+                mRefreshRequests.add(copyRequests[i])
+                requests.remove(copyRequests[i])
+
+                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
             }
-        } catch (e:Exception){
+        } catch (jse: JsonSyntaxException) {
+            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+            jse.printStackTrace()
+        } catch (e: Exception) {
             e.printStackTrace()
         }
+
 
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
     }

@@ -154,7 +154,7 @@ class CatalogDetailPageFragment : Fragment(),
             val textView = TextView(context)
             textView.textSize = 12f
             textView.text = MethodChecker.fromHtml(resources.getString(R.string.catalog_bullet_string, specs.value)).toString()
-            textView.setTextColor(MethodChecker.getColor(context, R.color.grey_796))
+            textView.setTextColor(MethodChecker.getColor(context, R.color.catalog_grey_796))
             top_three_specs.addView(textView)
         }
     }

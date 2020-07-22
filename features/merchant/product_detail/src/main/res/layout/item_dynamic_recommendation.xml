@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/white"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
     android:paddingBottom="@dimen/dp_16"
@@ -33,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/title_other_product"
-            android:textColor="@color/charcoal_grey_88"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 

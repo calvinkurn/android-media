@@ -1,24 +1,23 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
-import androidx.annotation.AttrRes
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.getColorFromResources
+import androidx.annotation.AttrRes
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by nabillasabbaha on 26/04/19.
  */
 class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
-    private lateinit var btnEnquiry: Button
+    private lateinit var btnEnquiry: UnifyButton
     private lateinit var enquiryResult: LinearLayout
     private lateinit var titleEnquiryResult: TextView
     private lateinit var postpaidListener: ClientNumberPostpaidListener
@@ -52,23 +51,23 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun resetClientNumberPostpaid() {
-        btnEnquiry.isEnabled = false
         enquiryResult.removeAllViews()
         btnEnquiry.visibility = View.VISIBLE
         titleEnquiryResult.visibility = View.GONE
-        btnEnquiry.setBackgroundResource(com.tokopedia.design.R.drawable.grey_button_rounded)
-        btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.digital_text_enquiry_non_active))
+        setButtonEnquiry(false)
     }
 
-    fun setButtonEnquiryEnable() {
-        btnEnquiry.isEnabled = true
-        btnEnquiry.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_orange)
-        btnEnquiry.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
+    fun setButtonEnquiry(enable: Boolean) {
+        btnEnquiry.isEnabled = enable
+    }
+
+    fun setLoadingButtonEnquiry(loading: Boolean) {
+        btnEnquiry.isLoading = loading
     }
 
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
         enquiryResult.removeAllViews()
-        for(item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
+        for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
             if (!TextUtils.isEmpty(item.value)) {
                 val billsResult = DigitalTelcoBillsResultWidget(context)
                 billsResult.setLabel(item.label)
