@@ -76,7 +76,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/txt_reason_1"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toRightOf="@id/ic_x_1"
                     app:layout_constraintTop_toTopOf="parent"
@@ -97,7 +97,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/txt_reason_2"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toRightOf="@id/ic_x_2"
                     app:layout_constraintTop_toBottomOf="@id/txt_reason_1"
