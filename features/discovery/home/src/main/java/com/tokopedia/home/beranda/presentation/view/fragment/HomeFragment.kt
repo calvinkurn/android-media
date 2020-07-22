@@ -1585,7 +1585,7 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         trackScreen(isVisibleToUser)
-        restartBanner(isVisibleToUser)
+        conditionalViewModelRefresh()
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {
