@@ -150,7 +150,7 @@ class VariantDataValuePicker : LinearLayout {
 
     private fun setupAddCustomVariantUnitValueButton(addCustomVariantUnitValueButton: ListItemUnify) {
         addCustomVariantUnitValueButton.isBold = false
-        addCustomVariantUnitValueButton.listTitle?.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
+        addCustomVariantUnitValueButton.listTitle?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
     }
 
     private fun setupListUnifyItemClickHandler(listItemUnifyList: List<ListItemUnify>,
