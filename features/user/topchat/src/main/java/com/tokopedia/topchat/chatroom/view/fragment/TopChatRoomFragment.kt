@@ -234,6 +234,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun onSuccessGetBottomChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         rvScrollListener?.finishBottomLoadingState()
         adapter.removeLatestHeaderDateIfSame(chatRoom.listChat)
+        adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
 //        loadChatRoomSettings(chatRoom)
