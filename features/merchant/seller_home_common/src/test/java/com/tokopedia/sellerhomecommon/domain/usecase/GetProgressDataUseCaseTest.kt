@@ -41,7 +41,6 @@ class GetProgressDataUseCaseTest {
     }
 
     private val params = GetProgressDataUseCase.getRequestParams(
-            shopId = ArgumentMatchers.anyString(),
             dataKey = ArgumentMatchers.anyList(),
             date = ArgumentMatchers.anyString()
     )

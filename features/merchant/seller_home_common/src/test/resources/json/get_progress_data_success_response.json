@@ -1,6 +1,6 @@
 {
   "data": {
-    "getProgressBarData": {
+    "fetchProgressBarWidgetData": {
       "data": [
         {
           "dataKey": "shopScore",
