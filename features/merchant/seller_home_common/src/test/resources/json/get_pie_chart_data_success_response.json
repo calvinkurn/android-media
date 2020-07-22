@@ -1,0 +1,38 @@
+{
+  "data": {
+    "fetchPieChartWidgetData": {
+      "data": [
+        {
+          "dataKey": "transactionBuyerRegularity",
+          "data": {
+            "item": [
+              {
+                "percentage": 75,
+                "percentageFmt": "75%",
+                "value": 3,
+                "valueFmt": "3",
+                "legend": "Pembeli Baru",
+                "color": "#4FBA68"
+              },
+              {
+                "percentage": 25,
+                "percentageFmt": "25%",
+                "value": 1,
+                "valueFmt": "1",
+                "legend": "Pembeli Reguler",
+                "color": "#E347B4"
+              }
+            ],
+            "summary": {
+              "value": 4,
+              "valueFmt": "4 Pembeli",
+              "diffPercentage": 100,
+              "diffPercentageFmt": "<span style=color:#03AC0E;><b>+100%</b></span> dengan 7 hari sebelumnya"
+            }
+          },
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}
