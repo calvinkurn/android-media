@@ -53,7 +53,8 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     private void routingOnNext(KycUserProjectInfoPojo pojo) {
         if (pojo.getKycProjectInfo() != null) {
-            if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED) {
+            if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED ||
+                    pojo.getKycProjectInfo().getStatusName() != null && pojo.getKycProjectInfo().getStatusName().equals("")) {
                 listener.onUserBlacklist();
             } else {
                 listener.onSuccessGetUserProjectInfo(pojo.getKycProjectInfo().getStatus(), pojo.getKycProjectInfo().getReasonList());
