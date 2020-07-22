@@ -293,7 +293,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         flEtalaseFlow.show()
     }
 
-    override fun showToaster(message: String, type: Int, duration: Int, actionLabel: String) {
+    override fun showToaster(message: String, type: Int, duration: Int, actionLabel: String, actionListener: View.OnClickListener) {
         if (toasterBottomMargin == 0) {
             val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = bottomActionView.rootView.height + offset8
@@ -304,6 +304,7 @@ class PlayEtalasePickerFragment @Inject constructor(
                 type = type,
                 duration = duration,
                 actionLabel = actionLabel,
+                actionListener = actionListener,
                 bottomMargin = toasterBottomMargin
         )
     }

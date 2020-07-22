@@ -11,10 +11,12 @@ import androidx.transition.Fade
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class PlaySearchSuggestionsFragment @Inject constructor(
@@ -83,12 +85,34 @@ class PlaySearchSuggestionsFragment @Inject constructor(
         searchKeyword(keyword)
     }
 
+    private fun dismissToaster() {
+        try {
+            Toaster.snackBar.dismiss()
+        } catch (e: Throwable) {}
+    }
+
     /**
      * Observe
      */
     private fun observeSearchSuggestions() {
-        viewModel.observableSuggestionList.observe(viewLifecycleOwner, Observer {
-            searchSuggestionsAdapter.setItemsAndAnimateChanges(it)
+        viewModel.observableSuggestionList.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is NetworkResult.Success -> {
+                    dismissToaster()
+                    searchSuggestionsAdapter.setItemsAndAnimateChanges(result.data)
+                }
+                is NetworkResult.Fail -> {
+                    etalaseSetupCoordinator.showToaster(
+                            message = result.error.localizedMessage,
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_LONG,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = View.OnClickListener {
+                                result.onRetry()
+                            }
+                    )
+                }
+            }
         })
     }
 
