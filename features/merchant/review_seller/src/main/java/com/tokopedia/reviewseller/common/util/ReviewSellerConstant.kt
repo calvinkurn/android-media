@@ -77,7 +77,7 @@ object ReviewSellerConstant {
         return map
     }
 
-    const val DEFAULT_PER_PAGE = 10
+    const val DEFAULT_PER_PAGE = 15
     const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
