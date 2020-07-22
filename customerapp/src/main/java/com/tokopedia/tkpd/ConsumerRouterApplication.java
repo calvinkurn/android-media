@@ -405,7 +405,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getReviewSellerFragment() {
-        return SellerReputationFragment.createInstance();
+        return null;
     }
 
     @Override
