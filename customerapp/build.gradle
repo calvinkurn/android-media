@@ -94,12 +94,12 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-/*ext.lintchecks = [
+ext.lintchecks = [
         'SetColourUsageError',
         'CoreResourcesUsageError',
         'VectorDrawableCompat',
         'TypographyOverTextViewUsage'
-] as String[]*/
+] as String[]
 
 
 android {
@@ -146,6 +146,7 @@ android {
         htmlReport false
         warningsAsErrors false
         abortOnError false
+        check lintchecks
     }
 
     signingConfigs {
