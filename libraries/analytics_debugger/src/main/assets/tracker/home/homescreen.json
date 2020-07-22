@@ -1,0 +1,11 @@
+{
+  "readme": "Homescreen Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/",
+      "isLoggedInStatus": "{{true|false}}",
+      "event": "",
+    }
+  ]
+}
