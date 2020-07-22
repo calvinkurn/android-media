@@ -18,7 +18,6 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.utils.convertValuesToString
@@ -39,7 +38,6 @@ internal class SearchShopViewModel(
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-        private val searchLocalCacheHandler: SearchLocalCacheHandler,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.ui()) {
 
@@ -75,6 +73,7 @@ internal class SearchShopViewModel(
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val sortFilterItemListLiveData = MutableLiveData<State<List<SortFilterItem>>>()
+    var dynamicFilterModel: DynamicFilterModel? = null
 
     init {
         setSearchParameterUniqueId()
@@ -478,12 +477,12 @@ internal class SearchShopViewModel(
     }
 
     private fun onGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
+        this.dynamicFilterModel = dynamicFilterModel
         dynamicFilterEventLiveData.postValue(Event(true))
 
         isFilterDataAvailable = dynamicFilterModel.data.filter.isNotEmpty()
 
-        saveDynamicFilterModel(dynamicFilterModel)
-        processFilterData(dynamicFilterModel)
+        processFilterData()
     }
 
     private fun createGetDynamicFilterParams(): RequestParams {
@@ -504,20 +503,16 @@ internal class SearchShopViewModel(
                 mutableMapOf())
     }
 
-    private fun saveDynamicFilterModel(dynamicFilterModel: DynamicFilterModel) {
-        searchLocalCacheHandler.saveDynamicFilterModelLocally(SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
-    }
-
-    private fun processFilterData(dynamicFilterModel: DynamicFilterModel) {
-        processFilterIntoFilterController(dynamicFilterModel)
+    private fun processFilterData() {
+        processFilterIntoFilterController()
 
         if (isEmptySearchShop) {
             updateEmptySearchViewModelWithFilter()
         }
     }
 
-    private fun processFilterIntoFilterController(dynamicFilterModel: DynamicFilterModel) {
-        dynamicFilterModel.data.filter.let { filterList ->
+    private fun processFilterIntoFilterController() {
+        dynamicFilterModel?.data?.filter?.let { filterList ->
             val initializedFilterList = FilterHelper.initializeFilterList(filterList)
             filterController.appendFilterList(searchParameter.convertValuesToString(), initializedFilterList)
         }

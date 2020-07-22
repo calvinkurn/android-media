@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.shop.presentation.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +18,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.manager.FilterSortManager
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -54,9 +53,7 @@ internal class ShopListFragment:
         BannerAdsListener {
 
     companion object {
-
         private const val SHOP = "shop"
-
         private const val SEARCH_SHOP_TRACE = "search_shop_trace"
 
         @JvmStatic
@@ -270,17 +267,36 @@ internal class ShopListFragment:
 
     private fun handleEventOpenFilterPage(isSuccessOpenFilterPage: Boolean) {
         if (isSuccessOpenFilterPage) {
-            FilterSortManager.openFilterPage(
-                    filterTrackingData,
-                    this,
-                    screenName,
-                    HashMap(searchShopViewModel?.getSearchParameter().convertValuesToString()))
+            openFilterPage()
         }
         else {
             activity?.let { activity ->
                 NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_filter_data_not_ready))
             }
         }
+    }
+
+    private fun openFilterPage() {
+        val sortFilterBottomSheet = SortFilterBottomSheet()
+        val isButtonResetVisible = searchShopViewModel?.getActiveFilterOptionListForEmptySearch()?.size ?: 0 > 0
+        val callback = object : SortFilterBottomSheet.Callback {
+            override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+                FilterTracking.eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
+                searchShopViewModel?.onViewApplyFilter(applySortFilterModel.mapParameter)
+            }
+
+            override fun getResultCount(mapParameter: Map<String, String>) {
+                sortFilterBottomSheet.setResultCountText("Terapkan")
+            }
+        }
+
+        sortFilterBottomSheet.show(
+                requireFragmentManager(),
+                searchShopViewModel?.getSearchParameter().convertValuesToString(),
+                searchShopViewModel?.dynamicFilterModel,
+                isButtonResetVisible,
+                callback
+        )
     }
 
     private fun observeTrackingShopItemImpressionEvent() {
@@ -488,21 +504,6 @@ internal class ShopListFragment:
         if (userVisibleHint) {
             SearchTracking.screenTrackSearchSectionFragment(screenName)
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
-            override fun onFilterResult(queryParams: Map<String, String>?,
-                                        selectedFilters: Map<String, String>?,
-                                        selectedOptions: List<Option>?) {
-                FilterTracking.eventApplyFilter(filterTrackingData, screenName, selectedFilters)
-                searchShopViewModel?.onViewApplyFilter(queryParams)
-            }
-
-            override fun onSortResult(selectedSort: Map<String, String>?, selectedSortName: String?, autoApplyFilter: String?) { }
-        })
     }
 
     override fun getScreenName(): String {

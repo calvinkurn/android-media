@@ -25,8 +25,7 @@ import javax.inject.Named
 @Module(includes = [
     SearchShopUseCaseModule::class,
     GetDynamicFilterCoroutineUseCaseModule::class,
-    ShopViewModelMapperModule::class,
-    SearchLocalCacheHandlerModule::class
+    ShopViewModelMapperModule::class
 ])
 internal class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
@@ -45,7 +44,6 @@ internal class SearchShopViewModelFactoryModule(
             shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
             shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-            searchLocalCacheHandler: SearchLocalCacheHandler,
             userSession: UserSessionInterface
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
@@ -57,7 +55,6 @@ internal class SearchShopViewModelFactoryModule(
                 shopCpmViewModelMapper,
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,
-                searchLocalCacheHandler,
                 userSession
         )
     }

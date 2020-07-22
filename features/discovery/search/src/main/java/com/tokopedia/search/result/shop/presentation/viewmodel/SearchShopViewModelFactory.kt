@@ -22,7 +22,6 @@ internal class SearchShopViewModelFactory(
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-        private val searchLocalCacheHandler: SearchLocalCacheHandler,
         private val userSession: UserSessionInterface
 ): ViewModelProvider.Factory {
 
@@ -45,7 +44,6 @@ internal class SearchShopViewModelFactory(
                 shopCpmViewModelMapper,
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,
-                searchLocalCacheHandler,
                 userSession
         )
     }

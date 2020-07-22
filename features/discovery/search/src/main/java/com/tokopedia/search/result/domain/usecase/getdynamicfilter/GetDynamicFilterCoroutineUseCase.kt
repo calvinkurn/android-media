@@ -67,13 +67,6 @@ class GetDynamicFilterCoroutineUseCase (
                                     }
                                 }
                             }
-                            sort {
-                                name
-                                key
-                                value
-                                inputType
-                                applyFilter
-                            }
                         }
                     }
                 }

@@ -182,20 +182,12 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
 
         `When handle view is visible and added`()
 
-        `Then assert save dynamic filter is executed`()
         `Then assert dynamic filter response event is success (true)`()
         `Then assert search shop state is success and have updated Empty Search Model with Filter Data`()
     }
 
     private fun `Given search shop view model`() {
         searchShopViewModel = createSearchShopViewModel()
-    }
-
-    private fun `Then assert save dynamic filter is executed`() {
-        verify(exactly = 1) {
-            searchLocalCacheHandler.saveDynamicFilterModelLocally(
-                    SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
-        }
     }
 
     private fun `Then assert dynamic filter response event is success (true)`() {
@@ -219,7 +211,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
 
         `When handle view is visible and added`()
 
-        `Then assert save dynamic filter is executed`()
         `Then assert dynamic filter response event is success (true)`()
         `Then assert search shop state is success, have updated Empty Search Model with Filter Data, and contains shop recommendation`()
         `Then assert has next page is true`()

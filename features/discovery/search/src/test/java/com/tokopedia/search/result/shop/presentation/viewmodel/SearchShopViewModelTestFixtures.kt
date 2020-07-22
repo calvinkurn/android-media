@@ -7,7 +7,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.search.result.TestDispatcherProvider
 import com.tokopedia.search.result.isExecuted
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.dynamicFilterModel
@@ -31,7 +30,6 @@ internal open class SearchShopViewModelTestFixtures {
     protected val searchShopFirstPageUseCase = mockk<UseCase<SearchShopModel>>(relaxed = true)
     protected val searchShopLoadMoreUseCase = mockk<UseCase<SearchShopModel>>(relaxed = true)
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
-    protected val searchLocalCacheHandler = mockk<SearchLocalCacheHandler>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val shopCpmViewModelMapper = shopViewModelMapperModule.provideShopCpmViewModelMapper()
     protected val shopTotalCountViewModelMapper = shopViewModelMapperModule.provideShopTotalCountViewModelMapper()
@@ -54,7 +52,7 @@ internal open class SearchShopViewModelTestFixtures {
                 TestDispatcherProvider(), parameter,
                 searchShopFirstPageUseCase, searchShopLoadMoreUseCase, getDynamicFilterUseCase,
                 shopCpmViewModelMapper, shopTotalCountViewModelMapper, shopViewModelMapper,
-                searchLocalCacheHandler, userSession
+                userSession
         )
     }
 
