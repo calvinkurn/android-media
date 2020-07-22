@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTI
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -148,6 +149,23 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun editVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
+    }
+
+    fun updateProductInputModel(productInputModel: ProductInputModel) {
+        this.productInputModel.value = productInputModel
+        setDefaultPrimaryVariant() // set default variant if don't have any
+    }
+
+    private fun setDefaultPrimaryVariant() {
+        productInputModel.value?.variantInputModel?.products?.let { products ->
+            val isPrimaryVariantExist = products.any {
+                it.isPrimary
+            }
+
+            if (!isPrimaryVariantExist) {
+                products.getOrNull(DEFAULT_IS_PRIMARY_INDEX)?.isPrimary = true
+            }
+        }
     }
 
     fun updateProductInputModel() {
