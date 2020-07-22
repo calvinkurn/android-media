@@ -34,7 +34,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop page first page is successful`()
         `Then assert has next page is true`()
         `Then assert get dynamic filter API called once`()
-        `Then assert bottom navigation visibility event is true (visible)`()
         `Then assert quick filter is shown`(searchShopModel.getQuickFilterList())
     }
 
@@ -103,13 +102,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         getDynamicFilterUseCase.isExecuted()
     }
 
-    private fun `Then assert bottom navigation visibility event is true (visible)`() {
-        val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
-
-        val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
-        bottomNavigationVisibilityEvent shouldBe true
-    }
-
     @Test
     fun `Search Shop First Page Successful Without Next Page`() {
         `Given search shop API call will be successful and return search shop data without next page`()
@@ -119,7 +111,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop state is success and contains search shop data without loading more view model`()
         `Then assert successful search shop tracking`()
         `Then assert has next page is false`()
-        `Then assert bottom navigation visibility event is true (visible)`()
         `Then assert quick filter is shown`(searchShopModelWithoutNextPage.getQuickFilterList())
     }
 
@@ -152,7 +143,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop state is success and contains search shop data without CPM`()
         `Then assert successful search shop tracking`()
         `Then assert has next page is true`()
-        `Then assert bottom navigation visibility event is true (visible)`()
         `Then assert quick filter is shown`(searchShopModelWithoutCpm.getFilterList())
     }
 
@@ -179,7 +169,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop state is success and contains search shop data without CPM Shop`()
         `Then assert successful search shop tracking`()
         `Then assert has next page is true`()
-        `Then assert bottom navigation visibility event is true (visible)`()
         `Then assert quick filter is shown`(searchShopModelWithoutValidCpmShop.getFilterList())
     }
 
@@ -246,7 +235,6 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop page first page is successful`()
         `Then assert has next page is true`()
         `Then assert get dynamic filter API called once`()
-        `Then assert bottom navigation visibility event is true (visible)`()
         `Then assert quick filter is shown`(createDefaultQuickFilter().filter)
     }
 

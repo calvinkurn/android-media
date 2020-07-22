@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
@@ -41,6 +40,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
+import com.tokopedia.search.utils.HideTabOnScrollListener
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
@@ -139,6 +139,7 @@ internal class ShopListFragment:
             recyclerViewSearchShop?.adapter = shopListAdapter
             recyclerViewSearchShop?.addItemDecoration(createShopItemDecoration(activity))
             gridLayoutLoadMoreTriggerListener?.let {
+                recyclerViewSearchShop?.addOnScrollListener(HideTabOnScrollListener(context, context as SearchNavigationListener, searchShopQuickSortFilter))
                 recyclerViewSearchShop?.addOnScrollListener(it)
             }
         }
@@ -178,7 +179,6 @@ internal class ShopListFragment:
         observeTrackingClickShopRecommendation()
         observeTrackingClickProductItem()
         observeTrackingClickProductRecommendation()
-        observeBottomNavigationVisibilityEvent()
         observeQuickFilterLiveData()
     }
 
@@ -437,12 +437,6 @@ internal class ShopListFragment:
         SearchTracking.trackEventClickShopRecommendationProductPreview(shopItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
     }
 
-    private fun observeBottomNavigationVisibilityEvent() {
-        searchShopViewModel?.getBottomNavigationVisibilityEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isVisible ->
-            searchViewModel?.changeBottomNavigationVisibility(isVisible)
-        })
-    }
-
     private fun observeQuickFilterLiveData() {
         searchShopViewModel?.getSortFilterItemListLiveData()?.observe(viewLifecycleOwner, Observer {
             updateQuickFilterView(it)
@@ -486,32 +480,8 @@ internal class ShopListFragment:
 
         trackScreen()
 
-        val childViewVisibilityChangedModel = createChildViewVisibilityChangedModel(isVisibleToUser)
-        searchViewModel?.onChildViewVisibilityChanged(childViewVisibilityChangedModel)
-
+        searchViewModel?.changeBottomNavigationVisibility(false)
         searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
-    }
-
-    private fun createChildViewVisibilityChangedModel(isVisibleToUser: Boolean): ChildViewVisibilityChangedModel {
-        return ChildViewVisibilityChangedModel(
-                isChildViewVisibleToUser = isVisibleToUser,
-                isChildViewReady = view != null,
-                isFilterEnabled = true,
-                isSortEnabled = false,
-                searchNavigationOnClickListener = object : SearchNavigationListener.ClickListener {
-                    override fun onFilterClick() {
-                        openFilterPage()
-                    }
-
-                    override fun onSortClick() {}
-
-                    override fun onChangeGridClick() {}
-                }
-        )
-    }
-
-    private fun openFilterPage() {
-        searchShopViewModel?.onViewOpenFilterPage()
     }
 
     private fun trackScreen() {

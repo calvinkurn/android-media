@@ -26,7 +26,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then assert has next page is false`()
-        `Then assert bottom navigation visibility event is false (hidden)`()
     }
 
     private fun `Given search shop view model without filter`() {
@@ -96,13 +95,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         hasNextPage shouldBe false
     }
 
-    private fun `Then assert bottom navigation visibility event is false (hidden)`() {
-        val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
-
-        val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
-        bottomNavigationVisibilityEvent shouldBe false
-    }
-
     @Test
     fun `Search Shop has Empty Result with Shop Recommendation has next page`() {
         `Given search shop view model without filter`()
@@ -117,7 +109,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then assert has next page is true`()
-        `Then assert bottom navigation visibility event is false (hidden)`()
     }
 
     private fun `Given search shop API will be successful and return empty search shop with recommendation shop has next page`() {
@@ -169,7 +160,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then assert has next page is false`()
-        `Then assert bottom navigation visibility event is false (hidden)`()
     }
 
     private fun `Given search shop API will be successful and return empty search shop with recommendation shop without next page`() {
