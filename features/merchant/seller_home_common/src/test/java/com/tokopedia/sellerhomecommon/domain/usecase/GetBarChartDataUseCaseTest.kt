@@ -62,13 +62,13 @@ class GetBarChartDataUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        val postList = getBarChartDataUseCase.executeOnBackground()
+        val result = getBarChartDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assert.assertTrue(!postList.isNullOrEmpty())
+        Assert.assertTrue(!result.isNullOrEmpty())
     }
 
     @Test
@@ -81,12 +81,12 @@ class GetBarChartDataUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val postList = getBarChartDataUseCase.executeOnBackground()
+        val result = getBarChartDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assert.assertTrue(postList.isNullOrEmpty())
+        Assert.assertTrue(result.isNullOrEmpty())
     }
 }

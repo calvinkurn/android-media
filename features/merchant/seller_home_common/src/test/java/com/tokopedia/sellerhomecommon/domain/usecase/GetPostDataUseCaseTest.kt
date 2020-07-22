@@ -59,13 +59,13 @@ class GetPostDataUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        val postList = getPostDataUseCase.executeOnBackground()
+        val result = getPostDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertTrue(!postList.isNullOrEmpty())
+        assertTrue(!result.isNullOrEmpty())
     }
 
     @Test
@@ -78,12 +78,12 @@ class GetPostDataUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val postList = getPostDataUseCase.executeOnBackground()
+        val result = getPostDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertTrue(postList.isNullOrEmpty())
+        assertTrue(result.isNullOrEmpty())
     }
 }
