@@ -63,15 +63,17 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         @JvmStatic
         fun getInstance(context: Context): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
+                val player = PlayVideoManager(context.applicationContext).also {
+                    INSTANCE = it
+                }
+
                 if (playProcessLifecycleObserver == null)
                     playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
 
                 playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
                         .lifecycle.addObserver(it) }
 
-                PlayVideoManager(context.applicationContext).also {
-                    INSTANCE = it
-                }
+                player
             }
         }
 
