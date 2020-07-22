@@ -838,8 +838,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     //------------------------------------//
 
     fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
-        launch { doClearPromo(mutation, validateUsePromoRequest, bboPromoCodes) }
-
         launchCatchError(block = {
             doClearPromo(mutation, validateUsePromoRequest, bboPromoCodes)
         }) { throwable ->
