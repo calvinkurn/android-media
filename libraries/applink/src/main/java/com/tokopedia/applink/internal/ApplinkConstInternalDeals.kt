@@ -23,4 +23,7 @@ object ApplinkConstInternalDeals {
 
     @JvmField
     val DEALS_BRAND_PAGE = "$INTERNAL_DEALS/brand-new/page"
+
+    @JvmField
+    val DEALS_SEARCH_PAGE = "$INTERNAL_DEALS/search-new"
 }
