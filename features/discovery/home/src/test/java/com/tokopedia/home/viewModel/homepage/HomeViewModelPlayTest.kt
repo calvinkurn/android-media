@@ -11,8 +11,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import org.junit.Rule
 import org.junit.Test
 
@@ -56,6 +59,56 @@ class HomeViewModelPlayTest{
             homeViewModel.setPlayBanner(it.peekContent())
         }
 
+        // Expect the event on live data available
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
+            )
+        }
+
+        // Update view triggered
+        homeViewModel.updateBannerTotalView("0")
+
+        // Expect the view updated
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
+                    && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "0"
+            )
+        }
+    }
+
+    @Test
+    fun `Get play data success and image url valid and home refresh`() {
+        val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+
+        // dynamic banner
+        coEvery { getHomeUseCase.getHomeData() } returns flow{
+            emit(HomeDataModel(
+                    list = listOf(playDataModel)
+            ))
+            delay(400)
+            emit(HomeDataModel(
+                    list = listOf(playDataModel)
+            ))
+        }
+
+        // play data returns success
+        getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                channel = playCardHome
+        )
+
+        // viewModel load play data
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
+
+        // Expect the event on live data available and check image
+        homeViewModel.requestImageTestLiveData.observeOnce {
+            assert(it.peekContent().playCardHome != null && it.peekContent().playCardHome!!.coverUrl == playCardHome.coverUrl)
+            // Image valid should submit the data on live data home
+            homeViewModel.setPlayBanner(it.peekContent())
+        }
+        Thread.sleep(500)
         // Expect the event on live data available
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null

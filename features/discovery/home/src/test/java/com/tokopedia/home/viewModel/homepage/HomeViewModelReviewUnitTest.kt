@@ -3,6 +3,8 @@ package com.tokopedia.home.viewModel.homepage
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
+import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -10,11 +12,14 @@ import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResp
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.ext.observeOnce
 import io.mockk.coEvery
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import org.junit.Rule
 import org.junit.Test
 
@@ -29,6 +34,7 @@ class HomeViewModelReviewUnitTest {
 
     private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
     private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
+    private val dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
 
     @Test
@@ -70,11 +76,16 @@ class HomeViewModelReviewUnitTest {
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
         // Populate data view model
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(review)
-                )
-        )
+        coEvery { getHomeUseCase.getHomeData() } returns flow{
+            emit(HomeDataModel(
+                    isCache = true,
+                    list = listOf(review)
+            ))
+            delay(100)
+            emit(HomeDataModel(
+                    list = listOf(review)
+            ))
+        }
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).also {
@@ -82,9 +93,43 @@ class HomeViewModelReviewUnitTest {
         }
         homeViewModel.homeLiveData.observeForever(observerHome)
 
+        Thread.sleep(100)
+        // Expect Review widget will show on user screen
+        homeViewModel.homeLiveData.observeOnce { homeDataModel -> assert(homeDataModel.list.find { it is ReviewDataModel } == null) }
+    }
+
+    @Test
+    fun `Test Review is visible trying to dismiss`(){
+        val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+
+        // Populate data view model
+        coEvery { getHomeUseCase.getHomeData() } returns flow{
+            emit(HomeDataModel(
+                    isCache = false,
+                    list = listOf(review)
+            ))
+        }
+
+        coEvery { getHomeReviewSuggestedUseCase.executeOnBackground() } returns SuggestedProductReview(
+                suggestedProductReview = SuggestedProductReviewResponse(
+                        title = "Suggested Title"
+                )
+        )
+
+        coEvery { dismissHomeReviewUseCase.executeOnBackground() } returns ProductrevDismissSuggestion()
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, dismissHomeReviewUseCase = dismissHomeReviewUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+        Thread.sleep(300)
+        homeViewModel.dismissReview()
         // Expect Review widget will show on user screen
         verifyOrder {
             // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } != null
+            })
             observerHome.onChanged(match { homeDataModel ->
                 homeDataModel.list.find { it is ReviewDataModel } == null
             })
@@ -192,6 +237,50 @@ class HomeViewModelReviewUnitTest {
             })
         }
         confirmVerified(observerHome)
+    }
 
+    @Test
+    fun `Test Review with data product and try remove when geolocation on`(){
+        val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+
+        // Populate data viewmodel
+        coEvery { getHomeUseCase.getHomeData() } returns flow{
+            emit(HomeDataModel(
+                    isCache = false,
+                    list = listOf(review)
+            ))
+            delay(300)
+            emit(HomeDataModel(
+                    isCache = true,
+                    list = listOf(review)
+            ))
+        }
+
+        // Review data
+        coEvery { getHomeReviewSuggestedUseCase.executeOnBackground() } returns SuggestedProductReview(
+                suggestedProductReview = SuggestedProductReviewResponse(
+                        title = "Suggested Title"
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase).also {
+            it.setNeedToShowGeolocationComponent(true)
+        }
+        homeViewModel.homeLiveData.observeForever(observerHome)
+
+        Thread.sleep(300)
+        // Expect Review widget will show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } != null
+            })
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find { it is ReviewDataModel } == null
+            })
+        }
+        confirmVerified(observerHome)
     }
 }

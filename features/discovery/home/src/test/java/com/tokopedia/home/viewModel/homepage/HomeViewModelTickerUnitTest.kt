@@ -81,7 +81,7 @@ class HomeViewModelTickerUnitTest {
     }
 
     @Test
-    fun `Test Remove Ticke`(){
+    fun `Test Remove Ticker`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
         val ticker = TickerDataModel()
         // Data with ticker
@@ -105,6 +105,32 @@ class HomeViewModelTickerUnitTest {
             // check data is not available cause removed
             observerHome.onChanged(match { homeDataModel ->
                 homeDataModel.list.find{ it::class.java == ticker::class.java} == null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+
+    @Test
+    fun `Test Refresh Ticker`(){
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val ticker = TickerDataModel()
+        // Data with ticker
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        isCache = false,
+                        list = listOf(ticker)
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+
+        // Expect ticker not show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} != null
             })
         }
         confirmVerified(observerHome)

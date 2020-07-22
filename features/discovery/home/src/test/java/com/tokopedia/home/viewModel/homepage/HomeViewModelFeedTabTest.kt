@@ -40,10 +40,27 @@ class HomeViewModelFeedTabTest {
             assert(homeDataModel.list.find{ it::class.java == HomeRecommendationFeedDataModel::class.java } != null)
         }
     }
+
+    @Test
+    fun `Test get recommendation feed section`(){
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf()
+                )
+        )
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+
+        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+            assert(homeDataModel.list.size -1 == homeViewModel.getRecommendationFeedSectionPosition())
+        }
+    }
+
     @Test
     fun `Test tab is available and send retry model`(){
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
+                        isCache = true,
                         list = listOf(HomeRecommendationFeedDataModel())
                 )
         )

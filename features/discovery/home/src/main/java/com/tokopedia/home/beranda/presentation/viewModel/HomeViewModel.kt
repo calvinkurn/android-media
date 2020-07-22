@@ -686,7 +686,7 @@ open class HomeViewModel @Inject constructor(
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
                 }
-                homeDataModel.copy(
+                return homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -699,14 +699,10 @@ open class HomeViewModel @Inject constructor(
             if(popularWidget != null) {
                 val list = homeViewModel.list.toMutableList()
                 // find the old data from current list
-                list.forEachIndexed { pos, data ->
-                    run {
-                        if (data is PopularKeywordListDataModel) {
-                            list[pos] = data
-                        }
-                    }
+                list.withIndex().find { (_, value) -> value is PopularKeywordListDataModel }?.let {
+                    list[it.index] = popularWidget
                 }
-                homeViewModel.copy(list = list)
+                return homeViewModel.copy(list = list)
             }
         }
         return homeDataModel
@@ -732,7 +728,7 @@ open class HomeViewModel @Inject constructor(
                             }
                         }
                     }
-                    homeViewModel.copy(list = list)
+                    return homeViewModel.copy(list = list)
                 }
             }
         }
@@ -753,7 +749,9 @@ open class HomeViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     withContext(homeDispatcher.get().ui()) {
-                        _homeLiveData.value = homeDataModel
+                        var homeData = evaluateGeolocationComponent(homeDataModel)
+                        homeData = evaluateAvailableComponent(homeDataModel)
+                        _homeLiveData.value = homeData
                     }
                     getHeaderData()
                     getReviewData()
@@ -958,15 +956,20 @@ open class HomeViewModel @Inject constructor(
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
         }){
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
+            val findLoadingModel = _homeLiveData.value?.list?.find {
+                visitable -> visitable is HomeLoadingMoreModel
+            }
+
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
     }
