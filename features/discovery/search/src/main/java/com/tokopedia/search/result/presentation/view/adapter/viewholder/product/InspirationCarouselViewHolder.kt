@@ -28,15 +28,8 @@ class InspirationCarouselViewHolder(
     }
 
     override fun bind(element: InspirationCarouselViewModel) {
-        setBackgroundRandom()
-
         bindTitle(element)
         bindContent(element)
-    }
-
-    private fun setBackgroundRandom() {
-        val backgroundIndex = intArrayOf(0, 1, 2, 3).indices.shuffled().first()
-        itemView.inspirationCarousel?.setContainerColor(backgroundIndex)
     }
 
     private fun bindTitle(element: InspirationCarouselViewModel) {
