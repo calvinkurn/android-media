@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
+import android.os.Bundle
+import android.view.View
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 
@@ -9,6 +11,11 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAd
 class NotificationUpdateSellerFragment : NotificationUpdateFragment() {
 
     private val filterSeller = hashMapOf(FILTER_SELLER_TYPE_KEY to FILTER_SELLER_TYPE_VALUE)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.clearNotifCounter()
+    }
 
     override fun loadData(page: Int) {
         // filter seller data only, using filterSeller

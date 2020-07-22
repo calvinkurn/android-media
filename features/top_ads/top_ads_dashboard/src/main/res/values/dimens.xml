@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="line_chart_height">200dp</dimen>
-    <dimen name="viewpager_statistics_height">250dp</dimen>
+    <dimen name="viewpager_statistics_height">220dp</dimen>
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="fontvs">12sp</dimen>

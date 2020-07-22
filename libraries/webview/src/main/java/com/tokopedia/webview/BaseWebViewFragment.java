@@ -494,10 +494,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             if (view.getContext() instanceof BaseSimpleWebViewActivity) {
                 BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) view.getContext();
                 String title = view.getTitle();
-                String activityTitle = activity.getTitle();
+                String activityTitle = activity.getWebViewTitle();
                 if (TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE)) {
                     if (activity.getShowTitleBar()) {
-                        activity.setTitle(title);
+                        activity.setWebViewTitle(title);
                         activity.updateTitle(title);
                     }
                 }
@@ -588,6 +588,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (goToLoginGoogle(uri)) return true;
+
         String queryParam = null;
         String headerText = null;
 
@@ -597,6 +598,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
@@ -625,10 +627,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
             return true;
-        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
-            Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
-            if (intent != null) {
-                startActivity(intent);
+        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+            //Avoid crash in app that doesn't support branch IO
+            try {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+                if (intent != null) {
+                    startActivity(intent);
+                }
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
             }
         }
         if (url.contains(PARAM_EXTERNAL)) {
