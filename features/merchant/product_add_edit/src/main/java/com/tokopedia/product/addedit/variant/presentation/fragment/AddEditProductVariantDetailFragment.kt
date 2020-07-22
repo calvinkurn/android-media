@@ -159,9 +159,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         // change primary variant if primary position equals adapter position
         viewModel.productInputModel.value?.variantInputModel?.products?.let { variants ->
-            val variant = variants[adapterPosition]
-            if(variant.isPrimary) {
-                variant.isPrimary = isChecked
+            variants.getOrNull(adapterPosition)?.let { variant ->
+                if(variant.isPrimary) {
+                    variant.isPrimary = isChecked
+                }
             }
         }
 
@@ -205,8 +206,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.updatePrimaryVariant(combination)
 
         // update switch status to be true if primary selected
-        val position = combination.getOrNull(0)
-        position?.let {
+        combination.getOrNull(0)?.let {
             val updatedInputModel = viewModel.updateSwitchStatus(true, it)
             viewModel.editVariantDetailInputMap(it, updatedInputModel)
             variantDetailFieldsAdapter?.updateDetailInputField(it, updatedInputModel)
