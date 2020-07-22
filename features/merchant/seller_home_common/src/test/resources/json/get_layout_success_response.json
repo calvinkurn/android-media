@@ -1,6 +1,6 @@
 {
   "data": {
-    "GetSellerDashboardLayout": {
+    "GetSellerDashboardPageLayout": {
       "widget": [
         {
           "widgetType": "section",
