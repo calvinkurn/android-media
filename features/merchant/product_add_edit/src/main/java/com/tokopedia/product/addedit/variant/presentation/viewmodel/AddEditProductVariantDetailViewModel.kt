@@ -383,6 +383,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val productVariant = productVariants
                 .getOrElse(productVariantIndex) { ProductVariantInputModel() }
         val priceString = productVariant.price.toString()
+        val isPrimary = productVariant.isPrimary
 
         return VariantDetailInputLayoutModel(
                 price = InputPriceUtil.formatProductPriceInput(priceString),
@@ -391,7 +392,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 stock = productVariant.stock.toString(),
                 headerPosition = headerPosition,
                 isSkuFieldVisible = isSkuFieldVisible,
-                unitValueLabel = unitValueLabel)
+                unitValueLabel = unitValueLabel,
+                isPrimary = isPrimary)
     }
 
 }
