@@ -89,7 +89,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
 
     fun requestCancellation() {
         launchCatchError(dispatcherProvider.ui(), block = {
-            val cancellationResponse = requestUseCase.execute(requestUseCase.createRequestParams(
+            requestUseCase.execute(requestUseCase.createRequestParams(
                     cancellationWrapperModel.invoiceId,
                     cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason,
                     cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId,
