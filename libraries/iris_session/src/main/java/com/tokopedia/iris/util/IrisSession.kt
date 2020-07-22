@@ -25,6 +25,7 @@ class IrisSession(val context: Context) : Session {
         const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
         const val ONE_DAY_MILLIS = 86_400_000L
         const val GMT_MILLIS = 25_200_000L // 7 hours
+        const val THRESHOLD_UPDATE_LAST_ACTIVITY = 10_000L // 10 seconds to prevent burst update shared pref
     }
 
     /**
@@ -107,10 +108,16 @@ class IrisSession(val context: Context) : Session {
         editor.commit()
     }
 
+    /**
+     * Update timestamp of last tracking activity
+     */
     private fun setPrefTrackingTimeStamp(timestamp: Long) {
-        lastTrackingActivity = timestamp
-        editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
-        editor.apply()
+        // threshold is to prevent bursting
+        if (timestamp - lastTrackingActivity > THRESHOLD_UPDATE_LAST_ACTIVITY) {
+            lastTrackingActivity = timestamp
+            editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
+            editor.apply()
+        }
     }
 
     private fun setUuid(uuid: String?) {
