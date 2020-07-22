@@ -80,8 +80,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
         cacheManagerId?.run {
-            viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
+             val productInputModel= saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java) ?: ProductInputModel()
+            viewModel.updateProductInputModel(productInputModel)
         }
 
         activity?.window?.setSoftInputMode(

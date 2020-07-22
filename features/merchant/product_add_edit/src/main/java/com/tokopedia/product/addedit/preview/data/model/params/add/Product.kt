@@ -24,6 +24,9 @@ data class Product (
         @SerializedName("stock")
         @Expose
         var stock: Int = 0,
+        @SerializedName("isPrimary")
+        @Expose
+        var isPrimary: Boolean = false,
         @SerializedName("pictures")
         @Expose
         var pictures: List<Picture> = emptyList()
