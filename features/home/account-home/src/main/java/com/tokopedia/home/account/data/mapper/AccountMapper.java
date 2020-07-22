@@ -13,6 +13,9 @@ import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
@@ -81,8 +84,45 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         BuyerCardViewModel buyerCardViewModel = new BuyerCardViewModel();
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
-        buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
-        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
+        ShortcutResponse shortcutResponse = accountModel.getShortcutResponse();
+        ShortcutGroupListItem shortcutListItem = null;
+        ArrayList<ShortcutListItem> shortcutListItems = new ArrayList<>();
+        if (shortcutResponse.getTokopointsShortcutList() != null &&
+                shortcutResponse.getTokopointsShortcutList().getShortcutGroupList() != null &&
+                shortcutResponse.getTokopointsShortcutList().getShortcutGroupList().size() != 0) {
+            shortcutListItem = shortcutResponse.getTokopointsShortcutList().getShortcutGroupList().get(0);
+            shortcutListItems = (ArrayList<ShortcutListItem>) shortcutListItem.getShortcutList();
+
+        }
+
+        if (shortcutListItems != null && shortcutListItems.size() > 0) {
+
+            buyerCardViewModel.setTokopointSize(1);
+            if (shortcutListItems.get(0).getCta() != null) {
+                buyerCardViewModel.setTokopointTitle(shortcutListItems.get(0).getCta().getText());
+            }
+            buyerCardViewModel.setTokopoint(shortcutListItems.get(0).getDescription());
+            buyerCardViewModel.setTokopointAppplink(shortcutListItems.get(0).getCta().getAppLink());
+            buyerCardViewModel.setTokopointImageUrl(shortcutListItems.get(0).getIconImageURL());
+
+            if (shortcutListItems.size() > 1) {
+                buyerCardViewModel.setCouponSize(1);
+                buyerCardViewModel.setCouponTitle(shortcutListItems.get(1).getCta().getText());
+                buyerCardViewModel.setCoupons(shortcutListItems.get(1).getDescription());
+                buyerCardViewModel.setCouponApplink(shortcutListItems.get(1).getCta().getAppLink());
+                buyerCardViewModel.setCouponImageUrl(shortcutListItems.get(1).getIconImageURL());
+            }
+
+            if (shortcutListItems.size() > 2) {
+                buyerCardViewModel.setTokomemberSize(1);
+                buyerCardViewModel.setTokomemberTitle(shortcutListItems.get(2).getCta().getText());
+                buyerCardViewModel.setTokomember(shortcutListItems.get(2).getDescription());
+                buyerCardViewModel.setTokomemberApplink(shortcutListItems.get(2).getCta().getAppLink());
+                buyerCardViewModel.setTokomemberImageUrl(shortcutListItems.get(2).getIconImageURL());
+            }
+        }
+        buyerCardViewModel.setEggImageUrl(accountModel.getTokopoints().getStatus().getTier().getImageUrl());
+        buyerCardViewModel.setMemberStatus(accountModel.getTokopoints().getStatus().getTier().getNameDesc());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
         items.add(buyerCardViewModel);
