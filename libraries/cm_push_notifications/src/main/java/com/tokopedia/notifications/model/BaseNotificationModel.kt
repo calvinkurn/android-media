@@ -106,7 +106,6 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "campaignUserToken")
         var campaignUserToken: String? = null,
 
-        //new Fields for offline
         @ColumnInfo(name = "notificationStatus")
         var status: NotificationStatus = NotificationStatus.PENDING,
 
@@ -122,7 +121,6 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "is_test")
         var isTest: Boolean = false,
 
-        //notification attribution
         @ColumnInfo(name = "transId")
         var transactionId: String? = null,
 

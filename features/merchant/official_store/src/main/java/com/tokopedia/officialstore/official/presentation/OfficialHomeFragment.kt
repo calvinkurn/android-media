@@ -30,6 +30,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -55,9 +56,14 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -101,6 +107,7 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
+    private var remoteConfig: RemoteConfig? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -113,9 +120,12 @@ class OfficialHomeFragment :
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    val categories = category?.categories.toString()
+                    val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
+                    val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
-                    viewModel.loadMore(category, page)
+                    viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
                         adapter?.showLoading()
@@ -132,6 +142,11 @@ class OfficialHomeFragment :
         }
         context?.let { tracking = OfficialStoreTracking(it) }
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        }
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -148,11 +163,15 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
+                this,
+                this,
+                this,
+                OfficialStoreHomeComponentCallback(),
+                OfficialStoreLegoBannerComponentCallback(this))
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
-        setPerformanceListenerForRecyclerView()
         return view
     }
 
@@ -161,7 +180,6 @@ class OfficialHomeFragment :
             override fun onGlobalLayout() {
                 if(officialStorePerformanceMonitoringListener != null){
                     officialStorePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
-                    officialStorePerformanceMonitoringListener = null
                     recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             }
@@ -169,11 +187,10 @@ class OfficialHomeFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         if (getOfficialStorePageLoadTimeCallback() != null) {
-            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
             getOfficialStorePageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
         }
+        super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeBenefit()
         observeFeaturedShop()
@@ -212,6 +229,11 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
+            if (getOfficialStorePageLoadTimeCallback() != null) {
+                getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+                getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+            }
+            setPerformanceListenerForRecyclerView()
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -270,7 +292,8 @@ class OfficialHomeFragment :
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingDynamicChannel(
                             result.data,
-                            adapter
+                            adapter,
+                            remoteConfig
                     )
                 }
                 is Fail -> {
@@ -283,7 +306,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
+        viewModel.productRecommendation.observe(this, Observer {
             when (it) {
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
@@ -333,6 +356,7 @@ class OfficialHomeFragment :
                         || it is ProductRecommendationViewModel
                         || it is ProductRecommendationTitleViewModel
                         || it is LoadingMoreModel
+                        || it is DynamicLegoBannerDataModel
             }
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
@@ -391,7 +415,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
-        viewModel.officialStoreProductRecommendationResult.removeObservers(this)
+        viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -578,7 +602,35 @@ class OfficialHomeFragment :
         loadData(true)
     }
 
-    override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
+    override fun onClickLegoHeaderActionText(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickLegoImage(channelModel: ChannelModel, position: Int) {
+        val gridData = channelModel.channelGrids[position]
+        val applink = gridData.applink ?: ""
+
+        gridData.let {
+            tracking?.dynamicChannelHomeComponentClick(
+                    viewModel.currentSlug,
+                    channelModel.channelHeader.name ?: "",
+                    (position + 1).toString(10),
+                    it,
+                    channelModel
+            )
+        }
+
+        RouteManager.route(context, applink)
+    }
+
+    override fun legoImpression(channelModel: ChannelModel) {
+        if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
+            tracking?.dynamicChannelHomeComponentImpression(viewModel.currentSlug, channelModel)
+            sentDynamicChannelTrackers.add(channelModel.id)
+        }
+    }
+
+    override fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener {
         return View.OnClickListener {
             RouteManager.route(context, applink)
         }
@@ -756,11 +808,22 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onClickMixLeftBannerImage(channel: Channel, position: Int) {
+        if (RouteManager.route(context, channel.banner?.applink.orEmpty())) {
+            tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+        }
+    }
+
+    override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
+        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+    }
+
     private fun removeLoading() {
         if (getOfficialStorePageLoadTimeCallback() != null) {
             getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
         }
+        setPerformanceListenerForRecyclerView()
+
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel

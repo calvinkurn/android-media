@@ -12,6 +12,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -470,5 +472,14 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 String.format(ETALASE_SECTION, etalaseSection)
         );
         return etalaseSection.isEmpty() ? etalaseEventEtalaseSectionEmpty : etalaseEventEtalaseSectionNotEmpty;
+    }
+
+    public void clickClearFilter(boolean isOwner, CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                CLICK_CLOSE_FILTER,
+                "",
+                customDimensionShopPage
+        );
     }
 }

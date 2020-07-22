@@ -62,6 +62,7 @@ import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
@@ -153,6 +154,9 @@ class PlayUserInteractionFragment :
 
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
+
+    private val playNavigation: PlayNavigation
+        get() = requireActivity() as PlayNavigation
 
     private var systemUiVisibility: Int
         get() = requireActivity().window.decorView.systemUiVisibility
@@ -848,7 +852,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun doLeaveRoom() {
-        activity?.onBackPressed()
+        playNavigation.onBackPressed(isSystemBack = false)
     }
 
     private fun showToast(text: String) {

@@ -1,8 +1,6 @@
 package com.tokopedia.topads.auto.view.widget
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
@@ -10,6 +8,7 @@ import android.widget.FrameLayout
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
+import kotlinx.android.synthetic.main.layout_confirmation_manual_ads.*
 
 /**
  * Author errysuprayogi on 07,May,2019
@@ -17,7 +16,6 @@ import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 class ManualAdsConfirmationSheet {
 
     private var dialog: BottomSheetDialog? = null
-    private var closeButton: View? = null
     private var startManualAdsButton: View? = null
     private var startAutoAdsButton: View? = null
     private var actionListener: ActionListener? = null
@@ -47,8 +45,12 @@ class ManualAdsConfirmationSheet {
                 actionListener!!.onManualAdsClicked()
             }
         }
+        dialog?.let {
+            it.btn_close?.setOnClickListener {
+                view -> dismissDialog()
 
-        closeButton!!.setOnClickListener { view -> dismissDialog() }
+            }
+        }
     }
 
     fun show() {
@@ -71,7 +73,6 @@ class ManualAdsConfirmationSheet {
             val fragment = ManualAdsConfirmationSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.AutoAdsBottomSheetDialogTheme)
             fragment.dialog!!.setContentView(R.layout.layout_confirmation_manual_ads)
-            fragment.closeButton = fragment.dialog!!.findViewById(com.tokopedia.design.R.id.btn_close)
             fragment.startAutoAdsButton = fragment.dialog!!.findViewById(R.id.btn_start_auto)
             fragment.startManualAdsButton = fragment.dialog!!.findViewById(R.id.btn_start_manual)
             fragment.setupView(context)

@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
@@ -17,11 +17,11 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.extension.formatToSimpleNumber
+import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -32,31 +32,28 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
                                        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                        private val context: Context) {
-    private var isShopFavourited = false
+    private var isShopFavorite = false
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
-    fun bind(shopInfo: ShopInfo, broadcasterConfig: Broadcaster.Config?, isMyShop: Boolean, remoteConfig: RemoteConfig) {
-        view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
-        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
-        view.shop_page_main_profile_location.text = shopInfo.location
-
-        ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
+    fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
+        view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString()
+        view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavorite) }
+        view.shop_page_main_profile_location.text = shopPageHeaderDataModel.location
+        ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
                 listener.onShopCoverClicked(
-                        TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()),
-                        shopInfo.goldOS.isGoldBadge == 1
+                        shopPageHeaderDataModel.isOfficial,
+                        shopPageHeaderDataModel.isGoldMerchant
                 )
             }
         }
         when {
-            TextApiUtils.isValueTrue(shopInfo.goldOS.isOfficial.toString()) -> displayOfficial()
-            shopInfo.goldOS.isGoldBadge == 1 -> {
-                displayGoldenShop()
-            }
+            shopPageHeaderDataModel.isOfficial -> displayOfficial()
+            shopPageHeaderDataModel.isGoldMerchant -> displayGoldenShop()
             else -> {
                 view.shop_page_main_profile_badge.visibility = View.GONE
             }
@@ -66,9 +63,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             displayAsBuyer()
         }
-        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
+        setupSgcPlayWidget(shopPageHeaderDataModel, isMyShop)
 
-        if (shopInfo.freeOngkir.isActive)
+        if (shopPageHeaderDataModel.isFreeOngkir)
             showLabelFreeOngkir(remoteConfig)
         else
             view.shop_page_main_profile_free_ongkir.hide()
@@ -81,16 +78,53 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupSgcPlayWidget(shopInfo: ShopInfo, isMyShop: Boolean, broadcasterConfig: Broadcaster.Config?){
-        view.play_seller_widget_container.visibility = if(isMyShop && broadcasterConfig?.streamAllowed == true) View.VISIBLE else View.GONE
+    private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean){
+        view.play_seller_widget_container.visibility = if(isMyShop && shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
         if(isMyShop){
             setupTextContentSgcWidget()
-            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
+                    shopPageHeaderDataModel.shopId,
+                    shopPageHeaderDataModel.isOfficial,
+                    shopPageHeaderDataModel.isGoldMerchant
+            ))
             view.container_lottie?.setOnClickListener {
-                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
+                        shopPageHeaderDataModel.shopId,
+                        shopPageHeaderDataModel.isOfficial,
+                        shopPageHeaderDataModel.isGoldMerchant
+                ))
                 RouteManager.route(view.context, "tokopedia-android-internal://play-broadcaster")
             }
         }
+    }
+
+    fun showShopPageHeaderContent() {
+        hideLoaderLoading()
+        view.shop_page_header_content.show()
+    }
+
+    fun showShopPageHeaderContentError() {
+        hideLoaderLoading()
+        view.shop_page_header_content.invisible()
+    }
+
+    fun showShopPageHeaderContentLoading() {
+        showLoaderLoading()
+        view.shop_page_header_content.hide()
+    }
+
+    private fun showLoaderLoading(){
+        view.loader_profile_image.show()
+        view.first_rect_loader_view.show()
+        view.second_rect_loader_view.show()
+        view.third_rect_loader_view.show()
+    }
+
+    private fun hideLoaderLoading(){
+        view.loader_profile_image.hide()
+        view.first_rect_loader_view.hide()
+        view.second_rect_loader_view.hide()
+        view.third_rect_loader_view.hide()
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
@@ -102,7 +136,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     }
 
     fun updateFavoriteData(favoriteData: ShopInfo.FavoriteData) {
-        isShopFavourited = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
+        isShopFavorite = TextApiUtils.isValueTrue(favoriteData.alreadyFavorited.toString())
         if (favoriteData.totalFavorite > 1) {
             view.shop_page_main_profile_follower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_followers,
                     favoriteData.totalFavorite.toDouble().formatToSimpleNumber()))
@@ -113,42 +147,49 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         updateFavoriteButton()
     }
 
-    fun updateShopTicker(shopInfo: ShopInfo, shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean) {
-        when {
-            shouldShowShopStatusTicker(shopInfo.statusInfo.statusTitle, shopInfo.statusInfo.statusMessage) -> {
-                showShopStatusTicker(shopInfo, isMyShop)
-            }
-            shouldShowShopStatusTicker(shopOperationalHourStatus.tickerTitle, shopOperationalHourStatus.tickerMessage) -> {
-                showShopOperationalHourStatusTicker(shopOperationalHourStatus)
-            }
-            else -> {
-                hideShopStatusTicker()
+    fun updateShopTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel?, shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean) {
+        shopPageHeaderDataModel?.let { it ->
+            when {
+                shouldShowShopStatusTicker(it.statusTitle, it.statusMessage) -> {
+                    showShopStatusTicker(it, isMyShop)
+                }
+                shouldShowShopStatusTicker(shopOperationalHourStatus.tickerTitle, shopOperationalHourStatus.tickerMessage) -> {
+                    showShopOperationalHourStatusTicker(shopOperationalHourStatus)
+                }
+                else -> {
+                    hideShopStatusTicker()
+                }
             }
         }
     }
 
     private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {
-        return  title.isNotEmpty() && message.isNotEmpty()
+        return title.isNotEmpty() && message.isNotEmpty()
     }
 
-    private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
+    private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
         view.tickerShopStatus.show()
-        view.tickerShopStatus.tickerTitle = shopInfo.statusInfo.statusTitle
-        view.tickerShopStatus.setHtmlDescription(shopInfo.statusInfo.statusMessage)
+        view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
+        view.tickerShopStatus.setHtmlDescription(shopPageHeaderDataModel.statusMessage)
         view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                when (shopInfo.statusInfo.shopStatus) {
+                when (shopPageHeaderDataModel.shopStatus) {
                     ShopStatusDef.CLOSED -> {
                         shopPageTracking?.sendOpenShop()
                         shopPageTracking?.clickOpenOperationalShop(CustomDimensionShopPage
-                                .create(shopInfo.shopCore.shopID,
-                                        shopInfo.goldOS.isOfficial == 1,
-                                        shopInfo.goldOS.isGold == 1))
+                                .create(
+                                        shopPageHeaderDataModel.shopId,
+                                        shopPageHeaderDataModel.isOfficial,
+                                        shopPageHeaderDataModel.isGoldMerchant
+                                ))
                     }
                     ShopStatusDef.NOT_ACTIVE -> {
                         shopPageTracking?.clickHowToActivateShop(CustomDimensionShopPage
-                                .create(shopInfo.shopCore.shopID, shopInfo.goldOS.isOfficial == 1,
-                                        shopInfo.goldOS.isGold == 1))
+                                .create(
+                                        shopPageHeaderDataModel.shopId,
+                                        shopPageHeaderDataModel.isOfficial,
+                                        shopPageHeaderDataModel.isGoldMerchant
+                                ))
                     }
                 }
                 listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -181,17 +222,17 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         updateFavoriteButton()
     }
 
-    fun isShopFavourited() = isShopFavourited
+    fun isShopFavourited() = isShopFavorite
 
     fun updateFavoriteButton() {
         view.shop_page_follow_unfollow_button.isLoading = false
         view.shop_page_follow_unfollow_button.setOnClickListener {
             if (!view.shop_page_follow_unfollow_button.isLoading) {
                 view.shop_page_follow_unfollow_button.isLoading = true
-                listener.toggleFavorite(!isShopFavourited)
+                listener.toggleFavorite(!isShopFavorite)
             }
         }
-        if (isShopFavourited) {
+        if (isShopFavorite) {
             view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.GHOST
             view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.ALTERNATE
             view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_following)
@@ -214,7 +255,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayGoldenShop() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
-        view.shop_page_main_profile_badge.setImageDrawable(GMConstant.getGMDrawable(context))
+        view.shop_page_main_profile_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
     }
 
     private fun displayOfficial() {
@@ -224,7 +265,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
 
     fun toggleFavourite() {
-        isShopFavourited = !isShopFavourited
+        isShopFavorite = !isShopFavorite
     }
 
     interface ShopPageFragmentViewHolderListener {

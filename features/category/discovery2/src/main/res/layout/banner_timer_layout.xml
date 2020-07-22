@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/banner_timer_container_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <ImageView
+        android:id="@+id/banner_image_view"
+        style="@style/MatchConstrain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </ImageView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/day_separator_text_view"
+        style="@style/TimerSeparatorStyle"
+        app:layout_constraintBottom_toBottomOf="@id/day_layout"
+        app:layout_constraintEnd_toStartOf="@id/hours_layout"
+        app:layout_constraintStart_toEndOf="@id/day_layout"
+        app:layout_constraintTop_toTopOf="@id/day_layout"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hours_separator_text_view"
+        style="@style/TimerSeparatorStyle"
+        app:layout_constraintBottom_toBottomOf="@id/hours_layout"
+        app:layout_constraintEnd_toStartOf="@id/minutes_layout"
+        app:layout_constraintStart_toEndOf="@id/hours_layout"
+        app:layout_constraintTop_toTopOf="@id/hours_layout"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/minutes_separator_text_view"
+        style="@style/TimerSeparatorStyle"
+        app:layout_constraintBottom_toBottomOf="@id/minutes_layout"
+        app:layout_constraintEnd_toStartOf="@id/seconds_layout"
+        app:layout_constraintStart_toEndOf="@id/minutes_layout"
+        app:layout_constraintTop_toTopOf="@id/hours_layout"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <include
+        android:id="@+id/day_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@id/banner_image_view"
+        app:layout_constraintEnd_toStartOf="@id/day_separator_text_view"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/hours_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        app:layout_constraintBottom_toBottomOf="@id/banner_image_view"
+        app:layout_constraintEnd_toStartOf="@id/hours_separator_text_view"
+        app:layout_constraintStart_toEndOf="@id/day_separator_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/minutes_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        app:layout_constraintBottom_toBottomOf="@id/banner_image_view"
+        app:layout_constraintEnd_toEndOf="@id/minutes_separator_text_view"
+        app:layout_constraintStart_toEndOf="@id/hours_separator_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/seconds_layout"
+        style="@style/WrapContent"
+        layout="@layout/timer_box_layout"
+        app:layout_constraintBottom_toBottomOf="@id/banner_image_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/minutes_separator_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,9 @@
 package com.tokopedia.flight.airport.view.adapter;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel;
@@ -24,6 +25,6 @@ public class FlightCountryViewHolder extends AbstractViewHolder<FlightCountryAir
 
     @Override
     public void bind(FlightCountryAirportModel country) {
-        countryTextView.setText(country.getCountryName());
+        countryTextView.setText(country.getCountryName().toUpperCase());
     }
 }

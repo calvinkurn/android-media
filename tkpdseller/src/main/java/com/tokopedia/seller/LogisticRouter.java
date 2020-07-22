@@ -3,7 +3,6 @@ package com.tokopedia.seller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.Fragment;
 
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;

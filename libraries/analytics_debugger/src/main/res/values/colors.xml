@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="topads_status_pending">#6f757d</color>
+    <color name="topads_status_data_not_found">#FFC107</color>
+    <color name="topads_status_not_match">#EF144A</color>
+    <color name="topads_status_match">#03AC0E</color>
+
+    <color name="topads_item_source_name">#31353b</color>
+    <color name="topads_item_url">#A4AAB3</color>
+    <color name="topads_item_label">#73777E</color>
+</resources>

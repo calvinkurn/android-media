@@ -185,7 +185,8 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String  = "", searchId: String = "", searchType: String = "") {
+    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String  = "",
+                                     searchId: String = "", searchType: String = "") {
         globalSearchModel.destinationName = name
         globalSearchModel.destinationId = destinationId
         globalSearchModel.destinationType = type

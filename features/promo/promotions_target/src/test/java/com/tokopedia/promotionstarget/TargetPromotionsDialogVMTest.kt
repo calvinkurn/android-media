@@ -5,11 +5,16 @@ import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -21,6 +26,7 @@ class TargetPromotionsDialogVMTest {
     lateinit var autoApplyUseCase: AutoApplyUseCase
     lateinit var viewModel: TargetPromotionsDialogVM
     val dispatcher = TestCoroutineDispatcher()
+
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
 
@@ -28,7 +34,7 @@ class TargetPromotionsDialogVMTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TargetPromotionsDialogVM(dispatcher, dispatcher, autoApplyUseCase, mockk())
+        viewModel = TargetPromotionsDialogVM(dispatcher, dispatcher, autoApplyUseCase, mockk(), mockk(), mockk())
     }
 
     @Test

@@ -222,13 +222,24 @@ object DFInstaller {
         installOnBackground(context, moduleNameList, message)
     }
 
+    @JvmStatic
+    fun stopInstall(context: Context) {
+        DFDownloader.stopService(context)
+        sessionId?.let {
+            getManager(context)?.cancelInstall(it)
+        }
+        sessionId = null
+        clearRef()
+    }
+
     /**
      * Non suspended function to trigger the schedule of the service.
      * The service will run suspend function of install on background.
      */
     @JvmStatic
     fun installOnBackground(context: Context, moduleNameList: List<String>, message: String) {
-        val filteredModuleNameList = ArrayList<String>()
+        val filteredModuleNameList = mutableListOf<String>()
+
         for (moduleName in moduleNameList) {
             if (!isInstalled(context, moduleName)) {
                 filteredModuleNameList.add(moduleName)
@@ -236,7 +247,17 @@ object DFInstaller {
         }
         val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.downloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
-            DFDownloader.startSchedule(context.applicationContext, filteredModuleNameList, true)
+            // this is to filter which module that download in background based on remote config
+            val eligibleInBgModuleNameList: List<String>
+            if (dfConfig.moduleRestrictInBackground?.isNotEmpty() == true) {
+                eligibleInBgModuleNameList = filteredModuleNameList.filter { it !in dfConfig.moduleRestrictInBackground }
+            } else {
+                eligibleInBgModuleNameList = filteredModuleNameList
+            }
+            // start downloading the modules using service
+            if (eligibleInBgModuleNameList.isNotEmpty()) {
+                DFDownloader.startSchedule(context.applicationContext, eligibleInBgModuleNameList, true, false)
+            }
         } else {
             startDeferredInstall(context, filteredModuleNameList, message)
         }
@@ -266,7 +287,7 @@ object DFInstaller {
      */
     fun getFilteredModuleList(context: Context, moduleNames: List<String>, installed: Boolean = true): List<String> {
         val moduleNameToDownload = mutableListOf<String>()
-        val manager = getManager(context.applicationContext) ?: return moduleNameToDownload
+        getManager(context.applicationContext) ?: return moduleNameToDownload
         moduleNames.forEach { name ->
             if (installed && !isInstalled(context, name)) {
                 moduleNameToDownload.add(name)

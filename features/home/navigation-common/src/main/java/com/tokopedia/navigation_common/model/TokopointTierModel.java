@@ -19,6 +19,9 @@ public class TokopointTierModel {
     @SerializedName("eggImageHomepageURL")
     @Expose
     private String imageUrl = "";
+    @SerializedName("eggImageURL")
+    @Expose
+    private String eggImageURL = "";
 
     public Integer getId() {
         return id;
@@ -50,5 +53,13 @@ public class TokopointTierModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getEggImageURL() {
+        return eggImageURL;
+    }
+
+    public void setEggImageURL(String eggImageURL) {
+        this.eggImageURL = eggImageURL;
     }
 }

@@ -54,7 +54,7 @@ open class VideoComponent(
                                 uiView.setPlayer(null)
                             }
                             is ScreenStateEvent.VideoPropertyChanged -> {
-                                if (!it.stateHelper.videoPlayer.isGeneral) {
+                                if (it.stateHelper.videoPlayer.isYouTube) {
                                     uiView.hide()
                                 } else {
                                     uiView.show()

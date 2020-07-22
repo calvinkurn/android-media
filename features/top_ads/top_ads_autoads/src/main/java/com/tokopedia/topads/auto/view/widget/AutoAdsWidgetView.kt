@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.widget
 
+import android.content.ComponentName
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
@@ -15,8 +16,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 
@@ -25,10 +27,14 @@ import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -53,6 +59,9 @@ class AutoAdsWidgetView : CardView {
     lateinit var factory: AutoAdsWidgetViewModelFactory
     @Inject
     lateinit var userSession: UserSessionInterface
+    val SELLER_PACKAGENAME = "com.tokopedia.sellerapp"
+    val CLASSNAME_SELLER_TOPADS = "com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity"
+
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -65,7 +74,7 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(context)).build()
 
     private fun initView(context: Context) {
         getComponent(context).inject(this)
@@ -190,8 +199,22 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun openAutoAdsRouteActivityLink() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS)
+        if (AppUtil.isSellerInstalled(context)) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+            intent.component = ComponentName(SELLER_PACKAGENAME, CLASSNAME_SELLER_TOPADS)
+            (context as FragmentActivity).startActivity(intent)
+        } else {
+            when (TokopediaUrl.getInstance().TYPE) {
+                Env.LIVE -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO))
+                }
+                else -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO_STAGING))
+                }
+            }
+        }
     }
+
 
     fun setActiveListener(activeListener: ActiveListener) {
         this.activeListener = activeListener

@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.http.SslError;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,7 +23,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
@@ -31,11 +34,14 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import timber.log.Timber;
+
 @Deprecated
 /**
  * Please use {@link com.tokopedia.user.session.UserSession} instead.
  */
 public class SessionHandler {
+    public static final String DRAWER_CACHE = "DRAWER_CACHE";
     public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
@@ -123,7 +129,7 @@ public class SessionHandler {
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
-        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
+        LocalCacheHandler.clearCache(context, DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_WIDGET_LAST_ORDER);
@@ -138,11 +144,11 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, KEY_AFFILIATE);
         logoutInstagram(context);
         try {
-            MethodChecker.removeAllCookies(context);
+            removeAllCookies(context);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
+        LocalCacheHandler.clearCache(context, DRAWER_CACHE);
 
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
@@ -151,6 +157,24 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
         deleteCacheExploreData();
+    }
+
+    private static void removeAllCookies(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
+                @Override
+                public void onReceiveValue(Boolean value) {
+                    Timber.d("Success Clear Cookie");
+                }
+            });
+        } else {
+            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
+            cookieSyncMngr.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncMngr.stopSync();
+        }
     }
 
     private static void deleteCacheTokoPoint() {

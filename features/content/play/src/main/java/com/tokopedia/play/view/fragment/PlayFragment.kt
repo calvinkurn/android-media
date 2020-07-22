@@ -17,13 +17,23 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.*
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play.ERR_STATE_SOCKET
+import com.tokopedia.play.ERR_STATE_VIDEO
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.R
+import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.analytic.WatchDurationModel
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -47,6 +57,7 @@ import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -67,6 +78,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 /**
  * Created by jegul on 29/11/19
@@ -144,8 +156,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setOrientation()
-        startPageMonitoring()
-        starPrepareMonitoring()
+        setupPageMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
@@ -561,43 +572,36 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     /**
      * Performance Monitoring
      */
-    private fun startPageMonitoring() {
-        pageMonitoring = PageLoadTimePerformanceCallback(
-                PLAY_TRACE_PREPARE_PAGE,
-                PLAY_TRACE_REQUEST_NETWORK,
-                PLAY_TRACE_RENDER_PAGE
-        )
-        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
-    }
-
-    private fun starPrepareMonitoring() {
-        pageMonitoring.startPreparePagePerformanceMonitoring()
+    private fun setupPageMonitoring() {
+        if (activity != null && activity is PlayActivity) {
+            pageMonitoring = (activity as PlayActivity).getPageMonitoring()
+        }
     }
 
     private fun stopPrepareMonitoring() {
-        pageMonitoring.stopPreparePagePerformanceMonitoring()
+        pageMonitoring?.stopPreparePagePerformanceMonitoring()
     }
 
     private fun startNetworkMonitoring() {
-        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+        pageMonitoring?.startNetworkRequestPerformanceMonitoring()
     }
 
     private fun stopNetworkMonitoring() {
-        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+        pageMonitoring?.stopNetworkRequestPerformanceMonitoring()
     }
 
     fun startRenderMonitoring() {
         stopNetworkMonitoring()
-        pageMonitoring.startRenderPerformanceMonitoring()
+        pageMonitoring?.startRenderPerformanceMonitoring()
     }
 
     fun stopRenderMonitoring() {
-        pageMonitoring.stopRenderPerformanceMonitoring()
+        pageMonitoring?.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }
 
     private fun stopPageMonitoring() {
-        pageMonitoring.stopMonitoring()
+        pageMonitoring?.stopMonitoring()
     }
 
     private fun hideKeyboard() {

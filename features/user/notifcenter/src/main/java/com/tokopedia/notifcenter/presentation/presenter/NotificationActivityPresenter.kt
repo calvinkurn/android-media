@@ -37,8 +37,15 @@ class NotificationActivityPresenter @Inject constructor(
         )
     }
 
-    override fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit){
-        sendNotificationUseCase.executeCoroutines(onSuccessSendNotif, onErrorSendNotif)
+    override fun sendNotif(
+            onSuccessSendNotif: () -> Unit,
+            onErrorSendNotif: () -> Unit
+    ){
+        sendNotificationUseCase.executeCoroutines({
+            onSuccessSendNotif()
+        }, {
+            onErrorSendNotif()
+        })
     }
 
     override fun detachView() {

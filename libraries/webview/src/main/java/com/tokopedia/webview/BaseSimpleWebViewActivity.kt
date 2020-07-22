@@ -19,15 +19,15 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import java.lang.Exception
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private lateinit var url: String
-    private var showTitleBar = true
+    var showTitleBar = true
+    private set
     private var allowOverride = true
     private var needLogin = false
-    private var title = ""
+    var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
@@ -37,7 +37,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun setupToolbar() {
         if (showTitleBar) {
-            updateTitle(title)
+            updateTitle(webViewTitle)
             supportActionBar?.show()
         } else {
             supportActionBar?.hide()
@@ -50,7 +50,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             showTitleBar = getBoolean(KEY_TITLEBAR, true)
             allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
-            title = getString(KEY_TITLE, DEFAULT_TITLE)
+            webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
         }
 
         intent.data?.run {
@@ -70,7 +70,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             isLoginRequire?.let { needLogin = it.toBoolean() }
 
             val needTitle = getQueryParameter(KEY_TITLE)
-            needTitle?.let { title = it }
+            needTitle?.let { webViewTitle = it }
         }
     }
 
@@ -92,7 +92,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        if (::url.isInitialized) {
+            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        } else {
+            this.finish()
+            return Fragment()
+        }
     }
 
     override fun onResume() {

@@ -20,7 +20,6 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
@@ -30,6 +29,8 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.features.phoneVerification)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -65,6 +66,16 @@ dependencies {
     //test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
+
 }
 
 project.ext {
@@ -75,3 +86,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

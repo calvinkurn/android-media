@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 buildscript {
     repositories {
@@ -9,6 +11,16 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
@@ -70,14 +82,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     testImplementation "org.robolectric:robolectric:3.8"
     testImplementation "org.robolectric:multidex:3.4.2"
-    testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    testImplementation "androidx.arch.core:core-testing:2.0.0-rc01"
 
     testImplementation rootProject.ext.testDependencies.assertJ
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -88,6 +94,20 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
 }
 
 project.ext {
@@ -98,4 +118,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'

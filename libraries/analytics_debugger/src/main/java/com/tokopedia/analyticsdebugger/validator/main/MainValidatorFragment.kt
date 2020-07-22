@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.validator.core.Validator
 import com.tokopedia.analyticsdebugger.validator.core.toJson
 import com.tokopedia.analyticsdebugger.validator.core.toJsonMap
@@ -49,14 +51,23 @@ class MainValidatorFragment : Fragment() {
         val testQuery = jsonTest.toJsonMap()
         Timber.d("Validator Test Query Map \n %s", testQuery)
 
+        val readme = testQuery["readme"]
+        if (readme != null && readme is String && !readme.isEmpty()) {
+            view.findViewById<View>(R.id.cv_readme).visibility = View.VISIBLE
+            view.findViewById<TextView>(R.id.tv_readme).text = readme
+        } else {
+            view.findViewById<View>(R.id.cv_readme).visibility = View.GONE
+        }
+
         viewModel.testCases.observe(this, Observer<List<Validator>> {
             Timber.d("Validator got ${it.size}")
             mAdapter.setData(it)
         })
         val rv = view.findViewById<RecyclerView>(R.id.rv)
-        val key = testQuery.keys.first()
-        val value = testQuery[key]
-        viewModel.run(value as List<Map<String, Any>>, key)
+        val mode = testQuery["mode"] as? String
+
+        val value = testQuery["query"]
+        viewModel.run(value as List<Map<String, Any>>, mode ?: "subset")
         with(rv) {
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -70,14 +81,13 @@ class MainValidatorFragment : Fragment() {
 
     private fun goToDetail(item: Validator) {
         val exp = item.data.toJson()
-        val act = item.match?.data ?: ""
-        val ts = Utils.getTimeStampFormat(item.match?.timestamp)
+        val act = item.matches
 
-        callback?.goDetail(exp, act, ts)
+        callback?.goDetail(exp, act)
     }
 
     interface Listener {
-        fun goDetail(expected: String, actual: String, timestamp: String)
+        fun goDetail(expected: String, actual: List<GtmLogUi>)
     }
 
     companion object {

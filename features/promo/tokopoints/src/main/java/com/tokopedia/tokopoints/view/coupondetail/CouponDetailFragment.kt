@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -33,9 +34,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -55,9 +58,12 @@ import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
@@ -174,7 +180,12 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> {
-                    showError(NetworkDetector.isConnectedToInternet(context))
+                    val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                    if (!internetStatus) {
+                        showError(internetStatus)
+                    } else {
+                        showCouponError()
+                    }
                 }
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -218,6 +229,13 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         server_error_view?.showErrorUi(networkError)
     }
 
+    private fun showCouponError() {
+        container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+    }
+
     override fun hideLoader() {
         container?.displayedChild = CONTAINER_DATA
     }
@@ -244,7 +262,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             context?.let { startActivity(CouponListingStackedActivity.getCallingIntent(context)) }
         }
     }
-
 
     private fun initListener() {
         server_error_view?.setErrorButtonClickListener { view -> mPresenter.onErrorButtonClick() }
@@ -293,8 +310,12 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private fun openPhoneVerificationBottomSheet() {
         val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
-        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-        closeableBottomSheetDialog.setCustomContentView(view, "", false)
+        val closeableBottomSheetDialog = BottomSheetUnify()
+        closeableBottomSheetDialog.apply {
+            setChild(view)
+            showCloseIcon = false
+            showHeader = false
+        }
         val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
         val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
@@ -306,18 +327,18 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
                     AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE,
                     "")
-            closeableBottomSheetDialog.cancel()
+            closeableBottomSheetDialog.dismiss()
 
         }
         btnCancel.setOnClickListener {
-            closeableBottomSheetDialog.cancel()
+            closeableBottomSheetDialog.dismiss()
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
                     AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
                     AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE_BATAL, "")
         }
 
-        closeableBottomSheetDialog.show()
+        closeableBottomSheetDialog.show(childFragmentManager, "")
     }
 
     override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
@@ -361,7 +382,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
 
         try {
-            val btnAction2 = view!!.findViewById<TextView>(com.tokopedia.session.R.id.btn_continue)
+            val btnAction2 = view!!.findViewById<TextView>(R.id.btn_continue)
             val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_refetch_code)
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
@@ -389,7 +410,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun setCouponToUi(data: CouponValueEntity) {
-        if (view == null || data.isEmpty) {
+        if (view == null) {
+            return
+        }
+        if (data.isEmpty) {
+            showCouponError()
             return
         }
         hideLoader()
@@ -410,6 +435,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         description.text = data.title
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
 
+        if (data.isIs_show_button) {
+            btnAction2.show()
+        }
         if (data.usage != null) {
             label.visibility = View.VISIBLE
             label.text = data.usage.text
@@ -423,9 +451,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                 } else {
                     btnAction2.visibility = View.VISIBLE
                 }
+                if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
+                    btnAction2.isEnabled = false
+                }
             }
-
-
         }
 
         if (TextUtils.isEmpty(data.minimumUsageLabel)) {
@@ -524,7 +553,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
 
     private fun setSwipeUi(swipeDetail: CouponSwipeDetail) = view?.apply {
-        ll_container_button.displayedChild = CONTAINER_SWIPE
+        layout_coupon_swipe.show()
         card_swipe?.apply {
             setTitle(swipeDetail.text)
             setOnSwipeListener(object : SwipeCardView.OnSwipeListener {
@@ -557,6 +586,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private fun setupInfoPager(info: String, tnc: String) {
         view?.apply {
             tnc_content.loadData(getLessDisplayData(tnc, tnc_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
+            tnc_content.setMargin(0,0,0,0)
             how_to_use_content.loadData(getLessDisplayData(info, how_to_use_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
 
             tnc_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(tnc, getString(R.string.tnc_coupon_catalog)) }
@@ -566,17 +596,23 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun loadWebViewInBottomsheet(data: String?, title: String?) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, true)
+        val bottomSheet = BottomSheetUnify()
+        bottomSheet.setShowListener {
+            val sideMargin = 16.toPx()
+            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
+            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
+        }
+        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        val closeBtn = view.findViewById<ImageView>(R.id.close_button)
-        val titleView = view.findViewById<Typography>(R.id.title_closeable)
-
         webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING)
-        closeBtn.setOnClickListener { v -> bottomSheet.dismiss() }
-        titleView.text = title
-        bottomSheet.setCustomContentView(view, title, false)
-        bottomSheet.show()
+        bottomSheet.apply {
+            setChild(view)
+            title?.let { setTitle(it) }
+            showCloseIcon = true
+            isDragable = true
+            isHideable = true
+        }
+        bottomSheet.show(childFragmentManager, "")
     }
 
     private fun addCountDownTimer(item: CouponValueEntity, label: Typography, btnContinue: TextView) {
@@ -738,6 +774,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
         private val CONTAINER_SWIPE = 1
+        private val CONTAINER_COUPON_ERROR = 3
 
 
         fun newInstance(extras: Bundle): Fragment {

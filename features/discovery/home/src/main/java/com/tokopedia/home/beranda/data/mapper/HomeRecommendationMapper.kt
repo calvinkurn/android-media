@@ -7,21 +7,24 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVi
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment.Companion.DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE
 import java.util.*
 
 class HomeRecommendationMapper {
-    fun mapToHomeRecommendationDataModel(graphqlResponse: HomeFeedContentGqlResponse, tabName: String): HomeRecommendationDataModel {
+    fun mapToHomeRecommendationDataModel(graphqlResponse: HomeFeedContentGqlResponse,
+                                         tabName: String,
+                                         pageNumber: Int): HomeRecommendationDataModel {
         val recommendationProduct = graphqlResponse.homeRecommendation.recommendationProduct
         val visitables = mutableListOf<HomeRecommendationVisitable>()
         val productStack = Stack<HomeRecommendationItemDataModel>()
         //reverse stack because to get the first in
         Collections.reverse(productStack)
-        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, tabName))
+        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, tabName, pageNumber))
 
         val bannerStack = Stack<BannerRecommendationDataModel>()
         //reverse stack because to get the first in
         Collections.reverse(productStack)
-        bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName))
+        bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName, pageNumber))
 
         recommendationProduct.layoutTypes.forEachIndexed { _, layoutType ->
             if (layoutType.type == TYPE_PRODUCT) {
@@ -33,7 +36,7 @@ class HomeRecommendationMapper {
         return HomeRecommendationDataModel(visitables, recommendationProduct.hasNextPage)
     }
 
-    private fun convertToHomeBannerFeedModel(banners: List<Banner>, tabName: String): List<BannerRecommendationDataModel> {
+    private fun convertToHomeBannerFeedModel(banners: List<Banner>, tabName: String, pageNumber: Int): List<BannerRecommendationDataModel> {
         val bannerFeedViewModels = ArrayList<BannerRecommendationDataModel>()
         for (position in banners.indices) {
             val banner = banners[position]
@@ -48,7 +51,7 @@ class HomeRecommendationMapper {
                             banner.buAttribution,
                             banner.creativeName,
                             banner.target,
-                            position,
+                            (((pageNumber-1) * banners.size) + position + 1).toInt(),
                             banner.galaxyAttribution,
                             banner.persona,
                             banner.brandId,
@@ -60,12 +63,12 @@ class HomeRecommendationMapper {
         return bannerFeedViewModels
     }
 
-    private fun convertToHomeProductFeedModel(products: List<Product>, tabName: String): List<HomeRecommendationItemDataModel> {
+    private fun convertToHomeProductFeedModel(products: List<Product>, tabName: String, pageNumber: Int): List<HomeRecommendationItemDataModel> {
         val homeFeedViewModels = ArrayList<HomeRecommendationItemDataModel>()
         for (position in products.indices) {
             val product = products[position]
 
-            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, position + 1, tabName))
+            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, (((pageNumber-1) * products.size) + position + 1), tabName))
         }
         return homeFeedViewModels
     }

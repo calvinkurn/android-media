@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.flight.R
-import com.tokopedia.flight.search.util.DurationUtil
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import kotlinx.android.synthetic.main.item_flight_search_new.view.*
 
@@ -38,14 +37,12 @@ class FlightSearchViewHolder(itemView: View,
 
     private fun setDuration(element: FlightJourneyModel) {
         with(itemView) {
-            val duration = DurationUtil.convertFormMinute(element.durationMinute)
-            val durationString = DurationUtil.getReadableString(context, duration)
             if (element.totalTransit > 0) {
                 tvFlightDuration.text = context.getString(R.string.flight_label_duration_transit,
-                        durationString, element.totalTransit.toString())
+                        element.duration, element.totalTransit.toString())
             } else {
                 tvFlightDuration.text = context.getString(R.string.flight_label_duration_direct,
-                        durationString)
+                        element.duration)
             }
         }
     }

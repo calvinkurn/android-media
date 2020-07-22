@@ -11,9 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -564,6 +566,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     override fun onShareButtonClicked() {
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
+    }
+
+    override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
+        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 }

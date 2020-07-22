@@ -47,6 +47,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
 
+        setAddToCartButtonText(productCardModel)
+
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
@@ -73,6 +75,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
+    private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
+        if (productCardModel.addToCardText.isNotEmpty())
+            buttonAddToCart?.text = productCardModel.addToCardText
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -94,6 +101,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         imageProduct?.layoutParams = layoutParams
     }
+
 
     override fun recycle() {
         imageProduct?.glideClear(context)

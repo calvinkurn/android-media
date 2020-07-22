@@ -33,17 +33,18 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
 
-    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String, propertyId: Long, searchParam: HotelHomepageModel) {
+    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String,
+                           propertyId: Long, searchParam: HotelHomepageModel, source: String) {
         launch {
-            getHotelInfo(hotelInfoQuery, propertyId)
+            getHotelInfo(hotelInfoQuery, propertyId, source)
             getHotelReview(hotelReviewQuery, propertyId)
             getRoomList(roomListQuery, searchParam)
         }
     }
 
-    fun getHotelDetailDataWithoutRoom(hotelInfoQuery: String, hotelReviewQuery: String, propertyId: Long) {
+    fun getHotelDetailDataWithoutRoom(hotelInfoQuery: String, hotelReviewQuery: String, propertyId: Long, source: String) {
         launch {
-            getHotelInfo(hotelInfoQuery, propertyId)
+            getHotelInfo(hotelInfoQuery, propertyId, source)
             getHotelReview(hotelReviewQuery, propertyId)
         }
     }
@@ -54,9 +55,9 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getHotelInfo(rawQuery: String, propertyId: Long) {
+    private suspend fun getHotelInfo(rawQuery: String, propertyId: Long, source: String) {
 
-        val requestDetailParams = PropertyDataParam(propertyId)
+        val requestDetailParams = PropertyDataParam(propertyId, source)
         val detailParams = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestDetailParams)
 
         try {
