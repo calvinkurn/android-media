@@ -176,6 +176,9 @@ dependencies {
     //you can comment below line if you use old login
     implementation project(rootProject.ext.features.logintestapp)
 
+    //you can comment below line if you are not using developer options
+    implementation project(rootProject.ext.features.developerOptions)
+
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){
 //        exclude group: 'org.jetbrains', module: 'annotations'
