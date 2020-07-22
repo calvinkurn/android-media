@@ -21,7 +21,7 @@ import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 import com.tokopedia.user.session.UserSession;
 
