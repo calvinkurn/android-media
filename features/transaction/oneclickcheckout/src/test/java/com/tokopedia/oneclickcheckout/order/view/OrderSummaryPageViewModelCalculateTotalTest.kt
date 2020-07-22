@@ -2,8 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.oneclickcheckout.common.data.model.Payment
-import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
@@ -17,8 +16,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Invalid Quantity`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 500),
-                preference = ProfileResponse(payment = Payment()))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment()), isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
 
         orderSummaryPageViewModel.calculateTotal()
 
@@ -29,8 +28,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 500),
-                preference = ProfileResponse(payment = Payment()))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment()), isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
 
         orderSummaryPageViewModel.calculateTotal()
 
@@ -40,34 +39,34 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Below Minimum`() {
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 500),
-                preference = ProfileResponse(payment = Payment(minimumAmount = 10000)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment(minimumAmount = 10000)), isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
 
         orderSummaryPageViewModel.calculateTotal()
 
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.DISABLE, true,
-                "Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel._orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPreference?.preference?.payment?.minimumAmount ?: 0, false)}). Silahkan pilih pembayaran lain."),
+                "Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel._orderPreference.preference.payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPreference.preference.payment.minimumAmount, false)}). Silahkan pilih pembayaran lain."),
                 orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
     fun `Calculate Total Above Minimum`() {
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 500),
-                preference = ProfileResponse(payment = Payment(maximumAmount = 10)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment(maximumAmount = 10)), isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
 
         orderSummaryPageViewModel.calculateTotal()
 
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.DISABLE, true,
-                "Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPreference?.preference?.payment?.maximumAmount ?: 0, false)}). Silahkan pilih pembayaran lain."),
+                "Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPreference.preference.payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPreference.preference.payment.maximumAmount, false)}). Silahkan pilih pembayaran lain."),
                 orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
     fun `Calculate Total Above OVO Balance`() {
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 500),
-                preference = ProfileResponse(payment = Payment(walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment(walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)), isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
 
         orderSummaryPageViewModel.calculateTotal()
 
@@ -86,10 +85,17 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         )))
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(shippingPrice = 2000, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = ShippingCourierUiModel()
-                , insuranceData = InsuranceData().apply {
-            insurancePrice = 100
-        }, isCheckInsurance = true), preference = ProfileResponse(payment = Payment()))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment()), isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 2000, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo,
+                logisticPromoShipping = ShippingCourierUiModel().apply {
+                    productData = ProductData().apply {
+                        shipperProductId = 1
+                    }
+                },
+                insuranceData = InsuranceData().apply {
+                    insurancePrice = 100
+                },
+                isCheckInsurance = true, serviceName = "service")
 
         orderSummaryPageViewModel.calculateTotal()
 

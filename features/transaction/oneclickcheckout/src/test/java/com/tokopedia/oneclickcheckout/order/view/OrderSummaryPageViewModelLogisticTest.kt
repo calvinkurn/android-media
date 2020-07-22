@@ -4,7 +4,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartDataOcc
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccResponse
@@ -37,13 +36,13 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceDuration = "",
                         serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE,
                         shippingRecommendationData = null),
-                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+                (orderSummaryPageViewModel.orderShipment.value))
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
     fun `Get Rates Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val shippingErrorMessage = "error"
         every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData().apply {
             errorId = "1"
@@ -58,7 +57,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceDuration = "",
                         serviceErrorMessage = shippingErrorMessage,
                         shippingRecommendationData = null),
-                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+                orderSummaryPageViewModel.orderShipment.value)
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
@@ -67,7 +66,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         shippingDurationViewModels.removeIf { it.serviceData.serviceId == helper.shipment.serviceId }
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -80,13 +79,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
-                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+                orderSummaryPageViewModel.orderShipment.value)
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
     fun `Choose Courier`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
         orderSummaryPageViewModel.chooseCourier(helper.secondCourierFirstDuration)
 
@@ -104,13 +104,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
                         insuranceData = helper.secondCourierFirstDuration.productData.insurance),
-                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+                orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Choose Duration`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
         orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, false)
 
@@ -129,13 +130,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         logisticPromoViewModel = helper.logisticPromo,
                         isServicePickerEnable = true,
                         insuranceData = helper.firstCourierSecondDuration.productData.insurance),
-                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+                orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Choose Duration With Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
         val error = "error"
         helper.firstCourierSecondDuration.productData.error = ErrorProductData().apply {
@@ -158,21 +160,22 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceErrorMessage = error,
                         isServicePickerEnable = true,
                         insuranceData = helper.firstCourierSecondDuration.productData.insurance),
-                (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping)
+                orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         assertEquals(ButtonBayarState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
     }
 
     @Test
     fun `Choose Logistic Promo Success`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK"))
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
-        val shipping = (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!
+        val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
         assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
@@ -182,7 +185,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Choose Logistic Promo Red State`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -191,7 +195,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
-        val shipping = (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!
+        val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Error(null, OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
@@ -199,7 +203,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Choose Logistic Promo Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         val response = Throwable()
@@ -207,7 +212,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
-        val shipping = (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!
+        val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
@@ -215,7 +220,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Autoapply Logistic Promo Success`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
 
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
@@ -228,7 +234,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
-        val shipping = (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!
+        val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
         assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
@@ -238,7 +244,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Autoapply Logistic Promo Red State`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -255,7 +262,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
-        val shipping = (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!
+        val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(null, shipping.logisticPromoShipping)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
@@ -264,7 +271,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Autoapply Logistic Promo Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -280,7 +288,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
         (testDispatchers.main as TestCoroutineDispatcher).advanceUntilIdle()
 
-        val shipping = (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!
+        val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
@@ -288,25 +296,26 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Set Insurance Check`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData()))
+        orderSummaryPageViewModel._orderShipment = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+                shipperProductId = 1, serviceName = "service")
 
         orderSummaryPageViewModel.setInsuranceCheck(true)
 
-        assertEquals(true, orderSummaryPageViewModel._orderPreference!!.shipping!!.isCheckInsurance)
+        assertEquals(true, orderSummaryPageViewModel._orderShipment.isCheckInsurance)
     }
 
     @Test
     fun `Change Pinpoint`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(shipping = OrderShipment(needPinpoint = true))
+        orderSummaryPageViewModel._orderShipment = OrderShipment(needPinpoint = true)
 
         orderSummaryPageViewModel.changePinpoint()
 
-        assertEquals(false, (orderSummaryPageViewModel.orderPreference.value as OccState.Success<OrderPreference>).data.shipping!!.needPinpoint)
+        assertEquals(false, orderSummaryPageViewModel._orderShipment.needPinpoint)
     }
 
     @Test
     fun `Save Pinpoint Success`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
 
         every { editAddressUseCase.createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 1}}")
 
@@ -317,7 +326,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Save Pinpoint Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
 
         every { editAddressUseCase.createObservable(any()) } returns Observable.just("{\"data\": {\"is_success\": 0},\"message_error\": [\"error\"]}")
 
@@ -328,7 +337,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Save Pinpoint Failed`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val throwable = Throwable()
         every { editAddressUseCase.createObservable(any()) } returns Observable.error(throwable)
 
@@ -339,7 +348,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
     @Test
     fun `Clear Bbo If Exist`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any(), any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(

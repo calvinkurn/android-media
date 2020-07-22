@@ -10,13 +10,11 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PriceDa
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.common.data.model.Shipment
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
-import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
 import com.tokopedia.oneclickcheckout.order.data.update.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -67,7 +65,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         orderSummaryPageViewModel.getOccCart(true, "")
 
-        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "")), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", isValid = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any())
@@ -88,8 +86,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Get Occ Cart Success With Preference`() {
-        val shipment = Shipment(serviceId = 1)
-        val profile = ProfileResponse(shipment = shipment)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
@@ -99,9 +97,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         orderSummaryPageViewModel.getOccCart(true, "")
 
-        assertEquals(OccState.Success(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile,
-                shipping = OrderShipment("", serviceDuration = "", serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE))),
+        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OrderShipment("", serviceDuration = "", serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE),
+        orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any())
@@ -110,8 +109,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Get Occ Cart Success With Preference And Rates`() {
-        val shipment = Shipment(serviceId = 1)
-        val profile = ProfileResponse(shipment = shipment, profileId = 1)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment, profileId = 1)
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))), preference = profile)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
@@ -142,11 +141,12 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         orderSummaryPageViewModel.getOccCart(true, "")
 
-        assertEquals(OccState.Success(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile,
-                shipping = OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
-                        shipperId = 0, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
-                        insuranceData = shippingRecommendationData.shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.insurance))),
+        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
+                shipperId = 0, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
+                insuranceData = shippingRecommendationData.shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.insurance),
+        orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any())
@@ -155,7 +155,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Product Debounce Success`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
 
@@ -170,7 +171,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Product Debounce Should Not Reload Rates`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), false)
 
@@ -182,7 +184,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Product Debounce With Error Quantity Should Not Reload Rates`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)), false)
 
@@ -204,7 +207,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Update Cart Params`() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
@@ -216,7 +220,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Preference Success Should Trigger Refresh`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
             (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
         }
@@ -228,7 +233,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Preference Failed`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val responseMessage = "message"
         val response = MessageErrorException(responseMessage)
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
@@ -242,7 +248,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
     fun `Update Preference Error`() {
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, shipping = helper.orderShipment)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val response = Throwable()
         every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)

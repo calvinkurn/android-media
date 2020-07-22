@@ -5,8 +5,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.*
-import com.tokopedia.oneclickcheckout.common.data.model.Shipment
-import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
 import com.tokopedia.oneclickcheckout.order.view.model.*
 
 class OrderSummaryPageViewModelTestHelper {
@@ -78,9 +76,9 @@ class OrderSummaryPageViewModelTestHelper {
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
     }
 
-    val shipment = Shipment(serviceId = 1)
+    val shipment = OrderProfileShipment(serviceId = 1)
 
-    val preference = ProfileResponse(shipment = shipment, profileId = 1)
+    val preference = OrderProfile(shipment = shipment, profileId = 1)
 
     val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
             serviceName = firstDuration.serviceData.serviceName,
