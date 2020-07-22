@@ -422,7 +422,7 @@ class PlayViewModel @Inject constructor(
                 _observableVideoStream.value = completeInfoUiModel.videoStream
                 _observableEvent.value = completeInfoUiModel.event
 
-                yield()
+                if (!isActive) return@launchCatchError
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
