@@ -164,7 +164,7 @@ class InboxReviewViewModel @Inject constructor(
             val countStatusIsZero = InboxReviewMapper.mapToStatusFilterList(allFilterList).filter { it.isSelected }.count().isZero()
             if(countStatusIsZero) {
                 filterByList.removeFilterElement(prefixStatus)
-                getInitInboxReview()
+                getInitInboxReview(1, "")
             } else {
                 getInboxReview()
             }
