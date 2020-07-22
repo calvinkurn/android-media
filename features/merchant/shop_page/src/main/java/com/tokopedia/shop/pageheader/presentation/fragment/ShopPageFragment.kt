@@ -267,6 +267,10 @@ class ShopPageFragment :
                     onErrorGetShopPageHeaderContentData(result.throwable)
                 }
             }
+            val shopProductListFragment: Fragment? = viewPagerAdapter.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
+            if (shopProductListFragment is ShopPageProductListFragment) {
+                shopProductListFragment.loadInitialProductListData()
+            }
         })
 
     }
