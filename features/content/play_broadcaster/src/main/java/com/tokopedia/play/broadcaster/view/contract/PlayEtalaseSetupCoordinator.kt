@@ -30,7 +30,8 @@ interface PlayEtalaseSetupCoordinator {
             message: String,
             type: Int = Toaster.TYPE_NORMAL,
             duration: Int = Toaster.LENGTH_SHORT,
-            actionLabel: String = ""
+            actionLabel: String = "",
+            actionListener: View.OnClickListener = View.OnClickListener {  }
     )
 
     fun showGlobalError(errorType: Int, errorAction: () -> Unit)
