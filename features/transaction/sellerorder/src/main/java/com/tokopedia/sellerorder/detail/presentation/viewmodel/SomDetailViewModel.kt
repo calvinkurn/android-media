@@ -3,27 +3,12 @@ package com.tokopedia.sellerorder.detail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_IS_FROM_FINTECH
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
-import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_ORDERID
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -62,38 +47,50 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         get() = _setDelivered
 
     fun loadDetailOrder(detailQuery: String, orderId: String) {
-        launch {
+        launchCatchError(block = {
             _orderDetailResult.postValue(somGetOrderDetailUseCase.execute(detailQuery, orderId))
-        }
+        }, onError = {
+            _orderDetailResult.postValue(Fail(it))
+        })
     }
 
     fun acceptOrder(acceptOrderQuery: String, orderId: String, shopId: String) {
-        launch {
+        launchCatchError(block = {
             _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(acceptOrderQuery, orderId, shopId))
-        }
+        }, onError = {
+            _acceptOrderResult.postValue(Fail(it))
+        })
     }
 
     fun getRejectReasons(rejectReasonQuery: String) {
-        launch {
+        launchCatchError(block = {
             _rejectReasonResult.postValue(somReasonRejectUseCase.execute(rejectReasonQuery, SomReasonRejectParam()))
-        }
+        }, onError = {
+            _rejectReasonResult.postValue(Fail(it))
+        })
     }
 
     fun rejectOrder(rejectOrderQuery: String, rejectOrderRequest: SomRejectRequest) {
-        launch {
+        launchCatchError(block = {
             _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderQuery, rejectOrderRequest))
-        }
+        }, onError = {
+            _rejectOrderResult.postValue(Fail(it))
+        })
     }
 
     fun editAwb(queryString: String) {
-        launch {
+        launchCatchError(block = {
             _editRefNumResult.postValue(somEditRefNumUseCase.execute(queryString))
-        }
+        }, onError = {
+            _editRefNumResult.postValue(Fail(it))
+        })
     }
 
     fun setDelivered(rawQuery: String, orderId: String, receivedBy: String) {
-        launch {
+        launchCatchError(block = {
             _setDelivered.postValue(somSetDeliveredUseCase.execute(rawQuery, orderId, receivedBy))
-        }
+        }, onError = {
+            _setDelivered.postValue(Fail(it))
+        })
     }
 }
