@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
@@ -30,6 +31,9 @@ class CampaignStockActivity : BaseSimpleActivity() {
 
         const val SHOP_ID = "extra_shop_id"
         const val PRODUCT_ID = "extra_product_id"
+
+        private const val PRODUCT_ID_SEGMENT_INDEX = 0
+        private const val SHOP_ID_SEGMENT_INDEX = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +45,10 @@ class CampaignStockActivity : BaseSimpleActivity() {
 
     override fun getParentViewResourceID(): Int = R.id.parent_view_campaign_stock
 
-    override fun getNewFragment(): Fragment? = CampaignStockFragment.createInstance()
+    override fun getNewFragment(): Fragment? {
+        setupApplinkAttribute()
+        return CampaignStockFragment.createInstance()
+    }
 
     private fun setupView() {
         window.decorView.setBackgroundColor(Color.WHITE)
@@ -67,4 +74,27 @@ class CampaignStockActivity : BaseSimpleActivity() {
             }
         }
     }
+
+    private fun setupApplinkAttribute() {
+        intent?.data?.let { uri ->
+            uri.getProductIds()?.let { productIds ->
+                uri.getShopId()?.let { shopId ->
+                    intent?.run {
+                        putExtra(PRODUCT_ID, productIds)
+                        putExtra(SHOP_ID, shopId)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Uri.getProductIds(): Array<String>? {
+        pathSegments.getOrNull(PRODUCT_ID_SEGMENT_INDEX)?.let { productId ->
+            return arrayOf(productId)
+        }
+        return null
+    }
+
+    private fun Uri.getShopId(): String? = pathSegments.getOrNull(SHOP_ID_SEGMENT_INDEX)
+
 }
