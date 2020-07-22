@@ -179,6 +179,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         loadInitialData()
     }
 
+    override fun clearAllData() {
+        isLoadingInitialData = true
+        super.clearAllData()
+    }
+
     private fun initView() {
         setupInterceptor()
         setupSearchBar()
@@ -353,7 +358,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showProductEmptyState(): Boolean {
         val selectedFilters = viewModel.selectedFilterAndSort.value
         val searchKeyword = searchBar.searchTextView.text.toString()
-        return searchKeyword.isEmpty() && selectedFilters == null && filterTab?.isFilterActive() == false
+        return searchKeyword.isEmpty() && selectedFilters?.selectedFilterCount.orZero() == 0 && filterTab?.isFilterActive() == false
     }
 
     private fun setupInterceptor() {
