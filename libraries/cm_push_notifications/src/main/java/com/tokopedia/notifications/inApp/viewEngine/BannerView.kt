@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
@@ -29,6 +30,8 @@ internal open class BannerView(activity: Activity) {
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
 
+    private val analytics by lazy { InAppAnalytics }
+
     private val listener by lazy {
         CMInAppManager.getCmInAppListener()
     }
@@ -44,6 +47,9 @@ internal open class BannerView(activity: Activity) {
 
         // resize dialog's width with 80% of screen
         setWindowAttributes(dialog, getDisplayMetrics(mActivity.get()).first)
+
+        // impression tracker
+        analytics.impression(data)
     }
 
     private fun createView(data: CMInApp): View? {
@@ -73,7 +79,7 @@ internal open class BannerView(activity: Activity) {
 
     private fun viewState(data: CMInApp) {
         when (data.getType()) {
-            TYPE_FULL_SCREEN_IMAGE_ONLY -> {
+            TYPE_INTERSTITIAL_IMAGE_ONLY -> {
                 fullScreenImageOnly(data)
             }
         }
@@ -108,6 +114,7 @@ internal open class BannerView(activity: Activity) {
 
     private fun onActionClicked(button: CMButton, data: CMInApp) {
         trackAppLinkClick(data, button.getAppLink(), ElementType(ElementType.BUTTON))
+        analytics.click(data)
         dialog?.dismiss()
     }
 
@@ -124,6 +131,8 @@ internal open class BannerView(activity: Activity) {
         imgBanner.setOnClickListener {
             trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
             RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
+            analytics.click(data)
+            dialog?.dismiss()
         }
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.promotionstarget.presentation.ui.views.CouponView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.promoui.common.CouponView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/couponView"
@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     tools:background="@color/y_200">
 
-    <com.tokopedia.promotionstarget.presentation.ui.views.CouponImageView
+    <com.tokopedia.promoui.common.CouponImageView
         android:id="@+id/appCompatImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -60,5 +60,5 @@
         app:typographyType="heading_5"
         tools:text="Rp100.000" />
 
-</com.tokopedia.promotionstarget.presentation.ui.views.CouponView>
+</com.tokopedia.promoui.common.CouponView>
 

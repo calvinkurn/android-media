@@ -37,15 +37,23 @@ object ApplinkConstInternalTopAds {
     val TOPADS_CREATE_ADS = "${INTERNAL_TOPADS}/create-ads"
     @JvmField
     val TOPADS_CREATE_CHOOSER = "${INTERNAL_TOPADS}/ad-picker"
-
+    @JvmField
+    val TOPADS_EDIT_ADS = "${INTERNAL_TOPADS}/edit-ads"
     @JvmField
     val TOPADS_HISTORY_CREDIT = "${INTERNAL_TOPADS}/history-credit"
     @JvmField
     val TOPADS_AUTOADS = "${DeeplinkConstant.SCHEME_SELLERAPP}://${HOST_TOPADS}/autoads"
     @JvmField
-    val TOPADS_AUTOADS_CREATE = "${DeeplinkConstant.SCHEME_SELLERAPP}://${HOST_TOPADS}/creat-autoads"
-
+    val TOPADS_AUTOADS_CREATE = "${INTERNAL_TOPADS}/create-autoads"
     @JvmField
     val TOPADS_KEYWORD_NEW_CHOOSE_GROUP = "${INTERNAL_TOPADS}/keyword-new-choose-group?is_pos={isPos}&EXTRA_CHOOSEN_GROUP={groupId}"
+    @JvmField
+    val TOPADS_AUTOADS_ONBOARDING = "${INTERNAL_TOPADS}/autoads-onboarding"
+    @JvmField
+    val TOPADS_EDIT_WITHOUT_GROUP = "${INTERNAL_TOPADS}/edit-without-group"
+    @JvmField
+    val TOPADS_EDIT_AUTOADS = "${INTERNAL_TOPADS}/edit-autoads"
+    @JvmField
+    val TOPADS_AUTO_TOPUP = "${INTERNAL_TOPADS}/auto-topup"
 
 }

@@ -12,7 +12,5 @@ class ECConstants {
         const val LAYANAN_SCREEN = "/semua-kategori"
         const val DEFAULT_SCREEN = "/kategori-belanja"
 
-        const val gql_ec_dynamic_home_icon_query = "gql_ec_dynamic_home_icon_query"
-
     }
 }

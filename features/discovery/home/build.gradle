@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
 
@@ -28,33 +29,9 @@ android {
         jvmTarget = "1.8"
     }
 
-    flavorDimensions "tier", "client"
-    productFlavors {
-        benchmark {
-            dimension "client"
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
-        }
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-        }
-    }
-
     defaultConfig {
-        defaultConfig {
-            multiDexEnabled true
-            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
-        }
+        multiDexEnabled true
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['targetModuleName': 'TkpdHome']
@@ -87,7 +64,7 @@ dependencies {
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.homeComponent)
-    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)

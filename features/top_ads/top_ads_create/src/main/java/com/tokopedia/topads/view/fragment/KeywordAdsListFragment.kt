@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.topads.Utils
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
@@ -33,6 +34,10 @@ import javax.inject.Inject
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_PILIH_KEYWORD = "click-pilih keyword"
+private const val CLICK_TAMBAH_KEYWORD = "click-tambah keyword"
+private const val CLICK_TIPS_KEYWORD = "click-tips memilih kata kunci"
 class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     @Inject
@@ -79,9 +84,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        var list = stepperModel?.selectedProductIds!!
-        var s = list.toString()
-        var productId = s.substring(1, s.length - 1)
+        val list = stepperModel?.selectedProductIds!!
+        val productId = list.joinToString(",")
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
     }
 
@@ -108,15 +112,17 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
     }
 
-    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
+    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.KeywordData>) {
         startShowCase()
         keywordListAdapter.items.add(KeywordGroupViewModel("Rekomendasi"))
         coachitem_title.visibility = View.GONE
         keywordListAdapter.favoured.clear()
         keywordListAdapter.manualKeywords.clear()
-        keywords.forEach { index ->
-            keywordListAdapter.items.add(KeywordItemViewModel(index))
-            keywordList.add(KeywordItemViewModel(index).data.keyword)
+        keywords.forEach { key ->
+            key.keywordData.forEach {index->
+                keywordListAdapter.items.add(KeywordItemViewModel(index))
+                keywordList.add(KeywordItemViewModel(index).data.keyword)
+            }
         }
         tip_btn.visibility = View.VISIBLE
         addManualKeywords()
@@ -172,6 +178,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel?.selectedSuggestBid = getSelectedBid()
         stepperModel?.manualKeywords = getManualKeywords()
         stepperListener?.goToNextPage(stepperModel)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PILIH_KEYWORD, getSelectedKeyword().joinToString("::"))
     }
 
     private fun getSelectedKeyword(): MutableList<String> {
@@ -239,7 +246,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             keywordValidation(editText.text.toString())
         }
         btn_next.setOnClickListener { gotoNextPage() }
-        tip_btn.setOnClickListener { TipSheetKeywordList.newInstance(view.context).show() }
+        tip_btn.setOnClickListener {
+            TipSheetKeywordList.newInstance(view.context).show()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, "")
+        }
         keyword_list.adapter = keywordListAdapter
         keyword_list.layoutManager = LinearLayoutManager(context)
         editText.addTextChangedListener(object : TextWatcher {
@@ -281,6 +291,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             if (alreadyExists) {
                 makeToast(getString(R.string.keyword_already_exists))
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TAMBAH_KEYWORD, key)
         }
     }
 

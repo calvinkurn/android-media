@@ -7,7 +7,10 @@ import com.google.gson.annotations.SerializedName
 data class GetNotificationsResponse(
         @Expose
         @SerializedName("notifications")
-        val notifications: NotificationsModel?
+        val notifications: NotificationsModel?,
+        @Expose
+        @SerializedName("notifcenter_unread")
+        val notifCenterUnread: NotifCenterUnreadModel?
 )
 
 data class NotificationsModel(

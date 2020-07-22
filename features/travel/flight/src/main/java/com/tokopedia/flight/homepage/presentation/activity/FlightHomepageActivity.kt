@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.FlightComponentInstance
+import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
@@ -60,6 +62,10 @@ class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepage
             DaggerFlightHomepageComponent.builder()
                     .flightComponent(FlightComponentInstance.getFlightComponent(application))
                     .build()
+
+    override fun navigateToHelpPage() {
+        RouteManager.route(this, FlightUrl.FLIGHT_HOMEPAGE_HELP_URL)
+    }
 
     companion object {
         private const val EXTRA_TRIP = "dest"
