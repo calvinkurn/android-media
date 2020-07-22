@@ -65,13 +65,14 @@
                 android:id="@+id/cl_reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_11"
                 app:layout_constraintLeft_toLeftOf="@id/text"
                 app:layout_constraintRight_toRightOf="@id/text"
                 android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:layout_marginRight="@dimen/spacing_lvl3"
-                app:layout_constraintTop_toBottomOf="@id/text">
+                app:layout_constraintTop_toBottomOf="@id/text"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/txt_reason_1"
