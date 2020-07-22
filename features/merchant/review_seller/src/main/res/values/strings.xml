@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Review Seller</string>
 
@@ -91,5 +92,6 @@
     <string name="titlte_inbox_review">Inbox Review</string>
     <string name="title_filter_rating">Filter Rating</string>
     <string name="reset_filter">Reset</string>
+    <string name="ticker_inbox_review">Ulasan yang sudah dibalas hanya tersimpan 30 hari dalam Inbox Ulasan</string>
 
 </resources>

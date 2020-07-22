@@ -5,7 +5,9 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VALUE
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixRating
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
 import com.tokopedia.reviewseller.common.util.getGeneratedFilterByText
@@ -78,7 +80,7 @@ class InboxReviewViewModel @Inject constructor(
         allFilterList = InboxReviewMapper.mapToUnSelectedStatusList(allFilterList)
         filterRatingList = InboxReviewMapper.mapToUnSelectedRatingList(filterRatingList)
         filterByList.clear()
-        getInboxReview()
+        getInitInboxReview()
     }
 
     fun getInboxReview(page: Int = 1) {
@@ -98,6 +100,55 @@ class InboxReviewViewModel @Inject constructor(
         })
     }
 
+    fun getInitInboxReview(page: Int = 1, statusFilter: String = UNANSWERED_VALUE) {
+        launchCatchError(block = {
+            val inboxReviewResult = withContext(dispatcherProvider.io()) {
+
+                val statusFilterTextGenerated = "$prefixStatus$statusFilter"
+                filterByList.removeFilterElement(prefixStatus)
+
+                if (statusFilter.isNotBlank()) {
+                    filterByList.add(statusFilterTextGenerated)
+                }
+                getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
+                        filterByList.getGeneratedFilterByText,
+                        page
+                )
+
+                val inboxReviewResultResponse = getInboxReviewUseCase.executeOnBackground()
+                InboxReviewMapper.mapToInboxReviewUiModel(inboxReviewResultResponse, userSession = userSession)
+            }
+            _inboxReview.postValue(Success(inboxReviewResult))
+        }, onError = {
+            _inboxReview.postValue(Fail(it))
+        })
+    }
+
+    fun getInitFeedbackInboxReviewListNext(page: Int, statusFilter: String = UNANSWERED_VALUE) {
+        launchCatchError(block = {
+            val statusFilterTextGenerated = "$prefixStatus$statusFilter"
+            filterByList.removeFilterElement(prefixStatus)
+
+            if (statusFilter.isNotBlank()) {
+                filterByList.add(statusFilterTextGenerated)
+            }
+
+            val feedbackInboxReviewList = withContext(dispatcherProvider.io()) {
+                getInboxReviewUseCase.params = GetInboxReviewUseCase.createParams(
+                        filterByList.getGeneratedFilterByText,
+                        page
+                )
+
+                val productFeedbackInboxReviewResponse = getInboxReviewUseCase.executeOnBackground()
+                InboxReviewMapper.mapToInboxReviewUiModel(productFeedbackInboxReviewResponse, userSession = userSession)
+            }
+            feedbackInboxReviewMediator.postValue(Success(feedbackInboxReviewList))
+        }, onError = {
+            feedbackInboxReviewMediator.postValue(Fail(it))
+        })
+    }
+
+
     private fun setupFeedBackInboxReview() {
         feedbackInboxReviewMediator.addSource(_ratingFilterData) { data ->
             val ratingFilterText = data.filter { it.isSelected }
@@ -109,7 +160,13 @@ class InboxReviewViewModel @Inject constructor(
             if (ratingFilterTextGenerated.isNotBlank()) {
                 filterByList.add(ratingFilterTextGenerated)
             }
-            getInboxReview()
+
+            val countStatusIsZero = InboxReviewMapper.mapToStatusFilterList(allFilterList).filter { it.isSelected }.count().isZero()
+            if(countStatusIsZero) {
+                getInitInboxReview()
+            } else {
+                getInboxReview()
+            }
         }
 
         feedbackInboxReviewMediator.addSource(_allFilterInboxReviewData) { data ->
@@ -124,7 +181,13 @@ class InboxReviewViewModel @Inject constructor(
             if (statusFilterTextGenerated.isNotBlank()) {
                 filterByList.add(statusFilterTextGenerated)
             }
-            getInboxReview()
+
+            val countStatusIsZero = statusFilterText.count().isZero()
+            if(countStatusIsZero) {
+                getInitInboxReview()
+            } else {
+                getInboxReview()
+            }
         }
     }
 

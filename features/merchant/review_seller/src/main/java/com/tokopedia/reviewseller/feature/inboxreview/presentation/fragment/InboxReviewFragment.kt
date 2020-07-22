@@ -1,6 +1,8 @@
 package com.tokopedia.reviewseller.feature.inboxreview.presentation.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +17,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ALL_RATINGS
-import com.tokopedia.reviewseller.common.util.toggle
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VALUE
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
+import com.tokopedia.reviewseller.common.util.getStatusFilter
+import com.tokopedia.reviewseller.common.util.isUnAnswered
 import com.tokopedia.reviewseller.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.reviewseller.feature.inboxreview.di.component.InboxReviewComponent
 import com.tokopedia.reviewseller.feature.inboxreview.di.module.InboxReviewModule
@@ -44,6 +48,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -60,9 +65,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
 
         private val TAG_FILTER_RATING = FilterRatingBottomSheet::class.java.simpleName
-        private val positionRating = 0
-        private val positionUnAnswered = 1
-        private val positionAnswered = 2
+        private const val positionRating = 0
+        private const val positionUnAnswered = 1
+        private const val positionAnswered = 2
+        private const val allSelected = 5
     }
 
     @Inject
@@ -82,7 +88,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private val inboxReviewAdapter: InboxReviewAdapter
         get() = adapter as InboxReviewAdapter
 
-    private val allSelected = 5
+    private val prefKey = this.javaClass.name + ".pref"
 
     private var isFilter = false
 
@@ -95,8 +101,19 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private var feedbackInboxList: MutableList<FeedbackInboxUiModel>? = null
 
+    private var inboxReviewUiModel: InboxReviewUiModel? = null
+
+    private var statusFilter = UNANSWERED_VALUE
+
+    private var prefs: SharedPreferences? = null
+
     override fun getScreenName(): String {
         return getString(R.string.titlte_inbox_review)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -108,6 +125,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         super.onViewCreated(view, savedInstanceState)
         observeInboxReview()
         observeFeedbackInboxReview()
+        initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
     }
@@ -133,11 +151,19 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         isLoadingInitialData = true
         endlessRecyclerViewScrollListener?.resetState()
         showLoading()
-        inboxReviewViewModel.getInboxReview()
+        if(countStatusIsZero()) {
+            inboxReviewViewModel.getInitInboxReview()
+        } else {
+            inboxReviewViewModel.getInboxReview()
+        }
     }
 
     override fun loadData(page: Int) {
-        inboxReviewViewModel.getFeedbackInboxReviewListNext(page)
+        if(countStatusIsZero()) {
+            inboxReviewViewModel.getInitFeedbackInboxReviewListNext(page, statusFilter)
+        } else {
+            inboxReviewViewModel.getFeedbackInboxReviewListNext(page)
+        }
     }
 
     override fun initInjector() {
@@ -244,7 +270,29 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         inboxReviewViewModel.updateRatingFilterData(InboxReviewMapper.mapToItemRatingFilterBottomSheet())
     }
 
+    private fun initTickerInboxReview() {
+        prefs?.let {
+            if (!it.getBoolean(ReviewSellerConstant.HAS_TICKER_INBOX_REVIEW, false)) {
+                tickerInboxReview?.apply {
+                    setTextDescription(getString(R.string.ticker_inbox_review))
+                    show()
+                    setDescriptionClickEvent(object : TickerCallback{
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                        override fun onDismiss() {
+                            hide()
+                            it.edit().putBoolean(ReviewSellerConstant.HAS_TICKER_INBOX_REVIEW, true).apply()
+                        }
+                    })
+                }
+            } else {
+                tickerInboxReview.hide()
+            }
+        }
+    }
+
     private fun onSuccessGetFeedbackInboxReview(data: InboxReviewUiModel) {
+        inboxReviewUiModel = data
         feedbackInboxList = data.feedbackInboxList.toMutableList()
         swipeToRefresh?.isRefreshing = false
         sortFilterInboxReview?.show()
@@ -259,7 +307,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             isFilter = true
             inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
         }
-        updateScrollListenerState(data.hasNext)
+
+        if(isUnAnsweredHasNextFalse(data)) {
+            statusFilter = ANSWERED_VALUE
+            endlessRecyclerViewScrollListener?.resetState()
+        } else {
+            updateScrollListenerState(data.hasNext)
+        }
     }
 
     private fun onSuccessGetFeedbackInboxReviewNext(data: InboxReviewUiModel) {
@@ -318,7 +372,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 } else {
                     updateFilterStatusInboxReview(index)
-                    sortFilterItem.toggle()
                 }
             }
         }
@@ -372,12 +425,18 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (index == positionUnAnswered) {
             val unAnsweredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
-            sortFilterItemInboxReviewWrapper[index].isSelected = !unAnsweredSelected
+            sortFilterItemInboxReviewWrapper[positionUnAnswered].isSelected = !unAnsweredSelected
             sortFilterItemInboxReviewWrapper[positionAnswered].isSelected = false
+
+            itemSortFilterList[positionUnAnswered].type = if (unAnsweredSelected) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+            itemSortFilterList[positionAnswered].type = ChipsUnify.TYPE_NORMAL
         } else {
             val answeredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
-            sortFilterItemInboxReviewWrapper[index].isSelected = !answeredSelected
+            sortFilterItemInboxReviewWrapper[positionAnswered].isSelected = !answeredSelected
             sortFilterItemInboxReviewWrapper[positionUnAnswered].isSelected = false
+
+            itemSortFilterList[positionAnswered].type = if (answeredSelected) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+            itemSortFilterList[positionUnAnswered].type = ChipsUnify.TYPE_NORMAL
         }
 
         sortFilterInboxReview?.hide()
@@ -426,5 +485,16 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
         inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
+    }
+
+    private fun isUnAnsweredHasNextFalse(data: InboxReviewUiModel): Boolean {
+        val statusFilterViewModel = inboxReviewViewModel.getStatusFilterListUpdated()
+        val statusIsEmpty = InboxReviewMapper.mapToStatusFilterList(statusFilterViewModel).filter { it.isSelected }.count().isZero()
+        val statusFilter = data.filterBy.getStatusFilter(prefixStatus).isUnAnswered
+        return statusIsEmpty && statusFilter && !data.hasNext
+    }
+
+    private fun countStatusIsZero(): Boolean {
+        return InboxReviewMapper.mapToStatusFilterList(inboxReviewViewModel.getStatusFilterListUpdated()).filter { it.isSelected }.count().isZero()
     }
 }

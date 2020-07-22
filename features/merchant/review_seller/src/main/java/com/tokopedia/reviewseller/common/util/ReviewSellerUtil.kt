@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VALUE
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -120,6 +121,11 @@ fun String.getStatusFilter(prefix: String): String {
 val String.isAnswered: Boolean
     get() {
         return this == ANSWERED_VALUE
+    }
+
+val String.isUnAnswered: Boolean
+    get() {
+        return this == UNANSWERED_VALUE
     }
 
 fun Float?.roundDecimal(): String {

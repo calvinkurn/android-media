@@ -81,6 +81,7 @@ object ReviewSellerConstant {
     const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
+    const val HAS_TICKER_INBOX_REVIEW = "hasTickerInboxReview"
 }
 
 
