@@ -42,7 +42,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         EmptyStateListener {
 
     private var categoryID: String = ""
-    private var page : Int = 0
     private var chips : DealsChipsDataView = DealsChipsDataView()
 
     @Inject

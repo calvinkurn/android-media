@@ -238,9 +238,6 @@ class DealsSelectLocationFragment(
 
     private fun setListener() {
         sb_location?.requestFocus()
-        sb_location?.searchBarTextField?.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            KeyboardHandler.showSoftKeyboard(activity)
-        }
 
         sb_location?.searchBarTextField?.afterTextChangedDelayed {
             onSearchTextChanged(it)

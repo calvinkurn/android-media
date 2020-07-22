@@ -16,7 +16,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
-import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
@@ -31,6 +30,7 @@ import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
+import com.tokopedia.deals.home.ui.activity.DealsHomeActivity
 import com.tokopedia.deals.home.ui.adapter.DealsHomeAdapter
 import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
@@ -305,8 +305,7 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* NEAREST PLACE SECTION ACTION */
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
-        (activity as DealsBaseActivity).setCurrentLocation(voucherPlaceCard.location)
-        startActivityForResult(DealsCategoryActivity.getCallingIntent(requireContext()), DEALS_CATEGORY_REQUEST_CODE)
+        (activity as DealsHomeActivity).setCurrentLocation(voucherPlaceCard.location)
     }
 
     /* FAVOURITE CATEGORY SECTION ACTION */
