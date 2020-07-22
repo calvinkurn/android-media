@@ -141,6 +141,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -searchBarDealsBaseSearch.height) {
                 //collapse
+                appBarLayout.elevation = 0f
                 viewSpacing.hide()
                 imgDealsSearchIcon.show()
             } else {
