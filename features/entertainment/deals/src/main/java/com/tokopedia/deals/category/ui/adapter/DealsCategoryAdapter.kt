@@ -10,6 +10,7 @@ import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandAdapterDel
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandGridAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonChipsAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonProductAdapterDelegate
+import com.tokopedia.deals.common.ui.adapter.delegate.LoadingMoreUnifyAdapterDelegate
 
 /**
  * @author by firman on 16/06/20
@@ -27,5 +28,6 @@ class DealsCategoryAdapter(
             .addDelegate(DealsCommonBrandGridAdapterDelegate(brandActionListener))
             .addDelegate(DealsCommonProductAdapterDelegate(productListListener))
             .addDelegate(DealsBrandEmptyAdapterDelegate(emptyStateListener))
+            .addDelegate(LoadingMoreUnifyAdapterDelegate())
     }
 }

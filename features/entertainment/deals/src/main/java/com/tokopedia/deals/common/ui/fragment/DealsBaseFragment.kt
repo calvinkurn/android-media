@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
+import com.tokopedia.deals.R
+import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 
 /**
  * @author by jessica on 16/06/20
@@ -32,7 +34,8 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if (hasInitialSwipeRefresh()) inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list_swipe, container, false)
+        return if(isBrandLayout()) inflater.inflate(R.layout.fragment_deals_brand, container, false)
+        else if (hasInitialSwipeRefresh()) inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list_swipe, container, false)
         else inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
     }
 
@@ -77,7 +80,7 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
             if (isLoadingInitialData) {
                 adapter.setItemsAndAnimateChanges(list)
             } else {
-                adapter.hideLoadMore()
+                hideLoadMoreUnify()
                 adapter.hidePageLoad()
                 adapter.addItems(list)
             }
@@ -145,12 +148,24 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     }
 
     fun showLoading() { if (::adapter.isInitialized) adapter.showPageLoad() }
-    fun showLoadMoreLoading() { if (::adapter.isInitialized) adapter.showLoadMore() }
+    fun showLoadMoreLoading() { if (::adapter.isInitialized) showLoadingMoreUnify() }
 
     private fun getRecyclerView(view: View): RecyclerView = view.findViewById(com.tokopedia.baselist.R.id.recycler_view)
     private fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
         return if (hasInitialSwipeRefresh()) view.findViewById(com.tokopedia.baselist.R.id.swipe_refresh_layout)
         else null
+    }
+
+    fun showLoadingMoreUnify(){
+        adapter.addItem(adapter.data.size, LoadingMoreUnifyModel())
+        adapter.notifyItemInserted(adapter.itemCount)
+    }
+
+    fun hideLoadMoreUnify(){
+        if (adapter.data.isNotEmpty() && adapter.data[adapter.data.lastIndex]::class == LoadingMoreUnifyModel::class) {
+            adapter.removeItemAt(adapter.data.lastIndex)
+            adapter.notifyItemRemoved(adapter.data.size)
+        }
     }
 
     abstract fun createAdapterInstance(): BaseCommonAdapter
@@ -163,6 +178,7 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     open fun isAutoLoadEnabled() = false
     open fun isShowInitialShimmering() = true
     open fun getMinimumScrollableNumOfItems(): Int = DEFAULT_MAX_ROW_FULL_PAGE
+    open fun isBrandLayout() = false
 
     companion object {
         private const val DEFAULT_INITIAL_PAGE = 1

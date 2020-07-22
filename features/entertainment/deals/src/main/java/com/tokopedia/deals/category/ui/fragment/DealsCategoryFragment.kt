@@ -252,4 +252,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page: Int) {
         analytics.impressionProductCategory(productCardDataView,productItemPosition, page)
     }
+
+    override fun showTitle(brand: DealsBrandsDataView) {
+        /* do nothing */
+    }
 }

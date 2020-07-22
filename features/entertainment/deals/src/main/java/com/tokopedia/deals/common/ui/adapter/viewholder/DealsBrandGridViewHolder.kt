@@ -26,6 +26,7 @@ class DealsBrandGridViewHolder (
                 showShimmering(itemView, brands)
             } else {
                 shimmering?.hide()
+                cl_containter_brand?.show()
                 one_row_shimmering?.hide()
                 showTitle(itemView, brands)
                 showSeeAllText(itemView, brands)
@@ -64,7 +65,7 @@ class DealsBrandGridViewHolder (
         itemView.rv_brands?.adapter = adapter
         itemView.rv_brands?.layoutManager = object : GridLayoutManager(itemView.context, BRAND_SPAN_COUNT) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
-                lp?.width = (width / BRAND_SPAN_COUNT) - itemView.getDimens(R.dimen.deals_dp_12)
+                lp?.width = (width / BRAND_SPAN_COUNT)
                 return true
             }
         }

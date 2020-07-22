@@ -78,10 +78,9 @@
 
     <include
         android:id="@+id/shimmering"
+        layout="@layout/item_deals_brands_page_shimmering"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        layout="@layout/item_deals_brands_page_shimmering"
-        />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

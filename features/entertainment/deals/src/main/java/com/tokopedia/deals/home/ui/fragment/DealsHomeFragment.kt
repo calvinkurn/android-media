@@ -335,6 +335,10 @@ class DealsHomeFragment : DealsBaseFragment(),
         analytics.impressionCuratedProduct(curatedProductCategoryDataView,position)
     }
 
+    override fun showTitle(brand: DealsBrandsDataView) {
+        /* do nothing */
+    }
+
     companion object {
         const val DEALS_SEARCH_REQUEST_CODE = 27
         const val DEALS_CATEGORY_REQUEST_CODE = 33
