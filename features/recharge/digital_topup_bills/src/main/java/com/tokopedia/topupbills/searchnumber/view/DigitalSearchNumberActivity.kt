@@ -37,6 +37,10 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasCompone
         return R.id.toolbar_search_telco
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     companion object {
         fun newInstance(activity: Activity, clientNumberType: String,
                         number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
