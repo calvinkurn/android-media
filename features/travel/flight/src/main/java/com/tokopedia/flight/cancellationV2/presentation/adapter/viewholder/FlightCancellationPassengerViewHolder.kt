@@ -40,7 +40,7 @@ class FlightCancellationPassengerViewHolder(itemView: View,
         this.passengerModel = passengerModel
         this.passengerAdapterPosition = adapterPosition
 
-        if (passengerModel.statusString != null && passengerModel.statusString?.isNotEmpty() == true) {
+        if (passengerModel.statusString.isNotEmpty()) {
             tvPassengerStatus.text = passengerModel.statusString
             tvPassengerStatus.visibility = View.VISIBLE
             checkBoxPassenger.isEnabled = false

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellationV2.domain
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
@@ -20,6 +21,7 @@ import javax.inject.Inject
  * @author by furqan on 15/07/2020
  */
 class FlightCancellationGetPassengerUseCase @Inject constructor(
+        @ApplicationContext
         private val context: Context,
         private val useCase: MultiRequestGraphqlUseCase,
         private val cancellationReasonsCache: FlightCancellationReasonDataCacheSource) {
@@ -102,10 +104,10 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         }
 
         for (item in reasonList) {
-            item.formattedRequiredDocs.toMutableList().addAll(processRequiredDocsData(docsMap, item.requiredDocs))
+            item.formattedRequiredDocs.addAll(processRequiredDocsData(docsMap, item.requiredDocs))
         }
 
-        flightCancellationPassengerEntity.formattedReasons.toMutableList().addAll(reasonList)
+        flightCancellationPassengerEntity.formattedReasons.addAll(reasonList)
         return flightCancellationPassengerEntity
     }
 

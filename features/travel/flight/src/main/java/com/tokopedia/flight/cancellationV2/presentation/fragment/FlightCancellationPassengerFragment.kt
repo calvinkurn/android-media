@@ -1,5 +1,7 @@
 package com.tokopedia.flight.cancellationV2.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -11,15 +13,17 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAdapterTypeFactory
 import com.tokopedia.flight.cancellationV2.presentation.adapter.viewholder.FlightCancellationViewHolder
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationReasonAndAttachmentModel
+import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationPassengerViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_cancellation.*
 import java.util.*
 import javax.inject.Inject
@@ -62,6 +66,10 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         initVariable()
 
         super.onViewCreated(view, savedInstanceState)
+
+        button_submit.setOnClickListener {
+            onNextButtonClicked()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -77,6 +85,18 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onSaveInstanceState(outState)
 
         outState.putBoolean(EXTRA_FIRST_CHECK, isFirstRelationCheck)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_REASON_AND_PROOF_CANCELLATION -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    closeCancellationPage()
+                }
+            }
+        }
     }
 
     override fun getAdapterTypeFactory(): FlightCancellationAdapterTypeFactory =
@@ -127,8 +147,8 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         invoiceId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
         flightCancellationJourneyList = arguments?.getParcelableArrayList(EXTRA_CANCEL_JOURNEY)
                 ?: arrayListOf()
-        flightCancellationWrapperModel.invoice = invoiceId
-        flightCancellationWrapperModel.cancellationReasonAndAttachment = FlightCancellationReasonAndAttachmentModel()
+        flightCancellationWrapperModel.invoiceId = invoiceId
+        flightCancellationWrapperModel.cancellationReasonAndAttachmentModel = FlightCancellationReasonAndAttachmentModel()
         passengerRelationMap = hashMapOf()
     }
 
@@ -180,13 +200,47 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         button_submit.isEnabled = false
     }
 
+    private fun onNextButtonClicked() {
+        var canGoNext = false
+
+        for (cancellation in flightCancellationPassengerViewModel.selectedCancellationPassengerList) {
+            if (cancellation.passengerModelList.size > 0) {
+                canGoNext = true
+            }
+        }
+
+        if (canGoNext) {
+            navigateToReasonPage()
+        } else {
+            showShouldChooseAtLeastOnePassengerError()
+        }
+    }
+
+    private fun navigateToReasonPage() {
+        flightCancellationWrapperModel.cancellationList = flightCancellationPassengerViewModel.selectedCancellationPassengerList
+        startActivityForResult(
+                FlightCancellationReasonActivity.getCallingIntent(
+                        requireContext(), flightCancellationWrapperModel),
+                REQUEST_REASON_AND_PROOF_CANCELLATION
+        )
+    }
+
+    private fun showShouldChooseAtLeastOnePassengerError() {
+        Toaster.make(requireView(), getString(R.string.flight_cancellation_should_choose_at_least_one_passenger_error),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+    }
+
+    private fun closeCancellationPage() {
+        requireActivity().setResult(Activity.RESULT_OK)
+        requireActivity().finish()
+    }
+
     companion object {
         const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         const val EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY"
         const val EXTRA_FIRST_CHECK = "EXTRA_FIRST_CHECK"
 
-        const val REQUEST_REFUND_CANCELLATION = 1
-        const val REQUEST_REASON_AND_PROOF_CANCELLATION = 2
+        const val REQUEST_REASON_AND_PROOF_CANCELLATION = 1111
 
         fun createInstance(invoiceId: String,
                            flightCancellationJourney: List<FlightCancellationJourney>)
