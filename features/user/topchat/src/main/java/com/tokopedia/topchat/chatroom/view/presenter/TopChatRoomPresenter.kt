@@ -78,8 +78,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
-import kotlin.reflect.KFunction1
-import kotlin.reflect.KFunction2
 
 /**
  * @author : Steven 11/12/18
@@ -112,6 +110,7 @@ class TopChatRoomPresenter @Inject constructor(
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
+    var newUnreadMessage = 0
     var thisMessageId: String = ""
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
 
@@ -129,6 +128,7 @@ class TopChatRoomPresenter @Inject constructor(
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
     }
+
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
@@ -208,10 +208,31 @@ class TopChatRoomPresenter @Inject constructor(
         val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
         if (pojo.msgId.toString() != messageId) return
         when (response.code) {
-            EVENT_TOPCHAT_TYPING -> view?.onReceiveStartTypingEvent()
-            EVENT_TOPCHAT_END_TYPING -> view?.onReceiveStopTypingEvent()
-            EVENT_TOPCHAT_READ_MESSAGE -> view?.onReceiveReadEvent()
-            EVENT_TOPCHAT_REPLY_MESSAGE -> onReplyMessage(pojo)
+            EVENT_TOPCHAT_TYPING -> {
+                if (!isInTheMiddleOfThePage()) {
+                    view?.onReceiveStartTypingEvent()
+                }
+            }
+            EVENT_TOPCHAT_END_TYPING -> {
+                if (!isInTheMiddleOfThePage()) {
+                    view?.onReceiveStopTypingEvent()
+                }
+            }
+            EVENT_TOPCHAT_READ_MESSAGE -> {
+                if (!isInTheMiddleOfThePage()) {
+                    view?.onReceiveReadEvent()
+                }
+            }
+            EVENT_TOPCHAT_REPLY_MESSAGE -> {
+                if (!isInTheMiddleOfThePage()) {
+                    onReplyMessage(pojo)
+                    newUnreadMessage = 0
+                    view?.hideUnreadMessage()
+                } else {
+                    newUnreadMessage++
+                    view?.showUnreadMessage(newUnreadMessage)
+                }
+            }
         }
     }
 
@@ -821,6 +842,10 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun resetChatUseCase() {
         getChatUseCase.reset()
+    }
+
+    override fun resetUnreadMessage() {
+        newUnreadMessage = 0
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

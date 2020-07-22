@@ -49,6 +49,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -93,6 +94,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -153,6 +155,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var rvLayoutManager: LinearLayoutManager? = null
     private var rvScrollListener: LoadMoreTopBottomScrollListener? = null
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
+    private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -174,7 +177,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun initFbNewUnreadMessage() {
-        val customView = layoutInflater.inflate(R.layout.custom_fb_new_unread_message, null)
+        val customView = layoutInflater.inflate(R.layout.custom_fb_new_unread_message, null).apply {
+            tvTotalUnreadMessage = this.findViewById(R.id.txt_new_unread_message)
+        }
         fbNewUnreadMessage?.setMargins(0, 0, 0, 0)
         fbNewUnreadMessage?.addItem(customView)
     }
@@ -616,6 +621,27 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         adapter.updateAttachmentView(firstVisible, lastVisible, attachments)
     }
 
+    override fun showUnreadMessage(newUnreadMessage: Int) {
+        tvTotalUnreadMessage?.text = newUnreadMessage.toString()
+        fbNewUnreadMessage?.setOnClickListener {
+            resetItemList()
+            presenter.getExistingChat(
+                    messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
+            )
+            presenter.resetUnreadMessage()
+            hideUnreadMessage()
+        }
+        if (fbNewUnreadMessage?.isVisible == false) {
+            fbNewUnreadMessage?.visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideUnreadMessage() {
+        if (fbNewUnreadMessage?.isVisible == true) {
+            fbNewUnreadMessage?.visibility = View.GONE
+        }
+    }
+
     private fun getFirstVisibleItemPosition(): Int? {
         var firstVisible = rvLayoutManager?.findFirstVisibleItemPosition() ?: return null
         val partialVisible = firstVisible - 1
@@ -720,8 +746,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun onSuccessResetChatToFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
-        sendMessage(delaySendMessage)
-        sendSticker(delaySendSticker)
+        if (delaySendMessage.isNotEmpty()) {
+            sendMessage(delaySendMessage)
+        }
+        if (delaySendSticker != null) {
+            sendSticker(delaySendSticker)
+        }
         setupFirstPage(chatRoom, chat)
         delaySendMessage = ""
         delaySendSticker = null

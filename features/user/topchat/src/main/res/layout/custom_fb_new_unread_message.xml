@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -19,8 +20,10 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:includeFontPadding="false"
-        android:text="3"
-        app:typographyType="heading_6" />
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -28,5 +31,7 @@
         android:layout_gravity="center_vertical"
         android:includeFontPadding="false"
         android:text=" Pesan Baru"
-        app:typographyType="heading_6" />
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold" />
 </LinearLayout>

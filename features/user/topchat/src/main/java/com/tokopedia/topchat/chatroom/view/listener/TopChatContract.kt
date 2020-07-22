@@ -65,6 +65,10 @@ interface TopChatContract {
         fun getChatMenuView(): ChatMenuView?
 
         fun updateAttachmentsView(attachments: ArrayMap<String, Attachment>)
+
+        fun showUnreadMessage(newUnreadMessage: Int)
+
+        fun hideUnreadMessage()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -187,5 +191,7 @@ interface TopChatContract {
         fun isInTheMiddleOfThePage(): Boolean
 
         fun resetChatUseCase()
+
+        fun resetUnreadMessage()
     }
 }
