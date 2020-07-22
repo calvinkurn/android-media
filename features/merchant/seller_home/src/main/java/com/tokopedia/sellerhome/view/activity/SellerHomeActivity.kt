@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.activity
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
@@ -56,14 +58,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
     }
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject
-    lateinit var remoteConfig: SellerHomeRemoteConfig
+    @Inject lateinit var userSession: UserSessionInterface
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
@@ -108,6 +105,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     override fun onResume() {
         super.onResume()
+        clearNotification()
         homeViewModel.getNotifications()
 
         if (!userSession.isLoggedIn) {
@@ -286,6 +284,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         when(page.type) {
             FragmentType.PRODUCT -> lastProductManagePage = PageFragment(FragmentType.PRODUCT)
             FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
+        }
+    }
+
+    private fun clearNotification() {
+        if (remoteConfig.isNotificationTrayClear()) {
+            (getSystemService(NOTIFICATION_SERVICE) as? NotificationManager)?.cancelAll()
+            NotificationManagerCompat.from(this).cancelAll()
         }
     }
 

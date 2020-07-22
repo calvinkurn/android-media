@@ -13,11 +13,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
+import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper;
-import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
-import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -75,10 +75,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
         shippingIndex = itemView.findViewById(R.id.shipping_index);
         deleteButton = itemView.findViewById(R.id.delete_button);
-        addressTitle = itemView.findViewById(R.id.tv_address_name);
-        addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
-        address = itemView.findViewById(R.id.tv_recipient_address);
-        addressStatus = itemView.findViewById(R.id.tv_address_status);
+        addressTitle = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
+        addressReceiverName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
+        address = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
+        addressStatus = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
         borderLine = itemView.findViewById(R.id.border_line);
         tvChangeRecipientAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         etNotesForSeller = itemView.findViewById(R.id.et_notes_for_seller);
@@ -88,7 +88,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
         tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
-        phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
+        phoneNumber = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
 
         etNotesForSeller.setOnTouchListener(new View.OnTouchListener() {

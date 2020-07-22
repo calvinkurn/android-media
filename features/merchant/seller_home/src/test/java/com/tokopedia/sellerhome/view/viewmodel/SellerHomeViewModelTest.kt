@@ -13,10 +13,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,15 +65,18 @@ class SellerHomeViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    private lateinit var testDispatcher: TestCoroutineDispatcher
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        testDispatcher = TestCoroutineDispatcher()
     }
 
     private fun createViewModel(): SellerHomeViewModel {
         return SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
                 getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
-                getPostDataUseCase, getCarouselDataUseCase, Dispatchers.Unconfined)
+                getPostDataUseCase, getCarouselDataUseCase, testDispatcher)
     }
 
     @Test
@@ -89,7 +93,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         runBlocking {
             viewModel.getTicker()
-            delay(100)
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
             coVerify {
                 getTickerUseCase.executeOnBackground()
             }
@@ -114,7 +118,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getShopStatus()
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             userSession.shopId
         }
@@ -136,13 +140,13 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
-        delay(100)
         coEvery {
             getShopStatusUseCase.executeOnBackground()
         } throws throwable
 
         val viewModel = createViewModel()
         viewModel.getShopStatus()
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             userSession.shopId
@@ -173,7 +177,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getWidgetLayout()
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             userSession.shopId
         }
@@ -231,7 +235,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getShopLocation()
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             userSession.shopId
         }
@@ -260,7 +264,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getShopLocation()
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
@@ -289,7 +293,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         runBlocking {
             viewModel.getCardWidgetData(dataKeys)
-            delay(100)
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
             verify {
                 userSession.shopId
             }
@@ -324,8 +328,9 @@ class SellerHomeViewModelTest {
                 getCardDataUseCase.executeOnBackground()
             } throws throwable
             viewModel.getCardWidgetData(dataKeys)
+          
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-            delay(300)
             val result = viewModel.cardWidgetData.value
             assert(result is Fail)
         }
@@ -352,7 +357,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getLineGraphWidgetData(dataKeys)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             userSession.shopId
         }
@@ -386,7 +391,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getLineGraphWidgetData(dataKeys)
 
-        delay (100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -414,7 +419,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getProgressWidgetData(dataKeys)
 
-        delay (100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -473,7 +478,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getPostWidgetData(dataKeys)
 
-        delay (100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             userSession.shopId
         }
@@ -508,7 +513,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         runBlocking {
             viewModel.getPostWidgetData(dataKeys)
-            delay (100)
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
             verify {
                 userSession.shopId
             }
@@ -535,7 +540,7 @@ class SellerHomeViewModelTest {
         runBlocking {
             viewModel.getCarouselWidgetData(dataKeys)
 
-            delay (100)
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
             coVerify {
                 getCarouselDataUseCase.executeOnBackground()
             }
@@ -560,7 +565,7 @@ class SellerHomeViewModelTest {
         val viewModel = createViewModel()
         viewModel.getCarouselWidgetData(dataKeys)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getCarouselDataUseCase.executeOnBackground()
         }

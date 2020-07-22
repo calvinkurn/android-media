@@ -7,8 +7,11 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.*
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PowerMerchantItemViewHolder
+import com.tokopedia.power_merchant.subscribe.view.viewholder.PowerMerchantItemViewHolder.*
 
-class PowerMerchantViewAdapter: RecyclerView.Adapter<PowerMerchantItemViewHolder>() {
+class PowerMerchantViewAdapter(
+    private val listener: PmViewHolderListener? = null
+): RecyclerView.Adapter<PowerMerchantItemViewHolder>() {
 
     var items: List<PowerMerchantItemView> = emptyList()
         set(value) {
@@ -18,7 +21,7 @@ class PowerMerchantViewAdapter: RecyclerView.Adapter<PowerMerchantItemViewHolder
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PowerMerchantItemViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return PowerMerchantItemViewHolder(itemView)
+        return PowerMerchantItemViewHolder(itemView, listener)
     }
 
     override fun getItemCount(): Int = items.count()
