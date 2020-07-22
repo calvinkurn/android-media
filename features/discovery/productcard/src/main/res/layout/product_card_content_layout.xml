@@ -329,20 +329,22 @@
 
     <ProgressBar
         android:id="@+id/progressBarStock"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/product_card_flashsale_progressbar_height"
         android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
-        app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop"
-        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
         android:progressDrawable="@drawable/progressbar_flashsale"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
-        android:max="100"/>
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewStockLabel"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_flashsale_label_height"
-        android:src="@drawable/ic_pdp_view"
+        app:srcCompat="@drawable/ic_pdp_view"
         android:textStyle="bold"
         android:textColor="@color/charcoal_grey_68"
         android:textSize="@dimen/sp_10"
