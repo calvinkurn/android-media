@@ -93,25 +93,6 @@ class IrisSession(val context: Context) : Session {
         return gmtNextDay
     }
 
-    private fun shouldGenerateSession(bp: Long, bc: Long): Boolean {
-        return isExpired(bp, bc) || isDayChanged(bp, bc)
-    }
-
-    private fun isExpired(bp: Long, bc: Long): Boolean {
-        val thirtyMinutes = 1800
-        return (bp + thirtyMinutes) < bc
-    }
-
-    private fun isDayChanged(bp: Long, bc: Long): Boolean {
-        val cal = Calendar.getInstance()
-        cal.time = Date(bp)
-        val dayBp = cal.get(Calendar.DAY_OF_YEAR)
-
-        cal.time = Date(bc)
-        val dayBc = cal.get(Calendar.DAY_OF_YEAR)
-        return dayBp != dayBc
-    }
-
     private fun generateDomainHash(): String {
         val data: ByteArray = DOMAIN_HASH.toByteArray(Charset.defaultCharset())
         return Base64.encodeToString(data, Base64.NO_WRAP).trim()
