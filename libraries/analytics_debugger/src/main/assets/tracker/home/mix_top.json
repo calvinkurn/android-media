@@ -22,8 +22,7 @@
       "eventCategory": "homepage",
       "event": "clickHomepage",
       "eventAction": "click view all on dynamic channel top carousel",
-      "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
+      "eventLabel": "{{.*}}"
     },
     {
       "eventCategory": "homepage",
