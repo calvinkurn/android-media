@@ -35,8 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             app:fbType="group"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-            app:layout_scrollFlags="scroll|enterAlways"
             tools:visibility="visible" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
