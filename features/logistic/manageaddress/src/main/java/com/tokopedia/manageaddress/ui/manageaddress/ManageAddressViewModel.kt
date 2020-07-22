@@ -42,7 +42,7 @@ class ManageAddressViewModel @Inject constructor(
 
                             override fun onNext(addressModel: AddressListModel) {
                                 savedQuery = query
-                                mapToModel(addressModel)
+                                _addressList.value = ManageAddressState.Success(addressModel)
                             }
 
                             override fun onCompleted() {
@@ -52,25 +52,18 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun mapToModel(addressListModel: AddressListModel) {
-        _addressList.value = ManageAddressState.Success(addressListModel)
-    }
-
     fun getToken(): Token {
         return token
     }
 
     fun deletePeopleAddress(id: String) {
-        val value = _addressList.value
-        if (value is ManageAddressState.Success) {
-            _result.value = ManageAddressState.Loading
-            deletePeopleAddressUseCase.execute(id.toInt(), {
-                _result.value = ManageAddressState.Success("Success")
-                searchAddress("")
-            },  {
-                _addressList.value  = ManageAddressState.Fail(it, "")
-            })
-        }
+        _result.value = ManageAddressState.Loading
+        deletePeopleAddressUseCase.execute(id.toInt(), {
+            _result.value = ManageAddressState.Success("Success")
+            searchAddress("")
+        },  {
+            _addressList.value  = ManageAddressState.Fail(it, "")
+        })
     }
 
     fun setDefaultPeopleAddress(id: String) {
@@ -81,7 +74,6 @@ class ManageAddressViewModel @Inject constructor(
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")
         })
-
     }
 
     override fun onCleared() {

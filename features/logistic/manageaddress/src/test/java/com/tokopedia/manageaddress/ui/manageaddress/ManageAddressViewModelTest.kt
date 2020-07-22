@@ -52,6 +52,7 @@ class ManageAddressViewModelTest {
         every { getPeopleAddressUseCase.getAll(any()) } returns Observable.error(response)
 
         manageAddressViewModel.searchAddress("")
+
         Assert.assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
 
@@ -82,5 +83,39 @@ class ManageAddressViewModelTest {
         manageAddressViewModel.setDefaultPeopleAddress("1")
 
         Assert.assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+    }
+
+    @Test
+    fun `Delete Address Success`() {
+        every {
+            deletePeopleAddressUseCase.execute(any(), any(), any())
+        } answers {
+            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            (secondArg() as ((String) -> Unit)).invoke(success)
+        }
+
+        manageAddressViewModel.deletePeopleAddress("1")
+
+        Assert.assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+    }
+
+    @Test
+    fun `Delete Address Fail`() {
+        val response = Throwable()
+        every {
+            deletePeopleAddressUseCase.execute(any(), any(), any())
+        } answers {
+            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        manageAddressViewModel.deletePeopleAddress("1")
+
+        Assert.assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+    }
+
+    @Test
+    fun `Get Token Data`() {
+        manageAddressViewModel.getToken()
     }
 }
