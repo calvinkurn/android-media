@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/rectangle_rating_detail"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:corners="5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.35" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/rectangle_review_detail"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:corners="5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_rating_detail"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/rectangleCheckbox"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintWidth_percent="0.3"
+        app:corners="12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/partialShimmerRatingDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rectangleCheckbox"
+        android:orientation="vertical">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/partial_rating_bar_detail_shimmer" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/partial_rating_bar_detail_shimmer" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/partial_rating_bar_detail_shimmer" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/partial_rating_bar_detail_shimmer" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/partial_rating_bar_detail_shimmer" />
+
+    </LinearLayout>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/rectangle_topic_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:corners="5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/partialShimmerRatingDetail"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/rectangleTopic1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintWidth_percent="0.33"
+        app:corners="12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_topic_title" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/rectangleTopic2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintWidth_percent="0.33"
+        app:corners="12"
+        app:layout_constraintStart_toEndOf="@id/rectangleTopic1"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_topic_title" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/rectangleTopic3"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintWidth_percent="0.33"
+        app:corners="12"
+        app:layout_constraintStart_toEndOf="@id/rectangleTopic2"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_topic_title" />
+
+    <include
+        android:id="@+id/partial_feedback_detail_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/partial_feedback_detail_shimmer"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rectangleTopic1"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        android:id="@+id/partial_feedback_detail_shimmer2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        layout="@layout/partial_feedback_detail_shimmer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partial_feedback_detail_shimmer"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

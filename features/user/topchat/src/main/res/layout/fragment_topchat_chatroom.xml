@@ -162,10 +162,10 @@
                     android:maxLines="5"
                     android:paddingStart="@dimen/spacing_lvl7"
                     android:paddingLeft="@dimen/spacing_lvl7"
-                    android:paddingTop="@dimen/dp_topchat_10"
+                    android:paddingTop="@dimen/dp_topchat_9"
                     android:paddingEnd="@dimen/spacing_lvl8"
                     android:paddingRight="@dimen/spacing_lvl8"
-                    android:paddingBottom="@dimen/dp_topchat_10"
+                    android:paddingBottom="@dimen/dp_topchat_11"
                     android:textSize="@dimen/fontSize_lvl4"
                     tools:text="@tools:sample/lorem/random" />
 
@@ -176,6 +176,7 @@
                     android:layout_alignStart="@+id/new_comment"
                     android:layout_alignLeft="@+id/new_comment"
                     android:layout_alignBottom="@+id/new_comment"
+                    android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
                     app:srcCompat="@drawable/ic_topchat_sticker" />
 
@@ -188,6 +189,7 @@
                     android:layout_alignBottom="@+id/new_comment"
                     android:layout_marginEnd="@dimen/spacing_lvl1"
                     android:layout_marginRight="@dimen/spacing_lvl1"
+                    android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
                     app:srcCompat="@drawable/ic_add_grey_chat_common" />
 

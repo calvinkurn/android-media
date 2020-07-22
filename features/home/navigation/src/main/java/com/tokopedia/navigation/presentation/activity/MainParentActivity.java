@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,24 +20,12 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.snackbar.Snackbar;
@@ -84,6 +73,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -101,6 +91,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.RestrictTo;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import dagger.Lazy;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -160,14 +156,12 @@ public class MainParentActivity extends BaseActivity implements
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
-    @Inject
-    Lazy<UserSessionInterface> userSession;
-    @Inject
-    Lazy<MainParentPresenter> presenter;
-    @Inject
-    Lazy<GlobalNavAnalytics> globalNavAnalytics;
-    @Inject
-    Lazy<ApplicationUpdate> appUpdate;
+    @Inject Lazy<UserSessionInterface> userSession;
+    @Inject Lazy<MainParentPresenter> presenter;
+    @Inject Lazy<GlobalNavAnalytics> globalNavAnalytics;
+    @Inject Lazy<ApplicationUpdate> appUpdate;
+    @Inject Lazy<RemoteConfig> remoteConfig;
+
     private LottieBottomNavbar bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     List<Fragment> fragmentList;
@@ -244,12 +238,14 @@ public class MainParentActivity extends BaseActivity implements
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_GAMIFICATION);
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_LOGIN);
         }
         if (userSession.get().hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
+        moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
@@ -585,6 +581,8 @@ public class MainParentActivity extends BaseActivity implements
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.get().onResume();
+        clearNotification();
+
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
         }
@@ -609,6 +607,13 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+    }
+
+    private void clearNotification() {
+        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
+            NotificationManagerCompat.from(this).cancelAll();
+        }
     }
 
     @NotNull
@@ -672,7 +677,11 @@ public class MainParentActivity extends BaseActivity implements
     public void renderNotification(Notification notification) {
         this.notification = notification;
         if(bottomNavigation != null) {
-            bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
+            if (notification.getTotalCart() != 0) {
+                bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
+            } else {
+                bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.INVISIBLE);
+            }
             if (notification.getHaveNewFeed()) {
                 bottomNavigation.setBadge(0, FEED_MENU, View.VISIBLE);
                 Intent intent = new Intent(BROADCAST_FEED);

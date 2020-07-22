@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
  * Created by nabillasabbaha on 10/05/19.
  */
 @Module
-@DigitalTopupScope
 abstract class DigitalTopupViewModelModule {
 
     @DigitalTopupScope

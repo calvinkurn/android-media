@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/skeleton_1"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:corners="16"
+        app:layout_constraintBottom_toBottomOf="@+id/skeleton_2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/skeleton_2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/skeleton_2"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:corners="16"
+        app:layout_constraintBottom_toTopOf="@+id/line_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/line_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="17dp"
+        app:layout_constraintTop_toBottomOf="@+id/skeleton_2" />
+
+    <LinearLayout
+        android:id="@+id/linear_layout_background"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line_2">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/background_1"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="17dp"
+            android:layout_marginLeft="17dp"
+            app:corners="35" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/background_2"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:corners="35" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/background_3"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:corners="35" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/background_4"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:corners="35" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/rectangle_8_1"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_76"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:card_type="border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout_background" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/rectangle_1"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_22"
+                android:layout_marginBottom="@dimen/dp_22"
+                app:corners="22"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/rectangle_2"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                app:corners="16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/rectangle_1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/rectangle_3"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_56"
+                android:layout_marginRight="@dimen/dp_56"
+                android:layout_marginBottom="@dimen/dp_20"
+                app:corners="16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/rectangle_1"
+                app:layout_constraintTop_toBottomOf="@+id/rectangle_2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_6"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rectangle_8_1">
+
+        <include
+            layout="@layout/partial_shimmering_product_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/rectangle_8_2"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16" />
+
+        <include layout="@layout/partial_shimmering_product_list" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/rectangle_8_3"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16" />
+
+        <include layout="@layout/partial_shimmering_product_list" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/rectangle_8_4"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16" />
+
+        <include layout="@layout/partial_shimmering_product_list" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/rectangle_8_5"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16" />
+
+        <include layout="@layout/partial_shimmering_product_list" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/rectangle_8_6"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16" />
+
+        <include layout="@layout/partial_shimmering_product_list" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50121653" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

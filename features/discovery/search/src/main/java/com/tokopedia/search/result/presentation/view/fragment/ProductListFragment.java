@@ -111,6 +111,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.ChipsUnify;
 
@@ -831,11 +832,6 @@ public class ProductListFragment
         if (presenter == null) return;
 
         presenter.onProductImpressed(item);
-    }
-
-    @Override
-    public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(topAdsTrackingUrl);
     }
 
     @Override
@@ -2015,5 +2011,12 @@ public class ProductListFragment
         if (sortFilterBottomSheet == null) return;
 
         sortFilterBottomSheet.setResultCountText(String.format(getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text), productCountText));
+    }
+
+    @Override
+    public String getClassName() {
+        if (getActivity() == null) return "";
+
+        return getActivity().getClass().getName();
     }
 }
