@@ -8,7 +8,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.response.valida
 object ApplyPromoDataProvider {
 
     private val gson = Gson()
-    private val uiModelMapper = PromoCheckoutUiModelMapper()
     private val fileUtil = UnitTestFileUtils()
 
     fun provideApplyPromoEmptyRequest(): ValidateUsePromoRequest {
@@ -61,5 +60,15 @@ object ApplyPromoDataProvider {
 
     fun provideApplyPromoMerchantSuccessButGetRedState(): ValidateUseResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_merchant_response_success_but_get_red_state.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideApplyPromoGlobalAndMerchantRequestInvalid(): ValidateUsePromoRequest {
+        val request = provideApplyPromoGlobalAndMerchantRequest()
+        request.codes = mutableListOf("GLOBAL_CODE_INVALID")
+        request.orders.forEach {
+            it?.codes = mutableListOf("MERCHANT_CODE_INVALID")
+        }
+
+        return request
     }
 }

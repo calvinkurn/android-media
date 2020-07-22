@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -43,6 +44,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     private var graphqlRepository: GraphqlRepository = mockk(relaxed = true)
     private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
     private var analytics: PromoCheckoutAnalytics = mockk()
+    private var gson = Gson()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -50,7 +52,7 @@ object PromoCheckoutViewModelGetPromoListTest {
     @Before
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics)
+        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson)
 
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
         every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs

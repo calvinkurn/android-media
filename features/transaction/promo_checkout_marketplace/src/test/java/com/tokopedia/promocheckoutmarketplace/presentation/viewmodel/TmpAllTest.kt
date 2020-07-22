@@ -1,26 +1,36 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequest
-import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseError
-import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseFailed
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequestInvalid
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalRequest
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoMerchantSuccessButGetRedState
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseClashing
+import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseError
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoResponseFailed
+import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseFailed
+import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledCollapsedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentDisabledExpandedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
+import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseApplyManualFailed
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateBlacklisted
@@ -34,10 +44,6 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGe
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllExpanded
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessAllIneligible
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseSuccessWithPreSelectedPromo
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
-import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedCollapsedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedCollapsedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideNoCurrentSelectedExpandedGlobalPromoData
@@ -46,6 +52,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePr
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedCollapsedMerchantPromo
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedGlobalPromo
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoRequestWithSelectedExpandedMerchantPromo
+import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
@@ -63,7 +70,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
-import java.util.ArrayList
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.isNotEmpty
+import kotlin.collections.listOf
+import kotlin.collections.set
 
 class TmpAllTest {
 
@@ -73,6 +85,7 @@ class TmpAllTest {
     private var graphqlRepository: GraphqlRepository = mockk(relaxed = true)
     private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
     private var analytics: PromoCheckoutAnalytics = mockk()
+    private var gson = Gson()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -80,7 +93,7 @@ class TmpAllTest {
     @Before
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics)
+        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson)
 
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
         every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
@@ -1211,4 +1224,98 @@ class TmpAllTest {
         assert(request.orders[0]?.codes?.isEmpty() == true)
     }
 
+
+    /* CLEAR PROMO */
+
+    @Test
+    fun `WHEN clear promo and success THEN clear promo response action state should not be null`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ClearPromoResponse::class.java] = provideClearPromoResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.clearPromoResponse.value)
+    }
+
+    @Test
+    fun `WHEN clear promo and success THEN clear promo response action state should be success`() {
+        //given
+        val validateUseRequest = provideApplyPromoGlobalAndMerchantRequestInvalid()
+        val result = HashMap<Type, Any>()
+        result[ClearPromoResponse::class.java] = provideClearPromoResponseSuccess()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.clearPromo("", validateUseRequest, ArrayList())
+
+        //then
+        assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS)
+    }
+
+    @Test
+    fun `WHEN clear promo and failed THEN clear promo response action state should not be null`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ClearPromoResponse::class.java] = provideClearPromoResponseFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assertNotNull(viewModel.clearPromoResponse.value)
+    }
+
+    @Test
+    fun `WHEN clear promo and failed THEN clear promo response action state should be error`() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[ClearPromoResponse::class.java] = provideClearPromoResponseFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
+    }
+
+/*
+    @Test
+    fun `WHEN clear promo and BBO promo code exist THEN should not include BBO promo code to be cleared`() {
+        val result = HashMap<Type, Any>()
+        result[ClearPromoResponse::class.java] = provideClearPromoResponseFailed()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
+
+        //then
+        assert(viewModel.clearPromoResponse.value?.state == ClearPromoResponseAction.ACTION_STATE_ERROR)
+    }
+*/
 }

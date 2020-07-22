@@ -725,7 +725,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
 
         // Check all promo merchant is success
-        // Update : This section might be unnecessary
+        // Update : This logic might be unnecessary,
+        // since if global success is true, all voucher order status shoulbe success
         var successCount = 0
         responseValidatePromo.voucherOrders.forEach { voucherOrder ->
             if (voucherOrder.success) {
@@ -855,7 +856,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         tmpMutation = tmpMutation.replace("#isOCC", (validateUsePromoRequest.cartType == "occ").toString())
 
         // Get response
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(dispatcher) {
             val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ClearPromoResponse>()
@@ -871,6 +872,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         addUnSelectedPromoCodes(toBeRemovedPromoCodes)
 
         // Add invalid promo
+        // Invalid promo code is promo code from outside promo page (cart/checkout) which previously selected,
+        // but become invalid or not selected on promo page, except promo BBO
         addInvalidPromo(validateUsePromoRequest, bboPromoCodes, toBeRemovedPromoCodes)
 
         return toBeRemovedPromoCodes
