@@ -89,6 +89,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INV
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
@@ -277,6 +278,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(BRANDLIST_SEARCH)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST_WITH_SLASH)}, DF_BASE, R.string.title_brandlist))
+            add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
 
             // Operational
             add(DFP({
@@ -370,6 +372,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(PREFERENCE_EDIT)
             }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
+            add(DFP({ it.startsWith(NORMAL_CHECKOUT)}, DF_BASE, R.string.title_normal_checkout))
         }
     }
 

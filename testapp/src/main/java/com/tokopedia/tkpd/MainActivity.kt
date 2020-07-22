@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -56,6 +57,10 @@ class MainActivity : AppCompatActivity() {
 
         testGqlButton.setOnClickListener {
             TestGqlUseCase().execute()
+        }
+
+        devOptButton.setOnClickListener {
+            RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
         }
 
         val button = findViewById<Button>(R.id.button)
