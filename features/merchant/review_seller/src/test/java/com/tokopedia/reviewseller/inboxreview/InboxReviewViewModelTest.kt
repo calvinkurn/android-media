@@ -1,5 +1,7 @@
 package com.tokopedia.reviewseller.inboxreview
 
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.ANSWERED_VALUE
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VALUE
 import com.tokopedia.reviewseller.feature.inboxreview.domain.response.InboxReviewResponse
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
@@ -68,7 +70,6 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
             onGetInboxReview_thenReturn()
             val statusFilter = ArrayList<SortFilterInboxItemWrapper>().apply {
                 add(SortFilterInboxItemWrapper(isSelected = true, sortValue = "answered"))
-                add(SortFilterInboxItemWrapper(isSelected = true, sortValue = "unanswered"))
             }
 
             viewModel.feedbackInboxReviewMediator.observe( {lifecycle}) {}
@@ -203,7 +204,6 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
         runBlocking {
             onGetInboxReview_thenReturn()
             val statusFilter = ArrayList<SortFilterInboxItemWrapper>().apply {
-                add(SortFilterInboxItemWrapper(isSelected = true, sortValue = "answered"))
                 add(SortFilterInboxItemWrapper(isSelected = true, sortValue = "unanswered"))
             }
 
@@ -267,7 +267,6 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
 
             val statusFilter = ArrayList<SortFilterInboxItemWrapper>().apply {
                 add(SortFilterInboxItemWrapper(isSelected = true, sortValue = "answered"))
-                add(SortFilterInboxItemWrapper(isSelected = true, sortValue = "unanswered"))
             }
 
             viewModel.apply {
@@ -281,6 +280,46 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
             val expectedResult = Fail(error)
             viewModel.inboxReview.verifyErrorEquals(expectedResult)
         }
+    }
+
+    @Test
+    fun `when init get inbox review on lazy load should return success`() {
+        runBlocking {
+            onGetInboxReview_thenReturn()
+
+            viewModel.getInitInboxReview(statusFilter = UNANSWERED_VALUE)
+
+            verifySuccessGetInboxReviewUseCaseCalled()
+            Assert.assertTrue(viewModel.inboxReview.value is Success)
+            Assert.assertNotNull(viewModel.inboxReview.value)
+
+
+            viewModel.getInitFeedbackInboxReviewListNext(2, statusFilter = ANSWERED_VALUE)
+            verifySuccessGetInboxReviewUseCaseCalled()
+            Assert.assertTrue(viewModel.feedbackInboxReview.value is Success)
+            Assert.assertNotNull(viewModel.feedbackInboxReview.value)
+        }
+    }
+
+    @Test
+    fun `when get inbox review on lazy load with rating filter should return success`() {
+        onGetInboxReview_thenReturn()
+        val ratingFilter = ArrayList<ListItemRatingWrapper>().apply {
+            add(ListItemRatingWrapper(isSelected = true, sortValue = "2"))
+            add(ListItemRatingWrapper(isSelected = true, sortValue = "3"))
+            add(ListItemRatingWrapper(isSelected = true, sortValue = "4"))
+        }
+
+        viewModel.apply {
+            feedbackInboxReviewMediator.observe( {lifecycle}) {}
+            updateRatingFilterData(ratingFilter)
+            setFilterRatingDataText(ratingFilter)
+            getInitFeedbackInboxReviewListNext(3, ANSWERED_VALUE)
+        }
+
+        verifySuccessGetInboxReviewUseCaseCalled()
+        Assert.assertTrue(viewModel.feedbackInboxReview.value is Success)
+        Assert.assertNotNull(viewModel.feedbackInboxReview.value)
     }
 
     private fun onGetInboxReview_thenReturn() {
