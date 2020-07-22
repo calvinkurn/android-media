@@ -3,6 +3,7 @@ package com.tokopedia.deals.home.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
@@ -251,7 +252,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     /* BANNER SECTION ACTION */
     override fun onBannerClicked(banner: List<BannersDataView.BannerDataView>, position: Int) {
         analytics.eventClickHomePageBanner(bannerId = banner[position].bannerId, bannerPosition = position, promotions = banner[position])
-        RouteManager.route(context, banner[position].bannerUrl)
+        onClickBanner(banner[position].bannerUrl)
     }
 
     override fun onBannerSeeAllClick(bannerSeeAllUrl: String) {
@@ -337,6 +338,24 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun showTitle(brand: DealsBrandsDataView) {
         /* do nothing */
+    }
+
+    private fun onClickBanner(bannerlink:String) {
+        val deeplink = "tokopedia://"
+        val fullPathWWW = "https://www.tokopedia.com/"
+        val domainWithWWW = "www.tokopedia.com/"
+        val domainWithoutWWW = "tokopedia.com/"
+        var applink = ""
+        if (!TextUtils.isEmpty(bannerlink)) {
+            applink = if (bannerlink.contains(domainWithWWW)) {
+                bannerlink.replace(fullPathWWW, deeplink)
+            } else if (bannerlink.contains(domainWithoutWWW)) {
+                bannerlink.replace(domainWithoutWWW, deeplink)
+            } else {
+                bannerlink
+            }
+            RouteManager.route(context, applink)
+        }
     }
 
     companion object {
