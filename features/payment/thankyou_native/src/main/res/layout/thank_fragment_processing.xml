@@ -223,10 +223,10 @@
                 android:text="@string/thank_check_payment_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"
+                app:layout_constraintTop_toBottomOf="@id/btnShopAgain"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
-                app:unifyButtonVariant="filled" />
+                app:unifyButtonVariant="ghost" />
 
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -239,10 +239,10 @@
                 android:text="@string/thank_shop_again"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnCheckPaymentStatus"
+                app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
-                app:unifyButtonVariant="ghost" />
+                app:unifyButtonVariant="filled" />
 
 
             <View
@@ -253,7 +253,7 @@
                 android:background="@color/thank_divider_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnShopAgain" />
+                app:layout_constraintTop_toBottomOf="@+id/btnCheckPaymentStatus" />
 
             <LinearLayout
                 android:id="@+id/recommendationContainer"

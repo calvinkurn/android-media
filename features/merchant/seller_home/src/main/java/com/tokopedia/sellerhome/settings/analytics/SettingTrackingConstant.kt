@@ -42,5 +42,9 @@ object SettingTrackingConstant {
     const val APP_SETTING = "app settings"
     const val APPLICATION_SETTING = "application settings"
     const val OTHER_SETTING = "other settings"
-    
+
+    const val SHOP_REGULAR_MERCHANT = "RM"
+    const val SHOP_POWER_MERCHANT = "PM"
+    const val SHOP_OFFICIAL_STORE = "OS"
+
 }
