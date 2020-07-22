@@ -48,7 +48,6 @@ import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListene
 import com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
-import com.tokopedia.review.feature.ovoincentive.data.mapper.IncentiveOvoMapper
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ContainerUnify
@@ -365,28 +364,30 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
         productRevIncentiveOvo = data
-        with(data.productrevIncentiveOvo) {
-            ovoPointsTicker.apply {
-                visibility = View.VISIBLE
-                tickerTitle = ticker.title
-                setHtmlDescription(ticker.subtitle)
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), "")
-                        bottomSheet.isFullpage = true
-                        fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
-                        bottomSheet.setCloseClickListener {
-                            ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
-                            bottomSheet.dismiss()
+        data.productrevIncentiveOvo?.let {
+            it.ticker?.let {
+                ovoPointsTicker.apply {
+                    visibility = View.VISIBLE
+                    tickerTitle = it.title
+                    setHtmlDescription(it.subtitle)
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(data, "")
+                            bottomSheet.isFullpage = true
+                            fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
+                            bottomSheet.setCloseClickListener {
+                                ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
+                                bottomSheet.dismiss()
+                            }
+                            ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                         }
-                        ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
-                    }
 
-                    override fun onDismiss() {
-                        ReviewTracking.onClickDismissIncentiveOvoTracker(tickerTitle, "")
-                    }
-                })
-                ReviewTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
+                        override fun onDismiss() {
+                            ReviewTracking.onClickDismissIncentiveOvoTracker(tickerTitle, "")
+                        }
+                    })
+                    ReviewTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
+                }
             }
         }
     }

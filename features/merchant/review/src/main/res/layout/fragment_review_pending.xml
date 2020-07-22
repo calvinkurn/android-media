@@ -4,28 +4,18 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ovoPointsTicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tickerType="announcement"/>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/reviewPendingSwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/ovoPointsTicker"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reviewPendingRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2" />
+            android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -29,7 +29,7 @@ class ReviewDetailResponseWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_review_detail_response, this)
     }
 
-    fun setContent(response: ProductrevGetReviewDetailResponse, customMovementMethod: LinkMovementMethod) {
+    fun setContent(response: ProductrevGetReviewDetailResponse) {
         with(response) {
             if(shopName.isNotEmpty()) {
                 reviewDetailResponderName.apply {
@@ -44,8 +44,7 @@ class ReviewDetailResponseWidget : BaseCustomView {
                 }
             }
             reviewDetailResponseContent.apply {
-                text = HtmlLinkHelper(context, responseText).spannedString
-                movementMethod = customMovementMethod
+                text = responseText
                 show()
             }
         }
