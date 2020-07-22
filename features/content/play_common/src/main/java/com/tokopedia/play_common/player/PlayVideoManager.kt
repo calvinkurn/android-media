@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.database.DatabaseProvider
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
@@ -26,6 +27,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -56,9 +58,17 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         @Volatile
         private var INSTANCE: PlayVideoManager? = null
 
+        private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
+
         @JvmStatic
         fun getInstance(context: Context): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
+                if (playProcessLifecycleObserver == null)
+                    playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
+
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.addObserver(it) }
+
                 PlayVideoManager(context.applicationContext).also {
                     INSTANCE = it
                 }
@@ -68,6 +78,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.removeObserver(it) }
+
                 INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
                 INSTANCE = null
             }
