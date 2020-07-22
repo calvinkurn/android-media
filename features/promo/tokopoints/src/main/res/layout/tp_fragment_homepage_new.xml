@@ -84,7 +84,6 @@
                                 android:layout_marginLeft="@dimen/dp_12"
                                 android:layout_toEndOf="@id/img_egg"
                                 android:layout_toRightOf="@id/img_egg"
-                                android:fontFamily="sans-serif-medium"
                                 android:textColor="@color/tp_toolbar_navigation_white_color"
                                 android:textSize="@dimen/tp_text_size_small"
                                 tools:text="Gulfikar Rinjani" />
@@ -147,8 +146,8 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/dp_16"
                                         android:layout_marginLeft="@dimen/dp_16"
-                                        android:layout_marginEnd="@dimen/dp_32"
-                                        android:layout_marginRight="@dimen/dp_32"
+                                        android:layout_marginEnd="@dimen/dp_20"
+                                        android:layout_marginRight="@dimen/dp_20"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toEndOf="@id/tv_targetText"
