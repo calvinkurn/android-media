@@ -2,6 +2,7 @@ package com.tokopedia.home.component
 
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -121,6 +122,7 @@ class DynamicChannelComponentAnalyticsTest {
             is MixLeftComponentViewHolder -> {
                 logTestMessage("VH MixLeftComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
+                clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixLeftComponentViewHolder")
             }
             is MixTopBannerViewHolder -> {
                 logTestMessage("VH MixTopBannerViewHolder")
@@ -133,13 +135,24 @@ class DynamicChannelComponentAnalyticsTest {
         }
     }
 
+    private fun clickLihatSemuaButtonIfAvailable(view: View, viewComponent: String) {
+        val childView = view
+        val seeAllButton = childView.findViewById<TextView>(R.id.see_all_button)
+        if (seeAllButton.visibility == View.VISIBLE) {
+            logTestMessage("See All Button $viewComponent available")
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.see_all_button)))
+                    .perform(ViewActions.click())
+        }
+
+    }
+
     private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int) {
         val childView = view
         val childRecyclerView = childView.findViewById<RecyclerView>(recyclerViewId)
         val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
         logTestMessage("ChildCount Here: " + childItemCount + " item")
 
-        for (j in 1 until childItemCount) {
+        for (j in 0 until childItemCount) {
             try {
                 Espresso.onView(firstView(ViewMatchers.withId(recyclerViewId)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, ViewActions.click()))

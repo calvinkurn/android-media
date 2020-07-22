@@ -1,5 +1,5 @@
 {
-  "readme": "Mix Left component on home; impression, click, and click lihat semua",
+  "readme": "Mix Left component on home; impression, click, click lihat semua, click lihat semua card, impression banner, click banner",
   "mode": "subset",
   "query": [
     {
@@ -18,6 +18,43 @@
       "item_list": "{{.*}}",
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "clickHomepage",
+      "eventAction": "click view all on dynamic channel left carousel",
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickHomepage",
+      "eventAction": "click view all card on dynamic channel left carousel",
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName": "/",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "eventAction": "impression on banner dynamic channel left carousel",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "screenName": "/",
+      "eventAction": "click on banner dynamic channel left carousel",
+      "eventLabel": "{{.*}}",
+      "affinityLabel": "{{.*}}",
+      "currentSite": "tokopediamarketplace",
+      "event": "select_content",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
     }
   ]
 }
