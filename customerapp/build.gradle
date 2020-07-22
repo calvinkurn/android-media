@@ -213,7 +213,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
-        applicationId "com.tokopedia.tkpd"
+        applicationId "com.tokopedia.intl"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = vectorDrawable

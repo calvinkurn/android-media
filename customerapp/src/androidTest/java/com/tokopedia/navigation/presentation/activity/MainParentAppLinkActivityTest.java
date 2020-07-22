@@ -19,7 +19,7 @@ import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.pms.payment.view.activity.PaymentListActivity;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
 

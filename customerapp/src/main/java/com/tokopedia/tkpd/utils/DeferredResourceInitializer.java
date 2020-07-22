@@ -6,7 +6,7 @@ import com.tkpd.remoteresourcerequest.callback.DeferredCallback;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 

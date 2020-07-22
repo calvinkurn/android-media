@@ -40,7 +40,7 @@ import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;

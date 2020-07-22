@@ -25,7 +25,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.tkpd.home.adapter.SlidingImageBannerAdapter;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;

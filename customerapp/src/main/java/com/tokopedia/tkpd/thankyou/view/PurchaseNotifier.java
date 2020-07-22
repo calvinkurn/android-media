@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.pms.common.Constant;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.intl.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 
 import java.text.SimpleDateFormat;
