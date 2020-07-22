@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTI
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -58,7 +59,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     private var collapsedFields = 0
 
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
-
+    private val headerPositionMap: HashMap<String, Int> = hashMapOf()
+    private val headerVisitablePositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
     private val inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
@@ -93,6 +95,54 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         headerStatusMap[adapterPosition] = isCollapsed
     }
 
+    fun updateHeaderPositionMap(headerName: String, headerPosition: Int) {
+        headerPositionMap[headerName] = headerPosition
+    }
+
+    fun updateHeaderVisitablePositionMap(headerPosition: Int, visitablePosition: Int) {
+        headerVisitablePositionMap[headerPosition] = visitablePosition
+    }
+
+    fun collapseHeaderVisitablePositions(collapsedHeaderPosition: Int) {
+        val firstHeaderPosition = headerPositionMap.minBy { it.value } ?: 0
+        val lastHeaderPosition = headerPositionMap.maxBy { it.value }?.value ?: 0
+        // collapsing last header position creates no impact
+        if (collapsedHeaderPosition == lastHeaderPosition) return
+        else {
+            headerVisitablePositionMap.forEach {
+                val headerMapPosition = it.key
+                // first header position cannot be moved
+                if (headerMapPosition != firstHeaderPosition) {
+                    // only affecting the header position after the collapsing one
+                    if (headerMapPosition > collapsedHeaderPosition) {
+                        val newVisitablePosition = it.value - inputFieldSize
+                        headerVisitablePositionMap[headerMapPosition] = newVisitablePosition
+                    }
+                }
+            }
+        }
+    }
+
+    fun expandHeaderVisitablePositions(expandedHeaderPosition: Int) {
+        val firstHeaderPosition = headerPositionMap.minBy { it.value } ?: 0
+        val lastHeaderPosition = headerPositionMap.maxBy { it.value }?.value ?: 0
+        // expanding last header position creates no impact
+        if (expandedHeaderPosition == lastHeaderPosition) return
+        else {
+            headerVisitablePositionMap.forEach {
+                val headerMapPosition = it.key
+                // first header position cannot be moved
+                if (headerMapPosition != firstHeaderPosition) {
+                    // only affecting the header position after the expanding one
+                    if (headerMapPosition > expandedHeaderPosition) {
+                        val newVisitablePosition = it.value + inputFieldSize
+                        headerVisitablePositionMap[headerMapPosition] = newVisitablePosition
+                    }
+                }
+            }
+        }
+    }
+
     fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
     }
@@ -101,22 +151,39 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
     }
 
+    fun updateProductInputModel(productInputModel: ProductInputModel) {
+        this.productInputModel.value = productInputModel
+        setDefaultPrimaryVariant() // set default variant if don't have any
+    }
+
+    private fun setDefaultPrimaryVariant() {
+        productInputModel.value?.variantInputModel?.products?.let { products ->
+            val isPrimaryVariantExist = products.any {
+                it.isPrimary
+            }
+
+            if (!isPrimaryVariantExist) {
+                products.getOrNull(DEFAULT_IS_PRIMARY_INDEX)?.isPrimary = true
+            }
+        }
+    }
+
     fun updateProductInputModel() {
         val products = productInputModel.value?.variantInputModel?.products.orEmpty()
-        var index = 0
-        inputLayoutModelMap.forEach {
-            val variantDetail = it.value
-            products.getOrNull(index)?.apply {
-                price = variantDetail.price.replace(".", "").toBigIntegerOrNull().orZero()
-                sku = variantDetail.sku
-                stock = variantDetail.stock.toIntOrZero()
-                status = if (variantDetail.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
+        var productPosition = 0
+        inputLayoutModelMap.toSortedMap().forEach {
+            val variantDetailInput = it.value
+            products.getOrNull(productPosition)?.apply {
+                price = variantDetailInput.price.replace(".", "").toBigIntegerOrNull().orZero()
+                sku = variantDetailInput.sku
+                stock = variantDetailInput.stock.toIntOrZero()
+                status = if (variantDetailInput.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
                 // the minimum product variant price will replace the main product price
                 if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
                     productInputModel.value?.detailInputModel?.price = price
                 }
             }
-            index++
+            productPosition++
         }
     }
 
@@ -158,12 +225,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val level2OptionIndex = combination.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION).orZero()
 
         val level1Title = selections
-                .getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.options?.
-                getOrNull(level1OptionIndex)?.value.orEmpty()
+                .getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.options?.getOrNull(level1OptionIndex)?.value.orEmpty()
 
         val level2Title = selections
-                .getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.options?.
-                getOrNull(level2OptionIndex)?.value.orEmpty()
+                .getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.options?.getOrNull(level2OptionIndex)?.value.orEmpty()
         return "${level1Title}-${level2Title}"
     }
 
@@ -171,6 +236,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputLayoutModelMap.forEach {
             it.value.isSkuFieldVisible = isVisible
         }
+    }
+
+    fun getHeaderPosition(headerName: String): Int {
+        return headerPositionMap[headerName] ?: 0
+    }
+
+    fun getHeaderVisitablePosition(headerPosition: Int): Int {
+        return headerVisitablePositionMap[headerPosition] ?: 0
     }
 
     fun getVariantDetailHeaderData(headerPosition: Int): MutableList<VariantDetailInputLayoutModel> {

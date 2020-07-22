@@ -83,8 +83,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
         cacheManagerId?.run {
-            viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
+             val productInputModel= saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java) ?: ProductInputModel()
+            viewModel.updateProductInputModel(productInputModel)
         }
 
         activity?.window?.setSoftInputMode(
@@ -141,19 +142,23 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         setupToolbarActions()
     }
 
-    override fun onHeaderClicked(adapterPosition: Int): Boolean {
-        val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
+    override fun onHeaderClicked(headerName: String): Boolean {
+        val headerPosition = viewModel.getHeaderPosition(headerName)
+        val visitablePosition = viewModel.getHeaderVisitablePosition(headerPosition)
+        val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(headerPosition)
         if (!isCollapsed) {
-            variantDetailFieldsAdapter?.collapseUnitValueHeader(adapterPosition, viewModel.getInputFieldSize())
+            variantDetailFieldsAdapter?.collapseUnitValueHeader(visitablePosition, viewModel.getInputFieldSize())
             viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
-            viewModel.updateVariantDetailHeaderMap(adapterPosition, true)
+            viewModel.updateVariantDetailHeaderMap(headerPosition, true)
+            viewModel.collapseHeaderVisitablePositions(headerPosition)
         } else {
-            variantDetailFieldsAdapter?.expandDetailFields(adapterPosition, viewModel.getVariantDetailHeaderData(adapterPosition))
-            recyclerViewVariantDetailFields.scrollToPosition(adapterPosition)
+            variantDetailFieldsAdapter?.expandDetailFields(visitablePosition, viewModel.getVariantDetailHeaderData(headerPosition))
+            recyclerViewVariantDetailFields.scrollToPosition(headerPosition)
             viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
-            viewModel.updateVariantDetailHeaderMap(adapterPosition, false)
+            viewModel.updateVariantDetailHeaderMap(headerPosition, false)
+            viewModel.expandHeaderVisitablePositions(headerPosition)
         }
-        return viewModel.isVariantDetailHeaderCollapsed(adapterPosition)
+        return viewModel.isVariantDetailHeaderCollapsed(headerPosition)
     }
 
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
@@ -161,10 +166,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
 
         // tracking
-        ProductAddVariantDetailTracking.clickVariantStatusToggle(
-                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                userSession.shopId
-        )
+        sendClickVariantStatusToggleData(isChecked)
     }
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -266,6 +268,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             val headerPosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value, index)
                     ?: 0
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
+            viewModel.updateHeaderPositionMap(level1Value.value, headerPosition)
+            // init header position - visitable position map values
+            viewModel.updateHeaderVisitablePositionMap(headerPosition, headerPosition)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
                 val isSkuVisible = switchUnifySku.isChecked // get last visibility
@@ -308,13 +313,22 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         } else {
             viewModel.updateProductInputModel()
             viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+                        ?: ""
                 SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
                 val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             }
+        }
+    }
+
+    private fun sendClickVariantStatusToggleData(isChecked: Boolean) {
+        if (!viewModel.isEditMode) {
+            ProductAddVariantDetailTracking.clickVariantStatusToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
         }
     }
 

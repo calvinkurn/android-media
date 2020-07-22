@@ -28,9 +28,10 @@ class GetProductMapper @Inject constructor() {
 
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
             VariantInputModel(
-                    mapProductVariants(variant.products),
-                    mapProductVariantSelections(variant.selections),
-                    mapSizeChart(variant.sizecharts)
+                    products = mapProductVariants(variant.products),
+                    selections = mapProductVariantSelections(variant.selections),
+                    sizecharts = mapSizeChart(variant.sizecharts),
+                    isRemoteDataHasVariant = variant.selections.isNotEmpty() // if selection is not empty, means server has a variant
             )
 
     private fun mapSizeChart(sizecharts: List<Picture>): PictureVariantInputModel {

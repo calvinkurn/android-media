@@ -79,7 +79,11 @@ class EditProductInputMapper @Inject constructor() {
     private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
             // if there is no variant input then return null
-            null
+            if (variantInputModel.isRemoteDataHasVariant) {
+                Variant()
+            } else {
+                null
+            }
         } else {
             Variant(
                     mapVariantSelections(variantInputModel.selections),
@@ -112,6 +116,7 @@ class EditProductInputMapper @Inject constructor() {
                 it.sku,
                 it.status,
                 it.stock,
+                it.isPrimary,
                 mapPictureVariant(it.pictures)
         )
     }
