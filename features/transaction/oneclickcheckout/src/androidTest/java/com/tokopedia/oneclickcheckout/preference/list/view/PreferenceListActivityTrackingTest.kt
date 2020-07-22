@@ -16,8 +16,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.Status
-import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -25,7 +25,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockIntercept
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import org.hamcrest.Matcher
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 
@@ -120,9 +120,7 @@ class PreferenceListActivityTrackingTest {
             }))
         }
 
-        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
-            assertEquals(Status.SUCCESS, it.status)
-        }
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
 
         cleanup()
     }
