@@ -64,6 +64,7 @@ class FlightCancellationChooseReasonViewModelTest {
 
         // then
         isReasonChecked shouldBe true
+        viewModel.selectedReason shouldBe DUMMY_REASON
     }
 
     @Test
