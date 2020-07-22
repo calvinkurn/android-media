@@ -89,6 +89,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
@@ -108,12 +109,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
+
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
+
     @Inject
     lateinit var analytics: TopChatAnalytics
+
     @Inject
     lateinit var settingAnalytics: ChatSettingsAnalytics
+
     @Inject
     lateinit var session: UserSessionInterface
 
@@ -121,6 +126,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
+    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
@@ -147,6 +153,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initFireBase()
+        initTooltipPopup()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -174,6 +181,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         setupAlertDialog()
         setupAnalytic()
         loadInitialData()
+    }
+
+    private fun initTooltipPopup() {
+        toolTip = ToolTipStickerPopupWindow(context, presenter)
     }
 
     private fun setupAnalytic() {
@@ -303,8 +314,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         loadChatRoomSettings(chatRoom)
         presenter.getStickerGroupList(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        showStickerOnBoardingTooltip()
 
         fpm.stopTrace()
+    }
+
+    private fun showStickerOnBoardingTooltip() {
+        if (!presenter.isStickerTooltipAlreadyShow()) {
+            toolTip.showAtTop(getViewState().chatStickerMenuButton)
+        }
     }
 
     private fun checkCanAttachVoucher() {
@@ -905,6 +923,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session)
+
+            // this for experimentation of DATA
+            if(remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false)?:false){
+                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
+            }
         }
     }
 
@@ -1113,6 +1136,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
+        toolTip.dismissOnBoarding()
     }
 
     override fun onStickerClosed() {

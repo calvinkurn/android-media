@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -37,6 +38,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.BuildConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -49,7 +51,10 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.exception.ShopPageException
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
@@ -75,6 +80,7 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
@@ -326,6 +332,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
+
+        viewModel?.videoYoutube?.observe(this, Observer {
+            val result = it.second
+            when (result) {
+                is Success -> {
+                    onSuccessGetYouTubeData(it.first, result.data)
+                }
+                is Fail -> {
+                    onFailedGetYouTubeData(it.first, result.throwable)
+                }
+            }
+        })
     }
 
     private fun addProductListHeader() {
@@ -353,6 +371,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeAdapter.updateProductWidgetData(it.first)
             }
         }
+    }
+
+    private fun onSuccessGetYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+        shopHomeAdapter.setHomeYouTubeData(widgetId, data)
+    }
+
+    private fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
+        logExceptionToCrashlytics(ERROR_WHEN_GET_YOUTUBE_DATA, throwable)
+        shopHomeAdapter.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
     }
 
     private fun onSuccessAddToCart(
@@ -592,6 +619,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (displayWidgetItem.appLink.isNotEmpty())
                 RouteManager.route(it, displayWidgetItem.appLink)
         }
+    }
+
+    override fun loadYouTubeData(videoUrl: String, widgetId: String) {
+        viewModel?.getVideoYoutube(videoUrl, widgetId)
     }
 
     override fun onVoucherClicked(parentPosition: Int, position: Int, merchantVoucherViewModel: MerchantVoucherViewModel) {
