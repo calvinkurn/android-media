@@ -148,6 +148,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun onAutoWithdrawalStatusLoaded(autoWDStatusData: AutoWDStatusData) {
         groupAutoWDSaveSetting.gone()
+        autoWDStatusData.status = 2
         this.autoWDStatusData = autoWDStatusData
         autoWDStatusData.apply {
             setCurrentWithdrawalSchedule(this)
@@ -160,8 +161,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 tickerAutoWD.setTextDescription(getString(R.string.swd_auto_wd_user_not_owner))
             }
             enableAutoWDSettingSection(isOwner)
-            enableScheduleSection(currentSchedule?.status == 1 && autoWDStatusData.isOwner)
-            enableBankAccountSection(currentSchedule?.status == 1 && autoWDStatusData.isOwner)
+            enableScheduleSection(autoWDStatusData.status == 1 && autoWDStatusData.isOwner)
+            enableBankAccountSection(autoWDStatusData.status == 1 && autoWDStatusData.isOwner)
             updateBankAccountSectionState()
             setLoaderViewVisibility(false)
             scrollViewAutoWDContent.visible()
@@ -176,13 +177,16 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             currentSchedule?.apply {
                 tvAutoWDScheduleType.text = title
                 tvScheduleTiming.text = desc
-                checkboxAutoWD.isChecked = status == 1
+                //todo check from autoWDstatus
+                checkboxAutoWD.isChecked = autoWDStatusData?.status == 1
             }
         }
     }
 
     private fun setCurrentWithdrawalSchedule(autoWDStatusData: AutoWDStatusData) {
-        currentSchedule = autoWDStatusData.scheduleList[0]
+        //todo to remove
+        currentSchedule = autoWDStatusData.scheduleList[1]
+        currentSchedule?.status = 1
         autoWDStatusData.scheduleList.forEach {
             if (it.status == 1) {
                 currentSchedule = it
@@ -202,8 +206,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun showSaveButton() {
         if (currentSchedule != null
                 && autoWDStatusData?.isOwner == true) {
-            if ((checkboxAutoWD.isChecked && currentSchedule?.status != 1)
-                    || (!checkboxAutoWD.isChecked && currentSchedule?.status == 1)
+            if ((checkboxAutoWD.isChecked && autoWDStatusData?.status != 1)
+                    || (!checkboxAutoWD.isChecked && autoWDStatusData?.status == 1)
                     || (requestedSchedule != null && currentSchedule?.equals(requestedSchedule) == false)) {
                 setSaveSettingBottomViewVisibility(true)
                 btnAutoWDSaveSettings.isEnabled = isPrimaryAccountActive()
@@ -418,12 +422,3 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         showSaveButton()
     }
 }
-
-
-/*
-tomorrow dev ----add Tamba Rekening - Full Flow settle
----> Open Info Bottomsheet---> TNC bottom Sheet
----> Non Rekening Try to set bottomsheet
----->Final Api Integration ---> Refresh Data...
-- Auto Info
-    */
