@@ -63,11 +63,19 @@ class InspirationCarouselViewHolder(
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return InspirationCarouselItemDecoration(itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0)
+        return InspirationCarouselItemDecoration(
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0,
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16) ?: 0
+        )
     }
 
     private class InspirationCarouselItemDecoration(
-            private val margin: Int
+            private val left: Int,
+            private val top: Int,
+            private val right: Int,
+            private val bottom: Int
     ): RecyclerView.ItemDecoration() {
 
         private var cardViewHorizontalOffset = 0
@@ -94,26 +102,26 @@ class InspirationCarouselViewHolder(
 
         private fun getLeftOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == 0) {
-                margin - (cardViewHorizontalOffset / 2)
+                left - (cardViewHorizontalOffset / 2)
             } else {
-                (margin / 4) - (cardViewHorizontalOffset / 2)
+                (left / 4) - (cardViewHorizontalOffset / 2)
             }
         }
 
         private fun getTopOffset(): Int {
-            return margin - cardViewVerticalOffset
+            return top - cardViewVerticalOffset
         }
 
         private fun getRightOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == (parent.adapter?.itemCount ?: 0) - 1) {
-                margin - (cardViewHorizontalOffset / 2)
+                right - (cardViewHorizontalOffset / 2)
             } else {
-                (margin / 4) - (cardViewHorizontalOffset / 2)
+                (right / 4) - (cardViewHorizontalOffset / 2)
             }
         }
 
         private fun getBottomOffset(): Int {
-            return margin - (cardViewVerticalOffset / 2)
+            return bottom - (cardViewVerticalOffset / 2)
         }
     }
 }
