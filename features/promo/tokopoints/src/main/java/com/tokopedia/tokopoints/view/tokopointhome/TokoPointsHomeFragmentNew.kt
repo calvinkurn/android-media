@@ -264,7 +264,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mImgEgg = view.findViewById(R.id.img_egg)
         mTabLayoutPromo = view.findViewById(R.id.tab_layout_promos)
         mPagerPromos = view.findViewById(R.id.view_pager_promos)
-        mPagerPromos?.disableScroll(false)
+        mPagerPromos?.disableScroll(true)
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom)
         mImgBackground = view.findViewById(R.id.img_bg_header)
         appBarHeader = view.findViewById(R.id.app_bar)
