@@ -725,7 +725,7 @@ class AddEditProductVariantFragment :
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
             // get all variant details
             val categoryId = productInputModel.detailInputModel.categoryId
-            viewModel.getCategoryVariantCombination("2860")
+            viewModel.getCategoryVariantCombination(categoryId)
         })
     }
 
@@ -862,7 +862,7 @@ class AddEditProductVariantFragment :
             setSecondaryCTAText(getString(R.string.action_confirm_exit))
             setSecondaryCTAClickListener {
                 dialog.dismiss()
-                activity?.onBackPressed()
+                activity?.finish()
             }
         }
         dialog.show()
