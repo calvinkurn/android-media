@@ -164,6 +164,7 @@ object PlayBroadcastUiMapper {
                 productTagConfig = ProductTagConfigUiModel(
                         maxProduct = config.maxTaggedProduct,
                         minProduct = config.minTaggedProduct,
+                        maxProductDesc = config.maxTaggedProductDesc,
                         errorMessage = config.maxTaggedProductDesc
                 ),
                 coverConfig = CoverConfigUiModel(

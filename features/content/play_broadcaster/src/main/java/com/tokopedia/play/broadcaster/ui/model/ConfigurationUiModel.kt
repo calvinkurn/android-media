@@ -26,6 +26,7 @@ data class DurationConfigUiModel(
 data class ProductTagConfigUiModel(
         val maxProduct: Int,
         val minProduct: Int,
+        val maxProductDesc: String,
         val errorMessage: String
 )
 

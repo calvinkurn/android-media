@@ -391,6 +391,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun setProductConfig(configModel: ProductTagConfigUiModel) {
         hydraConfigStore.setMaxProduct(configModel.maxProduct)
         hydraConfigStore.setMinProduct(configModel.minProduct)
+        hydraConfigStore.setMaxProductDesc(configModel.maxProductDesc)
     }
 
     private fun setCoverConfig(configModel: CoverConfigUiModel) {

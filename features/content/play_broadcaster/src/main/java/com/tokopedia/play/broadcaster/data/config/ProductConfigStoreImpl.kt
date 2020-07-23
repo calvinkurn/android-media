@@ -17,6 +17,7 @@ class ProductConfigStoreImpl @Inject constructor(
      */
     private var mMinProduct: Int = 1
     private var mMaxProduct: Int = 15
+    private var mMaxProductDesc: String = ""
 
     override fun setMaxProduct(count: Int) {
         mMaxProduct = count
@@ -26,11 +27,19 @@ class ProductConfigStoreImpl @Inject constructor(
         mMinProduct = count
     }
 
+    override fun setMaxProductDesc(desc: String) {
+        mMaxProductDesc = desc
+    }
+
     override fun getMaxProduct(): Int {
         return mMaxProduct
     }
 
     override fun getMinProduct(): Int {
         return mMinProduct
+    }
+
+    override fun getMaxProductDesc(): String {
+        return mMaxProductDesc
     }
 }
