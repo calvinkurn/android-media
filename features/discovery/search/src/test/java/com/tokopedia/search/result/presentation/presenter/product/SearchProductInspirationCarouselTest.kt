@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.jsonToObject
-import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
@@ -24,8 +23,6 @@ private const val samePosition = "searchproduct/inspirationcarousel/same-positio
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val inspirationCarouselListSlot = slot<InspirationCarouselViewModel>()
-    private val inspirationCarouselInfoSlot = slot<InspirationCarouselViewModel>()
 
     @Test
     fun `Show inspiration carousel general cases`() {
@@ -433,67 +430,25 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then verify interaction for Inspiration Carousel Info impression`()
-        `Then verify interaction for Inspiration Carousel List impression`()
 
-        `Then verify data`()
-    }
 
-    private fun `Then verify interaction for Inspiration Carousel Info impression`() {
-        verify {
-            productListView.sendImpressionInspirationCarouselInfo(capture(inspirationCarouselInfoSlot))
-        }
-    }
-
-    private fun `Then verify interaction for Inspiration Carousel List impression`() {
-        verify {
-            productListView.sendImpressionInspirationCarouselList(capture(inspirationCarouselListSlot))
-        }
-    }
-
-    private fun `Then verify data`() {
         // POSITION
         // 5 -> inspiration carousel info (position 4)
         // 15 -> inspiration carousel list (position 12)
         val visitableList = visitableListSlot.captured
-        `Then verify data for Inspiration Carousel Info is correct`(visitableList[5] as InspirationCarouselViewModel)
-        `Then verify data for Inspiration Carousel List is correct`(visitableList[15] as InspirationCarouselViewModel)
+        `Then verify interaction for Inspiration Carousel Info impression`(visitableList[5] as InspirationCarouselViewModel)
+        `Then verify interaction for Inspiration Carousel List impression`(visitableList[15] as InspirationCarouselViewModel)
     }
 
-    private fun `Then verify data for Inspiration Carousel Info is correct`(data: InspirationCarouselViewModel) {
-        val inspirationCarouselInfo = inspirationCarouselInfoSlot.captured
-        inspirationCarouselInfo.assert(data)
-    }
-
-    private fun InspirationCarouselViewModel.assert(
-            expectedInspirationCarouselViewModel: InspirationCarouselViewModel
-    ) {
-        title.shouldBe(expectedInspirationCarouselViewModel.title,
-                "Inspiration Carousel Model title should be ${expectedInspirationCarouselViewModel.title}")
-        type.shouldBe(expectedInspirationCarouselViewModel.type,
-                "Inspiration Carousel Model type should be ${expectedInspirationCarouselViewModel.type}")
-        position.shouldBe(expectedInspirationCarouselViewModel.position,
-                "Inspiration Carousel Model position should be ${expectedInspirationCarouselViewModel.position}")
-        layout.shouldBe(expectedInspirationCarouselViewModel.layout,
-                "Inspiration Carousel Model layout should be ${expectedInspirationCarouselViewModel.layout}")
-        options.listShouldBe(expectedInspirationCarouselViewModel.options) { options, expectedOptions ->
-            options.title.shouldBe(expectedOptions.title,
-                    "Inspiration Carousel Model Option title should be ${expectedOptions.title}")
-            options.url.shouldBe(expectedOptions.url,
-                    "Inspiration Carousel Model Option url should be ${expectedOptions.url}")
-            options.applink.shouldBe(expectedOptions.applink,
-                    "Inspiration Carousel Model Option applink should be ${expectedOptions.applink}")
-
-            val optionProduct = options.product.getOrNull(0)
-            val expectedOptionProduct = expectedOptions.product.getOrNull(0)
-
-            optionProduct.shouldBe(expectedOptionProduct,
-                    "Inspiration Carousel Model Option Product should be $expectedOptionProduct")
+    private fun `Then verify interaction for Inspiration Carousel Info impression`(data: InspirationCarouselViewModel) {
+        verify {
+            productListView.sendImpressionInspirationCarouselInfo(data)
         }
     }
 
-    private fun `Then verify data for Inspiration Carousel List is correct`(data: InspirationCarouselViewModel) {
-        val inspirationCarouselList = inspirationCarouselListSlot.captured
-        inspirationCarouselList.assert(data)
+    private fun `Then verify interaction for Inspiration Carousel List impression`(data: InspirationCarouselViewModel) {
+        verify {
+            productListView.sendImpressionInspirationCarouselList(data)
+        }
     }
 }
