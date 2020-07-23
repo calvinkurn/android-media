@@ -165,7 +165,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderShipment.value = _orderShipment
             }
             val payment = _orderPreference.preference.payment
-            _orderPayment = OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName, payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount, payment.metadata, payment.creditCard, payment.errorMessage)
+            _orderPayment = OrderPayment(payment.enable != 0, false, payment.gatewayCode,
+                    payment.gatewayName, payment.image, payment.description, payment.minimumAmount,
+                    payment.maximumAmount, payment.fee, payment.walletAmount, payment.metadata, payment.creditCard, payment.errorMessage)
             orderPayment.value = _orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
@@ -848,6 +850,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
 
                                 override fun onCompleted() {
+                                    //no op
                                 }
                             })
             )
@@ -934,12 +937,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
                         }
                     })
-                } else {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                    return
                 }
-            } else {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
             }
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
         }
     }
 
@@ -977,18 +978,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
         val shopPromos = generateShopPromos()
         val checkoutPromos = generateCheckoutPromos()
-        val allPromoCodes = ArrayList<String>().apply {
-            if (checkoutPromos.isNotEmpty()) {
-                addAll(checkoutPromos.map {
-                    it.code
-                })
-            }
-            if (shopPromos.isNotEmpty()) {
-                addAll(shopPromos.map {
-                    it.code
-                })
-            }
-        }
+        val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
+//        val allPromoCodes = ArrayList<String>().apply {
+//            if (checkoutPromos.isNotEmpty()) {
+//                addAll(checkoutPromos.map {
+//                    it.code
+//                })
+//            }
+//            if (shopPromos.isNotEmpty()) {
+//                addAll(shopPromos.map {
+//                    it.code
+//                })
+//            }
+//        }
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -1048,10 +1050,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (finalPromo != null) {
             val list: ArrayList<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> = ArrayList()
             for (voucherOrder in finalPromo.promoUiModel.voucherOrderUiModels) {
-                if (voucherOrder?.messageUiModel?.state != "red" && orderCart.cartString == voucherOrder?.uniqueId) {
-                    if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
-                        list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
-                    }
+                if (voucherOrder?.messageUiModel?.state != "red" && orderCart.cartString == voucherOrder?.uniqueId &&
+                        voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
+                    list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
                 }
             }
             return list
@@ -1172,15 +1173,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun generatePromoRequest(): PromoRequest {
         val promoRequest = PromoRequest()
 
-        val ordersItem = Order(orderShop.shopId.toLong(), orderCart.cartString, listOf(
-                ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity.orderQuantity)
-        ), isChecked = true)
+        val ordersItem = Order()
+        ordersItem.shopId = orderShop.shopId.toLong()
+        ordersItem.uniqueId = orderCart.cartString
+        ordersItem.product_details = listOf(ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity.orderQuantity))
+        ordersItem.isChecked = true
 
         val shipping = _orderShipment
-        if (shipping.getRealShipperProductId() > 0 && shipping.getRealShipperId() > 0) {
-            ordersItem.shippingId = shipping.getRealShipperId()
-            ordersItem.spId = shipping.getRealShipperProductId()
-        }
+        ordersItem.shippingId = shipping.getRealShipperId()
+        ordersItem.spId = shipping.getRealShipperProductId()
 
         if (shipping.isCheckInsurance && shipping.insuranceData != null) {
             ordersItem.isInsurancePrice = 1
@@ -1189,28 +1190,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
 
         val lastRequest = lastValidateUsePromoRequest
-        var codes: MutableList<String> = ArrayList()
-        if (lastRequest != null && lastRequest.orders.isNotEmpty() && lastRequest.orders[0] != null) {
-            codes = lastRequest.orders[0]?.codes ?: ArrayList()
-        } else {
-            val voucherOrders = orderPromo.value.lastApply?.voucherOrders ?: emptyList()
-            for (voucherOrder in voucherOrders) {
-                if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
-                    codes.add(voucherOrder.code)
-                    break
-                }
-            }
-        }
 
-        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-                codes.add(shipping.logisticPromoViewModel.promoCode)
-            }
-        } else if (shipping.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
-            codes.remove(shipping.logisticPromoViewModel.promoCode)
-        }
-
-        ordersItem.codes = codes
+        ordersItem.codes = generateOrderPromoCodes(lastRequest, ordersItem.uniqueId, shipping)
 
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = PARAM_CHECKOUT
@@ -1225,32 +1206,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return promoRequest
     }
 
-    fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true): ValidateUsePromoRequest {
-        val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
-
-        val ordersItem = OrdersItem()
-        ordersItem.shopId = orderShop.shopId
-        ordersItem.uniqueId = orderCart.cartString
-
-        ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity.orderQuantity, orderProduct.productId))
-
-        val shipping = _orderShipment
-        if (shipping.getRealShipperProductId() > 0 && shipping.getRealShipperId() > 0) {
-            ordersItem.shippingId = shipping.getRealShipperId()
-            ordersItem.spId = shipping.getRealShipperProductId()
-        }
-
-        val lastRequest = lastValidateUsePromoRequest
+    private fun generateOrderPromoCodes(lastRequest: ValidateUsePromoRequest?, uniqueId: String, shipping: OrderShipment, shouldAddLogisticPromo: Boolean = true): MutableList<String> {
         var codes: MutableList<String> = ArrayList()
-        if (lastRequest != null && lastRequest.orders.isNotEmpty() && lastRequest.orders[0] != null) {
-            codes = lastRequest.orders[0]?.codes ?: ArrayList()
+        val lastRequestOrderCodes = lastRequest?.orders?.firstOrNull()?.codes
+        if (lastRequestOrderCodes != null) {
+            codes = lastRequestOrderCodes
         } else {
             val voucherOrders = orderPromo.value.lastApply?.voucherOrders ?: emptyList()
             for (voucherOrder in voucherOrders) {
-                if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
+                if (voucherOrder.uniqueId.equals(uniqueId, true)) {
                     if (!codes.contains(voucherOrder.code)) {
                         codes.add(voucherOrder.code)
                     }
+                    // todo check why break
                     break
                 }
             }
@@ -1263,7 +1231,25 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (shipping.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
             codes.remove(shipping.logisticPromoViewModel.promoCode)
         }
-        ordersItem.codes = codes
+        return codes
+    }
+
+    fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true): ValidateUsePromoRequest {
+        val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
+
+        val ordersItem = OrdersItem()
+        ordersItem.shopId = orderShop.shopId
+        ordersItem.uniqueId = orderCart.cartString
+
+        ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity.orderQuantity, orderProduct.productId))
+
+        val shipping = _orderShipment
+        ordersItem.shippingId = shipping.getRealShipperId()
+        ordersItem.spId = shipping.getRealShipperProductId()
+
+        val lastRequest = lastValidateUsePromoRequest
+
+        ordersItem.codes = generateOrderPromoCodes(lastRequest, ordersItem.uniqueId, shipping, shouldAddLogisticPromo)
 
         validateUsePromoRequest.orders = listOf(ordersItem)
         validateUsePromoRequest.state = PARAM_CHECKOUT
@@ -1309,10 +1295,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             override fun onNext(result: ValidateUsePromoRevampUiModel) {
                                 var isPromoReleased = false
                                 val lastResult = validateUsePromoRevampUiModel
-                                if (lastResult != null && lastResult.promoUiModel.codes.isNotEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
+                                if (!lastResult?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
                                     isPromoReleased = true
-                                }
-                                if (result.promoUiModel.voucherOrderUiModels.isNotEmpty()) {
+                                } else {
+//                                    result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
+//                                        isPromoReleased = true
+//                                    }
                                     for (voucherOrderUiModel in result.promoUiModel.voucherOrderUiModels) {
                                         if (voucherOrderUiModel?.messageUiModel?.state == "red") {
                                             isPromoReleased = true
@@ -1322,11 +1310,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
                                 if (isPromoReleased) {
                                     orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
-                                } else {
-                                    if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
-                                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
-                                    }
+                                } else if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
+                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
                                 }
+
                                 validateUsePromoRevampUiModel = result
                                 updatePromoState(result.promoUiModel)
                             }
