@@ -43,7 +43,7 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 public class GraphqlClient {
-    private static Retrofit sRetrofit = null;
+    public static Retrofit sRetrofit = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
 

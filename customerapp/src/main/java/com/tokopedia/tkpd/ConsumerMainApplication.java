@@ -67,6 +67,7 @@ import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallback
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
+import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -85,6 +86,9 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
@@ -132,7 +136,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
         createAndCallPreSeq();
         super.onCreate();
-
+        warmUpGQLClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
 
@@ -230,9 +234,22 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppNetworkKeys();
     }
 
-    private void initGqlNWClient(){
-        GraphqlClient.init(getApplicationContext());
-        NetworkClient.init(getApplicationContext());
+    private void warmUpGQLClient(){
+        if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            GQLPing gqlPing = GraphqlClient.sRetrofit.create(GQLPing.class);
+            Call<String> gqlPingCall = gqlPing.pingGQL();
+            gqlPingCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Timber.d("Success" + response.body().toString());
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Timber.d("Failure");
+                }
+            });
+        }
     }
 
     @NotNull
