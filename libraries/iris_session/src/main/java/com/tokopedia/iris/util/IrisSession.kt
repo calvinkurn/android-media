@@ -20,6 +20,8 @@ class IrisSession(val context: Context) : Session {
 
     // variable to hold last time Iris Session is accessed
     private var lastTrackingActivity: Long = 0L
+    // variable to hold last time Iris Session is accessed (from shared Preference)
+    private var lastTrackingActivityPref: Long = 0L
 
     companion object {
         const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
@@ -48,6 +50,7 @@ class IrisSession(val context: Context) : Session {
         val currentTimeStamp = System.currentTimeMillis()
         if (lastTrackingActivity == 0L) {
             lastTrackingActivity = sharedPreferences.getLong(KEY_TIMESTAMP_LAST_ACTIVITY, 0L)
+            lastTrackingActivityPref = lastTrackingActivity
         }
         if (currentTimeStamp - lastTrackingActivity > THRESHOLD_EXPIRED_IF_NO_ACTIVITY) {
             // The session will be expired if there is no tracking activity for more than 30 minutes
@@ -112,9 +115,9 @@ class IrisSession(val context: Context) : Session {
      * Update timestamp of last tracking activity
      */
     private fun setPrefTrackingTimeStamp(timestamp: Long) {
-        // threshold is to prevent bursting
-        if (timestamp - lastTrackingActivity > THRESHOLD_UPDATE_LAST_ACTIVITY) {
-            lastTrackingActivity = timestamp
+        lastTrackingActivity = timestamp
+        if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
+            lastTrackingActivityPref = timestamp
             editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
             editor.apply()
         }
