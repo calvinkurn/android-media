@@ -1,8 +1,8 @@
 package com.tokopedia.statistic.analytics
 
-import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created By @ilhamsuaib on 22/07/20
@@ -10,43 +10,85 @@ import com.tokopedia.track.TrackApp
 
 object StatisticTracker {
 
-    fun sendCardImpressionEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendDateFilterEvent(userSession: UserSessionInterface) {
+        val mShopStatus = TrackingHelper.getShopStatus(userSession)
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                TrackingConstant.SHOP_INSIGHT,
+                TrackingConstant.CLICK_DATE_FILTER,
+                mShopStatus
+        )
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun sendSetDateFilterEvent(filterSubHeader: String) {
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                TrackingConstant.SHOP_INSIGHT,
+                TrackingConstant.CLICK_SELECT_ON_DATE_FILTER,
+                filterSubHeader
+        )
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun sendSelectSectionTabEvent(sectionTitle: String) {
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                TrackingConstant.SHOP_INSIGHT,
+                TrackingConstant.CLICK_TABS,
+                sectionTitle
+        )
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun sendCardImpressionEvent(model: CardWidgetUiModel, position: Int) {
+        val state = model.data?.state.orEmpty()
+        val cardValue = model.data?.value ?: "0"
+
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
                 category = TrackingConstant.SHOP_INSIGHT,
-                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_CARD, "$dataKey $state").joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_CARD, "${model.dataKey} $state").joinToString(" - "),
                 label = cardValue
         )
 
-        /*val promoView = mapOf(TrackingConstant.PROMOTIONS to getCardPromotions(cards, position))
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_CARD, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
 
-        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)*/
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
-    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendClickCardEvent(model: CardWidgetUiModel) {
+        val state = model.data?.state.orEmpty()
+        val cardValue = model.data?.value ?: "0"
+
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
+                TrackingConstant.CLICK_SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
-                arrayOf(TrackingConstant.CLICK_WIDGET_CARD, "$dataKey $state").joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_CARD, "${model.dataKey} $state").joinToString(" - "),
                 cardValue
         )
+
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendImpressionLineGraphEvent(dataKey: String, cardValue: String) {
-        val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
-                arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
-                cardValue
+    fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel, position: Int) {
+        val eventMap = TrackingHelper.createMap(
+                TrackingConstant.PROMO_VIEW,
+                TrackingConstant.SHOP_INSIGHT,
+                arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, model.dataKey).joinToString(" - "),
+                model.data?.header.orEmpty()
         )
-        TrackingHelper.sendGeneralEvent(map)
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_TREND_LINE, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
     fun sendClickLineGraphEvent(dataKey: String, chartValue: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
+                TrackingConstant.CLICK_SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 chartValue
@@ -56,7 +98,7 @@ object StatisticTracker {
 
     fun sendImpressionDescriptionEvent(descriptionTitle: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
+                TrackingConstant.SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_DESCRIPTION, descriptionTitle).joinToString(" - "),
                 ""
@@ -66,7 +108,7 @@ object StatisticTracker {
 
     fun sendClickDescriptionEvent(descriptionTitle: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
+                TrackingConstant.CLICK_SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_DESCRIPTION, descriptionTitle, TrackingConstant.SEE_MORE).joinToString(" - "),
                 ""
@@ -86,7 +128,7 @@ object StatisticTracker {
 
     fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
+                TrackingConstant.CLICK_SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_PROGRESS_BAR, "$dataKey $stateColor", TrackingConstant.SEE_MORE).joinToString(" - "),
                 "$valueScore"
@@ -106,7 +148,7 @@ object StatisticTracker {
 
     fun sendClickPostSeeMoreEvent(dataKey: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
+                TrackingConstant.CLICK_SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 ""
@@ -116,7 +158,7 @@ object StatisticTracker {
 
     fun sendClickPostItemEvent(dataKey: String, title: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
+                TrackingConstant.CLICK_SHOP_INSIGHT,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, title).joinToString(" - "),
                 ""
@@ -126,7 +168,7 @@ object StatisticTracker {
 
     fun sendClickCarouselCtaEvent(dataKey: String) {
         val map = TrackingHelper.createMap(
-                event = TrackingConstant.CLICK_SELLER_WIDGET,
+                event = TrackingConstant.CLICK_SHOP_INSIGHT,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 action = arrayOf(TrackingConstant.CLICK_WIDGET_BANNER, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 label = ""
@@ -168,15 +210,51 @@ object StatisticTracker {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
-    fun sendTableImpressionEvent(dataKey: String, eventLabel: String, tablePages: List<TablePageUiModel>, position: Int) {
+    fun sendTableImpressionEvent(model: TableWidgetUiModel, position: Int, slideNumber: Int, isSlideEmpty: Boolean) {
+        val state = if (isSlideEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
                 category = TrackingConstant.SHOP_INSIGHT,
-                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_TABLE, dataKey).joinToString(" - "),
-                label = eventLabel
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_TABLE, model.dataKey).joinToString(" - "),
+                label = "$state - $slideNumber"
         )
 
-        val promoView = mapOf(TrackingConstant.PROMOTIONS to getTablePromotions(tablePages, position))
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_SIMPLE_TABLE, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
+        val value = model.data?.data?.summary?.value?.toString().orEmpty()
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.PROMO_VIEW,
+                category = TrackingConstant.SHOP_INSIGHT,
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
+                label = value
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_PIE_CHART, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
+        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.PROMO_VIEW,
+                category = TrackingConstant.SHOP_INSIGHT,
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_BAR_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
@@ -198,25 +276,16 @@ object StatisticTracker {
         }
     }
 
-    private fun getTablePromotions(tablePages: List<TablePageUiModel>, position: Int): List<Map<String, String>> {
-        return tablePages.map {
-            return@map mapOf(
-                    TrackingConstant.ID to "{}",
-                    TrackingConstant.NAME to TrackingConstant.WIDGET_SIMPLE_TABLE,
-                    TrackingConstant.CREATIVE to "{}",
-                    TrackingConstant.CREATIVE_URL to "",
-                    TrackingConstant.POSITION to position.toString()
-            )
-        }
-    }
-
-    private fun getCardPromotions(cards: List<String>, position: Int): List<Map<String, String>> {
+    private fun getWidgetPromotions(cards: List<BaseWidgetUiModel<*>>, name: String, position: Int): List<Map<String, String>> {
         return cards.map {
             return@map mapOf(
-                    TrackingConstant.ID to "{}",
-                    TrackingConstant.NAME to TrackingConstant.WIDGET_SIMPLE_CARD,
-                    TrackingConstant.CREATIVE to "{}",
-                    TrackingConstant.CREATIVE_URL to "",
+                    TrackingConstant.ID to it.dataKey,
+                    TrackingConstant.NAME to name,
+                    TrackingConstant.CREATIVE to TrackingConstant.NONE,
+                    TrackingConstant.CREATIVE_URL to TrackingConstant.NONE,
+                    TrackingConstant.CATEGORY to TrackingConstant.NONE,
+                    TrackingConstant.PROMO_ID to TrackingConstant.NONE,
+                    TrackingConstant.PROMO_CODE to TrackingConstant.NONE,
                     TrackingConstant.POSITION to position.toString()
             )
         }

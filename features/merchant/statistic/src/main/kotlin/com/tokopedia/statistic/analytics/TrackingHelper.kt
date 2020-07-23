@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.analytics
 
 import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created By @ilhamsuaib on 22/07/20
@@ -23,5 +24,13 @@ object TrackingHelper {
 
     fun sendEnhanceEcommerceEvent(eventMap: MutableMap<String, Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun getShopStatus(userSession: UserSessionInterface): String {
+        return when {
+            userSession.isShopOfficialStore -> "OS"
+            userSession.isPowerMerchantIdle -> "PM"
+            else -> "RM"
+        }
     }
 }

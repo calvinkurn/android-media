@@ -37,6 +37,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,6 +65,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
@@ -111,6 +115,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             view?.appBarStc?.gone()
             reloadPage()
         }
+        if (userVisibleHint)
+            StatisticTracker.sendScreen(screenName)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -163,23 +169,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
-        val state = model.data?.state.orEmpty()
-        val cardValue = model.data?.value ?: "0"
-        StatisticTracker.sendClickCardEvent(model.dataKey, state, cardValue)
+        StatisticTracker.sendClickCardEvent(model)
     }
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
-        val state = model.data?.state.orEmpty()
-        val cardValue = model.data?.value ?: "0"
-        StatisticTracker.sendCardImpressionEvent(model.dataKey, state, cardValue)
+        val position = adapter.data.indexOf(model)
+        StatisticTracker.sendCardImpressionEvent(model, position)
     }
 
     override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
         StatisticTracker.sendClickLineGraphEvent(dataKey, chartValue)
     }
 
-    override fun sendLineGraphImpressionEvent(dataKey: String, chartValue: String) {
-        StatisticTracker.sendImpressionLineGraphEvent(dataKey, chartValue)
+    override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
+        val position = adapter.data.indexOf(model)
+        StatisticTracker.sendImpressionLineGraphEvent(model, position)
     }
 
     override fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
@@ -214,8 +218,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendTableImpressionEvent(dataKey: String, eventLabel: String, tablePages: List<TablePageUiModel>, position: Int) {
-        StatisticTracker.sendTableImpressionEvent(dataKey, eventLabel, tablePages, position)
+    override fun sendDescriptionCtaClickEvent(descriptionTitle: String) {
+        StatisticTracker.sendClickDescriptionEvent(descriptionTitle)
+    }
+
+    override fun sendDescriptionImpressionEvent(descriptionTitle: String) {
+        StatisticTracker.sendImpressionDescriptionEvent(descriptionTitle)
+    }
+
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+        val position = adapter.data.indexOf(model)
+        StatisticTracker.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
+    }
+
+    override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
+        val position = adapter.data.indexOf(model)
+        StatisticTracker.sendPieChartImpressionEvent(model, position)
+    }
+
+    override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
+        val position = adapter.data.indexOf(model)
+        StatisticTracker.sendBarChartImpressionEvent(model, position)
     }
 
     private fun setupView() = view?.run {
@@ -339,6 +362,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun selectDateRange() {
         if (!isAdded) return
+        StatisticTracker.sendDateFilterEvent(userSession)
         dateRangeBottomSheet
                 .setOnApplyChanges {
                     setHeaderSubTitle(it.getHeaderSubTitle())
@@ -348,6 +372,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun applyDateRange(item: DateRangeItem) {
+        StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
         mViewModel.setDateRange(startDate, endDate)
@@ -429,6 +454,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
         tabLayoutStc.tabLayout.setOnTabSelectedListener { tab ->
+            StatisticTracker.sendSelectSectionTabEvent(tab.text?.toString().orEmpty())
             scrollToPosition()
         }
         selectTabOnScrolling()
