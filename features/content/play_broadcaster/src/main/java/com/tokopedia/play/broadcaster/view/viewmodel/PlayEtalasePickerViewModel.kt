@@ -134,9 +134,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 if (page == 1) emptyList() else currentValue
         )
         scope.launch {
-            val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
-            updateProductMap(searchedProducts)
-            _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
+            try {
+                val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
+                updateProductMap(searchedProducts)
+                _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
+            } catch (e: Throwable) {
+                _observableSearchedProducts.value = PageResult(
+                        currentValue = _observableSearchedProducts.value?.currentValue.orEmpty(),
+                        state = PageResultState.Fail(e)
+                )
+            }
         }
     }
 
