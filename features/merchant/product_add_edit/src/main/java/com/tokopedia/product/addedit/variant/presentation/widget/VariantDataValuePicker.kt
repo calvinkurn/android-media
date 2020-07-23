@@ -115,6 +115,8 @@ class VariantDataValuePicker : LinearLayout {
             setupCheckBoxCheckedChangeListener(listItemUnifyList, variantUnitValues, selectedVariantUnitValues)
             // set added custom variant unit value
             setAddedCustomVariantUnitValue(listItemUnifyList, addedCustomVariantUnitValue)
+            // set unconfirmed selection
+            setUnconfirmedSelection(listItemUnifyList, unConfirmedSelection)
 
             listItemUnifyList.forEach {
                 it.listRightCheckbox?.setPadding(0, 0, 0, 0)
@@ -136,16 +138,17 @@ class VariantDataValuePicker : LinearLayout {
             selectedListItemUnify?.listRightCheckbox?.isChecked = true
             selectedListItemUnify?.listRightCheckbox?.isEnabled = false
         }
-        // set unconfirmed selection to check box
-        unConfirmedSelection.forEach { unitValue ->
-            // comparing the title with unit value name to find the selected item(s)
-            val selectedListItemUnify = listItemUnifyList.find { listItemUnify ->
-                listItemUnify.listTitleText == unitValue.value
-            }
-            // set the ListItemUnify state
-            selectedListItemUnify?.listRightCheckbox?.isChecked = true
-            selectedListItemUnify?.listRightCheckbox?.isEnabled = true
-        }
+//        // set unconfirmed selection to check box
+//        unConfirmedSelection.forEach { unitValue ->
+//            // comparing the title with unit value name to find the selected item(s)
+//            val selectedListItemUnify = listItemUnifyList.find { listItemUnify ->
+//                listItemUnify.listTitleText == unitValue.value
+//            }
+//            selectedListItemUnify?.listRightCheckbox?.performClick()
+//            // set the ListItemUnify state
+//            selectedListItemUnify?.listRightCheckbox?.isChecked = true
+//            selectedListItemUnify?.listRightCheckbox?.isEnabled = true
+//        }
     }
 
     private fun setupAddCustomVariantUnitValueButton(addCustomVariantUnitValueButton: ListItemUnify) {
@@ -175,6 +178,7 @@ class VariantDataValuePicker : LinearLayout {
             } else {
                 // add custom variant unit value
                 onAddCustomVariantUnitValueListener?.onAddCustomButtonClicked(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
+
             }
         }
     }
@@ -204,6 +208,17 @@ class VariantDataValuePicker : LinearLayout {
             // scroll to the bottom
             val top = listUnifyVariantUnitValues.getChildAt(listItemUnifyList.lastIndex).top
             scrollViewVariantUnitValues.smoothScrollTo(0, top)
+        }
+    }
+
+    private fun setUnconfirmedSelection(listItemUnifyList: List<ListItemUnify>, unConfirmedSelection: List<UnitValue>) {
+        // set unconfirmed selection to check box
+        unConfirmedSelection.forEach { unitValue ->
+            // comparing the title with unit value name to find the selected item(s)
+            val selectedListItemUnify = listItemUnifyList.find { listItemUnify ->
+                listItemUnify.listTitleText == unitValue.value
+            }
+            selectedListItemUnify?.listRightCheckbox?.performClick()
         }
     }
 

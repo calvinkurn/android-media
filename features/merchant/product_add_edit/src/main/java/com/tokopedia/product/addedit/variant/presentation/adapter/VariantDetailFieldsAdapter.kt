@@ -9,17 +9,18 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInp
 class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInputTypeFactoryImpl) :
         BaseAdapter<VariantDetailInputTypeFactoryImpl>(variantDetailTypeFactoryImpl) {
 
-    fun addUnitValueHeader(unitValueHeader: String, position: Int): Int {
-        visitables.add(VariantDetailHeaderViewModel(unitValueHeader, position))
+    fun addUnitValueHeader(unitValueHeader: String): Int {
+        val variantDetailHeaderUiModel = VariantDetailHeaderViewModel(unitValueHeader, lastIndex + 1)
+        visitables.add(variantDetailHeaderUiModel)
         notifyItemInserted(this.lastIndex)
         return this.lastIndex
     }
 
     fun addVariantDetailField(variantDetailInputLayoutModel: VariantDetailInputLayoutModel): Int {
+        variantDetailInputLayoutModel.visitablePosition = lastIndex + 1
         visitables.add(VariantDetailFieldsViewModel(variantDetailInputLayoutModel))
-        val position = this.lastIndex
-        notifyItemInserted(position)
-        return position
+        notifyItemInserted(this.lastIndex)
+        return this.lastIndex
     }
 
     fun collapseUnitValueHeader(visitablePosition: Int, fieldSize: Int) {

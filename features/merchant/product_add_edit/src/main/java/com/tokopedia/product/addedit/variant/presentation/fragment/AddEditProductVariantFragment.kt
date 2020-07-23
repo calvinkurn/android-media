@@ -181,7 +181,7 @@ class AddEditProductVariantFragment :
         observeSizechartVisibility()
         observeVariantPhotosVisibility()
         observeIsEditMode()
-        observeHasVariants()
+        observeIsSelectedVariantUnitValuesEmpty()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -328,10 +328,10 @@ class AddEditProductVariantFragment :
 
     fun onBackPressed() {
         // if removing all variants then save the changes
-        if (viewModel.hasVariants.value == false) {
+        if (viewModel.isSelectedVariantUnitValuesEmpty.value == true) {
             submitVariantInput()
         } else {
-            activity?.finish()
+            showExitConfirmationDialog()
         }
     }
 
@@ -721,7 +721,7 @@ class AddEditProductVariantFragment :
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
             // get all variant details
             val categoryId = productInputModel.detailInputModel.categoryId
-            viewModel.getCategoryVariantCombination(categoryId)
+            viewModel.getCategoryVariantCombination("2860")
         })
     }
 
@@ -762,10 +762,10 @@ class AddEditProductVariantFragment :
         })
     }
 
-    private fun observeHasVariants() {
-        viewModel.hasVariants.observe(this, Observer { hasVariants ->
-            // hide reset button if has variants
-            tvDeleteAll?.visibility = if (hasVariants) View.VISIBLE else View.GONE
+    private fun observeIsSelectedVariantUnitValuesEmpty() {
+        viewModel.isSelectedVariantUnitValuesEmpty.observe(this, Observer { isSelectedVariantUnitValuesEmpty ->
+            // hide reset button if selected variant unit values exist
+            tvDeleteAll?.visibility = if (!isSelectedVariantUnitValuesEmpty) View.VISIBLE else View.GONE
         })
     }
 
@@ -841,6 +841,24 @@ class AddEditProductVariantFragment :
         // update sizechart visibility based on variant selected type
         viewModel.updateSizechartFieldVisibility(variantTypeAdapter?.getSelectedItems().orEmpty())
 
+    }
+
+    private fun showExitConfirmationDialog() {
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.label_variant_exit_dialog_title))
+            setDescription(getString(R.string.label_variant_exit_dialog_desc))
+            setPrimaryCTAText(getString(R.string.action_cancel_exit))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            setSecondaryCTAText(getString(R.string.action_confirm_exit))
+            setSecondaryCTAClickListener {
+                dialog.dismiss()
+                activity?.onBackPressed()
+            }
+        }
+        dialog.show()
     }
 
     private fun showRemoveVariantDialog() {
