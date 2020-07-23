@@ -314,7 +314,7 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      * View Preparation Page
      */
     fun openFinalSetupPage() {
-        sendScreen("") // it is empty, from the doc row 41
+        sendScreen("/$KEY_TRACK_CATEGORY - preparation page - ${userSession.shopId}") // it is empty, from the doc row 41
     }
 
     /**
@@ -426,10 +426,16 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Live Room Page
+     */
     fun openBroadcastScreen(channelId: String) {
         sendScreen("/$KEY_TRACK_CATEGORY - live room - ${userSession.shopId} - $channelId")
     }
 
+    /**
+     * Click Product Tag on Live Room
+     */
     fun clickProductTagOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "product tag live",
@@ -437,6 +443,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * Click Share Link on Live Room
+     */
     fun clickShareIconOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "share link live",
@@ -444,6 +453,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * Click Camera Switch
+     */
     fun clickSwitchCameraOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "camera switch live",
@@ -451,6 +463,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Exit Pop Up on Live Room
+     */
     fun viewDialogExitOnLivePage(channelId: String, titleChannel: String) {
         viewGeneralEvent(
                 "popup message exit",
@@ -458,6 +473,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * Click Keluar on Exit Pop Up
+     */
     fun clickDialogExitOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "keluar live room",
@@ -465,6 +483,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Pop Up `Lihat Laporan` on Live Room
+     */
     fun viewDialogSeeReportOnLivePage(channelId: String, titleChannel: String) {
         viewGeneralEvent(
                 "lihat laporan message",
@@ -472,6 +493,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * Click `Lihat Laporan` on Live Room
+     */
     fun clickDialogSeeReportOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "lihat laporan",
@@ -479,6 +503,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Error Message (:Param) on Live Room
+     */
     fun viewErrorOnLivePage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
                 "error state on live room - $errorMessage",
@@ -486,6 +513,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Resume Pop Up
+     */
     fun viewDialogContinueBroadcastOnLivePage(channelId: String, titleChannel: String) {
         viewGeneralEvent(
                 "lanjutkan siaran message",
@@ -493,6 +523,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * Click `Lanjutkan` to continue the streaming on Live Room
+     */
     fun clickDialogContinueBroadcastOnLivePage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "lanjutkan siaran",
@@ -500,6 +533,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Multiple Device Violation Pop Up
+     */
     fun viewDialogViolation(channelId: String, titleChannel: String) {
         viewGeneralEvent(
                 "device violation popup message",
@@ -507,10 +543,16 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Report Page
+     */
     fun openReportScreen(channelId: String) {
         sendScreen("/$KEY_TRACK_CATEGORY - report summary - ${userSession.shopId} - $channelId")
     }
 
+    /**
+     * Click Selesai on Report Page
+     */
     fun clickDoneOnReportPage(channelId: String, titleChannel: String) {
         clickGeneralEvent(
                 "selesai on report page",
@@ -518,6 +560,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
         )
     }
 
+    /**
+     * View Error Message on Report Page
+     */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
                 "error state on report page",

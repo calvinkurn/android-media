@@ -244,7 +244,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
             tvInfo.hide()
             rvProduct.hide()
-            analytic.viewErrorProduct(errorEmptyProduct.errorTitle.text.toString())
         } else {
             errorEmptyProduct.hide()
 
@@ -298,6 +297,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(false)
 
+                    analytic.viewErrorProduct(it.state.error.localizedMessage)
                     showProductEmptyError(flattenValues.isEmpty())
                 }
             }
