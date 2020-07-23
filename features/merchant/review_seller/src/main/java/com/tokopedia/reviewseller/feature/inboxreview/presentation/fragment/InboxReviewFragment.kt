@@ -159,7 +159,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         endlessRecyclerViewScrollListener?.resetState()
         showLoading()
         if (countStatusIsZero()) {
-            inboxReviewViewModel.getInitInboxReview()
+            inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
         } else {
             inboxReviewViewModel.getInboxReview()
         }
@@ -338,6 +338,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             statusFilter = ANSWERED_VALUE
             if(data.feedbackInboxList.isNotEmpty()) {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+            } else {
+                loadInitialData()
             }
             endlessRecyclerViewScrollListener?.resetState()
         } else {
