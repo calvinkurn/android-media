@@ -23,7 +23,6 @@ import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -103,7 +102,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void handleApplinkNotification(Bundle data) {
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
-            if (SessionHandler.getLoginID(mContext).equals(
+            UserSessionInterface userSession = new UserSession(mContext);
+            if (userSession.getUserId().equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
             ) {
                 resetNotificationStatus(data);
@@ -184,7 +184,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     public void handleDedicatedNotification(Bundle data) {
         UserSessionInterface userSession = new UserSession(mContext);
         if (userSession.isLoggedIn()
-                && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
+                && userSession.getUserId().equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
             resetNotificationStatus(data);
             prepareAndExecuteDedicatedNotification(data);

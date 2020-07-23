@@ -50,7 +50,7 @@ interface EditShippingPresenter {
 
     fun dataWebViewResource(courierIndex: Int, webViewURL: String?)
 
-    fun setCourierAdditionalOptionConfig(courierIndex: Int, additionalOptionQueries: String?)
+    fun setCourierAdditionalOptionConfig(courierIndex: Int?, additionalOptionQueries: String?)
 
     fun getCourierAdditionalOptionsURL(courierIndex: Int): String?
 

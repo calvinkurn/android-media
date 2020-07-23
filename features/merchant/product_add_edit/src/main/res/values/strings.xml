@@ -56,7 +56,7 @@
     <string name="label_add_product_price_tips">Tentukan harga sesuai pasaran produkmu</string>
     <string name="label_prefix_rupiah">Rp </string>
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
-    <string name="error_product_price_less_than_min_limit">Harga kurang dari batas minimum Rp100</string>
+    <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100.</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
     <!-- add edit product price bottomsheet   -->
@@ -78,6 +78,7 @@
     <string name="error_zero_wholesale_price">Harga grosir tidak boleh 0</string>
     <string name="error_wholesale_price_must_cheaper_than_previous_input">Harga harus lebih murah dari harga sebelumnya</string>
     <string name="error_wholesale_price_too_expensive">Harga grosir harus lebih murah dari harga satuan</string>
+    <string name="message_variant_price_wholesale">Semua harga varian otomatis mengikuti harga utama jika produk memiliki harga grosir</string>
 
     <!-- add edit product stock -->
     <string name="add_product_stock_header">Stok</string>
@@ -97,7 +98,7 @@
     <string name="label_duration_amount">Jumlah</string>
     <string name="label_day">Hari</string>
     <string name="label_week">Minggu</string>
-    <string name="error_empty_preorder_duration">Durasi tidak boleh kosong</string>
+    <string name="error_empty_preorder_duration">Durasi minimal 1</string>
     <string name="error_preorder_duration_minimum_is_one">Durasi minimal 1</string>
     <string name="error_preorder_duration_cant_exceed_ninety_days">Durasi melebihi batas maks. \n90 hari</string>
     <string name="error_preorder_duration_cant_exceed_thirteen_weeks">Durasi melebihi batas maks. \n13 minggu</string>
@@ -117,7 +118,7 @@
     <string name="product_label_catalog">Katalog</string>
     <string name="primary">Utama</string>
 
-    <!--Descripton-->
+    <!--Description-->
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="label_product_name">Nama produk</string>
     <string name="label_product_price">Harga</string>

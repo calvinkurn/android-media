@@ -5,6 +5,7 @@ interface FirebaseMessagingManager {
     fun isNewToken(token: String): Boolean
     fun clear()
     fun syncFcmToken(listener: SyncListener)
+    fun currentToken(): String
 
     interface SyncListener {
         fun onSuccess()

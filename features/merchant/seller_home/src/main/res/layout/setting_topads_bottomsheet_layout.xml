@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:textColor="@color/setting_black_text"
+        android:textColor="@color/default_black_text"
         app:typographyType="heading_2"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -37,7 +37,7 @@
         android:text="@string/setting_topads_next"
         android:textAllCaps="false"
         app:unifyButtonVariant="filled"
-        app:unifyButtonSize="medium"
+        app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:layout_constraintTop_toBottomOf="@id/topAdsBottomSheetDescription"/>
 

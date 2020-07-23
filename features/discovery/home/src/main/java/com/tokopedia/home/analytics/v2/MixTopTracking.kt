@@ -91,7 +91,7 @@ object MixTopTracking : BaseTracking() {
             channelId = channelId,
             isFreeOngkir = grid.freeOngkir.isActive,
             productPosition = position.toString(),
-            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
             categoryId = categoryId,
@@ -101,18 +101,6 @@ object MixTopTracking : BaseTracking() {
     fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map {
         mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
     }
-
-    fun getBackgroundClick(channels: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CustomAction.CLICK_BACKGROUND,
-            Label.KEY, channels.id + " - " + channels.header.name,
-            Screen.KEY, Screen.DEFAULT,
-            CurrentSite.KEY, CurrentSite.DEFAULT,
-            Screen.KEY, Screen.DEFAULT,
-            UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
-    )
 
     //home component section
 
@@ -128,7 +116,7 @@ object MixTopTracking : BaseTracking() {
             channelId = channelId,
             isFreeOngkir = grid.isFreeOngkirActive,
             productPosition = position.toString(),
-            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
             categoryId = categoryId,

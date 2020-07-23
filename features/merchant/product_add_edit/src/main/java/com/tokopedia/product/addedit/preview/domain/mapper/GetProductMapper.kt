@@ -31,9 +31,9 @@ class GetProductMapper @Inject constructor() {
                     mapSizeChart(variant.sizecharts).firstOrNull()
             )
 
-    private fun mapSizeChart(sizecharts: List<Picture>): List<PictureViewModel> =
+    private fun mapSizeChart(sizecharts: List<Picture>): List<ProductPicture> =
             sizecharts.map {
-                PictureViewModel(
+                ProductPicture(
                         it.picID.toLongOrZero(),
                         it.status.toIntOrZero(),
                         "",
@@ -46,9 +46,9 @@ class GetProductMapper @Inject constructor() {
                 )
             }
 
-    private fun mapProductVariant(products: List<ProductVariant>): ArrayList<ProductVariantCombinationViewModel> {
+    private fun mapProductVariant(products: List<ProductVariant>): ArrayList<ProductVariantCombination> {
         val variantCombination = products.map {
-            ProductVariantCombinationViewModel(
+            ProductVariantCombination(
                     getActiveStatus(it.status),
                     it.price.toDouble(),
                     it.stock.toLong(),
@@ -111,8 +111,8 @@ class GetProductMapper @Inject constructor() {
     private fun mapProductVariantPicture(
             productVariant: List<ProductVariant>,
             index: Int
-    ): List<PictureViewModel> {
-        var variantPicture = listOf<PictureViewModel>()
+    ): List<ProductPicture> {
+        var variantPicture = listOf<ProductPicture>()
         productVariant.forEach { variant ->
             val level1Combination = variant.combination.getOrNull(0)
             level1Combination?.apply {
@@ -124,10 +124,10 @@ class GetProductMapper @Inject constructor() {
         return variantPicture
     }
 
-    private fun transformProductVariantPicture(picture: Picture?): List<PictureViewModel> {
-        var variantPicture = listOf<PictureViewModel>()
+    private fun transformProductVariantPicture(picture: Picture?): List<ProductPicture> {
+        var variantPicture = listOf<ProductPicture>()
         picture?.let {
-            val pictureViewModel = PictureViewModel(
+            val pictureViewModel = ProductPicture(
                     id = it.picID.toLongOrZero(),
                     fileName = it.fileName,
                     filePath = it.filePath,
@@ -189,7 +189,7 @@ class GetProductMapper @Inject constructor() {
             UNIT_DAY_STRING -> UNIT_DAY
             UNIT_WEEK_STRING -> UNIT_WEEK
             UNIT_MONTH_STRING -> UNIT_MONTH
-            else -> -1
+            else -> UNIT_DAY
         }
         return PreorderInputModel(
                 preorder.duration,
@@ -223,7 +223,7 @@ class GetProductMapper @Inject constructor() {
         val weightUnit: Int = when (product.weightUnit) {
             UNIT_GRAM_SRING -> UNIT_GRAM
             UNIT_KILOGRAM_SRING -> UNIT_KILOGRAM
-            else -> -1
+            else -> UNIT_GRAM
         }
         return ShipmentInputModel(
                 product.weight,

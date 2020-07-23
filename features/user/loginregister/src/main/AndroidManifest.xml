@@ -151,6 +151,44 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".login.view.activity.SellerSeamlessLoginActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_seller_seamless_choose_acc"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".login.view.activity.SeamlessLoginEmailPhoneActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_seller_seamless_login"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
         <service android:name=".seamlesslogin.RemoteService">
             <intent-filter>
                 <action android:name="com.tokopedia.loginregister.seamlesslogin.RemoteService" />

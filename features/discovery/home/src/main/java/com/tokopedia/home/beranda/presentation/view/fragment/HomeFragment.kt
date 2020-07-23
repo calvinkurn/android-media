@@ -16,7 +16,10 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -59,7 +62,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
@@ -98,6 +100,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
@@ -106,6 +109,8 @@ import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -135,8 +140,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutine
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import org.jetbrains.annotations.NotNull
 import rx.Observable
@@ -164,7 +168,8 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
-        FramePerformanceIndexInterface{
+        FramePerformanceIndexInterface,
+        HomeAutoRefreshListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -270,6 +275,10 @@ open class HomeFragment : BaseDaggerFragment(),
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
     private var lock = Object()
+    private var autoRefreshFlag = HomeFlag()
+    private var autoRefreshHandler = Handler()
+    private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
+    private var serverOffsetTime: Long = 0L
 
 
     override fun onAttach(context: Context) {
@@ -396,7 +405,7 @@ open class HomeFragment : BaseDaggerFragment(),
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
-            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true)
+            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
@@ -581,6 +590,9 @@ open class HomeFragment : BaseDaggerFragment(),
             activityStateListener!!.onResume()
         }
         adjustStatusBarColor()
+        if (isEnableToAutoRefresh(autoRefreshFlag)) {
+            setAutoRefreshOnHome(autoRefreshFlag)
+        }
     }
 
     private fun conditionalViewModelRefresh(){
@@ -603,7 +615,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, getRemoteConfig()))
+        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext)
     }
 
     override fun onPause() {
@@ -612,6 +624,9 @@ open class HomeFragment : BaseDaggerFragment(),
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
+        }
+        if (isEnableToAutoRefresh(autoRefreshFlag)) {
+            stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
     }
 
@@ -970,6 +985,39 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun configureHomeFlag(homeFlag: HomeFlag) {
         floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
+        initAutoRefreshHandler()
+        if (isEnableToAutoRefresh(homeFlag)) {
+            autoRefreshFlag = homeFlag
+            serverOffsetTime = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(homeFlag.serverTime)
+            setAutoRefreshOnHome(homeFlag)
+        }
+    }
+
+    private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
+        return homeFlag.getFlag(HomeFlag.TYPE.IS_AUTO_REFRESH)
+                && homeFlag.serverTime != 0L
+                && homeFlag.eventTime.isNotEmpty()
+    }
+
+    private fun initAutoRefreshHandler() {
+        stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+        autoRefreshRunnable = TimerRunnable(listener = this)
+        autoRefreshHandler = Handler()
+    }
+
+    private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
+        initAutoRefreshHandler()
+        val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
+        autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
+        runAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+    }
+
+    override fun onHomeAutoRefreshTriggered() {
+        doHomeDataRefresh()
+    }
+
+    private fun doHomeDataRefresh() {
+        getHomeViewModel().refreshHomeData()
     }
 
     private fun onGoToSell() {
@@ -1466,6 +1514,10 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun removeViewHolderAtPosition(position: Int) {
+        getHomeViewModel().removeViewHolderAtPosition(position)
+    }
+
     fun openWebViewURL(url: String?, context: Context?) {
         if (!TextUtils.isEmpty(url) && context != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
@@ -1921,8 +1973,6 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, getHomeViewModel().getUserId(), true

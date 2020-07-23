@@ -12,14 +12,14 @@
         android:id="@+id/tv_campaign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_10"
+        android:textSize="@dimen/notif_sp_10"
         tools:text="Rp 160.180" />
 
     <ImageView
         android:id="@+id/iv_discount"
-        android:layout_width="@dimen/dp_16"
+        android:layout_width="@dimen/notif_dp_16"
         android:layout_height="match_parent"
-        android:padding="@dimen/dp_4"
+        android:padding="@dimen/notif_dp_4"
         app:srcCompat="@drawable/notifcenter_ic_arrow_down_green" />
 
     <TextView
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Green_G500"
-        android:textSize="@dimen/sp_10"
+        android:textSize="@dimen/notif_sp_10"
         tools:text="50%" />
 
 </LinearLayout>

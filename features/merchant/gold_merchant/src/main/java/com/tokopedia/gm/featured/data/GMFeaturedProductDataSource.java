@@ -1,10 +1,11 @@
 package com.tokopedia.gm.featured.data;
 
+
+import com.tokopedia.gm.common.util.GetData;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
 import com.tokopedia.gm.featured.data.model.GMFeaturedProductDataModel;
 import com.tokopedia.gm.featured.data.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.data.model.GMFeaturedProductSubmitModel;
-import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;
 

@@ -32,7 +32,7 @@
     <string name="title_invoice">Invoice</string>
     <string name="detail_product">Detail Pengiriman</string>
     <string name="awb_number_copied">Nomor Resi berhasil disalin</string>
-    <string name="additional_text">Masa Perlindungan JKK JKM</string>
+    <string name="additional_text">Detail Periode</string>
     <string name="tkpdtransaction_bebas_ongkir">Bebas Ongkir</string>
     <string name="bom_check_cart">Lihat</string>
     <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
