@@ -28,8 +28,6 @@ import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
@@ -62,7 +60,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var mIris: Iris? = null
     private var tetraDebugger: TetraDebugger? = null
 
     override fun getNewFragment(): Fragment? = null
@@ -81,7 +78,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         getParams()
 
-        initIris()
         initTetraDebugger()
         initObservable()
         initGoogleClient()
@@ -104,11 +100,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun initIris() {
-        mIris = getInstance(applicationContext)
-        mIris?.initialize()
     }
 
     private fun initTetraDebugger() {
@@ -157,8 +148,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         notify.dismissAllActivedNotifications()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
-
-        mIris?.setUserId("")
 
         tetraDebugger?.setUserId("")
 

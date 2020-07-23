@@ -64,7 +64,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     fun showTyping() {
-        if(this.visitables.none{it == typingModel}) {
+        if (this.visitables.none { it == typingModel }) {
             this.visitables.add(0, typingModel)
             notifyItemInserted(0)
         }
@@ -229,7 +229,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
-    fun addNewMessage(item: Visitable<*>){
+    fun addNewMessage(item: Visitable<*>) {
         addElement(item)
     }
 
@@ -260,6 +260,11 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                 } else {
                     (visitables.get(i) as MessageViewModel).isRead = true
                     notifyItemRangeChanged(i, 1)
+                }
+            } else if (currentItem is SendableViewModel && currentItem.isSender) {
+                if (!currentItem.isRead) {
+                    currentItem.isRead = true
+                    notifyItemChanged(i, SendableViewModel.PAYLOAD_EVENT_READ)
                 }
             }
         }

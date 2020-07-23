@@ -66,6 +66,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
+    private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -107,7 +108,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopdetail.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
-                    ImpresionTask().execute(cpmData.adClickUrl)
+                    ImpresionTask(className).execute(cpmData.adClickUrl)
                 }
             }
 
@@ -117,7 +118,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
                     impressionListener?.let {
                         it.onImpressionHeadlineAdsItem(0, cpmData)
-                        ImpresionTask().execute(cpmData.cpm.cpmImage.fullUrl)
+                        ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
                     }
                 }
             }
@@ -192,7 +193,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             if (image != null) {
                                 image.setImageBitmap(resource)
-                                ImpresionTask().execute(cpm.cpmImage.fullUrl)
+                                ImpresionTask(className).execute(cpm.cpmImage.fullUrl)
                             }
                         }
 
@@ -241,7 +242,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         setOnClickListener {
                             if (topAdsBannerClickListener != null) {
                                 topAdsBannerClickListener!!.onBannerAdsClicked(0, data.applinks, data)
-                                ImpresionTask().execute(data.adClickUrl)
+                                ImpresionTask(className).execute(data.adClickUrl)
                             }
                         }
                     }

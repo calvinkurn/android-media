@@ -14,7 +14,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:gravity="center_vertical"
         android:paddingEnd="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
@@ -108,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:elevation="0dp"
-                android:background="@color/Neutral_N0">
+                android:background="@null">
 
                 <include
                     layout="@layout/partial_new_shop_page_header"

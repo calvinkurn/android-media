@@ -31,9 +31,8 @@ public class AddressViewHolder extends AbstractViewHolder<AddressUiModel> {
     }
 
     private TextView addressName;
-    private Typography addressDetail;
     private View editBtn, deleteBtn, defaultBtn;
-    private Typography locationDesc;
+    private Typography locationDesc, addressDetail;
     private ImageView locationImg;
 
     @LayoutRes

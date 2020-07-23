@@ -8,11 +8,9 @@ import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMa
 import rx.Subscriber
 
 class GetChatSubscriber(
-        private val useCarousel: Boolean,
-        private val useNewCard: Boolean,
         val onErrorGetChat: (Throwable) -> Unit,
         val onSuccess: (ChatroomViewModel) -> Unit,
-        val mapper: TopChatRoomGetExistingChatMapper = TopChatRoomGetExistingChatMapper(useNewCard, useCarousel)
+        val mapper: TopChatRoomGetExistingChatMapper = TopChatRoomGetExistingChatMapper()
 ) : Subscriber<GraphqlResponse>() {
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, GetExistingChatPojo::class.java,

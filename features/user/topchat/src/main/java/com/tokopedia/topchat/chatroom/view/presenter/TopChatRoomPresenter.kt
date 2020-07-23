@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.collection.ArrayMap
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -42,11 +43,16 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
@@ -92,11 +98,14 @@ class TopChatRoomPresenter @Inject constructor(
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
         private var uploadImageUseCase: TopchatUploadImageUseCase,
-        private var orderProgressUseCase: OrderProgressUseCase
+        private var orderProgressUseCase: OrderProgressUseCase,
+        private val groupStickerUseCase: ChatListGroupStickerUseCase,
+        private val chatAttachmentUseCase: ChatAttachmentUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
     var thisMessageId: String = ""
+    val attachments: ArrayMap<String, Attachment> = ArrayMap()
 
     private lateinit var webSocketUrl: String
     private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
@@ -218,8 +227,6 @@ class TopChatRoomPresenter @Inject constructor(
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(
-                            view?.isUseCarousel() ?: false,
-                            view?.isUseNewCard() ?: true,
                             onError,
                             onSuccessGetExistingMessage
                     )
@@ -247,8 +254,6 @@ class TopChatRoomPresenter @Inject constructor(
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(
-                            view?.isUseCarousel() ?: false,
-                            view?.isUseNewCard() ?: true,
                             onError,
                             onSuccessGetPreviousChat
                     )
@@ -456,6 +461,47 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    override fun sendAttachmentsAndSticker(
+            messageId: String,
+            sticker: Sticker,
+            startTime: String,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        sendAttachments(messageId, opponentId, sticker.intention)
+        sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
+        view?.clearAttachmentPreviews()
+    }
+
+    private fun sendSticker(
+            messageId: String,
+            sticker: Sticker,
+            startTime: String,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        onSendingMessage()
+        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
+        sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
+    }
+
+    private fun mapToDummySticker(messageId: String, sticker: Sticker, startTime: String): Visitable<*> {
+        return StickerUiModel(
+                messageId, userSession.userId, userSession.name, startTime, sticker.generateStickerProfile()
+        )
+    }
+
+    private fun sendStickerWithWebSocket(
+            messageId: String,
+            sticker: Sticker,
+            opponentId: String,
+            startTime: String
+    ) {
+        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime)
+        val stringContract = CommonUtil.toJson(stickerContract)
+        RxWebSocket.send(stringContract, listInterceptor)
+    }
+
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
@@ -501,6 +547,8 @@ class TopChatRoomPresenter @Inject constructor(
             addToCardSubscriber.unsubscribe()
         }
         compressImageSubscription.unsubscribe()
+        groupStickerUseCase.safeCancel()
+        chatAttachmentUseCase.safeCancel()
         super.detachView()
     }
 
@@ -553,14 +601,21 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun initInvoicePreview(savedInstanceState: Bundle?) {
         val id = view?.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState) ?: ""
-        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState) ?: ""
-        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState) ?: ""
+        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+                ?: ""
+        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+                ?: ""
         val date = view?.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState) ?: ""
-        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState) ?: ""
-        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState) ?: ""
-        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState) ?: ""
-        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState) ?: ""
-        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState) ?: ""
+        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+                ?: ""
+        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+                ?: ""
+        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+                ?: ""
+        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+                ?: ""
+        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+                ?: ""
 
         val invoiceViewModel = InvoicePreviewUiModel(
                 id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
@@ -705,7 +760,7 @@ class TopChatRoomPresenter @Inject constructor(
         paramBeforeReplyTime = chatRoom.minReplyTime
     }
 
-    override fun clearText() { }
+    override fun clearText() {}
 
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
@@ -715,9 +770,52 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
+    override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
+        groupStickerUseCase.getStickerGroup(
+                chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
+                ::onErrorGetStickerGroup
+        )
+    }
+
+    override fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel) {
+        if (chatRoom.hasAttachment() && msgId != 0) {
+            chatAttachmentUseCase.getAttachments(
+                    msgId, chatRoom.attachmentIds, ::onSuccessGetAttachments, ::onErrorGetAttachments
+            )
+        }
+    }
+
+    private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
+        this.attachments.putAll(attachments.toMap())
+        view?.updateAttachmentsView(this.attachments)
+    }
+
+    private fun onErrorGetAttachments(throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>) {
+        this.attachments.putAll(errorAttachment.toMap())
+        view?.updateAttachmentsView(this.attachments)
+        println(throwable.message)
+    }
+
+    private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
+        view?.getChatMenuView()?.stickerMenu
+                ?.updateStickers(response.chatListGroupSticker.list)
+    }
+
+    private fun onSuccessGetStickerGroup(
+            response: ChatListGroupStickerResponse,
+            needToUpdate: List<StickerGroup>
+    ) {
+        view?.getChatMenuView()?.stickerMenu
+                ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
+    }
+
+    private fun onErrorGetStickerGroup(throwable: Throwable) {
+
+    }
+
     private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    private fun onErrorGetOrderProgress(throwable: Throwable) { }
+    private fun onErrorGetOrderProgress(throwable: Throwable) {}
 }

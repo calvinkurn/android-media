@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import kotlinx.android.synthetic.main.add_to_cart_done_added_product_layout.view.*
 
@@ -33,6 +34,6 @@ class AddToCartDoneAddedProductViewHolder(
 
     interface AddToCartDoneAddedProductListener {
         fun onButtonGoToCartClicked()
-        fun onRecommendationItemSelected(item: RecommendationItem, position: Int)
+        fun onRecommendationItemSelected(item: AddToCartDoneRecommendationItemDataModel, position: Int)
     }
 }

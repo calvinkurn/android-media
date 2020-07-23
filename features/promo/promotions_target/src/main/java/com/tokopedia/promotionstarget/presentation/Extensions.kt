@@ -1,18 +1,18 @@
 package com.tokopedia.promotionstarget.presentation
 
-import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.promotionstarget.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,8 +21,33 @@ import kotlin.coroutines.CoroutineContext
 fun AppCompatImageView.loadImageGlide(url: String?, onLoadingFinished: (success: Boolean) -> Unit = {}) {
     if (!TextUtils.isEmpty(url)) {
         Glide.with(context)
+                .asBitmap()
                 .load(url)
                 .placeholder(R.drawable.t_promo_placeholder)
+                .dontAnimate()
+                .dontTransform()
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        onLoadingFinished(false)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        onLoadingFinished(false)
+                    }
+
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        this@loadImageGlide.setImageBitmap(resource)
+                        onLoadingFinished(true)
+                    }
+                })
+    }
+}
+
+fun AppCompatImageView.loadImageWithNoPlaceholder(url: String?, onLoadingFinished: (success: Boolean) -> Unit = {}) {
+    if (!TextUtils.isEmpty(url)) {
+        Glide.with(context)
+                .load(url)
                 .dontAnimate()
                 .listener(object : RequestListener<Drawable> {
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
@@ -38,6 +63,7 @@ fun AppCompatImageView.loadImageGlide(url: String?, onLoadingFinished: (success:
                 .into(this)
     }
 }
+
 
 fun AppCompatImageView.loadImageGlide(id: Int) {
     Glide.with(context)
@@ -63,16 +89,4 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
                 }
             }
         }
-
-fun getColor(context: Context, id: Int): Int {
-    try {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ContextCompat.getColor(context, id)
-        } else {
-            context.resources.getColor(id)
-        }
-    } catch (e: NullPointerException) {
-        return 0
-    }
-}
 

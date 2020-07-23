@@ -16,7 +16,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core2.R;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -30,6 +30,9 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 @Deprecated
 public abstract class TActivity extends BaseActivity {
+
+    private final static String CART_ACTIVITY_NEW
+            = "com.tokopedia.purchase_platform.features.cart.view.CartActivity";
 
     protected FrameLayout parentView;
     protected Toolbar toolbar;
@@ -90,7 +93,7 @@ public abstract class TActivity extends BaseActivity {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             startActivity(intent);
         } else {
-            startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+            startActivity(RouterUtils.getActivityIntent(this, CART_ACTIVITY_NEW));
         }
         return true;
     }

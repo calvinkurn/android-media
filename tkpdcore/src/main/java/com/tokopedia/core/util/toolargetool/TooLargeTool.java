@@ -57,18 +57,18 @@ public final class TooLargeTool {
     @NonNull
     public static String bundleBreakdown(@NonNull Bundle bundle) {
         float totalBundleSize = KB(sizeAsParcel(bundle));
-        String result = String.format(
+        StringBuilder result = new StringBuilder(String.format(
                 Locale.UK,
                 "Bundle@%d contains %d keys and measures %,.1f KB when serialized as a Parcel",
-                System.identityHashCode(bundle), bundle.size(), totalBundleSize);
+                System.identityHashCode(bundle), bundle.size(), totalBundleSize));
         for (Map.Entry<String, Integer> entry: valueSizes(bundle).entrySet()) {
-            result += String.format(
+            result.append(String.format(
                     Locale.UK,
                     "\n* %s = %,.1f KB",
                     entry.getKey(), KB(entry.getValue())
-            );
+            ));
         }
-        return result;
+        return result.toString();
     }
 
     /**
@@ -99,8 +99,10 @@ public final class TooLargeTool {
             }
             return result;
         } finally {
-            // Put everything back into original bundle
-            bundle.putAll(copy);
+            try {
+                // Put everything back into original bundle
+                bundle.putAll(copy);
+            } catch (Exception ignored) { }
         }
     }
 

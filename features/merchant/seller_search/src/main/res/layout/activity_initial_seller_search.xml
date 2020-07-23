@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_container"
+    android:orientation="vertical">
+
+    <com.tokopedia.seller.search.feature.initialsearch.view.widget.GlobalSearchView
+        android:id="@+id/globalSearchSeller"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_initial_state_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/search_initial_state"
+            android:name="com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_suggestion_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/search_suggestion"
+            android:name="com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

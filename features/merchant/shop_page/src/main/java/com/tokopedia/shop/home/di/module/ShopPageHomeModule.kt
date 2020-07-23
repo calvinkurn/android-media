@@ -37,28 +37,171 @@ class ShopPageHomeModule {
     @Provides
     @Named(GQL_GET_SHOP_PAGE_HOME_LAYOUT)
     fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_page_home_layout)
+        return """
+            query get_shop_page_home_layout(${'$'}shopId: String!,${'$'}status:String,${'$'}layoutId:String){
+              shopPageGetLayout (shopID:${'$'}shopId,status:${'$'}status,layoutID:${'$'}layoutId){
+                layoutID
+                masterLayoutID
+                merchantTierID
+                status
+                maxWidgets
+                publishDate
+                widgets {
+                  widgetID
+                  layoutOrder
+                  name
+                  type
+                  header {
+                    title
+                    ctaText
+                    ctaLink
+                    cover
+                    ratio
+                    isATC
+                  }
+                  data {
+                    ... on DisplayWidget {
+                      imageUrl
+                      videoUrl
+                      appLink
+                      webLink
+                    }
+                    ... on ProductWidget {
+                      productID
+                      name
+                      imageUrl
+                      productUrl
+                      displayPrice
+                      originalPrice
+                      discountPercentage
+                      isShowFreeOngkir
+                      freeOngkirPromoIcon
+                      isSoldOut
+                      rating
+                      totalReview
+                      isPO
+                      cashback
+                    }
+                    ... on PromoWidget {
+                      voucherID
+                      imageUrl
+                      name
+                      voucherType {
+                          voucherType
+                          identifier
+                      }
+                      voucherCode
+                      amount {
+                        amountType
+                        amount
+                        amountFormatted
+                      }
+                      minimumSpend
+                      minimumSpendFormatted
+                      owner {
+                        ownerID
+                        identifier
+                      }
+                      validThru
+                      tnc
+                      inUseExpiry
+                      status {
+                        status
+                        identifier
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        """.trimIndent()
     }
 
     @ShopPageHomeScope
     @Provides
     @Named(GQLQueryConstant.SHOP_PRODUCT)
     fun getShopProductQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_product)
+        return """
+            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
+              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
+                status
+                errors
+                data {
+                  product_id
+                  name
+                  product_url
+                  stock
+                  status
+                  price{
+                    text_idr
+                  }
+                  flags{
+                    isFeatured
+                    isPreorder
+                    isFreereturn
+                    isVariant
+                    isWholesale
+                    isWishlist
+                    isSold
+                    supportFreereturn
+                    mustInsurance
+                    withStock
+                  }
+                  stats{
+                    reviewCount
+                    rating
+                  }
+                  campaign{
+                    original_price
+                    original_price_fmt
+                    discounted_price_fmt
+                    discounted_percentage
+                    discounted_price
+                  }
+                  primary_image{
+                    original
+                    thumbnail
+                    resize300
+                  }
+                  cashback{
+                    cashback
+                    cashback_amount
+                  }
+                  freeOngkir {
+                    isActive
+                    imgURL
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                  }
+                }
+                totalData
+              }
+            }
+        """.trimIndent()
     }
 
     @ShopPageHomeScope
     @Provides
     @Named(GQL_ATC_MUTATION)
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart);
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
     }
 
     @ShopPageHomeScope
     @Provides
     @Named(GQL_CHECK_WISHLIST)
     fun provideCheckWishlistQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_wishlist);
+        return """
+            query CheckWishList(${'$'}productID:String!){
+              checkWishlist(productID:${'$'}productID){
+                product_id
+                is_wishlist
+              }
+            }
+        """.trimIndent()
     }
 
     @ShopPageHomeScope

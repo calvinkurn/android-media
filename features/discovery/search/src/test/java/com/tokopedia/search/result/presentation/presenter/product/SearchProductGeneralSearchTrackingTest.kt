@@ -3,9 +3,9 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
+import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.*
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
@@ -13,37 +13,32 @@ import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
+private const val commonResponse = "searchproduct/common-response.json"
+private const val generalSearchTrackingDirectory = "searchproduct/generalsearchtracking/"
+private const val multipleCategories = "${generalSearchTrackingDirectory}multiple-categories.json"
+private const val noResult = "${generalSearchTrackingDirectory}no-result.json"
+private const val responseCode3RelatedSearch = "${generalSearchTrackingDirectory}response-code-3-related-search.json"
+private const val responseCode4RelatedSearch = "${generalSearchTrackingDirectory}response-code-4-related-search.json"
+private const val responseCode4NoRelatedKeyword = "${generalSearchTrackingDirectory}response-code-4-no-related-keyword.json"
+private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory}response-code-5-related-search.json"
+private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
+private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
+
 internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
 
-    private val generalSearchTrackingModelSlot = slot<GeneralSearchTrackingModel>()
-
-    @Test
-    fun `General search tracking with result found`() {
-        val searchProductModel = searchProductModelCommon
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given Previous keyword from view is empty`()
-        `Given View reload data immediately calls load data`()
+    private fun `Test General Search Tracking`(searchProductModel: SearchProductModel, previousKeyword: String, expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
+        `Given Search Product Setup`(searchProductModel, previousKeyword)
 
         `When View is created`()
 
-        `Then verify view send general search tracking`()
-
-        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
-                eventLabel = String.format(
-                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
-                ),
-                isResultFound = true,
-                categoryIdMapping = "65",
-                categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
-        )
-
         `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+    }
+
+    private fun `Given Search Product Setup`(searchProductModel: SearchProductModel, previousKeyword: String) {
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given View is first active tab`()
+        `Given View with previous keyword`(previousKeyword)
+        `Given View reload data immediately calls load data`()
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -56,8 +51,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         every { productListView.isFirstActiveTab }.returns(true)
     }
 
-    private fun `Given Previous keyword from view is empty`() {
-        every { productListView.previousKeyword }.returns("")
+    private fun `Given View with previous keyword`(previousKeyword: String) {
+        every { productListView.previousKeyword }.returns(previousKeyword)
     }
 
     private fun `Given View reload data immediately calls load data`() {
@@ -77,31 +72,42 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         productListPresenter.onViewCreated()
     }
 
-    private fun `Then verify view send general search tracking`() {
+    private fun `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
+        val generalSearchTrackingModelSlot = slot<GeneralSearchTrackingModel>()
+
         verify {
             productListView.sendTrackingGTMEventSearchAttempt(capture(generalSearchTrackingModelSlot))
         }
-    }
 
-    private fun `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
         val actualGeneralSearchTrackingModel = generalSearchTrackingModelSlot.captured
 
         actualGeneralSearchTrackingModel shouldBe expectedGeneralSearchTrackingModel
     }
 
     @Test
+    fun `General search tracking with result found`() {
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        searchProductModel.searchProduct.query,
+                        searchProductModel.searchProduct.keywordProcess,
+                        searchProductModel.searchProduct.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
     fun `General search tracking with result found and multiple categories`() {
-        val searchProductModel = searchProductModelMultipleCategories
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given Previous keyword from view is empty`()
-        `Given View reload data immediately calls load data`()
-
-        `When View is created`()
-
-        `Then verify view send general search tracking`()
-
+        val searchProductModel = multipleCategories.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
@@ -115,22 +121,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 relatedKeyword = "none - none"
         )
 
-        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
 
     @Test
     fun `General search tracking with no result found`() {
-        val searchProductModel = searchProductModelNoResult
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given Previous keyword from view is empty`()
-        `Given View reload data immediately calls load data`()
-
-        `When View is created`()
-
-        `Then verify view send general search tracking`()
-
+        val searchProductModel = noResult.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
@@ -144,23 +141,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 relatedKeyword = "none - none"
         )
 
-        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
 
     @Test
     fun `General search tracking with previous keyword`() {
-        val searchProductModel = searchProductModelCommon
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
         val previousKeyword = "xiaomi"
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given View has previous keyword`(previousKeyword)
-        `Given View reload data immediately calls load data`()
-
-        `When View is created`()
-
-        `Then verify view send general search tracking`()
-
         val expectedGeneralSearchTrackingModel =  GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
@@ -174,27 +161,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 relatedKeyword = "$previousKeyword - none"
         )
 
-        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
-    }
-
-    private fun `Given View has previous keyword`(previousKeyword: String) {
-        every { productListView.previousKeyword }.returns(previousKeyword)
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
 
     @Test
     fun `General search tracking with previous keyword and has related search with response code 3`() {
-        val searchProductModel = searchProductModelRelatedSearch_3
+        val searchProductModel = responseCode3RelatedSearch.jsonToObject<SearchProductModel>()
         val previousKeyword = "xiaomi"
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given View has previous keyword`(previousKeyword)
-        `Given View reload data immediately calls load data`()
-
-        `When View is created`()
-
-        `Then verify view send general search tracking`()
-
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
@@ -208,23 +181,78 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
         )
 
-        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General search tracking with previous keyword, has related search and other related with response code 4`() {
+        val searchProductModel = responseCode4RelatedSearch.jsonToObject<SearchProductModel>()
+        val previousKeyword = "xiaomi"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        searchProductModel.searchProduct.query,
+                        searchProductModel.searchProduct.keywordProcess,
+                        searchProductModel.searchProduct.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
+                relatedKeyword = "$previousKeyword - " +
+                        "${searchProductModel.searchProduct.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General search tracking with previous keyword, response code 4, without related keyword`() {
+        val searchProductModel = responseCode4NoRelatedKeyword.jsonToObject<SearchProductModel>()
+        val previousKeyword = "xiaomi"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        searchProductModel.searchProduct.query,
+                        searchProductModel.searchProduct.keywordProcess,
+                        searchProductModel.searchProduct.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
+                relatedKeyword = "$previousKeyword - " +
+                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General search tracking with previous keyword, has related search and other related with response code 5`() {
+        val searchProductModel = responseCode5RelatedSearch.jsonToObject<SearchProductModel>()
+        val previousKeyword = "xiaomi"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        searchProductModel.searchProduct.query,
+                        searchProductModel.searchProduct.keywordProcess,
+                        searchProductModel.searchProduct.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
+                relatedKeyword = "$previousKeyword - " +
+                        "${searchProductModel.searchProduct.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
 
     @Test
     fun `General search tracking with previous keyword and has related search with response code 6`() {
-        val searchProductModel = searchProductModelRelatedSearch_6
+        val searchProductModel = responseCode6RelatedSearch.jsonToObject<SearchProductModel>()
         val previousKeyword = "xiaomi"
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given View has previous keyword`(previousKeyword)
-        `Given View reload data immediately calls load data`()
-
-        `When View is created`()
-
-        `Then verify view send general search tracking`()
-
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
@@ -238,23 +266,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
         )
 
-        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
 
     @Test
     fun `General search tracking with previous keyword and has suggestion with response code 7`() {
-        val searchProductModel = searchProductModelSuggestedSearch
+        val searchProductModel = responseCode7SuggestedSearch.jsonToObject<SearchProductModel>()
         val previousKeyword = "xiaomi"
-
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given View is first active tab`()
-        `Given View has previous keyword`(previousKeyword)
-        `Given View reload data immediately calls load data`()
-
-        `When View is created`()
-
-        `Then verify view send general search tracking`()
-
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
@@ -268,6 +286,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.suggestion.suggestion}"
         )
 
-        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
 }

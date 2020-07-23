@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -96,21 +97,23 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
         boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
 
-        if (enableInAppReview && !hasShownInAppReviewBefore) {
+        if (enableInAppReview && !hasShownInAppReviewBefore && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             requestInAppReviewFlow();
         }
     }
 
     private void requestInAppReviewFlow() {
-        inAppReviewManager = InAppReviewManagerFactory.create(this);
-        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
-            @Override
-            public void onComplete(Task<InAppReviewInfo> request) {
-                if (request.isSuccessful()) {
-                    inAppReviewRequest = request;
+        try {
+            inAppReviewManager = InAppReviewManagerFactory.create(this);
+            inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+                @Override
+                public void onComplete(Task<InAppReviewInfo> request) {
+                    if (request.isSuccessful()) {
+                        inAppReviewRequest = request;
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) { }
     }
 
     @Override
@@ -200,24 +203,26 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public void onBackPressed() {
-        FragmentManager manager = getSupportFragmentManager();
-        if (isDigital() && manager != null) {
-            if (inAppReviewManager != null && inAppReviewRequest != null) {
-                inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
-                    @Override
-                    public void onComplete(Task<Integer> task) {
-                        setInAppReviewHasShownBefore();
-                        closeThankyouPage();
-                    }
-                });
+        try {
+            FragmentManager manager = getSupportFragmentManager();
+            if (isDigital() && manager != null) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && inAppReviewManager != null && inAppReviewRequest != null) {
+                    inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(Task<Integer> task) {
+                            setInAppReviewHasShownBefore();
+                            closeThankyouPage();
+                        }
+                    });
+                } else {
+                    AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+                    rating.setDialogDismissListener(this::closeThankyouPage);
+                    rating.showDialog(manager, this);
+                }
             } else {
-                AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDialogDismissListener(this::closeThankyouPage);
-                rating.showDialog(manager, this);
+                closeThankyouPage();
             }
-        } else {
-            closeThankyouPage();
-        }
+        } catch (Exception e) { closeThankyouPage();}
     }
 
     private boolean getInAppReviewHasShownBefore() {
@@ -259,6 +264,11 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
+    }
+
+    @Override
     public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
 
     }
@@ -267,4 +277,5 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void showSimpleAppRatingDialog(Activity activity) {
 
     }
+
 }

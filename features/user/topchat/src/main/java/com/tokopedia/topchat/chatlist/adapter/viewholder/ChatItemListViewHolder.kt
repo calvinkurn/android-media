@@ -88,7 +88,7 @@ class ChatItemListViewHolder(
     }
 
     private fun bindName(chat: ItemChatListPojo) {
-        userName.text = chat.name
+        userName.text = MethodChecker.fromHtml(chat.name)
     }
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {

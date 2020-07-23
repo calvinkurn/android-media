@@ -6,7 +6,7 @@ data class Validator(
         val name: String,
         val data: Map<String, Any>,
         var status: Status = Status.PENDING,
-        var match: GtmLogDB? = null
+        var matches: List<GtmLogUi> = emptyList()
 )
 
 enum class Status {

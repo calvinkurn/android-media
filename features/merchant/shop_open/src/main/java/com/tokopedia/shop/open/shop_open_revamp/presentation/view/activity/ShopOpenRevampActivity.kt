@@ -45,13 +45,12 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
             bundle = it
         }
 
-        val shopId = userSession.shopId
-        if (shopId.isNotEmpty() && isNeedLocation) {
+        if (userSession.hasShop() && isNeedLocation) {
             val fragmentQuisionerPage = ShopOpenRevampQuisionerFragment()
             fragmentQuisionerPage.arguments = bundle
             navigateToOtherFragment(fragmentQuisionerPage, FIRST_FRAGMENT_TAG)
-        } else if (shopId.isNotEmpty() && !isNeedLocation) {
-            RouteManager.route(this, ApplinkConst.SHOP, shopId)
+        } else if (userSession.hasShop() && !isNeedLocation) {
+            RouteManager.route(this, ApplinkConst.SHOP, userSession.shopId)
         }
     }
 

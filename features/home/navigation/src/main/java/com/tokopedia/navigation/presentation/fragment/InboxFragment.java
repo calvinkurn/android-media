@@ -75,6 +75,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
+    private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
 
     @Inject
     InboxPresenter presenter;
@@ -449,7 +450,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new ImpresionTask().execute(item.getTrackerImageUrl());
+        new ImpresionTask(getActivity().getClass().getName()).execute(item.getTrackerImageUrl());
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -458,7 +459,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new ImpresionTask().execute(item.getClickUrl());
+        new ImpresionTask(getActivity().getClass().getName()).execute(item.getClickUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 

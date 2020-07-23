@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -15,7 +16,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.widget.PinEditText
+import com.tokopedia.pin.PinUnify
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
@@ -27,10 +28,10 @@ import javax.inject.Inject
 
 class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinContract.View, View.OnClickListener {
     @Inject
-    lateinit var factory : ViewModelFactory
+    lateinit var factory: ViewModelFactory
 
-    private val  mViewModel: ValidateMerchantPinViewModel by lazy { ViewModelProviders.of(this, factory)[ValidateMerchantPinViewModel::class.java] }
-    private var mEditPin: PinEditText? = null
+    private val mViewModel: ValidateMerchantPinViewModel by lazy { ViewModelProviders.of(this, factory)[ValidateMerchantPinViewModel::class.java] }
+    private var mEditPin: PinUnify? = null
     private var mTextError: TextView? = null
     private var mTextInfo: TextView? = null
     private var mValidatePinCallBack: ValidatePinCallBack? = null
@@ -52,11 +53,13 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
         if (arguments != null) {
             mTextInfo?.setText(arguments!!.getString(CommonConstant.EXTRA_PIN_INFO))
         }
-        mEditPin?.addTextChangedListener(object : TextWatcher {
+        mEditPin?.focus()
+        mEditPin?.pinTextField?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (mEditPin?.getText().toString().length == CommonConstant.PIN_COUNT) {
-                    mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID) ?: "", mEditPin?.getText().toString())
+                if (charSequence.length == CommonConstant.PIN_COUNT) {
+                    mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID)
+                            ?: "", mEditPin?.pinTextField.toString())
                 }
             }
 
@@ -72,7 +75,7 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
 
     private fun addSwipeObserver() = mViewModel.swipeCouponLiveData.observe(this, Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Success -> onSuccess(it.data)
                 is ErrorMessage -> onError(it.data)
             }
@@ -85,7 +88,8 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
                 return
             }
             KeyboardHandler.hideSoftKeyboard(activity)
-            mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID) ?: "", mEditPin!!.text.toString())
+            mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID)
+                    ?: "", mEditPin!!.pinTextField.toString())
         }
     }
 
@@ -133,6 +137,14 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
 
     interface ValidatePinCallBack {
         fun onSuccess(couponSwipeUpdate: CouponSwipeUpdate?)
+    }
+
+    fun PinUnify.focus() {
+        requestFocus()
+        // Show keyboard
+        val inputMethodManager = context
+                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(this, 0)
     }
 
     companion object {

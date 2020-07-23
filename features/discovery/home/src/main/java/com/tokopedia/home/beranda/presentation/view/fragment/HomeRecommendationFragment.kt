@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -51,6 +52,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -75,7 +77,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private lateinit var viewModel: HomeRecommendationViewModel
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
     private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory, this) }
-    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
+    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
     private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
@@ -116,6 +118,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                     handleWishlistAction(productCardOptionsModel)
                 }
             })
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -217,7 +220,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads) {
-            viewModel.sendTopAds(homeRecommendationItemDataModel.product.trackerImageUrl)
+            TopAdsUrlHitter(this::class.qualifiedName).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -246,7 +249,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads){
-            viewModel.sendTopAds(homeRecommendationItemDataModel.product.clickUrl)
+            TopAdsUrlHitter(this::class.qualifiedName).hitClickUrl(context, homeRecommendationItemDataModel.product.clickUrl)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -319,7 +322,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
             intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
-            startActivityForResult(intent, REQUEST_FROM_PDP)
+            try {
+                startActivityForResult(intent, REQUEST_FROM_PDP)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 

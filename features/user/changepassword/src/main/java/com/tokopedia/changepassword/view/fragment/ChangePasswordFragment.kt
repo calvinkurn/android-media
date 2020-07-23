@@ -36,6 +36,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     lateinit var confPasswordTextField : TextFieldUnify
 
     private lateinit var userSession : UserSessionInterface
+    private val tracker = ChangePasswordAnalytics()
 
     override fun getScreenName(): String {
         return ChangePasswordAnalytics.SCREEN_NAME
@@ -54,7 +55,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
             var intent: Intent
@@ -68,9 +68,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         newPasswordTextField = view.findViewById(R.id.wrapper_new)
         confPasswordTextField = view.findViewById(R.id.wrapper_conf)
 
-        oldPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), oldPasswordTextField) }
-        newPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), newPasswordTextField) }
-        confPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), confPasswordTextField) }
+        oldPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), oldPasswordTextField, false) }
+        newPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), newPasswordTextField, true) }
+        confPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), confPasswordTextField, true) }
 
         submit_button?.setOnClickListener {
             onSubmitClicked()
@@ -83,7 +83,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_LOGOUT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     context?.let {
@@ -109,16 +109,31 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         }
     }
 
-    private fun processInput(input: String, textField: TextFieldUnify) {
-        if(input.isBlank()){
-            textField.setError(true)
-        } else {
-            textField.setError(false)
+    private fun processInput(input: String, textField: TextFieldUnify, isShowErrorValidate: Boolean) {
+        when {
+            input.isEmpty() && isShowErrorValidate -> {
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_FIELD_REQUIRED)
+            }
+            input.length < MIN_COUNT && isShowErrorValidate -> {
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_MIN_CHAR)
+            }
+            input.length > MAX_COUNT && isShowErrorValidate -> {
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_MAX_CHAR)
+            }
+            else -> {
+                setTextFieldStatus(textField, false, "")
+            }
         }
         checkIsValidForm()
     }
 
+    private fun setTextFieldStatus(textField: TextFieldUnify, isShowErrorValidate: Boolean, message: String) {
+        textField.setError(isShowErrorValidate)
+        textField.setMessage(message)
+    }
+
     private fun onGoToForgotPass() {
+        tracker.onClickForgotPassword()
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
@@ -150,6 +165,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     private fun onSubmitClicked() {
         showLoading()
+        tracker.onClickSubmit()
         presenter.submitChangePasswordForm(
                 oldPasswordTextField.textFieldInput.text.toString(),
                 newPasswordTextField.textFieldInput.text.toString(),
@@ -169,6 +185,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onSuccessChangePassword() {
         hideLoading()
+        tracker.onSuccessChangePassword()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LOGOUT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
         startActivityForResult(intent, REQUEST_LOGOUT)
@@ -178,6 +195,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         hideLoading()
         oldPasswordTextField.setError(true)
         errorMessage?.let{
+            tracker.onErrorValidate(it)
             oldPasswordTextField.setMessage(it)
         }
     }
@@ -186,6 +204,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         hideLoading()
         newPasswordTextField.setError(true)
         errorMessage?.let{
+            tracker.onErrorValidate(it)
             newPasswordTextField.setMessage(it)
         }
     }
@@ -194,6 +213,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         hideLoading()
         confPasswordTextField.setError(true)
         errorMessage?.let{
+            tracker.onErrorValidate(it)
             confPasswordTextField.setMessage(it)
         }
     }
@@ -201,9 +221,12 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     override fun onErrorChangePassword(errorMessage: String) {
         hideLoading()
         if (TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showRedSnackbar(activity, getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
+            val errorMessage = getString(R.string.default_request_error_unknown)
+            NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
+            tracker.onErrorValidate(errorMessage)
         } else {
             NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
+            tracker.onErrorValidate(errorMessage)
         }
 
     }
@@ -225,7 +248,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int){
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
             }
@@ -235,5 +258,11 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     companion object {
         private const val REQUEST_LOGOUT = 1000
         private const val REQUEST_LOGIN = 2000
+
+        private const val MIN_COUNT = 8
+        private const val MAX_COUNT = 32
+        private const val ERROR_FIELD_REQUIRED = "Harus diisi"
+        private const val ERROR_MIN_CHAR = "Minimum $MIN_COUNT karakter"
+        private const val ERROR_MAX_CHAR = "Maksimum $MAX_COUNT karakter"
     }
 }

@@ -85,7 +85,6 @@ class ProductSnapshotViewHolder(private val view: View,
             listener.txtTradeinClicked(getComponentTrackData(element))
         }
         fab_detail.setOnClickListener {
-            listener.onEditProductClick(element!!, element.dynamicProductInfoP1, getComponentTrackData(element))
             listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
         }
     }

@@ -14,7 +14,4 @@ public interface SellerModuleRouter {
     ShopComponent getShopComponent();
 
     Intent getPhoneVerificationActivityIntent(Context context);
-
-    boolean isToggleBuyAgainOn();
-
 }

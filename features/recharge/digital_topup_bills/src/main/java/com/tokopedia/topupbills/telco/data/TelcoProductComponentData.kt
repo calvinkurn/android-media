@@ -10,5 +10,5 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 class TelcoProductComponentData(
         @SerializedName("rechargeComponentDataCollection")
         @Expose
-        val rechargeProductData: TelcoProductData,
+        val rechargeProductData: TelcoProductData = TelcoProductData(),
         var productType: Int = TelcoProductType.PRODUCT_GRID)

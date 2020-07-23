@@ -64,7 +64,6 @@
 
     <dimen name="home_recharge_recommendation_card_min_height">110dp</dimen>
     <dimen name="home_recharge_recommendation_background_margin">6dp</dimen>
-    <dimen name="home_recharge_recommendation_product_icon_card_size">60dp</dimen>
     <dimen name="home_recharge_recommendation_product_icon_card_padding">10dp</dimen>
     <dimen name="home_recharge_recommendation_shimmering_card_size">120dp</dimen>
 </resources>
