@@ -75,8 +75,8 @@ class BusinessUnitTrackerTest : Spek({
                                         "id", "101",
                                         "creative", "LISTRIK PLN",
                                         "name", "/ - p${positionOnWidgetHome} - bu widget - tab ${tabIndex} - $tabName",
-                                        "creative_url", "https://ecs7.tokopedia.net/img/recharge/operator/pln_2.png",
-                                        "position", "3",
+                                        "creative_url", "",
+                                        "position", "4",
                                         "promo_code", "",
                                         "promo_id", ""
                                 )
@@ -108,8 +108,8 @@ class BusinessUnitTrackerTest : Spek({
                                         "id", "101",
                                         "creative", "LISTRIK PLN",
                                         "name", "/ - p${positionOnWidgetHome} - bu widget - tab $tabIndex - $tabName",
-                                        "creative_url", "https://ecs7.tokopedia.net/img/recharge/operator/pln_2.png",
-                                        "position", "3",
+                                        "creative_url", "",
+                                        "position", "4",
                                         "promo_id", "",
                                         "promo_code", ""
                                 )
