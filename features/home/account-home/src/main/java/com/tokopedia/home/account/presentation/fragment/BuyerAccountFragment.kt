@@ -26,7 +26,6 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
-import com.tokopedia.home.account.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
@@ -35,6 +34,7 @@ import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
+import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
