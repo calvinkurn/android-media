@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter.RatingListAdapter
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter.RatingListListener
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.ListItemRatingWrapper
@@ -27,6 +28,7 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
     private var ratingListFilter: MutableList<ListItemRatingWrapper>? = null
 
     private var ratingFilterAdapter: RatingListAdapter? = null
+    private var shopId = ""
 
     init {
         val view = View.inflate(mActivity, R.layout.bottom_sheet_filter_rating_inbox_review, null)
@@ -55,6 +57,7 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
             })
         }
         setOnDismissListener {
+            InboxReviewTracking.eventClickOutsideRatingFilterBottomSheet(shopId)
             listener.invoke(ratingFilterAdapter?.ratingFilterList?.toList() ?: listOf())
         }
         setChild(view)
@@ -67,11 +70,14 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
         initAdapter()
 
         btnFilter?.setOnClickListener {
+            val starSelected = ratingFilterAdapter?.ratingFilterList?.filter { it.isSelected }?.joinToString(separator = ",") { it.sortValue }.orEmpty()
+            InboxReviewTracking.eventClickSelectedRatingFilterBottomSheet(starSelected, shopId)
             listener.invoke(ratingFilterAdapter?.ratingFilterList?.toList() ?: listOf())
         }
     }
 
-    override fun onItemRatingClicked(selected: Boolean, adapterPosition: Int) {
+    override fun onItemRatingClicked(starSelected: String, selected: Boolean, adapterPosition: Int) {
+        InboxReviewTracking.eventClickItemRatingFilterBottomSheet(starSelected, selected.toString(), shopId)
         ratingFilterAdapter?.updateRatingFilter(selected, adapterPosition)
     }
 
@@ -83,11 +89,17 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
 
 
     private fun resetRatingFilter() {
+        val starSelected = ratingFilterAdapter?.ratingFilterList?.filter { it.isSelected }?.joinToString(separator = ",") { it.sortValue }.orEmpty()
+        InboxReviewTracking.eventClickResetRatingFilterBottomSheet(starSelected, shopId)
         ratingFilterAdapter?.resetRatingFilter()
     }
 
     fun setRatingFilterList(filterRatingWrapper: List<ListItemRatingWrapper>) {
         ratingListFilter = filterRatingWrapper.toMutableList()
+    }
+
+    fun setShopId(shopId: String) {
+        this.shopId = shopId
     }
 
 }

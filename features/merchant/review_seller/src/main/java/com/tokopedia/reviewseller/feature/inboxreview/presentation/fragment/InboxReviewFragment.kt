@@ -27,6 +27,7 @@ import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.UNANSWERED_VA
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.prefixStatus
 import com.tokopedia.reviewseller.common.util.getStatusFilter
 import com.tokopedia.reviewseller.common.util.isUnAnswered
+import com.tokopedia.reviewseller.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.reviewseller.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.reviewseller.feature.inboxreview.di.component.InboxReviewComponent
 import com.tokopedia.reviewseller.feature.inboxreview.di.module.InboxReviewModule
@@ -130,6 +131,11 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         initRatingFilterList()
     }
 
+    override fun onResume() {
+        super.onResume()
+        InboxReviewTracking.openScreenInboxReview(userSession.shopId.orEmpty(), userSession.userId.orEmpty())
+    }
+
     override fun onDestroy() {
         removeObservers(inboxReviewViewModel.inboxReview)
         removeObservers(inboxReviewViewModel.feedbackInboxReview)
@@ -194,7 +200,21 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         return rvInboxReview
     }
 
-    override fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isReply: Boolean, adapterPosition: Int) {
+    override fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isEmptyReply: Boolean, adapterPosition: Int) {
+        if(isEmptyReply) {
+            InboxReviewTracking.eventClickReviewNotYetReplied(data.feedbackId.toString(),
+                    getQuickFilter(),
+                    userSession.shopId.orEmpty(),
+                    data.productID.toString()
+            )
+        } else {
+            InboxReviewTracking.eventClickReviewReplied(data.feedbackId.toString(),
+                    getQuickFilter(),
+                    userSession.shopId.orEmpty(),
+                    data.productID.toString()
+            )
+        }
+
         val feedbackReplyUiModel = ProductReplyUiModel(data.productID, data.productImageUrl, data.productName, data.variantName)
         val mapFeedbackData = InboxReviewMapper.mapFeedbackInboxToFeedbackUiModel(data)
 
@@ -208,12 +228,22 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
             putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
             putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, userSession.shopId.orEmpty())
-            putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isReply)
+            putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
         })
 
     }
 
-    override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int) {
+    override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>,
+                                    feedbackId: String,
+                                    productId: String,
+                                    position: Int) {
+
+        InboxReviewTracking.eventClickSpecificImageReview(
+                feedbackId,
+                getQuickFilter(),
+                userSession.shopId.orEmpty(),
+                productId
+        )
         context?.run {
             startActivity(ImagePreviewSliderActivity.getCallingIntent(
                     context = this,
@@ -223,6 +253,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     imagePosition = position
             ))
         }
+    }
+
+
+    override fun onInFullReviewClicked(feedbackId: String, productId: String) {
+        InboxReviewTracking.eventClickInFullReview(feedbackId, getQuickFilter(),
+                                userSession.shopId.orEmpty(), productId)
     }
 
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
@@ -343,7 +379,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private fun initSortFilterInboxReview() {
         inboxReviewViewModel.updateStatusFilterData(InboxReviewMapper.mapToItemSortFilterIsEmpty())
         sortFilterItemInboxReviewWrapper = ArrayList(inboxReviewViewModel.getStatusFilterListUpdated())
-        itemSortFilterList.addAll(sortFilterItemInboxReviewWrapper.mapIndexed { index, it ->
+        itemSortFilterList.addAll(sortFilterItemInboxReviewWrapper.mapIndexed { _, it ->
             SortFilterItem(
                     title = it.sortFilterItem?.title.toString(),
                     type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
@@ -391,8 +427,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun initBottomSheetFilterPeriod() {
+        InboxReviewTracking.eventClickRatingFilter(userSession.shopId.orEmpty())
         bottomSheet = FilterRatingBottomSheet(activity, ::onRatingFilterSelected)
         inboxReviewViewModel.getRatingFilterListUpdated().toList().let { bottomSheet?.setRatingFilterList(it) }
+        bottomSheet?.setShopId(userSession.shopId.orEmpty())
         fragmentManager?.let {
             bottomSheet?.show(it, TAG_FILTER_RATING)
         }
@@ -430,6 +468,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
             itemSortFilterList[positionUnAnswered].type = if (unAnsweredSelected) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
             itemSortFilterList[positionAnswered].type = ChipsUnify.TYPE_NORMAL
+
+            val quickFilter = itemSortFilterList[positionUnAnswered].title.toString()
+            val isActive = itemSortFilterList[positionUnAnswered].type == ChipsUnify.TYPE_SELECTED
+            InboxReviewTracking.eventClickNotRepliedFilter(quickFilter, isActive.toString(), userSession.shopId.orEmpty())
         } else {
             val answeredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
             sortFilterItemInboxReviewWrapper[positionAnswered].isSelected = !answeredSelected
@@ -437,6 +479,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
             itemSortFilterList[positionAnswered].type = if (answeredSelected) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
             itemSortFilterList[positionUnAnswered].type = ChipsUnify.TYPE_NORMAL
+
+            val quickFilter = itemSortFilterList[positionUnAnswered].title.toString()
+            val isActive = itemSortFilterList[positionUnAnswered].type == ChipsUnify.TYPE_SELECTED
+            InboxReviewTracking.eventClickHasBeenRepliedFilter(quickFilter, isActive.toString(), userSession.shopId.orEmpty())
         }
 
         sortFilterInboxReview?.hide()
@@ -496,5 +542,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun countStatusIsZero(): Boolean {
         return InboxReviewMapper.mapToStatusFilterList(inboxReviewViewModel.getStatusFilterListUpdated()).filter { it.isSelected }.count().isZero()
+    }
+
+    private fun getQuickFilter(): String {
+        return inboxReviewViewModel.getStatusFilterListUpdated().filter { it.isSelected }.joinToString { it.sortFilterItem?.title.toString() }
     }
 }

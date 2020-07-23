@@ -18,6 +18,7 @@ class InboxReviewFeedbackImageViewHolder(
     private var attachmentUiModel: List<FeedbackInboxUiModel.Attachment>? = null
     private var feedbackId = ""
     private var titleProduct = ""
+    private var productId = ""
 
     fun bind(data: FeedbackInboxUiModel.Attachment) {
         ivItemFeedback.setImageUrl(data.thumbnailURL)
@@ -25,7 +26,7 @@ class InboxReviewFeedbackImageViewHolder(
         val imageUrls = InboxReviewMapper.mapToItemImageSlider(attachmentUiModel)
 
         itemView.setOnClickListener {
-            feedbackInboxReviewListener.onImageItemClicked(titleProduct, imageUrls.first, imageUrls.second, feedbackId, adapterPosition)
+            feedbackInboxReviewListener.onImageItemClicked(titleProduct, imageUrls.first, imageUrls.second, feedbackId, productId, adapterPosition)
         }
     }
 
@@ -39,5 +40,9 @@ class InboxReviewFeedbackImageViewHolder(
 
     fun setTitleProduct(title: String) {
         this.titleProduct = title
+    }
+
+    fun setProductId(productId: String) {
+        this.productId = productId
     }
 }

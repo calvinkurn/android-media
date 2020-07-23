@@ -16,6 +16,7 @@ class InboxReviewFeedbackImageAdapter(
     private var attachmentUiModel: List<FeedbackInboxUiModel.Attachment>? = null
     private var feedbackId = ""
     private var titleProduct = ""
+    private var productId = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InboxReviewFeedbackImageViewHolder {
         val view = LayoutInflater
@@ -28,6 +29,7 @@ class InboxReviewFeedbackImageAdapter(
         holder.setAttachmentUiData(attachmentUiModel)
         holder.setFeedbackId(feedbackId)
         holder.setTitleProduct(titleProduct)
+        holder.setProductId(productId)
         getItem(position)?.let {
             holder.bind(it)
         }
@@ -43,5 +45,9 @@ class InboxReviewFeedbackImageAdapter(
 
     fun setTitleProduct(title: String) {
         this.titleProduct = title
+    }
+
+    fun setProductId(productId: String) {
+        this.titleProduct = productId
     }
 }

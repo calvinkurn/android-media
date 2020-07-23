@@ -326,7 +326,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     coachMarkShow()
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData(it.throwable)
+                    onErrorGetReviewDetailData()
                 }
             }
         })
@@ -338,7 +338,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData(it.throwable)
+                    onErrorGetReviewDetailData()
                 }
             }
         })
@@ -355,7 +355,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetReviewDetailData(throwable: Throwable) {
+    private fun onErrorGetReviewDetailData() {
         swipeToRefreshReviewDetail?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {

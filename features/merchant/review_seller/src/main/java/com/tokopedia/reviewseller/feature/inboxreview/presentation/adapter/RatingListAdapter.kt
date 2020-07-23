@@ -61,7 +61,7 @@ class RatingListAdapter(private val ratingListListener: RatingListListener) : Re
                 rating_star_label.text = data.sortValue
 
                 rating_checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    ratingListListener.onItemRatingClicked(isChecked, adapterPosition)
+                    ratingListListener.onItemRatingClicked(data.sortValue, isChecked, adapterPosition)
                 }
             }
         }

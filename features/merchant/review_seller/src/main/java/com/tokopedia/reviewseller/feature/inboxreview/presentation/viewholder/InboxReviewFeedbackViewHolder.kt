@@ -103,6 +103,10 @@ class InboxReviewFeedbackViewHolder(view: View,
                 tvReplyComment?.let {
                     it.text = element.replyText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
                     it.setOnClickListener { _ ->
+                        feedbackInboxReviewListener.onInFullReviewClicked(
+                                element.feedbackId.toString(),
+                                element.productID.toString()
+                        )
                         it.maxLines = Integer.MAX_VALUE
                         it.text = MethodChecker.fromHtml(element.replyText)
                     }
@@ -131,6 +135,7 @@ class InboxReviewFeedbackViewHolder(view: View,
                 reviewInboxFeedbackImageAdapter.setAttachmentUiData(element.attachments)
                 reviewInboxFeedbackImageAdapter.setFeedbackId(element.feedbackId.toString())
                 reviewInboxFeedbackImageAdapter.setTitleProduct(element.productName)
+                reviewInboxFeedbackImageAdapter.setProductId(element.productID.toString())
                 reviewInboxFeedbackImageAdapter.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }
