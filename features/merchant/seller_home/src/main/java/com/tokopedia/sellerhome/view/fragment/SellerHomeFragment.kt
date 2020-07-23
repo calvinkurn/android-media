@@ -371,8 +371,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickDescriptionEvent(descriptionTitle)
     }
 
-    override fun sendLineGraphImpressionEvent(dataKey: String, chartValue: String) {
-        SellerHomeTracking.sendImpressionLineGraphEvent(dataKey, chartValue)
+    override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
+        SellerHomeTracking.sendImpressionLineGraphEvent(model.dataKey, model.data?.header.orEmpty())
     }
 
     override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
