@@ -124,6 +124,7 @@ public class TopChatAnalytics {
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
+        String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
     }
 
     public interface Label {
@@ -603,6 +604,16 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.CLICK_OP_ORDER_HISTORY,
                 Label.BUYER
+        );
+    }
+
+    // #OP9
+    public void eventViewOrderProgress(@NotNull ChatOrderProgress chatOrder) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.VIEW_CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.VIEW_ORDER_PROGRESS_WIDGET,
+                "buyer - " + chatOrder.getStatus()
         );
     }
 }

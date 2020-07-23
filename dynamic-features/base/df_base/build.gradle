@@ -79,7 +79,6 @@ dependencies {
     implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.ovop2p)
-    implementation project(rootProject.ext.features.saldodetails)
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
     //Logistic
@@ -91,19 +90,18 @@ dependencies {
 
     //Payment
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.instantDebitBca)
     //Promo
-    implementation project(rootProject.ext.features.tokopoints)
+
     //Salam
 
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
     //User
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.groupchat)
-    implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.kyccentralized)

@@ -20,6 +20,7 @@ object PlayUiMocker {
 
     fun getMockProductSheetContent() = PlayResult.Success(ProductSheetUiModel(
             title = "Barang & Promo Pilihan",
+            partnerId = 123,
             voucherList = List(5) { voucherIndex ->
                 MerchantVoucherUiModel(
                         type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,

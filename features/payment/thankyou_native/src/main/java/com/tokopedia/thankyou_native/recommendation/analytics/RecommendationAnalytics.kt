@@ -82,7 +82,7 @@ class RecommendationAnalytics @Inject constructor(
         return mutableMapOf(
                 KEY_PRODUCT_NAME to recommendationItem.name,
                 KEY_PRODUCT_ID to recommendationItem.productId,
-                KEY_PRODUCT_PRICE to recommendationItem.price,
+                KEY_PRODUCT_PRICE to recommendationItem.priceInt.toString(),
                 KEY_PRODUCT_BRAND to "",
                 KEY_PRODUCT_CATEGORY to "",
                 KEY_PRODUCT_VARIANT to "",

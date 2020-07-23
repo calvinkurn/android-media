@@ -78,11 +78,7 @@ open class WebsocketMessageMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
                 ProductAttachmentAttributes::class.java)
 
-        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
-            emptyList()
-        } else {
-            pojoAttribute.productProfile.variant
-        }
+        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
 
         return ProductAttachmentViewModel(
                 pojo.msgId.toString(),
@@ -114,7 +110,9 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.playStoreData,
                 pojoAttribute.productProfile.remainingStock,
                 pojoAttribute.productProfile.status
-        )
+        ).apply {
+            finishLoading()
+        }
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
@@ -140,8 +138,9 @@ open class WebsocketMessageMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.code,
                 invoiceSentPojo.invoiceLink.attributes.hrefUrl,
                 invoiceSentPojo.invoiceLink.attributes.createTime
-        )
-
+        ).apply {
+            finishLoading()
+        }
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {

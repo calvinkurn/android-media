@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +18,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
@@ -107,13 +104,13 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         }
     }
 
-    private fun configViewVisibility(recommendation: RecommendationItem){
+    private fun configViewVisibility(dataModel: AddToCartDoneRecommendationItemDataModel){
         productName.show()
         shopLocation.show()
         reviewCount.show()
         ratingCount.show()
-        freeOngkirImage.visibility = if (recommendation.isFreeOngkirActive) View.VISIBLE else View.GONE
-        shopBadges.visibility = if (recommendation.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
+        freeOngkirImage.visibility = if (dataModel.recommendationItem.isFreeOngkirActive) View.VISIBLE else View.GONE
+        shopBadges.visibility = if (dataModel.recommendationItem.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
         ticker.visibility = if (model?.shopId != -1) View.VISIBLE else View.GONE
     }
 
@@ -179,20 +176,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         slideRightOut.addListener(animationListener)
     }
 
-    private fun setRecommendationItemToView(recommendation: RecommendationItem){
-        productName.text = recommendation.name
-        shopLocation.text = recommendation.location
-        reviewCount.text = "(${recommendation.countReview})"
-        ratingCount.text = recommendation.rating.toString()
-        shopBadges.loadImage(recommendation.badgesUrl.firstOrNull() ?: "")
-        freeOngkirImage.loadImage(recommendation.freeOngkirImageUrl)
-        ticker.tickerType = if(recommendation.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
-        ticker.setTextDescription(getString(if(recommendation.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
-        addToCartDoneAddedProductListener.onRecommendationItemSelected(recommendation, recommendation.position)
+    private fun setRecommendationItemToView(dataModel: AddToCartDoneRecommendationItemDataModel){
+        productName.text = dataModel.recommendationItem.name
+        shopLocation.text = dataModel.recommendationItem.location
+        reviewCount.text = "(${dataModel.recommendationItem.countReview})"
+        ratingCount.text = dataModel.recommendationItem.rating.toString()
+        shopBadges.loadImage(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
+        freeOngkirImage.loadImage(dataModel.recommendationItem.freeOngkirImageUrl)
+        ticker.tickerType = if(dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
+        ticker.setTextDescription(getString(if(dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
+        addToCartDoneAddedProductListener.onRecommendationItemSelected(dataModel, dataModel.recommendationItem.position)
     }
 
     inner class RecommendationCarouselAdapter : RecyclerView.Adapter<RecommendationCarouselImageViewHolder>(){
-        private var list: List<RecommendationItem> = listOf()
+        private var list: List<AddToCartDoneRecommendationItemDataModel> = listOf()
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselImageViewHolder {
             return RecommendationCarouselImageViewHolder(parent)
         }
@@ -205,7 +202,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             holder.bind(list[position])
         }
 
-        fun setItem(list: List<RecommendationItem>){
+        fun setItem(list: List<AddToCartDoneRecommendationItemDataModel>){
             this.list = list
             notifyDataSetChanged()
         }
@@ -213,7 +210,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     inner class RecommendationCarouselImageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.add_to_cart_done_recommendation_carousel_image_item, parent, false))
-        fun bind(recommendation: RecommendationItem){
+        fun bind(dataModel: AddToCartDoneRecommendationItemDataModel){
+            val recommendation = dataModel.recommendationItem
             itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(
                     recommendation.imageUrl,
                     16f

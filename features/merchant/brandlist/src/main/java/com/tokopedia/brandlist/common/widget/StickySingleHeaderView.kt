@@ -28,6 +28,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
+    private val headerContainerHeight = 162
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
@@ -36,7 +37,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     val containerHeight: Int
         get() {
             mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-            return mHeaderContainer?.measuredHeight ?: 0
+            return headerContainerHeight
         }
 
     interface OnStickySingleHeaderAdapter {
@@ -46,7 +47,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         fun bindSticky(viewHolder: RecyclerView.ViewHolder?)
         fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?)
         fun updateEtalaseListViewHolderData()
-        fun updateStickyStatus(isStickyShowed: Boolean)
     }
 
     private fun initView() {
@@ -102,19 +102,18 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView?.addOnScrollListener(onScrollListener)
     }
 
-    private fun convertPixelsToDp(px: Int, context: Context) : Int {
+    private fun convertPixelsToDp(px: Int, context: Context): Int {
         val result = px.toFloat() / (context.getResources().getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat())
         return result.roundToInt()
     }
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
-        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
-        if  (firstCompletelyVisiblePosition != null) {
+        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition()
+        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()
+        if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
-                adapter?.updateStickyStatus(isStickyShowed)
                 if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                     if (!isStickyShowed || refreshSticky) {
                         showSticky()

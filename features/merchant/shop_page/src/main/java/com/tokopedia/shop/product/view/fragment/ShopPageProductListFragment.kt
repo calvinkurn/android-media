@@ -178,7 +178,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun chooseProductClicked() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
         }
     }
 
@@ -818,7 +818,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onAddProductClicked() {
         context?.let {
             shopPageTracking?.clickAddProduct(customDimensionShopPage)
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_ADD)
             startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         }
     }

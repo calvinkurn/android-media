@@ -25,19 +25,19 @@ open class GetExistingChatMapper @Inject constructor() {
     protected var latestHeaderDate: String = ""
 
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
-
         val listChat = mappingListChat(pojo)
         val headerModel = mappingHeaderModel(pojo)
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
         val minReplyTime = pojo.chatReplies.minReplyTime
+        val attachmentIds = pojo.chatReplies.attachmentIds
         listChat.reverse()
         return ChatroomViewModel(
                 listChat, headerModel,
                 canLoadMore, isReplyable,
                 blockedStatus, minReplyTime,
-                latestHeaderDate
+                latestHeaderDate, attachmentIds
         )
 
     }
@@ -183,11 +183,7 @@ open class GetExistingChatMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
-        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
-            emptyList()
-        } else {
-            pojoAttribute.productProfile.variant
-        }
+        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
 
         if (pojoAttribute.isBannedProduct()) {
             return BannedProductAttachmentViewModel(
@@ -266,24 +262,24 @@ open class GetExistingChatMapper @Inject constructor() {
         val invoiceAttributes = pojo.attachment?.attributes
         val invoiceSentPojo = GsonBuilder().create().fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
         return AttachInvoiceSentViewModel(
-                pojo.msgId.toString(),
-                pojo.senderId.toString(),
-                pojo.senderName,
-                pojo.role,
-                pojo.attachment?.id ?: "",
-                pojo.attachment?.type.toString(),
-                pojo.replyTime,
-                invoiceSentPojo.invoiceLink.attributes.title,
-                invoiceSentPojo.invoiceLink.attributes.description,
-                invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                !pojo.isOpposite,
-                pojo.isRead,
-                invoiceSentPojo.invoiceLink.attributes.statusId,
-                invoiceSentPojo.invoiceLink.attributes.status,
-                invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceSentPojo.invoiceLink.attributes.hrefUrl,
-                invoiceSentPojo.invoiceLink.attributes.createTime
+                msgId = pojo.msgId.toString(),
+                fromUid = pojo.senderId.toString(),
+                from = pojo.senderName,
+                fromRole = pojo.role,
+                attachmentId = pojo.attachment?.id ?: "",
+                attachmentType = pojo.attachment?.type.toString(),
+                replyTime = pojo.replyTime,
+                message = invoiceSentPojo.invoiceLink.attributes.title,
+                description = invoiceSentPojo.invoiceLink.attributes.description,
+                imageUrl = invoiceSentPojo.invoiceLink.attributes.imageUrl,
+                totalAmount = invoiceSentPojo.invoiceLink.attributes.totalAmount,
+                isSender = !pojo.isOpposite,
+                isRead = pojo.isRead,
+                statusId = invoiceSentPojo.invoiceLink.attributes.statusId,
+                status = invoiceSentPojo.invoiceLink.attributes.status,
+                invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
+                invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
+                createTime = invoiceSentPojo.invoiceLink.attributes.createTime
         )
 
     }

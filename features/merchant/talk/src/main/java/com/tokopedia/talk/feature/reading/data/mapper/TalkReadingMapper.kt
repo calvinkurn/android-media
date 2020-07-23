@@ -32,7 +32,7 @@ object TalkReadingMapper {
     fun mapDiscussionDataResponseToTalkReadingUiModel(discussionDataResponse: DiscussionDataResponse): List<TalkReadingUiModel> {
         val result = mutableListOf<TalkReadingUiModel>()
         discussionDataResponse.question.forEach {
-            result.add(TalkReadingUiModel(it))
+            result.add(TalkReadingUiModel(it, discussionDataResponse.shopID))
         }
         return result
     }

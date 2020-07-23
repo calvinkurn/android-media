@@ -11,10 +11,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import java.util.*
 
-class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
+class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
         HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables){
 
    private var mRecyclerView: RecyclerView? = null
@@ -27,7 +28,9 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
     }
 
     override fun getItemViewType(position: Int): Int {
-        return (getItem(position) as Visitable<HomeAdapterFactory>).type(adapterTypeFactory)
+        val item = getItem(position)
+        return if (item != null) (getItem(position) as Visitable<HomeAdapterFactory>).type(adapterTypeFactory)
+        else EmptyBlankViewHolder.LAYOUT
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {

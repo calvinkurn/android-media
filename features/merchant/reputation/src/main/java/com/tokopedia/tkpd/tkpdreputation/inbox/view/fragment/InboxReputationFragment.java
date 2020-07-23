@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationReviewBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -50,8 +51,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 
 /**
@@ -81,6 +80,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private View filterButton;
     private boolean isFromWhitespace;
     private Ticker ovoTicker;
+    private Ticker sellerMigrationTicker;
 
     @Inject
     InboxReputationPresenter presenter;
@@ -151,6 +151,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
         ovoTicker = parentView.findViewById(R.id.ovoPointsTicker);
+        sellerMigrationTicker = parentView.findViewById(R.id.review_seller_migration_ticker);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
         searchView.setFocusChangeListener(this);
@@ -174,6 +175,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         });
 
         setQueryHint();
+        setupSellerMigrationTicker();
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +184,31 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 reputationTracking.onClickButtonFilterReputationTracker(getTab());
             }
         });
+    }
+
+    private void setupSellerMigrationTicker() {
+        if(getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            sellerMigrationTicker.setTickerTitle(getResources().getString(com.tokopedia.seller_migration_common.R.string.seller_migration_review_ticker_title));
+            sellerMigrationTicker.setHtmlDescription(getResources().getString(com.tokopedia.seller_migration_common.R.string.seller_migration_review_ticker_description));
+            sellerMigrationTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    openSellerMigrationBottomSheet();
+                }
+
+                @Override
+                public void onDismiss() {
+                    // No Op
+                }
+            });
+            sellerMigrationTicker.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void openSellerMigrationBottomSheet() {
+        if(getContext() != null) {
+            SellerMigrationReviewBottomSheet.Companion.createNewInstance(getContext()).show(getChildFragmentManager(), "");
+        }
     }
 
     private void setQueryHint() {
@@ -257,6 +284,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         searchView.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.VISIBLE);
+        sellerMigrationTicker.setVisibility(View.VISIBLE);
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -277,17 +305,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                 BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.WAITING_REVIEWED);
-                bottomSheet.setFullpage(true);
                 if(getFragmentManager() != null) {
                     bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
-                    bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
-                        @Override
-                        public Unit invoke(View view) {
-                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.WAITING_REVIEWED);
-                            bottomSheet.dismiss();
-                            return Unit.INSTANCE;
-                        }
-                    });
                 }
                 reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
             }

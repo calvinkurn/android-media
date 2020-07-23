@@ -38,7 +38,8 @@ data class ProductCardModel (
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
         val stockBarPercentage: Int = 0,
-        val isOutOfStock: Boolean = false
+        val isOutOfStock: Boolean = false,
+        val addToCardText: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

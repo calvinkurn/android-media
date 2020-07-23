@@ -285,6 +285,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onMenuDetailError(error: Throwable) {
+        errorMenuDetail()
         Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
@@ -294,7 +295,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onFavoriteNumbersError(error: Throwable) {
         errorSetFavNumbers()
-        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCheckVoucherError(error: Throwable) {
@@ -304,6 +304,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onExpressCheckoutError(error: Throwable) {
         NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
+
+    abstract fun errorMenuDetail()
 
     abstract fun clickCopyOnPromoCode(promoId: Int)
 
