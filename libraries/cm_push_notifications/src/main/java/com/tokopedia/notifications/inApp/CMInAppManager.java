@@ -88,21 +88,18 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
 
     @Override
     public void notificationsDataResult(List<CMInApp> inAppDataList) {
-        sendEventInAppPrepared(inAppDataList);
-
         synchronized (lock) {
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
+                sendEventInAppPrepared(cmInApp);
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
             }
         }
     }
 
-    private void sendEventInAppPrepared(List<CMInApp> inAppDataList) {
-        for (CMInApp cmInApp: inAppDataList) {
-            sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREPARED, null);
-        }
+    private void sendEventInAppPrepared(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREPARED, null);
     }
 
     @Override
