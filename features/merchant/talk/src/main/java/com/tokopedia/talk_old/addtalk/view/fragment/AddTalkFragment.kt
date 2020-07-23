@@ -105,6 +105,7 @@ class AddTalkFragment : BaseDaggerFragment(),
             analytics.trackClickSendNewTalk(productId)
             presenter.send(productId, message_talk.text.toString())
         }
+        message_talk.requestFocus()
     }
 
     class QuickReplyItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {

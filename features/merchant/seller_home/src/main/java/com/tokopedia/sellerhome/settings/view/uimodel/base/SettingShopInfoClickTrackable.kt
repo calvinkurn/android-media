@@ -11,4 +11,10 @@ interface SettingShopInfoClickTrackable {
     val clickEventAction: String
     val clickEventLabel: String
         get() = ""
+    val clickEventUserId: String
+        get() = ""
+    val clickEventShopId: String
+        get() = ""
+    val clickEventShopType: String
+        get() = ""
 }
