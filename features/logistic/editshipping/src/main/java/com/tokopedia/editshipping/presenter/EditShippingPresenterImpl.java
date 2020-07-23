@@ -26,6 +26,7 @@ import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,6 +59,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     private RevGeocodeUseCase revGeocodeUseCase;
 
     private ShopShipping shopInformation;
+
+    private ValidateShippingModel validateBoData;
 
     private List<Courier> courierList;
 
@@ -421,7 +424,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     @Override
                     public void onSuccess(String statusMessage) {
                         view.finishLoading();
-                        view.dismissFragment(statusMessage);
+                        view.refreshData(statusMessage);
+//                        view.dismissFragment(statusMessage);
                     }
 
                     @Override
@@ -811,10 +815,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void validateBo() {
         scanActivatedCourier();
-        Map<String, String> shippingUpdateParams = new HashMap<>();
-        putDataToHashMap(shippingUpdateParams);
-        //ToDo:: validate Bo here
-        validateShippingUseCase.execute(new Subscriber<ValidateShippingModel>() {
+        validateShippingUseCase.execute(userSession.getShopId(), compiledShippingId());
+/*        validateShippingUseCase.execute(new Subscriber<ValidateShippingModel>() {
 
             @Override
             public void onCompleted() {
@@ -830,8 +832,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             public void onNext(ValidateShippingModel validateShippingModel) {
 
             }
-        });
+        });*/
 
     }
 
+    @Nullable
+    @Override
+    public ValidateShippingModel getValidateBoData() {
+        return validateBoData;
+    }
 }

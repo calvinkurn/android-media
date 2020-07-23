@@ -35,6 +35,8 @@ interface EditShippingViewListener {
 
     fun finishLoading()
 
+    fun refreshData(messageStatus: String?)
+
     fun finishStartingFragment()
 
     fun setLocationProvinceCityDistrict(Province: String?, City: String?, District: String?)
