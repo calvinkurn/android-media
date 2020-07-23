@@ -624,7 +624,6 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm = BottomSheetUnify()
         customVariantValueInputForm?.setTitle(getString(R.string.action_variant_add) + " " + variantData.name)
         customVariantValueInputForm?.isKeyboardOverlap = false
-        variantValuePicker?.clearContentPadding = true
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
         customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)
