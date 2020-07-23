@@ -61,7 +61,7 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
                 if(groupId == it.key) {
                     index = count - 1
                 }
-                val list = ListItemUnify(it.value.name +"(${it.value.count})", "")
+                val list = ListItemUnify(it.value.name +" (${it.value.count})", "")
                 list.isBold = true
                 list.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
                 listUnify.add(list)
