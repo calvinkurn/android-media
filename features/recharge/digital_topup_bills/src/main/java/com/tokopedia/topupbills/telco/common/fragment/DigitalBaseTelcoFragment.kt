@@ -306,6 +306,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     abstract fun onExpandAppBar()
 
+    abstract fun onBackPressed()
+
     protected abstract fun getTelcoMenuId(): Int
 
     protected abstract fun getTelcoCategoryId(): Int
@@ -329,8 +331,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
     protected abstract fun setInputNumberFromContact(contactNumber: String)
-
-    protected abstract fun onBackPressed()
 
     override fun onDestroy() {
         listMenu.clear()
