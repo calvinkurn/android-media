@@ -17,7 +17,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -31,8 +30,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
-import com.tokopedia.reviewseller.common.di.component.DaggerReviewSellerComponent
-import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
@@ -271,17 +268,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             override fun isDataEmpty(): Boolean {
                 return reviewSellerAdapter.list.isEmpty()
             }
-        }
-    }
-
-    private fun inject() {
-        if (activity != null) {
-            val appComponent = (activity?.application as? BaseMainApplication)?.baseAppComponent
-            DaggerReviewSellerComponent.builder()
-                    .reviewSellerModule(ReviewSellerModule())
-                    .baseAppComponent(appComponent)
-                    .build()
-                    .inject(this)
         }
     }
 
