@@ -89,6 +89,7 @@ object PlayBroadcastMocker {
             timeElapsed = "01:00",
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
+                    maxDurationDesc = "Siaran 30 menit",
                     pauseDuration = (1 * 60 * 1000),
                     errorMessage = "Maks. siaran 30 menit"
             ),

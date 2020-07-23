@@ -150,6 +150,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
+            setDurationConfig(configUiModel.durationConfig)
 
             // configure live streaming duration
             if (configUiModel.channelType == ChannelType.Pause)
@@ -394,6 +395,10 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setCoverConfig(configModel: CoverConfigUiModel) {
         hydraConfigStore.setMaxTitleChars(configModel.maxChars)
+    }
+
+    private fun setDurationConfig(configModel: DurationConfigUiModel) {
+        hydraConfigStore.setMaxDurationDesc(configModel.maxDurationDesc)
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {
