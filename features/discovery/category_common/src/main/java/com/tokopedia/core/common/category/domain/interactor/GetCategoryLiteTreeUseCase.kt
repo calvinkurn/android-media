@@ -24,6 +24,10 @@ class GetCategoryLiteTreeUseCase @Inject constructor(private val graphqlUseCase:
                         children{
                             id
                             name
+                            children{
+                                id
+                                name
+                            }
                         }
                     }
                 }
