@@ -84,9 +84,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        var list = stepperModel?.selectedProductIds!!
-        var s = list.toString()
-        var productId = s.substring(1, s.length - 1)
+        val list = stepperModel?.selectedProductIds!!
+        val productId = list.joinToString(",")
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
     }
 
@@ -113,15 +112,17 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
     }
 
-    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
+    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.KeywordData>) {
         startShowCase()
         keywordListAdapter.items.add(KeywordGroupViewModel("Rekomendasi"))
         coachitem_title.visibility = View.GONE
         keywordListAdapter.favoured.clear()
         keywordListAdapter.manualKeywords.clear()
-        keywords.forEach { index ->
-            keywordListAdapter.items.add(KeywordItemViewModel(index))
-            keywordList.add(KeywordItemViewModel(index).data.keyword)
+        keywords.forEach { key ->
+            key.keywordData.forEach {index->
+                keywordListAdapter.items.add(KeywordItemViewModel(index))
+                keywordList.add(KeywordItemViewModel(index).data.keyword)
+            }
         }
         tip_btn.visibility = View.VISIBLE
         addManualKeywords()

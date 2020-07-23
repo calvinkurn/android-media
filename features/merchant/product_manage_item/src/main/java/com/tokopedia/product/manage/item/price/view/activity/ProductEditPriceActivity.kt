@@ -12,13 +12,15 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_GOLD_MERCHANT
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 
 class ProductEditPriceActivity : BaseSimpleActivity(){
 
     companion object {
-        fun createIntent(context: Context, productPrice: ProductPrice?, isOfficialStore: Boolean, hasVariant: Boolean, isGoldMerchant: Boolean): Intent {
+        fun createIntent(context: Context, productPrice: ProductPrice?, productStock: Int?, isOfficialStore: Boolean, hasVariant: Boolean, isGoldMerchant: Boolean): Intent {
             return Intent(context, ProductEditPriceActivity::class.java)
                     .putExtra(EXTRA_PRICE, productPrice)
+                    .putExtra(EXTRA_STOCK, productStock)
                     .putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore)
                     .putExtra(EXTRA_HAS_VARIANT, hasVariant)
                     .putExtra(EXTRA_IS_GOLD_MERCHANT, isGoldMerchant)

@@ -748,6 +748,7 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
+                    val homeDataWithoutExternalComponentPair = evaluateInitialTopAdsBannerComponent(homeDataModel)
                     withContext(homeDispatcher.get().ui()) {
                         var homeData = evaluateGeolocationComponent(homeDataModel)
                         homeData = evaluateAvailableComponent(homeDataModel)
@@ -757,7 +758,7 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    getTopAdsBannerData()
+                    getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -770,6 +771,21 @@ open class HomeViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
+    }
+
+    private fun evaluateInitialTopAdsBannerComponent(homeDataModel: HomeDataModel): Pair<HomeDataModel, Map<Int, HomeTopAdsBannerDataModel>> {
+        val topadsMap = mutableMapOf<Int, HomeTopAdsBannerDataModel>()
+        homeDataModel.list.mapIndexed { index, visitable ->
+            if (visitable is HomeTopAdsBannerDataModel) {
+                topadsMap[index] = visitable
+            }
+        }
+        val data: List<HomeTopAdsBannerDataModel> = ArrayList(topadsMap.values)
+        val mutableNewList = homeDataModel.list.toMutableList()
+        mutableNewList.removeAll(data)
+        val newHomeData = homeDataModel.copy(list = mutableNewList.toList())
+
+        return Pair(newHomeData, topadsMap)
     }
 
     private fun initChannel(){
@@ -990,12 +1006,8 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getTopAdsBannerData() {
-        val data: List<HomeTopAdsBannerDataModel> = _homeLiveData.value?.list?.filter {
-            it is HomeTopAdsBannerDataModel
-        } as List<HomeTopAdsBannerDataModel>
-
-        if(data.isNotEmpty()) {
+    private fun getTopAdsBannerData(topadsMap: Map<Int, HomeTopAdsBannerDataModel>) {
+        if(topadsMap.isNotEmpty()) {
             if(getTopAdsBannerDataJob?.isActive == true) return
                 getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
                 val results = topAdsImageViewUseCase.get().getImageData(
@@ -1003,7 +1015,7 @@ open class HomeViewModel @Inject constructor(
                                 "",
                                 "1",
                                 "",
-                                data.size,
+                                topadsMap.size,
                                 3,
                                 ""
                         )
@@ -1016,27 +1028,12 @@ open class HomeViewModel @Inject constructor(
                     val newHomeData = _homeLiveData.value
                     val newList = newHomeData?.list?: listOf()
                     if (newList.isNotEmpty()) {
-                        newList.mapIndexed { index, visitable ->
-                            if (visitable is HomeTopAdsBannerDataModel) {
-                                val topAdsImageViewModel = stack.pop()
-                                launch(coroutineContext){
-                                    val newTopAdsModel = visitable.copy(topAdsImageViewModel = topAdsImageViewModel)
-                                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE,
-                                            newTopAdsModel, index))
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    val newHomeData = _homeLiveData.value
-                    val newList = newHomeData?.list?: listOf()
-                    if (newList.isNotEmpty()) {
-                        newList.mapIndexed { index, visitable ->
-                            if (visitable is HomeTopAdsBannerDataModel) {
-                                launch(coroutineContext){
-                                    updateWidget(UpdateLiveDataModel(ACTION_DELETE,
-                                            visitable, index))
-                                }
+                        topadsMap.entries.forEach {
+                            val topAdsImageViewModel = stack.pop()
+                            launch(coroutineContext){
+                                val newTopAdsModel = it.value.copy(topAdsImageViewModel = topAdsImageViewModel)
+                                updateWidget(UpdateLiveDataModel(ACTION_ADD,
+                                        newTopAdsModel, it.key))
                             }
                         }
                     }
@@ -1215,7 +1212,8 @@ open class HomeViewModel @Inject constructor(
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
 
-        getTokopointJob = launchCatchError(coroutineContext, block={
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            getHomeTokopointsDataUseCase.get().setParams("2.0.0")
             val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
             updateHeaderViewModel(
                     isTokoPointDataError = false,
