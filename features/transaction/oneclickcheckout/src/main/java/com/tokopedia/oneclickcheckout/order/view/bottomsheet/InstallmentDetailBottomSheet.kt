@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageView
@@ -10,15 +11,20 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class InstallmentDetailBottomSheet {
 
+    private lateinit var listener: InstallmentDetailBottomSheetListener
+
     private var bottomSheetUnify: BottomSheetUnify? = null
 
-    fun show(fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
+    fun show(fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>, listener: InstallmentDetailBottomSheetListener) {
         fragment.fragmentManager?.let {
+            this.listener = listener
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
                 isHideable = true
@@ -42,25 +48,34 @@ class InstallmentDetailBottomSheet {
         setupTerms(child, fragment)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
-        for (i in 0..5) {
+        val installments = installmentDetails.filter { it.isEnable }
+        for (i in installments.lastIndex downTo 0) {
+            val installment = installmentDetails[i]
             val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)
-            val tvInstallmentDetailName = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name)
-            val tvInstallmentDetailServiceFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee)
-            val tvInstallmentDetailFinalFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee)
+            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name).text = "${installment.term}x Cicilan 0%"
+            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee).text = "+ Biaya Layanan ${CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix()}"
+            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee).text = "${CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()}/bulan"
             val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButton>(R.id.rb_installment_detail)
+            rbInstallmentDetail.isChecked = installment.isSelected
             rbInstallmentDetail.setOnClickListener {
-                // callback listener
+                listener.onSelectInstallment(installment)
                 dismiss()
             }
             ll.addView(viewInstallmentDetailItem, 0)
         }
         val installmentMessage = child.findViewById<Typography>(R.id.tv_installment_message)
+        if (installmentDetails.size > 1) {
+            installmentMessage.gone()
+        } else {
+            installmentMessage.visible()
+        }
     }
 
     private fun setupTerms(child: View, fragment: OrderSummaryPageFragment) {
-        val webView = child.findViewById<WebView>(R.id.web_view_terms_and_condition)
+        val webView = child.findViewById<WebView>(R.id.web_view_terms)
         val htmlText = """
 <html>
 	<style>
@@ -140,5 +155,6 @@ class InstallmentDetailBottomSheet {
 
     interface InstallmentDetailBottomSheetListener {
 
+        fun onSelectInstallment(installment: OrderPaymentInstallmentTerm)
     }
 }

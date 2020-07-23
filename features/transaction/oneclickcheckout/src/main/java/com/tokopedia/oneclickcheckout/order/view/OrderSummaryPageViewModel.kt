@@ -73,7 +73,6 @@ import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.math.ceil
-import kotlin.math.max
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
                                                     private val executorSchedulers: ExecutorSchedulers,
@@ -107,6 +106,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     var _orderShipment: OrderShipment = OrderShipment()
     val orderShipment: OccMutableLiveData<OrderShipment> = OccMutableLiveData(OrderShipment())
+
+    var _orderPayment: OrderPayment = OrderPayment()
+    val orderPayment: OccMutableLiveData<OrderPayment> = OccMutableLiveData(OrderPayment())
 
     val orderTotal: OccMutableLiveData<OrderTotal> = OccMutableLiveData(OrderTotal())
     val globalEvent: OccMutableLiveData<OccGlobalEvent> = OccMutableLiveData(OccGlobalEvent.Normal)
@@ -162,6 +164,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 _orderShipment = OrderShipment()
                 orderShipment.value = _orderShipment
             }
+            val payment = _orderPreference.preference.payment
+            _orderPayment = OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName, payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount, payment.metadata, payment.creditCard, payment.errorMessage)
+            orderPayment.value = _orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
             orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
@@ -227,7 +232,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 if (value.isValid) {
                                     val curShip = value.preference.shipment
                                     var shipping = _orderShipment
-                                    val currPromo = if (shipping.isApplyLogisticPromo) shipping.logisticPromoViewModel?.promoCode ?: "" else ""
+                                    val currPromo = if (shipping.isApplyLogisticPromo) shipping.logisticPromoViewModel?.promoCode
+                                            ?: "" else ""
                                     var shippingErrorId: String? = null
                                     var preselectedSpId: String? = null
 
@@ -514,88 +520,88 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
-            orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
-            val validateUsePromoRequest = generateValidateUsePromoRequest(false)
-            validateUsePromoRequest.orders[0]?.apply {
-                shippingId = logisticPromoUiModel.shipperId
-                spId = logisticPromoUiModel.shipperProductId
-                if (oldCode.isNotEmpty()) {
-                    codes.remove(oldCode)
-                }
-                codes.add(logisticPromoUiModel.promoCode)
+        orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
+        val validateUsePromoRequest = generateValidateUsePromoRequest(false)
+        validateUsePromoRequest.orders[0]?.apply {
+            shippingId = logisticPromoUiModel.shipperId
+            spId = logisticPromoUiModel.shipperProductId
+            if (oldCode.isNotEmpty()) {
+                codes.remove(oldCode)
             }
-            val requestParams = RequestParams.create()
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
-            compositeSubscription.add(
-                    validateUsePromoRevampUseCase.createObservable(requestParams)
-                            .subscribeOn(executorSchedulers.io)
-                            .observeOn(executorSchedulers.main)
-                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
-                                override fun onError(e: Throwable) {
-                                    orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
-                                    globalEvent.value = OccGlobalEvent.Error(e)
-                                    val shippingRecommendationData = shipping.shippingRecommendationData
-                                    if (shippingRecommendationData != null) {
-                                        _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-                                        orderShipment.value = _orderShipment
-                                    }
-                                    orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
-                                    calculateTotal()
+            codes.add(logisticPromoUiModel.promoCode)
+        }
+        val requestParams = RequestParams.create()
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+        compositeSubscription.add(
+                validateUsePromoRevampUseCase.createObservable(requestParams)
+                        .subscribeOn(executorSchedulers.io)
+                        .observeOn(executorSchedulers.main)
+                        .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+                            override fun onError(e: Throwable) {
+                                orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
+                                globalEvent.value = OccGlobalEvent.Error(e)
+                                val shippingRecommendationData = shipping.shippingRecommendationData
+                                if (shippingRecommendationData != null) {
+                                    _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                                    orderShipment.value = _orderShipment
                                 }
+                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                calculateTotal()
+                            }
 
-                                override fun onNext(response: ValidateUsePromoRevampUiModel) {
-                                    validateUsePromoRevampUiModel = response
-                                    if (response.status.equals(STATUS_OK, true)) {
-                                        for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
-                                            if (voucherOrderUiModel != null && voucherOrderUiModel.code == logisticPromoUiModel.promoCode && voucherOrderUiModel.messageUiModel.state != "red") {
-                                                val shippingRecommendationData = shipping.shippingRecommendationData
-                                                var logisticPromoShipping: ShippingCourierUiModel? = null
-                                                if (shippingRecommendationData != null) {
-                                                    val shouldEnableServicePicker = _orderShipment.isServicePickerEnable || !_orderShipment.serviceErrorMessage.isNullOrEmpty()
-                                                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-                                                        if (shippingDurationViewModel.isSelected) {
-                                                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
-                                                                shippingCourierUiModel.isSelected = false
-                                                            }
-                                                        }
-                                                        if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
-                                                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
-                                                                if (shippingCourierUiModel.productData.shipperProductId == logisticPromoUiModel.shipperProductId) {
-                                                                    logisticPromoShipping = shippingCourierUiModel
-                                                                    break
-                                                                }
-                                                            }
-                                                        }
-                                                        if (shouldEnableServicePicker) {
-                                                            shippingDurationViewModel.isSelected = false
+                            override fun onNext(response: ValidateUsePromoRevampUiModel) {
+                                validateUsePromoRevampUiModel = response
+                                if (response.status.equals(STATUS_OK, true)) {
+                                    for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
+                                        if (voucherOrderUiModel != null && voucherOrderUiModel.code == logisticPromoUiModel.promoCode && voucherOrderUiModel.messageUiModel.state != "red") {
+                                            val shippingRecommendationData = shipping.shippingRecommendationData
+                                            var logisticPromoShipping: ShippingCourierUiModel? = null
+                                            if (shippingRecommendationData != null) {
+                                                val shouldEnableServicePicker = _orderShipment.isServicePickerEnable || !_orderShipment.serviceErrorMessage.isNullOrEmpty()
+                                                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                                                    if (shippingDurationViewModel.isSelected) {
+                                                        for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                                            shippingCourierUiModel.isSelected = false
                                                         }
                                                     }
-                                                    if (logisticPromoShipping != null) {
-                                                        shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
-                                                        val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
-                                                        _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
-                                                                insuranceData = logisticPromoShipping.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
-                                                                needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
-                                                        orderShipment.value = _orderShipment
-                                                        globalEvent.value = OccGlobalEvent.Normal
-                                                        updatePromoState(response.promoUiModel)
-                                                        return
+                                                    if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
+                                                        for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                                            if (shippingCourierUiModel.productData.shipperProductId == logisticPromoUiModel.shipperProductId) {
+                                                                logisticPromoShipping = shippingCourierUiModel
+                                                                break
+                                                            }
+                                                        }
                                                     }
+                                                    if (shouldEnableServicePicker) {
+                                                        shippingDurationViewModel.isSelected = false
+                                                    }
+                                                }
+                                                if (logisticPromoShipping != null) {
+                                                    shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
+                                                    val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                                                    _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
+                                                            insuranceData = logisticPromoShipping.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
+                                                            needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
+                                                    orderShipment.value = _orderShipment
+                                                    globalEvent.value = OccGlobalEvent.Normal
+                                                    updatePromoState(response.promoUiModel)
+                                                    return
                                                 }
                                             }
                                         }
                                     }
-                                    _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-                                    orderShipment.value = _orderShipment
-                                    globalEvent.value = OccGlobalEvent.Normal
-                                    updatePromoState(response.promoUiModel)
                                 }
+                                _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                                orderShipment.value = _orderShipment
+                                globalEvent.value = OccGlobalEvent.Normal
+                                updatePromoState(response.promoUiModel)
+                            }
 
-                                override fun onCompleted() {
-                                    // do nothing
-                                }
-                            })
-            )
+                            override fun onCompleted() {
+                                // do nothing
+                            }
+                        })
+        )
     }
 
     fun clearBboIfExist() {
@@ -780,7 +786,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
         val shipping = _orderShipment
-        if (shipping.isValid()) {
+        val shippingRecommendationData = _orderShipment.shippingRecommendationData
+        if (shippingRecommendationData != null) {
             globalEvent.value = OccGlobalEvent.Loading
             val validateUsePromoRequest = generateValidateUsePromoRequest(false)
             validateUsePromoRequest.orders[0]?.apply {
@@ -804,38 +811,35 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     if (response.status.equals(STATUS_OK, true)) {
                                         for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
                                             if (voucherOrderUiModel != null && voucherOrderUiModel.code == logisticPromoUiModel.promoCode && voucherOrderUiModel.messageUiModel.state != "red") {
-                                                val shippingRecommendationData = _orderShipment.shippingRecommendationData
                                                 var logisticPromoShipping: ShippingCourierUiModel? = null
-                                                if (shippingRecommendationData != null) {
-                                                    val shouldEnableServicePicker = _orderShipment.isServicePickerEnable || !_orderShipment.serviceErrorMessage.isNullOrEmpty()
-                                                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-                                                        if (shippingDurationViewModel.isSelected) {
-                                                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
-                                                                shippingCourierUiModel.isSelected = false
-                                                            }
-                                                        }
-                                                        if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
-                                                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
-                                                                if (shippingCourierUiModel.productData.shipperProductId == logisticPromoUiModel.shipperProductId) {
-                                                                    logisticPromoShipping = shippingCourierUiModel
-                                                                    break
-                                                                }
-                                                            }
-                                                        }
-                                                        if (shouldEnableServicePicker) {
-                                                            shippingDurationViewModel.isSelected = false
+                                                val shouldEnableServicePicker = _orderShipment.isServicePickerEnable || !_orderShipment.serviceErrorMessage.isNullOrEmpty()
+                                                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                                                    if (shippingDurationViewModel.isSelected) {
+                                                        for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                                            shippingCourierUiModel.isSelected = false
                                                         }
                                                     }
-                                                    shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
-                                                    val needPinpoint = logisticPromoShipping?.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
-                                                    _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
-                                                            insuranceData = logisticPromoShipping?.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping?.productData?.error?.errorMessage,
-                                                            needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
-                                                    orderShipment.value = _orderShipment
-                                                    globalEvent.value = OccGlobalEvent.Normal
-                                                    updatePromoState(response.promoUiModel)
-                                                    return
+                                                    if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
+                                                        for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                                            if (shippingCourierUiModel.productData.shipperProductId == logisticPromoUiModel.shipperProductId) {
+                                                                logisticPromoShipping = shippingCourierUiModel
+                                                                break
+                                                            }
+                                                        }
+                                                    }
+                                                    if (shouldEnableServicePicker) {
+                                                        shippingDurationViewModel.isSelected = false
+                                                    }
                                                 }
+                                                shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
+                                                val needPinpoint = logisticPromoShipping?.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                                                _orderShipment = shipping.copy(shippingRecommendationData = shippingRecommendationData, isServicePickerEnable = shouldEnableServicePicker,
+                                                        insuranceData = logisticPromoShipping?.productData?.insurance, serviceErrorMessage = if (needPinpoint) NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping?.productData?.error?.errorMessage,
+                                                        needPinpoint = needPinpoint, logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping)
+                                                orderShipment.value = _orderShipment
+                                                globalEvent.value = OccGlobalEvent.Normal
+                                                updatePromoState(response.promoUiModel)
+                                                return
                                             }
                                         }
                                     }
@@ -1342,7 +1346,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun calculateTotal() {
         val quantity = orderProduct.quantity
-        val payment = _orderPreference.preference.payment
+        var payment = _orderPayment
         if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
             orderTotal.value = orderTotal.value.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
             return
@@ -1378,14 +1382,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
         }
-        val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
-        var fee = payment.fee.toDouble()
-        var subtotal = totalProductPrice + finalShippingPrice + insurancePrice - productDiscount
-        if (payment.creditCard.availableTerms.isNotEmpty()) {
-            calculateInstallmentDetails(subtotal, payment.creditCard.availableTerms)
-            fee = payment.creditCard.getSelectedAvailableTerms().fee
-        }
+//        val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
+        var subtotal = totalProductPrice + totalShippingPrice + insurancePrice
+//        if (payment.creditCard?.availableTerms?.isNotEmpty() == true) {
+        payment = calculateInstallmentDetails(payment, subtotal, if (orderShop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
+        val fee = payment.getRealFee()
+//        }
         subtotal += fee
+        subtotal -= productDiscount
+        subtotal -= shippingDiscount
         val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
         var currentState = orderTotal.value.buttonState
         if (currentState == ButtonBayarState.NORMAL && (!shipping.isValid() || !shipping.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
@@ -1395,69 +1400,78 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
+            _orderPayment = payment.copy(isError = true)
+            orderPayment.value = _orderPayment
         } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
+            _orderPayment = payment.copy(isError = true)
+            orderPayment.value = _orderPayment
         } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
                     isButtonChoosePayment = true, buttonState = currentState)
+            _orderPayment = payment.copy(isError = true)
+            orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
         } else {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+            _orderPayment = payment.copy(isError = false)
+            orderPayment.value = _orderPayment
         }
     }
 
-    private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Long, mdrSubsidize: Float): Double {
-        return subTotal * (mdr / 100) - subsidize * (mdrSubsidize / 100)
+    private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Double, mdrSubsidize: Float): Double {
+        return ceil(subTotal * (mdr / 100) - subsidize * (mdrSubsidize / 100))
     }
 
-    private fun calculateInstallmentDetails(subTotal: Double, installments: List<OrderPaymentInstallmentTerm>): List<OrderPaymentInstallmentTerm> {
+    private fun calculateInstallmentDetails(payment: OrderPayment, subTotal: Double, subsidize: Double, discount: Int): OrderPayment {
+        if (payment.creditCard?.selectedTerm == null) {
+            return payment
+        }
+        val installments = payment.creditCard.availableTerms
         var shouldChooseNextInstallment = false
+        var selectedInstallmentTerm: OrderPaymentInstallmentTerm? = null
         for (i in installments.lastIndex downTo 0) {
             val installment = installments[i]
             if (shouldChooseNextInstallment) {
                 installment.isSelected = true
             }
-            if (installment.isSelected && installment.minAmount > subTotal && i > 0) {
+            installment.isEnable = installment.minAmount <= subTotal
+            if (installment.isSelected && !installment.isEnable) {
                 installment.isSelected = false
                 shouldChooseNextInstallment = true
             }
-            installment.fee = calculateMdrFee(subTotal, installment.mdr, installment.minAmount, installment.mdrSubsidize)
-            installment.monthlyAmount = ceil((subTotal + installment.fee) / installment.term)
-        }
-//        _orderPreference = _orderPreference?.copy(preference = _orderPreference?.preference?.updateInstallment(installments)!!)
-//        orderPreference.value = OccState.Success(_orderPreference!!)
-        return installments
-    }
-
-    fun generateInstallmentDetails(): List<OrderPaymentInstallmentTerm> {
-        calculateTotal()
-        val orderCost = orderTotal.value.orderCost
-        val subTotal = orderCost.totalPrice - orderCost.paymentFee
-        val monthlyAmount = ceil(subTotal / 3)
-        val installmentDetails: ArrayList<OrderPaymentInstallmentTerm> = ArrayList()
-        for (i in 0..5) {
-            if (subTotal > 0) {
-                installmentDetails.add(OrderPaymentInstallmentTerm())
+            if (shouldChooseNextInstallment && i == 0) {
+                installment.isSelected = true
+            }
+            installment.fee = calculateMdrFee(subTotal, installment.mdr, subsidize, installment.mdrSubsidize)
+            val total = subTotal + installment.fee - discount
+            installment.monthlyAmount = if (installment.term > 0) ceil(total / installment.term) else total
+            if (installment.isSelected) {
+                selectedInstallmentTerm = installment
             }
         }
-        return installmentDetails
+        return payment.copy(creditCard = payment.creditCard.copy(availableTerms = installments, selectedTerm = selectedInstallmentTerm))
     }
 
-    fun updateInstallment(term: String) {
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         var param = generateUpdateCartParam()
-        if (param != null) {
-            val parse = JsonParser().parse(param.profile.metadata)
-            parse.asJsonObject.getAsJsonObject("express_checkout_param").addProperty("installment_term", term)
-            param = param.copy(profile = param.profile.copy(metadata = parse.toString()))
-            updateCartOccUseCase.execute(param, {
-                // do nothing
-            }, {
-                // do nothing
-            })
-            // todo: loop and update selected installment
+        val creditCard = _orderPayment.creditCard
+        if (param != null && creditCard != null) {
+//            val parse = JsonParser().parse(param.profile.metadata)
+//            parse.asJsonObject.getAsJsonObject("express_checkout_param").addProperty("installment_term", selectedInstallmentTerm.term.toString())
+//            param = param.copy(profile = param.profile.copy(metadata = parse.toString()))
+//            updateCartOccUseCase.execute(param, {
+//                // do nothing
+//            }, {
+//                // do nothing
+//            })
+            val availableTerms = creditCard.availableTerms
+            availableTerms.forEach { it.isSelected = it.term == selectedInstallmentTerm.term }
+            _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
+            calculateTotal()
         }
     }
 

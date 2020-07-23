@@ -22,7 +22,7 @@ data class Payment(
         @SerializedName("maximum_amount")
         val maximumAmount: Long = 0,
         @SerializedName("fee")
-        val fee: Long = 0,
+        val fee: Double = 0.0,
         @SerializedName("wallet_amount")
         val walletAmount: Long = 0,
         @SerializedName("metadata")

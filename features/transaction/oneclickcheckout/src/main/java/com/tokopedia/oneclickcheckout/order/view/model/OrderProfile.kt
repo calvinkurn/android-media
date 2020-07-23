@@ -49,7 +49,7 @@ data class OrderProfilePayment(
         val url: String = "",
         val minimumAmount: Long = 0,
         val maximumAmount: Long = 0,
-        val fee: Long = 0,
+        val fee: Double = 0.0,
         val walletAmount: Long = 0,
         val metadata: String = "",
         val mdr: Float = 0f,
@@ -73,7 +73,8 @@ data class OrderPaymentCreditCard(
         val bankCode: String = "",
         val cardType: String = "",
         val isExpired: Boolean = false,
-        val tncInfo: String = ""
+        val tncInfo: String = "",
+        val selectedTerm: OrderPaymentInstallmentTerm? = null
 ) {
     fun getSelectedAvailableTerms(): OrderPaymentInstallmentTerm {
         return availableTerms.first { it.isSelected }
@@ -86,6 +87,7 @@ data class OrderPaymentInstallmentTerm(
         val mdrSubsidize: Float = 0f,
         val minAmount: Long = 0,
         var isSelected: Boolean = false,
+        var isEnable: Boolean = false,
         var fee: Double = 0.0,
         var monthlyAmount: Double = 0.0
 )

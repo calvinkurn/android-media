@@ -18,7 +18,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:text="Cicilan tidak tersedia untuk jenis kartu ini"
+            android:text="@string/lbl_installment_not_available"
             android:textColor="@color/Neutral_N700_96"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
@@ -154,9 +154,10 @@
             <!--                app:typographyWeight="reguler" />-->
 
             <com.tokopedia.abstraction.base.view.webview.TkpdWebView
-                android:id="@+id/web_view_terms_and_condition"
+                android:id="@+id/web_view_terms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_180"
                 android:layout_marginTop="@dimen/dp_20"
                 app:layout_constraintEnd_toEndOf="@+id/iv_expand_terms"
                 app:layout_constraintStart_toStartOf="@+id/iv_installment_terms"

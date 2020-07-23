@@ -310,6 +310,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
+        viewModel.orderPayment.observe(viewLifecycleOwner, Observer {
+            orderPreferenceCard.setPayment(it)
+        })
+
         viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
             setupPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
@@ -753,11 +757,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun setupPaymentError(paymentErrorMessage: String?) {
         if (paymentErrorMessage.isNullOrEmpty()) {
             tickerPaymentError?.gone()
-            orderPreferenceCard.setPaymentError(false)
         } else {
             tickerPaymentError?.setTextDescription(paymentErrorMessage)
             tickerPaymentError?.visible()
-            orderPreferenceCard.setPaymentError(true)
         }
     }
 
@@ -871,8 +873,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onInstallmentDetailClicked() {
-            // generate installment options in VM
             orderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+        }
+
+        override fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
+            viewModel.chooseInstallment(selectedInstallmentTerm)
         }
     }
 

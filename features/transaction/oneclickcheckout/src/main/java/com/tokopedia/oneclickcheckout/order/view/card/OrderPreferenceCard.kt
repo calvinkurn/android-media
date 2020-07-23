@@ -21,6 +21,8 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -33,6 +35,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
     private lateinit var preference: OrderPreference
     private var shipment: OrderShipment? = null
+    private var payment: OrderPayment? = null
 
     private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_card_header) }
     private val lblMainPreference by lazy { view.findViewById<Label>(R.id.lbl_main_preference) }
@@ -69,6 +72,13 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (::preference.isInitialized) {
             this.shipment = shipment
             showShipping()
+        }
+    }
+
+    fun setPayment(payment: OrderPayment) {
+        if (::preference.isInitialized) {
+            this.payment = payment
+            showPayment()
         }
     }
 
@@ -229,8 +239,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showPayment() {
         val paymentModel = preference.preference.payment
+
         ivPayment?.let {
             ImageHandler.loadImageFitCenter(view.context, it, paymentModel.image)
         }
@@ -243,50 +255,82 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             tvPaymentDetail?.gone()
         }
 
-        //show error message if any
-        if (paymentModel.errorMessage.message.isNotBlank()) {
-            tvPaymentErrorMessage.text = paymentModel.errorMessage.message
-            tvPaymentErrorAction.text = paymentModel.errorMessage.button.text
-            tvPaymentErrorMessage.visible()
-            tvPaymentErrorAction.visible()
-            tvInstallmentType.gone()
-            tvInstallmentDetail.gone()
-        } else {
-            tvPaymentErrorMessage.gone()
-            tvPaymentErrorAction.gone()
-
-            //show installment if credit card has available terms
-            if (paymentModel.creditCard.availableTerms.isNotEmpty()) {
-                tvInstallmentType.visible()
-                tvInstallmentDetail.visible()
-                tvInstallmentDetail?.text = "6 Bulan x Rp100.000"
-                tvInstallmentDetail.setOnClickListener {
-                    listener.onInstallmentDetailClicked()
-                }
+        val payment = payment
+        if (payment != null) {
+            if (payment.isEnable && !payment.isError) {
+                setPaymentActiveAlpha()
             } else {
-                tvInstallmentType.gone()
-                tvInstallmentDetail.gone()
+                setPaymentErrorAlpha()
+            }
+
+            //show error message if any
+            if (payment.errorMessage?.message?.isNotBlank() == true) {
+                tvPaymentErrorMessage?.text = payment.errorMessage.message
+                tvPaymentErrorAction?.text = payment.errorMessage.button.text
+                tvPaymentErrorMessage?.visible()
+                tvPaymentErrorAction?.visible()
+                tvInstallmentType?.gone()
+                tvInstallmentDetail?.gone()
+                tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvPaymentDetail?.setOnClickListener {
+                    //do nothing
+                }
+                setPaymentErrorAlpha()
+            } else {
+                tvPaymentErrorMessage?.gone()
+                tvPaymentErrorAction?.gone()
+                setPaymentActiveAlpha()
+
+                if (payment.creditCard?.totalCards ?: 0 > 1) {
+                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
+                    tvPaymentDetail?.setOnClickListener {
+                        // todo: go to cc choose page
+                    }
+                } else {
+                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                    tvPaymentDetail?.setOnClickListener {
+                        //do nothing
+                    }
+                }
+
+                //show installment if credit card has selected term
+                val selectedTerm = payment.creditCard?.selectedTerm
+                if (selectedTerm != null) {
+                    tvInstallmentType?.visible()
+                    tvInstallmentDetail?.visible()
+                    if (selectedTerm.term > 0) {
+                        tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
+                    } else {
+                        tvInstallmentDetail?.text = "Bayar Penuh"
+                    }
+                    tvInstallmentDetail?.setOnClickListener {
+                        listener.onInstallmentDetailClicked()
+                    }
+                } else {
+                    tvInstallmentType?.gone()
+                    tvInstallmentDetail?.gone()
+                }
             }
         }
     }
 
-    fun setPaymentError(isError: Boolean) {
-        if (isError) {
-            ivPayment?.alpha = 0.5f
-            tvPaymentName?.alpha = 0.5f
-            tvPaymentDetail?.alpha = 0.5f
-            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
-            if (color != null) {
-                tvPaymentDetail?.setTextColor(color)
-            }
-        } else {
-            ivPayment?.alpha = 1f
-            tvPaymentName?.alpha = 1f
-            tvPaymentDetail?.alpha = 1f
-            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
-            if (color != null) {
-                tvPaymentDetail?.setTextColor(color)
-            }
+    private fun setPaymentErrorAlpha() {
+        ivPayment?.alpha = 0.5f
+        tvPaymentName?.alpha = 0.5f
+        tvPaymentDetail?.alpha = 0.5f
+        val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
+        if (color != null) {
+            tvPaymentDetail?.setTextColor(color)
+        }
+    }
+
+    private fun setPaymentActiveAlpha() {
+        ivPayment?.alpha = 1f
+        tvPaymentName?.alpha = 1f
+        tvPaymentDetail?.alpha = 1f
+        val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+        if (color != null) {
+            tvPaymentDetail?.setTextColor(color)
         }
     }
 
@@ -374,7 +418,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
-        InstallmentDetailBottomSheet().show(fragment, emptyList())
+        val availableTerms = payment?.creditCard?.availableTerms
+        if (availableTerms != null && availableTerms.isNotEmpty()) {
+            InstallmentDetailBottomSheet().show(fragment, availableTerms, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+                    listener.onInstallmentDetailChange(installment)
+                }
+            })
+        }
     }
 
     companion object {
@@ -398,5 +449,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onPreferenceEditClicked(preference: OrderPreference)
 
         fun onInstallmentDetailClicked()
+
+        fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
     }
 }

@@ -104,6 +104,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/lbl_installment_type"
         android:textColor="@color/Neutral_N700_68"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +112,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Jenis Pembayaran"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -119,8 +119,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:ellipsize="end"
-        android:lines="1"
         android:textColor="@color/Neutral_N700_96"
         android:visibility="visible"
         app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"

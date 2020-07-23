@@ -200,8 +200,16 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPaymentCreditCard(creditCard: PaymentCreditCard): OrderPaymentCreditCard {
-        return OrderPaymentCreditCard(creditCard.totalCards, mapPaymentInstallmentTerm(creditCard.availableTerms), creditCard.bankCode, creditCard.cardType,
-                creditCard.isExpired, creditCard.tncInfo)
+//        val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
+//        return OrderPaymentCreditCard(creditCard.totalCards, availableTerms, creditCard.bankCode, creditCard.cardType,
+//                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected })
+        val availableTerms = mapPaymentInstallmentTerm(listOf(
+                InstallmentTerm(0, 1.5f, 0.5f, 10000, true),
+                InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
+                InstallmentTerm(6, 1.5f, 0.5f, 200000, false)
+        ))
+        return OrderPaymentCreditCard(2, availableTerms, "bankCode", "cardType",
+                false, "tncInfo", availableTerms.firstOrNull { it.isSelected })
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
