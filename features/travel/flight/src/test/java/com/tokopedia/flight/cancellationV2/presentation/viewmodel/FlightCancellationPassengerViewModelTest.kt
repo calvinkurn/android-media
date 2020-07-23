@@ -144,12 +144,74 @@ class FlightCancellationPassengerViewModelTest {
     }
 
     @Test
+    fun checkPassenger_wrongPosition_shouldNotNotifyRelationChecked() {
+        // given
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } returns DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
+        viewModel.getCancellablePassenger("1234567890", DUMMY_CANCELLATION_JOURNEY)
+        val position = -1
+
+        // when
+        val shouldNotify = viewModel.checkPassenger(DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[0].passengerModelList[0], position)
+
+        // then
+        shouldNotify shouldBe false
+        viewModel.selectedCancellationPassengerList[1].passengerModelList.size shouldBe 0
+    }
+
+    @Test
+    fun checkPassenger_checkSamePassengerMultipleTime() {
+        // given
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } returns DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
+        viewModel.getCancellablePassenger("1234567890", DUMMY_CANCELLATION_JOURNEY)
+        val position = 0
+        viewModel.checkPassenger(DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[1].passengerModelList[0], position)
+
+        // when
+        viewModel.checkPassenger(DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[1].passengerModelList[0], position)
+
+        // then
+        viewModel.selectedCancellationPassengerList[position].passengerModelList.size shouldBe 1
+    }
+
+    @Test
     fun uncheckPassenger_withRelations() {
         // given
         coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } returns DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
         viewModel.getCancellablePassenger("1234567890", DUMMY_CANCELLATION_JOURNEY)
         val position = 1
         val selectedPassenger = DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[0].passengerModelList[0]
+        viewModel.checkPassenger(selectedPassenger, position)
+
+        // when
+        viewModel.uncheckPassenger(selectedPassenger, position)
+
+        // then
+        viewModel.selectedCancellationPassengerList[position].passengerModelList.size shouldBe 0
+    }
+
+    @Test
+    fun uncheckPassenger_wrongPosition_shouldDoNothing() {
+        // given
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } returns DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
+        viewModel.getCancellablePassenger("1234567890", DUMMY_CANCELLATION_JOURNEY)
+        val position = -1
+        val selectedPassenger = DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[0].passengerModelList[0]
+        viewModel.checkPassenger(selectedPassenger, 1)
+
+        // when
+        viewModel.uncheckPassenger(selectedPassenger, position)
+
+        // then
+        viewModel.selectedCancellationPassengerList[1].passengerModelList.size shouldBe 2
+    }
+
+    @Test
+    fun uncheckPassenger_emptyRelation() {
+        // given
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } returns DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
+        viewModel.getCancellablePassenger("1234567890", DUMMY_CANCELLATION_JOURNEY)
+        val position = 0
+        val selectedPassenger = DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[1].passengerModelList[0]
         viewModel.checkPassenger(selectedPassenger, position)
 
         // when

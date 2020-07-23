@@ -96,7 +96,7 @@ val DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION = arrayListOf<FlightCan
                                 "Tuan",
                                 "Penumpang",
                                 "Testing",
-                                "12345-54321",
+                                "",
                                 arrayListOf(),
                                 0,
                                 ""
