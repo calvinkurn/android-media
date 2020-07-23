@@ -720,13 +720,32 @@ public class ProductListFragment
     @Override
     public void showNetworkError(final int startRow) {
         if (adapter.isListEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), this::reloadData);
+            showNetworkErrorOnEmptyList();
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
-                presenter.setStartFrom(startRow);
-                loadMoreProduct(startRow);
-            }).showRetrySnackbar();
+            showNetworkErrorOnLoadMore(startRow);
         }
+    }
+
+    private void showNetworkErrorOnEmptyList() {
+        hideViewOnError();
+
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> {
+            refreshLayout.setVisibility(View.VISIBLE);
+            reloadData();
+        });
+    }
+
+    private void hideViewOnError() {
+        searchSortFilter.setVisibility(View.GONE);
+        shimmeringView.setVisibility(View.GONE);
+        refreshLayout.setVisibility(View.GONE);
+    }
+
+    private void showNetworkErrorOnLoadMore(int startRow) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
+            presenter.setStartFrom(startRow);
+            loadMoreProduct(startRow);
+        }).showRetrySnackbar();
     }
 
     private void generateLoadMoreParameter(int startRow) {
