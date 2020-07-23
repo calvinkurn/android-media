@@ -12,10 +12,14 @@ import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
+import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import kotlinx.android.synthetic.main.item_review_history.view.*
 import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
-class ReviewHistoryViewHolder(view: View, private val reviewAttachedImagesClickedListener: ReviewAttachedImagesClickedListener) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
+class ReviewHistoryViewHolder(view: View,
+                              private val reviewAttachedImagesClickedListener: ReviewAttachedImagesClickedListener,
+                              private val reviewHistoryItemListener: ReviewHistoryItemListener
+) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_review_history
@@ -29,7 +33,7 @@ class ReviewHistoryViewHolder(view: View, private val reviewAttachedImagesClicke
             }
             with(review) {
                 showDescription(reviewText)
-                showAttachedImages(attachments, product.productName)
+                showAttachedImages(attachments, product.productName, product.productId, feedbackId)
                 setupStarRatings(rating)
             }
             showDate(timestamp.createTimeFormatted)
@@ -52,11 +56,14 @@ class ReviewHistoryViewHolder(view: View, private val reviewAttachedImagesClicke
         }
     }
 
-    private fun showAttachedImages(attachedImages: List<String>, productName: String) {
+    private fun showAttachedImages(attachedImages: List<String>, productName: String, productId: Int, feedbackId: Int) {
         if(attachedImages.isEmpty()) {
             return
         }
         itemView.reviewHistoryAttachedImages.apply {
+            setOnClickListener {
+                reviewHistoryItemListener.trackAttachedImageClicked(productId, feedbackId)
+            }
             setImages(attachedImages, productName, reviewAttachedImagesClickedListener)
             show()
         }

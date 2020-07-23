@@ -62,4 +62,7 @@ class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : R
 
     override fun getItemCount(): Int = imageReviewData.size
 
+    fun isEmpty(): Boolean {
+        return imageReviewData.filterIsInstance<ImageReviewViewModel>().isEmpty()
+    }
 }

@@ -10,7 +10,7 @@ object ReviewDetailTracking {
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_BACK_BUTTON_ACTION,
                         userId,
-                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId.toString(), feedbackId)
+                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )
         )
     }
@@ -20,7 +20,7 @@ object ReviewDetailTracking {
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_SHARE_BUTTON_ACTION,
                         userId,
-                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId.toString(), feedbackId)
+                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )
         )
     }
@@ -30,7 +30,7 @@ object ReviewDetailTracking {
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_EDIT_BUTTON_ACTION,
                         userId,
-                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId.toString(), feedbackId)
+                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )
         )
     }
@@ -40,7 +40,7 @@ object ReviewDetailTracking {
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_PRODUCT_CARD_ACTION,
                         userId,
-                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId.toString(), feedbackId)
+                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )
         )
     }
@@ -50,7 +50,7 @@ object ReviewDetailTracking {
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_REVIEW_IMAGE_GALLERY,
                         userId,
-                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId.toString(), feedbackId)
+                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )
         )
     }
@@ -60,7 +60,7 @@ object ReviewDetailTracking {
                 generateTrackingMap(
                         ReviewDetailTrackingConstants.CLICK_SMILEY,
                         userId,
-                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId.toString(), feedbackId)
+                        String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )
         )
     }

@@ -13,11 +13,13 @@ import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponse
 import com.tokopedia.review.feature.inbox.history.domain.usecase.ProductrevFeedbackHistoryUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewHistoryViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
+        private val userSession: UserSessionInterface,
         private val productrevFeedbackHistoryUseCase: ProductrevFeedbackHistoryUseCase
 ) : BaseViewModel(dispatchers.io()) {
 
@@ -59,6 +61,10 @@ class ReviewHistoryViewModel @Inject constructor(
         searchQuery.value = keyword
         searchQuery.notifyObserver()
         resetPage()
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
     }
 
     private fun resetPage() {

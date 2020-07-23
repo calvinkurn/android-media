@@ -24,10 +24,12 @@ import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTracking
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
+import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWatcher
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
@@ -38,7 +40,7 @@ import kotlinx.android.synthetic.main.partial_review_empty.view.*
 import javax.inject.Inject
 
 class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(),
-        HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickedListener, SearchListener {
+        HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickedListener, SearchListener, ReviewHistoryItemListener {
 
     companion object {
         fun createNewInstance() : ReviewHistoryFragment {
@@ -74,7 +76,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
-        return ReviewHistoryAdapterTypeFactory(this)
+        return ReviewHistoryAdapterTypeFactory(this, this)
     }
 
     override fun getScreenName(): String {
@@ -87,6 +89,9 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
 
     override fun onItemClicked(t: ReviewHistoryUiModel?) {
         t?.let {
+            with(it.productrevFeedbackHistory) {
+                ReviewHistoryTracking.eventClickReviewCard(viewModel.getUserId(), product.productId, review.feedbackId)
+            }
             goToReviewDetails(it.productrevFeedbackHistory.review.feedbackId)
         }
     }
@@ -113,7 +118,12 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     }
 
     override fun onSearchTextChanged(text: String) {
+        adapter.clearAllElements()
         viewModel.updateKeyWord(text)
+    }
+
+    override fun trackAttachedImageClicked(productId: Int, feedbackId: Int) {
+        ReviewHistoryTracking.eventClickImageGallery(viewModel.getUserId(), productId, feedbackId)
     }
 
     private fun initSearchBar() {

@@ -259,7 +259,6 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
         }
 
         rv_img_review?.adapter = imageAdapter
-        imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
 
         createReviewSubmitButton.setOnClickListener {
             submitReview()
@@ -293,6 +292,10 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     override fun onRemoveImageClick(item: BaseImageReviewViewModel) {
         imageAdapter.removeItem(item)
+        if(imageAdapter.isEmpty()) {
+            rv_img_review.hide()
+            createReviewAddPhotoEmpty.show()
+        }
     }
 
     override fun onExpandButtonClicked(text: String) {
@@ -365,7 +368,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
         productRevIncentiveOvo = data
         data.productrevIncentiveOvo?.let {
-            it.ticker?.let {
+            it.ticker.let {
                 ovoPointsTicker.apply {
                     visibility = View.VISIBLE
                     tickerTitle = it.title

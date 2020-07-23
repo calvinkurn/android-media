@@ -12,13 +12,9 @@ class ImageReviewViewHolder(val view: View, private val imageClickListener: Imag
         view.setOnClickListener {
             imageClickListener?.onAddImageClick()
         }
-        if (adapterPosition == 3 && element.shouldDisplayOverlay) {
-            view.review_container_overlay.visibility = View.VISIBLE
-            view.txt_other_img_overlay.text = view.context.getString(R.string.review_overlay_count, element.otherImageCount)
-        } else {
-            view.review_container_overlay.visibility = View.GONE
+        view.createReviewRemoveImage.setOnClickListener {
+            imageClickListener?.onRemoveImageClick(element)
         }
-
         ImageHandler.loadImageRounded(view.context, view.image_review, element.imageUrl, 10F)
     }
 

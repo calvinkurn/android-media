@@ -52,12 +52,14 @@
         android:id="@+id/reviewHistoryEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone" />
 
     <include layout="@layout/partial_review_history_shimmering"
         android:id="@+id/reviewHistoryLoading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone" />
     
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
