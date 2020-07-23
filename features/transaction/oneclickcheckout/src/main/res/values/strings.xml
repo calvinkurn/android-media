@@ -88,4 +88,5 @@
     <string name="lbl_shipping">Pengiriman</string>
     <string name="lbl_shipping_with_name">Pengiriman %1$s</string>
     <string name="lbl_shipping_duration_prefix">Durasi %1$s</string>
+    <string name="lbl_no_exact_shipping_duration">Durasi tergantung kurir</string>
 </resources>
