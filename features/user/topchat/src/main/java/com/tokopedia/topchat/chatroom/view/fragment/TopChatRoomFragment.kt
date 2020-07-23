@@ -501,10 +501,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         adapter.addWidgetHeader(widgets)
     }
 
-    private fun checkShowLoading(canLoadMore: Boolean) {
-        if (canLoadMore) super.showLoading()
-    }
-
     private fun onError(): (Throwable) -> Unit {
         return {
             hideLoading()
