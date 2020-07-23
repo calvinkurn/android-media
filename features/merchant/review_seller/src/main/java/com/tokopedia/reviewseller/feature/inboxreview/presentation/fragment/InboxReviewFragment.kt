@@ -337,10 +337,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
-            endlessRecyclerViewScrollListener?.resetState()
             if(data.feedbackInboxList.isNotEmpty()) {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
-                updateScrollListenerState(true)
+                endlessRecyclerViewScrollListener?.resetState()
+                updateStateScrollListener()
             } else {
                 sortFilterInboxReview?.hide()
                 isLoadingInitialData = true
