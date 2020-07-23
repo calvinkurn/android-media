@@ -9,6 +9,7 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -50,16 +51,6 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
             } else if (it.isCard == 1) {
                 if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION) {
 
-                    val isPopular = curatedProductCategoryDataViews.size == 0
-
-                    val productCategoryDataView = if (isPopular) {
-                        ProductCategoryDataView(getString(R.string.deals_homepage_popular_tag),
-                                com.tokopedia.unifyprinciples.R.color.Yellow_Y400)
-                    } else {
-                        ProductCategoryDataView(getString(R.string.deals_homepage_new_deals_tag),
-                                com.tokopedia.unifyprinciples.R.color.Blue_B500)
-                    }
-
                     val items = it.productDetails.subList(0,
                             min(MAX_ITEM_ON_CURATED_SECTION_ITEMS, it.productDetails.size)).map { product ->
                         ProductCardDataView(
@@ -73,7 +64,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                                 categoryName =  product.category.firstOrNull()?.title ?: "",
                                 shop = product.brand.title,
                                 appUrl = product.appUrl,
-                                productCategory = productCategoryDataView,
+                                productCategory = getLabelColor(context, product.displayTags),
                                 brand = product.brand.title
                         )
                     }

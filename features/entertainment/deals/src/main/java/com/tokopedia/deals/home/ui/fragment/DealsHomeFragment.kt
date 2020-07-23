@@ -3,6 +3,7 @@ package com.tokopedia.deals.home.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
@@ -242,35 +243,35 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onClickSearchBar() {
-        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
         analytics.eventClickSearchHomePage()
+        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
     override fun afterSearchBarTextChanged(text: String) {/* do nothing */ }
 
     /* BANNER SECTION ACTION */
     override fun onBannerClicked(banner: List<BannersDataView.BannerDataView>, position: Int) {
-        RouteManager.route(context, banner[position].bannerUrl)
         analytics.eventClickHomePageBanner(bannerId = banner[position].bannerId, bannerPosition = position, promotions = banner[position])
+        onClickBanner(banner[position].bannerUrl)
     }
 
     override fun onBannerSeeAllClick(bannerSeeAllUrl: String) {
-        RouteManager.route(context, bannerSeeAllUrl)
         analytics.eventClickAllBanner()
+        RouteManager.route(context, bannerSeeAllUrl)
     }
 
     /* CATEGORY SECTION ACTION */
     override fun onDealsCategoryClicked(dealsCategory: DealsCategoryDataView, position: Int) {
+        analytics.eventClickCategoryIcon(dealsCategory.title, position)
         val intent = RouteManager.getIntent(requireContext(), dealsCategory.appUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
-        analytics.eventClickCategoryIcon(dealsCategory.title, position)
     }
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
+        analytics.eventClickCategorySectionOne()
         val categoriesBottomSheet = DealsCategoryBottomSheet(this)
         categoriesBottomSheet.showDealsCategories(categories)
         categoriesBottomSheet.show(requireFragmentManager(), "")
-        analytics.eventClickCategorySectionOne()
     }
 
     /* BRAND SECTION ACTION */
@@ -298,9 +299,9 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
+        analytics.clickAllCuratedProduct()
         val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
-        analytics.clickAllCuratedProduct()
     }
 
     /* NEAREST PLACE SECTION ACTION */
@@ -310,9 +311,9 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     /* FAVOURITE CATEGORY SECTION ACTION */
     override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: FavouritePlacesDataView.Place, position: Int) {
+        analytics.eventClickCuratedSection(favoritePlacesDataView, position)
         val intent = RouteManager.getIntent(context, url)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
-        analytics.eventClickCuratedSection(favoritePlacesDataView, position)
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
@@ -336,6 +337,24 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun showTitle(brand: DealsBrandsDataView) {
         /* do nothing */
+    }
+
+    private fun onClickBanner(bannerlink:String) {
+        val deeplink = "tokopedia://"
+        val fullPathWWW = "https://www.tokopedia.com/"
+        val domainWithWWW = "www.tokopedia.com/"
+        val domainWithoutWWW = "tokopedia.com/"
+        var applink = ""
+        if (!TextUtils.isEmpty(bannerlink)) {
+            applink = if (bannerlink.contains(domainWithWWW)) {
+                bannerlink.replace(fullPathWWW, deeplink)
+            } else if (bannerlink.contains(domainWithoutWWW)) {
+                bannerlink.replace(domainWithoutWWW, deeplink)
+            } else {
+                bannerlink
+            }
+            RouteManager.route(context, applink)
+        }
     }
 
     companion object {
