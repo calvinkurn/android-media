@@ -130,7 +130,7 @@ public interface ApplinkConst {
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
-    String PROMO_LIST = "tokopedia://promoNative";
+    String PROMO_LIST = "tokopedia://promoNative?menuID=4&categoryID=371";
     String EXPLORE = "tokopedia://jump/{section}";
 
     String DIGITAL_ORDER = "tokopedia://digital/order";
