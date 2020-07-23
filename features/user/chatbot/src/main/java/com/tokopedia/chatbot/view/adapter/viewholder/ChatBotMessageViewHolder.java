@@ -58,6 +58,11 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
     }
 
     @Override
+    protected boolean alwaysShowTime() {
+        return true;
+    }
+
+    @Override
     protected void setChatRight(View chatBalloon) {
         super.setChatRight(chatBalloon);
         message.setMaxLines(Integer.MAX_VALUE);

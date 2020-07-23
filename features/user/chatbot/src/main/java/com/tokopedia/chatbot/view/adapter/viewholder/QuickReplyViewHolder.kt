@@ -38,6 +38,8 @@ class QuickReplyViewHolder(itemView: View,
         setClickableUrl()
     }
 
+    override fun alwaysShowTime(): Boolean = true
+
     private fun setMessage(element: QuickReplyListViewModel) {
         if (element.message.isNotEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
@@ -66,5 +68,9 @@ class QuickReplyViewHolder(itemView: View,
 
     companion object {
         val LAYOUT = R.layout.quick_reply_chat_layout
+    }
+
+    override fun getHourId(): Int {
+        return R.id.hour
     }
 }

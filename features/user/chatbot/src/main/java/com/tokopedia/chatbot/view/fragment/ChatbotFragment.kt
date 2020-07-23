@@ -563,6 +563,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+        getViewState().hideActionBubble(model)
         chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
         presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
     }
