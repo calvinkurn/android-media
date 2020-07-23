@@ -26,8 +26,6 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
     renderFreeOngkir(productCardModel)
-    renderStockPercentage(productCardModel)
-    renderStockLabel(productCardModel)
     renderTextShipping(productCardModel)
 }
 
@@ -160,14 +158,4 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
         textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
 
-private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-    progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        it.progress = productCardModel.stockBarPercentage
-    }
-}
 
-private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-    textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        it.text = productCardModel.stockBarLabel
-    }
-}

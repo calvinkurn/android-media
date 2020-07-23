@@ -14,10 +14,10 @@
         android:textStyle="bold"
         android:text="@string/notif_transaction_for_you"
         android:textColor="@color/chorcoal_black"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/notif_dp_16"
+        android:paddingStart="@dimen/notif_dp_16"
+        android:paddingEnd="@dimen/notif_dp_16"
+        android:paddingBottom="@dimen/notif_dp_16"
         android:textSize="@dimen/sp_16"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -27,9 +27,9 @@
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingStart="@dimen/notif_dp_16"
+        android:paddingEnd="@dimen/notif_dp_16"
+        android:paddingBottom="@dimen/notif_dp_16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_filter_item_section" />
 

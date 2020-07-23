@@ -294,7 +294,6 @@ dependencies {
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.variantCommon)
     implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.thankYouNative)
     implementation project(rootProject.ext.features.commonPayment)
@@ -361,6 +360,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
+    implementation project(rootProject.ext.libraries.mediauploader)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -419,7 +419,6 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
     }
-    implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

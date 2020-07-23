@@ -32,7 +32,7 @@
         android:id="@+id/btnFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_18"
+        android:layout_marginBottom="@dimen/notif_dp_18"
         android:animateLayoutChanges="true"
         app:fbType="group"
         android:layout_alignParentBottom="true"
