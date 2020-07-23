@@ -427,6 +427,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private fun resetAllFiltersUnselected() {
         val positionRatingFilter = 0
         sortFilterInboxReview?.hide()
+        isLoadingInitialData = true
         inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
         itemSortFilterList[positionRatingFilter].apply {
@@ -452,8 +453,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         isFilter = true
         val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
         sortFilterInboxReview?.hide()
-        inboxReviewAdapter.clearAllElements()
-        inboxReviewAdapter.showLoading()
         updatedFilterRatingInboxReview(filterRatingList)
         selectedRatingsFilter(countSelected)
         endlessRecyclerViewScrollListener?.resetState()
@@ -497,6 +496,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
 
         sortFilterInboxReview?.hide()
+        isLoadingInitialData = true
         inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
 
@@ -540,10 +540,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
 
-        inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
-        inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
         isLoadingInitialData = true
         inboxReviewAdapter.clearAllElements()
+        inboxReviewAdapter.showLoading()
+
+        inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
+        inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
     }
 
     private fun isUnAnsweredHasNextFalse(data: InboxReviewUiModel): Boolean {
