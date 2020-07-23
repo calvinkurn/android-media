@@ -5,13 +5,17 @@ import com.tokopedia.power_merchant.subscribe.verification.verifyErrorEquals
 import com.tokopedia.power_merchant.subscribe.verification.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import org.junit.Test
 
 class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
 
     @Test
-    fun `when activate pm success should set result success`() {
-        val powerMerchantStatus = PowerMerchantStatus()
+    fun `when getPmStatusInfo success should set result success`() {
+        val kycUserProjectInfoPojo = KycUserProjectInfoPojo().apply {
+            kycProjectInfo = KycProjectInfo()
+        }
+        val powerMerchantStatus = PowerMerchantStatus(kycUserProjectInfoPojo = kycUserProjectInfoPojo)
 
         onGetPowerMerchantStatusUseCase_thenReturn(powerMerchantStatus)
 
@@ -26,7 +30,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
     }
 
     @Test
-    fun `when activate pm returns error should set result fail`() {
+    fun `when getPmStatusInfo returns error should set result fail`() {
         val error = NullPointerException()
 
         onGetPowerMerchantStatusUseCase_thenReturn(error)
