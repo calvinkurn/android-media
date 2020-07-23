@@ -9,7 +9,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
-import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
@@ -24,6 +23,8 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRec
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.smart_recycler_helper.SmartVisitable
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.datamodel.WishlistActionData
@@ -31,12 +32,13 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 
@@ -51,6 +53,7 @@ import kotlin.coroutines.CoroutineContext
  * @param bulkRemoveWishlistUseCase use case helper for bulk remove wishlist
  * @param getRecommendationUseCase use case helper for get recommendation
  * @param getSingleRecommendationUseCase use case helper for get single recommendation
+ * @param topAdsImageViewUseCase use case helper for get topads banner
  */
 @SuppressLint("SyntheticAccessor")
 open class WishlistViewModel @Inject constructor(
@@ -63,7 +66,7 @@ open class WishlistViewModel @Inject constructor(
         private val bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
-        private val sendTopAdsUseCase: SendTopAdsUseCase
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase
 ) : ViewModel(), CoroutineScope{
 
     private val masterJob = SupervisorJob()
@@ -76,7 +79,7 @@ open class WishlistViewModel @Inject constructor(
     private var tempSelectedParentPositionInPDP: Int? = null
 
     private val listVisitableMarked : HashMap<Int, WishlistDataModel> = hashMapOf()
-    private val listRecommendationCarouselOnMarked : HashMap<Int, RecommendationCarouselDataModel> = hashMapOf()
+    private val listRecommendationCarouselOnMarked : HashMap<Int, WishlistDataModel> = hashMapOf()
 
     private val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
 
@@ -147,28 +150,29 @@ open class WishlistViewModel @Inject constructor(
             } else {
                 wishlistState.value = Status.SUCCESS
 
-                var visitableWishlist = mappingWishlistToVisitable(data.items)
+                val visitableWishlist = mappingWishlistToVisitable(data.items)
 
                 wishlistData.value = visitableWishlist
 
                 if (data.items.size >= recommendationPositionInPage ) {
-                    val recommendationData = getRecommendationUseCase.getData(
-                            GetRecommendationRequestParam(
-                                    pageNumber = currentPage,
-                                    productIds = data.items.map { it.id },
-                                    pageName = "wishlist"
-                            )
-                    )
-                    if(recommendationData.isNotEmpty()) {
-                        visitableWishlist = mappingRecommendationToWishlist(
-                                currentPage = currentPage,
-                                recommendationList = recommendationData,
-                                wishlistVisitable = visitableWishlist,
-                                recommendationPositionInPage = recommendationPositionInPage,
-                                maxItemInPage = maxItemInPage
-                        ).toMutableList()
-                        wishlistData.value = visitableWishlist
-                    }
+                    getTopAdsBannerData(visitableWishlist)
+//                    val recommendationData = getRecommendationUseCase.getData(
+//                            GetRecommendationRequestParam(
+//                                    pageNumber = currentPage,
+//                                    productIds = data.items.map { it.id },
+//                                    pageName = "wishlist"
+//                            )
+//                    )
+//                    if(recommendationData.isNotEmpty()) {
+//                        visitableWishlist = mappingRecommendationToWishlist(
+//                                currentPage = currentPage,
+//                                recommendationList = recommendationData,
+//                                wishlistVisitable = visitableWishlist,
+//                                recommendationPositionInPage = recommendationPositionInPage,
+//                                maxItemInPage = maxItemInPage
+//                        ).toMutableList()
+//                        wishlistData.value = visitableWishlist
+//                    }
                 }
             }
         }){
@@ -336,6 +340,32 @@ open class WishlistViewModel @Inject constructor(
                     }
 
                 })
+            }
+        }
+    }
+
+    /**
+     * Void [getTopAdsBannerData]
+     */
+    private fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>) {
+        if(wishlistVisitable.isNotEmpty()) {
+
+            launchCatchError(coroutineContext, {
+                val results = topAdsImageViewUseCase.getImageData(
+                        topAdsImageViewUseCase.getQueryMap(
+                                "",
+                                "1",
+                                "",
+                                1,
+                                3,
+                                ""
+                        )
+                )
+                if (results.isNotEmpty()) {
+                    wishlistData.value = mappingTopadsBannerToWishlist(wishlistVisitable = wishlistVisitable, topadsBanner = results.first())
+                }
+            }){
+                it.printStackTrace()
             }
         }
     }
@@ -866,6 +896,25 @@ open class WishlistViewModel @Inject constructor(
                                         currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,
                             isOnBulkRemoveProgress = isInBulkMode.value?:false,
                             seeMoreAppLink = recommendationList.first().seeMoreAppLink))
+        }
+        return list
+    }
+
+    private fun mappingTopadsBannerToWishlist(
+            wishlistVisitable: List<WishlistDataModel>,
+            topadsBanner: TopAdsImageViewModel): List<WishlistDataModel>{
+        val list = mutableListOf<WishlistDataModel>()
+        list.addAll(wishlistVisitable)
+        if (isInBulkMode.value == true) {
+            listRecommendationCarouselOnMarked[recommendationPositionInPage] =
+                    BannerTopAdsDataModel(
+                            topAdsDataModel = topadsBanner,
+                            isOnBulkRemoveProgress = isInBulkMode.value?:false)
+        } else {
+            list.add(recommendationPositionInPage,
+                    BannerTopAdsDataModel(
+                            topAdsDataModel = topadsBanner,
+                            isOnBulkRemoveProgress = isInBulkMode.value?:false))
         }
         return list
     }

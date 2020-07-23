@@ -262,7 +262,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="end"
-        app:barrierMargin="@dimen/dp_2"
         app:barrierAllowsGoneWidgets="false"
         app:constraint_referenced_ids="imageRatingString,textViewRatingString,linearLayoutImageRating" />
 
