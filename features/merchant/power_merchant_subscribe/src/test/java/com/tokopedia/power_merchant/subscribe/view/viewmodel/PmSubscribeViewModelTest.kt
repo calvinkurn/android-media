@@ -42,6 +42,26 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
     }
 
     @Test
+    fun `given kycProjectInfo null when getPmStatusInfo should set result error`() {
+        val kycUserProjectInfoPojo = KycUserProjectInfoPojo().apply {
+            kycProjectInfo = null
+        }
+        val powerMerchantStatus = PowerMerchantStatus(kycUserProjectInfoPojo = kycUserProjectInfoPojo)
+
+        onGetPowerMerchantStatusUseCase_thenReturn(powerMerchantStatus)
+
+        viewModel.getPmStatusInfo()
+
+        val error = NullPointerException("kycProjectInfo must not be null")
+        val expectedResult = Fail(error)
+
+        viewModel.getPmStatusInfoResult
+            .verifyErrorEquals(expectedResult)
+
+        verifyHideLoading()
+    }
+
+    @Test
     fun `when detach view should unsubscribe use case`() {
         viewModel.detachView()
 
