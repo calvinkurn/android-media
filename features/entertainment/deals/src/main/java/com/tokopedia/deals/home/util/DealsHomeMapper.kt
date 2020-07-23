@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.*
@@ -42,7 +43,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                     val banner = BannersDataView.BannerDataView(item.id, item.title, item.seoUrl, item.imageApp)
                     banner
                 }
-                bannersDataView = BannersDataView(list = banners, seeAllUrl = ApplinkConst.PROMO_LIST)
+                bannersDataView = BannersDataView(list = banners, seeAllUrl = ApplinkConstInternalDeals.DEALS_PROMO)
 
             } else if (it.isCard == 0 && it.isHidden == 0) {
                 val category = DealsCategoryDataView(id = it.id, imageUrl = it.mediaUrl, title = it.title, appUrl = it.appUrl)
