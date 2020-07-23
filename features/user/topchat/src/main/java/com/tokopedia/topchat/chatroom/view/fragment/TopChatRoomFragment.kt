@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -36,7 +35,6 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
-import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -360,7 +358,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
         sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
-        createTime = getParamString(ApplinkConst.Chat.CREATE_TIME, arguments, savedInstanceState)
+        createTime = getParamString(ApplinkConst.Chat.SEARCH_CREATE_TIME, arguments, savedInstanceState)
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
