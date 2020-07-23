@@ -12,10 +12,14 @@ interface ProductConfigStore {
 
     fun setMinProduct(count: Int)
 
+    fun setMaxProductDesc(desc: String)
+
     /**
      * Getter
      */
     fun getMaxProduct(): Int
 
     fun getMinProduct(): Int
+
+    fun getMaxProductDesc(): String
 }

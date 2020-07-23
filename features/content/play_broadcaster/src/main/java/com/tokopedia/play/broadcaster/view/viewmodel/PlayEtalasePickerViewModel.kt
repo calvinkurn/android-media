@@ -69,7 +69,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableUploadProductEvent
     private val _observableUploadProductEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
-    val maxProduct: Int
+    val maxProductDesc: String
+        get() = hydraConfigStore.getMaxProductDesc()
+
+    private val maxProduct: Int
         get() = hydraConfigStore.getMaxProduct()
 
     val selectedProductList: List<ProductContentUiModel>
