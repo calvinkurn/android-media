@@ -163,7 +163,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             analytic.clickEditCoverOnFinalSetupPage()
         }
 
-        btnStartLive.setMaxStreamingDuration(30)
+        btnStartLive.setMaxDurationDescription(prepareViewModel.maxDurationDesc)
         ivShareLink.setOnClickListener {
             doCopyShareLink()
             analytic.clickShareIconOnFinalSetupPage()

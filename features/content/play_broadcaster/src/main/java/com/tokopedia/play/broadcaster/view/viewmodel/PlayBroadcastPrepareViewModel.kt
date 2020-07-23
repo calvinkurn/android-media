@@ -38,6 +38,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     val title: String
         get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
 
+    val maxDurationDesc: String
+        get() = try { channelConfigStore.getMaxDurationDesc() } catch (e: Throwable) { "" }
+
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
     private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()

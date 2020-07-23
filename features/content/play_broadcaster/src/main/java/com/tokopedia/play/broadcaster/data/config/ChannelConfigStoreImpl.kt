@@ -10,6 +10,7 @@ class ChannelConfigStoreImpl @Inject constructor(): ChannelConfigStore {
     private lateinit var mChannelId: String
     private lateinit var mIngestUrl: String
     private lateinit var mTitle: String
+    private lateinit var mMaxDurationDesc: String
 
     override fun setChannelId(id: String) {
         mChannelId = id
@@ -36,5 +37,14 @@ class ChannelConfigStoreImpl @Inject constructor(): ChannelConfigStore {
     override fun getTitle(): String {
         return if (::mTitle.isInitialized) mTitle
         else throw IllegalStateException("title has not been set")
+    }
+
+    override fun setMaxDurationDesc(desc: String) {
+        mMaxDurationDesc = desc
+    }
+
+    override fun getMaxDurationDesc(): String {
+        return if (::mMaxDurationDesc.isInitialized) mMaxDurationDesc
+        else throw IllegalStateException("Duration desc has not been set")
     }
 }

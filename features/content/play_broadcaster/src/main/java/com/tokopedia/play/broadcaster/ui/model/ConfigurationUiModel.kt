@@ -19,6 +19,7 @@ data class ConfigurationUiModel(
 data class DurationConfigUiModel(
         val duration: Long, // second
         val pauseDuration: Long, // second
+        val maxDurationDesc: String,
         val errorMessage: String
 )
 

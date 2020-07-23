@@ -16,4 +16,8 @@ interface ChannelConfigStore {
     fun setTitle(title: String)
 
     fun getTitle(): String
+
+    fun setMaxDurationDesc(desc: String)
+
+    fun getMaxDurationDesc(): String
 }
