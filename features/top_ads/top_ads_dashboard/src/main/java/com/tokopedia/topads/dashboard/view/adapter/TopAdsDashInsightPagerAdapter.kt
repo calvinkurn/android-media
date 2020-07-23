@@ -9,24 +9,19 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
  * Created by Pika on 14/5/20.
  */
 class TopAdsDashInsightPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
-    private val itemTabList: MutableList<FragmentTabItem> = mutableListOf()
+
+    var listFrag: ArrayList<Fragment> = arrayListOf()
 
     override fun getItem(position: Int): Fragment {
-        return itemTabList[position].fragment
+        return listFrag[position]
     }
 
     override fun getCount(): Int {
-        return itemTabList.size
+        return listFrag.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return itemTabList[position].title
-    }
-
-    fun setList(item: List<FragmentTabItem>) {
-        item.let {
-            itemTabList.clear()
-            itemTabList.addAll(item)
-        }
+    fun setList(listItem: ArrayList<Fragment>) {
+            this.listFrag = listItem
+            notifyDataSetChanged()
     }
 }

@@ -52,4 +52,5 @@ object ParamObject {
     const val KEYWORD_ID = "keywordID"
     const val KEYWORD_PRICE_BID = "keywordPriceBid"
     const val INSIGHT_TYPE = "insightType"
+    const val INSIGHT_SOURCE = "keyword_insight_app"
 }

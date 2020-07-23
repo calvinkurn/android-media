@@ -19,7 +19,7 @@ class HomeWidget(
         val widgetHeader: WidgetHeader = WidgetHeader("")
 ) {
 
-    data class Data (
+    data class  Data (
             @SerializedName("home_widget")
             @Expose
             val homeWidget: HomeWidget = HomeWidget()

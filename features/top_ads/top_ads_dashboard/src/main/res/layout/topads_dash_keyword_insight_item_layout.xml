@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingStart="@dimen/dp_24"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_24">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_dashboard_folder" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/keywordName"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/topads_heading_color"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".66"
+        app:typographyType="heading_5"
+        tools:text="@tools:sample/lorem" />
 
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topads_dashboard_folder" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/insightCount"
+        android:layout_width="@dimen/dp_22"
+        android:layout_height="@dimen/dp_20"
+        android:background="@drawable/topads_insight_count"
+        android:gravity="center"
+        android:textColor="@color/topads_light_shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tools:text="25" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/keyword_name"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:textColor="@color/topads_heading_color"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/img"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent=".66"
-            app:typographyType="heading_5"
-            tools:text="@tools:sample/lorem" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtPotential"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/topads_dash_insight_key_item_tampil_potensi"
+        android:textColor="@color/topads_light_shadow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/keywordName"
+        app:typographyType="heading_6" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="@dimen/dp_22"
-            android:layout_height="@dimen/dp_20"
-            android:background="@drawable/topads_insight_count"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="25" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtSavings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/topads_dash_insight_key_item_hemat_potensi"
+        android:textColor="@color/topads_light_shadow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPotential"
+        app:typographyType="heading_6" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tampil_potensi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/topads_dash_insight_key_item_tampil_potensi"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/keyword_name"
-            app:typographyType="heading_6" />
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtSavings" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/hemat_potensi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:text="@string/topads_dash_insight_key_item_hemat_potensi"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tampil_potensi"
-            app:typographyType="heading_6" />
-
-        <ImageView
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:tint="@color/tkpd_green_header"
-            app:layout_constraintBottom_toBottomOf="@+id/sort"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/keyword_name" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>

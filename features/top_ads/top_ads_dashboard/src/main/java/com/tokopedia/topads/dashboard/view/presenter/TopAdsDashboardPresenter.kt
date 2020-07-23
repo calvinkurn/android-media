@@ -24,8 +24,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
-import com.tokopedia.topads.dashboard.data.model.insight.InsightResponse
-import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyResponse
+import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.domain.interactor.*
@@ -218,20 +217,19 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 })
     }
 
-    fun getInsight(resources: Resources,onSuccess:((InsightKeyResponse)->Unit)){
-        topAdsInsightUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,R.raw.gql_query_insights_keyword))
-        topAdsInsightUseCase.setParams()
-        topAdsInsightUseCase.executeQuerySafeMode(
+    fun getInsight(resources: Resources,onSuccess:((InsightKeyData)->Unit)){
+        topAdsInsightUseCase.run {
+            setGraphqlQuery(GraphqlHelper.loadRawString(resources,R.raw.gql_query_insights_keyword))
+            setParams()
+            executeQuerySafeMode(
                 {
-                    if (it.data.isNotEmpty()){
                         onSuccess(it)
-                    }
 
                 },{
 
                 })
+        }
     }
-
 
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
         topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
