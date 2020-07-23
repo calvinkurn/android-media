@@ -13,5 +13,6 @@ data class VariantDetailInputLayoutModel(
         var stockFieldErrorMessage: String = "",
         var sku: String = "",
         var isSkuFieldVisible: Boolean = false,
-        var priceEditEnabled: Boolean = true
+        var priceEditEnabled: Boolean = true,
+        var isPrimary: Boolean = false
 )

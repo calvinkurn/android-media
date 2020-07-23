@@ -230,6 +230,9 @@ class AddEditProductVariantFragment :
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
 
+        // clear photo data if have new level structure
+        variantPhotoAdapter?.clearImageData()
+
         // track selected variant type
         viewModel.isEditMode.value?.let { isEditMode ->
             val variantTypeName = variantDetail.name
@@ -312,6 +315,9 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
+        // clear photo data if have new level structure
+        variantPhotoAdapter?.clearImageData()
+
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
         // if deselected variant type contain unit values show confirmation dialog
@@ -417,11 +423,9 @@ class AddEditProductVariantFragment :
 
         if (variantData.variantID == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoLayout.show()
-            val variantPhotoList = mutableListOf<VariantPhoto>()
             selectedVariantUnitValues.forEach {
-                variantPhotoList.add(VariantPhoto(it.value, ""))
+                variantPhotoAdapter?.addDataIfNotExist(VariantPhoto(it.value, ""))
             }
-            variantPhotoAdapter?.setData(variantPhotoList)
         }
 
         // update sizechart visibility based on variant selected type
@@ -796,9 +800,12 @@ class AddEditProductVariantFragment :
                     ?: Unit()
             val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
                     ?: mutableListOf()
+            val selectedVariantDetail = variantDataList.first {
+                it.variantID == variantDetail.variantID
+            }
             when (index) {
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                    setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDataList[index], selectedVariantUnitValues)
+                    setupVariantValueSection(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantDetail, selectedVariantUnitValues)
                     // update adapter - layout position map
                     viewModel.updateVariantValuesLayoutMap(index, VARIANT_VALUE_LEVEL_ONE_POSITION)
                     // update view model selected variant unit level1
@@ -809,7 +816,7 @@ class AddEditProductVariantFragment :
                     viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnitValues.toMutableList())
                 }
                 VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                    setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, variantDataList[index], selectedVariantUnitValues)
+                    setupVariantValueSection(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantDetail, selectedVariantUnitValues)
                     // update adapter - layout position map
                     viewModel.updateVariantValuesLayoutMap(index, VARIANT_VALUE_LEVEL_TWO_POSITION)
                     // update view model selected variant unit level2

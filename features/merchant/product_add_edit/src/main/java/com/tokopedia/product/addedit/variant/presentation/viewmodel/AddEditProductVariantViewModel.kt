@@ -186,7 +186,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateVariantInputModel(selectedVariantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>) {
         productInputModel.value?.variantInputModel?.apply {
-            products = mapProducts(variantPhotos)
+            products = mapProducts(selectedVariantDetails, variantPhotos)
             selections = mapSelections(selectedVariantDetails)
             sizecharts = variantSizechart.value ?: PictureVariantInputModel()
         }
@@ -354,15 +354,23 @@ class AddEditProductVariantViewModel @Inject constructor(
                 )
             }
 
-    private fun mapProducts(variantPhotos: List<VariantPhoto>): List<ProductVariantInputModel> {
+    private fun mapProducts(variantDetails: List<VariantDetail>, variantPhotos: List<VariantPhoto>): List<ProductVariantInputModel> {
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
         val selectedLevel1: MutableList<UnitValue> = selectedVariantUnitValuesMap
                 .getOrElse(VARIANT_VALUE_LEVEL_ONE_POSITION) { mutableListOf() }
         val selectedLevel2: MutableList<UnitValue> = selectedVariantUnitValuesMap
                 .getOrElse(VARIANT_VALUE_LEVEL_TWO_POSITION) { mutableListOf() }
+        val variantDetailLevel1 = variantDetails.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)
+                ?: VariantDetail()
+        val variantDetailLevel2 = variantDetails.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)
+                ?: VariantDetail()
 
         selectedLevel1.forEachIndexed { optionIndexLevel1, _ ->
-            val variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel1))
+            var variantPicture = emptyList<PictureVariantInputModel>()
+            if (variantDetailLevel1.variantID == COLOUR_VARIANT_TYPE_ID) {
+                variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel1))
+            }
+
             if (selectedLevel2.isEmpty()) {
                 result.add(mapProductVariant(
                         variantPicture,
@@ -370,6 +378,9 @@ class AddEditProductVariantViewModel @Inject constructor(
                 ))
             } else {
                 selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
+                    if (variantDetailLevel2.variantID == COLOUR_VARIANT_TYPE_ID) {
+                        variantPicture = mapVariantPhoto(variantPhotos.getOrNull(optionIndexLevel2))
+                    }
                     result.add(mapProductVariant(
                             variantPicture,
                             listOf(optionIndexLevel1, optionIndexLevel2)

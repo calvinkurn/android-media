@@ -31,10 +31,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
@@ -83,8 +80,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
         cacheManagerId?.run {
-            viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
+             val productInputModel= saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java) ?: ProductInputModel()
+            viewModel.updateProductInputModel(productInputModel)
         }
 
         activity?.window?.setSoftInputMode(
@@ -163,11 +161,17 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
 
+        // change primary variant if primary position equals adapter position
+        viewModel.productInputModel.value?.variantInputModel?.products?.let { variants ->
+            variants.getOrNull(adapterPosition)?.let { variant ->
+                if(variant.isPrimary) {
+                    variant.isPrimary = isChecked
+                }
+            }
+        }
+
         // tracking
-        ProductAddVariantDetailTracking.clickVariantStatusToggle(
-                if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
-                userSession.shopId
-        )
+        sendClickVariantStatusToggleData(isChecked)
     }
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
@@ -201,6 +205,13 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
         viewModel.updatePrimaryVariant(combination)
+
+        // update switch status to be true if primary selected
+        combination.getOrNull(0)?.let {
+            val updatedInputModel = viewModel.updateSwitchStatus(true, it)
+            viewModel.editVariantDetailInputMap(it, updatedInputModel)
+            variantDetailFieldsAdapter?.updateDetailInputField(it, updatedInputModel)
+        }
 
         // tracking
         ProductAddVariantDetailTracking.saveMainVariant(
@@ -321,6 +332,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             }
+        }
+    }
+
+    private fun sendClickVariantStatusToggleData(isChecked: Boolean) {
+        if (!viewModel.isEditMode) {
+            ProductAddVariantDetailTracking.clickVariantStatusToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
         }
     }
 

@@ -160,7 +160,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             visitablePosition = variantDetailInputLayoutModel.visitablePosition
             // render input data to
             unitValueLabel?.text = variantDetailInputLayoutModel.unitValueLabel
-            statusSwitch?.isChecked = variantDetailInputLayoutModel.isActive
+            statusSwitch?.isChecked = variantDetailInputLayoutModel.isActive || variantDetailInputLayoutModel.isPrimary
             priceField?.textFieldInput?.setText(variantDetailInputLayoutModel.price)
             priceField?.setError(variantDetailInputLayoutModel.isPriceError)
             priceField?.setMessage(variantDetailInputLayoutModel.priceFieldErrorMessage)

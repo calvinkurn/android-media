@@ -39,6 +39,11 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         notifyItemRangeInserted(targetPosition, viewModels.size)
     }
 
+    fun updateDetailInputField(adapterPosition: Int, variantDetailInputModel: VariantDetailInputLayoutModel) {
+        val variantDetailFieldsViewModel = VariantDetailFieldsViewModel(variantDetailInputModel)
+        notifyElement(adapterPosition, variantDetailFieldsViewModel)
+    }
+
     fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {
         variantDetailFieldMapLayout.forEach { (adapterPosition, variantDetailInputModel) ->
             variantDetailInputModel.isSkuFieldVisible = isVisible
