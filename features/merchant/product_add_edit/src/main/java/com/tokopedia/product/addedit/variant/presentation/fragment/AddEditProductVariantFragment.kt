@@ -725,7 +725,7 @@ class AddEditProductVariantFragment :
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
             // get all variant details
             val categoryId = productInputModel.detailInputModel.categoryId
-            viewModel.getCategoryVariantCombination("2860")
+            viewModel.getCategoryVariantCombination(categoryId)
         })
     }
 
