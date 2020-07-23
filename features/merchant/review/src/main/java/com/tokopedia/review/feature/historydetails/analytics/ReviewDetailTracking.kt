@@ -68,7 +68,7 @@ object ReviewDetailTracking {
     private fun generateTrackingMap(action: String, userId: String, label: String): Map<String,String> {
         with(ReviewTrackingConstant) {
             return mapOf(
-                    EVENT to ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                    EVENT to EVENT_CLICK_REVIEW,
                     EVENT_CATEGORY to ReviewDetailTrackingConstants.DETAIL_EVENT_CATEGORY,
                     EVENT_ACTION to action,
                     KEY_SCREEN_NAME to ReviewDetailTrackingConstants.DETAIL_SCREEN_NAME,

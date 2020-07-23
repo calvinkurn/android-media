@@ -27,7 +27,7 @@ class ReviewAttachedImagesAdapter(private val imageClickListener: ReviewAttached
 
     fun setData(attachedImages: List<String>) {
         val updatedImages = attachedImages.toMutableList()
-        updatedImages.add("")
+        updatedImages.add(0, "")
         this.attachedImages = updatedImages
         notifyDataSetChanged()
     }

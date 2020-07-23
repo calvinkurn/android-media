@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
@@ -32,9 +34,8 @@ class ReviewAttachedImages : BaseCustomView {
         val attachedImageAdapter = ReviewAttachedImagesAdapter(reviewAttachedImagesClickedListener, productName)
         this.reviewAttachedImages.apply {
             adapter = attachedImageAdapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             attachedImageAdapter.setData(attachedImages)
-            show()
         }
     }
 

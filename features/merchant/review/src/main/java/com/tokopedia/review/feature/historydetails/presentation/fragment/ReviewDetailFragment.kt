@@ -103,7 +103,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickImageGallery(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
         }
-        goToImagePreview(productName, attachedImages, position)
+        goToImagePreview(productName, attachedImages.filter { it.isNotEmpty() }, position)
     }
 
     override fun onBackPressed() {
@@ -188,7 +188,12 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                 }
             }
             addHeaderIcons(editable)
-            reviewDetailAttachedImages.setImages(attachments, productName, this@ReviewDetailFragment)
+            if(attachments.isNotEmpty()) {
+                reviewDetailAttachedImages.apply {
+                    setImages(attachments, productName, this@ReviewDetailFragment)
+                    show()
+                }
+            }
             reviewDetailDate.setTextAndCheckShow(getString(R.string.review_date, reviewTimeFormatted))
             if(reviewText.isEmpty()) {
                 reviewDetailContent.apply {
