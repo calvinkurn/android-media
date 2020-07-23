@@ -409,17 +409,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                                itemQty: Int,
                                                parentId: String,
                                                subtotalWholesalePriceMap: HashMap<String, Double>,
-                                               subtotalWholesaleCashbackMap: HashMap<String, Double>): Array<Any> {
-        // Return value by index
-        // 0 -> subtotalWholesalePrice
-        // 1 -> subtotalWholesaleCashback
-        val returnValue = Array<Any>(2) { }
-
+                                               subtotalWholesaleCashbackMap: HashMap<String, Double>): Pair<Double, Double> {
         var subTotalWholesalePrice = 0.0
         var subtotalWholesaleCashback = 0.0
-
-        returnValue[0] = subTotalWholesalePrice
-        returnValue[1] = subtotalWholesaleCashback
 
         var hasCalculateWholesalePrice = false
         val wholesalePriceDataList = originData.wholesalePriceData ?: emptyList()
@@ -434,6 +426,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 break
             }
         }
+
         if (!hasCalculateWholesalePrice) {
             if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
                 subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
@@ -445,20 +438,23 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 originData.wholesalePriceFormatted = null
             }
         }
+
         if (originData.isCashBack) {
             val cashbackPercentageString = originData.productCashBack?.replace("%", "")
             val cashbackPercentage = cashbackPercentageString?.toDouble()
                     ?: 0.toDouble()
             subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
         }
-        if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-            returnValue[0] = subTotalWholesalePrice
-        }
-        if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
-            returnValue[1] = subtotalWholesaleCashback
+
+        if (subtotalWholesalePriceMap.containsKey(parentId)) {
+            subTotalWholesalePrice = 0.0
         }
 
-        return returnValue
+        if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
+            subtotalWholesaleCashback = 0.0
+        }
+
+        return Pair(subTotalWholesalePrice, subtotalWholesaleCashback)
     }
 
     private fun calculatePriceNormalProduct(originData: CartItemData.OriginData,
@@ -548,10 +544,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     // Calculate price and cashback for wholesale marketplace product
                     val returnValueWholesaleProduct = calculatePriceWholesaleProduct(it, itemQty, parentId, subtotalWholesalePriceMap, subtotalWholesaleCashbackMap)
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                        subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct[0] as Double
+                        subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct.first
                     }
                     if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
-                        subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct[1] as Double
+                        subtotalWholesaleCashbackMap[parentId] = returnValueWholesaleProduct.second
                     }
                 } else {
                     // Calculate price and cashback for normal marketplace product
