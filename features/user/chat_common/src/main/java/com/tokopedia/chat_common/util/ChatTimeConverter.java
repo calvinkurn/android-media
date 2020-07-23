@@ -58,7 +58,7 @@ public class ChatTimeConverter {
     public static String formatTime(long unixTime) {
         Locale localeID = new Locale("in", "ID");
         Date postTime = new Date(unixTime);
-        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", Locale.getDefault());
         return sdfHour.format(postTime);
     }
 
