@@ -2681,10 +2681,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (data != null) {
             LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
             RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-            recipientAddressModel.setLocationDataModel(locationDataModel);
-            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
-            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
+            if (recipientAddressModel != null) {
+                recipientAddressModel.setLocationDataModel(locationDataModel);
+                recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
+                recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
+            }
         }
     }
 
