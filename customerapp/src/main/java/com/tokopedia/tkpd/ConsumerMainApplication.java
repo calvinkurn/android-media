@@ -136,7 +136,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
         createAndCallPreSeq();
         super.onCreate();
-        warmUpGQLClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
 
@@ -232,24 +231,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         }
         generateConsumerAppNetworkKeys();
-    }
-
-    private void warmUpGQLClient(){
-        if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
-            GQLPing gqlPing = GraphqlClient.sRetrofit.create(GQLPing.class);
-            Call<String> gqlPingCall = gqlPing.pingGQL();
-            gqlPingCall.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    Timber.d("Success" + response.body().toString());
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Timber.d("Failure");
-                }
-            });
-        }
     }
 
     @NotNull
