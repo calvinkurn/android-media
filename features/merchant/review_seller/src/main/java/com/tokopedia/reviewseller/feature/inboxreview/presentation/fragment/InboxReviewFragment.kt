@@ -342,6 +342,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             } else {
                 sortFilterInboxReview?.hide()
+                isLoadingInitialData = true
                 hideLoading()
                 inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
             }
