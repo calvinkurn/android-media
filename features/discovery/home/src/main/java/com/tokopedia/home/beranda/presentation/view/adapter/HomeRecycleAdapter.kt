@@ -114,7 +114,7 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityStop()
+            exoPlayerHelper.onActivityDestroy()
         }
     }
 
