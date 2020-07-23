@@ -59,7 +59,7 @@ class DealCategoryViewModel @Inject constructor(
             val curatedData = getChipCategory()
             privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(curatedData.eventChildCategory.categories)
         }){
-
+            privateErrorMessage.value = it
         }
     }
 
