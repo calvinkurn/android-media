@@ -34,7 +34,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashMiniInsightPagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
@@ -157,14 +157,14 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         viewPagerInsight?.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
     }
 
-    private fun getViewPagerAdapter(data: HashMap<String, KeywordInsightDataMain>): TopAdsDashMiniInsightPagerAdapter? {
+    private fun getViewPagerAdapter(data: HashMap<String, KeywordInsightDataMain>): TopAdsDashInsightPagerAdapter? {
         val list: ArrayList<Fragment> = arrayListOf()
         val bundle = Bundle()
         bundle.putSerializable(DATA_INSIGHT, data)
         list.add(TopAdsInsightMiniKeyFragment.createInstance(bundle))
         list.add(TopAdsInsightMiniProductFragment())
         list.add(TopAdsInsightMiniBidFragment())
-        val adapter = TopAdsDashMiniInsightPagerAdapter(childFragmentManager, 0)
+        val adapter = TopAdsDashInsightPagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         return adapter
     }

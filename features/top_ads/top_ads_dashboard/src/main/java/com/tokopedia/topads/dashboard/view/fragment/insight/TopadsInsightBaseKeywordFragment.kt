@@ -82,11 +82,6 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
     fun searchAction(search: String) {
         val list: MutableList<KeywordInsightDataMain> = mutableListOf()
         listOfKeys.clear()
-//        adapter.items.forEachIndexed {index,key->
-//            if (key.name.contains(search)) {
-//                list.add(key)
-//            }
-//        }
         keyData.forEach {
             if(it.value.name.contains(search)){
                 list.add(it.value)

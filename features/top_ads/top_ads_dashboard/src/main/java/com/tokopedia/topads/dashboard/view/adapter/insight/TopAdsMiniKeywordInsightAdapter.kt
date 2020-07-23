@@ -8,12 +8,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import kotlinx.android.synthetic.main.topads_dash_keyword_insight_mini_item_layout.view.*
 
-
-/**
- * Created by Pika on 13/4/20.
- */
-
-class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos:Int) -> Unit?)) : RecyclerView.Adapter<TopAdsMiniKeywordInsightAdapter.ViewHolder>() {
+class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos: Int) -> Unit?)) : RecyclerView.Adapter<TopAdsMiniKeywordInsightAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordInsightDataMain> = mutableListOf()
 

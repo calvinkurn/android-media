@@ -22,7 +22,6 @@ class InsightKeyBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private lateinit var adapter: TopAdsDashInsightPagerAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -35,9 +34,9 @@ class InsightKeyBottomSheet : BottomSheetUnify() {
         renderTabAndViewPager()
     }
 
-    companion object{
+    companion object {
         private var POSITION = 0
-        fun createInstance(pos:Int): InsightKeyBottomSheet {
+        fun createInstance(pos: Int): InsightKeyBottomSheet {
             POSITION = pos
             return InsightKeyBottomSheet()
         }
@@ -71,6 +70,4 @@ class InsightKeyBottomSheet : BottomSheetUnify() {
         adapter.setList(list)
         return adapter
     }
-
-
 }

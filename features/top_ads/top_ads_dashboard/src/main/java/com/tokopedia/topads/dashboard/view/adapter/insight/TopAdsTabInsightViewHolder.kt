@@ -5,11 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_dash_item_insight_tab_layout.view.*
 
-/**
- * Created by hadi.putra on 15/05/18.
- */
-
 class TopAdsTabInsightViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
     private val chip: ChipsUnify = itemView.tabInsightId
 
     fun bind(title: String) {

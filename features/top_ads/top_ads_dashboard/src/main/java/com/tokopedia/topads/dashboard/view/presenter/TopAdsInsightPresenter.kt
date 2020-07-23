@@ -16,29 +16,25 @@ import javax.inject.Inject
 
 class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCase: TopAdsInsightUseCase,
                                                  private val topAdsEditKeywordUseCase: TopAdsEditKeywordUseCase
-): BaseDaggerPresenter<TopAdsInsightView>() {
+) : BaseDaggerPresenter<TopAdsInsightView>() {
 
-    fun getInsight(resources: Resources){
+    fun getInsight(resources: Resources) {
         topAdsInsightUseCase.run {
             setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
             setParams()
             executeQuerySafeMode(
                     {
-                        //  if (it.isNotEmpty()){
                         view?.onSuccessKeywordInsight(it)
-                      //  onSuccess(it)
-                        //   }
-
-                    },{
-
+                    }, {
+                it.printStackTrace()
             })
         }
     }
 
     fun topAdsCreated(groupId: String, query: String, data: List<MutationData>) {
-        topAdsEditKeywordUseCase.setParam(groupId,query,data)
+        topAdsEditKeywordUseCase.setParam(groupId, query, data)
         topAdsEditKeywordUseCase.executeQuerySafeMode(
-                {  view?.onSuccessEditKeywords(it) },
+                { view?.onSuccessEditKeywords(it) },
                 { throwable ->
                     throwable.printStackTrace()
                 })
