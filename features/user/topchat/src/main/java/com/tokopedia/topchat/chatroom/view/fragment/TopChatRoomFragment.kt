@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -55,6 +54,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -272,7 +272,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun onErrorGetBottomChat(throwable: Throwable) {
         rvScrollListener?.finishBottomLoadingState()
         adapter.hideBottomLoading()
-        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        showSnackbarError(ErrorHandler.getErrorMessage(view?.context, throwable))
     }
 
     private fun showBottomLoading() {
