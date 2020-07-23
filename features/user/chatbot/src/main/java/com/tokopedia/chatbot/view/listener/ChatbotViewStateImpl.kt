@@ -226,8 +226,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun hideActionBubble(model: ChatActionSelectionBubbleViewModel) {
-        if (getAdapter().list.isNotEmpty() && getAdapter().list[0] is ChatActionSelectionBubbleViewModel ){
-            getAdapter().removeElement(model)
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
+            adapter.removeElement(model)
         }
     }
 
