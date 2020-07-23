@@ -3,7 +3,7 @@
     <application>
         <activity
             android:name=".view.activity.RecentViewActivity"
-            android:label="@string/recentview_title_recent_view"
+            android:label="@string/title_recent_view"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>

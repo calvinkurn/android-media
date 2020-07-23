@@ -110,7 +110,7 @@ class DynamicProductDetailAdapter(
         return if (data != null) {
             list.indexOf(data)
         } else {
-            0
+            -1
         }
     }
 

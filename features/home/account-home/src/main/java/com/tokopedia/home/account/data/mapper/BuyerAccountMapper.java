@@ -9,6 +9,9 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
@@ -120,9 +123,10 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
-            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
-
+            if(accountModel.getSaldoModel() != null && accountModel.getSaldoModel().getSaldo() != null) {
+                tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                        (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
+            }
             tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);
 
@@ -196,28 +200,53 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         BuyerCardViewModel buyerCardViewModel = new BuyerCardViewModel();
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
+        ShortcutResponse shortcutResponse = accountModel.getShortcutResponse();
+        if (shortcutResponse!=null) {
+            ShortcutGroupListItem shortcutListItem = null;
+            ArrayList<ShortcutListItem> shortcutListItems = new ArrayList<>();
 
-        if (accountModel.getTokopoints() != null
-                && accountModel.getTokopoints().getStatus() != null
-                && accountModel.getTokopoints().getStatus().getPoints() != null) {
-            buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
+            if (shortcutResponse.getTokopointsShortcutList() != null &&
+                    shortcutResponse.getTokopointsShortcutList().getShortcutGroupList() != null &&
+                    shortcutResponse.getTokopointsShortcutList().getShortcutGroupList().size() != 0) {
+                shortcutListItem = shortcutResponse.getTokopointsShortcutList().getShortcutGroupList().get(0);
+                shortcutListItems = (ArrayList<ShortcutListItem>) shortcutListItem.getShortcutList();
+            }
+
+            if (shortcutListItems != null && shortcutListItems.size() > 0) {
+
+                buyerCardViewModel.setTokopointSize(1);
+                buyerCardViewModel.setTokopointTitle(shortcutListItems.get(0).getCta().getText());
+                buyerCardViewModel.setTokopoint(shortcutListItems.get(0).getDescription());
+                buyerCardViewModel.setTokopointAppplink(shortcutListItems.get(0).getCta().getAppLink());
+                buyerCardViewModel.setTokopointImageUrl(shortcutListItems.get(0).getIconImageURL());
+
+                if (shortcutListItems.size() > 1) {
+                    buyerCardViewModel.setCouponSize(1);
+                    buyerCardViewModel.setCouponTitle(shortcutListItems.get(1).getCta().getText());
+                    buyerCardViewModel.setCoupons(shortcutListItems.get(1).getDescription());
+                    buyerCardViewModel.setCouponApplink(shortcutListItems.get(1).getCta().getAppLink());
+                    buyerCardViewModel.setCouponImageUrl(shortcutListItems.get(1).getIconImageURL());
+                }
+
+                if (shortcutListItems.size() > 2) {
+                    buyerCardViewModel.setTokomemberSize(2);
+                    buyerCardViewModel.setTokomemberTitle(shortcutListItems.get(2).getCta().getText());
+                    buyerCardViewModel.setTokomember(shortcutListItems.get(2).getDescription());
+                    buyerCardViewModel.setTokomemberApplink(shortcutListItems.get(2).getCta().getAppLink());
+                    buyerCardViewModel.setTokomemberImageUrl(shortcutListItems.get(2).getIconImageURL());
+                }
+            }
+        }
             buyerCardViewModel.setEggImageUrl(accountModel.getTokopoints().getStatus().getTier().getImageUrl());
-        }
-
-        if (accountModel.getTokopointsSumCoupon() != null) {
-            buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
-        }
-
-        if (accountModel.getMembershipSumUserCard() != null) {
-            buyerCardViewModel.setTokomember(accountModel.getMembershipSumUserCard().getSumUserCardStr());
-        }
-
-        buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
-        if (accountModel.getProfile().getCompletion() != null) {
+            buyerCardViewModel.setMemberStatus(accountModel.getTokopoints().getStatus().getTier().getNameDesc());
+            buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
             buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
-        }
-        buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
+            buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
+            if (accountModel.getProfile().getCompletion() != null) {
+                buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
+            }
+            buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
         userSession.setHasPassword(accountModel.getUserProfileCompletion().isCreatedPassword());
         return buyerCardViewModel;
     }
