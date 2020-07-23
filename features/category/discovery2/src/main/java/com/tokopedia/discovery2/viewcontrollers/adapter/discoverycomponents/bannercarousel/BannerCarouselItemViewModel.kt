@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class BannerCarouselItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
@@ -14,4 +15,18 @@ class BannerCarouselItemViewModel(val application: Application, private val comp
     }
 
     fun getComponentLiveData(): LiveData<ComponentsItem> = componentData
+
+    fun getBannerData():DataItem? {
+        components.data?.let {
+            if(it.isNotEmpty()) return it[0]
+        }
+        return null
+    }
+
+    fun getNavigationUrl() : String? {
+        components.data?.let {
+            if(it.isNotEmpty()) return it[0].imageClickUrl
+        }
+        return null
+    }
 }
