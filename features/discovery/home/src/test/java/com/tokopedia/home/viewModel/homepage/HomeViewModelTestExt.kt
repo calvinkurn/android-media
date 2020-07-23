@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -53,6 +54,7 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>()
     val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>()
     val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>()
+    val topAdsImageViewUseCase by memoized<TopAdsImageViewUseCase>()
     return HomeViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
@@ -77,7 +79,8 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             declineSalamWIdgetUseCase = Lazy{declineSalamWIdgetUseCase},
             declineRechargeRecommendationUseCase = Lazy { declineRechargeRecommendationUseCase },
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
-            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase }
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase },
+            topAdsImageViewUseCase = Lazy{topAdsImageViewUseCase}
     )
 }
 
@@ -106,6 +109,7 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>{ mockk(relaxed = true)}
     val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>{ mockk(relaxed = true)}
     val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>{ mockk(relaxed = true)}
+    val topAdsImageViewUseCase by  memoized<TopAdsImageViewUseCase>{mockk(relaxed = true)}
 }
 
 fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
