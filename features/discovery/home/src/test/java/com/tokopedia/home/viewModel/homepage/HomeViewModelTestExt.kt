@@ -153,3 +153,10 @@ fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInje
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
 }
+
+fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+    first.forEach{
+        if(it.value != second[it.key]) return false
+    }
+    return true
+}
