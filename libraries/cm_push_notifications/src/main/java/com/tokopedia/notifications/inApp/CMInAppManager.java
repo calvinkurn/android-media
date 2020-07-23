@@ -99,7 +99,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     private void sendEventInAppPrepared(CMInApp cmInApp) {
-        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREPARED, null);
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
     }
 
     @Override
