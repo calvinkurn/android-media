@@ -2,14 +2,13 @@ package com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewEmptyUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewErrorUiModel
 
 class InboxReviewAdapter(
         inboxReviewAdapterTypeFactory: InboxReviewAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, InboxReviewAdapterTypeFactory>(inboxReviewAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
+) : BaseListAdapter<Visitable<*>, InboxReviewAdapterTypeFactory>(inboxReviewAdapterTypeFactory) {
 
     private var feedbackInboxListUiModel: MutableList<FeedbackInboxUiModel> = mutableListOf()
 
@@ -33,24 +32,4 @@ class InboxReviewAdapter(
             notifyItemInserted(lastIndex)
         }
     }
-
-    override val endlessDataSize: Int
-        get() = feedbackInboxListUiModel.size
-
-    override fun hideLoading() {
-        if (visitables.contains(loadingModel)) {
-            val itemPosition = visitables.indexOf(loadingModel)
-            visitables.remove(loadingModel)
-            if (itemPosition != -1) {
-                notifyItemRemoved(itemPosition)
-            }
-        } else if (visitables.contains(loadingMoreModel)) {
-            val itemPosition = visitables.indexOf(loadingMoreModel)
-            visitables.remove(loadingMoreModel)
-            if (itemPosition != -1) {
-                notifyItemRemoved(itemPosition)
-            }
-        }
-    }
-
 }
