@@ -343,8 +343,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 updateStateScrollListener()
             } else {
                 sortFilterInboxReview?.hide()
-                isLoadingInitialData = true
-                inboxReviewAdapter.clearAllElements()
+                clearAllData()
                 hideLoading()
                 inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
             }
@@ -354,7 +353,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
             } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
                 sortFilterInboxReview?.hide()
-                inboxReviewAdapter.clearAllElements()
+                clearAllData()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             } else {
                 isFilter = true
@@ -497,8 +496,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
 
         sortFilterInboxReview?.hide()
-        isLoadingInitialData = true
-        inboxReviewAdapter.clearAllElements()
+        clearAllData()
         inboxReviewAdapter.showLoading()
 
         inboxReviewViewModel.updateStatusFilterData(sortFilterItemInboxReviewWrapper)
@@ -541,8 +539,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
 
-        isLoadingInitialData = true
-        inboxReviewAdapter.clearAllElements()
+        clearAllData()
         inboxReviewAdapter.showLoading()
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
