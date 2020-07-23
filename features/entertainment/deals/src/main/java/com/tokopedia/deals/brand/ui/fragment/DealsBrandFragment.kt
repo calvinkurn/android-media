@@ -22,7 +22,9 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
+import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
+import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -33,11 +35,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.activity_base_deals.*
 import kotlinx.android.synthetic.main.fragment_deals_brand.*
+import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 import javax.inject.Inject
 
 class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
-        DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener{
+        DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener,
+        SearchBarActionListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -63,6 +68,8 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         super.onViewCreated(view, savedInstanceState)
         childCategoryId = arguments?.getString(CHILD_CATEGORY_ID)
         tabName = arguments?.getString(TAB_NAME) ?: ""
+
+        (activity as DealsBaseActivity).searchBarActionListener = this
 
         loadInitialData()
     }
@@ -232,6 +239,14 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         analytics.eventScrollToBrandPopular(brand,position)
+    }
+
+    override fun onClickSearchBar() {
+        (activity as DealsBaseBrandCategoryActivity).appBarLayoutSearchContent.setExpanded(true)
+    }
+
+    override fun afterSearchBarTextChanged(text: String) {
+
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
