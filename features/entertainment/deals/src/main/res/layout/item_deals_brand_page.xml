@@ -65,7 +65,8 @@
             android:layout_marginTop="@dimen/deals_dp_18"
             app:layout_goneMarginTop="@dimen/spacing_lvl3"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_title"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintVertical_chainStyle="packed"
+            android:nestedScrollingEnabled="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

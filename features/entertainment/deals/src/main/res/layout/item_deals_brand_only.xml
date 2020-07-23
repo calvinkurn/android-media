@@ -16,14 +16,14 @@
             android:id="@+id/rv_brands"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/deals_dp_12"
+            android:layout_marginLeft="@dimen/deals_dp_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/deals_dp_18"
             app:layout_goneMarginTop="@dimen/spacing_lvl3"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintVertical_chainStyle="packed"
+            android:nestedScrollingEnabled="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

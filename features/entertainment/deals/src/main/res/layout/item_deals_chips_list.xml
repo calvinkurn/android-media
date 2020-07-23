@@ -18,7 +18,7 @@
         tools:visibility="visible" />
 
     <include
-        android:id="@+id/shimmering"
+        android:id="@+id/filter_shimmering"
         layout="@layout/item_deals_chips_shimmering"
         tools:visibility="gone" />
 

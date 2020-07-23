@@ -34,9 +34,8 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if(isBrandLayout()) inflater.inflate(R.layout.fragment_deals_brand, container, false)
-        else if (hasInitialSwipeRefresh()) inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list_swipe, container, false)
-        else inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
+        return if (hasInitialSwipeRefresh()) inflater.inflate(getInitialSwipeLayout(), container, false)
+        else inflater.inflate(getInitialLayout(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,6 +63,9 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
             loadInitialData()
         }
     }
+
+    open fun getInitialSwipeLayout(): Int = com.tokopedia.baselist.R.layout.fragment_base_list_swipe
+    open fun getInitialLayout(): Int = com.tokopedia.baselist.R.layout.fragment_base_list
 
     protected open fun loadInitialData() {
         isLoadingInitialData = true
@@ -150,9 +152,7 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     fun showLoading() { if (::adapter.isInitialized) adapter.showPageLoad() }
     fun showLoadMoreLoading() { if (::adapter.isInitialized) showLoadingMoreUnify() }
 
-    private fun getRecyclerView(view: View): RecyclerView =
-            if(isBrandLayout()) view.findViewById(com.tokopedia.deals.R.id.recycler_view)
-            else view.findViewById(com.tokopedia.baselist.R.id.recycler_view)
+    open fun getRecyclerView(view: View): RecyclerView = view.findViewById(com.tokopedia.baselist.R.id.recycler_view)
     private fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
         return if (hasInitialSwipeRefresh()) view.findViewById(com.tokopedia.baselist.R.id.swipe_refresh_layout)
         else null
@@ -180,7 +180,6 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
     open fun isAutoLoadEnabled() = false
     open fun isShowInitialShimmering() = true
     open fun getMinimumScrollableNumOfItems(): Int = DEFAULT_MAX_ROW_FULL_PAGE
-    open fun isBrandLayout() = false
 
     companion object {
         private const val DEFAULT_INITIAL_PAGE = 1

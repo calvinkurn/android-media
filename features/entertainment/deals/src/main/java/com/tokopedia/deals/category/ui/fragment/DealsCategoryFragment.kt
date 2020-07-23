@@ -6,9 +6,11 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.category.di.DealsCategoryComponent
 import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
@@ -19,19 +21,20 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.DealChipsListActionListener
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.ProductListListener
-import com.tokopedia.deals.common.ui.adapter.viewholder.DealsChipsViewHolder
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
-import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
-import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
-import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
+import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
+import kotlinx.android.synthetic.main.item_deals_chips_list.*
 import javax.inject.Inject
 
 
@@ -42,7 +45,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         EmptyStateListener {
 
     private var categoryID: String = ""
-    private var chips : DealsChipsDataView = DealsChipsDataView()
 
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
@@ -92,10 +94,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         })
 
         dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, Observer {
-            val chipsViewHolder = recyclerView.findViewHolderForAdapterPosition(
-                    CHIPS_VIEW_HOLDER_POSITION) as DealsChipsViewHolder
             chips = it
-            chipsViewHolder.updateChips(chips)
+            renderChips()
         })
 
         baseViewModel.observableCurrentLocation.observe(this, Observer {
@@ -112,15 +112,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun createAdapterInstance(): BaseCommonAdapter {
-        return DealsCategoryAdapter(this, this, this, this)
+        return DealsCategoryAdapter(this, this, this)
     }
 
     override fun loadData(page: Int) {
-        var categoryIDs = chips.chipList.filter { it.isSelected }.joinToString(separator = ",") { it.id }
-        if (categoryIDs.isEmpty()) categoryIDs = categoryID
         getCurrentLocation().let {
             dealCategoryViewModel.getCategoryBrandData(
-                    categoryIDs,
+                    categoryID,
                     it.coordinates,
                     it.locType.name,
                     page,
@@ -135,10 +133,86 @@ class DealsCategoryFragment : DealsBaseFragment(),
         getComponent(DealsCategoryComponent::class.java).inject(this)
     }
 
+    private var chips: List<ChipDataView> = listOf()
+
+    private fun renderChips() {
+        filter_shimmering.hide()
+        sort_filter_deals_category.visible()
+
+        val filterItems = arrayListOf<SortFilterItem>()
+        try {
+            val showingChips = if (chips.size > 5) { chips.subList(0, 4) } else { chips }
+            showingChips.forEach {
+                val item = SortFilterItem(it.title)
+                filterItems.add(item)
+            }
+        } catch (e: Exception) { }
+
+        sort_filter_deals_category.run {
+            filterItems.forEachIndexed { index, sortFilterItem ->
+                if (chips[index].isSelected) { sortFilterItem.type = ChipsUnify.TYPE_SELECTED }
+
+                sortFilterItem.listener = {
+                    sortFilterItem.toggle()
+
+                    val mutableChipList = chips.toMutableList()
+                    val chipItem = mutableChipList[index]
+
+                    val isItemSelected = filterItems[index].type == ChipsUnify.TYPE_SELECTED
+                    mutableChipList[index] = chipItem.copy(isSelected = isItemSelected)
+                    chips = mutableChipList
+
+                    onChipClicked(mutableChipList)
+                }
+            }
+
+            addItem(filterItems)
+
+            if (chips.size <= 5) {
+                sortFilterPrefix.hide()
+            } else {
+                sortFilterPrefix.setOnClickListener {
+                    onFilterChipClicked(chips)
+                }
+            }
+        }
+    }
+
+    override fun getInitialLayout(): Int = R.layout.fragment_deals_category
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
+
+    private var additionalSelectedFilterCount = 0
+
+    private fun selectFilterFromBottomSheet() {
+        sort_filter_deals_category.let {
+            for ((i, item) in it.chipItems.withIndex()) {
+                if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
+                else item.type = ChipsUnify.TYPE_NORMAL
+            }
+
+            it.indicatorCounter -= additionalSelectedFilterCount
+            additionalSelectedFilterCount = 0
+            if (chips.size > it.chipItems.size) {
+                for (i in it.chipItems.size until chips.size) {
+                    if (chips[i].isSelected) additionalSelectedFilterCount++
+                }
+            }
+            it.indicatorCounter += additionalSelectedFilterCount
+        }
+    }
+
+    private fun SortFilterItem.toggle() {
+        type = if (type == ChipsUnify.TYPE_NORMAL) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+    }
+
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         analytics.eventClickBrandPopular(brand, position, true)
-        RouteManager.route(requireContext(), brand.brandUrl)
+        RouteManager.route(context, brand.brandUrl)
     }
 
     override fun onClickSeeAllBrand(seeAllUrl: String) {
@@ -155,48 +229,27 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     /** DealChipsListActionListener **/
-    override fun onFilterChipClicked(chips: DealsChipsDataView) {
+    override fun onFilterChipClicked(chips: List<ChipDataView>) {
         if (filterBottomSheet == null) {
             filterBottomSheet = DealsCategoryFilterBottomSheet(this)
         }
-        filterBottomSheet?.showCategories(chips)
+        filterBottomSheet?.showCategories(DealsChipsDataView(chips))
         filterBottomSheet?.show(childFragmentManager, "")
     }
 
-    override fun onChipClicked(chips: DealsChipsDataView) {
+    override fun onChipClicked(chips: List<ChipDataView>) {
         analytics.eventClickChipsCategory()
-        applyFilter(chips)
+        this.chips = chips
+        applyFilter()
     }
 
     /** DealsCategoryFilterBottomSheetListener **/
     override fun onFilterApplied(chips: DealsChipsDataView) {
         analytics.eventApplyChipsCategory(chips)
-        applyFilter(chips)
-    }
+        this.chips = chips.chipList
+        selectFilterFromBottomSheet()
 
-    private fun applyFilter(chips: DealsChipsDataView) {
-        var categoryIDs = chips.chipList.filter { it.isSelected }.joinToString(separator = ",") { it.id }
-        if (categoryIDs.isEmpty()) categoryIDs = categoryID
-        dealCategoryViewModel.updateChips(chips, getCurrentLocation(), categoryIDs, true)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            DealsHomeFragment.DEALS_SEARCH_REQUEST_CODE -> (activity as DealsBaseActivity).changeLocationBasedOnCache()
-        }
-    }
-
-    companion object {
-        const val DEALS_SEARCH_REQUEST_CODE = 27
-        private const val CHIPS_VIEW_HOLDER_POSITION = 0
-
-        fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
-            it.arguments = Bundle().apply {
-                categoryId?.let { id ->
-                    putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
-                }
-            }
-        }
+        applyFilter()
     }
 
     private fun getErrorNetworkModel(): ErrorNetworkModel {
@@ -212,6 +265,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         (activity as DealsBaseActivity).searchBarActionListener = this
 
         loadInitialData()
+        dealCategoryViewModel.getChipsData()
     }
 
     override fun onBaseLocationChanged(location: Location) {
@@ -232,17 +286,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onClickSearchBar() {
-        analytics.eventClickSearchCategoryPage()
         startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
+        analytics.eventClickSearchCategoryPage()
     }
 
-    override fun afterSearchBarTextChanged(text: String) { /* do nothing */
-    }
-
-    override fun resetFilter() {
-        val chipReseted = DealsChipsDataView(chips.chipList.map { it.copy(isSelected = false) })
-        dealCategoryViewModel.updateChips(chipReseted, getCurrentLocation(), categoryID, false)
-    }
+    override fun afterSearchBarTextChanged(text: String) { /* do nothing */ }
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         analytics.eventScrollToBrandPopular(brand,position)
@@ -252,7 +300,37 @@ class DealsCategoryFragment : DealsBaseFragment(),
         analytics.impressionProductCategory(productCardDataView,productItemPosition, page)
     }
 
+    override fun resetFilter() {
+        chips.forEach { it.isSelected = false }
+        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryID, false)
+    }
+
+    private fun applyFilter() {
+        var categoryIDs = chips.filter { it.isSelected }.joinToString(separator = ",") { it.id }
+        if (categoryIDs.isEmpty()) categoryIDs = categoryID
+        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryIDs, true)
+    }
+
     override fun showTitle(brand: DealsBrandsDataView) {
         /* do nothing */
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            DealsHomeFragment.DEALS_SEARCH_REQUEST_CODE -> (activity as DealsBaseActivity).changeLocationBasedOnCache()
+        }
+    }
+
+    companion object {
+        const val DEALS_SEARCH_REQUEST_CODE = 27
+        private const val CHIPS_VIEW_HOLDER_POSITION = 0
+
+        fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
+            it.arguments = Bundle().apply {
+                categoryId?.let { id ->
+                    putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
+                }
+            }
+        }
     }
 }
