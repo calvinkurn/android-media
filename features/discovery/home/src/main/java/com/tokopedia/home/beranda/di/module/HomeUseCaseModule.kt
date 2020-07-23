@@ -11,7 +11,6 @@ import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -30,6 +29,8 @@ import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -37,7 +38,7 @@ import dagger.Provides
 @Module
 class HomeUseCaseModule {
 
-    val businessWidgetQuery : String = "query HomeWidget() {\n" +
+    val businessWidgetQuery: String = "query HomeWidget() {\n" +
             "  home_widget {\n" +
             "    widget_tab {\n" +
             "      id\n" +
@@ -49,11 +50,11 @@ class HomeUseCaseModule {
             "  }\n" +
             "}\n"
 
-    val dismissSuggestedQuery : String = "query productrevDismissSuggestion{\n" +
+    val dismissSuggestedQuery: String = "query productrevDismissSuggestion{\n" +
             "  productrevDismissSuggestion\n" +
             "}"
 
-    val suggestedReviewQuery : String = "{\n" +
+    val suggestedReviewQuery: String = "{\n" +
             "  suggestedProductReview{\n" +
             "    title\n" +
             "    description\n" +
@@ -66,7 +67,7 @@ class HomeUseCaseModule {
             "  }\n" +
             "}"
 
-    val stickyLoginQuery : String = "query get_ticker(\$page: String!) {\n" +
+    val stickyLoginQuery: String = "query get_ticker(\$page: String!) {\n" +
             "  ticker {\n" +
             "    tickers(page: \$page) {\n" +
             "      message\n" +
@@ -75,7 +76,7 @@ class HomeUseCaseModule {
             "  }\n" +
             "}"
 
-    val pendingCashBackQuery : String = "query pendingCashback {\n" +
+    val pendingCashBackQuery: String = "query pendingCashback {\n" +
             "  goalPendingBalance {\n" +
             "    balance\n" +
             "    balance_text\n" +
@@ -92,7 +93,7 @@ class HomeUseCaseModule {
             "  }\n" +
             "}\n"
 
-    val businessUnitDataQuery : String = "query(\$tabId:Int){\n" +
+    val businessUnitDataQuery: String = "query(\$tabId:Int){\n" +
             "  home_widget {\n" +
             "    widget_grid(tabID:\$tabId) {\n" +
             "      id\n" +
@@ -115,8 +116,8 @@ class HomeUseCaseModule {
             "}\n" +
             "\n"
 
-    val tokopointsQuery : String = "{\n" +
-            "    tokopointsDrawer{\n" +
+    val tokopointsQuery: String = "query(\$apiVersion:String){\n" +
+            "    tokopointsDrawer(apiVersion: \$apiVersion){\n" +
             "        iconImageURL\n" +
             "        redirectURL\n" +
             "        redirectAppLink\n" +
@@ -135,8 +136,8 @@ class HomeUseCaseModule {
             "    }\n" +
             "}"
 
-    val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
+    val walletBalanceQuery: String = "query(\$isGetTopup:Boolean!){\n" +
+            "  wallet(isGetTopup: \$isGetTopup) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +
@@ -164,10 +165,13 @@ class HomeUseCaseModule {
             "    help_applink\n" +
             "    tnc_applink\n" +
             "    show_announcement\n" +
+            "    is_show_topup\n" +
+            "    topup_applink\n" +
+            "    topup_limit\n" +
             "  }\n" +
             "}"
 
-    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!){\n" +
+    val dynamicChannelQuery: String = "query getDynamicChannel(\$groupIDs: String!){\n" +
             "    dynamicHomeChannel {\n" +
             "        channels(groupIDs: \$groupIDs){\n" +
             "          id\n" +
@@ -241,7 +245,7 @@ class HomeUseCaseModule {
             "    }\n" +
             "}"
 
-    val recommendationQuery : String = "{\n" +
+    val recommendationQuery: String = "{\n" +
             "  get_home_recommendation{\n" +
             "    recommendation_tabs{\n" +
             "      id\n" +
@@ -305,18 +309,11 @@ class HomeUseCaseModule {
             @ApplicationContext context: Context,
             graphqlRepository: GraphqlRepository,
             homeRecommendationMapper: HomeRecommendationMapper
-    ): GetHomeRecommendationUseCase{
+    ): GetHomeRecommendationUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
         useCase.setGraphqlQuery(query)
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
-    }
-
-    @Provides
-    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
-                                 graphqlUseCase: GraphqlUseCase?,
-                                 feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
-        return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
     }
 
     @Provides
@@ -411,7 +408,7 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase{
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
         useCase.setGraphqlQuery(dynamicChannelQuery)
         return GetDynamicChannelsUseCase(useCase, homeDataMapper)
@@ -419,13 +416,13 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideAddToCartOccUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): AddToCartOccUseCase{
+    fun provideAddToCartOccUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): AddToCartOccUseCase {
         return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper())
     }
 
     @Provides
     @HomeScope
-    fun provideCloseChannelUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): CloseChannelUseCase{
+    fun provideCloseChannelUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): CloseChannelUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
         useCase.setGraphqlQuery(closeChannel)
         return CloseChannelUseCase(useCase)
@@ -435,5 +432,11 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }

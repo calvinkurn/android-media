@@ -174,7 +174,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         if (actionActivate == ACTION_DELETE) {
             view.let {
                 Toaster.make(it!!, String.format(getString(R.string.topads_neg_keyword_del_toaster), getAdIds().size),
-                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                        TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                     deleteCancel = true
                 })
             }
@@ -211,7 +211,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setDescription(context.getString(R.string.topads_dash_confirm_delete_negkey_desc))
         dialog.setTitle(String.format(context.getString(R.string.topads_dash_confirm_delete_negkey), adapter.getSelectedItems().size))
-        dialog.setPrimaryCTAText(context.getString(R.string.topads_common_cancel_btn))
+        dialog.setPrimaryCTAText(context.getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
         dialog.setSecondaryCTAText(context.getString(R.string.topads_dash_ya_hapus))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()

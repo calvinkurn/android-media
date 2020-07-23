@@ -1,8 +1,10 @@
 package com.tokopedia.graphql.data.repository;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
@@ -16,6 +18,8 @@ import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore;
 import com.tokopedia.graphql.data.source.cloud.GraphqlCloudDataStore;
 import com.tokopedia.graphql.domain.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.graphql.util.CacheHelper;
+import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
 
 import java.lang.reflect.Type;
@@ -28,6 +32,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * This class will responsible for data fetching either from cloud or cache based on provided GraphqlCacheStrategy
@@ -52,6 +57,8 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
     @Override
     public Observable<GraphqlResponse> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        mResults.clear();
+
         return Observable.defer(() -> {
             if (cacheStrategy == null
                     || cacheStrategy.getType() == CacheType.NONE
@@ -59,7 +66,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 return getCloudResponse(requests, cacheStrategy);
             } else if (cacheStrategy.getType() == CacheType.CACHE_ONLY) {
                 return mGraphqlCache.getResponse(requests, cacheStrategy);
-            } else if (cacheStrategy.getType() == CacheType.CLOUD_THEN_CACHE){
+            } else if (cacheStrategy.getType() == CacheType.CLOUD_THEN_CACHE) {
                 return getCloudResponse(requests, cacheStrategy)
                         .onErrorReturn(
                                 throwable -> getCachedResponse(requests, cacheStrategy).map(
@@ -72,7 +79,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             }
         }).map(response -> {
             Map<Type, List<GraphqlError>> errors = new HashMap<>();
-            mResults.clear();
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
@@ -93,6 +99,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                             errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                             }.getType()));
                         }
+                    } catch (JsonSyntaxException jse) {
+                        jse.printStackTrace();
+                        Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -115,28 +124,39 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         try {
-            int counter = requests.size();
+            List<GraphqlRequest> copyRequests = new ArrayList<>();
+            copyRequests.addAll(requests);
+
+            int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
-                if (requests.get(i).isNoCache()) {
+                if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }
 
                 String cachesResponse = mGraphqlCloudDataStore.getCacheManager()
-                        .get(requests.get(i).cacheKey());
+                        .get(copyRequests.get(i).cacheKey());
+
                 if (TextUtils.isEmpty(cachesResponse)) {
                     continue;
                 }
 
-                Object object = CommonUtils.fromJson(cachesResponse, requests.get(i).getTypeOfT());
-                checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
+                Object object = CommonUtils.fromJson(cachesResponse, copyRequests.get(i).getTypeOfT());
+                checkForNull(object, copyRequests.get(i).getQuery(), copyRequests.get(i).isShouldThrow());
                 //Lookup for data
-                mResults.put(requests.get(i).getTypeOfT(), object);
-                mIsCachedData.put(requests.get(i).getTypeOfT(), true);
-                requests.get(i).setNoCache(true);
-                mRefreshRequests.add(requests.get(i));
-                requests.remove(requests.get(i));
+                mResults.put(copyRequests.get(i).getTypeOfT(), object);
+
+                LoggingUtils.logGqlSizeCached("java", requests.toString(), cachesResponse);
+
+                mIsCachedData.put(copyRequests.get(i).getTypeOfT(), true);
+                copyRequests.get(i).setNoCache(true);
+                mRefreshRequests.add(copyRequests.get(i));
+                requests.remove(copyRequests.get(i));
+
+                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
             }
-        } catch (Exception e){
+        } catch (JsonSyntaxException jse) {
+            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -151,12 +171,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
         }
     }
 
-    private void checkForNull(Object object, String query, boolean shouldThrow) {
-        if (shouldThrow) {
-            NullCheckerKt.throwIfNull(object,
-                    GraphqlUseCase.class,
-                    (query.length() >= 16) ? query.substring(0, 16) : query
-            );
+    private void checkForNull(Object object, String request, boolean shouldThrow) {
+        if (shouldThrow && !TextUtils.isEmpty(request)) {
+            NullCheckerKt.throwIfNull(object, GraphqlUseCase.class, request);
         }
     }
 }

@@ -6,13 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
+import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
+import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
+import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -41,6 +52,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         renderProductCardContent(productCardModel)
 
+        renderStockPercentage(productCardModel)
+        renderStockLabel(productCardModel)
+
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
@@ -48,6 +62,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+
+        setAddToCartButtonText(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -79,6 +95,23 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
+    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
+        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            progressBarStock.progress = productCardModel.stockBarPercentage
+        }
+    }
+
+    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
+        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            textViewStockLabel.text = productCardModel.stockBarLabel
+        }
+    }
+
+    private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
+        if (productCardModel.addToCardText.isNotEmpty())
+            buttonAddToCart?.text = productCardModel.addToCardText
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -101,6 +134,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
+
     override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
@@ -115,6 +149,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     fun wishlistPage_hideCTAButton(isVisible: Boolean) {
         buttonAddToCart?.showWithCondition(isVisible)
         buttonRemoveFromWishlist?.showWithCondition(isVisible)
+        progressBarStock?.showWithCondition(!isVisible)
+        textViewStockLabel?.showWithCondition(!isVisible)
     }
 
     fun wishlistPage_enableButtonAddToCart(){

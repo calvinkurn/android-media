@@ -286,12 +286,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
                     }
+                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
                     wholeSaleInputFormsAdapter?.itemCount?.let {
                         if (it == 1) {
                             productWholeSaleSwitch?.isChecked = false
                         }
+                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1)
                     }
-                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -562,7 +563,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product wholesale input validation
         viewModel.isWholeSalePriceActivated.value?.run {
-            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
+            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
         }
 
         // product stock validation
@@ -774,11 +775,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
-        wholesaleInputForms?.childCount?.let {
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?) {
+        itemCount?.let {
             var wholeSaleErrorCounter = 0
             for (index in 0 until it) {
-                val productWholeSaleFormView = wholesaleInputForms.layoutManager?.getChildAt(index)
+                val productWholeSaleFormView = wholesaleInputForms?.layoutManager?.getChildAt(index)
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
@@ -1012,7 +1013,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productCategoryRecommendationLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
-                is Fail -> onGetCategoryRecommendationFailed()
+                is Fail -> {
+                    onGetCategoryRecommendationFailed()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
             }
         })
     }
@@ -1076,8 +1080,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         val imagePickerPickerTabTypeDef = intArrayOf(
                 ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA,
-                ImagePickerTabTypeDef.TYPE_INSTAGRAM
+                ImagePickerTabTypeDef.TYPE_CAMERA
         )
 
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
@@ -1185,6 +1188,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecLoader?.hide()
                     productNameRecShimmering?.hide()
                     productNameRecView?.hide()
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         }

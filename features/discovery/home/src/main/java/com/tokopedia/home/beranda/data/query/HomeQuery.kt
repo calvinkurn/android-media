@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.query
 
 object HomeQuery{
     fun getQuery() = """
+        query homeData
         {
         status
           ticker {
@@ -15,6 +16,8 @@ object HomeQuery{
               message
               color
               layout
+              ticker_type
+              title
             }
           }
           slides(device: 32) {
@@ -110,6 +113,9 @@ object HomeQuery{
                   position
                   type
                 }
+                has_buy_button
+                rating
+                count_review
               }
               banner {
                 id
@@ -132,11 +138,14 @@ object HomeQuery{
             }
           }
           homeFlag{
-            flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
-              name
-              is_active
+                event_time
+                server_time
+                flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh"){
+                    name
+                    is_active
+                }
             }
-          }
         }
     """.trimIndent()
 }
+

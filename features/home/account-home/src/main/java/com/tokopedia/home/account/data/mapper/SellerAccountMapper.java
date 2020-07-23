@@ -3,19 +3,22 @@ package com.tokopedia.home.account.data.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.PremiumAccountCopyWriting;
 import com.tokopedia.home.account.data.model.PremiumAccountResponse;
 import com.tokopedia.home.account.data.model.ShopInfoLocation;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListUiModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
@@ -39,7 +42,6 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import rx.functions.Func1;
@@ -68,7 +70,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
         ShopInfoLocation shopInfoLocation = graphqlResponse.getData(ShopInfoLocation.class);
         SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-        accountModel.setSaldoModel(saldoModel);
+        if(saldoModel != null && accountModel != null) {
+            accountModel.setSaldoModel(saldoModel);
+        }
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;
         if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()) {
@@ -131,8 +135,10 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
-        if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
-            items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+        if(accountModel.getSaldoModel() != null) {
+            if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
+                items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+            }
         }
 
         if (showPinjamanModalOnTop) {
@@ -212,6 +218,14 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
+
+        items.add(createLabelledMenuList(
+                context.getString(R.string.title_menu_voucher_toko),
+                context.getString(R.string.label_menu_voucher_toko),
+                context.getString(R.string.description_menu_voucher_toko),
+                "",
+                PENJUAL,
+                context.getString(R.string.title_menu_other_features)));
 
         ParcelableViewModel menuItem = getRekeningPremiumAccountMenu(accountModel);
         if(menuItem != null)
@@ -376,6 +390,18 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return menuGridItems;
     }
 
+    private LabelledMenuListUiModel createLabelledMenuList(String title, String label, String description, String appLink, String titleTrack, String sectionTrack) {
+        LabelledMenuListUiModel menuList = new LabelledMenuListUiModel();
+        menuList.setMenu(title);
+        menuList.setLabel(label);
+        menuList.setMenuDescription(description);
+        menuList.setApplink(appLink);
+        menuList.setTitleTrack(titleTrack);
+        menuList.setSectionTrack(sectionTrack);
+
+        return menuList;
+    }
+
     private ParcelableViewModel getSellerResolutionMenu(AccountModel accountModel) {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_seller_complain));
@@ -384,7 +410,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 && accountModel.getNotifications().getResolution() != null) {
             menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
         }
-        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setApplink(SettingConstant.RESCENTER_SELLER);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
 

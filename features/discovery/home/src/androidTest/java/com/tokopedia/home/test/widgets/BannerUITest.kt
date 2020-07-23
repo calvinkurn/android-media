@@ -40,7 +40,7 @@ class BannerUITest : BaseWidgetUiTest(){
 
     @Before
     fun setup(){
-        every { userSessionInterface.isLoggedIn } returns false
+        every { userSessionInterface.get().isLoggedIn } returns false
     }
 
     @Test
@@ -52,7 +52,7 @@ class BannerUITest : BaseWidgetUiTest(){
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -71,7 +71,7 @@ class BannerUITest : BaseWidgetUiTest(){
             emit(homeDataMapper.mapToHomeViewModel(homeData2, false))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(1000)

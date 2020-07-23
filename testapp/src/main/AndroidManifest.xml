@@ -13,16 +13,21 @@
         android:label="@string/testapp_name"
         android:supportsRtl="true"
         tools:replace="label"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/Theme.AppCompat"
+            android:label="New Testapp!">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".OldMainActivity"
+            android:theme="@style/Theme.AppCompat"/>
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

@@ -11,12 +11,19 @@ import org.junit.Test
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.test.R
 import com.tokopedia.shop.util.Util
-import com.tokopedia.test.application.environment.MockResponseInterface
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import java.util.HashMap
 
 class PltShopPageOfficialStorePerformanceTest {
+
+    companion object{
+        private const val SAMPLE_SHOP_ID = "3418893"
+    }
+
     private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HEADER_LOAD_TIME_PERFORMANCE = "shop_page_official_store_header_test_case_page_load_time"
     private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_official_store_home_tab_test_case_page_load_time"
     private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_official_store_product_tab_test_case_page_load_time"
@@ -33,20 +40,33 @@ class PltShopPageOfficialStorePerformanceTest {
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            (it.applicationContext as MockResponseInterface).reInitMockResponse(createShopPageOfficialStoreMockResponse(it))
-            activityRule.launchActivity(Intent())
-            activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+            setupGraphqlMockResponseWithCheck(createShopPageOfficialStoreMockResponse(it))
+
+            val intent = Intent()
+            intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
+            activityRule.launchActivity(intent)
+            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
     }
 
-    private fun createShopPageOfficialStoreMockResponse(context: Context): HashMap<String, String> {
+    private fun createShopPageOfficialStoreMockResponse(context: Context): MockModelConfig {
         val responseList = HashMap<String, String>()
-        responseList["shopInfoByID"] = Util.getRawString(context, R.raw.response_mock_data_shop_info_native_home_type)
+        responseList["shopInfoByID"] = Util.getRawString(context, R.raw.response_mock_data_shop_os_info_native_home_type)
         responseList["getShopOperationalHourStatus"] = Util.getRawString(context, R.raw.response_mock_data_shop_operational_hour)
         responseList["shopShowcasesByShopID"] = Util.getRawString(context, R.raw.response_mock_data_shop_showcase_by_shop_id)
-        responseList["GetShopProduct"] = Util.getRawString(context, R.raw.response_mock_data_get_shop_product)
         responseList["shopPageGetLayout"] = Util.getRawString(context, R.raw.response_mock_data_shop_page_get_layout)
-        return responseList
+        responseList["membershipStampProgress"] = Util.getRawString(context, R.raw.response_mock_data_shop_membership_stamp)
+        responseList["GetShopProduct"] = Util.getRawString(context, R.raw.response_mock_data_get_shop_product)
+
+        return object: MockModelConfig() {
+            override fun createMockModel(context: Context): MockModelConfig {
+                responseList.forEach {
+                    addMockResponse(it.key, it.value, FIND_BY_CONTAINS)
+                }
+
+                return this
+            }
+        }
     }
 
     @Test
@@ -70,7 +90,7 @@ class PltShopPageOfficialStorePerformanceTest {
                     TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+        activityRule.activity.deleteDatabase("tokopedia_graphql")
         activityRule.activity.finishAndRemoveTask()
     }
 

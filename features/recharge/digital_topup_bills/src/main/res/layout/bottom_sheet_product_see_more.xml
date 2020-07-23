@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_18">
+    android:padding="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_detail"
@@ -14,8 +14,7 @@
         android:layout_marginBottom="@dimen/dp_4"
         android:lines="1"
         android:text="@string/digital_title_details"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyType="heading_5"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/details"
@@ -33,8 +32,7 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
         android:layout_marginBottom="@dimen/dp_4"
         android:lines="1"
         android:text="@string/digital_title_price"
-        app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_price"
@@ -42,9 +40,18 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_4"
         android:lines="1"
-        android:textColor="@color/tkpd_main_orange"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
+        android:textColor="@color/digital_orange_price"
+        app:typographyType="heading_5"
         tools:text="Rp 40.000" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_select_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"/>
 
 </LinearLayout>

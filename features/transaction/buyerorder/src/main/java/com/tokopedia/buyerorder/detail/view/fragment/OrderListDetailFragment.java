@@ -43,6 +43,7 @@ import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.OrderToken;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
@@ -305,6 +306,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setBoughtDate(String boughtDate) {
+
+    }
+
+    @Override
     public void showReplacementView(List<String> reasons) {
 
     }
@@ -461,7 +467,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setItems(List<Items> items, boolean isTradeIn) {
+    public void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails) {
 
     }
 

@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class PartialSnapshotView(private val view: View,
                           private val listener: DynamicProductDetailListener) {
 
-    companion object{
+    companion object {
         const val ONE_SECOND = 1000L
     }
 
@@ -54,6 +54,24 @@ class PartialSnapshotView(private val view: View,
         divider.show()
     }
 
+    fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(view) {
+        if (!shouldShowWishlist) {
+            fab_detail_pdp.hide()
+        } else {
+            if (wishlisted) {
+                fab_detail_pdp.hide()
+                fab_detail_pdp.isActivated = true
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
+                fab_detail_pdp.show()
+            } else {
+                fab_detail_pdp.hide()
+                fab_detail_pdp.isActivated = false
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
+                fab_detail_pdp.show()
+            }
+        }
+    }
+
     private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
         tv_price_pdp.text = context.getString(R.string.template_price, "",
                 campaign.discountedPrice.getCurrencyFormatted())
@@ -66,7 +84,7 @@ class PartialSnapshotView(private val view: View,
         renderFlashSale(campaign, stockWording)
     }
 
-    private fun renderCampaignInactive(price:String) = with(view){
+    private fun renderCampaignInactive(price: String) = with(view) {
         tv_price_pdp.text = context.getString(R.string.template_price, "", price)
         text_original_price.gone()
         text_discount.gone()
@@ -90,17 +108,29 @@ class PartialSnapshotView(private val view: View,
     }
 
     private fun renderFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
-        if (campaign.activeAndHasId) {
+        if (campaign.shouldShowRibbonCampaign) {
+            if (campaign.campaignID.toInt() > 0) {
+                renderStockBarFlashSale(campaign, stockWording)
+            } else {
+                renderSlashPriceFlashSale()
+            }
             text_title_discount_timer.text = campaign.campaignTypeName
-            sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
-            setProgressStockBar(campaign)
             showCountDownTimer(campaign)
             discount_timer_holder.show()
-            sale_text_stock_available.show()
         } else {
             discount_timer_holder.gone()
-            sale_text_stock_available.gone()
         }
+    }
+
+    private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Neutral_N50))
+        showStockBarFlashSale()
+        setProgressStockBar(campaign, stockWording)
+    }
+
+    private fun renderSlashPriceFlashSale() = with(view) {
+        hideStockBarFlashSale()
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.white))
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
@@ -114,11 +144,13 @@ class PartialSnapshotView(private val view: View,
     }
 
     fun renderCod(showCod: Boolean) = with(view) {
-        layout_cod_content.showWithCondition(showCod)
+        cod_header_container.showWithCondition(showCod)
+        cod_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
     }
 
     fun renderTradein(showTradein: Boolean) = with(view) {
         tradein_header_container.showWithCondition(showTradein)
+        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
     }
 
     fun showOfficialStore(isGoldMerchant: Boolean, isOfficialStore: Boolean) {
@@ -182,16 +214,26 @@ class PartialSnapshotView(private val view: View,
                 view.layout_discount_timer.gone()
             }
         } catch (ex: Exception) {
-            discount_timer_holder.visibility = View.GONE
+            discount_timer_holder.hide()
         }
     }
 
-    private fun setProgressStockBar(campaign: CampaignModular) = with(view) {
+    private fun setProgressStockBar(campaign: CampaignModular, stockWording: String) = with(view) {
         try {
+            sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
             stock_bar_sold_product.progress = campaign.stockSoldPercentage
-            stock_bar_sold_product.show()
         } catch (ex: Exception) {
             stock_bar_sold_product.hide()
         }
+    }
+
+    private fun showStockBarFlashSale() = with(view) {
+        stock_bar_sold_product.show()
+        sale_text_stock_available.show()
+    }
+
+    private fun hideStockBarFlashSale() = with(view) {
+        stock_bar_sold_product.hide()
+        sale_text_stock_available.hide()
     }
 }

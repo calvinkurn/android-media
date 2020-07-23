@@ -7,6 +7,7 @@ import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
+import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
@@ -456,6 +457,51 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
+    fun viewHotelCancellationPage(context: Context?, invoiceId: String, hotelCancellationModel: HotelCancellationModel, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val eventLabel = "$HOTEL_LABEL - $invoiceId - $orderAmount - $cancellationFee - $refundAmount"
+        map.addGeneralEvent(VIEW_HOTEL_IRIS, VIEW_CANCELLATION_PAGE, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun clickNextOnCancellationPage(context: Context?, invoiceId: String, hotelCancellationModel: HotelCancellationModel, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: HOTEL_DEFAULT_VALUE_ZERO_STRING
+        val eventLabel = "$HOTEL_LABEL - $invoiceId - $orderAmount - $cancellationFee - $refundAmount"
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_NEXT_ON_CANCELLATION_PAGE, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun clickSubmitCancellation(context: Context?, invoiceId: String, hotelCancellationModel: HotelCancellationModel, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: "0"
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: "0"
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: "0"
+        val eventLabel = "$HOTEL_LABEL - $invoiceId - $orderAmount - $cancellationFee - $refundAmount"
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_SUBMIT_CANCELLATION, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun viewCancellationStatus(context: Context?, invoiceId: String, orderAmount: String, cancellationFee: String, refundAmount: String,
+                               status: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $invoiceId - $orderAmount - $cancellationFee - $refundAmount - $status"
+        map.addGeneralEvent(VIEW_HOTEL_IRIS, VIEW_CANCELLATION_STATUS, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun clickOnCancellationStatusActionButton(context: Context?, buttonLabel: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $buttonLabel"
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_ON_CANCELLATION_RESULT_PAGE, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
     private fun convertDate(date: String): String =
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 
@@ -479,5 +525,9 @@ class TrackingHotelUtil {
         this[EVENT_ACTION] = action
         this[EVENT_LABEL] = label
         return this
+    }
+
+    companion object {
+        const val HOTEL_DEFAULT_VALUE_ZERO_STRING = "0"
     }
 }

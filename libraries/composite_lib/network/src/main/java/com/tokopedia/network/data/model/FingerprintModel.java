@@ -1,5 +1,6 @@
 package com.tokopedia.network.data.model;
 
+import android.text.TextUtils;
 /**
  * @author ricoharisin .
  */
@@ -19,7 +20,29 @@ public class FingerprintModel {
     }
 
     public void setAdsId(String adsId) {
-        this.adsId = adsId;
+        if(!TextUtils.isEmpty(adsId)){
+            this.adsId = trimGoogleAdId(adsId);
+        }else{
+            this.adsId = "";
+        }
+    }
+
+    String trimGoogleAdId(String googleAdsId){
+        StringBuilder sb = new StringBuilder(googleAdsId.length());//we know this is the capacity so we initialise with it:
+        for (int i = 0; i < googleAdsId.length(); i++) {
+            char c = googleAdsId.charAt(i);
+            switch (c){
+                case '\u2013':
+                case '\u2014':
+                case '\u2015':
+                    sb.append('-');
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
     }
 
     public String getRegistrarionId() {

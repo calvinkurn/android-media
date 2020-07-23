@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -243,6 +244,12 @@ class ChatModule {
     @Provides
     internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
     }
 
     @ChatScope

@@ -14,6 +14,7 @@ import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
@@ -23,11 +24,13 @@ import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.QuickFilterViewHolder;
@@ -42,6 +45,7 @@ import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
+import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -61,6 +65,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener;
     private final InspirationCarouselListener inspirationCarouselListener;
     private final BroadMatchListener broadMatchListener;
+    private final InspirationCardListener inspirationCardListener;
     private final Config topAdsConfig;
     private int recyclerViewItem;
 
@@ -75,6 +80,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener,
                                       InspirationCarouselListener inspirationCarouselListener,
                                       BroadMatchListener broadMatchListener,
+                                      InspirationCardListener inspirationCardListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -89,6 +95,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.topAdsConfig = config;
         this.inspirationCarouselListener = inspirationCarouselListener;
         this.broadMatchListener = broadMatchListener;
+        this.inspirationCardListener = inspirationCardListener;
     }
 
     @Override
@@ -180,6 +187,18 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(InspirationCardViewModel inspirationCardViewModel) {
+        switch (getRecyclerViewItem()) {
+            case SearchConstant.RecyclerView.VIEW_LIST:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
+                return BigGridInspirationCardViewHolder.LAYOUT;
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
+            default:
+                return SmallGridInspirationCardViewHolder.LAYOUT;
+        }
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -215,6 +234,10 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new BannedProductsTickerViewHolder(view, bannedProductsRedirectToBrowserListener);
         } else if (type == BroadMatchViewHolder.LAYOUT) {
             viewHolder = new BroadMatchViewHolder(view, broadMatchListener);
+        } else if (type == SmallGridInspirationCardViewHolder.LAYOUT) {
+            viewHolder = new SmallGridInspirationCardViewHolder(view, inspirationCardListener);
+        } else if (type == BigGridInspirationCardViewHolder.LAYOUT) {
+            viewHolder = new BigGridInspirationCardViewHolder(view, inspirationCardListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

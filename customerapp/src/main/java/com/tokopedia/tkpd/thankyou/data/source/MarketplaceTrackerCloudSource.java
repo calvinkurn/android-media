@@ -3,16 +3,16 @@ package com.tokopedia.tkpd.thankyou.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.OrderGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,22 +30,22 @@ import rx.Observable;
 
 public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private Context context;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSessionInterface;
     private RemoteConfig remoteConfig;
     private static final String ANDROID_ENABLE_TYPAGE_GRATIS_ONGKIR = "android_enable_typage_gratisongkir";
     private static final String PAYMENT_ID = "paymentID";
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
-                                         SessionHandler sessionHandler,
+                                         UserSessionInterface userSessionInterface,
                                          Context context) {
         super(requestParams);
         this.context = context;
-        this.sessionHandler = sessionHandler;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
     public Observable<Boolean> sendAnalytics() {
-        MarketplaceTrackerMapper mapper = new MarketplaceTrackerMapper(sessionHandler,
+        MarketplaceTrackerMapper mapper = new MarketplaceTrackerMapper(userSessionInterface,
                 (List<String>) requestParams.getObject(ThanksTrackerConst.Key.SHOP_TYPES),
                 requestParams);
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();

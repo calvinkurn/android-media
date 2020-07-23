@@ -9,15 +9,20 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
+import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import org.spekframework.spek2.dsl.TestBody
@@ -45,27 +50,37 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val userSessionInterface by memoized<UserSessionInterface>()
     val closeChannelUseCase by memoized<CloseChannelUseCase>()
     val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase>()
+    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>()
+    val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>()
+    val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>()
+    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>()
+    val topAdsImageViewUseCase by memoized<TopAdsImageViewUseCase>()
     return HomeViewModel(
-            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
-            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-            getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
-            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-            getKeywordSearchUseCase = getKeywordSearchUseCase,
-            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
-            getRecommendationTabUseCase = getRecommendationTabUseCase,
-            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-            homeDispatcher = TestDispatcherProvider(),
-            homeUseCase = getHomeUseCase,
-            popularKeywordUseCase = getPopularKeywordUseCase,
-            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
-            getAtcUseCase = getAtcUseCase,
-            userSession = userSessionInterface,
-            closeChannelUseCase = closeChannelUseCase,
-            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
+            dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
+            getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
+            getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
+            getDynamicChannelsUseCase = Lazy{getDynamicChannelsUseCase},
+            getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
+            getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
+            getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
+            getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
+            getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
+            getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
+            getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
+            homeDispatcher = Lazy{TestDispatcherProvider()},
+            homeUseCase = Lazy{getHomeUseCase},
+            popularKeywordUseCase = Lazy{getPopularKeywordUseCase},
+            sendGeolocationInfoUseCase = Lazy{getSendGeolocationInfoUseCase},
+            stickyLoginUseCase = Lazy{getStickyLoginUseCase},
+            getAtcUseCase = Lazy{getAtcUseCase},
+            userSession = Lazy{userSessionInterface},
+            closeChannelUseCase = Lazy{closeChannelUseCase},
+            injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
+            declineSalamWIdgetUseCase = Lazy{declineSalamWIdgetUseCase},
+            declineRechargeRecommendationUseCase = Lazy { declineRechargeRecommendationUseCase },
+            getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase },
+            topAdsImageViewUseCase = Lazy{topAdsImageViewUseCase}
     )
 }
 
@@ -90,6 +105,11 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val closeChannelUseCase by memoized<CloseChannelUseCase> { mockk(relaxed = true) }
     val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase> { mockk(relaxed = true) }
     val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
+    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>{ mockk(relaxed = true)}
+    val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>{ mockk(relaxed = true)}
+    val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>{ mockk(relaxed = true)}
+    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>{ mockk(relaxed = true)}
+    val topAdsImageViewUseCase by  memoized<TopAdsImageViewUseCase>{mockk(relaxed = true)}
 }
 
 fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
@@ -115,6 +135,30 @@ fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(businessLis
 }
 fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
     coEvery{ executeOnBackground() } throws Exception()
+}
+
+fun GetRechargeRecommendationUseCase.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){
+    coEvery { executeOnBackground() } returns rechargeRecommendation
+}
+
+fun GetRechargeRecommendationUseCase.givenGetRechargeRecommendationThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
+}
+
+fun DeclineRechargeRecommendationUseCase.givenDeclineRechargeRecommendationUseCase(declineRechargeRecommendation: DeclineRechargeRecommendation){
+    coEvery { executeOnBackground() } returns declineRechargeRecommendation
+}
+
+fun GetSalamWidgetUseCase.givenGetSalamWidgetUseCase(salamWidget : SalamWidget){
+    coEvery { executeOnBackground() } returns salamWidget
+}
+
+fun GetSalamWidgetUseCase.givenGetSalamWidgetThrowReturn(){
+    coEvery { executeOnBackground() } throws Exception()
+}
+
+fun DeclineSalamWIdgetUseCase.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
+    coEvery { executeOnBackground() } returns salamWidget
 }
 
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {

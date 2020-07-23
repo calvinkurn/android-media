@@ -18,17 +18,20 @@ import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
+import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
+        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener,
+        private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener?
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     private var previousViewHolder: AbstractViewHolder<*>? = null
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        when(baseShopHomeWidgetUiModel.name) {
+        when (baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
             SLIDER_SQUARE_BANNER -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
@@ -41,6 +44,10 @@ class ShopHomeAdapterTypeFactory(
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
         return ShopHomeProductEtalaseTitleViewHolder.LAYOUT
+    }
+
+    override fun type(etalaseLabelViewModel: ShopProductSortFilterUiModel): Int {
+        return ShopProductSortFilterViewHolder.LAYOUT
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
@@ -83,11 +90,13 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeCarousellProductViewHolder(parent, shopPageHomeProductClickListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
-                ShopHomeVoucherViewHolder(parent, adapter?.isOwner ?: false, onMerchantVoucherListWidgetListener)
+                ShopHomeVoucherViewHolder(parent, adapter?.isOwner
+                        ?: false, onMerchantVoucherListWidgetListener)
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)
             }
+            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
 
             else -> return super.createViewHolder(parent, type)
         }

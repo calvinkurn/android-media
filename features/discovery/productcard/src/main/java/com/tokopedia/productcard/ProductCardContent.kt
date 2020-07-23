@@ -26,8 +26,6 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
     renderFreeOngkir(productCardModel)
-    renderStockPercentage(productCardModel)
-    renderStockLabel(productCardModel)
     renderTextShipping(productCardModel)
 }
 
@@ -79,7 +77,7 @@ private fun ProductCardModel.getPriceToRender(): String {
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-    imageShopBadge?.shouldShowWithAction(shopBadge != null) {
+    imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
         it.loadIcon(shopBadge?.imageUrl ?: "")
     }
 }
@@ -141,27 +139,23 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
+    if (productCardModel.willShowRatingAndReviewCount())
+        textViewIntegrity?.initLabelGroup(null)
+    else
+        textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
-    imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.freeOngkir.isActive) {
+    imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.isShowFreeOngkirBadge()) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
 }
 
 private fun View.renderTextShipping(productCardModel: ProductCardModel) {
-    textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
+    if (productCardModel.isShowFreeOngkirBadge())
+        textViewShipping?.initLabelGroup(null)
+    else
+        textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
 
-private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-    progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        it.progress = productCardModel.stockBarPercentage
-    }
-}
 
-private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-    textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        it.text = productCardModel.stockBarLabel
-    }
-}

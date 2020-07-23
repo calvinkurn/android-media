@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
@@ -43,6 +44,7 @@ import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImp
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
@@ -69,6 +71,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
 import java.util.*
@@ -82,10 +85,15 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
@@ -152,6 +160,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 true
             }
             R.id.menu_chat_search -> {
+                chatTabListContract?.closeSearchTooltip()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SEARCH)
                 true
             }
@@ -175,6 +184,11 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         setupTicker()
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        chatTabListContract?.showSearchOnBoardingTooltip()
+        super.onPrepareOptionsMenu(menu)
+    }
+
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
@@ -189,6 +203,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDismiss() {}
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    SellerMigrationTracking.eventOnClickChatTicker(userSession.userId)
                     openSellerMigrationBottomSheet()
                 }
             })
@@ -287,7 +302,9 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     ) {
         adapter?.let { adapter ->
             when {
-                index >= adapter.list.size -> { return }
+                index >= adapter.list.size -> {
+                    return
+                }
                 //not found on list
                 index == -1 -> {
                     if (adapter.hasEmptyModel()) {
@@ -337,6 +354,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
                     attributes?.readStatus = readStatus
                     attributes?.lastReplyTimeStr = newChat.time
+                    attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
                 }
             }
         }
@@ -426,11 +444,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         activity?.let {
             if (filterMenu.isAdded) return@let
             val itemMenus = ArrayList<Menus.ItemMenus>()
-            val arrayFilterString = arrayListOf(
-                    it.getString(R.string.filter_chat_all),
-                    it.getString(R.string.filter_chat_unread),
-                    it.getString(R.string.filter_chat_unreplied)
-            )
+            val arrayFilterString = chatItemListViewModel.getFilterTittles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
                 if (index == filterChecked) itemMenus.add(Menus.ItemMenus(title, true))
@@ -448,6 +462,13 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                     dismiss()
                 }
             }.show(childFragmentManager, FilterMenu.TAG)
+        }
+    }
+
+    override fun loadInitialData() {
+        super.loadInitialData()
+        if (isTabSeller()) {
+            chatItemListViewModel.loadTopBotWhiteList()
         }
     }
 
@@ -605,6 +626,12 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 subtitle = ""
                 ctaText = ""
                 ctaApplink = ""
+            } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_TOPBOT)) {
+                image = CHAT_SELLER_EMPTY_SMART_REPLY
+                title = it.getString(R.string.empty_chat_smart_reply)
+                subtitle = ""
+                ctaText = ""
+                ctaApplink = ""
             }
         }
 
@@ -637,6 +664,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         private const val CHAT_TAB_TITLE = "chat_tab_title"
         private const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
         private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        private const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
 
         @JvmStatic

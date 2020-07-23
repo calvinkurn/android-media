@@ -59,7 +59,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
-        android:textColor="@color/charcoal_grey_88"
         tools:text="Varian Produk"
         android:visibility="invisible"
         android:layout_marginEnd="@dimen/dp_16"

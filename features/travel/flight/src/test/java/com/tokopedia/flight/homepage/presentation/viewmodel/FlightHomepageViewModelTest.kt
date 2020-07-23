@@ -10,14 +10,14 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
 import com.tokopedia.flight.dummy.BANNER_DATA
 import com.tokopedia.flight.dummy.TICKER_DATA
-import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
+import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
@@ -48,7 +48,7 @@ class FlightHomepageViewModelTest {
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
     @RelaxedMockK
-    private lateinit var deleteAllFlightSearch: FlightDeleteAllFlightSearchDataUseCase
+    private lateinit var deleteAllFlightSearch: FlightSearchDeleteAllDataUseCase
 
     private val passengerValidator = FlightSelectPassengerValidator()
     private lateinit var flightHomepageViewModel: FlightHomepageViewModel
@@ -488,7 +488,7 @@ class FlightHomepageViewModelTest {
         newViewModel.onDepartureAirportChanged(departureAirport)
 
         // then
-        newViewModel.dashboardData.value shouldBe null
+        newViewModel.homepageData.value shouldBe null
     }
 
     @Test
@@ -526,12 +526,12 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.onDepartureAirportChanged(departureAirport)
 
         // then
-        flightHomepageViewModel.dashboardData.value?.departureAirport?.cityName shouldBe departureAirport.cityName
-        flightHomepageViewModel.dashboardData.value?.departureAirport?.airportCode shouldBe departureAirport.airportCode
-        flightHomepageViewModel.dashboardData.value?.departureAirport?.airportName shouldBe departureAirport.airportName
-        flightHomepageViewModel.dashboardData.value?.departureAirport?.cityCode shouldBe departureAirport.cityCode
-        flightHomepageViewModel.dashboardData.value?.departureAirport?.cityId shouldBe departureAirport.cityId
-        flightHomepageViewModel.dashboardData.value?.departureAirport?.cityAirports shouldBe departureAirport.cityAirports
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityName shouldBe departureAirport.cityName
+        flightHomepageViewModel.homepageData.value?.departureAirport?.airportCode shouldBe departureAirport.airportCode
+        flightHomepageViewModel.homepageData.value?.departureAirport?.airportName shouldBe departureAirport.airportName
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityCode shouldBe departureAirport.cityCode
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityId shouldBe departureAirport.cityId
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityAirports shouldBe departureAirport.cityAirports
     }
 
     @Test
@@ -552,7 +552,7 @@ class FlightHomepageViewModelTest {
         newViewModel.onArrivalAirportChanged(arrivalAirport)
 
         // then
-        newViewModel.dashboardData.value shouldBe null
+        newViewModel.homepageData.value shouldBe null
     }
 
     @Test
@@ -590,20 +590,18 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.onArrivalAirportChanged(arrivalAirport)
 
         // then
-        flightHomepageViewModel.dashboardData.value?.arrivalAirport?.cityName shouldBe arrivalAirport.cityName
-        flightHomepageViewModel.dashboardData.value?.arrivalAirport?.airportCode shouldBe arrivalAirport.airportCode
-        flightHomepageViewModel.dashboardData.value?.arrivalAirport?.airportName shouldBe arrivalAirport.airportName
-        flightHomepageViewModel.dashboardData.value?.arrivalAirport?.cityCode shouldBe arrivalAirport.cityCode
-        flightHomepageViewModel.dashboardData.value?.arrivalAirport?.cityId shouldBe arrivalAirport.cityId
-        flightHomepageViewModel.dashboardData.value?.arrivalAirport?.cityAirports shouldBe arrivalAirport.cityAirports
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityName shouldBe arrivalAirport.cityName
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.airportCode shouldBe arrivalAirport.airportCode
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.airportName shouldBe arrivalAirport.airportName
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityCode shouldBe arrivalAirport.cityCode
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityId shouldBe arrivalAirport.cityId
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityAirports shouldBe arrivalAirport.cityAirports
     }
 
     @Test
     fun onClassChanged_withNullDashboardData_shouldDoNothing() {
         // given
-        val flightClassModel = FlightClassModel()
-        flightClassModel.id = 1
-        flightClassModel.title = "Ekonomi"
+        val flightClassModel = FlightClassModel(1, "Ekonomi")
         val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
                 dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
                 testDispatcherProvider)
@@ -612,15 +610,13 @@ class FlightHomepageViewModelTest {
         newViewModel.onClassChanged(flightClassModel)
 
         // then
-        newViewModel.dashboardData.value shouldBe null
+        newViewModel.homepageData.value shouldBe null
     }
 
     @Test
     fun onClassChanged_shouldSendAnalytics() {
         // given
-        val flightClassModel = FlightClassModel()
-        flightClassModel.id = 1
-        flightClassModel.title = "Ekonomi"
+        val flightClassModel = FlightClassModel(1, "Ekonomi")
 
         // when
         flightHomepageViewModel.onClassChanged(flightClassModel)
@@ -634,16 +630,14 @@ class FlightHomepageViewModelTest {
     @Test
     fun onClassChanged_changeDashboardData() {
         // given
-        val flightClassModel = FlightClassModel()
-        flightClassModel.id = 1
-        flightClassModel.title = "Ekonomi"
+        val flightClassModel = FlightClassModel(1, "Ekonomi")
 
         // when
         flightHomepageViewModel.onClassChanged(flightClassModel)
 
         // then
-        flightHomepageViewModel.dashboardData.value?.flightClass?.id shouldBe flightClassModel.id
-        flightHomepageViewModel.dashboardData.value?.flightClass?.title shouldBe flightClassModel.title
+        flightHomepageViewModel.homepageData.value?.flightClass?.id shouldBe flightClassModel.id
+        flightHomepageViewModel.homepageData.value?.flightClass?.title shouldBe flightClassModel.title
     }
 
     @Test
@@ -661,7 +655,7 @@ class FlightHomepageViewModelTest {
         newViewModel.onPassengerChanged(passengerModel)
 
         // then
-        newViewModel.dashboardData.value shouldBe null
+        newViewModel.homepageData.value shouldBe null
     }
 
     @Test
@@ -695,9 +689,9 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.onPassengerChanged(passengerModel)
 
         // then
-        flightHomepageViewModel.dashboardData.value?.flightPassengerViewModel?.adult shouldBe passengerModel.adult
-        flightHomepageViewModel.dashboardData.value?.flightPassengerViewModel?.children shouldBe passengerModel.children
-        flightHomepageViewModel.dashboardData.value?.flightPassengerViewModel?.infant shouldBe passengerModel.infant
+        flightHomepageViewModel.homepageData.value?.flightPassengerViewModel?.adult shouldBe passengerModel.adult
+        flightHomepageViewModel.homepageData.value?.flightPassengerViewModel?.children shouldBe passengerModel.children
+        flightHomepageViewModel.homepageData.value?.flightPassengerViewModel?.infant shouldBe passengerModel.infant
     }
 
     @Test
@@ -716,7 +710,7 @@ class FlightHomepageViewModelTest {
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
 
         // then
-        pair.second.compareTo(maxDateCalendar.time) shouldBe 0
+        assert(pair.second >= maxDateCalendar.time)
     }
 
     @Test
@@ -838,7 +832,7 @@ class FlightHomepageViewModelTest {
         // then
         coVerifySequence {
             flightAnalytics.eventSearchClick(any())
-            deleteAllFlightSearch.executeCoroutine()
+            deleteAllFlightSearch.execute()
         }
     }
 

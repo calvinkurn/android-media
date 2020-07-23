@@ -50,14 +50,24 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+            tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
+        } else {
+            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+        }
     }
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
             refreshThanksPageData()
         }
         btnShopAgain.setOnClickListener {
-            gotoHomePage()
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+                gotoHomePage()
+            } else {
+                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
+            }
         }
     }
 

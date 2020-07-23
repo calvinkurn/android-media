@@ -52,6 +52,7 @@ import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
+import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -211,11 +212,16 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             progress_bar.visibility = View.GONE
         } else {
             progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(R.string.topads_dash_group_item_progress_status), priceDaily)
+            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
-            priceSpent?.replace("Rp", "")?.trim()?.toInt().let {
-                progress_bar.setValue(it ?: 0, false)
+            try {
+                priceSpent = null
+                Utils.convertMoneyToValue(priceSpent ?: "0").let {
+                    progress_bar.setValue(it, false)
+                }
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
             }
         }
         renderTabAndViewPager()
@@ -223,7 +229,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     private fun onStateChanged(appBarLayout: AppBarLayout?, state: TopAdsProductIklanFragment.State?) {
         swipe_refresh_layout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

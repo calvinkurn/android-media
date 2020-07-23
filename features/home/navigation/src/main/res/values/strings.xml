@@ -4,6 +4,7 @@
     <string name="inbox">Inbox</string>
     <string name="keranjang">Keranjang</string>
     <string name="akun">Akun</string>
+    <string name="akun_non_login">Masuk</string>
     <string name="official">Official Store</string>
 
     <string name="exit_message">Tekan sekali lagi untuk keluar</string>
@@ -11,7 +12,7 @@
     <string name="chat">Chat</string>
     <string name="chat_desc">Percakapan pribadi Anda</string>
 
-    <string name="diskusi">Q&amp;A</string>
+    <string name="diskusi">Diskusi</string>
     <string name="diskusi_desc">Tanya jawab seputar Produk</string>
 
     <string name="ulasan">Ulasan</string>
@@ -88,4 +89,14 @@
     <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
     <string name="title_read_more">Lihat Semua</string>
     <string name="no_notification_update_yet">Belum ada Notification</string>
+
+    <string name="tag_lottie_animation_view">lottieAnimationView</string>
+    <string name="tag_title_textview">titleTextView</string>
+    <string name="tag_badge_textview">badgeTextView</string>
+
+    <string name="id_menu_home">menu_home</string>
+    <string name="id_menu_feed">menu_feed</string>
+    <string name="id_menu_os">menu_os</string>
+    <string name="id_menu_cart">menu_cart</string>
+    <string name="id_menu_account">menu_account</string>
 </resources>

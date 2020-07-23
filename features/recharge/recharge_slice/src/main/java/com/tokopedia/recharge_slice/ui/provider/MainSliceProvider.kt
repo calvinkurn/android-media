@@ -117,24 +117,27 @@ class MainSliceProvider : SliceProvider() {
                         recommendationModel?.indices?.let { recomRange ->
                             var listProduct: MutableList<Product> = mutableListOf()
                             for (i in recomRange) {
-                                var product = Product()
-                                row {
-                                    setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
-                                    recommendationModel.let {
-                                        it?.let {
-                                            product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
-                                            listProduct.add(i, product)
+                                if (!recommendationModel?.get(i)?.productName.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()
+                                        && recommendationModel?.get(i)?.productPrice!=0) {
+                                    var product = Product()
+                                    row {
+                                        setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
+                                        recommendationModel.let {
+                                            it?.let {
+                                                product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
+                                                listProduct.add(i, product)
+                                            }
+                                            it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                            it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
                                         }
-                                        it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
-                                        it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
-                                    }
-                                    primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
-                                        SliceAction.create(
-                                                it,
-                                                createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
-                                                SMALL_IMAGE,
-                                                ""
-                                        )
+                                        primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
+                                            SliceAction.create(
+                                                    it,
+                                                    createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
+                                                    SMALL_IMAGE,
+                                                    ""
+                                            )
+                                        }
                                     }
                                 }
                             }

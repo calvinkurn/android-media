@@ -272,6 +272,9 @@
     <string name="coachmark_booking_info">Cetak label pengiriman atau tulis kode booking di paket yang akan di kirim.</string>
     <string name="dialog_receiver_name">Nama Penerima</string>
     <string name="et_empty_error">Tidak Boleh Kosong</string>
-
+    <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
+    <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
+    <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
+    <string name="button_understand">Ya, saya mengerti</string>
 
 </resources>

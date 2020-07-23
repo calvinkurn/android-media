@@ -28,17 +28,14 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <com.tokopedia.design.button.BottomActionView
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/btnFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_18"
+        android:layout_marginBottom="@dimen/notif_dp_18"
         android:animateLayoutChanges="true"
-        app:bav_1_display="true"
-        app:bav_2_display="false"
-        app:bav_1_icon_display="false"
+        app:fbType="group"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        app:bav_label_1="@string/mark_all_as_read"/>
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
