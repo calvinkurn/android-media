@@ -271,9 +271,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onErrorGetBottomChat(throwable: Throwable) {
         rvScrollListener?.finishBottomLoadingState()
-//        hideTopLoading()
-//        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
-//        rvScrollListener?.finishTopLoadingState()
+        adapter.hideBottomLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
     }
 
     private fun showBottomLoading() {
