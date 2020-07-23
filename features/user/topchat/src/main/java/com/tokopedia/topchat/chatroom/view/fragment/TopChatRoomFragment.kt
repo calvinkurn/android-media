@@ -514,6 +514,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onErrorInitiateData(throwable: Throwable) {
         hideLoading()
+        showGetListError(throwable)
         showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
         fpm.stopTrace()
     }
