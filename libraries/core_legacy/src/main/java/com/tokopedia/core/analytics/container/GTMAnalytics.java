@@ -58,6 +58,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_TYPE = "shopType";
     public static final String OPEN_SCREEN = "openScreen";
     public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String KEY_GCLID = "gclid";
     public static final String CLIENT_ID = "clientId";
     public static final String SESSION_IRIS = "sessionIris";
     private final Iris iris;
@@ -69,6 +70,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private Long lastGetConnectionTimeStamp = 0L;
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
 
+    private String mGclid = "";
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
@@ -102,15 +104,10 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(clone(value));
-
-        StringBuilder stacktrace = new StringBuilder();
+        pushGeneralEcommerce(clone(value));
 
         // V5
         try {
-            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                stacktrace.append(String.format("%s\n", ste.toString()));
-            }
 
             String keyEvent = keyEvent(clone(value));
 
@@ -119,6 +116,10 @@ public class GTMAnalytics extends ContextAnalytics {
                 return;
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
+            StringBuilder stacktrace = new StringBuilder();
+            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                stacktrace.append(String.format("%s\n", ste.toString()));
+            }
             GtmLogger.getInstance(context).saveError(stacktrace.toString());
             if (e != null && !TextUtils.isEmpty(e.getMessage())) {
                 Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
@@ -170,14 +171,11 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public static class PurchaseKey {
-        private static final String KEY_NAME = "name";
         private static final String KEY_ID = "id";
         private static final String KEY_AFFILIATION = "affiliation";
         private static final String KEY_REVENUE = "revenue";
         private static final String KEY_TAX = "tax";
         public static final String KEY_SHIPPING = "shipping";
-        private static final String KEY_VARIANT = "variant";
-        private static final String KEY_QTY = "quantity";
         public static final String KEY_COUPON = "coupon";
     }
 
@@ -804,6 +802,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", bundle, context);
+        iris.saveEvent(bundleToMap(bundle));
     }
 
     public void putNetworkSpeed(Bundle bundle) {
@@ -858,9 +857,29 @@ public class GTMAnalytics extends ContextAnalytics {
         String name = eventName == null ? (String) values.get("event") : eventName;
         if (isGtmV5) name += " (v5)";
         GtmLogger.getInstance(context).save(name, values);
+        logEventSize(eventName, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);
         }
+    }
+
+    private void logEventSize(String eventName, Map<String, Object> values) {
+        String eventCategory = (String) values.get("eventCategory");
+        if (!TextUtils.isEmpty(eventCategory)) {
+            Timber.w("P1#GTM_SIZE#event_cat;name='%s';size=%s;value='%s'", eventName, values.toString().length(), eventCategory);
+            return;
+        }
+        String screenName = (String) values.get("screenName");
+        if (!TextUtils.isEmpty(screenName)) {
+            Timber.w("P1#GTM_SIZE#event_screen;name='%s';size=%s;value='%s'", eventName, values.toString().length(), screenName);
+            return;
+        }
+        String pageType = (String) values.get("pageType");
+        if (!TextUtils.isEmpty(pageType)) {
+            Timber.w("P1#GTM_SIZE#event_page;name='%s';size=%s;value='%s'", eventName, values.toString().length(), pageType);
+            return;
+        }
+        Timber.w("P1#GTM_SIZE#event_others;name='%s';size=%s", eventName, values.toString().length());
     }
 
     private static Map<String, Object> bundleToMap(Bundle extras) {
@@ -1009,6 +1028,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
         if(!TextUtils.isEmpty(gclid)) {
             bundle.putString("gclid", gclid);
+            mGclid = gclid;
         }
         bundle.putString("utmSource", (String) param.get(AppEventTracking.GTM.UTM_SOURCE));
         bundle.putString("utmMedium", (String) param.get(AppEventTracking.GTM.UTM_MEDIUM));
@@ -1045,6 +1065,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
+            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
+                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
@@ -1064,6 +1087,37 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribe(getDefaultSubscriber());
     }
 
+
+    private void pushGeneralEcommerce(Map<String, Object> values) {
+        Map<String, Object> data = new HashMap<>(values);
+        Observable.just(data)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(it -> {
+                    if (!TextUtils.isEmpty(mGclid)) {
+                        if (it.get("event") != null) {
+                            String eventName = String.valueOf(it.get("event"));
+                            addGclIdIfNeeded(eventName, it);
+                        }
+                    }
+                    pushIris("", it);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
+    }
+
+    private void addGclIdIfNeeded(String eventName, Map<String, Object> values){
+        if(null == eventName) return;
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.put(KEY_GCLID, mGclid);
+        }
+    }
 
     public void eventOnline(String uid) {
         pushEvent(

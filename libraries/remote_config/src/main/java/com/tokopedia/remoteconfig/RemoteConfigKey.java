@@ -110,13 +110,12 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
-    public static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
-
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
     public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
+    public static final String HOME_USE_GLOBAL_COMPONENT = "android_customer_home_use_global_component";
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
@@ -135,8 +134,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
-
-    public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
 
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
@@ -175,8 +172,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
-    public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
-
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -184,10 +179,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
-
-    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
-
-
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
@@ -207,11 +198,11 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_OPENHOME_EVENT = "android_async_openhome_event";
     public static final String ENABLE_ASYNC_FIRSTTIME_EVENT = "android_async_firsttime_event";
     public static final String ENABLE_ASYNC_CREATE_APPSFLYER = "android_async_create_appsflyer";
-    public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
     public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
+    public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
@@ -224,7 +215,18 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
+    public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
+
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
+
+    public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
+
+    public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
+    public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
+    public static final String SELLER_HOME_IMPROVEMENT_DISABLED = "android_seller_home_improvement_disabled";
+    public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
+
 }

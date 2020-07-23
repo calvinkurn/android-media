@@ -12,7 +12,6 @@ import android.webkit.URLUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -48,10 +47,8 @@ import timber.log.Timber;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
+public class SplashScreen extends AppCompatActivity {
 
-    public static final int DAYS_IN_SECONDS = 86400;
-    public static final int STATUS_FINISHED = 1;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
     private PasswordGenerator Pgenerator;
@@ -111,11 +108,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onResume() {
         super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
-                return executeMoveToHomeFlow();
+                return executeMoveToHomeFlow(status);
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
@@ -123,8 +121,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     @NotNull
-    private boolean executeMoveToHomeFlow(){
-        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
+    private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
             Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
@@ -132,7 +129,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
-        registerFCMDeviceID();
+        registerFCMDeviceID(status);
         return true;
     }
 
@@ -153,21 +150,15 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         };
     }
 
-    private void registerFCMDeviceID() {
+    private void registerFCMDeviceID(boolean isPlayServiceAvailable) {
         GCMHandler gcm = new GCMHandler(this);
-        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
+        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
     public void finishSplashScreen() {
         Intent intent = ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Timber.d(resultData.toString());
-        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {

@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.viewmodel
 
-import android.os.Parcel
-import android.os.Parcelable
 import java.util.*
 
 data class HomeHeaderWalletAction(
@@ -21,48 +19,7 @@ data class HomeHeaderWalletAction(
         val rawCashBalance: Int = 0,
         val walletType: String = "",
         val isShowAnnouncement: Boolean = false
-) : Parcelable{
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte(),
-            parcel.createStringArrayList(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(labelTitle)
-        parcel.writeString(balance)
-        parcel.writeString(redirectUrlBalance)
-        parcel.writeString(appLinkBalance)
-        parcel.writeInt(typeAction)
-        parcel.writeByte(if (isVisibleActionButton) 1 else 0)
-        parcel.writeString(labelActionButton)
-        parcel.writeString(appLinkActionButton)
-        parcel.writeByte(if (isLinked) 1 else 0)
-        parcel.writeStringList(abTags)
-        parcel.writeString(pointBalance)
-        parcel.writeInt(rawPointBalance)
-        parcel.writeString(cashBalance)
-        parcel.writeInt(rawCashBalance)
-        parcel.writeString(walletType)
-        parcel.writeByte(if (isShowAnnouncement) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
+){
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -108,17 +65,8 @@ data class HomeHeaderWalletAction(
         return result
     }
 
-    companion object CREATOR : Parcelable.Creator<HomeHeaderWalletAction> {
+    companion object{
         private const val HASH_CODE = 31
-        override fun createFromParcel(parcel: Parcel): HomeHeaderWalletAction {
-            return HomeHeaderWalletAction(parcel)
-        }
 
-        override fun newArray(size: Int): Array<HomeHeaderWalletAction?> {
-            return arrayOfNulls(size)
-        }
     }
-
-
-
 }

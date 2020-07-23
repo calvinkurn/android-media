@@ -5,23 +5,27 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
@@ -57,11 +61,12 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     private val viewModel by lazy { viewModelFragmentProvider.get(ChangeInactiveFormRequestViewModel::class.java) }
 
     private var userId: String? = null
-    private var tkpdProgressDialog: TkpdProgressDialog? = null
     private var updateNewPhoneEmailFragment: UpdateNewPhoneEmailFragment? = null
     private var newEmail: String? = null
     private var newPhoneNumber: String? = null
     private val updateInactivePhoneInfoBottomSheet by lazy { BottomSheetUnify() }
+    private var loader: LoaderUnify? = null
+    private var parentView: FrameLayout? = null
 
     override fun getNewFragment(): Fragment? {
         return SelectImageNewPhoneFragment.instance
@@ -122,6 +127,8 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         if (intent != null && intent.extras != null) {
             userId = intent.extras?.getString(USER_ID)
         }
+        loader = findViewById(R.id.progress_bar)
+        parentView = findViewById(R.id.parent_view)
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         var fragment = supportFragmentManager.findFragmentByTag(SelectImageNewPhoneFragment::class.java.name)
         if (fragment == null) {
@@ -153,6 +160,9 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         val infoIcon = toolbar.findViewById<ImageView>(R.id.info_icon)
         infoIcon.setOnClickListener { view ->
             updateInactivePhoneInfoBottomSheet.setTitle("Info")
+            val infoView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_info_layout, null)
+            updateInactivePhoneInfoBottomSheet.setChild(infoView)
+            updateInactivePhoneInfoBottomSheet.setCloseClickListener { updateInactivePhoneInfoBottomSheet.dismiss() }
             updateInactivePhoneInfoBottomSheet.show(supportFragmentManager, SelectImageNewPhoneFragment::class.java.name)
         }
 
@@ -204,15 +214,13 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     }
 
     override fun dismissLoading() {
-        if (tkpdProgressDialog != null)
-            tkpdProgressDialog?.dismiss()
+        loader?.hide()
+        parentView?.show()
     }
 
     override fun showLoading() {
-        if (tkpdProgressDialog == null)
-            tkpdProgressDialog = TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS)
-
-        tkpdProgressDialog?.showDialog()
+        loader?.show()
+        parentView?.hide()
     }
 
     override fun showErrorValidateData(errorMessage: String) {

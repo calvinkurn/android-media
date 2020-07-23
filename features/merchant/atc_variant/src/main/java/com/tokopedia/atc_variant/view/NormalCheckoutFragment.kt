@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
@@ -58,13 +59,13 @@ import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_ONE_CLICK_SHIPMENT
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
 import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
-import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_TICKET_DATA
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
@@ -516,7 +517,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun showToastError(throwable: Throwable?, onRetry: ((v: View) -> Unit)?) {
-        val message = if (throwable is MessageErrorException && throwable.message?.isNotEmpty() == true) {
+        val message = if ((throwable is MessageErrorException || throwable is AkamaiErrorException) && throwable.message?.isNotEmpty() == true) {
             throwable.message
         } else {
             ErrorHandler.getErrorMessage(context, throwable)

@@ -11,6 +11,7 @@ ext {
     lifeCycleVersion = "2.1.0"
     workManagerVersion = "1.0.1"
 
+    appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
@@ -24,14 +25,14 @@ ext {
     runnerVersion = "1.1.0"
     rulesVersion = "1.1.0"
     apolloVersion = '0.3.0'
-    lottieVersion = '2.7.0'
+    lottieVersion = '3.4.0'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.60.5'
     powerMockVersion = '1.6.2'
     roomVersion = '2.2.1'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    guavaVersion = '21.0'
+    guavaVersion = '20.0'
     constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.0.0'
 
@@ -39,7 +40,7 @@ ext {
     stfalconVersion = '1.0.0'
 
     playServiceFirebaseConfig = '16.1.3'
-    playServiceBaseVersion = '16.0.1'
+    playServiceBaseVersion = '17.0.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
     playCoreVersion = '1.6.3'
@@ -91,21 +92,22 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.7'
-    unifyComponentsVersion = '1.1.36'
-    unifyCoachMarkVersion = '1.2.3'
+    unifyCoachMarkVersion = '1.2.6'
+    unifyPrinciplesVersion = '1.1.8'
+    unifyComponentsVersion = '1.1.40'
+    unifyCoachMarkVersion = '1.2.5'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
-    unifyDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '1.0.3'
+    unifyDialogVersion = '1.0.3'
+    unifyDatePickerVersion = '1.0.5'
     unifyPinVersion = '1.0.1'
-    unifyEmptyStateVersion = '1.0.5'
+    unifyEmptyStateVersion = '1.0.6-beta-1'
     unifyGlobalErrorVersion = '1.0.8'
-    unifyListVersion = "1.0.4"
     unifyHeaderVersion = '1.1.1'
-    unifySortFilterVersion = '1.0.1'
+    unifySortFilterVersion = '1.0.3'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
+    unifyListVersion = '1.0.5'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -138,7 +140,7 @@ ext {
             recyclerViewV7    : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
             mediaV7           : "androidx.media:media:${supportLibraryVersion}",
             supportV4         : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
-            appCompactV7      : "androidx.appcompat:appcompat:${supportLibraryVersion}",
+            appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
             supportV13        : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
             design            : "com.google.android.material:material:${materialVersion}",
             cardViewV7        : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
@@ -232,6 +234,7 @@ ext {
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:8.3.18",
+            robust                : "com.meituan.robust:robust:0.4.99",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -256,7 +259,7 @@ ext {
             archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.9",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.0",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -321,7 +324,6 @@ ext {
             oldChuckNoOp    : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
             toolargetool    : "com.gu.android:toolargetool:0.1.3@aar",
             timber          : "com.jakewharton.timber:timber:4.7.1",
-            //blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
             blockCanary     : ":libraries:blockcanary",
             blockCanaryNoOp : "com.github.markzhai:blockcanary-no-op:1.5.0",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
@@ -349,7 +351,7 @@ ext {
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
-            list         : "com.tokopedia.unify.compositions:list:${unifyListVersion}@aar",
+            list            : "com.tokopedia.unify.compositions:list:${unifyListVersion}@aar",
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",

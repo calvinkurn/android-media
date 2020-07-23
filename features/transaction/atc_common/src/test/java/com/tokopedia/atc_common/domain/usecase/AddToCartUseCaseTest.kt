@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.data.model.response.AddToCartResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -16,6 +17,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
+import java.lang.reflect.Type
 
 /**
  * Created by Irfan Khoirul on 2019-11-12.
@@ -38,9 +40,12 @@ class AddToCartUseCaseTest : Spek({
         Scenario("use case run successfully") {
 
             Given("given api response") {
+                val result = HashMap<Type, Any>()
+                val errors = HashMap<Type, List<GraphqlError>>()
+                val objectType = AddToCartGqlResponse::class.java
+                result[objectType] = AddToCartGqlResponse(AddToCartResponse())
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(AddToCartGqlResponse::class.java to AddToCartGqlResponse(
-                                AddToCartResponse())), null, false))
+                    Observable.just(GraphqlResponse(result,errors, false))
             }
 
             When("create observable") {

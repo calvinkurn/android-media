@@ -1,8 +1,8 @@
 package com.tokopedia.contactus.createticket.presenter;
 
+import android.util.Patterns;
 import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -116,7 +116,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             if (viewListener.getEmail().getText().toString().trim().length() == 0) {
                 viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_field_required));
                 return false;
-            } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(viewListener.getEmail().getText().toString()).matches()) {
                 viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_invalid_email));
                 return false;
             }

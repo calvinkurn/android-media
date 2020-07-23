@@ -7,6 +7,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -37,11 +42,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.BottomSheetView
-import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -67,10 +67,18 @@ import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_layout_section_category_parent.*
 import java.util.*
+import kotlinx.android.synthetic.main.tp_tooltip_es.view.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /*
  * Dynamic layout params are applied via
@@ -413,7 +421,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     AnalyticsTrackerUtil.ActionKeys.CLICK_LOYALTY_SAYA,
                     "")
         } else if (source.id == R.id.text_failed_action) {
-            mPresenter!!.getTokoPointDetail()
+            mPresenter.getTokoPointDetail()
         } else if (source.id == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
@@ -697,21 +705,29 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun showOnBoardingTooltip(title: String, content: String) {
-        val mToolTip = BottomSheetView(activityContext)
-        mToolTip.renderBottomSheet(BottomSheetFieldBuilder()
-                .setTitle(title)
-                .setBody(content)
-                .setCloseButton(getString(R.string.tp_label_check_storepoints))
-                .build())
-        mToolTip.show()
-        mToolTip.setBtnCloseOnClick { view: View? ->
+        val view = LayoutInflater.from(context).inflate(R.layout.tp_tooltip_es, null, false)
+        view.title_tooltip.text = title
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            view.desc_tooltip.text = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            view.desc_tooltip.text = Html.fromHtml(content)
+        }
+        val mToolTip = BottomSheetUnify()
+        mToolTip.apply {
+            setChild(view)
+            showHeader = false
+            showCloseIcon = false
+        }
+        view.btn_tooltip.setOnClickListener {
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
                     AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL)
-            mToolTip.cancel()
+            mToolTip.dismiss()
         }
+
+        mToolTip.show(childFragmentManager, "")
     }
 
     override fun showTokoPointCoupon(data: TokoPointSumCoupon) {
@@ -726,18 +742,19 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             tickerContainer!!.visibility = View.GONE
             return
         }
+
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_ticker)
         pager.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
-        val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator_ticker)
+        val pageIndicator: PageControl = view!!.findViewById(R.id.page_indicator_ticker)
         val hideTickerView = view!!.findViewById<View>(R.id.ic_close_ticker)
         hideTickerView.visibility = View.GONE
         if (content.layoutTickerAttr.tickerList.size > 1) { //adding bottom dots(Page Indicator)
+            pageIndicator.setIndicator(2)
             pageIndicator.visibility = View.VISIBLE
-            pageIndicator.setViewPager(pager, 0)
         } else {
             pageIndicator.visibility = View.GONE
         }
-        tickerContainer!!.visibility = View.VISIBLE
+        tickerContainer?.visibility = View.VISIBLE
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
@@ -799,9 +816,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     ImageHandler.loadImageCircle2(activityContext, mImgEggBottom, data.status.tier.eggImageHomepageURL)
                 }
                 if (data.status.points != null) {
-                    mTextPoints!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.reward.toDouble(), false)
-                    mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.reward.toDouble(), false)
-                    mTextLoyalty!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.loyalty.toDouble(), false)
+                    mTextPoints!!.text = CurrencyHelper.convertPriceValue(data.status.points.reward.toDouble(), false)
+                    mTextPointsBottom!!.text = CurrencyHelper.convertPriceValue(data.status.points.reward.toDouble(), false)
+                    mTextLoyalty!!.text = CurrencyHelper.convertPriceValue(data.status.points.loyalty.toDouble(), false)
                 }
             }
         }
@@ -882,7 +899,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (data.title.isEmpty() || data.title == null || data.appLink.isEmpty() || data.appLink == null) {
             return
         }
-        val btn: ButtonCompat
+        val btn: UnifyButton
         val titleDialog: Typography
         val descDialog: Typography
         val boxImageView: ImageView
@@ -932,7 +949,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
-        private const val REQUEST_CODE_LOGIN = 1
+        const val REQUEST_CODE_LOGIN = 1
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
         }
@@ -1010,7 +1027,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        rv_dynamic_link.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        rv_dynamic_link?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.seller_migration_common.presentation.widget
 
 import android.content.Context
-import android.os.Bundle
 import android.view.View
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants

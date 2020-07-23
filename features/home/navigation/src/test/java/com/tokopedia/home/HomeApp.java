@@ -49,11 +49,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void goToManageCreditCard(Context context) {
-
-    }
-
-    @Override
     public void goToSaldo(Context context) {
 
     }

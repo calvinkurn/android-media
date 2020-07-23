@@ -31,20 +31,8 @@ public class CacheApiWhiteList {
         cacheApiWhiteList.addAll(ShopOpenCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ShopCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ProductCacheApiWhiteList.getWhiteList());
-        cacheApiWhiteList.addAll(OpportunityCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(InstagramCacheApiWhiteList.getWhiteList());
         return cacheApiWhiteList;
     }
 
-    static class OpportunityCacheApiWhiteList {
-
-        static List<CacheApiWhiteListDomain> getWhiteList() {
-            List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-
-            // Opportunity category
-            cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWS(), "/v4/order/replacement/category", ONE_DAY));
-
-            return cacheApiWhiteList;
-        }
-    }
 }

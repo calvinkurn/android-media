@@ -3,14 +3,13 @@ package com.tokopedia.webview;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -26,7 +25,6 @@ import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -46,6 +44,8 @@ public class TkpdWebView extends WebView {
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
+    private static final String HEADER_TKPD_SESSION_ID2 = "Tkpd-SessionId";
+    private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
     private RemoteConfig remoteConfig;
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
@@ -121,14 +121,11 @@ public class TkpdWebView extends WebView {
                     AuthConstant.DATE_FORMAT,
                     userSession.getUserId(),
                     userSession);
-            header.put(
-                    HEADER_TKPD_SESSION_ID,
-                    getRegistrationIdWithTemp(getContext())
-            );
-            header.put(
-                    HEADER_TKPD_USER_AGENT,
-                    DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-            );
+            String deviceId = userSession.getDeviceId();
+            header.put(HEADER_TKPD_SESSION_ID, deviceId);
+            header.put(HEADER_TKPD_SESSION_ID2, deviceId);
+            header.put(HEADER_TKPD_USER_AGENT, DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE);
+            header.put(HEADER_TKPD_USER_ID, userSession.getUserId());
             Context application = getContext().getApplicationContext();
             if (application instanceof NetworkRouter) {
                 FingerprintModel fingerprintModel = ((NetworkRouter) (application)).getFingerprintModel();
@@ -144,18 +141,6 @@ public class TkpdWebView extends WebView {
             }
             loadUrl(urlToLoad, header);
         }
-    }
-
-    private String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString(GCM_ID, "").equals("")) {
-            String tempID = UUID.randomUUID().toString();
-            ;
-            cache.putString(GCM_ID, tempID);
-            cache.applyEditor();
-            return tempID;
-        }
-        return cache.getString(GCM_ID, "");
     }
 
     /**
@@ -233,7 +218,7 @@ public class TkpdWebView extends WebView {
         } else {
             if (!GlobalConfig.DEBUG)
                 Crashlytics.log(
-                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                        getContext().getString(com.tokopedia.webview.R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);
         }

@@ -44,6 +44,7 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
@@ -212,6 +213,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.getProductIncentiveOvo();
         if (!TextUtils.isEmpty(reputationId)) {
             presenter.getInboxDetail(
                     reputationId,
@@ -639,5 +641,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (presenter != null)
             presenter.detachView();
         callbackManager = null;
+    }
+
+    @Override
+    public void onErrorGetProductRevIncentiveOvo(Throwable throwable) {
+        adapter.setProductRevIncentiveOvoDomain(null);
+    }
+
+    @Override
+    public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
+        adapter.setProductRevIncentiveOvoDomain(productRevIncentiveOvoDomain);
+        adapter.setFragmentManager(getFragmentManager());
     }
 }

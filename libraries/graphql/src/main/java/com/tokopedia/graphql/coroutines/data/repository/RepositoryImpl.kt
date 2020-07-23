@@ -25,6 +25,8 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
+        mResults.clear()
+
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
                 getCloudResponse(requests.toMutableList(), cacheStrategy)
@@ -39,7 +41,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
-                        responseCloud = getCloudResponse(requests.toMutableList(), cacheStrategy)
+                        responseCloud = getCloudResponse(tempRequestCloud.toMutableList(), cacheStrategy)
                     }
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
@@ -104,8 +106,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
 
     private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         try {
-            val counter = requests.size
-            for (i in 0 until counter) {
+            for (i in 0 until requests.size) {
                 if (requests[i].isNoCache) {
                     continue
                 }
@@ -125,7 +126,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 mRefreshRequests.add(requests[i])
                 requests.remove(requests[i])
             }
-        } catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 

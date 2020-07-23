@@ -12,11 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
@@ -24,6 +22,8 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -89,17 +89,20 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         arguments?.let {
             titleProduct = it.getString(COMPONENT_NAME)
-            val productType = it.getInt(PRODUCT_TYPE)
-            val operatorId = it.getString(OPERATOR_ID)
-            val componentId = it.getInt(COMPONENT_TYPE)
             selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
-            var mapParam = HashMap<String, kotlin.Any>()
-            mapParam.put(KEY_COMPONENT_ID, componentId)
-            mapParam.put(KEY_OPERATOR_ID, operatorId)
-            productViewModel.getProductCollections(GraphqlHelper.loadRawString(resources, R.raw.query_product_digital_telco),
-                    mapParam, productType, this::onLoadingProductList, this::onSuccessProductList, this::onErrorProductList)
+            sharedModel.productList.observe(this, Observer {
+                when (it) {
+                    is Success -> onSuccessProductList()
+                    is Fail -> onErrorProductList()
+                }
+            })
+
+            sharedModel.loadingProductList.observe(this, Observer {
+                onLoadingProductList(it)
+            })
+
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
@@ -132,23 +135,32 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    fun onSuccessProductList(productData: TelcoProductComponentData) {
+    private fun onSuccessProductList() {
+        val productDataList = (sharedModel.productList.value as Success).data
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
-        var position = -1
-        if (selectedProductId > 0) {
-            for (i in productData.rechargeProductData.productDataCollections.indices) {
-                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId.toString()) {
-                    productData.rechargeProductData.productDataCollections[i].product.attributes.selected = true
-                    position = i
+        productDataList.map {
+            if (it.key == titleProduct) {
+                if (it.value.rechargeProductData.productDataCollections.isNotEmpty()) {
+                    var position = -1
+                    if (selectedProductId > 0) {
+                        for (i in it.value.rechargeProductData.productDataCollections.indices) {
+                            if (it.value.rechargeProductData.productDataCollections[i].product.id == selectedProductId.toString()) {
+                                it.value.rechargeProductData.productDataCollections[i].product.attributes.selected = true
+                                position = i
+                            }
+                        }
+                    }
+                    telcoTelcoProductView.renderProductList(it.value.productType,
+                            it.value.rechargeProductData.productDataCollections, position)
+                } else {
+                    onErrorProductList()
                 }
             }
         }
-        telcoTelcoProductView.renderProductList(productData.productType,
-                productData.rechargeProductData.productDataCollections, position)
     }
 
-    fun onErrorProductList(throwable: Throwable) {
+    private fun onErrorProductList() {
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct.toLowerCase())
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state,
                 titleProduct.toLowerCase(), titleProduct.toLowerCase())
@@ -168,24 +180,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     companion object {
 
-        val PRODUCT_TYPE = "product_type"
-        val COMPONENT_TYPE = "component_type"
         val COMPONENT_NAME = "component_name"
-        val OPERATOR_ID = "operator_Id"
         val SELECTED_PRODUCT_ID = "selected_product_id"
         val OPERATOR_NAME = "operator_name"
 
         val KEY_COMPONENT_ID = "componentID"
         val KEY_OPERATOR_ID = "operatorID"
 
-        fun newInstance(componentType: Int, componentName: String, operatorId: String,
-                        operatorName: String, productType: Int,
-                        selectedProductId: Int): Fragment {
+        fun newInstance(componentName: String, operatorName: String, selectedProductId: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
-            bundle.putInt(PRODUCT_TYPE, productType)
-            bundle.putInt(COMPONENT_TYPE, componentType)
-            bundle.putString(OPERATOR_ID, operatorId)
             bundle.putString(COMPONENT_NAME, componentName)
             bundle.putInt(SELECTED_PRODUCT_ID, selectedProductId)
             bundle.putString(OPERATOR_NAME, operatorName)

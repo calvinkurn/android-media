@@ -6,26 +6,34 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProductDataResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ShopDataResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ShopShipment
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.mapper.LastApplyMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import kotlin.math.min
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
 
+    fun createRequestParams(source: String): RequestParams {
+        return RequestParams.create().apply {
+            putString(PARAM_SOURCE, source)
+        }
+    }
+
     override suspend fun executeOnBackground(): OrderData {
         graphqlUseCase.setTypeClass(GetOccCartGqlResponse::class.java)
         val graphqlRequest = GraphqlHelper.loadRawString(context.resources,
                 R.raw.mutation_get_occ)
         graphqlUseCase.setGraphqlQuery(graphqlRequest)
+        graphqlUseCase.setRequestParams(useCaseRequestParams.parameters)
         val response = graphqlUseCase.executeOnBackground()
         if (response.response.status.equals(STATUS_OK, true)) {
             if (response.response.data.cartList.isNotEmpty()) {
@@ -38,7 +46,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                     }
                     kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
-                return OrderData(orderCart, response.response.data.profileIndex, response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
+                return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation,
+                        response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
             } else if (response.response.data.errors.isNotEmpty()) {
                 throw MessageErrorException(response.response.data.errors[0])
             } else {
@@ -149,5 +158,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         quantityViewModel.orderQuantity = product.productQuantity
         quantityViewModel.stockWording = ""
         return quantityViewModel
+    }
+
+    companion object {
+        private const val PARAM_SOURCE = "source"
     }
 }

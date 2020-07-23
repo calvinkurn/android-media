@@ -23,15 +23,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
-import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
@@ -70,6 +69,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val ALPHA_CHANGE_THRESHOLD = 150
 
         private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
+
+        private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
+        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+
+        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -136,6 +140,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupOffset()
         setupView(view)
         observeLiveData()
+        observeFreeShippingStatus()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
@@ -157,8 +163,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
+    override fun onShopBadgeClicked() {
+        goToReputationHistory()
+    }
+
     override fun onFollowersCountClicked() {
-        //No op for now. Will discuss with PM
+        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -174,8 +184,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
         if (bottomSheet is BottomSheetUnify) {
             bottomSheet.dismiss()
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
+        } else {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
-        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 
     override fun onRefreshShopInfo() {
@@ -253,13 +265,32 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         with(otherMenuViewModel) {
             settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
-                    is Success -> showSettingShopInfoState(result.data)
-                    is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
+                    is Success -> {
+                        showSettingShopInfoState(result.data)
+                        otherMenuViewModel.getFreeShippingStatus()
+                    }
+                    is Fail -> {
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+                        showSettingShopInfoState(SettingResponseState.SettingError)
+                    }
                 }
             })
             isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
                 canShowErrorToaster = !isToasterAlreadyShown
             })
+        }
+    }
+
+    private fun observeFreeShippingStatus() {
+        observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
+            if(freeShippingActive) {
+                otherMenuViewHolder?.setupFreeShippingLayout(
+                    fragmentManager,
+                    userSession
+                )
+            } else {
+                otherMenuViewHolder?.hideFreeShippingLayout()
+            }
         }
     }
 
@@ -444,6 +475,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             activity?.requestStatusBarDark()
             statusBarBackground?.show()
         }
+    }
+
+    private fun goToReputationHistory() {
+        val reputationHistoryIntent = RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
+            putExtra(GO_TO_REPUTATION_HISTORY, true)
+        }
+        startActivity(reputationHistoryIntent)
+    }
+
+    private fun goToShopFavouriteList() {
+        val shopFavouriteListIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST).apply {
+            putExtra(EXTRA_SHOP_ID, userSession.shopId)
+        }
+        startActivity(shopFavouriteListIntent)
     }
 
 }

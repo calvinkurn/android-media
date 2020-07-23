@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
 import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
@@ -316,10 +317,6 @@ class HomeUseCaseModule {
     }
 
     @Provides
-    @HomeScope
-    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
-
-    @Provides
     fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
                                  graphqlUseCase: GraphqlUseCase?,
                                  feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
@@ -436,6 +433,12 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
         useCase.setGraphqlQuery(closeChannel)
         return CloseChannelUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
+        return InjectCouponTimeBasedUseCase(graphqlUseCase)
     }
 
     @Provides

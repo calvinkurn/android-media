@@ -41,7 +41,6 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:clipToPadding="false"
-            android:paddingLeft="@dimen/mix_left_product_list_left_padding"
             android:paddingRight="@dimen/dp_16"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"

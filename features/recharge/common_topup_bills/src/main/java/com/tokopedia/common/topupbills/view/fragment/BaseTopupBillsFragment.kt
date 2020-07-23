@@ -176,8 +176,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             isExpressCheckout = getBoolean(EXTRA_IS_EXPRESS_CHECKOUT, isExpressCheckout)
         }
 
-        getMenuDetail(menuId)
-
         val checkoutView = getCheckoutView()
         checkoutView?.run {
             promoTicker = getPromoTicker()

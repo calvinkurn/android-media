@@ -5,6 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -15,10 +18,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductInfoDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
+import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.view.adapter.ProductInfoAdapter
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration
+import kotlinx.android.synthetic.main.fragment_product_full_description.*
 import kotlinx.android.synthetic.main.item_dynamic_product_info.view.*
 
 class ProductInfoViewHolder(private val view: View,
@@ -80,6 +85,7 @@ class ProductInfoViewHolder(private val view: View,
 
             txt_product_descr.autoLinkMask = 0
             Linkify.addLinks(txt_product_descr, Linkify.WEB_URLS)
+            txt_product_descr.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
 
             label_see_detail_product_descr.setOnClickListener {
                 listener.gotoDescriptionTab(
@@ -99,6 +105,15 @@ class ProductInfoViewHolder(private val view: View,
 
             }
             visible()
+        }
+    }
+
+    private fun onBranchClicked(url: String) {
+        if (!GlobalConfig.isSellerApp()) {
+            val intent = RouteManager.getIntent(view.context, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            intent.putExtra(RouteManager.BRANCH, url)
+            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
+            view.context.startActivity(intent)
         }
     }
 

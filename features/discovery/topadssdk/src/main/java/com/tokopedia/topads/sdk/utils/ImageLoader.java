@@ -42,6 +42,7 @@ public class ImageLoader {
     private ImageCache.ImageCacheParams cacheParams;
     private ImageFetcher imageFetcher;
     private final String PATH_VIEW = "views";
+    private static final String className = "com.tokopedia.topads.sdk.utils.ImageLoader";
 
     public ImageLoader(Context context) {
         this.context = context;
@@ -73,7 +74,7 @@ public class ImageLoader {
                         imageView.setImageBitmap(resource);
                         if (!product.isLoaded()) {
                             product.setLoaded(true);
-                            new ImpresionTask().execute(product.getImage().getS_url());
+                            new ImpresionTask(className).execute(product.getImage().getS_url());
                             if(impressionListener!=null){
                                 impressionListener.onImpressionProductAdsItem(pos, product);
                             }
@@ -98,7 +99,7 @@ public class ImageLoader {
                         imageView.setImageBitmap(resource);
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                            new ImpresionTask(className).execute(shop.getImageShop().getsUrl());
                         }
                     }
 
@@ -119,7 +120,7 @@ public class ImageLoader {
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
                         if (url!=null && url.contains(PATH_VIEW)) {
-                            new ImpresionTask().execute(url);
+                            new ImpresionTask(className).execute(url);
                         }
                     }
 
@@ -150,7 +151,7 @@ public class ImageLoader {
 
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
-                            new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                            new ImpresionTask(className).execute(shop.getImageShop().getsUrl());
                         }
                     }
                 });

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 
@@ -16,6 +17,10 @@ public interface InboxReputation {
         void onErrorGetFirstTimeInboxReputation(Throwable throwable);
 
         void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel);
+
+        void onErrorGetProductRevIncentiveOvo(Throwable throwable);
+
+        void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
 
         void finishLoadingFull();
 

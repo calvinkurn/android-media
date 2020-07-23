@@ -33,9 +33,8 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
+    <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
-
-    <string name="opportunity_title">Peluang</string>
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
@@ -50,5 +49,17 @@
 
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+
+    <!-- Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
+    <!-- Shop Score -->
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
+    
+    <!--Product Add Edit-->
+    <string name="title_product_add_edit">Product Add Edit</string>
+
+    <!-- Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
 
 </resources>

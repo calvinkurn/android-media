@@ -33,6 +33,7 @@ const val ERR_STATE_GLOBAL = "Global Error"
 
 /**
  * Performance Monitoring for Play
+ * Start: PlayActivity before onCreate()
  */
 const val PLAY_TRACE_PAGE = "plt_play_page"
 

@@ -109,12 +109,14 @@ class LogManager(val application: Application) : CoroutineScope {
         }
 
         private fun runService() {
-            if (android.os.Build.VERSION.SDK_INT > 21
-                    && ::jobScheduler.isInitialized && ::jobInfo.isInitialized) {
-                jobScheduler.schedule(jobInfo)
-            } else if (::pi.isInitialized) {
-                pi.send()
-            }
+            globalScopeLaunch({
+                if (android.os.Build.VERSION.SDK_INT > 21
+                        && ::jobScheduler.isInitialized && ::jobInfo.isInitialized) {
+                    jobScheduler.schedule(jobInfo)
+                } else if (::pi.isInitialized) {
+                    pi.send()
+                }
+            })
         }
 
         private fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {

@@ -123,9 +123,6 @@ object GetRatesApiUseCaseTest : Spek({
             Then("error with message error exception occured") {
                 tSubscriber.assertError(MessageErrorException::class.java)
             }
-            Then("message should be equal with expected") {
-                assertEquals(errorMsg, tSubscriber.onErrorEvents.first().message)
-            }
         }
 
     }

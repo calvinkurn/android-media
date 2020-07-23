@@ -7,10 +7,12 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 
 class ProductListAdapter(
         private val listener: ProductAttachmentListener,
+        private val deferredAttachment: DeferredViewHolderAttachment,
         carousel: ProductCarouselUiModel? = null
 ) : RecyclerView.Adapter<TopchatProductAttachmentViewHolder>() {
 
@@ -25,7 +27,7 @@ class ProductListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopchatProductAttachmentViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(ProductCarouselAttachmentViewHolder.LAYOUT, parent, false)
-        return ProductCarouselAttachmentViewHolder(view, listener)
+        return ProductCarouselAttachmentViewHolder(view, listener, deferredAttachment)
     }
 
     override fun onBindViewHolder(holder: TopchatProductAttachmentViewHolder, position: Int) {

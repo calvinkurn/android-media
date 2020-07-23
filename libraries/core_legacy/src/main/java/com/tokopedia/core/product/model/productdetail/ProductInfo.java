@@ -14,11 +14,6 @@ import java.util.List;
  */
 @Deprecated
 public class ProductInfo implements Parcelable {
-    private static final String TAG = ProductInfo.class.getSimpleName();
-
-    public static final String PRD_STATE_ACTIVE = "1";
-    public static final String PRD_STATE_PENDING = "-1";
-    public static final String PRD_STATE_WAREHOUSE = "3";
 
     @SerializedName("product_weight_unit")
     @Expose
@@ -135,21 +130,6 @@ public class ProductInfo implements Parcelable {
     public ProductInfo() {
     }
 
-    public List<ProductInstallment> getProductInstallments() {
-        return productInstallments;
-    }
-
-    public void setProductInstallments(List<ProductInstallment> productInstallments) {
-        this.productInstallments = productInstallments;
-    }
-
-    public boolean isAlwaysAvailable() {
-        return alwaysAvailable;
-    }
-
-    public void setAlwaysAvailable(boolean alwaysAvailable) {
-        this.alwaysAvailable = alwaysAvailable;
-    }
 
     public String getProductWeightUnit() {
         return productWeightUnit;
@@ -165,10 +145,6 @@ public class ProductInfo implements Parcelable {
 
     public void setProductEtalaseId(String productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
-    }
-
-    public Integer getProductAlreadyWishlist() {
-        return productAlreadyWishlist;
     }
 
     public void setProductAlreadyWishlist(Integer productAlreadyWishlist) {
@@ -189,10 +165,6 @@ public class ProductInfo implements Parcelable {
 
     public void setProductCondition(String productCondition) {
         this.productCondition = productCondition;
-    }
-
-    public String getProductKey() {
-        return productKey;
     }
 
     public void setProductKey(String productKey) {
@@ -239,10 +211,6 @@ public class ProductInfo implements Parcelable {
         this.productDescription = productDescription;
     }
 
-    public Integer getProductReturnable() {
-        return productReturnable;
-    }
-
     public void setProductReturnable(Integer productReturnable) {
         this.productReturnable = productReturnable;
     }
@@ -253,10 +221,6 @@ public class ProductInfo implements Parcelable {
 
     public void setProductMinOrder(String productMinOrder) {
         this.productMinOrder = productMinOrder;
-    }
-
-    public String getProductLastUpdate() {
-        return productLastUpdate;
     }
 
     public void setProductLastUpdate(String productLastUpdate) {
@@ -295,100 +259,20 @@ public class ProductInfo implements Parcelable {
         this.productUrl = productUrl;
     }
 
-    public String getProductCatalogId() {
-        return productCatalogId;
-    }
-
     public void setProductCatalogId(String productCatalogId) {
         this.productCatalogId = productCatalogId;
-    }
-
-    public String getProductCatalogName() {
-        return productCatalogName;
     }
 
     public void setProductCatalogName(String productCatalogName) {
         this.productCatalogName = productCatalogName;
     }
 
-    public String getProductCatalogUrl() {
-        return productCatalogUrl;
-    }
-
     public void setProductCatalogUrl(String productCatalogUrl) {
         this.productCatalogUrl = productCatalogUrl;
     }
 
-    public String getProductStatusMessage() {
-        return productStatusMessage;
-    }
-
-    public void setProductStatusMessage(String productStatusMessage) {
-        this.productStatusMessage = productStatusMessage;
-    }
-
-    public String getProductStatusTitle() {
-        return productStatusTitle;
-    }
-
-    public void setProductStatusTitle(String productStatusTitle) {
-        this.productStatusTitle = productStatusTitle;
-    }
-
     public ReturnInfo getReturnInfo() {
         return returnInfo;
-    }
-
-    public void setReturnInfo(ReturnInfo returnInfo) {
-        this.returnInfo = returnInfo;
-    }
-
-    public String getWholseSaleMinPrice() {
-        return wholseSaleMinPrice;
-    }
-
-    public void setWholseSaleMinPrice(String wholseSaleMinPrice) {
-        this.wholseSaleMinPrice = wholseSaleMinPrice;
-    }
-
-    public String getWholeSaleMinQuantity() {
-        return wholeSaleMinQuantity;
-    }
-
-    public void setWholeSaleMinQuantity(String wholeSaleMinQuantity) {
-        this.wholeSaleMinQuantity = wholeSaleMinQuantity;
-    }
-
-    public String getInstallmentMinPercentage() {
-        return installmentMinPercentage;
-    }
-
-    public void setInstallmentMinPercentage(String installmentMinPercentage) {
-        this.installmentMinPercentage = installmentMinPercentage;
-    }
-
-    public String getInstallmentMinPrice() {
-        return installmentMinPrice;
-    }
-
-    public void setInstallmentMinPrice(String installmentMinPrice) {
-        this.installmentMinPrice = installmentMinPrice;
-    }
-
-    public Integer getProductPriceUnformatted() {
-        return productPriceUnformatted;
-    }
-
-    public void setProductPriceUnformatted(Integer productPriceUnformatted) {
-        this.productPriceUnformatted = productPriceUnformatted;
-    }
-
-    public Boolean getHasVariant() {
-        return hasVariant != null ? hasVariant : false;
-    }
-
-    public void setHasVariant(Boolean hasVariant) {
-        this.hasVariant = hasVariant;
     }
 
     public boolean isCod() {
@@ -523,30 +407,13 @@ public class ProductInfo implements Parcelable {
         }
     };
 
-    public String getProductStockWording() {
-        return productStockWording;
-    }
-
     public void setProductStockWording(String productStockWording) {
         this.productStockWording = productStockWording;
-    }
-
-    public boolean getLimitedStock() {
-        return limitedStock;
     }
 
     public void setLimitedStock(boolean limitedStock) {
         this.limitedStock = limitedStock;
     }
-
-    public Integer getProductOriginalPrice() {
-        return productOriginalPrice;
-    }
-
-    public void setProductOriginalPrice(Integer productOriginalPrice) {
-        this.productOriginalPrice = productOriginalPrice;
-    }
-
 
     public static class Builder {
         private String productWeightUnit;

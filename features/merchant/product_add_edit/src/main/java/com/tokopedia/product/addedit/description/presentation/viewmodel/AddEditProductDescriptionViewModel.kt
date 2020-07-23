@@ -11,13 +11,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
-import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +28,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var variantCountList: ArrayList<Int> = arrayListOf(0, 0)
@@ -49,21 +49,24 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val variantInputModel: ProductVariantInputModel get() {
         return productInputModel.variantInputModel
     }
+    val hasWholesale: Boolean get() {
+        return productInputModel.detailInputModel.wholesaleList.isNotEmpty()
+    }
     var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
     var urlToFetch: MutableMap<Int, String> = mutableMapOf()
     var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>> = _productVariant
-    val productVariantData get() = _productVariant.value.let {
+    val productVariantData: List<ProductVariantByCatModel>? get() = _productVariant.value.let {
         when(it) {
             is Success -> it.data
             else -> null
         }
     }
 
-    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoModel>>>()
-    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoModel>>> = MediatorLiveData()
+    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
+    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
 
     init {
         videoYoutube.addSource(_videoYoutubeNew) { pair ->
@@ -101,19 +104,24 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
-        return typeRestResponseMap[YoutubeVideoModel::class.java]?.getData() as YoutubeVideoModel
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
     private fun getIdYoutubeUrl(videoUrl: String): String? {
         return try {
             // add https:// prefix to videoUrl
-            val webVideoUrl =
-                    if (videoUrl.startsWith(WEB_PREFIX_HTTP) ||
-                            videoUrl.startsWith(WEB_PREFIX_HTTPS)) videoUrl else WEB_YOUTUBE_PREFIX + videoUrl
+            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                videoUrl
+            } else {
+                WEB_YOUTUBE_PREFIX + videoUrl
+            }
+            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
+
             val uri = Uri.parse(webVideoUrl)
             when {
                 uri.host == "youtu.be" -> uri.lastPathSegment
+                uri.host == "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("")
             }
@@ -138,9 +146,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return videoLinks.isEmpty()
     }
 
-    fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    fun setVariantInput(productVariant: ArrayList<ProductVariantCombination>,
                         variantOptionParent: ArrayList<ProductVariantOptionParent>,
-                        productPictureViewModel: PictureViewModel?) {
+                        productPictureViewModel: ProductPicture?) {
         productInputModel.variantInputModel.let {
             if (productVariant.isNotEmpty()) {
                 it.variantOptionParent = mapVariantOption(variantOptionParent)
@@ -157,9 +165,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombination>,
                                   variantOptionParent: ArrayList<ProductVariantOptionParent>
-    ): ArrayList<ProductVariantCombinationViewModel> {
+    ): ArrayList<ProductVariantCombination> {
         productVariant.forEach { variant ->
             val options: ArrayList<Int> = ArrayList()
             val level1Id = getVariantOptionIndex(variant.level1String,
@@ -193,7 +201,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         it
     } as ArrayList<ProductVariantOptionParent>
 
-    private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+    private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombination>,
                                         variantOptionParent: ArrayList<ProductVariantOptionParent>) {
         productVariant.firstOrNull().let { variant ->
             // process level 1
@@ -227,14 +235,14 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
+    private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombination>) {
         val distictOptionList = productVariant.distinctBy {
             it.level1String
         }
         variantCountList[0] = distictOptionList.size
     }
 
-    private fun setVariantCountLevel2(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
+    private fun setVariantCountLevel2(productVariant: ArrayList<ProductVariantCombination>) {
         val distictOptionList = productVariant.distinctBy {
             it.level2String
         }
@@ -290,6 +298,17 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } else {
             TYPE_ACTIVE
         }
+    }
+
+    // disable removing variant when in edit mode and if product have a variant
+    fun checkOriginalVariantLevel(): Boolean {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
+        if (isEditMode && !isAddMode) {
+            if (variantInputModel.productVariant.size > 0) {
+                return variantInputModel.variantOptionParent.getOrNull(0) != null
+            }
+        }
+        return false
     }
 
     companion object {

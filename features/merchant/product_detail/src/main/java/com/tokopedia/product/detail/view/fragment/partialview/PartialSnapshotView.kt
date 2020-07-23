@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -45,12 +44,12 @@ class PartialSnapshotView(private val view: View,
         }
 
         if (campaign.isActive) {
-            renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+            renderCampaignActive(campaign, nearestWarehouseStockWording)
         } else {
             renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
+        renderStockAvailable(campaign, data.variant.isVariant, nearestWarehouseStockWording, basic.isActive())
         label_prescription.showWithCondition(basic.needPrescription)
         divider.show()
     }

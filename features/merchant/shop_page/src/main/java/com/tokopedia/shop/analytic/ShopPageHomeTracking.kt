@@ -3,6 +3,7 @@ package com.tokopedia.shop.analytic
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -177,7 +178,7 @@ class ShopPageHomeTracking(
             widgetId: String,
             widgetName: String,
             widgetOption: Int,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPageAttribution
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(PRODUCT_LIST_IMPRESSION, HOME_TAB, layoutId, widgetNameEventValue)
@@ -219,7 +220,7 @@ class ShopPageHomeTracking(
             widgetId: String,
             widgetName: String,
             widgetOption: Int,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPageAttribution
     ) {
         val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
         val eventAction = joinDash(CLICK_PRODUCT, HOME_TAB, layoutId, widgetNameEventValue)
@@ -558,7 +559,7 @@ class ShopPageHomeTracking(
             widgetNameEventValue: String,
             widgetOption: Int,
             isLogin: Boolean,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPageAttribution
     ): Map<String, Any> {
         val listEventValue = createProductListValue(
                 isLogin,
@@ -578,7 +579,8 @@ class ShopPageHomeTracking(
                 LIST to listEventValue,
                 POSITION to horizontalPosition,
                 DIMENSION_81 to customDimensionShopPage.shopType,
-                DIMENSION_79 to customDimensionShopPage.shopId
+                DIMENSION_79 to customDimensionShopPage.shopId,
+                SHOP_REF to customDimensionShopPage.shopRef
         )
     }
 

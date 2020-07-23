@@ -70,7 +70,11 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return list[position].itemType ?: 0
+        return if (position < itemCount) {
+            list[position].itemType ?: 0
+        } else {
+            0
+        }
     }
 
     override fun getItemCount(): Int {
