@@ -26,15 +26,15 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
         private set
     var qualityMode: PlayPusherQualityMode = PlayPusherQualityMode.FluencyFirst
         private set
-    var audioChannel = AlivcAudioChannelEnum.AUDIO_CHANNEL_ONE
-        private set
-    var audioProfile = AlivcAudioAACProfileEnum.AAC_LC
-        private set
-    var audioEncode = AlivcEncodeModeEnum.Encode_MODE_HARD
-        private set
-    var audioSampleRate = AlivcAudioSampleRateEnum.AUDIO_SAMPLE_RATE_44100
-        private set
-    var audioBitrate = PlayPusherImpl.AUDIO_BITRATE_128Kbps
+//    var audioChannel = AlivcAudioChannelEnum.AUDIO_CHANNEL_ONE
+//        private set
+//    var audioProfile = AlivcAudioAACProfileEnum.AAC_LC
+//        private set
+//    var audioEncode = AlivcEncodeModeEnum.Encode_MODE_HARD
+//        private set
+//    var audioSampleRate = AlivcAudioSampleRateEnum.AUDIO_SAMPLE_RATE_44100
+//        private set
+//    var audioBitrate = PlayPusherImpl.AUDIO_BITRATE_128Kbps
 
     fun cameraType(cameraType: AlivcLivePushCameraTypeEnum) = apply {
         this.cameraType = cameraType
@@ -64,25 +64,25 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
         this.qualityMode = qualityMode
     }
 
-    fun audioChannel(audioChannelEnum: AlivcAudioChannelEnum) = apply {
-        this.audioChannel = audioChannelEnum
-    }
-
-    fun audioProfile(audioAACProfileEnum: AlivcAudioAACProfileEnum) = apply {
-        this.audioProfile = audioAACProfileEnum
-    }
-
-    fun audioEncode(encodeModeEnum: AlivcEncodeModeEnum) = apply {
-        this.audioEncode = encodeModeEnum
-    }
-
-    fun audioSampleRate(sampleRateEnum: AlivcAudioSampleRateEnum) = apply {
-        this.audioSampleRate = sampleRateEnum
-    }
-
-    fun audioBitrate(bitrate: Int) = apply {
-        this.audioBitrate = bitrate
-    }
+//    fun audioChannel(audioChannelEnum: AlivcAudioChannelEnum) = apply {
+//        this.audioChannel = audioChannelEnum
+//    }
+//
+//    fun audioProfile(audioAACProfileEnum: AlivcAudioAACProfileEnum) = apply {
+//        this.audioProfile = audioAACProfileEnum
+//    }
+//
+//    fun audioEncode(encodeModeEnum: AlivcEncodeModeEnum) = apply {
+//        this.audioEncode = encodeModeEnum
+//    }
+//
+//    fun audioSampleRate(sampleRateEnum: AlivcAudioSampleRateEnum) = apply {
+//        this.audioSampleRate = sampleRateEnum
+//    }
+//
+//    fun audioBitrate(bitrate: Int) = apply {
+//        this.audioBitrate = bitrate
+//    }
 
     fun build() = if (DeviceInfoUtil.isDeviceSupported()) {
         PlayPusherImpl(this)

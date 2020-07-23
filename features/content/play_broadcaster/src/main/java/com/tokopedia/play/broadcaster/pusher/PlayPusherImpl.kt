@@ -38,11 +38,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         setResolution(builder.resolution)
         isEnableAutoResolution = builder.isEnableAutoResolution
         setFps(builder.fps)
-        setAudioChannels(builder.audioChannel)
-        audioProfile = builder.audioProfile
-        setAudioEncodeMode(builder.audioEncode)
-        setAudioSamepleRate(builder.audioSampleRate)
-        audioBitRate = builder.audioBitrate
+//        setAudioChannels(builder.audioChannel)
+//        audioProfile = builder.audioProfile
+//        setAudioEncodeMode(builder.audioEncode)
+//        setAudioSamepleRate(builder.audioSampleRate)
+//        audioBitRate = builder.audioBitrate
         setQualityMode(this)
     }
 
@@ -56,6 +56,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
             mAliVcLivePusher?.setLivePushErrorListener(mAliVcLivePushErrorListener)
             mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
+            mAliVcLivePusher?.setAudioDenoise(true)
         } catch (e: Exception) {
             // crashlytics
             if (GlobalConfig.DEBUG) {
