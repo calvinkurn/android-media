@@ -336,6 +336,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
+            if(data.feedbackInboxList.isNotEmpty()) {
+                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+            }
             endlessRecyclerViewScrollListener?.resetState()
         } else {
             if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
@@ -538,7 +541,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val statusFilterViewModel = inboxReviewViewModel.getStatusFilterListUpdated()
         val statusIsEmpty = InboxReviewMapper.mapToStatusFilterList(statusFilterViewModel).filter { it.isSelected }.count().isZero()
         val statusFilter = data.filterBy.getStatusFilter(prefixStatus).isUnAnswered
-        return statusIsEmpty && statusFilter && !data.hasNext && data.remainder.isZero()
+        return statusIsEmpty && statusFilter && !data.hasNext
     }
 
     private fun countStatusIsZero(): Boolean {
