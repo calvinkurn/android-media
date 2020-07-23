@@ -59,7 +59,6 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = TopAdsInsightPosKeyAdapter(::butttonClicked)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

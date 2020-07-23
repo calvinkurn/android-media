@@ -51,11 +51,9 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
                 view_pager.setCurrentItem(tab!!.position, true)
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
         })
         changeSelectedGroup.setOnClickListener {
             val sheet = GroupSelectInsightSheet(data, currentGroupId)
