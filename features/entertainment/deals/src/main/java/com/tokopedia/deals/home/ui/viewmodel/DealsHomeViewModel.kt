@@ -7,6 +7,7 @@ import com.tokopedia.deals.common.data.DealsNearestLocationParam
 import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.home.domain.GetEventHomeLayoutUseCase
@@ -25,12 +26,12 @@ import javax.inject.Inject
  * @author by jessica on 19/06/20
  */
 
-class DealsHomeViewModel @Inject constructor(dispatcher: Dispatchers,
+class DealsHomeViewModel @Inject constructor(dispatcher: DealsDispatcherProvider,
                                              private val dealsHomeMapper: DealsHomeMapper,
                                              private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
                                              private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
                                              private val getNearestLocationUseCase: GetNearestLocationUseCase)
-    : BaseViewModel(dispatcher.Main) {
+    : BaseViewModel(dispatcher.io()) {
 
     private val _observableEventHomeLayout = MutableLiveData<Result<List<DealsBaseItemDataView>>>()
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
@@ -59,7 +60,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: Dispatchers,
     private suspend fun getEventHomeLayout(location: Location): List<EventHomeLayout> {
         try {
             val data = getEventHomeLayoutUseCase.apply {
-                params = GetEventHomeLayoutUseCase.createParams(location.coordinates, location.locType.name)
+                useParams(GetEventHomeLayoutUseCase.createParams(location.coordinates, location.locType.name))
             }.executeOnBackground()
             return data.response.layout
         } catch (t: Throwable) {
@@ -70,7 +71,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: Dispatchers,
     private suspend fun getBrandPopular(location: Location): List<Brand> {
         return try {
             val data = getEventHomeBrandPopularUseCase.apply {
-                params = GetEventHomeBrandPopularUseCase.createParams(location.coordinates, location.locType.name, POPULAR_BRAND_SIZE)
+                useParams(GetEventHomeBrandPopularUseCase.createParams(location.coordinates, location.locType.name, POPULAR_BRAND_SIZE))
             }.executeOnBackground()
             data.eventSearch.brands
         } catch (t: Throwable) {
@@ -82,15 +83,14 @@ class DealsHomeViewModel @Inject constructor(dispatcher: Dispatchers,
         return try {
             if (location.locType.name != LANDMARK) {
                 val data = getNearestLocationUseCase.apply {
-                    params = GetNearestLocationUseCase.createParams(
+                    useParams(GetNearestLocationUseCase.createParams(
                             DealsNearestLocationParam.VALUE_LOCATION_TYPE_LANDMARK,
                             location.coordinates, NEAREST_LOCATION_SIZE_NUM_VALUE,
                             NEAREST_LOCATION_PAGE_NUM_VALUE,
                             DealsNearestLocationParam.VALUE_CATEGORY_ID_DEFAULT,
                             DealsNearestLocationParam.VALUE_SORT_BY_PRIORITY,
                             NEAREST_LOCATION_FIXED_VALUE,
-                            DealsNearestLocationParam.VALUE_DISTANCE_20KM)
-
+                            DealsNearestLocationParam.VALUE_DISTANCE_20KM))
                 }.executeOnBackground()
                 data.eventLocationSearch.locations
             } else emptyList()

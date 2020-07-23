@@ -17,6 +17,6 @@ class SectionTitleViewHolder(itemView: View): AbstractViewHolder<SectionTitleMod
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_section_title
+        val LAYOUT = R.layout.layout_deals_section_title
     }
 }

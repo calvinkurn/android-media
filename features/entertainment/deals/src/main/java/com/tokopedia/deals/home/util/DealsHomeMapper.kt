@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -37,7 +39,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         homeLayout.forEach {
             if (it.title.equals(getString(TYPE_CAROUSEL), true)) {
                 val banners = it.productDetails.map { item ->
-                    val banner = BannersDataView.BannerDataView(item.id, item.title, item.appUrl, item.imageApp)
+                    val banner = BannersDataView.BannerDataView(item.id, item.title, item.seoUrl, item.imageApp)
                     banner
                 }
                 bannersDataView = BannersDataView(list = banners, seeAllUrl = ApplinkConst.PROMO_LIST)
@@ -49,16 +51,6 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
             } else if (it.isCard == 1) {
                 if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION) {
 
-                    val isPopular = curatedProductCategoryDataViews.size == 0
-
-                    val productCategoryDataView = if (isPopular) {
-                        ProductCategoryDataView(getString(R.string.deals_homepage_popular_tag),
-                                com.tokopedia.unifyprinciples.R.color.Yellow_Y400)
-                    } else {
-                        ProductCategoryDataView(getString(R.string.deals_homepage_new_deals_tag),
-                                com.tokopedia.unifyprinciples.R.color.Blue_B500)
-                    }
-
                     val items = it.productDetails.subList(0,
                             min(MAX_ITEM_ON_CURATED_SECTION_ITEMS, it.productDetails.size)).map { product ->
                         ProductCardDataView(
@@ -68,9 +60,12 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                                 discount = product.savingPercentage,
                                 oldPrice = DealsUtils.convertToCurrencyString(product.mrp.toLong()),
                                 price = DealsUtils.convertToCurrencyString(product.salesPrice.toLong()),
+                                priceNonCurrency = product.salesPrice,
+                                categoryName =  product.category.firstOrNull()?.title ?: "",
                                 shop = product.brand.title,
                                 appUrl = product.appUrl,
-                                productCategory = productCategoryDataView
+                                productCategory = getLabelColor(context, product.displayTags),
+                                brand = product.brand.title
                         )
                     }
 
@@ -91,7 +86,8 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         }
 
         val brandLayout = brands.map { brand ->
-            DealsBrandsDataView.Brand(brand.id.toString(), brand.title, brand.featuredThumbnailImage, brand.seoUrl)
+            DealsBrandsDataView.Brand(brand.id, brand.title, brand.featuredThumbnailImage,
+                    UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl))
         }
         brandsDataView = DealsBrandsDataView(title = getString(BRAND_POPULAR_SECTION_TITLE),
                 seeAllText = getString(DEALS_SEE_ALL), brands = brandLayout)

@@ -15,9 +15,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
-import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
 import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
@@ -45,6 +45,9 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
+
+    @Inject
+    lateinit var dealsAnalytics : DealsAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -164,7 +167,9 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setupOrderListMenu() {
-        imgDealsOrderListMenu.setOnClickListener { RouteManager.route(this, ApplinkConst.DEALS_ORDER) }
+        imgDealsOrderListMenu.setOnClickListener {
+            dealsAnalytics.clickOrderListDeals()
+            RouteManager.route(this, ApplinkConst.DEALS_ORDER) }
     }
 
     private fun setupSearchBar() {
@@ -217,11 +222,14 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         locationBottomSheet.show(supportFragmentManager, "")
     }
 
-    fun changeLocationBasedOnCache() {
+    fun changeLocationBasedOnCache(): Boolean {
         val location = dealsLocationUtils.getLocation()
         if (location != currentLoc) {
+            currentLoc = location
             renderLocationName(location.name)
+            return true
         }
+        return false
     }
 
     /**

@@ -44,7 +44,7 @@ import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactoryImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.deal_search_bar_layout.*
+import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 import kotlinx.android.synthetic.main.fragment_deals_search.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -101,7 +101,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun initViews() {
         tv_location?.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                MethodChecker.getDrawable(context, R.drawable.location_arrow_down), null)
+                MethodChecker.getDrawable(context, R.drawable.ic_deals_dropdown_down_24dp), null)
         initObserver()
         setListener()
     }
@@ -141,10 +141,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun chipsAnalytics(data: InitialLoadData) {
         if(data.eventChildCategory.categories.isNotEmpty()) {
-            if(isAnalyticsInitialized) {
                 analytics.eventViewChipsSearchPage()
-            }
-
         }
 
         if(data.travelCollectiveRecentSearches.items.isNotEmpty()) {
@@ -176,6 +173,9 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                 is Success -> {
                     clearAllData()
                     totalItem = it.data.products.size
+                    it.data.products.forEachIndexed { index, eventProductDetail ->
+                        analytics.eventSearchResultCaseShownOnCategoryPage(getSearchKeyword(), currentLocation?.name?: "", eventProductDetail, index)
+                    }
                     if(totalItem >= THRESHOLD_ITEMS) {
                         renderList(DealsSearchMapper.displayDataSearchResult(it.data,
                                 currentLocation?.name?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
@@ -183,9 +183,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                     } else {
                         if(totalItem == 0) {
                             searchNotFound = true
-                            if(isAnalyticsInitialized) {
-                                analytics.eventViewSearchNoResultSearchPage(getSearchKeyword(), currentLocation?.name?: "")
-                            }
+                            analytics.eventViewSearchNoResultSearchPage(getSearchKeyword(), currentLocation?.name?: "")
                         }
                         renderList(DealsSearchMapper.displayDataSearchResult(it.data,
                                 currentLocation?.name?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
@@ -368,9 +366,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     private fun analyticsLocation() {
         val oldLocation = currentLocation?.name?: ""
         val newLocation = onLocationUpdated()
-        if(isAnalyticsInitialized) {
-            analytics.eventClickChangeLocationSearchPage(oldLocation, newLocation)
-        }
+        analytics.eventClickChangeLocationSearchPage(oldLocation, newLocation)
     }
 
     override val coroutineContext: CoroutineContext
@@ -378,18 +374,14 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     override fun onVoucherClicked(itemView: View, voucher: VoucherModel) {
         itemView.setOnClickListener {
-            if(isAnalyticsInitialized) {
-                analytics.eventClickSearchResultProductSearchPage(voucher)
-            }
+            analytics.eventClickSearchResultProductSearchPage(voucher)
             RouteManager.route(context, voucher.appUrl)
         }
     }
 
     override fun onBrandClicked(itemView: View, brand: Brand, position: Int) {
         itemView.setOnClickListener {
-            if(isAnalyticsInitialized) {
-                analytics.eventClickSearchResultBrandSearchPage(brand, position)
-            }
+            analytics.eventClickSearchResultBrandSearchPage(brand, position)
             val brandApplink = DealsSearchConstants.PREFIX_DEALS_APPPLINK + DealsSearchConstants.PREFIX_APPLINK_BRAND + brand.seoUrl
             RouteManager.route(context, brandApplink)
         }

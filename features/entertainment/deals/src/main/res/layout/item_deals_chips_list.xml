@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,23 +9,17 @@
         android:id="@+id/sort_filter_deals_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl7"
-        android:layout_marginLeft="@dimen/spacing_lvl7"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
-        android:layout_marginRight="@dimen/spacing_lvl5"
         android:clipToPadding="true"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced" />
+        app:sort_filter_type="advanced"
+        tools:visibility="visible" />
 
     <include
-        android:id="@+id/shimmering"
-        layout="@layout/item_deals_chips_shimmering" />
+        android:id="@+id/filter_shimmering"
+        layout="@layout/item_deals_chips_shimmering"
+        tools:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

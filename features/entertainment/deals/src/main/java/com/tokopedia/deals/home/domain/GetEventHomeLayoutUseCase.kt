@@ -34,6 +34,10 @@ class GetEventHomeLayoutUseCase @Inject constructor(
         }
     }
 
+    fun useParams(params: Map<String, Any>) {
+        this.params = params
+    }
+
     companion object {
         private const val PARAM_CATEGORY = "category"
         private const val PARAM_CATEGORY_DEALS = "deal"

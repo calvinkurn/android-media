@@ -17,7 +17,7 @@ class GetChipsCategoryUseCase @Inject constructor(
     override suspend fun executeOnBackground(): CuratedData {
         val gqlRequest = GraphqlRequest(DealsGqlQueries.getChildCategory(), CuratedData::class.java)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.CACHE_FIRST).build())
         val errors = gqlResponse.getError(CuratedData::class.java)
         if (!errors.isNullOrEmpty()){
             throw  MessageErrorException(errors[0].message)

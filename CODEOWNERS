@@ -119,7 +119,7 @@
 
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
-/features/entertainment/event               	        @tokopedia/android-minionmark-dev
+/features/entertainment/deals               	        @tokopedia/android-minionmark-dev
 
 /features/travel/flight_orderlist                       @tokopedia/android-minionmark-dev
 /features/travel/flight/                                @tokopedia/android-minionmark-dev

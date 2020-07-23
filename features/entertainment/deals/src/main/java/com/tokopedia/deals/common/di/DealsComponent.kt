@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
@@ -35,6 +36,8 @@ interface DealsComponent {
     fun dealsLocationUtils(): DealsLocationUtils
 
     fun irisSession(): IrisSession
+
+    fun dispatcherProvider(): DealsDispatcherProvider
 
     fun inject(dealsBaseActivity: DealsBaseActivity)
 }

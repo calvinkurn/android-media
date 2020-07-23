@@ -25,14 +25,14 @@ class DealsFavouriteCategoriesAdapter(private val listener: DealsFavouriteCatego
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealsFavouriteCategoryViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.item_voucher_place_card, parent, false)
+        val itemView = inflater.inflate(R.layout.item_deals_voucher_place_card, parent, false)
         return DealsFavouriteCategoryViewHolder(itemView, listener)
     }
 
     override fun getItemCount(): Int = voucherPlaceCards.size
 
     override fun onBindViewHolder(holder: DealsFavouriteCategoryViewHolder, position: Int) {
-        holder.bindData(voucherPlaceCards[position])
+        holder.bindData(voucherPlaceCards[position],position)
     }
 
     private class VoucherPlaceCardDiffCallback(

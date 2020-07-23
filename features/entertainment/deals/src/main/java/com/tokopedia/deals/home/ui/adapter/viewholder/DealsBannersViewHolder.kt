@@ -35,7 +35,7 @@ class DealsBannersViewHolder(itemView: View, private val dealsBannerActionListen
                 val bannerImageUrls = banners.list.map { it.bannerImageUrl }
                 setPromoList(bannerImageUrls)
                 setOnPromoClickListener { position ->
-                    dealsBannerActionListener.onBannerClicked(banners.list[position], position)
+                    dealsBannerActionListener.onBannerClicked(banners.list, position)
                 }
                 setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Green_G500))
                 setBannerIndicator(Indicator.GREEN)

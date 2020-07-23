@@ -7,6 +7,7 @@ import com.tokopedia.deals.brand.mapper.DealsBrandMapper.mapBrandToBaseItemViewM
 import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
@@ -19,8 +20,8 @@ import javax.inject.Inject
 
 class DealsBrandViewModel @Inject constructor (
         private val dealsSearchUseCase: DealsSearchUseCase,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        dispatcher: DealsDispatcherProvider
+): BaseViewModel(dispatcher.io()) {
 
     private val _dealsSearchResponse = MutableLiveData<Result<DealsBrandsDataView>>()
     val dealsSearchResponse: LiveData<Result<DealsBrandsDataView>>

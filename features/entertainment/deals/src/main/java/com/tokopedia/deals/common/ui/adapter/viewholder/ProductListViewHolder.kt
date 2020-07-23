@@ -3,7 +3,6 @@ package com.tokopedia.deals.common.ui.adapter.viewholder
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.dataview.ProductListDataView
@@ -11,10 +10,9 @@ import com.tokopedia.deals.common.listener.ProductListListener
 import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_product_list.view.*
+import kotlinx.android.synthetic.main.item_deals_product_list.view.*
 
 class ProductListViewHolder(itemView: View, private val productListListener: ProductListListener) :
     BaseViewHolder(itemView), ProductCardListener {
@@ -37,6 +35,7 @@ class ProductListViewHolder(itemView: View, private val productListListener: Pro
             }
         }
         productCardAdapter.productCards = productList.productCards
+        productCardAdapter.page = productList.page
     }
 
     override fun onProductClicked(
@@ -47,8 +46,12 @@ class ProductListViewHolder(itemView: View, private val productListListener: Pro
         productListListener.onProductClicked(productCardDataView, position)
     }
 
+    override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page:Int) {
+        productListListener.onImpressionProduct(productCardDataView, productItemPosition, page)
+    }
+
     companion object {
         private const val PRODUCT_SPAN_COUNT = 2
-        val LAYOUT = R.layout.item_product_list
+        val LAYOUT = R.layout.item_deals_product_list
     }
 }

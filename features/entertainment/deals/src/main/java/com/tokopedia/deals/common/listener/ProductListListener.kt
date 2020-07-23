@@ -7,4 +7,9 @@ interface ProductListListener {
         productCardDataView: ProductCardDataView,
         productItemPosition: Int
     )
+    fun onImpressionProduct(
+            productCardDataView: ProductCardDataView,
+            productItemPosition: Int,
+            page:Int
+    )
 }

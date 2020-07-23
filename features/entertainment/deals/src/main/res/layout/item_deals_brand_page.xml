@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_containter_brand"
@@ -39,6 +40,20 @@
             android:layout_height="@dimen/deals_dp_1"
             android:background="@color/deals_search_divider_color" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_brand_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Green_G500"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_brand_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:typographyType="body_3"
+            tools:text="Lihat semua" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_brands"
             android:layout_width="match_parent"
@@ -50,15 +65,23 @@
             android:layout_marginTop="@dimen/deals_dp_18"
             app:layout_goneMarginTop="@dimen/spacing_lvl3"
             app:layout_constraintTop_toBottomOf="@id/tv_brand_title"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintVertical_chainStyle="packed"
+            android:nestedScrollingEnabled="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
+        android:id="@+id/one_row_shimmering"
+        layout="@layout/item_deals_brand_populars_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <include
         android:id="@+id/shimmering"
+        layout="@layout/item_deals_brands_page_shimmering"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        layout="@layout/item_deals_brands_page_shimmering" />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

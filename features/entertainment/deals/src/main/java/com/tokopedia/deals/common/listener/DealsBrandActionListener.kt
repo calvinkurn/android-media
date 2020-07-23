@@ -9,4 +9,6 @@ import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 interface DealsBrandActionListener {
     fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int)
     fun onClickSeeAllBrand(seeAllUrl: String)
+    fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int)
+    fun showTitle(brand:DealsBrandsDataView)
 }

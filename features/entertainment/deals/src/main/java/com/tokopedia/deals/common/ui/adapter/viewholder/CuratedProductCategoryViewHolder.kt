@@ -10,9 +10,10 @@ import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_curated_product_category.view.*
+import kotlinx.android.synthetic.main.item_deals_curated_product_category.view.*
 
 class CuratedProductCategoryViewHolder(
         itemView: View,
@@ -49,10 +50,16 @@ class CuratedProductCategoryViewHolder(
                     adapter = productCardAdapter
                     productCardAdapter.productCards = curatedProductCategory.productCards
                 }
-
+                addOnImpressionListener(curatedProductCategory, {
+                    curatedProductCategoryListener.onImpressionCuratedProduct(curatedProductCategory,position)
+                })
                 ViewCompat.setNestedScrollingEnabled(lst_curated_product_category_card, false)
             }
         }
+    }
+
+    override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page:Int) {
+        /* do nothing*/
     }
 
     override fun onProductClicked(
@@ -65,6 +72,6 @@ class CuratedProductCategoryViewHolder(
 
     companion object {
         private const val PRODUCT_SPAN_COUNT = 2
-        val LAYOUT = R.layout.item_curated_product_category
+        val LAYOUT = R.layout.item_deals_curated_product_category
     }
 }
