@@ -9,9 +9,11 @@ import com.tokopedia.managepassword.ext.InstantRunExecutorSpek
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.every
+import io.mockk.invoke
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import org.mockito.Matchers.any
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -119,23 +121,6 @@ class ChangePasswordViewModelTest : Spek({
 
         val success = Success(changePasswordResponseModel)
         val fail = Fail(throwableMock)
-
-        Scenario("submit - with empty param") {
-
-            Given("set empty param") {
-                ChangePasswordViewModel.createRequestParams(any())
-            }
-
-            When("submit password") {
-                viewModel.validatePassword("", "", "")
-            }
-
-            Then("it should be failed on change password") {
-                verify(exactly = 0) {
-                    changePasswordUseCase.submit(any(), any())
-                }
-            }
-        }
 
         Scenario("submit - failed input password") {
 

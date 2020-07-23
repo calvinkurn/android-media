@@ -8,11 +8,13 @@ import com.tokopedia.managepassword.ext.InstantRunExecutorSpek
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.invoke
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -50,8 +52,8 @@ class AddPasswordViewModelTest : Spek({
                     observer.onChanged(Fail(throwableMock))
                 }
 
-                assert(viewModel.validatePassword.value == Fail(throwableMock))
-                assert(viewModel.validatePasswordConfirmation.value == Fail(throwableMock))
+                assertEquals((viewModel.validatePassword.value as Fail).throwable.message, ERROR_FIELD_REQUIRED)
+                assertEquals((viewModel.validatePasswordConfirmation.value as Fail).throwable.message, ERROR_FIELD_REQUIRED)
 
                 viewModel.validatePassword.removeObserver(observer)
                 viewModel.validatePasswordConfirmation.removeObserver(observer)
@@ -80,8 +82,8 @@ class AddPasswordViewModelTest : Spek({
                     observer.onChanged(Fail(throwableMock))
                 }
 
-                assert(viewModel.validatePassword.value == Fail(throwableMock))
-                assert(viewModel.validatePasswordConfirmation.value == Fail(throwableMock))
+                assertEquals((viewModel.validatePassword.value as Fail).throwable.message, ERROR_MIN_CHAR)
+                assertEquals((viewModel.validatePasswordConfirmation.value as Fail).throwable.message, ERROR_MIN_CHAR)
 
                 viewModel.validatePassword.removeObserver(observer)
                 viewModel.validatePasswordConfirmation.removeObserver(observer)
@@ -110,8 +112,8 @@ class AddPasswordViewModelTest : Spek({
                     observer.onChanged(Fail(throwableMock))
                 }
 
-                assert(viewModel.validatePassword.value == Fail(throwableMock))
-                assert(viewModel.validatePasswordConfirmation.value == Fail(throwableMock))
+                assertEquals((viewModel.validatePassword.value as Fail).throwable.message, ERROR_MAX_CHAR)
+                assertEquals((viewModel.validatePasswordConfirmation.value as Fail).throwable.message, ERROR_MAX_CHAR)
 
                 viewModel.validatePassword.removeObserver(observer)
                 viewModel.validatePasswordConfirmation.removeObserver(observer)
@@ -151,18 +153,18 @@ class AddPasswordViewModelTest : Spek({
 
     Feature("Submit AddPassword") {
         val observer = mockk<Observer<Result<AddPasswordResponseModel>>>(relaxed = true)
-        val responseMock = AddPasswordResponseModel()
+        val responseMock = AddPasswordResponseModel(AddPasswordResponseModel.AddPassword(isSuccess = true))
         val throwableMock = Throwable("Opps!")
 
         Scenario("submit - failed response") {
             paramPassword = "test"
-            
+
+
             Given("set response failed") {
-                every { 
-                    useCase.submit(any(), captureLambda())
-                } answers {
-                    val onFailed = lambda<(Throwable) -> Unit>()
-                    onFailed.invoke(throwableMock)
+                coEvery {
+                    useCase.submit(any(), any())
+                } coAnswers {
+                    (secondArg() as (Throwable) -> Unit).invoke(throwableMock)
                 }
             }
             
@@ -171,7 +173,9 @@ class AddPasswordViewModelTest : Spek({
             }
 
             When("submit add password") {
-                viewModel.createPassword(paramPassword, paramPassword)
+                runBlocking {
+                    viewModel.createPassword(paramPassword, paramPassword)
+                }
             }
 
             Then("it should be return fail response") {
@@ -179,7 +183,7 @@ class AddPasswordViewModelTest : Spek({
                     observer.onChanged(Fail(throwableMock))
                 }
 
-                assert(viewModel.response.value == Fail(throwableMock))
+                assertEquals(viewModel.response.value, Fail(throwableMock))
             }
         }
 
@@ -190,8 +194,7 @@ class AddPasswordViewModelTest : Spek({
                 every {
                     useCase.submit(captureLambda(), any())
                 } answers {
-                    val onSuccess = lambda<(AddPasswordResponseModel) -> Unit>()
-                    onSuccess.invoke(responseMock)
+                    (firstArg() as (AddPasswordResponseModel) -> Unit).invoke(responseMock)
                 }
             }
 
@@ -208,7 +211,7 @@ class AddPasswordViewModelTest : Spek({
                     observer.onChanged(Success(responseMock))
                 }
 
-                assert(viewModel.response.value == Success(responseMock))
+                assertEquals(viewModel.response.value, Success(responseMock))
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.managepassword.viewmodel
 
 import androidx.lifecycle.Observer
-import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
 import com.tokopedia.managepassword.ext.InstantRunExecutorSpek
 import com.tokopedia.managepassword.forgotpassword.domain.data.ForgotPasswordResponseModel
 import com.tokopedia.managepassword.forgotpassword.domain.usecase.ForgotPasswordUseCase
@@ -9,9 +8,10 @@ import com.tokopedia.managepassword.forgotpassword.view.viewmodel.ForgotPassword
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.invoke
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -26,18 +26,17 @@ class ForgotPasswordViewModelTest : Spek({
 
     Feature("Submit AddPassword") {
         val observer = mockk<Observer<Result<ForgotPasswordResponseModel>>>(relaxed = true)
-        val responseMock = ForgotPasswordResponseModel()
+        val responseMock = ForgotPasswordResponseModel(ForgotPasswordResponseModel.ForgotPasswordModel(isSuccess = true))
         val throwableMock = Throwable("Opps!")
 
         Scenario("submit - failed response") {
             paramEmail = "test"
             
             Given("set response failed") {
-                every { 
-                    useCase.sendRequest(any(), captureLambda())
-                } answers {
-                    val onFailed = lambda<(Throwable) -> Unit>()
-                    onFailed.invoke(throwableMock)
+                coEvery {
+                    useCase.sendRequest(any(), any())
+                } coAnswers {
+                    (secondArg() as (Throwable) -> Unit).invoke(throwableMock)
                 }
             }
             
@@ -54,7 +53,7 @@ class ForgotPasswordViewModelTest : Spek({
                     observer.onChanged(Fail(throwableMock))
                 }
 
-                assert(viewModel.response.value == Fail(throwableMock))
+                assertEquals(viewModel.response.value, Fail(throwableMock))
             }
         }
 
@@ -63,10 +62,9 @@ class ForgotPasswordViewModelTest : Spek({
 
             Given("set response success") {
                 every {
-                    useCase.sendRequest(captureLambda(), any())
+                    useCase.sendRequest(any(), any())
                 } answers {
-                    val onSuccess = lambda<(ForgotPasswordResponseModel) -> Unit>()
-                    onSuccess.invoke(responseMock)
+                    (firstArg() as (ForgotPasswordResponseModel) -> Unit).invoke(responseMock)
                 }
             }
 
@@ -83,7 +81,7 @@ class ForgotPasswordViewModelTest : Spek({
                     observer.onChanged(Success(responseMock))
                 }
 
-                assert(viewModel.response.value == Success(responseMock))
+                assertEquals(viewModel.response.value, Success(responseMock))
             }
         }
     }
