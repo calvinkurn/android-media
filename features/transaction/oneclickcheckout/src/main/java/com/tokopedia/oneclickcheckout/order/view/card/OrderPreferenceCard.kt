@@ -239,7 +239,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showPayment() {
         val paymentModel = preference.preference.payment
 
@@ -257,59 +256,64 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         val payment = payment
         if (payment != null) {
-            if (payment.isEnable && !payment.isError) {
-                setPaymentActiveAlpha()
-            } else {
-                setPaymentErrorAlpha()
-            }
-
-            //show error message if any
-            if (payment.errorMessage?.message?.isNotBlank() == true) {
-                tvPaymentErrorMessage?.text = payment.errorMessage.message
-                tvPaymentErrorAction?.text = payment.errorMessage.button.text
-                tvPaymentErrorMessage?.visible()
-                tvPaymentErrorAction?.visible()
-                tvInstallmentType?.gone()
-                tvInstallmentDetail?.gone()
-                tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                tvPaymentDetail?.setOnClickListener {
-                    //do nothing
-                }
-                setPaymentErrorAlpha()
-            } else {
+            if (payment.isEnable && !payment.isError()) {
                 tvPaymentErrorMessage?.gone()
                 tvPaymentErrorAction?.gone()
                 setPaymentActiveAlpha()
 
-                if (payment.creditCard?.totalCards ?: 0 > 1) {
-                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
-                    tvPaymentDetail?.setOnClickListener {
-                        // todo: go to cc choose page
-                    }
-                } else {
+                setupPaymentSelector(payment)
+
+                setupPaymentInstallment(payment.creditCard?.selectedTerm)
+            } else {
+                if (payment.errorMessage?.message?.isNotBlank() == true) {
+                    tvPaymentErrorMessage?.text = payment.errorMessage.message
+                    tvPaymentErrorAction?.text = payment.errorMessage.button.text
+                    tvPaymentErrorMessage?.visible()
+                    tvPaymentErrorAction?.visible()
                     tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvPaymentDetail?.setOnClickListener {
                         //do nothing
                     }
-                }
-
-                //show installment if credit card has selected term
-                val selectedTerm = payment.creditCard?.selectedTerm
-                if (selectedTerm != null) {
-                    tvInstallmentType?.visible()
-                    tvInstallmentDetail?.visible()
-                    if (selectedTerm.term > 0) {
-                        tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
-                    } else {
-                        tvInstallmentDetail?.text = "Bayar Penuh"
-                    }
-                    tvInstallmentDetail?.setOnClickListener {
-                        listener.onInstallmentDetailClicked()
-                    }
                 } else {
-                    tvInstallmentType?.gone()
-                    tvInstallmentDetail?.gone()
+                    tvPaymentErrorMessage?.gone()
+                    tvPaymentErrorAction?.gone()
                 }
+                tvInstallmentType?.gone()
+                tvInstallmentDetail?.gone()
+                setPaymentErrorAlpha()
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
+        if (selectedTerm != null) {
+            tvInstallmentType?.visible()
+            tvInstallmentDetail?.visible()
+            if (selectedTerm.term > 0) {
+                tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
+            } else {
+                tvInstallmentDetail?.text = "Bayar Penuh"
+            }
+            tvInstallmentDetail?.setOnClickListener {
+                listener.onInstallmentDetailClicked()
+            }
+        } else {
+            tvInstallmentType?.gone()
+            tvInstallmentDetail?.gone()
+        }
+    }
+
+    private fun setupPaymentSelector(payment: OrderPayment) {
+        if (payment.creditCard?.totalCards ?: 0 > 1) {
+            tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
+            tvPaymentDetail?.setOnClickListener {
+                // todo: go to cc choose page
+            }
+        } else {
+            tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            tvPaymentDetail?.setOnClickListener {
+                //do nothing
             }
         }
     }
@@ -318,9 +322,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         ivPayment?.alpha = 0.5f
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
-        val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
-        if (color != null) {
-            tvPaymentDetail?.setTextColor(color)
+        view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)?.let {
+            tvPaymentDetail?.setTextColor(it)
         }
     }
 
@@ -328,9 +331,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         ivPayment?.alpha = 1f
         tvPaymentName?.alpha = 1f
         tvPaymentDetail?.alpha = 1f
-        val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
-        if (color != null) {
-            tvPaymentDetail?.setTextColor(color)
+        view.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)?.let {
+            tvPaymentDetail?.setTextColor(it)
         }
     }
 
@@ -418,9 +420,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
-        val availableTerms = payment?.creditCard?.availableTerms
-        if (availableTerms != null && availableTerms.isNotEmpty()) {
-            InstallmentDetailBottomSheet().show(fragment, availableTerms, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+        val creditCard = payment?.creditCard
+        if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
+            InstallmentDetailBottomSheet().show(fragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                 override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
                     listener.onInstallmentDetailChange(installment)
                 }

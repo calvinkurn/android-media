@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.model
 
 data class OrderPayment(
         val isEnable: Boolean = false,
-        val isError: Boolean = false,
+        val isCalculationError: Boolean = false,
         val gatewayCode: String = "",
         val gatewayName: String = "",
         val image: String = "",
@@ -15,7 +15,20 @@ data class OrderPayment(
         val creditCard: OrderPaymentCreditCard? = null,
         val errorMessage: OrderPaymentErrorMessage? = null
 ) {
+    fun isError(): Boolean {
+        return isCalculationError || !errorMessage?.message.isNullOrEmpty()
+    }
+
     fun getRealFee(): Double {
         return creditCard?.selectedTerm?.fee ?: fee
+    }
+
+    fun hasBlockingError(): Boolean {
+        if (creditCard?.isExpired == true) {
+            if (creditCard.totalCards > 1) return true
+            return false
+        }
+        if (errorMessage?.message.isNullOrEmpty()) return false
+        return true
     }
 }

@@ -75,11 +75,7 @@ data class OrderPaymentCreditCard(
         val isExpired: Boolean = false,
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null
-) {
-    fun getSelectedAvailableTerms(): OrderPaymentInstallmentTerm {
-        return availableTerms.first { it.isSelected }
-    }
-}
+)
 
 data class OrderPaymentInstallmentTerm(
         val term: Int = 0,

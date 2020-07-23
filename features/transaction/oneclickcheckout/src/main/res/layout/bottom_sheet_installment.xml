@@ -157,7 +157,6 @@
                 android:id="@+id/web_view_terms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/dp_180"
                 android:layout_marginTop="@dimen/dp_20"
                 app:layout_constraintEnd_toEndOf="@+id/iv_expand_terms"
                 app:layout_constraintStart_toStartOf="@+id/iv_installment_terms"

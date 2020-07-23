@@ -197,6 +197,9 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderPaymentErrorMessage(errorMessage.message,
                 OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
         )
+//        return OrderPaymentErrorMessage("errorMessage.message",
+//                OrderPaymentErrorMessageButton("errorMessage.button.text", "errorMessage.button.link")
+//        )
     }
 
     private fun mapPaymentCreditCard(creditCard: PaymentCreditCard): OrderPaymentCreditCard {

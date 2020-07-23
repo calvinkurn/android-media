@@ -396,6 +396,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
                                     _orderShipment = shipping
                                     orderShipment.value = _orderShipment
+                                    sendViewOspEe()
                                     if (shipping.serviceErrorMessage.isNullOrEmpty()) {
                                         validateUsePromo()
                                     } else {
@@ -406,7 +407,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
                                         }
                                     }
-                                    sendViewOspEe()
                                     if (preselectedSpId != null) {
                                         orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSessionInterface.userId)
                                     }
@@ -1382,12 +1382,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
             }
         }
-//        val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
         var subtotal = totalProductPrice + totalShippingPrice + insurancePrice
-//        if (payment.creditCard?.availableTerms?.isNotEmpty() == true) {
         payment = calculateInstallmentDetails(payment, subtotal, if (orderShop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
         val fee = payment.getRealFee()
-//        }
         subtotal += fee
         subtotal -= productDiscount
         subtotal -= shippingDiscount
@@ -1400,25 +1397,34 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
-            _orderPayment = payment.copy(isError = true)
+            _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
         } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
                     isButtonChoosePayment = true, buttonState = currentState)
-            _orderPayment = payment.copy(isError = true)
+            _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
         } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
                     paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
                     isButtonChoosePayment = true, buttonState = currentState)
-            _orderPayment = payment.copy(isError = true)
+            _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
         } else {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
-            _orderPayment = payment.copy(isError = false)
+            var isButtonChoosePayment = false
+            if (payment.hasBlockingError()) {
+                if (currentState == ButtonBayarState.NORMAL) {
+                    currentState = ButtonBayarState.DISABLE
+                }
+            } else if (payment.creditCard?.isExpired == true) {
+                // todo check if has valid credit card
+                isButtonChoosePayment = true
+            }
+            _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = isButtonChoosePayment, buttonState = currentState)
         }
     }
 

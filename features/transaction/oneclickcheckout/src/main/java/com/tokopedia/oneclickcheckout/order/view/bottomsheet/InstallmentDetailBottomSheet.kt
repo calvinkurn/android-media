@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -22,7 +23,7 @@ class InstallmentDetailBottomSheet {
 
     private var bottomSheetUnify: BottomSheetUnify? = null
 
-    fun show(fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>, listener: InstallmentDetailBottomSheetListener) {
+    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, listener: InstallmentDetailBottomSheetListener) {
         fragment.fragmentManager?.let {
             this.listener = listener
             bottomSheetUnify = BottomSheetUnify().apply {
@@ -33,7 +34,7 @@ class InstallmentDetailBottomSheet {
                 setTitle("Pilih Jenis Pembayaran")
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_installment, null)
-                setupChild(child, fragment, installmentDetails)
+                setupChild(child, fragment, creditCard)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -43,9 +44,9 @@ class InstallmentDetailBottomSheet {
         }
     }
 
-    private fun setupChild(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
-        setupInstallments(child, fragment, installmentDetails)
-        setupTerms(child, fragment)
+    private fun setupChild(child: View, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
+        setupInstallments(child, fragment, creditCard.availableTerms)
+        setupTerms(child, fragment, creditCard.tncInfo)
     }
 
     @SuppressLint("SetTextI18n")
@@ -74,7 +75,7 @@ class InstallmentDetailBottomSheet {
         }
     }
 
-    private fun setupTerms(child: View, fragment: OrderSummaryPageFragment) {
+    private fun setupTerms(child: View, fragment: OrderSummaryPageFragment, tncInfo: String) {
         val webView = child.findViewById<WebView>(R.id.web_view_terms)
         val htmlText = """
 <html>
@@ -133,6 +134,7 @@ class InstallmentDetailBottomSheet {
             </p>
           </li>
         </ul>
+        $tncInfo
     </body>
 </html>
         """.trimIndent()
