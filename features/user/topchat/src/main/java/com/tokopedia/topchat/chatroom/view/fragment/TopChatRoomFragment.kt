@@ -264,7 +264,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun renderBottomList(listChat: List<Visitable<*>>) {
         adapter.hideBottomLoading()
-        adapter.addBottomData(listChat)
+        if (listChat.isNotEmpty()) {
+            adapter.addBottomData(listChat)
+        }
     }
 
     private fun onErrorGetBottomChat(throwable: Throwable) {

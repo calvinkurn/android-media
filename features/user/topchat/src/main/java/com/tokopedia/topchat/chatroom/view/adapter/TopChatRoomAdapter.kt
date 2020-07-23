@@ -85,6 +85,7 @@ class TopChatRoomAdapter(
     }
 
     fun removeLatestHeaderDateIfSame(newBottomList: ArrayList<Visitable<*>>) {
+        if (newBottomList.isEmpty()) return
         val newListOldestDate = newBottomList[newBottomList.lastIndex]
         if (newListOldestDate is HeaderDateUiModel) {
             if (newListOldestDate == this.bottomMostHeaderDate) {
