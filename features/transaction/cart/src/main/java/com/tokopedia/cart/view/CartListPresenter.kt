@@ -326,15 +326,15 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         // Calculate total total item, price and cashback for marketplace product
         val returnValueMarketplaceProduct = calculatePriceMarketplaceProduct(allCartItemDataList)
-        totalItemQty += returnValueMarketplaceProduct[0] as Int
-        subtotalPrice += returnValueMarketplaceProduct[1] as Double
-        subtotalCashback += returnValueMarketplaceProduct[2] as Double
+        totalItemQty += returnValueMarketplaceProduct.first
+        subtotalPrice += returnValueMarketplaceProduct.second
+        subtotalCashback += returnValueMarketplaceProduct.third
 
         // Calculate total item and price for insurance product
         insuranceChecked = true
         val returnValueInsuranceProduct = calculatePriceInsuranceProduct(insuranceCartShopsArrayList)
-        totalItemQty += returnValueInsuranceProduct[0] as Int
-        subtotalPrice += returnValueInsuranceProduct[1] as Double
+        totalItemQty += returnValueInsuranceProduct.first
+        subtotalPrice += returnValueInsuranceProduct.second
 
         view?.updateCashback(subtotalCashback)
 
@@ -463,11 +463,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             cartItemParentIdMap: HashMap<String, CartItemData>,
                                             subtotalPrice: Double,
                                             subtotalCashback: Double,
-                                            cartItemHolderData: CartItemHolderData): Array<Any> {
-        // Return value by index
-        // 0 -> totalPrice
-        // 1 -> totalCashback
-        val returnValue = Array<Any>(2) { }
+                                            cartItemHolderData: CartItemHolderData): Pair<Double, Double> {
 
         var tmpSubTotalPrice = subtotalPrice
         var tmpSubtotalCashback = subtotalCashback
@@ -502,19 +498,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        returnValue[0] = tmpSubTotalPrice
-        returnValue[1] = tmpSubtotalCashback
-
-        return returnValue
+        return Pair(tmpSubTotalPrice, tmpSubtotalCashback)
     }
 
-    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Array<Any> {
-        // Return value by index
-        // 0 -> totalItemQty
-        // 1 -> subtotalPrice
-        // 2 -> subtotalCashback
-        val returnValue = Array<Any>(3) { }
-
+    private fun calculatePriceMarketplaceProduct(allCartItemDataList: ArrayList<CartItemHolderData>): Triple<Int, Double, Double> {
         var totalItemQty = 0
         var subtotalPrice = 0.0
         var subtotalCashback = 0.0
@@ -552,8 +539,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 } else {
                     // Calculate price and cashback for normal marketplace product
                     val returnValueNormalProduct = calculatePriceNormalProduct(it, itemQty, parentId, cartItemParentIdMap, subtotalPrice, subtotalCashback, cartItemHolderData)
-                    subtotalPrice = returnValueNormalProduct[0] as Double
-                    subtotalCashback = returnValueNormalProduct[1] as Double
+                    subtotalPrice = returnValueNormalProduct.first
+                    subtotalCashback = returnValueNormalProduct.second
                 }
             }
         }
@@ -570,19 +557,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        returnValue[0] = totalItemQty
-        returnValue[1] = subtotalPrice
-        returnValue[2] = subtotalCashback
-
-        return returnValue
+        return Triple(totalItemQty, subtotalPrice, subtotalCashback)
     }
 
-    private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>): Array<Any> {
-        // Return value by index
-        // 0 -> totalItemQty
-        // 1 -> subtotalPrice
-        val returnValue = Array<Any>(3) { }
-
+    private fun calculatePriceInsuranceProduct(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>): Pair<Int, Double> {
         var tmpTotalItemQty = 0
         var tmpSubTotalPrice = 0.0
 
@@ -601,10 +579,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             }
         }
 
-        returnValue[0] = tmpTotalItemQty
-        returnValue[1] = tmpSubTotalPrice
-
-        return returnValue
+        return Pair(tmpTotalItemQty, tmpSubTotalPrice)
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
