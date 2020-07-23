@@ -100,13 +100,21 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                val currentTab = reviewInboxTabs.tabLayout.selectedTabPosition
                 reviewInboxViewPager.setCurrentItem(tab.position, true)
                 when(tab.position) {
                     PENDING_TAB_INDEX -> {
-                        ReviewInboxContainerTracking.eventOnClickReviewPendingTab(viewModel.userId)
+                        when(currentTab) {
+                            PENDING_TAB_INDEX -> {
+                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewPendingTab(viewModel.userId)
+                            }
+                            HISTORY_TAB_INDEX -> {
+                                ReviewInboxContainerTracking.eventOnClickReviewPendingTabFromReviewHistoryTab(viewModel.userId)
+                            }
+                        }
                     }
                     HISTORY_TAB_INDEX -> {
-                        ReviewInboxContainerTracking.eventOnClickReviewHistoryTab(viewModel.userId)
+                        ReviewInboxContainerTracking.eventOnClickReviewHistoryTabFromReviewPendingTab(viewModel.userId)
                     }
                     else -> {
                         ReviewInboxContainerTracking.eventOnClickReviewSellerTab(viewModel.userId)
