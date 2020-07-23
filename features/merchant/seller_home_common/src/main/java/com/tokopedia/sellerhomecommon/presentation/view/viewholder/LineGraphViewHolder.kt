@@ -134,7 +134,7 @@ class LineGraphViewHolder(
         if (isShown) {
             showLineGraph(element)
             itemView.addOnImpressionListener(element.impressHolder) {
-                listener.sendLineGraphImpressionEvent(element.dataKey, element.data?.header.orEmpty())
+                listener.sendLineGraphImpressionEvent(element)
             }
         }
     }
@@ -191,7 +191,7 @@ class LineGraphViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendLineGraphImpressionEvent(dataKey: String, chartValue: String) {}
+        fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {}
 
         fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
     }
