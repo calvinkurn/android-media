@@ -1,4 +1,4 @@
-package com.tokopedia.statistic.utils
+package com.tokopedia.statistic.common.utils
 
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import java.util.*

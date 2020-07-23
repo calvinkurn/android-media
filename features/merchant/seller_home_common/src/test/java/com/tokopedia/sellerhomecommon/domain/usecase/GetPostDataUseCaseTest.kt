@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -41,8 +42,7 @@ class GetPostDataUseCaseTest {
 
     private val params = GetPostDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
-            startDate = ArgumentMatchers.anyString(),
-            endDate = ArgumentMatchers.anyString()
+            dynamicParameter = WidgetDataParameterModel()
     )
 
     @Before
@@ -59,13 +59,13 @@ class GetPostDataUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        val postList = getPostDataUseCase.executeOnBackground()
+        val result = getPostDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertTrue(!postList.isNullOrEmpty())
+        assertTrue(!result.isNullOrEmpty())
     }
 
     @Test
@@ -78,12 +78,12 @@ class GetPostDataUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val postList = getPostDataUseCase.executeOnBackground()
+        val result = getPostDataUseCase.executeOnBackground()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertTrue(postList.isNullOrEmpty())
+        assertTrue(result.isNullOrEmpty())
     }
 }

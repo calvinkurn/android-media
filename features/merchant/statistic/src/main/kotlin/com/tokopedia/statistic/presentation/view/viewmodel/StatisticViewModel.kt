@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.statistic.common.coroutine.DispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,8 +35,8 @@ class StatisticViewModel @Inject constructor(
         private val getTableDataUseCase: GetTableDataUseCase,
         private val getPieChartDataUseCase: GetPieChartDataUseCase,
         private val getBarChartDataUseCase: GetBarChartDataUseCase,
-        @Named("Main") dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatcher: DispatchersProvider
+) : BaseViewModel(dispatcher.main()) {
 
     companion object {
         private const val STATISTIC_PAGE_NAME = "shop-insight"
@@ -86,7 +87,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getWidgetLayout() {
         launchCatchError(block = {
-            val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(dispatcher.io()) {
                 getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, STATISTIC_PAGE_NAME)
                 return@withContext getLayoutUseCase.executeOnBackground()
             })
@@ -98,7 +99,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<CardDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<CardDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getCardDataUseCase.executeOnBackground()
             })
@@ -110,7 +111,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<LineGraphDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<LineGraphDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
@@ -122,7 +123,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<ProgressDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<ProgressDataUiModel>> = Success(withContext(dispatcher.io()) {
                 val today: String = DateTimeUtil.format(Date().time, DATE_FORMAT)
                 getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
@@ -135,7 +136,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<PostListDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<PostListDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getPostDataUseCase.executeOnBackground()
             })
@@ -147,7 +148,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<CarouselDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<CarouselDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
                 return@withContext getCarouselDataUseCase.executeOnBackground()
             })
@@ -159,7 +160,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getTableWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<TableDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<TableDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getTableDataUseCase.executeOnBackground()
             })
@@ -171,7 +172,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<PieChartDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<PieChartDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getPieChartDataUseCase.executeOnBackground()
             })
@@ -183,7 +184,7 @@ class StatisticViewModel @Inject constructor(
 
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<BarChartDataUiModel>> = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<BarChartDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getBarChartDataUseCase.executeOnBackground()
             })

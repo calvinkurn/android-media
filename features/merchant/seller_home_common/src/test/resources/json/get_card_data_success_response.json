@@ -1,6 +1,6 @@
 {
   "data": {
-    "getCardWidgetData": {
+    "fetchCardWidgetData": {
       "data": [
         {
           "dataKey": "newOrder",

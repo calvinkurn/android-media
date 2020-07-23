@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateRangeItem
-import com.tokopedia.statistic.utils.DateRangeFormatUtil
+import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_click.view.*
 
 /**

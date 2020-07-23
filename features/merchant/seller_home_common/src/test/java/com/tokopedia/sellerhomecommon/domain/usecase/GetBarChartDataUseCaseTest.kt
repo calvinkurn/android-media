@@ -2,17 +2,16 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
-import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
+import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
+import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,14 +19,14 @@ import org.junit.rules.ExpectedException
 import org.mockito.ArgumentMatchers
 
 /**
- * Created By @ilhamsuaib on 21/05/20
+ * Created By @ilhamsuaib on 22/07/20
  */
 
 @ExperimentalCoroutinesApi
-class GetLineGraphDataUseCaseTest {
+class GetBarChartDataUseCaseTest {
 
     companion object {
-        private const val SUCCESS_RESPONSE = "json/get_line_graph_data_success_response.json"
+        private const val SUCCESS_RESPONSE = "json/get_bar_chart_data_success_response.json"
     }
 
     @get:Rule
@@ -35,13 +34,13 @@ class GetLineGraphDataUseCaseTest {
 
     @RelaxedMockK
     lateinit var gqlRepository: GraphqlRepository
-    @RelaxedMockK
-    lateinit var mapper: LineGraphMapper
-    private val getLineGraphDataUseCase by lazy {
-        GetLineGraphDataUseCase(gqlRepository, mapper)
-    }
 
-    private val params = GetLineGraphDataUseCase.getRequestParams(
+    @RelaxedMockK
+    lateinit var mapper: BarChartMapper
+
+    private lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
+
+    private val params = GetPieChartDataUseCase.getRequestParams(
             dataKey = ArgumentMatchers.anyList(),
             dynamicParameter = WidgetDataParameterModel()
     )
@@ -49,42 +48,45 @@ class GetLineGraphDataUseCaseTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        getBarChartDataUseCase = GetBarChartDataUseCase(gqlRepository, mapper)
     }
 
     @Test
-    fun `should success get line graph data`() = runBlocking {
-        getLineGraphDataUseCase.params = params
-        val successResponse = TestHelper.createSuccessResponse<GetLineGraphDataResponse>(SUCCESS_RESPONSE)
+    fun `should success when get bar chart data`() = runBlocking {
+        getBarChartDataUseCase.params = params
+
+        val successResponse = TestHelper.createSuccessResponse<GetBarChartDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns successResponse
 
-        val lineGraphData = getLineGraphDataUseCase.executeOnBackground()
+        val result = getBarChartDataUseCase.executeOnBackground()
 
-        coVerify {
+        coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertTrue(!lineGraphData.isNullOrEmpty())
+        Assert.assertTrue(!result.isNullOrEmpty())
     }
 
     @Test
-    fun `should failed get line graph data`() = runBlocking {
-        getLineGraphDataUseCase.params = params
-        val errorResponse = TestHelper.createErrorResponse<GetLineGraphDataResponse>()
+    fun `should failed when get bar chart data`() = runBlocking {
+        getBarChartDataUseCase.params = params
+        val errorResponse = TestHelper.createErrorResponse<GetBarChartDataResponse>()
 
         coEvery {
             gqlRepository.getReseponse(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val lineGraphData = getLineGraphDataUseCase.executeOnBackground()
+        val result = getBarChartDataUseCase.executeOnBackground()
 
-        coVerify {
+        coEvery {
             gqlRepository.getReseponse(any(), any())
         }
 
-        assertTrue(lineGraphData.isNullOrEmpty())
+        Assert.assertTrue(result.isNullOrEmpty())
     }
 }
