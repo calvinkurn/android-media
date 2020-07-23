@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -13,7 +14,7 @@ import javax.inject.Inject
  */
 class DailyBudgetViewModelFactory @Inject constructor(
         private val context: Context,
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: AutoAdsDispatcherProvider,
         private val repository: GraphqlRepository,
         private val query: Map<String, String>
 ): ViewModelProvider.NewInstanceFactory() {

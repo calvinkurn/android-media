@@ -2,6 +2,8 @@ package com.tokopedia.recentview.di;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.recentview.view.fragment.RecentViewFragment;
@@ -19,14 +21,18 @@ import retrofit2.Retrofit;
 @Component(modules = RecentViewModule.class, dependencies = BaseAppComponent.class)
 public interface RecentViewComponent {
 
+    @NonNull
     @ApplicationContext
     Context context();
 
+    @NonNull
     Retrofit.Builder retrofitBuilder();
 
+    @NonNull
     HttpLoggingInterceptor httpLoggingInterceptor();
 
+    @NonNull
     UserSessionInterface userSessionInterface();
 
-    void inject(RecentViewFragment fragment);
+    void inject(@NonNull RecentViewFragment fragment);
 }

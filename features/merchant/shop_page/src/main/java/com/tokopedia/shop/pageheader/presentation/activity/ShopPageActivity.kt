@@ -113,8 +113,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 SHOP_TRACE_MIDDLE,
                 SHOP_TRACE_RENDER
         )
-        shopPageHeaderLoadTimePerformanceCallback?.startMonitoring(SHOP_TRACE)
-        shopPageHeaderLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+        performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
 
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)

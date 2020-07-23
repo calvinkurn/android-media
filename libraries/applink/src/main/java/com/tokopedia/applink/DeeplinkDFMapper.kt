@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_PREPAID_D
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION
+import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_RECENT_VIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
@@ -28,9 +29,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_FIND
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_HOTLIST_REVAMP
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.MONEYIN_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.TRADEIN
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.AFFILIATE_EDIT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.COMMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.CONTENT_REPORT
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_DRAFT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_CONTENT_POST_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.MEDIA_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.VIDEO_DETAIL
@@ -71,6 +75,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INSTANT_DEBIT_B
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
@@ -84,6 +89,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INV
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
@@ -199,6 +205,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE, R.string.applink_kol_title_media_preview))
             add(DFP({ it.startsWithPattern(INTEREST_PICK) }, DF_BASE, R.string.applink_ip_title))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_BASE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_BASE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_BASE, R.string.applink_af_title_create_post))
 
             // Digital
             add(DFP({
@@ -224,6 +233,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SEARCH_RESULT) || it.startsWith(AUTOCOMPLETE) }, DF_BASE, R.string.title_search_result))
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DF_BASE, R.string.title_wishlist))
             add(DFP({ it.startsWith(DEFAULT_HOME_RECOMMENDATION) }, DF_BASE, R.string.recom_home_recommendation))
+            add(DFP({ it.startsWith(HOME_RECENT_VIEW) }, DF_BASE, R.string.title_recent_view))
 
             // Fintech
             add(DFP({ it.startsWith(OVO_PAY_WITH_QR_ENTRY) }, DF_BASE, R.string.ovo_pay_with_qr_title))
@@ -268,6 +278,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(BRANDLIST_SEARCH)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST)}, DF_BASE, R.string.title_brandlist))
             add(DFP({ it.startsWith(BRAND_LIST_WITH_SLASH)}, DF_BASE, R.string.title_brandlist))
+            add(DFP({ it.startsWith(MERCHANT_OPEN_PRODUCT_PREVIEW) || it.startsWith(PRODUCT_ADD) }, DF_MERCHANT_SELLER, R.string.title_product_add_edit))
 
             // Operational
             add(DFP({
@@ -346,6 +357,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(NOTIFICATION) }, DF_BASE, R.string.title_notification_center))
             add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DF_BASE, R.string.title_notification_center))
+            add(DFP({ it.startsWith(PUSH_NOTIFICATION_TROUBLESHOOTER) }, DF_BASE, R.string.applink_notif_troubleshooter))
 
             add(DFP({ it.startsWith(SHIPPING_CONFIRMATION) }, DF_BASE, R.string.path_shipping_confirmation))
             add(DFP({ it.startsWith(ORDER_TRACKING) }, DF_BASE, R.string.path_order_tracking))
@@ -360,6 +372,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(PREFERENCE_EDIT)
             }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
+            add(DFP({ it.startsWith(NORMAL_CHECKOUT)}, DF_BASE, R.string.title_normal_checkout))
         }
     }
 

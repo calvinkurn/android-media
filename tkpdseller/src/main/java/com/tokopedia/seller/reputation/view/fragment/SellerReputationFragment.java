@@ -87,8 +87,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
     SwipeToRefresh swipeToRefresh;
 
     @Inject
-    SessionHandler sessionHandler;
-    @Inject
     ReviewReputationUseCase reviewReputationUseCase;
     @Inject
     GCMHandler gcmHandler;
@@ -242,7 +240,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
             inject();
             UserSessionInterface userSession = new UserSession(getActivity());
             presenter.setUserSession(userSession);
-            presenter.setSessionHandler(sessionHandler);
             presenter.setReviewReputationUseCase(reviewReputationUseCase);
             presenter.setGcmHandler(gcmHandler);
             presenter.setErrorNetworkListener(this);
