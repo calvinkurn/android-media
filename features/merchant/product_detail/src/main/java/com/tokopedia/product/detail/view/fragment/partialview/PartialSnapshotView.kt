@@ -16,6 +16,8 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.isGivenDateIsBelowThan24H
+import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,7 +47,7 @@ class PartialSnapshotView(private val view: View,
 
         when {
             product.isUpcomingNplType() -> {
-                renderNplRibbon(data.ribbonCopy)
+                renderNplRibbon(data.ribbonCopy, data.startDate, data.campaign)
                 renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
             }
             campaign.isActive -> {
@@ -171,11 +173,18 @@ class PartialSnapshotView(private val view: View,
         hideStockBarAndBackgroundColor()
     }
 
-    private fun renderNplRibbon(ribbonCopy: String) = with(view) {
+    private fun renderNplRibbon(ribbonCopy: String, startDate:String, campaign: CampaignModular) = with(view) {
+        if (startDate.isGivenDateIsBelowThan24H()) {
+            text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
+            showCountDownTimerUpcomingNpl(startDate, campaign)
+        } else {
+            text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
+            count_down.hide()
+        }
+
         hideStockBarAndBackgroundColor()
         discount_timer_holder.show()
         count_down.hide()
-        text_title_discount_timer.text = MethodChecker.fromHtml(ribbonCopy)
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(view) {
@@ -241,6 +250,28 @@ class PartialSnapshotView(private val view: View,
         visible()
     }
 
+    private fun showCountDownTimerUpcomingNpl(startDateData: String, campaign: CampaignModular) = with(view) {
+        try {
+            val now = System.currentTimeMillis()
+            val startTime = startDateData.toLongOrZero() * ProductNotifyMeViewHolder.SECOND
+            val startDate = Date(startTime)
+            val delta = startDate.time - startTime
+
+            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
+                count_down.show()
+                count_down.setup(delta, startDate) {
+                    hideProductCampaign(campaign)
+                    listener.showAlertCampaignEnded()
+                }
+                discount_timer_holder.show()
+            } else {
+                layout_discount_timer.gone()
+            }
+        } catch (e: Throwable) {
+            discount_timer_holder.hide()
+        }
+    }
+
     private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -257,7 +288,7 @@ class PartialSnapshotView(private val view: View,
                 }
                 discount_timer_holder.show()
             } else {
-                view.layout_discount_timer.gone()
+                layout_discount_timer.gone()
             }
         } catch (ex: Exception) {
             discount_timer_holder.hide()
