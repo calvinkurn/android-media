@@ -163,7 +163,7 @@ class InboxReviewViewModel @Inject constructor(
 
             val countStatusIsZero = InboxReviewMapper.mapToStatusFilterList(allFilterList).filter { it.isSelected }.count().isZero()
             if(countStatusIsZero) {
-                getInitInboxReview(1, "")
+                getInitInboxReview()
             } else {
                 getInboxReview()
             }
@@ -182,9 +182,9 @@ class InboxReviewViewModel @Inject constructor(
                 filterByList.add(statusFilterTextGenerated)
             }
 
-            val countStatusIsZero = statusFilterText.count().isZero()
+            val countStatusIsZero = InboxReviewMapper.mapToStatusFilterList(allFilterList).filter { it.isSelected }.count().isZero()
             if(countStatusIsZero) {
-                getInitInboxReview(1, "")
+                getInitInboxReview()
             } else {
                 getInboxReview()
             }

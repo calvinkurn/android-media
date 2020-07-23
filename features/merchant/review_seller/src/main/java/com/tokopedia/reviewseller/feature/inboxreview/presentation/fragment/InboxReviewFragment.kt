@@ -151,7 +151,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         isLoadingInitialData = true
         endlessRecyclerViewScrollListener?.resetState()
         showLoading()
-        if(countStatusIsZero()) {
+        if (countStatusIsZero()) {
             inboxReviewViewModel.getInitInboxReview()
         } else {
             inboxReviewViewModel.getInboxReview()
@@ -159,7 +159,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun loadData(page: Int) {
-        if(countStatusIsZero()) {
+        if (countStatusIsZero()) {
             inboxReviewViewModel.getInitFeedbackInboxReviewListNext(page, statusFilter)
         } else {
             inboxReviewViewModel.getFeedbackInboxReviewListNext(page)
@@ -276,7 +276,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 tickerInboxReview?.apply {
                     setTextDescription(getString(R.string.ticker_inbox_review))
                     show()
-                    setDescriptionClickEvent(object : TickerCallback{
+                    setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
@@ -296,22 +296,22 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         feedbackInboxList = data.feedbackInboxList.toMutableList()
         swipeToRefresh?.isRefreshing = false
         sortFilterInboxReview?.show()
-        if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
-            sortFilterInboxReview?.show()
-            inboxReviewAdapter.addInboxFeedbackEmpty(true)
-        } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
-            sortFilterInboxReview?.hide()
-            inboxReviewAdapter.clearAllElements()
-            inboxReviewAdapter.addInboxFeedbackEmpty(false)
-        } else {
-            isFilter = true
-            inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
-        }
 
-        if(isUnAnsweredHasNextFalse(data)) {
+        if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
             endlessRecyclerViewScrollListener?.resetState()
         } else {
+            if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
+                sortFilterInboxReview?.show()
+                inboxReviewAdapter.addInboxFeedbackEmpty(true)
+            } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
+                sortFilterInboxReview?.hide()
+                inboxReviewAdapter.clearAllElements()
+                inboxReviewAdapter.addInboxFeedbackEmpty(false)
+            } else {
+                isFilter = true
+                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+            }
             updateScrollListenerState(data.hasNext)
         }
     }
