@@ -227,14 +227,4 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/footer"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
 </RelativeLayout>
