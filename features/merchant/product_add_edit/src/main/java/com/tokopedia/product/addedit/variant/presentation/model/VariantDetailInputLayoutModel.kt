@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.variant.presentation.model
 
 data class VariantDetailInputLayoutModel(
         var headerPosition: Int = 0,
+        var visitablePosition: Int = 0,
         var unitValueLabel: String = "",
         var isActive: Boolean = true,
         var price: String = "",

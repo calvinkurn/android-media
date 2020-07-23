@@ -19,8 +19,7 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
         accordionIndicator = itemView?.findViewById(R.id.iv_accordion_indicator)
 
         itemView?.setOnClickListener {
-            val headerName = unitValueHeader?.text.toString()
-            val isCollapsed = listener.onHeaderClicked(headerName)
+            val isCollapsed = listener.onHeaderClicked(headerPosition)
             if (isCollapsed) accordionIndicator?.setImageResource(R.drawable.ic_chevron_up)
             else accordionIndicator?.setImageResource(R.drawable.ic_chevron_down)
         }
@@ -39,6 +38,6 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
     }
 
     interface OnCollapsibleHeaderClickListener {
-        fun onHeaderClicked(headerName: String): Boolean
+        fun onHeaderClicked(headerPosition:Int): Boolean
     }
 }

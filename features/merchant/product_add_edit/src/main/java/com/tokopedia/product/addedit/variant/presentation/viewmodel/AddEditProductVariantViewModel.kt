@@ -93,15 +93,22 @@ class AddEditProductVariantViewModel @Inject constructor(
         it.productId > 0
     }
 
-    val hasVariants: LiveData<Boolean> = Transformations.map(mSelectedVariantUnitValuesLevel1) {
-        it.isNotEmpty()
+    val isSelectedVariantUnitValuesEmpty =  MediatorLiveData<Boolean>().apply {
+        addSource(mSelectedVariantUnitValuesLevel1) {
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty() ?: true
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty() ?: true
+            this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
+        }
+        addSource(mSelectedVariantUnitValuesLevel2) {
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty() ?: true
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty() ?: true
+            this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
+        }
     }
 
     private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
-
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel2Empty) return true
-
         return !isVariantUnitValuesLevel1Empty && !isVariantUnitValuesLevel2Empty
     }
 
