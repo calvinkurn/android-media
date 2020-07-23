@@ -2,20 +2,16 @@ package com.tokopedia.reviewseller.feature.inboxreview.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewEmptyUiModel
 import com.tokopedia.reviewseller.feature.inboxreview.presentation.model.InboxReviewErrorUiModel
 
 class InboxReviewAdapter(
         inboxReviewAdapterTypeFactory: InboxReviewAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, InboxReviewAdapterTypeFactory>(inboxReviewAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
-
-    var feedbackInboxListUiModel: MutableList<FeedbackInboxUiModel> = mutableListOf()
+) : BaseListAdapter<Visitable<*>, InboxReviewAdapterTypeFactory>(inboxReviewAdapterTypeFactory){
 
     fun setFeedbackListData(feedbackInboxList: List<FeedbackInboxUiModel>) {
         val lastIndex = visitables.size
-        feedbackInboxListUiModel.addAll(feedbackInboxList)
         visitables.addAll(feedbackInboxList)
         notifyItemRangeInserted(lastIndex, feedbackInboxList.size)
     }
@@ -33,9 +29,6 @@ class InboxReviewAdapter(
             notifyItemInserted(lastIndex)
         }
     }
-
-    override val endlessDataSize: Int
-        get() = feedbackInboxListUiModel.size
 
     override fun hideLoading() {
         if (visitables.contains(loadingModel)) {
