@@ -191,8 +191,8 @@ class LineGraphViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendLineGraphImpressionEvent(dataKey: String, cardValue: String) {}
+        fun sendLineGraphImpressionEvent(dataKey: String, chartValue: String) {}
 
-        fun sendLineGraphCtaClickEvent(dataKey: String, cardValue: String) {}
+        fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
     }
 }
