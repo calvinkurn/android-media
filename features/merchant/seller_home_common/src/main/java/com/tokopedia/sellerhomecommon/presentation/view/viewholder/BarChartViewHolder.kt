@@ -8,10 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.BarChartConfig
 import com.tokopedia.charts.model.*
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartMetricsUiModel
@@ -112,6 +109,10 @@ class BarChartViewHolder(
                     openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
                 }
             }
+
+            addOnImpressionListener(element.impressHolder) {
+                listener.sendBarChartImpressionEvent(element)
+            }
         }
     }
 
@@ -197,5 +198,8 @@ class BarChartViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+
+        fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {}
+    }
 }
