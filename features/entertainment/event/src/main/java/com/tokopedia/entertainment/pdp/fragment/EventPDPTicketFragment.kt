@@ -326,7 +326,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     private fun getTimestamptoText(state: Boolean): String {
-        return DateFormatUtils.getFormattedDate(if (state) selectedDate else getTodayDates(), DateFormatUtils.FORMAT_DD_MMMM_YYYY)
+        return DateFormatUtils.getFormattedDate(if (state) selectedDate else getTodayDates(), DATE_TICKET)
     }
 
     private fun getTodayDates(): String = (Date().time / 1000L).toString()
@@ -349,6 +349,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         val EMPTY_QTY = 0
         val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000
+        const val DATE_TICKET = "EEE, dd MMM yyyy"
     }
 
 }

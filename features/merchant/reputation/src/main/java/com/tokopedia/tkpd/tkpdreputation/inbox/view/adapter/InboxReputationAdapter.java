@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.EmptySearchModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationOvoIncentiveViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +57,20 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
         return list.size();
     }
 
-    public void setList(List<InboxReputationItemViewModel> list) {
+    public void setList(List<InboxReputationItemViewModel> list, InboxReputationOvoIncentiveViewModel ovoIncentiveViewModel) {
         this.list.clear();
+        if(ovoIncentiveViewModel != null) {
+            this.list.add(ovoIncentiveViewModel);
+        }
         this.list.addAll(list);
         notifyDataSetChanged();
+    }
+
+    public void insertOvoIncentiveDataModel(InboxReputationOvoIncentiveViewModel ovoIncentiveViewModel) {
+        Visitable first = this.list.get(0);
+        if(!(first instanceof LoadingModel || first instanceof InboxReputationOvoIncentiveViewModel)) {
+            this.list.add(0, ovoIncentiveViewModel);
+        }
     }
 
     public void addList(List<InboxReputationItemViewModel> list) {
