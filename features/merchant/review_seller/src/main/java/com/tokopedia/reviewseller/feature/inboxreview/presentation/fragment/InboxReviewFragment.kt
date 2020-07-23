@@ -337,15 +337,16 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
-            endlessRecyclerViewScrollListener?.resetState()
             if(data.feedbackInboxList.isNotEmpty()) {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             } else {
                 sortFilterInboxReview?.hide()
                 isLoadingInitialData = true
+                inboxReviewAdapter.clearAllElements()
                 hideLoading()
                 inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
             }
+            endlessRecyclerViewScrollListener?.resetState()
         } else {
             if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
                 sortFilterInboxReview?.show()
@@ -541,6 +542,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
         inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
+        isLoadingInitialData = true
+        inboxReviewAdapter.clearAllElements()
     }
 
     private fun isUnAnsweredHasNextFalse(data: InboxReviewUiModel): Boolean {
