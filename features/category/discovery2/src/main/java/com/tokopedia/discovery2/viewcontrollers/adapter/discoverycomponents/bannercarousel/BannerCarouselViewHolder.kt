@@ -40,8 +40,6 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())
             (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerCarouselLihat(mBannerCarouselComponentViewModel.getComponentName())
         }
-
-
     }
 
 

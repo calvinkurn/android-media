@@ -16,16 +16,17 @@ class BannerCarouselItemViewModel(val application: Application, private val comp
 
     fun getComponentLiveData(): LiveData<ComponentsItem> = componentData
 
-    fun getBannerData():DataItem? {
-        components.data?.let {
-            if(it.isNotEmpty()) return it[0]
-        }
-        return null
+    fun getBannerData(): DataItem? {
+        return getDataItem()
     }
 
-    fun getNavigationUrl() : String? {
+    fun getNavigationUrl(): String? {
+        return getDataItem()?.imageClickUrl
+    }
+
+    private fun getDataItem(): DataItem? {
         components.data?.let {
-            if(it.isNotEmpty()) return it[0].imageClickUrl
+            if (it.isNotEmpty()) return it[0]
         }
         return null
     }
