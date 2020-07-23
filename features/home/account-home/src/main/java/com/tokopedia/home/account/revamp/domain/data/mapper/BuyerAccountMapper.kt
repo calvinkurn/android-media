@@ -33,14 +33,12 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
 
-    val items: ArrayList<ParcelableViewModel<*>> = ArrayList()
-
     override fun call(t: AccountModel): BuyerViewModel {
         return getBuyerModel(t)
     }
 
     private fun getBuyerModel(accountModel: AccountModel) : BuyerViewModel {
-        items.clear()
+        val items: ArrayList<ParcelableViewModel<*>> = ArrayList()
 
         val model = BuyerViewModel()
         items.add(getBuyerProfile(accountModel))
