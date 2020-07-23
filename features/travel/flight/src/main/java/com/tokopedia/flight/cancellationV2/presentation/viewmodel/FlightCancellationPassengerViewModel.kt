@@ -20,7 +20,7 @@ class FlightCancellationPassengerViewModel @Inject constructor(
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
-    val passengerRelationsMap: HashMap<String, FlightCancellationPassengerModel> = hashMapOf()
+    private val passengerRelationsMap: HashMap<String, FlightCancellationPassengerModel> = hashMapOf()
     val selectedCancellationPassengerList: MutableList<FlightCancellationModel> = arrayListOf()
 
     private val mutableCancellationPassengerList = MutableLiveData<List<FlightCancellationModel>>()
@@ -122,7 +122,7 @@ class FlightCancellationPassengerViewModel @Inject constructor(
         for (cancellation in selectedCancellationPassengerList) {
             if (passengerModel in cancellation.passengerModelList) {
                 return true
-            } else if (passengerModel.statusString != null && passengerModel.statusString!!.isNotEmpty()) {
+            } else if (passengerModel.statusString.isNotEmpty()) {
                 return true
             }
         }
@@ -155,7 +155,7 @@ class FlightCancellationPassengerViewModel @Inject constructor(
     private fun buildPassengerRelationsMap(passengerList: List<FlightCancellationPassengerModel>): Map<String, FlightCancellationPassengerModel> {
         val passengerRelations = hashMapOf<String, FlightCancellationPassengerModel>()
         for (passenger in passengerList) {
-            passengerRelations.put(passenger.relationId, passenger)
+            passengerRelations[passenger.relationId] = passenger
         }
         return passengerRelations
     }
