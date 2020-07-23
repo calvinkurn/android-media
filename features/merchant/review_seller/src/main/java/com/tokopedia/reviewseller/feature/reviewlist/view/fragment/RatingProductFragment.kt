@@ -236,7 +236,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun initInjector() {
-        inject()
+        component?.inject(this)
     }
 
     override fun getComponent(): ReviewProductListComponent? {
