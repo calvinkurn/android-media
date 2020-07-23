@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.charts.config.PieChartConfig
 import com.tokopedia.charts.model.PieChartEntry
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -75,6 +76,10 @@ class PieChartViewHolder(
         pieChartShc.init(PieChartConfig.getDefaultConfig())
         pieChartShc.setData(getPieChartData(element))
         pieChartShc.invalidateChart()
+
+        addOnImpressionListener(element.impressHolder) {
+            listener.sendPieChartImpressionEvent(element)
+        }
     }
 
     private fun setOnError() {
@@ -115,5 +120,8 @@ class PieChartViewHolder(
         }.orEmpty()
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+
+        fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {}
+    }
 }
