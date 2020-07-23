@@ -354,7 +354,7 @@ open class WishlistViewModel @Inject constructor(
                 val results = topAdsImageViewUseCase.getImageData(
                         topAdsImageViewUseCase.getQueryMap(
                                 "",
-                                "1",
+                                "6",
                                 "",
                                 1,
                                 3,
