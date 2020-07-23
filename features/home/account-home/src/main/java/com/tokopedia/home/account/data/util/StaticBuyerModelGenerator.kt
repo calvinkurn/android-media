@@ -5,9 +5,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
+import com.tokopedia.home.account.revamp.domain.data.model.AccountModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.lang.Boolean

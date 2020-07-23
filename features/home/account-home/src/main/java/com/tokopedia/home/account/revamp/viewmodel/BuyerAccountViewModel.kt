@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
-import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
 import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
+import com.tokopedia.home.account.revamp.domain.data.model.AccountModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref

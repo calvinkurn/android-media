@@ -8,13 +8,13 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.home.account.revamp.domain.data.model.AccountModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.user.session.UserSession;
@@ -112,9 +112,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             }
         }
 
-        if ((accountModel.getSaldoModel() != null &&
-                accountModel.getSaldoModel().getSaldo() != null) ||
-                (accountModel.getSaldo() != null) ||
+        if ((accountModel.getSaldo() != null) ||
                 (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
                         accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
 
@@ -122,14 +120,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
 
-            long saldo = 0;
-            if(accountModel.getSaldo() != null) {
-                saldo = accountModel.getSaldo().getDepositLong();
-            } else if(accountModel.getSaldoModel() != null && accountModel.getSaldoModel().getSaldo() != null) {
-                saldo = accountModel.getSaldoModel().getSaldo().getDepositLong();
-            }
             tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (saldo, true));
+                    (accountModel.getSaldo().getDepositLong(), true));
 
             tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);

@@ -64,23 +64,29 @@ public class AccountModel {
     private DebitInstantModel debitInstant = new DebitInstantModel();
 
     @SerializedName("vcc_user_status")
+    @Expose
     private VccUserStatus vccUserStatus = new VccUserStatus();
 
     @SerializedName("vcc_user_balance")
+    @Expose
     private VccUserBalance vccUserBalance = new VccUserBalance();
 
     @SerializedName("kycStatus")
+    @Expose
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
     private SaldoModel saldoModel = new SaldoModel();
 
     @SerializedName("isAffiliate")
+    @Expose
     private boolean isAffiliate = false;
 
     @SerializedName("CheckEligible")
+    @Expose
     private PremiumAccountResponse premiumAccountResponse;
 
     @SerializedName("balance")
+    @Expose
     private DepositModel saldo = new DepositModel();
 
     private PendingCashbackModel pendingCashbackModel = new PendingCashbackModel();

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.account.AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME
-import com.tokopedia.home.account.data.model.AccountModel
+import com.tokopedia.home.account.revamp.domain.data.model.AccountModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

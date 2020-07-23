@@ -6,13 +6,13 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.home.account.AccountConstants.VccStatus
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator.Companion.getModel
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
+import com.tokopedia.home.account.revamp.domain.data.model.AccountModel
 import com.tokopedia.navigation_common.model.VccUserStatus
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
