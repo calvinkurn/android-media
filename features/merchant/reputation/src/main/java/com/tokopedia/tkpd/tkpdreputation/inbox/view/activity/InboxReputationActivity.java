@@ -25,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.fragment.InboxReviewFragment;
+import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -102,13 +104,13 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
-            if(GlobalConfig.isSellerApp()) {
-                reviewSellerFragment = applicationContext.getReviewSellerFragment();
-                Bundle reviewSellerBundle = new Bundle();
-                reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
-                reviewSellerFragment.setArguments(reviewSellerBundle);
-                inboxReviewFragment = applicationContext.getInboxReviewFragment();
-            }
+        }
+        if(GlobalConfig.isSellerApp()) {
+            reviewSellerFragment = RatingProductFragment.Companion.createInstance();
+            Bundle reviewSellerBundle = new Bundle();
+            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
+            reviewSellerFragment.setArguments(reviewSellerBundle);
+            inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
         }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {

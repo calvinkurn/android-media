@@ -203,16 +203,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Fragment getReviewSellerFragment() {
-        return null;
-    }
-
-    @Override
-    public Fragment getInboxReviewFragment() {
-        return null;
-    }
-
-    @Override
     public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
 
     }
