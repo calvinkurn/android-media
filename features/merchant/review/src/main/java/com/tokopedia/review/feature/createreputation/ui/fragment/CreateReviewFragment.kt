@@ -188,6 +188,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isLowDevice = DevicePerformanceInfo.isLow(context)
+        initReputation()
         initCreateReviewTextArea()
         initEmptyPhoto()
         initAnonymousText()
@@ -312,6 +313,36 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_IMAGE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    createReviewViewModel.initImageData()
+
+                    ReviewTracking.reviewOnImageUploadTracker(
+                            orderId,
+                            productId.toString(10),
+                            true,
+                            selectedImage.size.toString(10),
+                            false
+                    )
+
+                    val imageListData = createReviewViewModel.getImageList(selectedImage)
+                    if (selectedImage.isNotEmpty()) {
+                        if (!isImageAdded) {
+                            isImageAdded = true
+                        }
+                        imageAdapter.setImageReviewData(imageListData)
+                        rv_img_review.show()
+                        createReviewAddPhotoEmpty.hide()
+                    }
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     private fun getReviewData() {
         showShimmering()
         createReviewViewModel.getProductReputation(productId, reviewId)
@@ -362,6 +393,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
             shopId = shopData.shopID.toString()
             orderId = orderID
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
+            setShopName(shopData.shopName)
         }
     }
 
@@ -465,36 +497,6 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
         if (shouldPlayAnimation && ::imgAnimationView.isInitialized) {
             generateAnimationByIndex(animatedReviewPicker.getReviewClickAt())
             shouldPlayAnimation = false
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_IMAGE -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    createReviewViewModel.initImageData()
-
-                    ReviewTracking.reviewOnImageUploadTracker(
-                            orderId,
-                            productId.toString(10),
-                            true,
-                            selectedImage.size.toString(10),
-                            false
-                    )
-
-                    val imageListData = createReviewViewModel.getImageList(selectedImage)
-                    if (selectedImage.isNotEmpty()) {
-                        if (!isImageAdded) {
-                            isImageAdded = true
-                        }
-                        imageAdapter.setImageReviewData(imageListData)
-                        rv_img_review.show()
-                        createReviewAddPhotoEmpty.hide()
-                    }
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -665,6 +667,14 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
                 }
             }
         }
+    }
+
+    private fun initReputation() {
+        createReviewScore.setEditableScore(0, "")
+    }
+
+    private fun setShopName(shopName: String) {
+        createReviewScore.setShopName(shopName)
     }
 
     fun showCancelDialog() {

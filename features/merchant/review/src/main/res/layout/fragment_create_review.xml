@@ -231,13 +231,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createReviewTextAreaTitle"/>
 
-            <View
-                android:id="@+id/review_line"
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/create_review_divider"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
+                android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@+id/createReviewExpandableTextArea"
-                android:background="@color/pale_grey" />
+                app:layout_constraintTop_toBottomOf="@+id/createReviewExpandableTextArea"/>
+
+            <com.tokopedia.review.common.presentation.widget.ReviewScoreWidget
+                android:id="@+id/createReviewScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/create_review_divider"/>
 
             <LinearLayout
                 android:id="@+id/container_anonymous"
@@ -245,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@+id/review_line"
+                app:layout_constraintTop_toBottomOf="@id/createReviewScore"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
