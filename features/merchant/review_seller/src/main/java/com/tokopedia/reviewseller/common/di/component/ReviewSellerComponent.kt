@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
 import com.tokopedia.reviewseller.common.di.scope.ReviewSellerScope
-import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,6 +27,4 @@ interface ReviewSellerComponent {
     fun getGraphqlRepository(): GraphqlRepository
 
     fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
-
-    fun inject(ratingProductFragment: RatingProductFragment)
 }

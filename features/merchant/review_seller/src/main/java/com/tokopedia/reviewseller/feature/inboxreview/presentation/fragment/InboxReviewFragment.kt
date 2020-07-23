@@ -57,7 +57,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
 import javax.inject.Inject
 
-class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(), HasComponent<InboxReviewComponent>,
+class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
+        HasComponent<InboxReviewComponent>,
         FeedbackInboxReviewListener, GlobalErrorStateListener {
 
     companion object {

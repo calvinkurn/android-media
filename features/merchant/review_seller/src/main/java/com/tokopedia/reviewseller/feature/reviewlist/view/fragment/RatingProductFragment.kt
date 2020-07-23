@@ -23,18 +23,23 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
 import com.tokopedia.reviewseller.common.di.component.DaggerReviewSellerComponent
 import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.reviewseller.feature.reviewlist.analytics.ProductReviewTracking
+import com.tokopedia.reviewseller.feature.reviewlist.di.component.DaggerReviewProductListComponent
+import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
+import com.tokopedia.reviewseller.feature.reviewlist.di.module.ReviewProductListModule
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
@@ -60,6 +65,7 @@ import javax.inject.Inject
  * A simple [Fragment] subclass.
  */
 class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+        HasComponent<ReviewProductListComponent>,
         ReviewSummaryViewHolder.ReviewSummaryViewListener,
         SellerReviewListViewHolder.SellerReviewListListener {
 
@@ -231,6 +237,16 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun initInjector() {
         inject()
+    }
+
+    override fun getComponent(): ReviewProductListComponent? {
+        return activity?.run {
+            DaggerReviewProductListComponent
+                    .builder()
+                    .reviewSellerComponent(ReviewSellerComponentBuilder.getComponent(application))
+                    .reviewProductListModule(ReviewProductListModule())
+                    .build()
+        }
     }
 
     override fun loadInitialData() {
