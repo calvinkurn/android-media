@@ -156,10 +156,11 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     override fun loadInitialData() {
         sortFilterInboxReview?.hide()
         isLoadingInitialData = true
+        statusFilter = UNANSWERED_VALUE
         endlessRecyclerViewScrollListener?.resetState()
         showLoading()
         if (countStatusIsZero()) {
-            inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
+            inboxReviewViewModel.getInitInboxReview()
         } else {
             inboxReviewViewModel.getInboxReview()
         }
@@ -336,12 +337,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
+            endlessRecyclerViewScrollListener?.resetState()
             if(data.feedbackInboxList.isNotEmpty()) {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             } else {
-                loadInitialData()
+                sortFilterInboxReview?.hide()
+                hideLoading()
+                inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
             }
-            endlessRecyclerViewScrollListener?.resetState()
         } else {
             if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
                 sortFilterInboxReview?.show()
