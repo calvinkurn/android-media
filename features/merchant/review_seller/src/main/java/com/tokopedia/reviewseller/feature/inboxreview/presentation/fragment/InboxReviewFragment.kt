@@ -338,7 +338,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
             if(data.feedbackInboxList.isNotEmpty()) {
-                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+                renderList(data.feedbackInboxList)
                 endlessRecyclerViewScrollListener?.resetState()
                 updateStateScrollListener()
             } else {
@@ -358,14 +358,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             } else {
                 isFilter = true
-                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+                renderList(data.feedbackInboxList)
             }
             updateScrollListenerState(data.hasNext)
         }
     }
 
     private fun onSuccessGetFeedbackInboxReviewNext(data: InboxReviewUiModel) {
-        inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+        renderList(data.feedbackInboxList)
         updateScrollListenerState(data.hasNext)
     }
 
