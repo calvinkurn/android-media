@@ -5,11 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
@@ -55,23 +55,27 @@ class TableViewHolder(
             val dataSet = element.data?.dataSet.orEmpty()
             if (dataSet.isNotEmpty()) {
                 if (dataSet[0].rows.isEmpty()) {
-                    setOnTableEmpty()
+                    setOnTableEmpty(element)
                 } else {
-                    shcTableView.visible()
                     tvShcTableOnEmpty.gone()
+                    shcTableView.visible()
                     shcTableView.showTable(element.data?.dataSet.orEmpty())
+                    shcTableView.addOnSlideImpressionListener { position, isEmpty ->
+                        listener.sendTableImpressionEvent(element, position, isEmpty)
+                    }
                 }
             } else {
-                setOnTableEmpty()
+                setOnTableEmpty(element)
             }
         }
 
         setupCta(element)
     }
 
-    private fun setOnTableEmpty() = with(itemView) {
+    private fun setOnTableEmpty(element: TableWidgetUiModel) = with(itemView) {
         tvShcTableOnEmpty.visible()
         shcTableView.gone()
+        listener.sendTableImpressionEvent(element, 0, true)
     }
 
     private fun showLoadingState() = with(itemView) {
@@ -130,6 +134,6 @@ class TableViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendTableImpressionEvent(dataKey: String, eventLabel: String, tablePages: List<TablePageUiModel>, position: Int) {}
+        fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
     }
 }
