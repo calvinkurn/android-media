@@ -78,7 +78,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun observeLayout() {
         dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
-            checkIfCategoryIdEqualsToFilterChipId(it)
             renderList(it, true)
         })
 
@@ -101,14 +100,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         baseViewModel.observableCurrentLocation.observe(this, Observer {
             onBaseLocationChanged(it)
         })
-    }
-
-    private fun checkIfCategoryIdEqualsToFilterChipId(layouts: List<DealsBaseItemDataView>) {
-        if (layouts[CHIPS_VIEW_HOLDER_POSITION] is DealsChipsDataView) {
-            (layouts[CHIPS_VIEW_HOLDER_POSITION] as DealsChipsDataView).chipList.forEach {
-                if (it.id == categoryID) it.isSelected = true
-            }
-        }
     }
 
     override fun createAdapterInstance(): BaseCommonAdapter {
@@ -148,6 +139,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
             }
         } catch (e: Exception) { }
 
+        for (chip in chips) {
+            if (chip.id == categoryID) chip.isSelected = true
+        }
+
         sort_filter_deals_category.run {
             filterItems.forEachIndexed { index, sortFilterItem ->
                 if (chips[index].isSelected) { sortFilterItem.type = ChipsUnify.TYPE_SELECTED }
@@ -175,6 +170,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     onFilterChipClicked(chips)
                 }
             }
+
+            selectFilterFromChipsData()
         }
     }
 
@@ -183,7 +180,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     private var additionalSelectedFilterCount = 0
 
-    private fun selectFilterFromBottomSheet() {
+    private fun selectFilterFromChipsData() {
         sort_filter_deals_category.let {
             for ((i, item) in it.chipItems.withIndex()) {
                 if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
@@ -247,7 +244,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onFilterApplied(chips: DealsChipsDataView) {
         analytics.eventApplyChipsCategory(chips)
         this.chips = chips.chipList
-        selectFilterFromBottomSheet()
+        selectFilterFromChipsData()
 
         applyFilter()
     }
