@@ -15,7 +15,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.Pinpoint
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
+/**
+ * Only works when device has turned on Location
+ * */
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class AddNewAddressTest {
@@ -56,7 +58,7 @@ class AddNewAddressTest {
     }
 
     private fun delayShort() {
-        Thread.sleep(2000L)
+        Thread.sleep(3000L)
     }
 
 }
