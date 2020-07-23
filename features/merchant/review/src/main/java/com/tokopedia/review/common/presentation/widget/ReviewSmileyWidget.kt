@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -27,12 +30,17 @@ class ReviewSmileyWidget : BaseCustomView {
         setView(attrs, defStyleAttr)
     }
 
-    fun activate() {
-
+    companion object {
+        private const val BAD_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad.json"
+        private const val MEDIOCRE_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre.json"
+        private const val EXCELLENT_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent.json"
     }
 
-    fun deactivate() {
+    private var isActive = false
+    private var score = 0
 
+    private fun isActive(): Boolean {
+        return isActive
     }
 
     private fun init() {
@@ -41,9 +49,9 @@ class ReviewSmileyWidget : BaseCustomView {
 
     private fun setView(attrs: AttributeSet, defStyleAttr: Int = 0) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ReviewSmileyWidget, defStyleAttr, 0)
-        val isActive = typedArray.getBoolean(R.styleable.ReviewSmileyWidget_isSelected, false)
-        val score = typedArray.getInt(R.styleable.ReviewSmileyWidget_score, 0)
-        if(isActive) {
+        isActive = typedArray.getBoolean(R.styleable.ReviewSmileyWidget_isSelected, false)
+        score = typedArray.getInt(R.styleable.ReviewSmileyWidget_score, 0)
+        if (isActive) {
             setActiveImage(score)
         } else {
             setInActiveImage(score)
@@ -52,47 +60,134 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     private fun setActiveImage(score: Int) {
-        when(score) {
+        when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_active)
-                this.reviewEditableText.apply {
-                    text = context.getString(R.string.review_detail_score_bad)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
+                this.reviewEditableSmiley.apply {
+                    loadImageDrawable(R.drawable.ic_smiley_bad_active)
                 }
+                setBadSmileyText()
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_neutral_active)
-                this.reviewEditableText.apply {
-                    text = context.getString(R.string.review_detail_score_mediocre)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
+                this.reviewEditableSmiley.apply {
+                    loadImageDrawable(R.drawable.ic_smiley_neutral_active)
                 }
+                setMediocreSmileyText()
             }
             else -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_great_active)
-                this.reviewEditableText.apply {
-                    text = context.getString(R.string.review_detail_score_excellent)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                this.reviewEditableSmiley.apply {
+                    loadImageDrawable(R.drawable.ic_smiley_great_active)
                 }
+                setExcellentSmileyText()
             }
         }
-        this.reviewEditableText.show()
     }
 
     private fun setInActiveImage(score: Int) {
-        when(score) {
+        when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_inactive)
+                this.reviewEditableSmiley.apply {
+                    loadImageDrawable(R.drawable.ic_smiley_bad_inactive)
+                    setOnClickListener {
+                        if(!isActive) {
+                            isActive = true
+                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION)
+                            setBadSmileyText()
+                        } else {
+                            isActive = false
+                            setLottieAnomationFromUrlReverse(BAD_SMILEY_ANIMATION)
+                            hideSmileyText()
+                        }
+                    }
+                }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_neutral_inactive)
+                this.reviewEditableSmiley.apply {
+                    loadImageDrawable(R.drawable.ic_smiley_neutral_inactive)
+                    setOnClickListener {
+                        if(!isActive) {
+                            isActive = true
+                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION)
+                            setMediocreSmileyText()
+                        } else {
+                            isActive = false
+                            setLottieAnomationFromUrlReverse(MEDIOCRE_SMILEY_ANIMATION)
+                            hideSmileyText()
+                        }
+                    }
+                }
             }
             else -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_great_inactive)
+                this.reviewEditableSmiley.apply {
+                    loadImageDrawable(R.drawable.ic_smiley_great_inactive)
+                    setOnClickListener {
+                        if(!isActive) {
+                            isActive = true
+                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION)
+                            setExcellentSmileyText()
+                        } else {
+                            isActive = false
+                            setLottieAnomationFromUrlReverse(EXCELLENT_SMILEY_ANIMATION)
+                            hideSmileyText()
+                        }
+                    }
+                }
             }
         }
     }
 
-    private fun setOnClickListener() {
-        // Animation
+    private fun setBadSmileyText() {
+        this.reviewEditableText.apply {
+            text = context.getString(R.string.review_detail_score_bad)
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
+            show()
+        }
     }
+
+    private fun setMediocreSmileyText() {
+        this.reviewEditableText.apply {
+            text = context.getString(R.string.review_detail_score_mediocre)
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
+            show()
+        }
+    }
+
+    private fun setExcellentSmileyText() {
+        this.reviewEditableText.apply {
+            text = context.getString(R.string.review_detail_score_excellent)
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+            show()
+        }
+    }
+
+    private fun hideSmileyText() {
+        this.reviewEditableText.hide()
+    }
+
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                this.reviewEditableSmiley.setComposition(result)
+                this.reviewEditableSmiley.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { throwable -> }
+        }
+    }
+
+    private fun setLottieAnomationFromUrlReverse(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                this.reviewEditableSmiley.setComposition(result)
+                this.reviewEditableSmiley.reverseAnimationSpeed()
+                this.reviewEditableSmiley.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { throwable -> }
+        }
+    }
+
 }

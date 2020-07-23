@@ -31,7 +31,7 @@ object ReviewInboxContainerTracking {
     private fun generateTrackingMap(category: String, action: String, userId: String): Map<String, String> {
         with(ReviewTrackingConstant) {
             return mapOf(
-                    EVENT to CLICK_REVIEW_OLD,
+                    EVENT to EVENT_CLICK_REVIEW,
                     EVENT_CATEGORY to category,
                     EVENT_ACTION to action,
                     EVENT_LABEL to "",

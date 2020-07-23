@@ -25,8 +25,30 @@ class ReviewScoreWidget : BaseCustomView {
         init()
     }
 
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_detail_score, this)
+    private var currentScore = 0
+
+    fun setEditableScore(score: Int, lockTime: String) {
+        currentScore = score
+        when(score) {
+            ReviewConstants.REPUTATION_SCORE_BAD -> {
+                this.reviewEditableBadSmiley.apply {
+                    show()
+                }
+                setDeadline(lockTime)
+            }
+            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
+                this.reviewEditableMediocreSmiley.apply {
+                    show()
+                }
+                setDeadline(lockTime)
+            }
+            else -> {
+                setEmptyScore()
+            }
+        }
+        this.reviewEditableBadSmiley.show()
+        this.reviewEditableMediocreSmiley.show()
+        this.reviewEditableGreatSmiley.show()
     }
 
     fun setShopName(shopName: String) {
@@ -80,21 +102,8 @@ class ReviewScoreWidget : BaseCustomView {
         this.reviewDetailScoreTitle.text = context.getString(R.string.review_history_details_score_empty)
     }
 
-    fun setEditableScore(score: Int, lockTime: String) {
-        this.reviewEditableBadSmiley.show()
-        this.reviewEditableMediocreSmiley.show()
-        this.reviewEditableGreatSmiley.show()
-        when(score) {
-            ReviewConstants.REPUTATION_SCORE_BAD -> {
-                setDeadline(lockTime)
-            }
-            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                setDeadline(lockTime)
-            }
-            else -> {
-                setEmptyScore()
-            }
-        }
+    private fun init() {
+        View.inflate(context, R.layout.widget_review_detail_score, this)
     }
 
 }

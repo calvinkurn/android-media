@@ -33,7 +33,7 @@ object ReviewPendingTracking {
     private fun generateTrackingMap(label: String, action: String, userId: String): Map<String, String> {
         with(ReviewTrackingConstant) {
             return mapOf(
-                    EVENT to CLICK_REVIEW_OLD,
+                    EVENT to EVENT_CLICK_REVIEW,
                     EVENT_CATEGORY to ReviewInboxTrackingConstants.EVENT_CATEGORY_PENDING_TAB,
                     EVENT_ACTION to action,
                     EVENT_LABEL to label,

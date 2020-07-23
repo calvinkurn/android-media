@@ -100,6 +100,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     }
 
     override fun onAttachedImagesClicked(productName: String, attachedImages: List<String>, position: Int) {
+        (viewModel.reviewDetails.value as? Success)?.let {
+            ReviewDetailTracking.eventClickImageGallery(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+        }
         goToImagePreview(productName, attachedImages, position)
     }
 
@@ -252,6 +255,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
         reviewDetailHeader.apply {
             addRightIcon(R.drawable.ic_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
+                (viewModel.reviewDetails.value as? Success)?.let {
+                    ReviewDetailTracking.eventClickShare(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
+                }
                 goToSharing()
             }
             if(!editable) {
@@ -260,6 +266,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
             addRightIcon(R.drawable.ic_edit_review_history_detail)
             rightIcons?.let {
                 it[INDEX_OF_EDIT_BUTTON].setOnClickListener {
+                    (viewModel.reviewDetails.value as? Success)?.let { success ->
+                        ReviewDetailTracking.eventClickEdit(success.data.product.productId, success.data.review.feedbackId, viewModel.getUserId())
+                    }
                     goToEditForm()
                 }
             }
