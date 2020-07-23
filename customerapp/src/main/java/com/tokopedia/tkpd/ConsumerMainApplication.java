@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -45,9 +44,10 @@ import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
+import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -63,16 +63,12 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.timber.TimberWrapper;
-import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
-import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,9 +82,6 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import timber.log.Timber;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
@@ -157,7 +150,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
     }
 
-    private void createAndCallPreSeq(){
+    private void createAndCallPreSeq() {
         PersistentCacheManager.init(ConsumerMainApplication.this);
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
@@ -170,7 +163,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context);
     }
 
-    private void createAndCallPostSeq(){
+    private void createAndCallPostSeq() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface postWeave = new WeaveInterface() {
             @NotNull
@@ -182,7 +175,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
     }
 
-    private void createAndCallFontLoad(){
+    private void createAndCallFontLoad() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface fontWeave = new WeaveInterface() {
             @NotNull
@@ -195,7 +188,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     @NotNull
-    private Boolean loadFontsInBg(){
+    private Boolean loadFontsInBg() {
         getTypeface(context, "NunitoSansExtraBold.ttf");
         getTypeface(context, "RobotoRegular.ttf");
         getTypeface(context, "RobotoBold.ttf");
@@ -203,7 +196,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     @NotNull
-    private Boolean executePreCreateSequence(){
+    private Boolean executePreCreateSequence() {
         initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
@@ -211,7 +204,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return true;
     }
 
-    private void initConfigValues(){
+    private void initConfigValues() {
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -227,14 +220,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        if(com.tokopedia.config.GlobalConfig.DEBUG) {
+        if (com.tokopedia.config.GlobalConfig.DEBUG) {
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         }
         generateConsumerAppNetworkKeys();
     }
 
     @NotNull
-    private Boolean executePostCreateSequence(){
+    private Boolean executePostCreateSequence() {
         StethoUtil.initStetho(ConsumerMainApplication.this);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(ConsumerMainApplication.this);
         InAppManager.getInstance().setInAppListener(ConsumerMainApplication.this);
@@ -314,7 +307,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
 
-
     private void createCustomSoundNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
@@ -373,7 +365,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
     }
 
-    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
+    protected AbTestPlatform.Listener getRemoteConfigListener() {
+        return null;
+    }
 
     private void setVersionCode() {
         try {
@@ -575,8 +569,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onNewIntent(Context context, Intent intent) {
         super.onNewIntent(context, intent);
-        if(gratificationSubscriber != null){
-            if(context instanceof Activity) {
+        if (gratificationSubscriber != null) {
+            if (context instanceof Activity) {
                 gratificationSubscriber.onNewIntent((Activity) context, intent);
             }
         }
