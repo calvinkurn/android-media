@@ -52,12 +52,6 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                         .getStorageProvider()
                         .getDataFromStore(entity);
             }
-        }).map(new Func1<List<CMInApp>, List<CMInApp>>() {
-            @Override
-            public List<CMInApp> call(List<CMInApp> cmInApps) {
-                dataProvider.sendEventInAppPrepared(cmInApps);
-                return cmInApps;
-            }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<CMInApp>>() {
