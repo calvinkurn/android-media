@@ -62,6 +62,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     private var searchBarTransitionRange = 0
 
     private var platformId: Int = 0
+    private var enablePersonalize: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_digital_home, container, false)
@@ -77,6 +78,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
         arguments?.let {
             platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
+            enablePersonalize = it.getBoolean(EXTRA_ENABLE_PERSONALIZE, false)
         }
 
         searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
@@ -214,7 +216,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         if (isDynamicPage()) {
             viewModel.getRechargeHomepageSections(
                     GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
-                    viewModel.createRechargeHomepageSectionsParams(platformId, false),
+                    viewModel.createRechargeHomepageSectionsParams(platformId, enablePersonalize),
                     swipeToRefresh?.isRefreshing ?: false
             )
         } else {
@@ -398,14 +400,16 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     companion object {
         const val EXTRA_PLATFORM_ID = "platform_id"
+        const val EXTRA_ENABLE_PERSONALIZE = "personalize"
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
 
-        fun newInstance(platformId: Int): DigitalHomePageFragment {
+        fun newInstance(platformId: Int, enablePersonalize: Boolean = false): DigitalHomePageFragment {
             val fragment = DigitalHomePageFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PLATFORM_ID, platformId)
+            bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)
             fragment.arguments = bundle
             return fragment
         }

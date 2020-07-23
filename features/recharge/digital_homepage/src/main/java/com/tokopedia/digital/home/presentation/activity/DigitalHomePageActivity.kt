@@ -33,7 +33,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
         val platformId = bundle?.getString(PARAM_PLATFORM_ID)?.toIntOrNull() ?: 0
-        return DigitalHomePageFragment.newInstance(platformId)
+        val enablePersonalize = bundle?.getBoolean(PARAM_ENABLE_PERSONALIZE, false) ?: false
+        return DigitalHomePageFragment.newInstance(platformId, enablePersonalize)
     }
 
     override fun getScreenName(): String {
@@ -54,11 +55,18 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     companion object {
         const val PARAM_PLATFORM_ID = "platform_id"
+        const val PARAM_ENABLE_PERSONALIZE = "personalize"
 
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
-        fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
+        fun getCallingIntent(context: Context, platformID: String,
+                             enablePersonalize: Boolean = false): Intent {
+            val intent = Intent(context, DigitalHomePageActivity::class.java)
+            intent.putExtra(PARAM_PLATFORM_ID, platformID)
+            intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
+            return intent
+        }
     }
 
 
