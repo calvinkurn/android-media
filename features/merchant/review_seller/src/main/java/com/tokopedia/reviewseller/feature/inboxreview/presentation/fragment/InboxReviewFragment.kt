@@ -339,11 +339,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             statusFilter = ANSWERED_VALUE
             endlessRecyclerViewScrollListener?.resetState()
             if(data.feedbackInboxList.isNotEmpty()) {
-                renderList(data.feedbackInboxList)
+                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
                 updateStateScrollListener()
             } else {
                 sortFilterInboxReview?.hide()
-                clearAllData()
+                isLoadingInitialData = true
+                inboxReviewAdapter.clearAllElements()
                 hideLoading()
                 inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
             }
@@ -353,18 +354,18 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
             } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
                 sortFilterInboxReview?.hide()
-                clearAllData()
+                inboxReviewAdapter.clearAllElements()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             } else {
                 isFilter = true
-                renderList(data.feedbackInboxList)
+                inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             }
             updateScrollListenerState(data.hasNext)
         }
     }
 
     private fun onSuccessGetFeedbackInboxReviewNext(data: InboxReviewUiModel) {
-        renderList(data.feedbackInboxList)
+        inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
         updateScrollListenerState(data.hasNext)
     }
 
@@ -496,7 +497,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
 
         sortFilterInboxReview?.hide()
-        clearAllData()
+        isLoadingInitialData = true
+        inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
 
         inboxReviewViewModel.updateStatusFilterData(sortFilterItemInboxReviewWrapper)
@@ -539,7 +541,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
 
-        clearAllData()
+        isLoadingInitialData = true
+        inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
