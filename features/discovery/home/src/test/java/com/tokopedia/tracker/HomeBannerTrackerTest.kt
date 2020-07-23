@@ -31,10 +31,12 @@ class HomeBannerTrackerTest : Spek({
             promoCode = "",
             creativeName = "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
             type = "new_user_mp",
-            campaignCode = "this_is_campaign_code"
+            campaignCode = "this_is_campaign_code",
+            position = 1
     )
 
     Feature("Impression Banner Promotion"){
+        homeBanner.position = -1
         Scenario("Test tracker impression"){
             Given("True tracker"){
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
@@ -43,23 +45,21 @@ class HomeBannerTrackerTest : Spek({
                         "eventAction", "slider banner impression",
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf(
-                        "currencyCode","IDR",
-                        "ecommerce", DataLayer.listOf(
-                            DataLayer.mapOf(
-                                "promoView", DataLayer.listOf(
-                                    DataLayer.mapOf(
-                                            "name", "/ - p1 - promo",
-                                            "id","6794",
-                                            "promo_code","",
-                                            "position","-1",
-                                            "promo_id", "",
-                                            "creative","X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-                                            "creative_url","https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg"
+                                "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", "/ - p1 - promo",
+                                                "id","6794",
+                                                "promo_code","",
+                                                "position","-1",
+                                                "promo_id", "",
+                                                "creative","X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
+                                                "creative_url",""
+                                        )
                                     )
                                 )
-                            )
                         )
-                    )
+
                 )
             }
 
@@ -71,6 +71,7 @@ class HomeBannerTrackerTest : Spek({
     }
 
     Feature("Impression Banner Overlay"){
+        homeBanner.position = -1
         Scenario("Test tracker impression"){
             Given("True tracker"){
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
@@ -78,24 +79,21 @@ class HomeBannerTrackerTest : Spek({
                         "eventCategory", "homepage",
                         "eventAction", "overlay slider banner impression",
                         "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                        "currencyCode","IDR",
-                        "ecommerce", DataLayer.listOf(
-                        DataLayer.mapOf(
-                                "promoView", DataLayer.listOf(
-                                DataLayer.mapOf(
-                                        "name", "/ - p1 - promo overlay",
-                                        "id","6794",
-                                        "promo_code","",
-                                        "position","-1",
-                                        "promo_id", "",
-                                        "creative","X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-                                        "creative_url","https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg"
-                                )
+                            "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", "/ - p1 - promo overlay",
+                                                "id","6794",
+                                                "promo_code","",
+                                                "position","-1",
+                                                "promo_id", "",
+                                                "creative","X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
+                                                "creative_url",""
+                                        )
+                            )
                         )
-                        )
-                )
-                )
+                    )
                 )
             }
 
