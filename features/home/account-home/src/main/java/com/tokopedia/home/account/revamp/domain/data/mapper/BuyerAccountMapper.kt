@@ -85,14 +85,12 @@ class BuyerAccountMapper @Inject constructor(
             setWalletNonOvoType(tokopediaPayViewModel, accountModel, cdnUrl)
         }
 
-        if (accountModel.saldo.depositLong != -1L || accountModel.vccUserStatus.status.equals(VccStatus.REJECTED, ignoreCase = true)) {
-            tokopediaPayViewModel.iconUrlRight = cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG
-            tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
-            tokopediaPayViewModel.isRightSaldo = true
+        tokopediaPayViewModel.iconUrlRight = cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG
+        tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
+        tokopediaPayViewModel.isRightSaldo = true
 
-            tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountModel.saldo.depositLong, true)
-            tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
-        }
+        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountModel.saldo.depositLong, true)
+        tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
 
         setVCCBuyer(tokopediaPayViewModel, accountModel)
 
