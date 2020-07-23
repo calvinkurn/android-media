@@ -28,7 +28,6 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     private lateinit var bannerCarouselItemViewModel: BannerCarouselItemViewModel
     private val displayMetrics = getDisplayMetric(fragment.context)
 
-
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         bannerCarouselItemViewModel = discoveryBaseViewModel as BannerCarouselItemViewModel
         parentView.setOnClickListener {

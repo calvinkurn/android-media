@@ -119,4 +119,5 @@ const val NOTIFY_ON  = "ON"
 const val NOTIFY_OFF  = "OFF"
 const val CLICK_VIEW_ALL_BANNER_CAROUSEL = "click view all on banner carousel new'"
 const val DEFAULT_ID = "0"
+const val PROMO_CODE = "promo_code"
 
