@@ -72,6 +72,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolde
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
@@ -107,7 +108,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener, SearchListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -134,6 +135,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var remoteConfig: RemoteConfig? = null
     private var sourcePage: String = ""
     private var createTime: String = ""
+    private var searchQuery: String = ""
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
 
@@ -359,6 +361,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
         createTime = getParamString(ApplinkConst.Chat.SEARCH_CREATE_TIME, arguments, savedInstanceState)
+        searchQuery = getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
@@ -560,7 +563,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         isMoveItemInboxToTop = true
     }
 
-    override fun loadData(page: Int) { }
+    override fun loadData(page: Int) {}
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
         analytics.trackClickImageUpload()
@@ -591,7 +594,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return TopChatTypeFactoryImpl(
                 this, this, this, this,
                 this, this, this, this,
-                this, this
+                this, this, this
         )
     }
 
@@ -1120,7 +1123,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             analytics.eventSeenProductAttachment(requireContext(), element, session)
 
             // this for experimentation of DATA
-            if(remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false)?:false){
+            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) ?: false) {
                 analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
             }
         }
@@ -1348,5 +1351,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun isSeller(): Boolean {
         return amISeller
+    }
+
+    override fun getSearchQuery(): String {
+        return searchQuery
     }
 }
