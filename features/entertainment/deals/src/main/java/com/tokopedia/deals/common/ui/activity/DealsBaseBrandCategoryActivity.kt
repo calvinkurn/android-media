@@ -1,6 +1,7 @@
 package com.tokopedia.deals.common.ui.activity
 
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -79,7 +80,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             childCategoryList.addAll(ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
                     .map { category -> category.id }))
 
-            val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID) ?: ""
+            val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID)
+                    ?: ""
             val position = findCategoryPosition(categoryId)
 
             if (position != null) {
@@ -95,7 +97,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
                 vp_deals_brand_category.adapter = adapter
 
                 redirectsToSpecificCategory(position)
-            } else  {
+            } else {
                 tab_deals_brand_category.hide()
                 adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId))
                 vp_deals_brand_category.offscreenPageLimit = 1
@@ -109,11 +111,16 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     }
 
     private fun redirectsToSpecificCategory(position: Int?) {
-        position?.let {
-            tab_deals_brand_category.getUnifyTabLayout().isSmoothScrollingEnabled = true
-
-            val tab = tab_deals_brand_category.getUnifyTabLayout().getTabAt(position)
-            tab?.select()
+        val tabLayout = tab_deals_brand_category.getUnifyTabLayout()
+        val observer = tab_deals_brand_category.getUnifyTabLayout().viewTreeObserver
+        if (observer.isAlive) {
+            observer.dispatchOnGlobalLayout()
+            observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    observer.removeOnGlobalLayoutListener(this)
+                    position?.let { tabLayout.getTabAt(it)?.select() }
+                }
+            })
         }
     }
 

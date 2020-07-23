@@ -69,7 +69,8 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
         val brandsDataView = DealsBrandsDataView(
             title = getString(BRAND_POPULAR_TITLE),
             seeAllText = getString(BRAND_SEE_ALL_TEXT),
-            brands = brandLayout
+            brands = brandLayout,
+            oneRow = true
         )
 
         brandsDataView.isLoadedAndSuccess()
