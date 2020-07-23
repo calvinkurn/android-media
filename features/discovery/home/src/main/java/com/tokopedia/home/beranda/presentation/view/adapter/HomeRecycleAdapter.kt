@@ -138,7 +138,7 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityStop()
+            exoPlayerHelper.onActivityDestroy()
         }
         for (i in 0 until itemCount){
             val viewHolder = getViewHolder(i)

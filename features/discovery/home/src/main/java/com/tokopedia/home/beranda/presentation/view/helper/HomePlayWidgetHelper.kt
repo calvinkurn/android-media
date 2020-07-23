@@ -184,7 +184,7 @@ class HomePlayWidgetHelper(
         removeVideoPlayerObserver()
     }
 
-    override fun onActivityStop() {
+    override fun onActivityDestroy() {
         masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
         releasePlayer()
