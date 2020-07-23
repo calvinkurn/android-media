@@ -44,11 +44,11 @@ class ThanksPageAnalyticsFragment : BaseDaggerFragment() {
                 MarketPlaceThankPage -> thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
                 else -> thankYouPageAnalytics.get().sendigitalThankYouPageDataLoadEvent(thanksPageData)
             }
+            thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
+            thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)
         } else {
             thankYouPageAnalytics.get().sendPushGtmFalseEvent(thanksPageData.paymentID.toString())
         }
-        thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
-        thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)
 
     }
 

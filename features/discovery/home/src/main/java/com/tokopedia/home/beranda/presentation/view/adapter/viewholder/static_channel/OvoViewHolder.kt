@@ -50,7 +50,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         @LayoutRes
         val NON_LOGIN_LAYOUT = R.layout.layout_item_widget_ovo_tokopoint_nonlogin
 
-        private const val TITLE_HEADER_WEBSITE = "TokoPoints"
+        private const val TITLE_HEADER_WEBSITE = "Tokopedia"
         private const val TITLE = "OVO"
         private const val WALLET_TYPE = "OVO"
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"

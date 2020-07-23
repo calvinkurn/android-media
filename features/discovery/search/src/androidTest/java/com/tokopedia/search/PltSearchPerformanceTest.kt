@@ -1,8 +1,5 @@
 package com.tokopedia.search
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -10,11 +7,9 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
@@ -46,15 +41,7 @@ class PltSearchPerformanceTest {
     }
 
     private fun setupActivity() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = createIntent(context, "samsung")
-        activityRule.launchActivity(intent)
-    }
-
-    private fun createIntent(context: Context?, query: String): Intent? {
-        val intent = Intent(context, SearchActivity::class.java)
-        intent.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query)
-        return intent
+        activityRule.launchActivity(createIntent())
     }
 
     private fun setupIdlingResource() {
