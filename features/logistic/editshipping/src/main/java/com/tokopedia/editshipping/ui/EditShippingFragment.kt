@@ -211,6 +211,11 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         progressDialog?.dismiss()
     }
 
+    override fun refreshData(messageStatus: String?) {
+        onShowViewAfterLoading()
+        Toast.makeText(activity, messageStatus, Toast.LENGTH_LONG).show()
+    }
+
     override fun finishStartingFragment() {
         mainProgressDialog?.dismiss()
     }
@@ -376,7 +381,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             return true
         } else if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
-                openPopupValidation()
+//                editShippingPresenter?.validateBo()
+                ValidateShippingPopUp()
             } else showErrorToast(getString(R.string.dialog_on_process))
         }
         return super.onOptionsItemSelected(item)
@@ -487,10 +493,24 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         return intent
     }
 
+    private fun ValidateShippingPopUp() {
+        if (editShippingPresenter?.validateBoData?.data?.showPopup == true) {
+            openPopupValidation()
+        } else {
+            submitData()
+        }
+    }
+
     private fun openPopupValidation() {
         bottomSheetValidation = BottomSheetUnify()
         val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
-            //ToDo:: contains view from popup
+            val boData = editShippingPresenter?.validateBoData
+            ticker_validation_bo.tickerTitle = boData?.data?.tickerTitle
+            boData?.data?.tickerContent?.let { ticker_validation_bo.setHtmlDescription(it) }
+
+            point_one.text = boData?.data?.popupContent?.get(0)
+            point_two.text = boData?.data?.popupContent?.get(1)
+            point_three.text = boData?.data?.popupContent?.get(2)
 
             btn_nonaktifkan.setOnClickListener {
                 submitData()
