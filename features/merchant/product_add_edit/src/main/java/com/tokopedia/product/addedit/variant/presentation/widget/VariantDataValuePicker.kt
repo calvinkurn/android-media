@@ -106,7 +106,7 @@ class VariantDataValuePicker : LinearLayout {
 
         listUnifyVariantUnitValues.onLoadFinish {
             // set selected values
-            setSelectedValues(listItemUnifyList, selectedVariantUnitValues, unConfirmedSelection)
+            setSelectedValues(listItemUnifyList, selectedVariantUnitValues)
             // setup add custom button
             setupAddCustomVariantUnitValueButton(addCustomVariantUnitValueButton)
             // setup item click handler
@@ -125,9 +125,7 @@ class VariantDataValuePicker : LinearLayout {
         }
     }
 
-    private fun setSelectedValues(listItemUnifyList: List<ListItemUnify>,
-                                  selectedVariantUnitValues: MutableList<UnitValue>,
-                                  unConfirmedSelection: List<UnitValue>) {
+    private fun setSelectedValues(listItemUnifyList: List<ListItemUnify>, selectedVariantUnitValues: MutableList<UnitValue>) {
         // set selected values to check box
         selectedVariantUnitValues.forEach { unitValue ->
             // comparing the title with unit value name to find the selected item(s)
@@ -138,17 +136,6 @@ class VariantDataValuePicker : LinearLayout {
             selectedListItemUnify?.listRightCheckbox?.isChecked = true
             selectedListItemUnify?.listRightCheckbox?.isEnabled = false
         }
-//        // set unconfirmed selection to check box
-//        unConfirmedSelection.forEach { unitValue ->
-//            // comparing the title with unit value name to find the selected item(s)
-//            val selectedListItemUnify = listItemUnifyList.find { listItemUnify ->
-//                listItemUnify.listTitleText == unitValue.value
-//            }
-//            selectedListItemUnify?.listRightCheckbox?.performClick()
-//            // set the ListItemUnify state
-//            selectedListItemUnify?.listRightCheckbox?.isChecked = true
-//            selectedListItemUnify?.listRightCheckbox?.isEnabled = true
-//        }
     }
 
     private fun setupAddCustomVariantUnitValueButton(addCustomVariantUnitValueButton: ListItemUnify) {
