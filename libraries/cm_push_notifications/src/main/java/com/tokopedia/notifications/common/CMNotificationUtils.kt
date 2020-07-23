@@ -55,19 +55,32 @@ object CMNotificationUtils {
         return true
     }
 
-    fun getUserStatus(context: Context, userId: String): String {
+    fun getUserIdAndStatus(context: Context, userId: String): Pair<String, Int> {
         val cacheHandler = CMNotificationCacheHandler(context)
         val oldUserId = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY)
         return if (TextUtils.isEmpty(userId)) {
             if (TextUtils.isEmpty(oldUserId)) {
-                ""
+                Pair("", getUserIdAsInt(userId))
             } else {
-                STATE_LOGGED_OUT
+                Pair(STATE_LOGGED_OUT, getUserIdAsInt(oldUserId ?: "0"))
             }
         } else {
-            STATE_LOGGED_IN
+            Pair(STATE_LOGGED_IN, getUserIdAsInt(userId))
         }
     }
+
+
+    private fun getUserIdAsInt(userId: String): Int {
+        var userIdInt = 0
+        if (!TextUtils.isEmpty(userId)) {
+            try {
+                userIdInt = Integer.parseInt(userId.trim { it <= ' ' })
+            } catch (e: NumberFormatException) {
+            }
+        }
+        return userIdInt
+    }
+
 
     fun mapTokenWithUserRequired(context: Context, newUserId: String): Boolean {
         val cacheHandler = CMNotificationCacheHandler(context)
@@ -121,8 +134,7 @@ object CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
-    fun getToken(context: Context): String?
-            = CMNotificationCacheHandler(context).getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
+    fun getToken(context: Context): String? = CMNotificationCacheHandler(context).getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
 
 
     fun saveUserId(context: Context, userId: String) {
@@ -130,8 +142,7 @@ object CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.USERID_CACHE_KEY, userId)
     }
 
-    fun getUserId(context: Context) : String?
-            = CMNotificationCacheHandler(context).getStringValue(CMConstant.USERID_CACHE_KEY)
+    fun getUserId(context: Context): String? = CMNotificationCacheHandler(context).getStringValue(CMConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(context: Context, gAdsId: String) {
         val cacheHandler = CMNotificationCacheHandler(context)

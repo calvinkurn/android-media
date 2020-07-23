@@ -696,14 +696,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         val parent = view as? ViewGroup ?: return
         EditQuotaBottomSheet.createInstance(parent, voucher)
                 .setOnSuccessUpdateVoucher {
+                    loadInitialData()
                     view?.run {
                         Toaster.make(this,
                                 context?.getString(R.string.mvc_quota_success).toBlankOrString(),
-                                Toaster.LENGTH_SHORT,
+                                Toaster.LENGTH_LONG,
                                 Toaster.TYPE_NORMAL,
                                 context?.getString(R.string.mvc_oke).toBlankOrString())
                     }
-                    loadInitialData()
                 }
                 .setOnFailUpdateVoucher { errorMessage ->
                     view?.run {
@@ -996,14 +996,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
+        loadInitialData()
         view?.run {
             Toaster.make(this,
                     context?.getString(R.string.mvc_success_update_period).toBlankOrString(),
-                    Snackbar.LENGTH_SHORT,
+                    Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     context?.getString(R.string.mvc_oke).toBlankOrString())
         }
-        loadInitialData()
     }
 
     private fun observeLiveData() {
