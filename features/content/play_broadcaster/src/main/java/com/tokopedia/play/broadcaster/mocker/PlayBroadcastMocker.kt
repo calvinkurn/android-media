@@ -96,6 +96,7 @@ object PlayBroadcastMocker {
             productTagConfig = ProductTagConfigUiModel(
                     maxProduct = 15,
                     minProduct = 1,
+                    maxProductDesc = "Maks. Produk 15",
                     errorMessage = "Oops, kamu sudah memilih 15 produk"
             ),
             coverConfig = CoverConfigUiModel(

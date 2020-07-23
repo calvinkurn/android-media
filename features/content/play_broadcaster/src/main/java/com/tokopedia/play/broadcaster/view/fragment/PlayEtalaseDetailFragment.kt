@@ -149,6 +149,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
+        tvInfo.text = viewModel.maxProductDesc
+
         selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
             private var isAlreadyBound = false
 
@@ -276,7 +278,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
             bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = false)
-            tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
             val flattenValues = it.currentValue.productMap.values.flatten()
             when (it.state) {
                 is PageResultState.Success -> {
