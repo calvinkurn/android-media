@@ -10,7 +10,7 @@ import com.tokopedia.track.TrackApp
 
 object StatisticTracker {
 
-    fun sendCardImpressionEvent(dataKey: String, state: String, cardValue: String, cards: List<String>, position: Int) {
+    fun sendCardImpressionEvent(dataKey: String, state: String, cardValue: String) {
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
                 category = TrackingConstant.SHOP_INSIGHT,
@@ -18,10 +18,10 @@ object StatisticTracker {
                 label = cardValue
         )
 
-        val promoView = mapOf(TrackingConstant.PROMOTIONS to getCardPromotions(cards, position))
+        /*val promoView = mapOf(TrackingConstant.PROMOTIONS to getCardPromotions(cards, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
 
-        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)*/
     }
 
     fun sendClickCardEvent(dataKey: String, state: String, cardValue: String) {

@@ -24,6 +24,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBotto
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
@@ -159,6 +160,62 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
         showErrorToaster()
+    }
+
+    override fun sendCardClickTracking(model: CardWidgetUiModel) {
+        val state = model.data?.state.orEmpty()
+        val cardValue = model.data?.value ?: "0"
+        StatisticTracker.sendClickCardEvent(model.dataKey, state, cardValue)
+    }
+
+    override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
+        val state = model.data?.state.orEmpty()
+        val cardValue = model.data?.value ?: "0"
+        StatisticTracker.sendCardImpressionEvent(model.dataKey, state, cardValue)
+    }
+
+    override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
+        StatisticTracker.sendClickLineGraphEvent(dataKey, chartValue)
+    }
+
+    override fun sendLineGraphImpressionEvent(dataKey: String, chartValue: String) {
+        StatisticTracker.sendImpressionLineGraphEvent(dataKey, chartValue)
+    }
+
+    override fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
+        StatisticTracker.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
+    }
+
+    override fun sendCarouselClickTracking(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
+        StatisticTracker.sendClickCarouselItemBannerEvent(dataKey, carouselItems, position)
+    }
+
+    override fun sendCarouselCtaClickEvent(dataKey: String) {
+        StatisticTracker.sendClickCarouselCtaEvent(dataKey)
+    }
+
+    override fun sendPosListItemClickEvent(dataKey: String, title: String) {
+        StatisticTracker.sendClickPostItemEvent(dataKey, title)
+    }
+
+    override fun sendPostListCtaClickEvent(dataKey: String) {
+        StatisticTracker.sendClickPostSeeMoreEvent(dataKey)
+    }
+
+    override fun sendPostListImpressionEvent(dataKey: String) {
+        StatisticTracker.sendImpressionPostEvent(dataKey)
+    }
+
+    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+        StatisticTracker.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
+    }
+
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+        StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
+    }
+
+    override fun sendTableImpressionEvent(dataKey: String, eventLabel: String, tablePages: List<TablePageUiModel>, position: Int) {
+        StatisticTracker.sendTableImpressionEvent(dataKey, eventLabel, tablePages, position)
     }
 
     private fun setupView() = view?.run {
