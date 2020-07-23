@@ -538,7 +538,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val statusFilterViewModel = inboxReviewViewModel.getStatusFilterListUpdated()
         val statusIsEmpty = InboxReviewMapper.mapToStatusFilterList(statusFilterViewModel).filter { it.isSelected }.count().isZero()
         val statusFilter = data.filterBy.getStatusFilter(prefixStatus).isUnAnswered
-        return statusIsEmpty && statusFilter && !data.hasNext
+        return statusIsEmpty && statusFilter && !data.hasNext && data.remainder.isZero()
     }
 
     private fun countStatusIsZero(): Boolean {
@@ -546,6 +546,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun getQuickFilter(): String {
-        return inboxReviewViewModel.getStatusFilterListUpdated().filter { it.isSelected }.joinToString { it.sortFilterItem?.title.toString() }
+        val statusFilterViewModel = inboxReviewViewModel.getStatusFilterListUpdated()
+        return InboxReviewMapper.mapToStatusFilterList(statusFilterViewModel).filter { it.isSelected }.joinToString { it.sortFilterItem?.title.toString() }
     }
 }
