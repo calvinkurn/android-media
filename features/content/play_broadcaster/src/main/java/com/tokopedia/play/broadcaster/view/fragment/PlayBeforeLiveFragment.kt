@@ -260,12 +260,10 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun doCopyShareLink() {
-        parentViewModel.shareInfo?.let { shareInfo ->
-            PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
-                showToaster(
-                        message = getString(R.string.play_live_broadcast_share_link_copied),
-                        actionLabel = getString(R.string.play_ok))
-            }
+        PlayShareWrapper.copyToClipboard(requireContext(), parentViewModel.shareContents) {
+            showToaster(
+                    message = getString(R.string.play_live_broadcast_share_link_copied),
+                    actionLabel = getString(R.string.play_ok))
         }
     }
 

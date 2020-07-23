@@ -20,25 +20,30 @@ import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
  */
 object PlayShareWrapper {
 
-    fun doCopyShareLink(context: Context, shareData: ShareUiModel, onUrlCopied: () -> Unit) {
-        if (shareData.shortenUrl) generateShortUrl(shareData) { shortenUrl ->
-            val shareContents =
-                    generateSharedContent(shareData.textContent, shortenUrl) ?:
-                    defaultSharedContent(shareData.description, shareData.redirectUrl)
-            doCopyToClipboard(context, shareContents, onUrlCopied)
-        } else {
-            val shareContents =
-                    generateSharedContent(shareData.textContent, shareData.redirectUrl) ?:
-                    defaultSharedContent(shareData.description, shareData.redirectUrl)
-            doCopyToClipboard(context, shareContents, onUrlCopied)
-        }
-    }
-
-    private fun doCopyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
+    fun copyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
         val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("play-broadcaster", shareContents)
         clipboard.primaryClip = clip
         onUrlCopied()
+    }
+
+    fun generateShareLink(shareUiModel: ShareUiModel, onUrlCreated: (String) -> Unit) {
+        val defaultShareContent = defaultSharedContent(
+                shareContents = shareUiModel.description,
+                shareLink = shareUiModel.redirectUrl)
+
+        if (shareUiModel.shortenUrl) {
+            generateShortUrl(shareUiModel) { shareLink ->
+                onUrlCreated(generateSharedContent(
+                        shareContents = shareUiModel.textContent,
+                        shareLink = shareLink)?: defaultShareContent)
+            }
+        }
+        else {
+            onUrlCreated(generateSharedContent(
+                    shareContents = shareUiModel.textContent,
+                    shareLink = shareUiModel.redirectUrl)?: defaultShareContent)
+        }
     }
 
     private fun generateShortUrl(shareData: ShareUiModel, onUrlCreated: (String) -> Unit) {
@@ -46,7 +51,7 @@ object PlayShareWrapper {
             LinkerManager.getInstance().executeShareRequest(LinkerShareRequest(0,
                     DataMapper.getLinkerShareData(generateShareData(shareData)), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                   onUrlCreated(linkerShareData?.url?:shareData.redirectUrl)
+                    onUrlCreated(linkerShareData?.url?:shareData.redirectUrl)
                 }
 
                 override fun onError(linkerError: LinkerError?) {
@@ -58,8 +63,8 @@ object PlayShareWrapper {
         }
     }
 
-    private fun generateSharedContent(text: String, url: String): String? = try {
-        text.replace("${'$'}{url}", url)
+    private fun generateSharedContent(shareContents: String, shareLink: String): String? = try {
+        shareContents.replace("${'$'}{url}", shareLink)
     } catch (e: Exception) { null }
 
     private fun defaultSharedContent(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
