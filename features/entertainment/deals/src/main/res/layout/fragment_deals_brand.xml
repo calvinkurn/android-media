@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:nestedScrollingEnabled="true"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl7" />
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/deals_dp_minus_4"
+        app:layout_constraintTop_toBottomOf="@id/container"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/layout_lvl3"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
@@ -62,4 +66,4 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

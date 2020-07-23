@@ -146,13 +146,11 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
     private fun setUpScrollView() {
         appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -searchBarDealsBaseSearch.height) {
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - searchBarDealsBaseSearch.height ) {
                 //collapse
                 appBarLayout.elevation = 0f
-                viewSpacing.hide()
                 imgDealsSearchIcon.show()
             } else {
-                viewSpacing.show()
                 imgDealsSearchIcon.hide()
             }
         })

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
@@ -240,13 +241,10 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     private var isAnalyticsInitialized: Boolean = this::analytics.isInitialized
 
-    override fun resetFilter() {
+    override fun resetFilter() {}
 
-    }
-
-    override fun isBrandLayout(): Boolean {
-        return true
-    }
+    override fun getInitialLayout(): Int = R.layout.fragment_deals_brand
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
 
     override fun showTitle(brands: DealsBrandsDataView) {
         if(!brands.title.isNullOrEmpty()) {

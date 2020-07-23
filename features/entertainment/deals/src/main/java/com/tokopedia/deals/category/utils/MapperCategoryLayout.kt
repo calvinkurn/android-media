@@ -20,39 +20,24 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
     val layout = mutableListOf<DealsBaseItemDataView>()
 
     fun mapCategoryLayout(
-        chips: CuratedData,
         brandProduct: SearchData, page: Int
     ): List<DealsBaseItemDataView> {
         layout.clear()
-        mapCuratedtoLayout(chips)
         mapBrandtoLayout(brandProduct)
         mapProducttoLayout(brandProduct,page)
         return layout
     }
 
-    fun mapChipLayout(
-            chips: CuratedData,
+    fun getEmptyLayout(
             isFilter:Boolean
     ): List<DealsBaseItemDataView> {
         layout.clear()
-        mapCuratedtoLayout(chips)
         layout.add(DealsEmptyDataView(getString(EMPTY_TITLE),
                 if(isFilter) getString(EMPTY_DESC_FILTER)  else  getString(EMPTY_DESC),
                 isFilter
         ))
         return layout
     }
-
-
-    private fun mapCuratedtoLayout(curatedData: CuratedData) {
-        val dealsChipsDataView = DealsChipsDataView(
-            mapCategoryToChips(curatedData.eventChildCategory.categories),
-            MAX_SIZE_CHIP
-        )
-        dealsChipsDataView.isLoadedAndSuccess()
-        layout.add(dealsChipsDataView)
-    }
-
 
     private fun mapBrandtoLayout(searchData: SearchData) {
         var maxValue = 0
@@ -102,7 +87,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
         return productListDataView
     }
 
-    private fun mapCategoryToChips(categories: List<Category>): List<ChipDataView> {
+     fun mapCategoryToChips(categories: List<Category>): List<ChipDataView> {
         val listChipData = mutableListOf<ChipDataView>()
         categories.forEach {
             if (it.isCard == 1 && it.isHidden == 0) listChipData.add(ChipDataView(it.title, it.id))
