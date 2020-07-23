@@ -322,7 +322,7 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    private fun readMessage() {
+    override fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 

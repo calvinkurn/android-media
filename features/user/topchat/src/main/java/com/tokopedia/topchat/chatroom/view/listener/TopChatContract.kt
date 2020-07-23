@@ -91,6 +91,8 @@ interface TopChatContract {
                 onSuccessGetMessageId: (String) -> Unit
         )
 
+        fun readMessage()
+
         fun startCompressImages(it: ImageUploadViewModel)
 
         fun startUploadImages(it: ImageUploadViewModel)

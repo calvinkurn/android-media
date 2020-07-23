@@ -250,11 +250,18 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         rvScrollListener?.finishBottomLoadingState()
         adapter.removeLatestHeaderDateIfSame(chatRoom.listChat)
         adapter.setLatestHeaderDate(chatRoom.latestHeaderDate)
+        updateNewUnreadMessageState(chat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
 //        loadChatRoomSettings(chatRoom)
 //        presenter.updateMinReplyTime(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+    }
+
+    private fun updateNewUnreadMessageState(chat: ChatReplies) {
+        if (!chat.hasNextAfter) {
+            onViewReachBottomMostChat()
+        }
     }
 
     private fun renderBottomList(listChat: List<Visitable<*>>) {
@@ -628,12 +635,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             presenter.getExistingChat(
                     messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
             )
-            presenter.resetUnreadMessage()
-            hideUnreadMessage()
+            onViewReachBottomMostChat()
         }
         if (fbNewUnreadMessage?.isVisible == false) {
             fbNewUnreadMessage?.visibility = View.VISIBLE
         }
+    }
+
+    private fun onViewReachBottomMostChat() {
+        presenter.resetUnreadMessage()
+        presenter.readMessage()
+        hideUnreadMessage()
     }
 
     override fun hideUnreadMessage() {
