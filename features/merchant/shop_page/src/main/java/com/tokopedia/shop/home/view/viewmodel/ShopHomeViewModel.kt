@@ -15,6 +15,7 @@ import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_AUTHOR_TYPE
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_WIDGET_TYPE
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -259,6 +260,23 @@ class ShopHomeViewModel @Inject constructor(
                 _checkWishlistData.value = Success(listResultCheckWishlist)
             }
         }) {}
+    }
+
+    fun updatePlayWidgetData(channelId: String, totalView: String){
+        val result = _shopHomeLayoutData.value
+        if(result is Success){
+            launchCatchError(block = {
+                result.data.listWidget.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
+                    val newList = (uiModel as ShopHomePlayCarouselUiModel).playBannerCarouselDataModel.channelList.toMutableList()
+                    val indexOf = newList.indexOfFirst { it is PlayBannerCarouselItemDataModel && it.channelId == channelId }
+                    if(indexOf != -1){
+                        newList[index] = (newList[index] as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                        _updatePlayWidgetData.postValue(uiModel.copy(playBannerCarouselDataModel = uiModel.playBannerCarouselDataModel.copy(channelList = newList)))
+                    }
+                }
+            }){
+            }
+        }
     }
 
     private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {
