@@ -253,8 +253,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         updateNewUnreadMessageState(chat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
-//        loadChatRoomSettings(chatRoom)
-//        presenter.updateMinReplyTime(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
     }
 
@@ -564,18 +562,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         isMoveItemInboxToTop = true
     }
 
-    override fun loadData(page: Int) {
-//        presenter.loadPreviousChat(messageId, onError(), onSuccessGetPreviousChat())
-    }
-
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//                showLoading()
-//                loadData(page)
-            }
-        }
-    }
+    override fun loadData(page: Int) { }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
         analytics.trackClickImageUpload()
@@ -1045,7 +1032,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onGoToChatSetting(blockedStatus: BlockedStatus) {
-
         (activity as Activity).let {
             val intent = TopChatInternalRouter.Companion.getChatSettingIntent(it,
                     messageId,
