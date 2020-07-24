@@ -1437,9 +1437,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .build();
     }
 
-    private void setSaveShipmentStateData(ShipmentCartItemModel
-                                                  shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
-        // todo: refactor to converter class
+    private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel,
+                                          List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+        if (shipmentCartItemModel == null) return;
         CourierItemData courierData = null;
         if (getView().isTradeInByDropOff()) {
             courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
