@@ -7,7 +7,6 @@
     android:visibility="gone"
     app:cardCornerRadius="@dimen/spacing_lvl3"
     app:contentPadding="@dimen/dp_12"
-    android:visibility="gone"
     android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginBottom="@dimen/spacing_lvl2"
     android:layout_marginLeft="@dimen/spacing_lvl4"
