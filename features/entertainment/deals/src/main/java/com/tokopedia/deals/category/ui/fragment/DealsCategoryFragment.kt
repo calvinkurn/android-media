@@ -268,7 +268,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onBaseLocationChanged(location: Location) {
         setCurrentLocation(location)
         getCurrentLocation()
-        dealCategoryViewModel.loadFilterShimmering()
+        dealCategoryViewModel.shimmeringCategory()
         loadData(1)
         analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
     }
