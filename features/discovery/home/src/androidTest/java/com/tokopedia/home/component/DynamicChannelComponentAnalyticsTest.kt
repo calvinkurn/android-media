@@ -15,8 +15,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
 import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.MixLeftViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
@@ -114,17 +112,9 @@ class DynamicChannelComponentAnalyticsTest {
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
         val viewholder = homeRecyclerView.findViewHolderForAdapterPosition(i)
         when (viewholder) {
-            is MixLeftViewHolder -> {
-                logTestMessage("VH MixLeftViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
-            }
             is MixLeftComponentViewHolder -> {
                 logTestMessage("VH MixLeftComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
-            }
-            is MixTopBannerViewHolder -> {
-                logTestMessage("VH MixTopBannerViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
             }
             is MixTopComponentViewHolder -> {
                 logTestMessage("VH MixTopComponentViewHolder")
