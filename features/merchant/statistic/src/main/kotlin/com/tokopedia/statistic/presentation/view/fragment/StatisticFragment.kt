@@ -453,14 +453,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 Pair(sectionTitle, it.dataKey)
             }
         }
-        tabLayoutStc.tabLayout.setOnTabSelectedListener { tab ->
-            StatisticTracker.sendSelectSectionTabEvent(tab.text?.toString().orEmpty())
-            scrollToPosition()
+        tabLayoutStc.tabLayout.setOnTabSelectedListener {
+            setOnTabSelected()
         }
         selectTabOnScrolling()
     }
 
-    private fun scrollToPosition() = view?.run {
+    private fun setOnTabSelected() = view?.run {
         if (isUserScrolling) return@run
 
         val selectedTabIndex = tabLayoutStc.tabLayout.selectedTabPosition
@@ -479,6 +478,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (selectedTabIndex == 0) {
             appBarStc.gone()
         }
+
+        StatisticTracker.sendSelectSectionTabEvent(tabTitle)
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
