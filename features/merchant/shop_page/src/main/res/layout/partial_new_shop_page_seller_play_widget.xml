@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/spacing_lvl3"
     app:contentPadding="@dimen/dp_12"
+    android:visibility="gone"
     android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginBottom="@dimen/spacing_lvl2"
     android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -14,46 +15,49 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.tokopedia.topads.sdk.view.FlowLayout
-            android:id="@+id/container_text"
-            android:layout_width="0dp"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_page_sgc_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Ayo cobain live streaming"
+            app:typographyType="body_2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/container_lottie">
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/shop_page_sgc_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Ayo cobain live streaming"
-                app:typographyType="body_2" />
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/spacing_lvl2"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                app:srcCompat="@drawable/ic_play_beta_badge"/>
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/shop_page_play_widget_sgc_content"
-                app:typographyType="body_2" />
-        </com.tokopedia.topads.sdk.view.FlowLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/badge"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/shop_page_sgc_title"
+            app:srcCompat="@drawable/ic_play_beta_badge" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_page_play_widget_sgc_content"
+            app:typographyType="body_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shop_page_sgc_title"/>
+
         <FrameLayout
             android:id="@+id/container_lottie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/container_text">
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/badge"
+            app:layout_constraintTop_toTopOf="parent">
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie"
                 android:layout_width="120dp"
                 android:layout_height="36dp"
-                app:lottie_fileName="sgc_entry_point.json"
                 app:lottie_autoPlay="true"
+                app:lottie_fileName="sgc_entry_point.json"
                 app:lottie_loop="false" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

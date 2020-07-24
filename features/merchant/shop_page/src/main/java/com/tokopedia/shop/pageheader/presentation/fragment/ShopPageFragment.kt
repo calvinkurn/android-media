@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -125,7 +124,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
-    var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
+    private var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
     var titles = listOf<String>()
     var shopId: String? = null
     var shopRef: String = ""
@@ -259,6 +258,10 @@ class ShopPageFragment :
                 }
             }
             stopPerformanceMonitoring()
+        })
+
+        shopViewModel.broadcasterConfigResp.observe(owner, Observer { pair ->
+            shopPageFragmentHeaderViewHolder.setupSgcContent(pair.first, shopViewModel.isMyShop(pair.first.shopCore.shopID), pair.second)
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -546,13 +549,13 @@ class ShopPageFragment :
         }
     }
 
-    fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
+    private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
             shopName = shopInfo.shopCore.name
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
-            shopPageFragmentHeaderViewHolder.bind(this, shopInfo.broadcasterConfig, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
+            shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             setupTabs()
             if (!isMyShop) {
                 button_chat.show()
@@ -573,7 +576,6 @@ class ShopPageFragment :
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
-
     }
 
     fun onBackPressed() {
@@ -647,7 +649,7 @@ class ShopPageFragment :
                 setShopInfo(it)
             }
         }
-        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+//        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
         val homeFragment = getHomeFragment()
         val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
         return mutableListOf<Fragment>().apply {
@@ -657,7 +659,7 @@ class ShopPageFragment :
             add(shopPageProductFragment)
             if (isShowFeed)
                 add(feedFragment)
-            add(shopReviewFragment)
+//            add(shopReviewFragment)
         }
     }
 

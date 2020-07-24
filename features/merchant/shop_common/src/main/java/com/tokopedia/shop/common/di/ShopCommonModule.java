@@ -23,7 +23,6 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetBroadcasterShopConfigUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
@@ -166,10 +165,5 @@ public class ShopCommonModule {
                                                               @Named(GQLQueryNamedConstant.SHOP_INFO)
                                                                     String gqlQuery) {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
-    }
-
-    @Provides
-    public GetBroadcasterShopConfigUseCase provideGetBroadcasterShopConfigUseCase(MultiRequestGraphqlUseCase graphqlUseCase) {
-        return new GetBroadcasterShopConfigUseCase(graphqlUseCase);
     }
 }

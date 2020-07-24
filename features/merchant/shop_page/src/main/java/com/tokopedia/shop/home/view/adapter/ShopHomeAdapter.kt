@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder.Companion.ON_DESTROY
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder.Companion.ON_PAUSE
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder.Companion.ON_RESUME
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -21,10 +24,6 @@ class ShopHomeAdapter(
 
     companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
-
-        const val ON_PAUSE = "on_pause"
-        const val ON_RESUME = "on_resume"
-        const val ON_DESTROY = "on_resume"
     }
 
     var isOwner: Boolean = false
