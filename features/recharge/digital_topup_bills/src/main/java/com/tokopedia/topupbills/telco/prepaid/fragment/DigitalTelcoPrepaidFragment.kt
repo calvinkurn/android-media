@@ -78,7 +78,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private var clientNumber = ""
     private var operatorId = ""
-    private var fromFavNumber = false
+    private var autoSelectTabProduct = false
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
@@ -168,8 +168,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViewPager()
-        getPrefixOperatorData()
-        telcoClientNumberWidget.setListener(clientNumberCallback)
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
     }
@@ -209,7 +207,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onTabSelected(p0: TabLayout.Tab) {
-            if (!fromFavNumber) {
+            if (!autoSelectTabProduct) {
                 viewPager.setCurrentItem(p0.position, true)
             }
         }
@@ -319,7 +317,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER) ?: ""
         }
-        telcoClientNumberWidget.setInputNumber(clientNumber)
+
+        telcoClientNumberWidget.setListener(clientNumberCallback)
+        if (clientNumber.isNotEmpty()) {
+            autoSelectTabProduct = true
+            telcoClientNumberWidget.setInputNumber(clientNumber)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -486,11 +489,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
         viewPager.setCurrentItem(itemId, true)
 
-        if (fromFavNumber) {
+        if (autoSelectTabProduct) {
             tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
                 it.select()
             }
-            fromFavNumber = false
+            autoSelectTabProduct = false
         }
     }
 
@@ -524,6 +527,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         val favNumbers = data.favNumberList
         favNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
+            autoSelectTabProduct = true
             telcoClientNumberWidget.setInputNumber(favNumbers[0].clientNumber)
         }
     }
@@ -541,7 +545,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-        fromFavNumber = true
+        autoSelectTabProduct = true
         if (orderClientNumber.productId.isNotEmpty() &&
                 orderClientNumber.categoryId.toIntOrNull() ?: 0 == categoryId) {
             sharedModelPrepaid.setFavNumberSelected(orderClientNumber)
