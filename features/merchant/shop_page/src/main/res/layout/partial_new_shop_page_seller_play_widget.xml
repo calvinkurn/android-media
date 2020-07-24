@@ -53,7 +53,6 @@
                 android:id="@+id/lottie"
                 android:layout_width="120dp"
                 android:layout_height="36dp"
-                app:lottie_url="@string/shop_page_lottie_sgc_url"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="false" />
         </FrameLayout>

@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
 import android.view.View
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -82,6 +83,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.play_seller_widget_container.visibility = if(isMyShop && shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
         if(isMyShop){
             setupTextContentSgcWidget()
+            setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
             shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
                     shopPageHeaderDataModel.shopId,
                     shopPageHeaderDataModel.isOfficial,
@@ -261,6 +263,22 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun displayOfficial() {
         view.shop_page_main_profile_badge.visibility = View.VISIBLE
         view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
+    }
+
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                view.lottie?.setComposition(result)
+                view.lottie?.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { }
+        }
     }
 
     fun toggleFavourite() {
