@@ -45,5 +45,7 @@ class CreateReviewTextArea : BaseCustomView {
         reviewCreateTextArea.setText(text)
     }
 
-
+    fun getText(): String {
+        return reviewCreateTextArea.text.toString()
+    }
 }

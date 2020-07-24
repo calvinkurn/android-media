@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider,
-        userSession: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
         private val getProductIncentiveOvo: GetProductIncentiveOvo
 ) : BaseViewModel(dispatchers.io()) {
@@ -35,8 +35,6 @@ class ReviewPendingViewModel @Inject constructor(
     private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
     val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>>
         get() = _incentiveOvo
-
-    val userId = userSession.userId ?: ""
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
         if(isRefresh) {
@@ -60,6 +58,14 @@ class ReviewPendingViewModel @Inject constructor(
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
         }
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
+    }
+
+    fun getUserName(): String {
+        return userSession.name
     }
 
 }

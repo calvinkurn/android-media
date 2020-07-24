@@ -88,6 +88,10 @@ class ReviewScoreWidget : BaseCustomView {
         reviewDetailScoreText.show()
     }
 
+    fun getScore(): Int {
+        return currentScore
+    }
+
     private fun setDeadline(deadline: String) {
         if(deadline.isNotBlank()) {
             this.reviewScoreDeadline.apply {

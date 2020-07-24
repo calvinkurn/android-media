@@ -33,7 +33,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         setGraphqlQuery(query)
     }
 
-    fun setParams(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String>) {
+    fun setParams(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String> = emptyList()) {
         setRequestParams(RequestParams.create().apply {
             putInt(PARAM_REPUTATION_ID, reputationId)
             putInt(PARAM_PRODUCT_ID, productId)

@@ -32,6 +32,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -62,9 +63,8 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
-        private const val DEFAULT_REVIEW_ID = "0"
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
-        private const val REVIEW_ID = "REVIEW_ID"
+        private const val REPUTATION_ID = "REPUTATION_ID"
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
         const val REVIEW_ORDER_ID = "REVIEW_ORDER_ID"
@@ -85,7 +85,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
-                putString(REVIEW_ID, reviewId)
+                putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putString(UTM_SOURCE, utmSource)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
@@ -107,7 +107,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
-    private var reviewId: Int = 0
+    private var reputationId: Int = 0
     private var productId: Int = 0
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
     private var productRevIncentiveOvo: ProductRevIncentiveOvoDomain = ProductRevIncentiveOvoDomain()
@@ -149,7 +149,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
             productId = it.getString(PRODUCT_ID_REVIEW, "").toIntOrNull() ?: 0
             orderId = it.getString(REVIEW_ORDER_ID) ?: ""
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
-            reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
+            reputationId = it.getString(REPUTATION_ID, "").toIntOrNull() ?: 0
             utmSource = it.getString(UTM_SOURCE, "")
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getInt(ReviewConstants.PARAM_FEEDBACK_ID, 0)
@@ -181,6 +181,14 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
             when(it) {
                 is Success -> onSuccessGetReviewDetail(it.data)
                 is Fail -> onFailGetReviewDetail(it.fail)
+            }
+        })
+
+        createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                onSuccessSubmitReview()
+            } else {
+                onFailSubmitReview()
             }
         })
     }
@@ -345,7 +353,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     private fun getReviewData() {
         showShimmering()
-        createReviewViewModel.getProductReputation(productId, reviewId)
+        createReviewViewModel.getProductReputation(productId, reputationId)
     }
 
     private fun getReviewDetailData() {
@@ -358,8 +366,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     }
 
     private fun submitReview() {
-        val reviewMessage = ""
-
+        val reviewMessage = createReviewExpandableTextArea.getText()
         ReviewTracking.reviewOnSubmitTracker(
                 orderId,
                 productId.toString(10),
@@ -369,9 +376,8 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
                 createReviewAnonymousCheckbox.isChecked,
                 false
         )
-
-        createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
-                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, createReviewAnonymousCheckbox.isChecked, utmSource)
+        createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
+                createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked, selectedImage)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
@@ -564,6 +570,12 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
         }, 800)
     }
 
+    private fun onFailSubmitReview() {
+        stopLoading()
+        showLayout()
+        showToasterError(getString(R.string.review_create_fail_toaster))
+    }
+
     private fun showShimmering() {
         shimmering_create_review.show()
     }
@@ -591,7 +603,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     private fun showToasterError(message: String) {
         view?.let {
-            Toaster.make(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR).show()
         }
     }
 

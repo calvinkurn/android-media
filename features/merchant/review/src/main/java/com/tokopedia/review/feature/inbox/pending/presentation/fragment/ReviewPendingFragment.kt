@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -53,6 +55,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         ReviewPendingItemListener, HasComponent<ReviewPendingComponent> {
 
     companion object {
+        const val CREATE_REVIEW_REQUEST_CODE = 420
         fun createNewInstance() : ReviewPendingFragment {
             return ReviewPendingFragment()
         }
@@ -82,15 +85,14 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun trackCardClicked(reputationId: Int, productId: Int) {
-        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.userId)
+        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId())
     }
 
     override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int) {
-        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.userId)
+        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId())
     }
 
     override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int) {
-
         goToCreateReviewActivity(reputationId, productId, rating)
     }
 
@@ -179,6 +181,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == CREATE_REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            onSuccessCreateReview()
+        }
+    }
+
     private fun initView() {
         setupErrorPage()
         setupEmptyState()
@@ -230,6 +239,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+    }
+
+    private fun showToaster(message: String, ctaText: String) {
+        view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
     }
 
     private fun getPendingReviewData(page: Int, isRefresh: Boolean = false) {
@@ -294,6 +307,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         // No Op
     }
 
+    private fun onSuccessCreateReview() {
+        loadInitialData()
+        showToaster(getString(R.string.review_create_success_toaster, viewModel.getUserName()), getString(R.string.review_oke))
+    }
+
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Boolean) {
         hideEmptyState()
         showList()
@@ -301,12 +319,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int) {
-        RouteManager.route(context,
+        val intent = RouteManager.getIntent(context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
                         .buildUpon()
                         .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
                         .build()
                         .toString())
+        startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
     }
 
 }
