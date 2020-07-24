@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.data.source.HomeDataSource
+import dagger.Lazy
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.TestBody
 import org.spekframework.spek2.style.gherkin.FeatureBody
@@ -22,7 +23,7 @@ fun TestBody.createHomeRepositoryImpl(): HomeRepository {
             homeCachedDataSource = getCachedDataSource,
             homeRemoteDataSource = getRemoteDataSource,
             homeDefaultDataSource = getHomeDefaultDataSource,
-            geolocationRemoteDataSource = geolocationRemoteDataSource
+            geolocationRemoteDataSource = Lazy { geolocationRemoteDataSource }
     )
 }
 

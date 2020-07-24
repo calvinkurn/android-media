@@ -16,9 +16,6 @@
     <dimen name="sp_12">12sp</dimen>
     <dimen name="sp_20">20sp</dimen>
 
-    <dimen name="play_view_stats_info_badge_radius">4dp</dimen>
-    <dimen name="play_view_stats_info_view_padding">4dp</dimen>
-
     <dimen name="play_product_sheet_radius">10dp</dimen>
     <dimen name="play_product_sheet_title_margin_start">12dp</dimen>
     <dimen name="play_product_voucher_margin">12dp</dimen>

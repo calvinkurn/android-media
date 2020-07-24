@@ -86,6 +86,7 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
+import com.tokopedia.home.beranda.helper.isSuccess
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -95,6 +96,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder
@@ -124,6 +126,7 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -136,6 +139,7 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
@@ -161,6 +165,7 @@ import com.tokopedia.home_component.model.ChannelModel
  * @author by errysuprayogi on 11/27/17.
  */
 @SuppressLint("SyntheticAccessor")
+@ExperimentalCoroutinesApi
 open class HomeFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
@@ -615,17 +620,22 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeHome() {
-        observeHomeData()
-        observeUpdateNetworkStatusData()
-        observeOneClickCheckout()
-        observePopupIntroOvo()
-        observeErrorEvent()
-        observeSendLocation()
-        observeStickyLogin()
-        observeTrackingData()
-        observeRequestImagePlayBanner()
-        observeViewModelInitialized();
-        observeHomeRequestNetwork();
+        try{
+            observeHomeData()
+            observeUpdateNetworkStatusData()
+            observeOneClickCheckout()
+            observePopupIntroOvo()
+            observeErrorEvent()
+            observeSendLocation()
+            observeStickyLogin()
+            observeTrackingData()
+            observeRequestImagePlayBanner()
+            observeViewModelInitialized()
+            observeHomeRequestNetwork()
+            observePlayReminder()
+        }catch (e: Exception){
+
+        }
     }
 
     private fun observeHomeRequestNetwork() {
@@ -715,6 +725,20 @@ open class HomeFragment : BaseDaggerFragment(),
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
+    }
+
+    private fun observePlayReminder(){
+        viewModel?.reminderPlayLiveData?.observe(this, Observer {
+            if(it.isSuccess()){
+                showToaster(
+                        if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
+                        else getString(R.string.home_page_play_card_success_remove_reminder),
+                        Toaster.TYPE_NORMAL
+                )
+            } else {
+                showToaster(it.error?.message ?: "", Toaster.TYPE_ERROR)
             }
         })
     }
@@ -1370,6 +1394,14 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             openWebViewURL(actionLink, activity)
         }
+    }
+
+    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
+        viewModel?.getPlayBannerCarousel(position)
+    }
+
+    override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, true)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

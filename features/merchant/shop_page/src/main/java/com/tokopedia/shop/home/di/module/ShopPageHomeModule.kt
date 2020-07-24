@@ -3,7 +3,14 @@ package com.tokopedia.shop.home.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
@@ -222,6 +229,20 @@ class ShopPageHomeModule {
     @Provides
     fun provideRemoveFromWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideGetPlayWidgetUseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
+        val graphQlUseCase = GraphqlUseCase<PlayGetWidgetEntity>(graphqlRepository)
+        return GetPlayWidgetUseCase(graphQlUseCase)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase{
+        val graphQlUseCase = GraphqlUseCase<PlayToggleChannelReminder>(graphqlRepository)
+        return PlayToggleChannelReminderUseCase(graphQlUseCase)
     }
 
     @ShopPageHomeScope

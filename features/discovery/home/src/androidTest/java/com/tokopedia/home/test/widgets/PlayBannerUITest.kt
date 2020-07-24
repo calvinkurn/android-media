@@ -26,6 +26,7 @@ import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -69,6 +70,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val closeChannelUseCase = mockk<dagger.Lazy<CloseChannelUseCase>>(relaxed = true)
     override val injectCouponTimeBasedUseCase = mockk<dagger.Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     override val remoteConfig = mockk<RemoteConfig>(relaxed = true)
+    private val getPlayBannerUseCase = mockk<GetPlayWidgetUseCase>(relaxed = true)
     override val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig), mockk(relaxed = true))
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
@@ -321,7 +323,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-  
+
 //    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
 //        return object : ViewModelProvider.Factory {
 //            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
@@ -356,6 +358,7 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase,
             injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 }

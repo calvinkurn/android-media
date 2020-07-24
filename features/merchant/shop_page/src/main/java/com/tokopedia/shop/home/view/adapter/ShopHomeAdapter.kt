@@ -1,16 +1,17 @@
 package com.tokopedia.shop.home.view.adapter
 
+import android.os.Bundle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder.Companion.ON_DESTROY
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder.Companion.ON_PAUSE
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder.Companion.ON_RESUME
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 
 /**
@@ -98,5 +99,31 @@ class ShopHomeAdapter(
                 notifyItemChanged(visitables.indexOf(shopHomeCarousellProductUiModel))
         }
     }
+
+    fun pausePlayCarousel(){
+        val indexPlay = getPositionPlayCarousel()
+        if(indexPlay == -1) return
+        notifyItemChanged(indexPlay, Bundle().apply {
+            putBoolean(ON_PAUSE, true)
+        })
+    }
+
+    fun resumePlayCarousel(){
+        val indexPlay = getPositionPlayCarousel()
+        if(indexPlay == -1) return
+        notifyItemChanged(indexPlay, Bundle().apply {
+            putBoolean(ON_RESUME, true)
+        })
+    }
+
+    fun onDestroy(){
+        val indexPlay = getPositionPlayCarousel()
+        if(indexPlay == -1) return
+        notifyItemChanged(indexPlay, Bundle().apply {
+            putBoolean(ON_DESTROY, true)
+        })
+    }
+
+    private fun getPositionPlayCarousel(): Int = visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }
 
 }

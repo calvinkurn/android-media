@@ -8,11 +8,12 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetType.DISPLAY
+import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
@@ -136,6 +137,9 @@ object ShopPageHomeMapper {
             VOUCHER.toLowerCase() -> {
                 mapToVoucherUiModel(widgetResponse)
             }
+            DYNAMIC.toLowerCase()-> {
+                mapToPlayWidgetUiModel(widgetResponse, isMyOwnProduct)
+            }
             else -> {
                 null
             }
@@ -219,6 +223,17 @@ object ShopPageHomeMapper {
                 widgetModel.type,
                 mapToHeaderModel(widgetModel.header),
                 mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct)
+        )
+    }
+
+    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget, isMyOwnProduct: Boolean): ShopHomePlayCarouselUiModel? {
+        if(isMyOwnProduct) return null
+        return ShopHomePlayCarouselUiModel(
+                widgetId = widgetModel.widgetID,
+                layoutOrder = widgetModel.layoutOrder,
+                name = widgetModel.name,
+                type = widgetModel.type,
+                header = mapToHeaderModel(widgetModel.header)
         )
     }
 

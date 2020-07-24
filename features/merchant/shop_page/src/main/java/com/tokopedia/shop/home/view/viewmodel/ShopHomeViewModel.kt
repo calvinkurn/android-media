@@ -9,16 +9,24 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_AUTHOR_TYPE
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_WIDGET_TYPE
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +46,8 @@ class ShopHomeViewModel @Inject constructor(
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val addToCartUseCase: AddToCartUseCase,
+        private val getPlayWidgetUseCase: GetPlayWidgetUseCase,
+        private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
@@ -58,6 +68,9 @@ class ShopHomeViewModel @Inject constructor(
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
+
+    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -83,8 +96,18 @@ class ShopHomeViewModel @Inject constructor(
                     block = { getProductList(shopId, 1) },
                     onError = { null }
             )
+
             shopLayoutWidget.await()?.let {
-                _shopHomeLayoutData.postValue(Success(it))
+
+                val newShopPageHomeLayoutUiModel = asyncCatchError(
+                        dispatcherProvider.io(),
+                        block = { getPlayWidgetCarousel(shopId, it) },
+                        onError = {null}
+                )
+
+                newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
+                    _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
+                }
                 productList.await()?.let { productListData ->
                     _productListData.postValue(Success(productListData))
                 }
@@ -105,6 +128,51 @@ class ShopHomeViewModel @Inject constructor(
         }) {
             _productListData.postValue(Fail(it))
         }
+    }
+
+    fun onRefreshPlayBanner(shopId: String){
+        val result = _shopHomeLayoutData.value
+        if(result is Success){
+            launchCatchError(dispatcherProvider.io(), block = {
+                getPlayWidgetCarousel(shopId, result.data)?.let {result ->
+                    _shopHomeLayoutData.postValue(Success(result))
+                }
+            }){
+            }
+        }
+    }
+
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
+        launchCatchError(block = {
+            playToggleChannelReminderUseCase.setParams(channelId, isSet)
+            val reminder = playToggleChannelReminderUseCase.executeOnBackground()
+            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+                _reminderPlayLiveData.postValue(Success(isSet))
+            } else {
+                _reminderPlayLiveData.postValue(Fail(Throwable(reminder.header.message)))
+            }
+        }){
+            _reminderPlayLiveData.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
+        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomePlayCarouselUiModel }
+        if(index != -1){
+            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
+            getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+            val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
+            val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
+            if(playBannerDataModel.channelList.isNotEmpty()){
+                newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
+            }else{
+                newHomeLayout.remove(data)
+            }
+            return shopPageHomeLayoutUiModel.copy(
+                    listWidget = newHomeLayout
+            )
+        }
+        return shopPageHomeLayoutUiModel
     }
 
     fun addProductToCart(

@@ -240,6 +240,7 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
                         channel
                 ) }
@@ -265,6 +266,13 @@ class HomeVisitableFactoryImpl(
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = PlayCardDataModel(channel, null)
+            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
+        }
+    }
+
+    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) {
+            val playBanner = mappingPlayCarouselChannel(channel, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
         }
     }
@@ -460,6 +468,17 @@ class HomeVisitableFactoryImpl(
             viewModel.isTrackingCombined = false
         }
         visitableList.add(viewModel)
+    }
+
+
+    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
+                                           trackingData: MutableMap<String, Any>,
+                                           isCache: Boolean): Visitable<*> {
+        val playCardViewModel = PlayCarouselCardDataModel(channel)
+        if (!isCache) {
+            playCardViewModel.setTrackingData(trackingData)
+        }
+        return playCardViewModel
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {

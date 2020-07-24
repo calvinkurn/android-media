@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -38,6 +39,9 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -80,6 +84,8 @@ open class HomeViewModel @Inject constructor(
         private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
+        private val playToggleChannelReminderUseCase: Lazy<PlayToggleChannelReminderUseCase>,
+        private val getPlayBannerUseCase: Lazy<GetPlayWidgetUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
@@ -97,7 +103,7 @@ open class HomeViewModel @Inject constructor(
         const val ATC = "atc"
         const val CHANNEL = "channel"
         const val GRID = "grid"
-        const val QUANTITIY = "quantity"
+        const val QUANTITY = "quantity"
         const val POSITION = "position"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
@@ -121,6 +127,9 @@ open class HomeViewModel @Inject constructor(
     val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
         get() = _stickyLogin
     private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
+
+    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
 
     val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
         get() = _injectCouponTimeBasedResult
@@ -157,7 +166,7 @@ open class HomeViewModel @Inject constructor(
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
     val errorEventLiveData: LiveData<Event<String>>
-            get() = _errorEventLiveData
+        get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
     val isViewModelInitalized: LiveData<Event<Boolean>>
@@ -263,6 +272,52 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
+        launchCatchError(coroutineContext, block = {
+            getPlayBannerUseCase.setParams(
+                    widgetType = GetPlayWidgetUseCase.HOME_WIDGET_TYPE,
+                    authorId = "",
+                    authorType = GetPlayWidgetUseCase.HOME_AUTHOR_TYPE
+            )
+            val newPlayCarouselDataModel = getPlayBannerUseCase.executeOnBackground()
+            if(newPlayCarouselDataModel.channelList.isEmpty()){
+                _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                }
+            } else {
+                val newList = mutableListOf<Visitable<*>>()
+                newList.addAll(_homeLiveData.value?.list ?: listOf())
+                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+                if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel) {
+                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
+                            playBannerCarouselDataModel = newPlayCarouselDataModel
+                    ), playIndex))
+                }
+            }
+        }){
+            if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
+                val newList = mutableListOf<Visitable<*>>()
+                newList.addAll(_homeLiveData.value?.list ?: listOf())
+                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+            }
+        }
+    }
+
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
+        launchCatchError(block = {
+            playToggleChannelReminderUseCase.setParams(channelId, isSet)
+            val reminder = playToggleChannelReminderUseCase.executeOnBackground()
+            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+                _reminderPlayLiveData.postValue(Result.success(isSet))
+            } else {
+                _reminderPlayLiveData.postValue(Result.error(Throwable(reminder.header.message)))
+            }
+        }){
+            _reminderPlayLiveData.postValue(Result.error(it))
+        }
+    }
+
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
                                       tokopointHomeDrawerData: TokopointHomeDrawerData? = null,
@@ -329,6 +384,7 @@ open class HomeViewModel @Inject constructor(
             var newHomeViewModel = homeDataModel
             if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
+            newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
@@ -373,6 +429,19 @@ open class HomeViewModel @Inject constructor(
         val playBanner = _homeLiveData.value?.list?.find { it is PlayCardDataModel }
         if(playBanner != null && playBanner is PlayCardDataModel) {
             getLoadPlayBannerFromNetwork(playBanner)
+        }
+    }
+
+    // Logic get play carousel and should load from API
+    fun getPlayBannerCarousel(position: Int = 0){
+        val visitable = _homeLiveData.value?.list?.get(position)
+        if(visitable != null && visitable is PlayCarouselCardDataModel){
+            getPlayBannerV2(visitable)
+        } else {
+            val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
+            if(playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel){
+                getPlayBannerV2(playBannerCarousel)
+            }
         }
     }
 
@@ -576,6 +645,26 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
+    private fun evaluatePlayCarouselWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
+            // find the old data from current list
+            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCarouselCardDataModel}
+            if(playWidget != null) {
+                // Find the new play widget is still available or not
+                val list = homeViewModel.list.toMutableList()
+                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+
+                // if on new home available the data, it will be load new data
+                if(playIndex != -1){
+                    list[playIndex] = playWidget
+                    return homeViewModel.copy(list = list)
+                }
+            }
+        }
+
+        return homeDataModel
+    }
+
     private fun evaluateBuWidgetData(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
             val findBuWidgetViewModel =
@@ -672,6 +761,7 @@ open class HomeViewModel @Inject constructor(
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
+                    getPlayBannerCarousel()
                     getPopularKeyword()
                     getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
@@ -956,7 +1046,7 @@ open class HomeViewModel @Inject constructor(
                                                 ATC to it,
                                                 CHANNEL to channel,
                                                 GRID to grid,
-                                                QUANTITIY to quantity,
+                                                QUANTITY to quantity,
                                                 POSITION to position
 
                                         )
@@ -1085,7 +1175,7 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-                        _homeLiveData.value = homeDataModel
+                    _homeLiveData.value = homeDataModel
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()
@@ -1097,6 +1187,7 @@ open class HomeViewModel @Inject constructor(
                                 else newList.add(data.position, homeVisitable)
                             }
                             ACTION_UPDATE -> {
+                                Log.d("UPDATE", "UPDATE WIDGET $homeVisitable")
                                 if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                     newList[data.position] = homeVisitable
                                 } else {
