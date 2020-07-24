@@ -124,7 +124,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             })
 
             sharedModelPrepaid.loadingProductList.observe(this, Observer {
-                if (it) showShimmering() else hideShimmering()
+                if (it) {
+                    showShimmering()
+                    titleFilterResult.hide()
+                } else {
+                    hideShimmering()
+                }
             })
         }
 
