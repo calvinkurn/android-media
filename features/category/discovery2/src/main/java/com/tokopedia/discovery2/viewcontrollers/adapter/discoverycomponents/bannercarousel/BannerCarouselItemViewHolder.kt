@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 
 private const val ITEM_DECORATION = 40
+private const val DEFAULT_DESIGN = 2.2
 
 class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val parentView: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
@@ -44,21 +45,25 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            bannerCarouselItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                item.data?.let {
+            bannerCarouselItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
+                componentItem.data?.let {
                     if (it.isNotEmpty()) {
                         val itemData = it[0]
-                        parentView.layoutParams.width = ((displayMetrics.widthPixels - ITEM_DECORATION) / item.design.toDouble()).toInt()
-                        bannerImage.layoutParams.height = parentView.layoutParams.width
-                        bannerImage.loadImageWithoutPlaceholder(itemData.image ?: "")
-
-                        itemData.description?.let { title ->
-                            if (title.isEmpty()) {
-                                titleTextView.hide()
-                            } else {
-                                titleTextView.text = title
-                                titleTextView.show()
+                        try {
+                            parentView.layoutParams.width = ((displayMetrics.widthPixels - ITEM_DECORATION) / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble() ).toInt()
+                            bannerImage.layoutParams.height = parentView.layoutParams.width
+                            bannerImage.loadImageWithoutPlaceholder(itemData.image)
+                            itemData.description?.let { title ->
+                                if (title.isEmpty()) {
+                                    titleTextView.hide()
+                                } else {
+                                    titleTextView.text = title
+                                    titleTextView.show()
+                                }
                             }
+                        } catch (exception: NumberFormatException) {
+                            parentView.hide()
+                            exception.printStackTrace()
                         }
                     }
                 }

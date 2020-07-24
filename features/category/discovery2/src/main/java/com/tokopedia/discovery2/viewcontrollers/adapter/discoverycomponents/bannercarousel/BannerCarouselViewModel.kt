@@ -29,14 +29,14 @@ class BannerCarouselViewModel(val application: Application, val components: Comp
     fun getTitleLiveData(): LiveData<String> = title
     fun getComponents(): LiveData<ComponentsItem> = componentData
 
-    fun getLihatUrl() : String{
-       components.properties?.let {
-           return it.ctaApp
-       }
+    fun getLihatUrl(): String {
+        components.properties?.let {
+            return it.ctaApp ?: ""
+        }
         return ""
     }
 
-    fun getComponentName() : String {
+    fun getComponentName(): String {
         return components.name ?: ""
     }
 }

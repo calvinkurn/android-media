@@ -28,7 +28,7 @@ data class Properties(
         val bannerTitle: String,
 
         @SerializedName("cta_app")
-        val ctaApp: String,
+        val ctaApp: String?,
 
         @SerializedName("design")
         val design: String

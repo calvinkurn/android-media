@@ -38,7 +38,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         addDefaultItemDecorator()
         lihatSemuaTextView.setOnClickListener {
             RouteManager.route(fragment.activity, mBannerCarouselComponentViewModel.getLihatUrl())
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerCarouselLihat(mBannerCarouselComponentViewModel.getComponentName())
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerCarouselLihat()
         }
     }
 
@@ -69,7 +69,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         } else {
             titleTextView.show()
             titleTextView.text = title
-            if (mBannerCarouselComponentViewModel.getLihatUrl().isEmpty()) {
+            if (mBannerCarouselComponentViewModel.getLihatUrl()?.isEmpty()) {
                 lihatSemuaTextView.hide()
             } else {
                 lihatSemuaTextView.show()
