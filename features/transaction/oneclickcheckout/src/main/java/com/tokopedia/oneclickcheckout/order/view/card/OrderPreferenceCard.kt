@@ -265,7 +265,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                 setupPaymentInstallment(payment.creditCard?.selectedTerm)
             } else {
-                if (payment.errorMessage?.message?.isNotBlank() == true) {
+                if (payment.errorMessage?.message?.isNotEmpty() == true) {
                     tvPaymentErrorMessage?.text = payment.errorMessage.message
                     tvPaymentErrorAction?.text = payment.errorMessage.button.text
                     tvPaymentErrorMessage?.visible()
@@ -305,7 +305,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     private fun setupPaymentSelector(payment: OrderPayment) {
-        if (payment.creditCard?.totalCards ?: 0 > 1) {
+        if (payment.creditCard?.numberOfCards?.availableCards ?: 0 > 1) {
             tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
             tvPaymentDetail?.setOnClickListener {
                 // todo: go to cc choose page

@@ -68,13 +68,19 @@ data class OrderPaymentErrorMessageButton(
 )
 
 data class OrderPaymentCreditCard(
-        val totalCards: Int = 0,
+        val numberOfCards: OrderPaymentCreditCardsNumber = OrderPaymentCreditCardsNumber(),
         val availableTerms: List<OrderPaymentInstallmentTerm> = emptyList(),
         val bankCode: String = "",
         val cardType: String = "",
         val isExpired: Boolean = false,
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null
+)
+
+data class OrderPaymentCreditCardsNumber(
+        val availableCards: Int = 0,
+        val unavailableCards: Int = 0,
+        val totalCards: Int = 0
 )
 
 data class OrderPaymentInstallmentTerm(

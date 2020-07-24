@@ -50,8 +50,8 @@ data class PaymentErrorMessageButton(
 )
 
 data class PaymentCreditCard(
-        @SerializedName("total_cards")
-        val totalCards: Int = 0,
+        @SerializedName("number_of_cards")
+        val numberOfCards: PaymentCreditCardsNumber = PaymentCreditCardsNumber(),
         @SerializedName("available_terms")
         val availableTerms: List<InstallmentTerm> = emptyList(),
         @SerializedName("bank_code")
@@ -62,6 +62,15 @@ data class PaymentCreditCard(
         val isExpired: Boolean = false,
         @SerializedName("tnc_info")
         val tncInfo: String = ""
+)
+
+data class PaymentCreditCardsNumber(
+        @SerializedName("available")
+        val availableCards: Int = 0,
+        @SerializedName("unavailable")
+        val unavailableCards: Int = 0,
+        @SerializedName("total")
+        val totalCards: Int = 0
 )
 
 data class InstallmentTerm(

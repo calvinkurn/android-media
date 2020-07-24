@@ -211,7 +211,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                 InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
                 InstallmentTerm(6, 1.5f, 0.5f, 200000, false)
         ))
-        return OrderPaymentCreditCard(2, availableTerms, "bankCode", "cardType",
+        return OrderPaymentCreditCard(OrderPaymentCreditCardsNumber(2, 0, 2), availableTerms, "bankCode", "cardType",
                 false, "tncInfo", availableTerms.firstOrNull { it.isSelected })
     }
 

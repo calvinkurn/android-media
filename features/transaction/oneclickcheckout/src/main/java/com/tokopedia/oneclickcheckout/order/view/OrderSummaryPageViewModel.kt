@@ -1399,19 +1399,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
+        } else if (payment.hasNoCreditCardOption()) {
+            _orderPayment = payment.copy(isCalculationError = false)
+            orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = true, buttonState = currentState)
         } else {
-            var isButtonChoosePayment = false
-            if (payment.hasBlockingError()) {
-                if (currentState == ButtonBayarState.NORMAL) {
-                    currentState = ButtonBayarState.DISABLE
-                }
-            } else if (payment.creditCard?.isExpired == true) {
-                // todo check if has valid credit card
-                isButtonChoosePayment = true
+            if (payment.hasBlockingError() && currentState == ButtonBayarState.NORMAL) {
+                currentState = ButtonBayarState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = isButtonChoosePayment, buttonState = currentState)
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
         }
     }
 

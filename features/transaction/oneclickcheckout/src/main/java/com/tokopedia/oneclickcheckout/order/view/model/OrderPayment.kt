@@ -24,11 +24,11 @@ data class OrderPayment(
     }
 
     fun hasBlockingError(): Boolean {
-        if (creditCard?.isExpired == true) {
-            if (creditCard.totalCards > 1) return true
-            return false
-        }
-        if (errorMessage?.message.isNullOrEmpty()) return false
-        return true
+        return !errorMessage?.message.isNullOrEmpty()
+    }
+
+    fun hasNoCreditCardOption(): Boolean {
+        if (creditCard != null && creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards < 1) return true
+        return false
     }
 }
