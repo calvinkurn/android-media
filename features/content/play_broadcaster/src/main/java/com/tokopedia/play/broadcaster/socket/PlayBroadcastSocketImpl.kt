@@ -1,11 +1,10 @@
 package com.tokopedia.play.broadcaster.socket
 
-import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
@@ -170,9 +169,7 @@ class PlayBroadcastSocketImpl constructor(
         try {
             return gson.fromJson(jsonElement, classOfT)
         } catch (e: Exception) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, PlayBroadcastSocket.TAG, e.localizedMessage)
-            }
+            sendCrashlyticsLog(0, e.localizedMessage)
         }
         return null
     }

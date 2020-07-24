@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
+import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.usecase.coroutines.UseCase
 import java.lang.reflect.Type
 import java.net.SocketTimeoutException
@@ -39,11 +40,11 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
                             if (GlobalConfig.DEBUG) {
                                 throw DefaultErrorThrowable(errors[0].message)
                             }
-                            // Crashlytics.log(0, TAG, errors[0].message)
+                            sendCrashlyticsLog(0, errors[0].message)
                         }
                     }
                 }
-                // Crashlytics.log(0, TAG, throwable.localizedMessage) // TODO uncomment Crashlytics
+                sendCrashlyticsLog(0, throwable.localizedMessage)
             }
         }
 
@@ -53,7 +54,6 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
     }
 
     companion object {
-        const val TAG = "play broadcaster"
         const val MAX_RETRY = 3
     }
 }
