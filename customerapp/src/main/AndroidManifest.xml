@@ -101,7 +101,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
         <activity
-            android:name=".ConsumerSplashScreen"
+            android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
@@ -133,14 +133,14 @@
         </activity>
 
         <activity
-            android:name=".FallbackActivity"
+            android:name="com.tokopedia.tkpd.FallbackActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.PlainGreen">
         </activity>
 
         <activity
-            android:name=".deeplink.activity.DeepLinkActivity"
+            android:name="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
             android:theme="@style/Theme.White"
@@ -200,7 +200,7 @@
 
         </activity>
         <activity
-            android:name=".goldmerchant.GoldMerchantRedirectActivity"
+            android:name="com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
             android:screenOrientation="portrait" >
             <intent-filter android:autoVerify="true">
@@ -230,7 +230,7 @@
             android:exported="true"/>
 
         <activity
-            android:name=".deeplink.DeeplinkHandlerActivity"
+            android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -244,17 +244,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-
-        <service
-            android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
-            android:exported="false"/>
-
-        <activity
-            android:name=".redirect.RedirectCreateShopActivity"
+            android:name="com.tokopedia.tkpd.redirect.RedirectCreateShopActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" >
             <intent-filter>
@@ -269,15 +259,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.ReactNativeDiscoveryActivity"
+            android:name="com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".thankyou.view.ReactNativeThankYouPageActivity"
+            android:name="com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".home.ReactNativeSubPromoPageActivity"
+        <activity android:name="com.tokopedia.tkpd.home.ReactNativeSubPromoPageActivity"
             android:screenOrientation="portrait" />
         <service
-            android:name=".thankyou.view.ThanksTrackerService"
+            android:name="com.tokopedia.tkpd.thankyou.view.ThanksTrackerService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
 
@@ -294,10 +284,10 @@
         </provider>
 
         <activity
-            android:name=".home.TkpdYoutubeVideoActivity"
+            android:name="com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
 
-        <activity android:name=".nfc.NFCHandlerActivity"
+        <activity android:name="com.tokopedia.tkpd.nfc.NFCHandlerActivity"
             android:theme="@style/Theme.White" >
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
