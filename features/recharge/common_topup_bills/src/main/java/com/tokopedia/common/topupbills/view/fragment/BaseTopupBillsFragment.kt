@@ -84,11 +84,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
-    override fun onStart() {
-        super.onStart()
-        subscribeUi()
-    }
-
     private fun subscribeUi() {
         topupBillsViewModel.enquiryData.observe(this, Observer {
             it.run {
@@ -171,6 +166,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        subscribeUi()
 
         savedInstanceState?.run {
             promoCode = getString(EXTRA_PROMO_CODE, promoCode)

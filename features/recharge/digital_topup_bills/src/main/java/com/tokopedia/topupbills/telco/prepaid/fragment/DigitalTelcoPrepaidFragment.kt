@@ -101,11 +101,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return telcoProduct.id != ID_PRODUCT_EMPTY
     }
 
-    override fun onStart() {
-        super.onStart()
-        subscribeUi()
-    }
-
     private fun subscribeUi() {
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             if (isProductExist(it)) {
@@ -170,6 +165,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        subscribeUi()
         initViewPager()
         getPrefixOperatorData()
         telcoClientNumberWidget.setListener(clientNumberCallback)
