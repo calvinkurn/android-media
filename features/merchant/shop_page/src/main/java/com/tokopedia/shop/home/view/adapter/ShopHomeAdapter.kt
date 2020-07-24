@@ -37,9 +37,6 @@ class ShopHomeAdapter(
     companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
 
-        const val ON_PAUSE = "on_pause"
-        const val ON_RESUME = "on_resume"
-        const val ON_DESTROY = "on_resume"
     }
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
@@ -94,13 +91,13 @@ class ShopHomeAdapter(
     }
 
     fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
-        visitables.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let {
+        visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
-                visitables.removeAt(it.index)
-                notifyItemRemoved(it.index)
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
             } else {
-                visitables[it.index] = playCarouselUiModel
-                notifyItemChanged(it.index)
+                visitables[index] = playCarouselUiModel
+                notifyItemChanged(index)
             }
         }
     }
@@ -310,7 +307,7 @@ class ShopHomeAdapter(
         val indexPlay = getPositionPlayCarousel()
         if(indexPlay == -1) return
         notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ON_PAUSE, true)
+            putBoolean(ShopHomePlayCarouselViewHolder.ON_PAUSE, true)
         })
     }
 
@@ -318,7 +315,7 @@ class ShopHomeAdapter(
         val indexPlay = getPositionPlayCarousel()
         if(indexPlay == -1) return
         notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ON_RESUME, true)
+            putBoolean(ShopHomePlayCarouselViewHolder.ON_RESUME, true)
         })
     }
 
@@ -326,7 +323,7 @@ class ShopHomeAdapter(
         val indexPlay = getPositionPlayCarousel()
         if(indexPlay == -1) return
         notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ON_DESTROY, true)
+            putBoolean(ShopHomePlayCarouselViewHolder.ON_DESTROY, true)
         })
     }
 
