@@ -55,7 +55,7 @@ class VariantDataValuePicker : LinearLayout {
         // setup unit value picker
         setupVariantUnitValuePicker(layoutPosition, variantData, selectedVariantUnit, selectedVariantUnitValues, addedCustomVariantUnitValue, unConfirmedSelection)
         // setup and configure save button
-        setupSaveButton(layoutPosition, selectedVariantUnitValues)
+        setupSaveButton(layoutPosition, selectedVariantUnit, selectedVariantUnitValues)
         // count and enable/disable save button
         configureSaveButton(selectedVariantUnitValues.isEmpty(), selectedVariantUnitValues.size)
     }
@@ -209,13 +209,13 @@ class VariantDataValuePicker : LinearLayout {
         }
     }
 
-    private fun setupSaveButton(layoutPosition: Int, selectedVariantUnitValues: MutableList<UnitValue>) {
+    private fun setupSaveButton(layoutPosition: Int, selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
         buttonSave.setOnClickListener {
             if (selectedVariantUnitValues.size > MAX_SELECTED_VARIANT_UNIT_VALUES) {
                 Toaster.make(this, context.getString(R.string.error_variant_unit_value_selection_exceed), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 return@setOnClickListener
             }
-            onButtonSaveClickListener?.onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues, layoutPosition)
+            onButtonSaveClickListener?.onVariantUnitValueSaveButtonClicked(selectedVariantUnit, selectedVariantUnitValues, layoutPosition)
         }
     }
 
@@ -248,6 +248,6 @@ class VariantDataValuePicker : LinearLayout {
     }
 
     interface OnButtonSaveClickListener {
-        fun onVariantUnitValueSaveButtonClicked(selectedVariantUnitValues: MutableList<UnitValue>, layoutPosition: Int)
+        fun onVariantUnitValueSaveButtonClicked(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>, layoutPosition: Int)
     }
 }
