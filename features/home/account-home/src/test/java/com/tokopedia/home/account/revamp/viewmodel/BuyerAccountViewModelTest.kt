@@ -5,7 +5,7 @@ import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.data.model.AccountModel
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.TestDispatcherProvider
-import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
+import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -91,7 +91,7 @@ class BuyerAccountViewModelTest {
 
         viewModel.getBuyerData()
 
-        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+        Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(expectedReturn)
     }
 
     @Test
@@ -117,7 +117,7 @@ class BuyerAccountViewModelTest {
 
         viewModel.getBuyerData()
 
-        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+        Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(expectedReturn)
     }
 
     @Test
@@ -142,7 +142,7 @@ class BuyerAccountViewModelTest {
 
         viewModel.getBuyerData()
 
-        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+        Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(expectedReturn)
     }
 
     @Test
@@ -168,6 +168,6 @@ class BuyerAccountViewModelTest {
 
         viewModel.getBuyerData()
 
-        Assertions.assertThat(viewModel.buyerAccountData.value).isEqualTo(expectedReturn)
+        Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(expectedReturn)
     }
 }

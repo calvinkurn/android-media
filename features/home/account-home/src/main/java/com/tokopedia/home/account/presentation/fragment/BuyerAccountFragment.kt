@@ -102,7 +102,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun setObservers() {
-        viewModel.buyerAccountData.observe(viewLifecycleOwner, Observer {
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when(it) {
                 is Success -> {

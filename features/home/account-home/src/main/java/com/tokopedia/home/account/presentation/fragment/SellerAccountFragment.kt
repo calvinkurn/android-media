@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.data.mapper.SellerAccountMapper
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter
@@ -26,6 +25,7 @@ import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler.logE
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel
+import com.tokopedia.home.account.revamp.domain.data.mapper.SellerAccountMapper
 import com.tokopedia.home.account.revamp.viewmodel.SellerAccountViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -115,14 +115,16 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
     private fun getData() {
         if (!isLoaded && context != null) {
             showLoading()
-            viewModel.getSellerData(userSession.shopId)
-            isLoaded = !isLoaded
+            val shopIds = IntArray(1)
+            shopIds[0] = userSession.shopId.toInt()
+            viewModel.getSellerData(shopIds)
         }
     }
 
     private fun initObserver() {
         viewModel.sellerData.observe(viewLifecycleOwner, Observer {
             hideLoading()
+            isLoaded = !isLoaded
             when (it) {
                 is Success -> {
                     loadSellerData(sellerAccountMapper.call(it.data))
@@ -225,11 +227,6 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.sellerData.removeObservers(viewLifecycleOwner)
-    }
-
     public override fun notifyItemChanged(position: Int) {
         adapter.notifyItemChanged(position)
     }
@@ -283,6 +280,11 @@ class SellerAccountFragment : BaseAccountFragment(), AccountItemListener, Fragme
             sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.createNewInstance(it)
             sellerMigrationVoucherTokoBottomSheet.show(childFragmentManager, SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.sellerData.removeObservers(viewLifecycleOwner)
     }
 
     companion object {

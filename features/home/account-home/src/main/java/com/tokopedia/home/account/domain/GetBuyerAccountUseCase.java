@@ -9,7 +9,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper;
-import com.tokopedia.home.account.revamp.domain.data.model.AccountModel;
+import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
@@ -60,10 +60,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 getAccountData(requestParams),
                 getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY),
                 checkIsAffiliate(requestParams),
-                (accountModel, walletModel, isAffiliate) -> {
-                    accountModel.setWallet(walletModel);
-                    accountModel.setAffiliate(isAffiliate);
-                    return accountModel;
+                (accountDataModel, walletModel, isAffiliate) -> {
+                    accountDataModel.setWallet(walletModel);
+                    accountDataModel.setAffiliate(isAffiliate);
+                    return accountDataModel;
                 })
                 .doOnNext(this::saveLocallyWallet)
                 .doOnNext(this::saveLocallyVccUserStatus)
@@ -73,7 +73,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .map(mapper);
     }
 
-    private Observable<AccountModel> getAccountData(RequestParams requestParams) {
+    private Observable<AccountDataModel> getAccountData(RequestParams requestParams) {
         return Observable
                 .just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
@@ -83,7 +83,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest requestGraphql = new GraphqlRequest(query,
-                                AccountModel.class, variables, false);
+                                AccountDataModel.class, variables, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(requestGraphql);
 
@@ -98,14 +98,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     return Observable.error(new Exception("Query and/or variable are empty."));
 
                 })
-                .map(graphqlResponse -> {
-                    AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
-                    SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-                    if(saldoModel != null && accountModel != null) {
-                        accountModel.setSaldo(saldoModel.getSaldo());
-                    }
-                    return accountModel;
-                });
+                .map(graphqlResponse -> graphqlResponse.getData(AccountDataModel.class));
     }
 
     private Observable<Boolean> checkIsAffiliate(RequestParams requestParams) {
@@ -117,34 +110,34 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         }
     }
 
-    private void saveLocallyWallet(AccountModel accountModel) {
-        walletPref.saveWallet(accountModel.getWallet());
-        if (accountModel.getVccUserStatus() != null) {
-            walletPref.setTokoSwipeUrl(accountModel.getVccUserStatus().getRedirectionUrl());
+    private void saveLocallyWallet(AccountDataModel accountDataModel) {
+        walletPref.saveWallet(accountDataModel.getWallet());
+        if (accountDataModel.getVccUserStatus() != null) {
+            walletPref.setTokoSwipeUrl(accountDataModel.getVccUserStatus().getRedirectionUrl());
         }
     }
 
-    private void saveLocallyVccUserStatus(AccountModel accountModel) {
-        if (accountModel.getVccUserStatus() != null) {
-            walletPref.saveVccUserStatus(accountModel.getVccUserStatus());
+    private void saveLocallyVccUserStatus(AccountDataModel accountDataModel) {
+        if (accountDataModel.getVccUserStatus() != null) {
+            walletPref.saveVccUserStatus(accountDataModel.getVccUserStatus());
         }
     }
 
-    private void savePhoneVerified(AccountModel accountModel) {
-        if (accountModel.getProfile() != null) {
-            userSession.setIsMSISDNVerified(accountModel.getProfile().isPhoneVerified());
+    private void savePhoneVerified(AccountDataModel accountDataModel) {
+        if (accountDataModel.getProfile() != null) {
+            userSession.setIsMSISDNVerified(accountDataModel.getProfile().isPhoneVerified());
         }
     }
 
-    private void saveIsAffiliateStatus(AccountModel accountModel) {
-        if (accountModel != null) {
-            userSession.setIsAffiliateStatus(accountModel.isAffiliate());
+    private void saveIsAffiliateStatus(AccountDataModel accountDataModel) {
+        if (accountDataModel != null) {
+            userSession.setIsAffiliateStatus(accountDataModel.isAffiliate());
         }
     }
 
-    private void saveDebitInstantData(AccountModel accountModel) {
-        if (accountModel.getDebitInstant() != null) {
-            walletPref.saveDebitInstantUrl(accountModel.getDebitInstant().getData().getRedirectUrl());
+    private void saveDebitInstantData(AccountDataModel accountDataModel) {
+        if (accountDataModel.getDebitInstant() != null) {
+            walletPref.saveDebitInstantUrl(accountDataModel.getDebitInstant().getData().getRedirectUrl());
         }
     }
 }

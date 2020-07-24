@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
-import com.tokopedia.home.account.revamp.domain.GetBuyerAccountDataUseCase
-import com.tokopedia.home.account.revamp.domain.data.model.AccountModel
+import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
+import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
@@ -39,8 +39,8 @@ class BuyerAccountViewModel @Inject constructor (
         private val dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()) {
 
-    private val _buyerAccountData = MutableLiveData<Result<AccountModel>>()
-    val buyerAccountData: LiveData<Result<AccountModel>>
+    private val _buyerAccountData = MutableLiveData<Result<AccountDataModel>>()
+    val buyerAccountDataData: LiveData<Result<AccountDataModel>>
         get() = _buyerAccountData
 
     private val _addWishList = MutableLiveData<Result<String>>()
@@ -75,12 +75,12 @@ class BuyerAccountViewModel @Inject constructor (
         })
     }
 
-    private fun saveLocallyAttributes(accountModel: AccountModel) {
-        saveLocallyWallet(accountModel)
-        saveLocallyVccUserStatus(accountModel)
-        savePhoneVerified(accountModel)
-        saveIsAffiliateStatus(accountModel)
-        saveDebitInstantData(accountModel)
+    private fun saveLocallyAttributes(accountDataModel: AccountDataModel) {
+        saveLocallyWallet(accountDataModel)
+        saveLocallyVccUserStatus(accountDataModel)
+        savePhoneVerified(accountDataModel)
+        saveIsAffiliateStatus(accountDataModel)
+        saveDebitInstantData(accountDataModel)
     }
 
     fun addWishList(item: RecommendationItem) {
@@ -147,32 +147,32 @@ class BuyerAccountViewModel @Inject constructor (
         return getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
     }
 
-    private fun saveLocallyWallet(accountModel: AccountModel) {
-        walletPref.saveWallet(accountModel.wallet)
-        if (accountModel.vccUserStatus != null) {
-            walletPref.tokoSwipeUrl = accountModel.vccUserStatus.redirectionUrl
+    private fun saveLocallyWallet(accountDataModel: AccountDataModel) {
+        walletPref.saveWallet(accountDataModel.wallet)
+        if (accountDataModel.vccUserStatus != null) {
+            walletPref.tokoSwipeUrl = accountDataModel.vccUserStatus.redirectionUrl
         }
     }
 
-    private fun saveLocallyVccUserStatus(accountModel: AccountModel) {
-        if (accountModel.vccUserStatus != null) {
-            walletPref.saveVccUserStatus(accountModel.vccUserStatus)
+    private fun saveLocallyVccUserStatus(accountDataModel: AccountDataModel) {
+        if (accountDataModel.vccUserStatus != null) {
+            walletPref.saveVccUserStatus(accountDataModel.vccUserStatus)
         }
     }
 
-    private fun savePhoneVerified(accountModel: AccountModel) {
-        if (accountModel.profile != null) {
-            userSession.setIsMSISDNVerified(accountModel.profile.isPhoneVerified)
+    private fun savePhoneVerified(accountDataModel: AccountDataModel) {
+        if (accountDataModel.profile != null) {
+            userSession.setIsMSISDNVerified(accountDataModel.profile.isPhoneVerified)
         }
     }
 
-    private fun saveIsAffiliateStatus(accountModel: AccountModel) {
-        userSession.setIsAffiliateStatus(accountModel.isAffiliate)
+    private fun saveIsAffiliateStatus(accountDataModel: AccountDataModel) {
+        userSession.setIsAffiliateStatus(accountDataModel.isAffiliate)
     }
 
-    private fun saveDebitInstantData(accountModel: AccountModel) {
-        if (accountModel.debitInstant != null && accountModel.debitInstant.data != null) {
-            walletPref.saveDebitInstantUrl(accountModel.debitInstant.data.redirectUrl)
+    private fun saveDebitInstantData(accountDataModel: AccountDataModel) {
+        if (accountDataModel.debitInstant != null && accountDataModel.debitInstant.data != null) {
+            walletPref.saveDebitInstantUrl(accountDataModel.debitInstant.data.redirectUrl)
         }
     }
 
