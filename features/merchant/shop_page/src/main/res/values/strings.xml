@@ -234,6 +234,7 @@
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
+    <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
 
 
 </resources>
