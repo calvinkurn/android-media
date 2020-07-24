@@ -6,10 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
 import com.tokopedia.talk.feature.write.data.mapper.TalkWriteMapper
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
+import com.tokopedia.talk.feature.write.data.model.DiscussionSubmitForm
 import com.tokopedia.talk.feature.write.domain.usecase.DiscussionGetWritingFormUseCase
+import com.tokopedia.talk.feature.write.domain.usecase.DiscussionSubmitFormUseCase
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,10 +24,10 @@ import javax.inject.Inject
 
 class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
                                              private val discussionGetWritingFormUseCase: DiscussionGetWritingFormUseCase,
-                                             userSession: UserSessionInterface
+                                             private val discussionSubmitFormUseCase: DiscussionSubmitFormUseCase,
+                                             private val userSession: UserSessionInterface
 ): BaseViewModel(dispatchers.io) {
 
-    val userId = userSession.userId ?: ""
     var shopId = ""
 
     private val productId = MutableLiveData<Int>()
@@ -48,6 +51,10 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         get() = _categoryChips
 
     private var selectedCategory: TalkWriteCategory? = null
+
+    private val _submitFormResult = MutableLiveData<Result<DiscussionSubmitForm>>()
+    val submitFormResult: LiveData<Result<DiscussionSubmitForm>>
+        get() = _submitFormResult
 
     init {
         _buttonState.value = TalkWriteButtonState()
@@ -101,6 +108,18 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
         _buttonState.notifyObserver()
     }
 
+    fun submitForm(text: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                discussionSubmitFormUseCase.setParams(text, selectedCategory?.categoryName.orEmpty(), productId.value.orZero())
+                discussionSubmitFormUseCase.executeOnBackground()
+            }
+            _submitFormResult.postValue(Success(response.discussionSubmitForm))
+        }) {
+            _submitFormResult.postValue(Fail(it))
+        }
+    }
+
     fun updateIsTextNotEmpty(isTextNotEmptyData: Boolean) {
         isTextNotEmpty.value = isTextNotEmptyData
     }
@@ -119,6 +138,10 @@ class TalkWriteViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     fun getSelectedCategory(): TalkWriteCategory? {
         return selectedCategory
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
     }
 
     private fun <T> MutableLiveData<T>.notifyObserver() {

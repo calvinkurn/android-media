@@ -290,7 +290,8 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun submitNewQuestion() {
-        TalkWriteTracking.eventClickSendButton(viewModel.userId, viewModel.getProductId().toString())
+        viewModel.submitForm(writeQuestionTextArea.textAreaMessage.toString())
+        TalkWriteTracking.eventClickSendButton(viewModel.getUserId(), viewModel.getProductId().toString())
     }
 
     private fun setCharLimits(maxChar: Int, minChar: Int) {
