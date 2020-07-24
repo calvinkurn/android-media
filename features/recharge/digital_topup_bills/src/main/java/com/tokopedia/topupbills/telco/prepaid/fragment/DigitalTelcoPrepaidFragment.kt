@@ -50,6 +50,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
 import java.util.*
@@ -67,7 +68,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var loadingShimmering: LinearLayout
     private lateinit var viewPager: ViewPager2
-    private lateinit var tabLayout: TabLayout
+    private lateinit var tabLayout: TabsUnify
     private lateinit var nestedScrollView: NestedScrollView
     private lateinit var separator: View
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -192,7 +193,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         })
         viewPager.adapter = pagerAdapter
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
-        tabLayout.addOnTabSelectedListener(tabLayoutCallback)
+        tabLayout.customTabMode = TabLayout.MODE_FIXED
+        tabLayout.customTabGravity = TabLayout.GRAVITY_FILL
+        tabLayout.getUnifyTabLayout().addOnTabSelectedListener(tabLayoutCallback)
 
     }
 
@@ -214,7 +217,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            tabLayout.getTabAt(position)?.let {
+            tabLayout.getUnifyTabLayout().getTabAt(position)?.let {
                 it.select()
             }
             val tabs = telcoTabViewModel.getAll()
@@ -262,9 +265,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     //region Promo and Recommendation
     override fun renderPromoAndRecommendation() {
-        tabLayout.removeAllTabs()
+        tabLayout.getUnifyTabLayout().removeAllTabs()
         for (i in 0 until listMenu.size) {
-            tabLayout.addTab(tabLayout.newTab().setText(listMenu[i].title))
+            tabLayout.addNewTab(listMenu[i].title)
         }
         changeDataSet { telcoTabViewModel.addAll(listMenu) }
         if (!showProducts) {
@@ -437,7 +440,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun renderProductViewPager() {
         var idProductTab = 6L
         val listProductTab = mutableListOf<TelcoTabItem>()
-        tabLayout.removeAllTabs()
+        tabLayout.getUnifyTabLayout().removeAllTabs()
         listProductTab.add(
                 TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_PULSA,
                         operatorName, TelcoProductType.PRODUCT_GRID),
@@ -455,7 +458,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         idProductTab++))
 
         for (i in 0 until listProductTab.size) {
-            tabLayout.addTab(tabLayout.newTab().setText(listProductTab[i].title))
+            tabLayout.addNewTab(listProductTab[i].title)
         }
 
         changeDataSet { telcoTabViewModel.addAll(listProductTab) }
@@ -484,7 +487,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         viewPager.setCurrentItem(itemId, true)
 
         if (fromFavNumber) {
-            tabLayout.getTabAt(itemId)?.let {
+            tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
                 it.select()
             }
             fromFavNumber = false
@@ -633,7 +636,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onDestroy() {
         viewPager.unregisterOnPageChangeCallback(viewPagerCallback)
         viewPager.adapter = null
-        tabLayout.removeOnTabSelectedListener(tabLayoutCallback)
+        tabLayout.getUnifyTabLayout().removeOnTabSelectedListener(tabLayoutCallback)
         super.onDestroy()
     }
 

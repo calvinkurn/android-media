@@ -43,19 +43,11 @@
                 android:layout_marginRight="@dimen/spacing_lvl4" />
 
 
-            <com.tokopedia.design.component.Tabs
+            <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl5"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/telco_input_number"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:theme="@style/ThemeOverlay.AppCompat.Light"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/tkpd_main_green"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/tkpd_main_green"
-                app:tabTextAppearance="@style/Tabs.Secondary.Bold"
-                app:tabTextColor="@color/Neutral_N700_68"
                 tools:visibility="visible" />
 
             <View
