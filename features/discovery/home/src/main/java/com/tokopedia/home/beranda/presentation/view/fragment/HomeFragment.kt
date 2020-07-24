@@ -1201,8 +1201,9 @@ open class HomeFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID))
-                getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+            REQUEST_CODE_PLAY_ROOM -> {
+                if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+            }
         }
     }
 

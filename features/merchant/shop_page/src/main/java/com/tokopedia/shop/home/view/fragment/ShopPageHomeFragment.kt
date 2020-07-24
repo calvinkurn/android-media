@@ -92,12 +92,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_SHOP_NAME = "SHOP_NAME"
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val SPAN_COUNT = 2
         const val UPDATE_REMIND_ME_PLAY = "update_remind_me"
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
+        private const val REQUEST_CODE_PLAY_ROOM = 256
         const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
         const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
         const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
@@ -553,6 +556,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 handleWishlistAction(productCardOptionsModel)
             }
         })
+        if(requestCode == REQUEST_CODE_PLAY_ROOM) {
+            if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel?.updatePlayWidgetData(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+        }
     }
 
     private fun scrollToEtalaseTitlePosition() {
