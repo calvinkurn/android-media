@@ -158,7 +158,11 @@ open class TopchatProductAttachmentViewHolder constructor(
             val color = Constant.searchTextBackgroundColor
             val index = spanText.indexOf(query, ignoreCase = true)
             if (index != -1) {
-                spanText.setSpan(BackgroundColorSpan(color), index, (index + query.length), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                var lastIndex = index + query.length
+                if (lastIndex > spanText.lastIndex) {
+                    lastIndex = spanText.lastIndex
+                }
+                spanText.setSpan(BackgroundColorSpan(color), index, lastIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
         productName?.text = spanText
