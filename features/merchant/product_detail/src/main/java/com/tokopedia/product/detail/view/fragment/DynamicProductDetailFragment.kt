@@ -1153,14 +1153,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val indexOfSelectedVariant = selectedChildAndPosition?.first
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 
+        //TODO selectedmultiorigin
         viewModel.selectedMultiOrigin = VariantMapper.updateSelectedMultiOrigin(viewModel.selectedMultiOrigin, selectedChild)
         productId = updatedDynamicProductInfo?.basic?.productID
         viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
 
         pdpUiUpdater?.updateVariantData(variantProcessedData)
-        pdpUiUpdater?.updateNearestWarehouseData(ProductSnapshotDataModel.NearestWarehouseDataModel("",
-                selectedChild?.price?.toInt() ?: 0, selectedChild?.stock?.stockWordingHTML ?: ""))
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
+        //TODO selectedmultiorigin
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
@@ -1185,7 +1185,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         showOrHideButton()
 
         viewModel.getDynamicProductInfoP1?.let {
-            actionButtonView.renderData(!it.isProductActive(viewModel.selectedMultiOrigin.stock),
+            actionButtonView.renderData(!it.isProductActive(),
                     viewModel.hasShopAuthority(), viewModel.isShopOwner(), hasTopAds(),
                     viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
         }
@@ -1463,9 +1463,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
-            val productStock = p1.getFinalStock(viewModel.selectedMultiOrigin.getOriginStock()).toIntOrZero()
-
-            actionButtonView.renderData(!p1.isProductActive(productStock), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
+            actionButtonView.renderData(!p1.isProductActive(), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
                     hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
             showOrHideButton()
             setupTickerOcc()
@@ -1673,17 +1671,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun getStockWording(): String {
-        val updatedNearestWarehouse = pdpUiUpdater?.basicContentMap?.getNearestWarehouse()?.nearestWarehouseStockWording
-                ?: pdpUiUpdater?.snapShotMap?.nearestWarehouseDataModel?.nearestWarehouseStockWording
-                ?: ""
-        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
-                ?: false
+        val variantStockWording = viewModel.getDynamicProductInfoP1?.data?.stock?.stockWording ?: ""
+        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() ?: false
 
-        return if (isPartialySelected) {
-            ""
-        } else {
-            updatedNearestWarehouse
-        }
+        return if (isPartialySelected) "" else variantStockWording
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
@@ -2092,8 +2083,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         viewModel.tradeInParams.usedPrice > 0,
                         viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
                         deeplinkUrl,
-                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString())
-                                ?: "0"
+                        viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0"
                 )
                 context?.let {
                     getInstance(it).saveEvent(sentBundle)

@@ -10,7 +10,7 @@ data class DynamicProductInfoP1(
 
     fun isProductVariant(): Boolean = data.variant.isVariant
 
-    fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
+    fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
 
     val shopTypeString: String
         get() {
@@ -67,15 +67,11 @@ data class DynamicProductInfoP1(
         return imeiRemoteConfig && data.campaign.isCheckImei
     }
 
-    fun getFinalStock(multiOriginStock: String): String {
-        return if (multiOriginStock.isEmpty()) {
-            if (data.campaign.isActive) {
-                data.campaign.stock.toString()
-            } else {
-                data.stock.value.toString()
-            }
+    fun getFinalStock(): String {
+        return if (data.campaign.isActive) {
+            data.campaign.stock.toString()
         } else {
-            multiOriginStock
+            data.stock.value.toString()
         }
     }
 

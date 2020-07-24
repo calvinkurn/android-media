@@ -31,8 +31,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
-                header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording
-                        ?: "")
+                header?.renderData(it)
                 header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
             }
             header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())

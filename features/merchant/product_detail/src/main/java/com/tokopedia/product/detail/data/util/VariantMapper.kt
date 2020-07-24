@@ -137,7 +137,7 @@ object VariantMapper {
 
         val newStock = oldData.data.stock.copy(
                 value = newData?.stock?.stock ?: 0,
-                stockWording = newData?.stock?.stockWording ?: ""
+                stockWording = newData?.stock?.stockWordingHTML ?: ""
         )
 
         val data = oldData.data.copy(

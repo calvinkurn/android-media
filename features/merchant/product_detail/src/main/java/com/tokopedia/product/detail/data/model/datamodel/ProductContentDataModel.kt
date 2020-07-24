@@ -12,7 +12,6 @@ data class ProductContentDataModel(
         val type: String = "",
         val name: String = "",
         var data: DynamicProductInfoP1? = null,
-        var nearestWarehouseDataModel: ProductSnapshotDataModel.NearestWarehouseDataModel? = null,
         var isWishlisted: Boolean = false,
 
         //Ribbon Data
@@ -33,9 +32,6 @@ data class ProductContentDataModel(
     fun showCod(): Boolean {
         return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false
     }
-
-    fun getNearestWarehouse(): ProductSnapshotDataModel.NearestWarehouseDataModel = nearestWarehouseDataModel
-            ?: ProductSnapshotDataModel.NearestWarehouseDataModel()
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)

@@ -44,7 +44,6 @@ data class ProductP1VariantChild(
         @Expose
         val picture: Picture? = null,
 
-        //TODO check
         @SerializedName("campaignInfo")
         @Expose
         val campaign: ProductP1VariantCampaign? = null,
@@ -123,20 +122,13 @@ data class ProductP1VariantCampaign(
         @Expose
         val originalPriceFmt: String? = null,
 
-        //TODO check
         @SerializedName("discountPercentage")
         @Expose
         val discountedPercentage: Float? = 0f,
 
-        //TODO check
         @SerializedName("discountPrice")
         @Expose
         val discountedPrice: Float? = 0f,
-
-        //TODO check
-        @SerializedName("discountPriceFmt")
-        @Expose
-        val discountedPriceFmt: String? = null,
 
         @SerializedName("campaignType")
         @Expose

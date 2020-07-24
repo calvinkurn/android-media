@@ -14,17 +14,9 @@ data class ProductSnapshotDataModel(
         var isAllowManage: Int = 0,
         var isWishlisted: Boolean = false,
         var shouldShowCod: Boolean = false,
-        var shouldShowTradein: Boolean = false,
+        var shouldShowTradein: Boolean = false
 
-        //MultiOrigin
-        var nearestWarehouseDataModel: NearestWarehouseDataModel? = null
 ) : DynamicPdpDataModel {
-
-    data class NearestWarehouseDataModel(
-            var nearestWarehouseId: String = "",
-            var nearestWarehousePrice: Int = 0,
-            var nearestWarehouseStockWording: String = ""
-    )
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 

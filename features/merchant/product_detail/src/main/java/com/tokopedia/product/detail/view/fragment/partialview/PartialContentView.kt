@@ -25,7 +25,7 @@ class PartialContentView(private val view: View,
         const val ONE_SECOND = 1000L
     }
 
-    fun renderData(product: DynamicProductInfoP1, nearestWarehouseStockWording: String) = with(view) {
+    fun renderData(product: DynamicProductInfoP1) = with(view) {
         val data = product.data
         val basic = product.basic
         val campaign = data.campaign
@@ -41,12 +41,12 @@ class PartialContentView(private val view: View,
         }
 
         if (campaign.isActive) {
-            renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+            renderCampaignActive(campaign, data.stock.stockWording)
         } else {
             renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
+        renderStockAvailable(campaign, data.variant.isVariant, data.stock.stockWording, basic.isActive())
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(view) {

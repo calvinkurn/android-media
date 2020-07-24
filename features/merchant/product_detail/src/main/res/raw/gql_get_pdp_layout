@@ -109,7 +109,6 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             percentageAmount
             originalPrice
             discountedPrice
-            originalStock
             stock
             stockSoldPercentage
             threshold
@@ -246,14 +245,13 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             }
             isCOD
             isWishlist
-            campaign {
+            campaignInfo {
               campaignID
               campaignType
               campaignTypeName
-              percentageAmount
+              discountPercentage
               originalPrice
-              discountedPrice
-              originalStock
+              discountPrice
               stock
               stockSoldPercentage
               startDate

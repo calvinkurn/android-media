@@ -258,16 +258,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopName = it.shopInfo?.shopCore?.name ?: ""
             }
 
-            basicContentMap?.run {
-                nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(multiOriginNearestWarehouse.warehouseInfo.id,
-                        multiOriginNearestWarehouse.price, multiOriginNearestWarehouse.stockWording)
-            }
-
-            snapShotMap?.run {
-                nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(multiOriginNearestWarehouse.warehouseInfo.id,
-                        multiOriginNearestWarehouse.price, multiOriginNearestWarehouse.stockWording)
-            }
-
             tickerInfoMap?.run {
                 generalTickerInfo = it.tickerInfo
                 statusInfo = it.shopInfo?.statusInfo
@@ -412,11 +402,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateVariantData(processedVariant: List<VariantCategory>?) {
         productNewVariantDataModel?.listOfVariantCategory = processedVariant
-    }
-
-    fun updateNearestWarehouseData(data: ProductSnapshotDataModel.NearestWarehouseDataModel) {
-        basicContentMap?.nearestWarehouseDataModel = data
-        snapShotMap?.nearestWarehouseDataModel = data
     }
 
     fun updateDiscussionData(discussionMostHelpful: DiscussionMostHelpful) {
