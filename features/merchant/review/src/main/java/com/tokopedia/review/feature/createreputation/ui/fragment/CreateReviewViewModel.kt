@@ -10,6 +10,7 @@ import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.createreputation.usecase.GetProductReputationForm
+import com.tokopedia.review.feature.createreputation.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +24,8 @@ import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
                                                 private val getProductReputationForm: GetProductReputationForm,
                                                 private val getProductIncentiveOvo: GetProductIncentiveOvo,
-                                                private val getReviewDetailUseCase: ProductrevGetReviewDetailUseCase
+                                                private val getReviewDetailUseCase: ProductrevGetReviewDetailUseCase,
+                                                private val submitReviewUseCase: ProductrevSubmitReviewUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.io()) {
 
     @Inject
@@ -54,7 +56,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getReviewDetails(feedbackId: Int) {
         _reviewDetails.value = LoadingView()
         launchCatchError(block = {
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(coroutineDispatcherProvider.io()) {
                 getReviewDetailUseCase.setRequestParams(feedbackId)
                 getReviewDetailUseCase.executeOnBackground()
             }
@@ -89,7 +91,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun getProductReputation(productId: Int, reptutationId: Int) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(coroutineDispatcherProvider.io()) {
                 getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(reptutationId, productId))
             }
             reputationDataForm.postValue(CoroutineSuccess(data))
@@ -100,7 +102,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun getProductIncentiveOvo() {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) { getProductIncentiveOvo.getIncentiveOvo() }
+            val data = withContext(coroutineDispatcherProvider.io()) {
+                getProductIncentiveOvo.getIncentiveOvo()
+            }
             _incentiveOvo.postValue(CoroutineSuccess(data))
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))

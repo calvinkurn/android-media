@@ -37,7 +37,7 @@ class ReviewHistoryViewModel @Inject constructor(
         }
     }
 
-    fun getReviewData(page: Int) {
+    private fun getReviewData(page: Int) {
         if(page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
             _reviewList.value = LoadingView()
         }
