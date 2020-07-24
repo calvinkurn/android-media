@@ -65,3 +65,7 @@ object DigitaHomepageTrackingEEConstant {
     const val ECOMMERCE = "ecommerce"
     const val PROMOTIONS = "promotions"
 }
+
+object DigitaHomepageTrackingAdditionalConstant {
+    const val EVENT = "event"
+}

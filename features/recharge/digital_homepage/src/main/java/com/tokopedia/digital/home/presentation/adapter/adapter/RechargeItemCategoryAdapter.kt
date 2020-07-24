@@ -32,7 +32,7 @@ class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>
             itemView.category_image.loadImage(element.mediaUrl)
             itemView.category_name.text = element.title
             itemView.setOnClickListener {
-                onItemBindListener.onRechargeSectionItemClicked(element, adapterPosition, DYNAMIC_ICON_CLICK)
+                onItemBindListener.onRechargeSectionItemClicked(element)
             }
         }
 

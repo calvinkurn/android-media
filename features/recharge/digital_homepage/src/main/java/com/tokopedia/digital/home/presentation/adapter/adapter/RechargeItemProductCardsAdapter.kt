@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.adapter
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,12 +31,12 @@ class RechargeItemProductCardsAdapter(val items: List<RechargeHomepageSections.I
     class RechargeItemProductCardViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: OnItemBindListener) {
             itemView.iv_recharge_home_product_cards_item.loadImage(element.mediaUrl)
-            itemView.tv_recharge_home_product_cards_item_category.text = element.label3
-            itemView.tv_recharge_home_product_cards_item_title.text = element.title
-            itemView.tv_recharge_home_product_cards_item_price_info.text = element.label2
-            itemView.tv_recharge_home_product_cards_item_price.text = element.label1
+            itemView.tv_recharge_home_product_cards_item_category.text = element.title
+            itemView.tv_recharge_home_product_cards_item_title.text = element.subtitle
+            itemView.tv_recharge_home_product_cards_item_price_info.text = Html.fromHtml(element.label1)
+            itemView.tv_recharge_home_product_cards_item_price.text = element.label2
             itemView.setOnClickListener {
-                onItemBindListener.onRechargeSectionItemClicked(element, adapterPosition, PRODUCT_CARDS_CLICK)
+                onItemBindListener.onRechargeSectionItemClicked(element)
             }
         }
 

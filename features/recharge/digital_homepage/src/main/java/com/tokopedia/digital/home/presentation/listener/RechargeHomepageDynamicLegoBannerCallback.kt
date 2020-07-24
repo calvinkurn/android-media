@@ -21,9 +21,8 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener
         // Do nothing
     }
 
-    // TODO: Add lego banner click listener; current default is to 6 image
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-
+        listener.onRechargeLegoBannerItemClicked(channelModel.id.toIntOrNull() ?: -1, position)
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -34,12 +33,11 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener
         // Do nothing
     }
 
-    // TODO: Add lego banner item impression listener; current default is to 6 image
-    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
+    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
+        // Do nothing
     }
 
-    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
+    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
         // Do nothing
     }
 
@@ -47,9 +45,8 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: OnItemBindListener
         // Do nothing
     }
 
-    // TODO: Add lego banner section impression listener; current default is to 6 image
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        listener.onRechargeLegoBannerImpression(channelModel.id.toIntOrNull() ?: -1)
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {

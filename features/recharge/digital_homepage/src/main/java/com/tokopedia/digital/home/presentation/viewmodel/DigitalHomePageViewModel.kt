@@ -118,5 +118,7 @@ class DigitalHomePageViewModel @Inject constructor(
         const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
         const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
         const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
+
+        val SECTION_HOME_COMPONENTS = listOf(SECTION_URGENCY_WIDGET, SECTION_LEGO_BANNERS)
     }
 }

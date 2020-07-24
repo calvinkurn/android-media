@@ -1,5 +1,8 @@
 package com.tokopedia.digital.home.presentation.Util
 
+import android.os.Bundle
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
@@ -141,43 +144,43 @@ class DigitalHomeTrackingUtil {
 
     }
 
-    fun eventClickOrderList(){
+    fun eventClickOrderList() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, ORDER_LIST)
     }
 
-    fun eventClickLangganan(){
+    fun eventClickLangganan() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, LANGGANAN)
     }
 
-    fun eventClickHelp(){
+    fun eventClickHelp() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, HELP)
     }
 
-    fun eventClickFavNumber(){
+    fun eventClickFavNumber() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, FAVOURITE_NUMBER)
     }
 
-    fun eventClickBackButton(){
+    fun eventClickBackButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, BACK_BUTTON_CLICK, "")
     }
 
-    fun eventClickSearchBox(){
+    fun eventClickSearchBox() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_BOX_CLICK, "")
     }
 
-    fun eventClickSearch(searchQuery: String){
+    fun eventClickSearch(searchQuery: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_CLICK, searchQuery)
     }
 
-    fun eventClickAllBanners(){
+    fun eventClickAllBanners() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, ALL_BANNERS_CLICK, "")
     }
 
-    fun eventClickSubscriptionGuide(){
+    fun eventClickSubscriptionGuide() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, SUBSCRIPTION_GUIDE_CLICK, "")
     }
 
-    fun eventClickMoreInfo(){
+    fun eventClickMoreInfo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, MORE_INFO_CLICK, "")
     }
 
@@ -298,16 +301,16 @@ class DigitalHomeTrackingUtil {
 
     fun eventSearchResultPageClick(item: DigitalHomePageSearchCategoryModel, position: Int) {
         val categories = mutableListOf<Any>()
-            categories.add(DataLayer.mapOf(
-                    ID, item.id,
-                    NAME, item.name,
-                    CREATIVE, item.name,
-                    CREATIVE_URL, item.icon,
-                    POSITION, position,
-                    CATEGORY, "",
-                    PROMO_ID, "",
-                    PROMO_CODE, ""
-            ))
+        categories.add(DataLayer.mapOf(
+                ID, item.id,
+                NAME, item.name,
+                CREATIVE, item.name,
+                CREATIVE_URL, item.icon,
+                POSITION, position,
+                CATEGORY, "",
+                PROMO_ID, "",
+                PROMO_CODE, ""
+        ))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -318,6 +321,43 @@ class DigitalHomeTrackingUtil {
                         ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, categories))
                 ))
 
+    }
+
+    fun rechargeEnhanceEcommerceEvent(trackingDataString: String) {
+        val trackingData = Gson().fromJson<Map<String, Any>>(trackingDataString, object : TypeToken<HashMap<String, Any>>() {}.type)
+        val event = (trackingData[DigitaHomepageTrackingAdditionalConstant.EVENT] as? String) ?: ""
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(event, convertToBundle(trackingData)
+        )
+    }
+
+    private fun convertToBundle(data: Map<String, Any>): Bundle {
+        val bundle = Bundle()
+        for (entry in data.entries) {
+            when (val value = entry.value) {
+                is String -> bundle.putString(entry.key, value)
+                is Boolean -> bundle.putBoolean(entry.key, value)
+                is Int -> bundle.putInt(entry.key, value)
+                is Long -> bundle.putLong(entry.key, value)
+                is Double -> bundle.putDouble(entry.key, value)
+                is ArrayList<*> -> {
+                    val list = ArrayList<Bundle>(
+                            value.map {
+                                (it as? Map<String, Any>)?.let { map ->
+                                    return@map convertToBundle(map)
+                                }
+                                null
+                            }.filterNotNull()
+                    )
+                    bundle.putParcelableArrayList(entry.key, list)
+                }
+            }
+        }
+        return bundle
+    }
+
+    companion object {
+        const val ACTION_IMPRESSION = "impression"
+        const val ACTION_CLICK = "click"
     }
 
 }

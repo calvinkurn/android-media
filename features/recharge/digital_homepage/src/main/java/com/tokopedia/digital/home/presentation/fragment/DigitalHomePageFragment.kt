@@ -39,9 +39,11 @@ import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
@@ -63,6 +65,8 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
+
+    lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_digital_home, container, false)
@@ -200,8 +204,9 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    sections = it.data
-                    val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections).filterNotNull()
+                    homeComponentsData = it.data.filter{ section ->
+                        DigitalHomePageViewModel.SECTION_HOME_COMPONENTS.contains(section.template) }
+                    val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it.data).filterNotNull()
                     renderList(mappedData)
                 }
                 is Fail -> {
@@ -284,72 +289,95 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
         RouteManager.route(context, section.applink)
     }
 
-    override fun onRechargeLegoBannerItemClicked(itemPosition: Int) {
-        if (::sections.isInitialized) {
-            val trackingData = RechargeHomepageSectionMapper.getSection(
-                    sections,
-                    DigitalHomePageViewModel.SECTION_LEGO_BANNERS
-            )?.items?.get(itemPosition)
-            // TODO: Implement tracking
+    override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemPosition: Int) {
+        if (::homeComponentsData.isInitialized) {
+            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+                it.action == DigitalHomeTrackingUtil.ACTION_CLICK
+            }?.run {
+                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            }
         }
     }
 
     override fun onRechargeBannerAllItemClicked(section: RechargeHomepageSections.Section) {
+        // TODO: Add click all tracking
         RouteManager.route(context, section.applink)
     }
 
-    override fun onRechargeReminderWidgetClicked() {
-        if (::sections.isInitialized) {
-            val trackingData = RechargeHomepageSectionMapper.getSection(
-                    sections,
-                    DigitalHomePageViewModel.SECTION_URGENCY_WIDGET
-            )
+    override fun onRechargeReminderWidgetClicked(sectionID: Int) {
+        if (::homeComponentsData.isInitialized) {
+            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+                it.action == DigitalHomeTrackingUtil.ACTION_CLICK
+            }?.run {
+                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            }
         }
     }
 
-    override fun onRechargeProductBannerClose(section: RechargeHomepageSections.Section) {
-        // TODO: Trigger close product banner query
-        RouteManager.route(context, section.applink)
+    override fun onRechargeReminderWidgetClosed(sectionID: Int) {
+        val index = adapter.data.indexOfFirst { it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID }
+        if (index >= 0) onRechargeSectionEmpty(index)
     }
 
-    override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
-        // TODO: Add click tracking
-//        if (element.tracking.isNotEmpty()) {
-//            val trackingMap = Gson().fromJson<Any>(element.tracking[0].data, object : TypeToken<HashMap<String, Any>>() {}.type)
-//        }
+    override fun onRechargeProductBannerClosed(section: RechargeHomepageSections.Section, position: Int) {
+//        val index = adapter.data.indexOfFirst { it is RechargeHomepageSectionModel && it.visitableId() == section.id }
+//        if (index >= 0) onRechargeSectionEmpty(index)
+        onRechargeSectionEmpty(position)
+    }
+
+    override fun onRechargeSectionItemImpression(element: RechargeHomepageSections.Section) {
+        element.tracking.firstOrNull { it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION }?.run {
+            trackingUtil.rechargeEnhanceEcommerceEvent(data)
+        }
+    }
+
+    override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item) {
+        element.tracking.firstOrNull { it.action == DigitalHomeTrackingUtil.ACTION_CLICK }?.run {
+            trackingUtil.rechargeEnhanceEcommerceEvent(data)
+        }
 
         RouteManager.route(context, element.applink)
     }
 
-    override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
-        // TODO: Add impression tracking
-//        val trackingMap = Gson().fromJson<Any>(stringJson, object : TypeToken<HashMap<String, Any>>() {}.type)
-    }
-
-    override fun onRechargeReminderWidgetImpression() {
-        if (::sections.isInitialized) {
-            val trackingData = RechargeHomepageSectionMapper.getSection(
-                    sections,
-                    DigitalHomePageViewModel.SECTION_URGENCY_WIDGET
-            )
+    override fun onRechargeBannerImpression(element: RechargeHomepageSections.Section) {
+        element.tracking.firstOrNull { it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION }?.run {
+            trackingUtil.rechargeEnhanceEcommerceEvent(data)
         }
     }
 
-    override fun onRechargeLegoBannerItemImpression() {
-        if (::sections.isInitialized) {
-            val trackingData = RechargeHomepageSectionMapper.getSection(
-                    sections,
-                    DigitalHomePageViewModel.SECTION_LEGO_BANNERS
-            )
-            // TODO: Implement tracking
+    override fun onRechargeReminderWidgetImpression(sectionID: Int) {
+        if (::homeComponentsData.isInitialized) {
+            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+                it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION
+            }?.run {
+                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            }
         }
     }
 
-    override fun onRechargeSectionEmpty(position: Int) {
-        adapter.apply {
-            data.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, dataSize)
+    override fun onRechargeLegoBannerImpression(sectionID: Int) {
+        if (::homeComponentsData.isInitialized) {
+            homeComponentsData.firstOrNull { it.id == sectionID }?.tracking?.firstOrNull {
+                it.action == DigitalHomeTrackingUtil.ACTION_IMPRESSION
+            }?.run {
+                trackingUtil.rechargeEnhanceEcommerceEvent(data)
+            }
+        }
+    }
+
+    override fun onRechargeSectionEmpty(sectionID: Int) {
+        val index = adapter.data.indexOfFirst {
+            (it is RechargeHomepageSectionModel && it.visitableId() == sectionID) ||
+            (it is HomeComponentVisitable && it.visitableId()?.toIntOrNull() == sectionID)
+        }
+        if (index >= 0) {
+            recycler_view.post {
+                adapter.apply {
+                    data.removeAt(index)
+                    notifyItemRemoved(index)
+                    notifyItemRangeChanged(index, dataSize)
+                }
+            }
         }
     }
 

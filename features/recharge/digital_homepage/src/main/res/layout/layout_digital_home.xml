@@ -15,7 +15,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/layout_lvl2" />
 
         <com.tokopedia.digital.home.presentation.customview.DigitalHomepageToolbar
             android:id="@+id/digital_homepage_toolbar"

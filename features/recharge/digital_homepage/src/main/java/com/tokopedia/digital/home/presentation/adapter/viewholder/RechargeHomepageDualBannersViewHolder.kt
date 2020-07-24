@@ -4,12 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DUAL_BANNER_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DUAL_BANNER_IMPRESSION
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_recharge_home_dual_banners.view.*
 
@@ -33,16 +30,16 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: OnIte
                 view_recharge_home_dual_banners_image_1.loadImage(items[0].mediaUrl)
                 view_recharge_home_dual_banners_image_2.loadImage(items[1].mediaUrl)
                 view_recharge_home_dual_banners_image_1.setOnClickListener {
-                    listener.onRechargeSectionItemClicked(items[0], adapterPosition, DUAL_BANNER_CLICK)
+                    listener.onRechargeSectionItemClicked(items[0])
                 }
                 view_recharge_home_dual_banners_image_2.setOnClickListener {
-                    listener.onRechargeSectionItemClicked(items[1], adapterPosition, DUAL_BANNER_CLICK)
+                    listener.onRechargeSectionItemClicked(items[1])
                 }
-                addOnImpressionListener(section) {
-                    listener.onRechargeSectionItemImpression(items, DUAL_BANNER_IMPRESSION)
+                this@with.addOnImpressionListener(section) {
+                    listener.onRechargeSectionItemImpression(section)
                 }
             }
-            if (items == null) listener.onRechargeSectionEmpty(adapterPosition)
+            if (items == null) listener.onRechargeSectionEmpty(element.visitableId())
         }
     }
 

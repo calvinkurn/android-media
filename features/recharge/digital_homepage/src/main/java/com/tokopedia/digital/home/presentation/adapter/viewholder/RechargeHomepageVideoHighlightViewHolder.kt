@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageVideoHighlightModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.VIDEO_HIGHLIGHT_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.VIDEO_HIGHLIGHT_IMPRESSION
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.*
 
@@ -41,7 +39,7 @@ class RechargeHomepageVideoHighlightViewHolder(
             initView(element.section)
             container.show()
         } else {
-            listener.onRechargeSectionEmpty(adapterPosition)
+            listener.onRechargeSectionEmpty(element.visitableId())
         }
     }
 
@@ -63,11 +61,11 @@ class RechargeHomepageVideoHighlightViewHolder(
         live.show()
 
         container.setOnClickListener {
-            listener.onRechargeSectionItemClicked(item, adapterPosition, VIDEO_HIGHLIGHT_CLICK)
+            listener.onRechargeSectionItemClicked(item)
         }
 
         container.addOnImpressionListener(section){
-            listener.onRechargeSectionItemImpression(section.items, VIDEO_HIGHLIGHT_IMPRESSION)
+            listener.onRechargeSectionItemImpression(section)
         }
     }
 }

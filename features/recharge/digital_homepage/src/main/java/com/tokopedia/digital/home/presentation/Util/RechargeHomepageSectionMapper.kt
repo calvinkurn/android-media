@@ -22,18 +22,18 @@ object RechargeHomepageSectionMapper {
 //                    SECTION_TOP_BANNER -> RechargeHomepageBannerEmptyModel(it)
                     SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
                     SECTION_TOP_ICONS -> RechargeHomepageFavoriteModel(it)
-//                    SECTION_URGENCY_WIDGET -> getReminderWidgetModel(it)
+                    SECTION_URGENCY_WIDGET -> getReminderWidgetModel(it)
                     // TODO: Replace background color with backend data
-                    SECTION_URGENCY_WIDGET -> ReminderWidgetModel(ReminderWidget(listOf(ReminderData(
-                            "test",
-                            id = "99",
-                            iconURL = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
-                            title = "Bayar!!!",
-                            mainText = "Tagihan kamu sudah waktu tenggat",
-                            subText = "Ayo bayar sekarang",
-                            buttonText = "Bayar Sekarang",
-                            backgroundColor = listOf("#0153B5", "#06DD69")
-                    ))), ReminderEnum.RECHARGE)
+//                    SECTION_URGENCY_WIDGET -> ReminderWidgetModel(ReminderWidget(listOf(ReminderData(
+//                            "test",
+//                            id = "99",
+//                            iconURL = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
+//                            title = "Bayar!!!",
+//                            mainText = "Tagihan kamu sudah waktu tenggat",
+//                            subText = "Ayo bayar sekarang",
+//                            buttonText = "Bayar Sekarang",
+//                            backgroundColor = listOf("#0153B5", "#06DD69")
+//                    ))), ReminderEnum.RECHARGE)
                     SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
@@ -41,38 +41,38 @@ object RechargeHomepageSectionMapper {
                     SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
                     SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
                     SECTION_LEGO_BANNERS -> getDynamicLegoBannerModel(it)
-//                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
-                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(RechargeHomepageSections.Section(
-                            id = 100,
-                            title = "Product Card Row",
-                            items = listOf(
-                                    RechargeHomepageSections.Item(
-                                            title = "Product 1",
-                                            mediaUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
-                                            label1 = "Rp 10.000",
-                                            label2 = "Mulai dari",
-                                            label3 = "Streaming"),
-                                    RechargeHomepageSections.Item(
-                                            title = "Product 2",
-                                            mediaUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
-                                            label1 = "Rp 20.000",
-                                            label2 = "Mulai dari",
-                                            label3 = "Voucher"
-                                    )
-                            )
-                    ))
-//                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
-                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(RechargeHomepageSections.Section(
-                            id = 101,
-                            title = "Product Banner",
-                            items = listOf(RechargeHomepageSections.Item(
-                                    title = "Test Product",
-                                    subtitle = "This product is cool",
-                                    label1 = "Rp 10.000",
-                                    label2 = "Rp 15.000",
-                                    label3 = "30%"
-                            ))
-                    ))
+                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
+//                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(RechargeHomepageSections.Section(
+//                            id = 100,
+//                            title = "Product Card Row",
+//                            items = listOf(
+//                                    RechargeHomepageSections.Item(
+//                                            title = "Product 1",
+//                                            mediaUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
+//                                            label1 = "Rp 10.000",
+//                                            label2 = "Mulai dari",
+//                                            label3 = "Streaming"),
+//                                    RechargeHomepageSections.Item(
+//                                            title = "Product 2",
+//                                            mediaUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
+//                                            label1 = "Rp 20.000",
+//                                            label2 = "Mulai dari",
+//                                            label3 = "Voucher"
+//                                    )
+//                            )
+//                    ))
+                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+//                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(RechargeHomepageSections.Section(
+//                            id = 101,
+//                            title = "Product Banner",
+//                            items = listOf(RechargeHomepageSections.Item(
+//                                    title = "Test Product",
+//                                    subtitle = "This product is cool",
+//                                    label1 = "Rp 10.000",
+//                                    label2 = "Rp 15.000",
+//                                    label3 = "30%"
+//                            ))
+//                    ))
                     else -> null
                 }
             }

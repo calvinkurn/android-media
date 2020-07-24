@@ -10,11 +10,9 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemBannerAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
 
 /**
@@ -32,9 +30,9 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         slidesList = element.section.items
         if (slidesList.isNotEmpty()) {
             initSeeAllPromo(element.section)
-            initBanner(slidesList.map { CircularModel(it.id, it.mediaUrl) })
+            initBanner(element.section)
         } else {
-            listener.onRechargeSectionEmpty(adapterPosition)
+            listener.onRechargeSectionEmpty(element.visitableId())
         }
     }
 
@@ -42,7 +40,8 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
     }
 
-    private fun initBanner(list: List<CircularModel>){
+    private fun initBanner(section: RechargeHomepageSections.Section){
+        val list = slidesList.map { CircularModel(it.id, it.mediaUrl) }
         with (itemView) {
             circular_view_pager.setIndicatorPageChangeListener(object : CircularViewPager.IndicatorPageChangeListener {
                 override fun onIndicatorPageChange(newIndicatorPosition: Int) {
@@ -62,19 +61,22 @@ class RechargeHomepageBannerViewHolder(itemView: View,
             circular_view_pager.setAdapter(adapter)
             circular_view_pager.setItemList(list)
             indicator_banner.createIndicators(circular_view_pager.indicatorCount, circular_view_pager.indicatorPosition)
+            addOnImpressionListener(section) {
+                listener.onRechargeBannerImpression(section)
+            }
         }
     }
 
     override fun onClick(position: Int) {
         if (::slidesList.isInitialized && slidesList.size > position) {
-            listener.onRechargeSectionItemClicked(slidesList[position], position, BANNER_CLICK)
+            listener.onRechargeSectionItemClicked(slidesList[position])
         }
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (::slidesList.isInitialized) {
-            listener.onRechargeSectionItemImpression(listOf(slidesList[position]), BANNER_IMPRESSION)
-        }
+//        if (::slidesList.isInitialized) {
+//            listener.onRechargeBannerImpression(slidesList[position])
+//        }
     }
 
     private fun onPromoAllClick(section: RechargeHomepageSections.Section) {

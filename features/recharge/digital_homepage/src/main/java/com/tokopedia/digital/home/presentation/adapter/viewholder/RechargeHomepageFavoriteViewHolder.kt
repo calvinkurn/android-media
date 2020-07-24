@@ -5,11 +5,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemFavoriteAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_favorites.view.*
 
@@ -34,10 +32,10 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: OnItemBi
                 }
                 rv_recharge_home_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
                 addOnImpressionListener(section) {
-                    listener.onRechargeSectionItemImpression(section.items, BEHAVIORAL_CATEGORY_IMPRESSION)
+                    listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                listener.onRechargeSectionEmpty(adapterPosition)
+                listener.onRechargeSectionEmpty(element.visitableId())
             }
         }
     }

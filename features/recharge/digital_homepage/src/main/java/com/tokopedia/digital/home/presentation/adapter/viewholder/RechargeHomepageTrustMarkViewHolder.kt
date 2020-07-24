@@ -32,7 +32,7 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
 
                 // Only use first 3 items or less
                 val trustMarkItems: List<RechargeHomepageSections.Item> = when (section.items.size) {
-                    in 1..3 -> section.items
+                    in 1..TRUST_MARK_MAX_SPAN_COUNT -> section.items
                     else -> section.items.subList(0, 3)
                 }
 
@@ -43,13 +43,13 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
                         RechargeItemTrustMarkAdapter(trustMarkItems)
 
             } else {
-                listener.onRechargeSectionEmpty(adapterPosition)
+                listener.onRechargeSectionEmpty(element.visitableId())
             }
         }
     }
 
     companion object {
         val LAYOUT = R.layout.view_recharge_home_trustmark
-        const val TRUST_MARK_SPAN_COUNT = 2
+        const val TRUST_MARK_MAX_SPAN_COUNT = 3
     }
 }
