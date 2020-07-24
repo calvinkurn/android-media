@@ -60,6 +60,8 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
     val shopFavouriteResp = MutableLiveData<ShopInfo.FavoriteData>()
     val shopTickerData = MutableLiveData<Result<Pair<ShopInfo, ShopOperationalHourStatus>>>()
+    val broadcasterConfigResp get() = _broadcasterConfigResp
+    private val _broadcasterConfigResp = MutableLiveData<Pair<ShopInfo, Broadcaster.Config>>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
@@ -97,22 +99,25 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             val shopInfoShopBadgeFeedWhitelistResponse = shopInfoShopBadgeFeedWhitelist.await()
             val shopOperationalHourStatusResponse = shopOperationalHourStatus.await()
             val shopFavouriteResponse = shopFavourite.await()
-            shopInfoShopBadgeFeedWhitelistResponse?.let{
-                it.feedWhitelist?.let {
+            shopInfoShopBadgeFeedWhitelistResponse?.let{ infoShopBadgeFeedWhitelist ->
+                infoShopBadgeFeedWhitelist.feedWhitelist?.let {
                     if (TextUtils.isEmpty(it.error)) {
                         whiteListResp.postValue(Success(it.isWhitelist to it.url))
                     } else {
                         whiteListResp.postValue(Fail(RuntimeException()))
                     }
                 }
-                it.shopInfo?.let { shopInfo ->
+                infoShopBadgeFeedWhitelist.shopInfo?.let { shopInfo ->
                     shopInfoResp.postValue(Success(shopInfo))
+                    infoShopBadgeFeedWhitelist.broadcaster?.let {
+                        _broadcasterConfigResp.postValue(Pair(shopInfo, it))
+                    }
                 }
-                it.shopBadge?.let {
+                infoShopBadgeFeedWhitelist.shopBadge?.let {
                     shopBadgeResp.postValue((shopInfoShopBadgeFeedWhitelistResponse.shopInfo?.goldOS?.isOfficial != 1) to it)
                 }
                 shopOperationalHourStatusResponse?.let { shopOperationalStatusResponse ->
-                    it.shopInfo?.let { shopInfo ->
+                    infoShopBadgeFeedWhitelist.shopInfo?.let { shopInfo ->
                         shopTickerData.postValue(Success(Pair(shopInfo, shopOperationalStatusResponse)))
                     }
                 }
@@ -168,9 +173,9 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             val broadcasterConfigError = gqlResponse.getError(Broadcaster::class.java)
             val broadcasterConfig = gqlResponse.getData<Broadcaster>(Broadcaster::class.java)
             if (broadcasterConfigError == null && broadcasterConfig?.config != null) {
-                shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = broadcasterConfig?.config)
+                shopInfoShopBadgeFeedWhitelist.broadcaster = broadcasterConfig.config
             } else {
-                shopInfoShopBadgeFeedWhitelist.shopInfo = shopInfoShopBadgeFeedWhitelist.shopInfo?.copy(broadcasterConfig = Broadcaster.Config(false))
+                shopInfoShopBadgeFeedWhitelist.broadcaster = Broadcaster.Config(false)
             }
         }
 

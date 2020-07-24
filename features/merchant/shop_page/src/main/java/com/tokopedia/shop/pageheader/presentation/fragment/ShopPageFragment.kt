@@ -128,7 +128,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
-    var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
+    private var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
     var titles = listOf<String>()
     var shopId: String? = null
     var shopRef: String = ""
@@ -267,6 +267,10 @@ class ShopPageFragment :
             }
             stopPerformanceMonitoring()
             stopShopPageHeaderMonitoringPltRenderPage()
+        })
+
+        shopViewModel.broadcasterConfigResp.observe(owner, Observer { pair ->
+            shopPageFragmentHeaderViewHolder.setupSgcContent(pair.first, shopViewModel.isMyShop(pair.first.shopCore.shopID), pair.second)
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -588,7 +592,7 @@ class ShopPageFragment :
             isGoldMerchant = (goldOS.isGoldBadge == 1)
             shopName = shopInfo.shopCore.name
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
-            shopPageFragmentHeaderViewHolder.bind(this, shopInfo.broadcasterConfig, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
+            shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             setupTabs()
             if (!isMyShop) {
                 button_chat.show()
@@ -609,7 +613,6 @@ class ShopPageFragment :
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
-
     }
 
     fun onBackPressed() {

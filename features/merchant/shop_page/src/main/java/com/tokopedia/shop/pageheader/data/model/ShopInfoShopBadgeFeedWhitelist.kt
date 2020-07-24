@@ -7,6 +7,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 data class ShopInfoShopBadgeFeedWhitelist(
         var shopInfo: ShopInfo? = null,
+        var broadcaster: Broadcaster.Config? = null,
         var shopBadge: ShopBadge? = null,
         var feedWhitelist: Whitelist? = null
 )

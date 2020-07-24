@@ -39,7 +39,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
-    fun bind(shopInfo: ShopInfo, broadcasterConfig: Broadcaster.Config?, isMyShop: Boolean, remoteConfig: RemoteConfig) {
+    fun bind(shopInfo: ShopInfo, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
         view.shop_page_main_profile_location.text = shopInfo.location
@@ -67,7 +67,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             displayAsBuyer()
         }
-        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
 
         if (shopInfo.freeOngkir.isActive)
             showLabelFreeOngkir(remoteConfig)
@@ -75,11 +74,13 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_free_ongkir.hide()
     }
 
+    fun setupSgcContent(shopInfo: ShopInfo, isMyShop: Boolean, broadcasterConfig: Broadcaster.Config?){
+        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
+    }
+
     private fun setupTextContentSgcWidget(){
-        if(view.shop_page_sgc_title.text.isBlank()) {
-            val text = context.getString(R.string.shop_page_play_widget_title)
-            view.shop_page_sgc_title.text = Html.fromHtml(text)
-        }
+        val text = context.getString(R.string.shop_page_play_widget_title)
+        view.shop_page_sgc_title.text = MethodChecker.fromHtml(text)
     }
 
     private fun setupSgcPlayWidget(shopInfo: ShopInfo, isMyShop: Boolean, broadcasterConfig: Broadcaster.Config?){
