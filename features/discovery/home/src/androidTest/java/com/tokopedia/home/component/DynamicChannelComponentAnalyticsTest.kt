@@ -138,10 +138,6 @@ class DynamicChannelComponentAnalyticsTest {
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixLeftComponentViewHolder")
                 clickOnEachItemRecyclerView(viewholder.itemView, R.id.rv_product)
             }
-            is MixTopBannerViewHolder -> {
-                logTestMessage("VH MixTopBannerViewHolder")
-                clickOnEachItemRecyclerView(viewholder.itemView, R.id.dc_banner_rv)
-            }
             is MixTopComponentViewHolder -> {
                 logTestMessage("VH MixTopComponentViewHolder")
                 clickLihatSemuaButtonIfAvailable(viewholder.itemView, "MixTopComponentViewHolder")
