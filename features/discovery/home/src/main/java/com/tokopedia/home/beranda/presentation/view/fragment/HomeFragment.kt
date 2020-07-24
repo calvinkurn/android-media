@@ -189,6 +189,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val EXTRA_TITLE = "core_web_view_extra_title"
         private const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
@@ -1200,7 +1201,9 @@ open class HomeFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
+            REQUEST_CODE_PLAY_ROOM -> {
+                if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
+            }
         }
     }
 
