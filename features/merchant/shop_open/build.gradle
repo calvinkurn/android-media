@@ -26,9 +26,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -87,3 +84,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

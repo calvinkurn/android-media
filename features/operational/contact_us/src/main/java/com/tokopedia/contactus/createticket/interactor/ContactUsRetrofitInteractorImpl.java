@@ -25,7 +25,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -50,6 +49,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 /**
  * Created by nisie on 8/12/16.
@@ -380,7 +380,10 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
     @Override
     public void unsubscribe() {
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        if (compositeSubscription != null) {
+            Timber.d("unsubscribeIfNotNull");
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override

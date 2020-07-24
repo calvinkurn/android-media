@@ -12,7 +12,6 @@ import java.lang.reflect.Type
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-
 /**
  * Created by mzennis on 30/06/20.
  */
@@ -25,23 +24,36 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
     ): GraphqlResponse {
         val gqlRequest = GraphqlRequest(query, typeOfT, params)
         var gqlResponse: GraphqlResponse? = null
-        try {
-            gqlResponse =  gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
-        } catch (throwable: Throwable) {
-//            Crashlytics.log(0, TAG, throwable.localizedMessage) // TODO uncomment Crashlytics
-            if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
-        }
-        val errors = gqlResponse?.getError(typeOfT)
-        if (!errors.isNullOrEmpty()) {
-            if (GlobalConfig.DEBUG) {
-//                Crashlytics.log(0, TAG, errors[0].message)
-                throw DefaultErrorThrowable(errors[0].message)
+
+        var retryCount = 0
+        suspend fun executeWithRetry() {
+            try {
+                gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
+            } catch (throwable: Throwable) {
+                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
+                else {
+                    if (retryCount++ < MAX_RETRY) executeWithRetry()
+                    else {
+                        val errors = gqlResponse?.getError(typeOfT)
+                        if (!errors.isNullOrEmpty()) {
+                            if (GlobalConfig.DEBUG) {
+                                throw DefaultErrorThrowable(errors[0].message)
+                            }
+                            // Crashlytics.log(0, TAG, errors[0].message)
+                        }
+                    }
+                }
+                // Crashlytics.log(0, TAG, throwable.localizedMessage) // TODO uncomment Crashlytics
             }
         }
+
+        executeWithRetry()
+
         return gqlResponse?: throw DefaultErrorThrowable()
     }
 
     companion object {
         const val TAG = "play broadcaster"
+        const val MAX_RETRY = 3
     }
 }

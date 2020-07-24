@@ -184,8 +184,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                             room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1),
                             adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0),
                             searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE),
-                            searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID)
-                    )
+                            searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID))
 
                     (fragment as HotelSearchResultFragment).let { searchFragment ->
                         searchFragment.searchResultviewModel.initSearchParam(hotelSearchModel)

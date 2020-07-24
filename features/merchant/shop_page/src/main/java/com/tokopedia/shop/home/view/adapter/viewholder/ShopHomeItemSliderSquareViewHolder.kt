@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -32,7 +32,12 @@ class ShopHomeItemSliderSquareViewHolder(
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE)
-        ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        //avoid crash in ImageUnify when image url is returned as base64
+        try {
+            ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         ivSliderSquare.onUrlLoaded = {
             performanceMonitoring?.stopTrace() ?: Unit
         }

@@ -45,8 +45,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -62,6 +60,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -110,11 +109,10 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, LoginEmailPhoneContract.View {
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var mIris: Iris
 
     private lateinit var callbackManager: CallbackManager
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -124,6 +122,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
+
+    @Inject
+    lateinit var seamlessAnalytics: SeamlessLoginAnalytics
 
     @Inject
     lateinit var presenter: LoginEmailPhonePresenter
@@ -136,7 +137,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var userSession: UserSessionInterface
 
     private var source: String = ""
-    private var isAutoLogin: Boolean = false
+    protected var isAutoLogin: Boolean = false
+    protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
@@ -244,10 +246,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
 
-        context?.run {
-            mIris = IrisAnalytics.getInstance(this)
-        }
-
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
     }
@@ -326,11 +324,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     private fun showSmartLock() {
-        val intent = Intent(activity, SmartLockActivity::class.java)
-        val bundle = Bundle()
-        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_SMART_LOCK)
+        if(isEnableSmartLock) {
+            val intent = Intent(activity, SmartLockActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_SMART_LOCK)
+        }
     }
 
 
@@ -617,7 +617,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
-            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
+            var intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+            if (GlobalConfig.isSellerApp()) {
+                intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
+            }
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             startActivity(intent)
@@ -671,7 +674,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 finish()
             }
 
-            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+            if(userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS){
+                seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
+            }else analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+
             setTrackingUserId(userSession.userId)
             setFCM()
         }
@@ -721,11 +727,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
                 loginEventAppsFlyer(userSession.userId, userSession.email)
-            }
-
-            if (::mIris.isInitialized) {
-                mIris.setUserId(userId)
-                mIris.setDeviceId(userSession.deviceId)
             }
 
             TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(

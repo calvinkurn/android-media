@@ -69,7 +69,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableUploadProductEvent
     private val _observableUploadProductEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
-    val maxProduct: Int
+    val maxProductDesc: String
+        get() = hydraConfigStore.getMaxProductDesc()
+
+    private val maxProduct: Int
         get() = hydraConfigStore.getMaxProduct()
 
     val selectedProductList: List<ProductContentUiModel>
@@ -134,9 +137,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 if (page == 1) emptyList() else currentValue
         )
         scope.launch {
-            val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
-            updateProductMap(searchedProducts)
-            _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
+            try {
+                val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
+                updateProductMap(searchedProducts)
+                _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
+            } catch (e: Throwable) {
+                _observableSearchedProducts.value = PageResult(
+                        currentValue = _observableSearchedProducts.value?.currentValue.orEmpty(),
+                        state = PageResultState.Fail(e)
+                )
+            }
         }
     }
 

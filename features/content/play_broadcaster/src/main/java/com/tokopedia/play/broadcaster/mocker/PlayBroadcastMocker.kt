@@ -89,12 +89,14 @@ object PlayBroadcastMocker {
             timeElapsed = "01:00",
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
+                    maxDurationDesc = "Siaran 30 menit",
                     pauseDuration = (1 * 60 * 1000),
                     errorMessage = "Maks. siaran 30 menit"
             ),
             productTagConfig = ProductTagConfigUiModel(
                     maxProduct = 15,
                     minProduct = 1,
+                    maxProductDesc = "Maks. Produk 15",
                     errorMessage = "Oops, kamu sudah memilih 15 produk"
             ),
             coverConfig = CoverConfigUiModel(

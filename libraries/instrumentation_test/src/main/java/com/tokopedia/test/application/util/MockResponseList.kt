@@ -18,6 +18,11 @@ object MockResponseList {
         responseList.put("suggestedProductReview", getRawString(context, R.raw.response_mock_data_suggested_review))
         responseList.put("playGetLiveDynamicChannels", getRawString(context, R.raw.response_mock_data_play_widget))
         responseList.put("rechargeRecommendation", getRawString(context, R.raw.response_mock_data_recharge_recommendation))
+
+        //official store
+        responseList.put("slides", getRawString(context, R.raw.response_mock_data_official_store_banners))
+
+        responseList.put("pdpGetLayout", getRawString(context, R.raw.response_mock_data_pdp_get_layout))
         return responseList
     }
 

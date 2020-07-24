@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">product_detail</string>
+
+    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+
     <string name="label_flash_sale">Flash Sale</string>
     <string name="product_detail_discussion">Diskusi</string>
     <string name="product_detail_courier">Pengiriman</string>
@@ -26,7 +29,7 @@
     <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s)</string>
-    <string name="template_talk">%1$d Diskusi</string>
+    <string name="template_talk">%1$d Q&amp;A</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
@@ -54,7 +57,6 @@
     <string name="label_product_installment">Cicilan</string>
     <string name="label_format_wholesale">Mulai dari %1$s</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="label_weight">Berat</string>
     <string name="label_asuransi">Asuransi</string>
     <string name="label_category">Kategori</string>
@@ -220,5 +222,20 @@
     <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
     <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
+
+    // Discussion Most Helpful
+    <string name="product_detail_discussion_title">Q&amp;A (%d)</string>
+    <string name="product_detail_discussion_see_all">Lihat Semua</string>
+    <string name="product_detail_discussion_no_answers">Belum ada jawaban</string>
+    <string name="product_detail_discussion_other_answers">Lihat %d jawaban lainnya</string>
+    <string name="product_detail_discussion_attached_products">%d produk</string>
+    <string name="product_detail_discussion_empty_subtitle">Tanya di Q&amp;A aja!</string>
+    <string name="product_detail_discussion_empty_description">Masih ragu dengan barang ini? Tanyain langsung aja di sini.</string>
+    <string name="product_detail_discussion_empty_button">Kirim Pertanyaan</string>
+    <string name="product_detail_discussion_formatted_date">• %s</string>
+    <string name="product_detail_discussion_total_answers">%d jawaban</string>
+    <string name="product_detail_discussion_seller_label">Penjual</string>
+    <string name="product_detail_discussion_local_load_title">Q&amp;A gagal ditampilkan</string>
+    <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
 
 </resources>

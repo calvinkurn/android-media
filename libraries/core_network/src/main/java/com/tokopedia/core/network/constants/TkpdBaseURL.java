@@ -9,59 +9,36 @@ import com.tokopedia.url.TokopediaUrl;
 @Deprecated
 public class TkpdBaseURL {
 
-    public static final String FLAG_APP = "?flag_app=1";
     public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
     public static String MERLIN_DOMAIN = TokopediaUrl.Companion.getInstance().getMERLIN();
     public static String GOOGLE_APIS = "https://www.googleapis.com";
     public static String TOPADS_DOMAIN = TokopediaUrl.Companion.getInstance().getTA();
     public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
     public static String INBOX_DOMAIN = TokopediaUrl.Companion.getInstance().getINBOX();
-    public static String CHAT_DOMAIN = TokopediaUrl.Companion.getInstance().getCHAT();
     public static String JS_DOMAIN = TokopediaUrl.Companion.getInstance().getJS();
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
     public static String GOLD_MERCHANT_DOMAIN = TokopediaUrl.Companion.getInstance().getGOLDMERCHANT();
     public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
-    public static String MOBILE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = TokopediaUrl.getInstance().getFS() + "tkpdcart/";
     public static String DIGITAL_API_DOMAIN = TokopediaUrl.Companion.getInstance().getPULSA_API();
     public static String SCROOGE_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY();
-    public static String HOME_DATA_BASE_URL = TokopediaUrl.Companion.getInstance().getGQL();
-    public static String SCROOGE_CREDIT_CARD_DOMAIN = TokopediaUrl.Companion.getInstance().getPAY_ID();
-    public static String MAPS_DOMAIN = TokopediaUrl.Companion.getInstance().getGW();
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
-        public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
-        public static final String V4_ACTION_PRODUCT = "v4/action/product/";
-        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + V4_ACTION_PRODUCT;
 
         public static final String PATH_GET_DETAIL_PRODUCT = "get_detail.pl";
         public static final String PATH_GET_EDIT_PRODUCT_FORM = "get_edit_product_form.pl";
-
-        public static final String PATH_DELETE_PRODUCT = "delete_product.pl";
-        public static final String PATH_EDIT_CATEGORY = "edit_category.pl";
-        public static final String PATH_EDIT_ETALASE = "edit_etalase.pl";
-        public static final String PATH_EDIT_INSURANCE = "edit_insurance.pl";
-        public static final String PATH_EDIT_PRICE = "edit_price.pl";
-        public static final String PATH_EDIT_PRODUCT = "edit_product.pl";
-        public static final String PATH_EDIT_DESCRIPTION = "edit_description.pl";
-        public static final String PATH_EDIT_WEIGHT_PRICE = "edit_weight_price.pl";
     }
 
     public static class User {
         public static final String URL_INBOX_RES_CENTER = BASE_DOMAIN + "v4/inbox-resolution-center/";
-        public static final String URL_INVOICE = BASE_DOMAIN + "v4/";
         public static final String PATH_NOTIFICATION = "v4/notification/";
         public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
-        public static final String URL_SESSION = BASE_DOMAIN + "v4/session/";
 
-        public static final String URL_POST_FAVORITE_SHOP = "v4/action/favorite-shop/fav_shop.pl";
-
-        public static final String PATH_FAVE_SHOP = "fav_shop.pl";
         public static final String PATH_GET_CREATE_RESOLUTION_FORM_NEW = "get_create_resolution_form_new.pl";
         public static final String PATH_GET_EDIT_RESOLUTION_FORM = "get_edit_resolution_form.pl";
         public static final String PATH_GET_RES_CENTER_PRODUCT_LIST = "get_product_list.pl";
@@ -70,20 +47,11 @@ public class TkpdBaseURL {
         public static final String PATH_GET_APPEAL_RESOLUTION_FORM = "get_appeal_resolution_form.pl";
         public static final String PATH_TRACK_SHIPPING_REF_V2 = "v4/inbox-resolution-center/track_shipping_ref.pl";
 
-        public static final String PATH_RENDER_INVOICE = "invoice.pl";
         public static final String PATH_GET_NOTIFICATION = "get_notification.pl";
 
-        public static final String PATH_DELETE_ADDRESS = "delete_address.pl";
-        public static final String PATH_EDIT_ADDRESS = "edit_address.pl";
-        public static final String PATH_EDIT_DEFAULT_ADDRESS = "edit_default_address.pl";
         public static final String PATH_EDIT_NOTIFICATION = "edit_notification.pl";
 
-        public static final String PATH_GET_ADDRESS = "get_address.pl";
-        public static final String PATH_GET_FAVORITE_SHOP = "get_favorit_shop.pl";
         public static final String PATH_GET_PEOPLE_INFO = "get_people_info.pl";
-
-        public static final String PATH_LOGIN = "login.pl";
-        public static final String PATH_LOGOUT = "logout.pl";
     }
 
     public static class Shop {
@@ -91,9 +59,6 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP = BASE_DOMAIN + PATH_MY_SHOP;
         public static final String PATH_MY_SHOP_ETALASE = "v4/myshop-etalase/";
         public static final String PATH_ACTION_MY_SHOP_ETALASE = "v4/action/myshop-etalase/";
-        public static final String PATH_MY_SHOP_INFO = "v4/action/myshop-info/";
-        public static final String URL_MY_SHOP_ORDER = BASE_DOMAIN + "v4/myshop-order/";
-        public static final String URL_MY_SHOP_ORDER_ACTION = BASE_DOMAIN + "v4/action/myshop-order/";
         public static final String URL_MY_SHOP_PAYMENT = BASE_DOMAIN + "v4/myshop-payment/";
         public static final String PATH_MY_SHOP_SHIPMENT = "v4/myshop-shipment/";
         public static final String URL_MY_SHOP_SHIPMENT = BASE_DOMAIN + PATH_MY_SHOP_SHIPMENT;
@@ -110,40 +75,17 @@ public class TkpdBaseURL {
         public static final String PATH_EVENT_SHOP_ADD_ETALASE = "event_shop_add_etalase.pl";
         public static final String PATH_GET_SHOP_ETALASE = "get_shop_etalase.pl";
 
-        public static final String PATH_UPDATE_SHOP_CLOSE = "update_shop_close.pl";
-
         public static final String PATH_GET_SHOP_INFO = "get_shop_info.pl";
-
-        public static final String PATH_EDIT_SHIPPING_REF = "edit_shipping_ref.pl";
-        public static final String PATH_PROCEED_ORDER = "proceed_order.pl";
-        public static final String PATH_PROCEED_SHIPPING = "proceed_shipping.pl";
-
-        public static final String PATH_GET_SHIPPING_FORM = "get_edit_shipping_form.pl";
         public static final String PATH_GET_DETAIL_INFO_DETAIL = "get_shipping_detail_info.pl";
-        public static final String PATH_GET_ORDER_LIST = "get_order_list.pl";
         public static final String PATH_GET_ORDER_NEW = "get_order_new.pl";
-        public static final String PATH_GET_ORDER_PROCESS = "get_order_process.pl";
-        public static final String PATH_GET_ORDER_STATUS = "get_order_status.pl";
 
         public static final String PATH_GET_PAYMENT_INFO = "get_payment_info.pl";
 
         public static final String PATH_UPDATE_SHIPPING_INFO = "update_shipping_info.pl";
 
         public static final String PATH_GET_SHIPPING_INFO = "get_shipping_info.pl";
-
-        public static final String PATH_GET_LIKE_DISLIKE_REVIEW = "get_like_dislike_review_shop.pl";
         public static final String PATH_GET_SHOP_LOCATION = "get_shop_location.pl";
         public static final String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
-
-        public static final String PATH_RETRY_PICKUP = "retry_pickup.pl";
-    }
-
-    public static final class Etc {
-
-        public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
-
-        public static final String PATH_TERM_CONDITION = "terms.pl";
-        public static final String PATH_PRIVACY_POLICY = "privacy.pl";
 
     }
 
@@ -167,27 +109,9 @@ public class TkpdBaseURL {
     }
 
     public static class Search {
-        public static final String URL_CATALOG_SELLER = "search/v1/catalog/product";
-
-        public static final String URL_CATALOG = BASE_DOMAIN + "v4/catalog/";
         public static final String URL_HOT_LIST = BASE_DOMAIN + "v4/hotlist/";
-        public static final String PATH_GET_CATALOG_DETAIL = "get_catalog_detail.pl";
 
         public static final String PATH_GET_HOTLIST = "get_hotlist.pl";
-        public static final String PATH_GET_HOTLIST_BANNER = "v4/hotlist/get_hotlist_banner.pl";
-    }
-
-    public static class Transaction {
-        public static final String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
-        public static final String URL_TX_ORDER_ACTION = BASE_DOMAIN + "v4/action/tx-order/";
-
-
-        public static final String PATH_TRACK_ORDER = "track_order.pl";
-
-        public static final String PATH_DELIVERY_CONFIRM = "delivery_confirm.pl";
-        public static final String PATH_DELIVERY_FINISH_ORDER = "delivery_finish_order.pl";
-        public static final String PATH_REQUEST_CANCEL_ORDER = "request_cancel_order.pl";
-        public static final String PATH_REORDER = "reorder.pl";
     }
 
     public static class Upload {
@@ -208,15 +132,7 @@ public class TkpdBaseURL {
 
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
-        public static final String URL_SEARCH = TokopediaUrl.Companion.getInstance().getACE() + PATH_SEARCH;
-
         public static final String PATH_CATALOG = "v1/catalog";
-        public static final String PATH_HOTLIST_CATEGORY = "/hoth/hotlist/v1/category";
-        public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
-        public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
-        public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
-        public static final String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
-        public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
     }
 
     public static class Merlin {
@@ -224,32 +140,10 @@ public class TkpdBaseURL {
 
     }
 
-    public static class TopAds {
-        public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
-        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.3/display/ads";
-    }
-
-    public static class Mojito {
-        public static final String PATH_PRODUCT = "users/";
-
-        public static final String PATH_WISHLIST = "wishlist/";
-        public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
-        public static final String PATH_USER_RECENT_VIEW = "users/";
-        public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
-        public static final String API_V1_BRANDS_CATEGORY = "/os/api/v1/brands/category/android/{categoryId}";
-        public static final String PATH_USER_WISHLIST = "/users";
-        public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
-        public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
-    }
-
     public static class Accounts {
         public static final String PATH_GET_TOKEN = "token";
         public static final String PATH_DISCOVER_LOGIN = "api/discover";
         public static final String GENERATE_HOST = "/api/upload-host";
-    }
-
-    public static class Home {
-        public static final String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 
     public static class GoldMerchant {
@@ -272,15 +166,6 @@ public class TkpdBaseURL {
     public static class DigitalApi {
         public static final String VERSION = "v1.4/";
         public static final String HMAC_KEY = "web_service_v4";
-    }
-
-    public static class HadesCategory {
-        public static final String CHECK_VERSION = "/v1/categories_version";
-        public static final String URL_HADES = TokopediaUrl.Companion.getInstance().getHADES();
-        public static final String PATH_CATEGORIES = "/v2/categories/{catId}/detail";
-        public static final String PATH_CATEGORIES_LAYOUT_ROOT = "/v1/category_layout/{catId}?type=root";
-        public static final String PATH_CATEGORIES_LAYOUT = "/v1/category_layout/{catId}";
-        public static final String FETCH_CATEGORIES = "/v1/categorieslite?filter=seller";
     }
 
     public static class ResCenterV2 {
@@ -323,34 +208,13 @@ public class TkpdBaseURL {
 
     }
 
-    public static class Replacement {
-        public static final String URL_REPLACEMENT = BASE_DOMAIN + "";
-
-        public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
-    }
-
     public static class Payment {
-        public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
-        public static final String PATH_CC_DELETE = "v2/ccvault/delete";
-
-        public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
-
     }
 
     public static class Chat {
-        public static final String GET_MESSAGE = "/tc/v1/list_message";
-        public static final String REPLY = "/tc/v1/reply";
         public static final String SEARCH = "/tc/v1/search";
         public static final String DELETE = "/tc/v1/delete";
-        public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
-        public static final String SET_TEMPLATE = "tc/v1/templates";
-    }
-
-    public class Maps {
-        public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
-        public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
-        public static final String PATH_MAPS_GEOCODE = "maps/geocode";
     }
 
     public class Purchase {

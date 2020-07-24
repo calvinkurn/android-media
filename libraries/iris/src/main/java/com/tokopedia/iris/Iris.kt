@@ -1,5 +1,6 @@
 package com.tokopedia.iris
 
+import android.os.Bundle
 import com.tokopedia.iris.model.Configuration
 
 /**
@@ -29,15 +30,13 @@ interface Iris {
      */
     fun saveEvent(map: Map<String, Any>)
 
+    fun saveEvent(bundle: Bundle)
+
     /**
      * direct send event to server
      */
     @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(map)"))
     fun sendEvent(map: Map<String, Any>)
-
-    fun setUserId(userId: String)
-
-    fun setDeviceId(deviceId: String)
 
     fun setAlarm(isTurnOn: Boolean, force: Boolean)
 

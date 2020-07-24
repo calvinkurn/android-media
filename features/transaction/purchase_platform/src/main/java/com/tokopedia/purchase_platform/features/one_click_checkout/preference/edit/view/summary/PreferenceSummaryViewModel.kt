@@ -76,9 +76,9 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
     }
 
-    fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String) {
+    fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
-        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery),
+        createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { createPreferenceGqlResponse: CreatePreferenceGqlResponse ->
                     val messages = createPreferenceGqlResponse.response.data.messages
                     if (messages.isNotEmpty()) {
@@ -92,9 +92,9 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 })
     }
 
-    fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String) {
+    fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int) {
         _editResult.value = OccState.Loading
-        updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery),
+        updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { updatePreferenceGqlResponse: UpdatePreferenceGqlResponse ->
                     val messages = updatePreferenceGqlResponse.response.data.messages
                     if (messages.isNotEmpty()) {

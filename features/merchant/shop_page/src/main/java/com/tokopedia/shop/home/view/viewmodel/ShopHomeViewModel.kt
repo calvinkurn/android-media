@@ -65,9 +65,9 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
 
-    val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>
+    val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
-    private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>()
+    private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
 
     val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
     private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
@@ -243,14 +243,16 @@ class ShopHomeViewModel @Inject constructor(
     fun getWishlistStatus(shopHomeCarousellProductUiModel: List<ShopHomeCarousellProductUiModel>) {
         launchCatchError(block = {
             val listResultCheckWishlist = shopHomeCarousellProductUiModel.map {
-                async(dispatcherProvider.io()) {
-                    val resultCheckWishlist = checkListProductWishlist(it)
-                    Pair(it, resultCheckWishlist)
-                }
+                asyncCatchError(
+                        dispatcherProvider.io(),
+                        block = {
+                            val resultCheckWishlist = checkListProductWishlist(it)
+                            Pair(it, resultCheckWishlist)
+                        },
+                        onError = { null }
+                )
             }.awaitAll()
-            listResultCheckWishlist.onEach {
-                _checkWishlistData.value = Success(listResultCheckWishlist)
-            }
+            _checkWishlistData.value = Success(listResultCheckWishlist)
         }) {}
     }
 

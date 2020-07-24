@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
@@ -19,7 +18,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
@@ -41,17 +39,14 @@ import io.fabric.sdk.android.Fabric;
 public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
-    private static final String TAG = "MainApplication";
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Boolean isResetNotification = false;
-    private static Boolean isResetCart = false;
-    private static Boolean isResetTickerState = true;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
+    private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
 
 
     public static MainApplication getInstance() {
@@ -73,11 +68,6 @@ public abstract class MainApplication extends MainRouterApplication{
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(MainApplication.this);
-    }
-
-    public static Boolean resetCartStatus(Boolean status) {
-        isResetCart = status;
-        return isResetCart;
     }
 
     public static int getCurrentVersion(Context context) {
@@ -102,7 +92,6 @@ public abstract class MainApplication extends MainRouterApplication{
         userSession = new UserSession(this);
         initCrashlytics();
         PACKAGE_NAME = getPackageName();
-        isResetTickerState = true;
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
@@ -188,10 +177,13 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
+    //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-
+        LinkerManager.initLinkerManager(getApplicationContext());
+        if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
+            LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        }
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());
@@ -210,20 +202,5 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
         return InboxRouter.getInboxResCenterActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return SellerRouter.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionList(mContext);
     }
 }

@@ -12,6 +12,8 @@ object DeeplinkMapperEntertainment {
     fun getRegisteredNavigationEvents(deeplink: String, context: Context): String {
           return if(getRemoteConfigEventEnabler(context) && deeplink.equals(ApplinkConst.EVENTS)) {
               ApplinkConstInternalEntertainment.EVENT_HOME
+          } else if(getRemoteConfigEventEnabler(context) && deeplink.equals(ApplinkConst.EVENTS_ORDER)){
+              deeplink
           } else if(getRemoteConfigEventPDPEnabler(context) && deeplink.startsWith(ApplinkConst.EVENTS)){
               val uri = Uri.parse(deeplink)
               ApplinkConstInternalEntertainment.EVENT_PDP+"/"+uri.lastPathSegment

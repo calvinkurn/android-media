@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFinishedFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;

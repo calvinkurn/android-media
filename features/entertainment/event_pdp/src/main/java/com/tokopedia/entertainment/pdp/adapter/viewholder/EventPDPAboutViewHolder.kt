@@ -26,7 +26,6 @@ class EventPDPAboutViewHolder(view: View, val onBindItemListener: OnBindItemList
 
                 if(!element.longDesc.isNullOrEmpty()) {
                     tg_event_pdp_about_desc.apply {
-                        setLines(MAX_LINE)
                         setText(Html.fromHtml(element.longDesc))
                     }
                 } else {
@@ -52,6 +51,5 @@ class EventPDPAboutViewHolder(view: View, val onBindItemListener: OnBindItemList
 
     companion object {
         val LAYOUT = R.layout.partial_event_pdp_about
-        const val MAX_LINE = 15
     }
 }

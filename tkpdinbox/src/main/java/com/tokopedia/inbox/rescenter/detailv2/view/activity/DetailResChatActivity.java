@@ -15,7 +15,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.common.ResolutionUrl;

@@ -1,16 +1,14 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.setImage
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -29,7 +27,12 @@ class ShopHomeItemImageColumnViewHolder(
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE)
-        ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        //avoid crash in ImageUnify when image url is returned as base64
+        try {
+            ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         ivMultipleColumn.onUrlLoaded = {
             performanceMonitoring?.stopTrace() ?: Unit
         }

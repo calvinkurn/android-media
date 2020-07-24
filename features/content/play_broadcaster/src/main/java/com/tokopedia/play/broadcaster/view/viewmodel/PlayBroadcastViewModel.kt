@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.state.BroadcastState
 import com.tokopedia.play.broadcaster.view.state.BroadcastTimerState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -88,8 +89,8 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableReportDuration: LiveData<String>
         get() = _observableReportDuration
 
-    val shareInfo: ShareUiModel?
-        get() = _observableShareInfo.value
+    val shareContents: String
+        get() = _observableShareInfo.value.orEmpty()
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -98,7 +99,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLiveDuration = MutableLiveData<Event<BroadcastTimerState>>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetrics = MutableLiveData<Event<List<PlayMetricUiModel>>>()
-    private val _observableShareInfo = MutableLiveData<ShareUiModel>()
+    private val _observableShareInfo = MutableLiveData<String>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -150,6 +151,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
+            setDurationConfig(configUiModel.durationConfig)
 
             // configure live streaming duration
             if (configUiModel.channelType == ChannelType.Pause)
@@ -193,12 +195,13 @@ class PlayBroadcastViewModel @Inject constructor(
             }
             val channelInfo = PlayBroadcastUiMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
-            _observableShareInfo.value = PlayBroadcastUiMapper.mapShareInfo(channel)
 
             setChannelId(channelInfo.channelId)
             setChannelInfo(channelInfo)
             setSelectedProduct(PlayBroadcastUiMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(PlayBroadcastUiMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+
+            generateShareLink(PlayBroadcastUiMapper.mapShareInfo(channel))
 
             null
         } catch (err: Throwable) {
@@ -390,10 +393,15 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun setProductConfig(configModel: ProductTagConfigUiModel) {
         hydraConfigStore.setMaxProduct(configModel.maxProduct)
         hydraConfigStore.setMinProduct(configModel.minProduct)
+        hydraConfigStore.setMaxProductDesc(configModel.maxProductDesc)
     }
 
     private fun setCoverConfig(configModel: CoverConfigUiModel) {
         hydraConfigStore.setMaxTitleChars(configModel.maxChars)
+    }
+
+    private fun setDurationConfig(configModel: DurationConfigUiModel) {
+        hydraConfigStore.setMaxDurationDesc(configModel.maxDurationDesc)
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {
@@ -427,6 +435,14 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun retrievedReportDuration(timeElapsed: String) {
         scope.launch(dispatcher.main) {
             _observableReportDuration.value = timeElapsed
+        }
+    }
+
+    private fun generateShareLink(shareUiModel: ShareUiModel) {
+        scope.launch {
+            PlayShareWrapper.generateShareLink(shareUiModel) {
+                _observableShareInfo.value = it
+            }
         }
     }
 

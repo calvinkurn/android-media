@@ -32,8 +32,14 @@ data class ProductCardModel (
         val ratingString: String = "",
         val hasThreeDots: Boolean = false,
         val labelGroupList: List<LabelGroup> = listOf(),
+        val hasDeleteProductButton: Boolean = false,
         val hasAddToCartButton: Boolean = false,
-        val hasRemoveFromWishlistButton: Boolean = false
+        val hasRemoveFromWishlistButton: Boolean = false,
+        val pdpViewCount: String = "",
+        val stockBarLabel: String = "",
+        val stockBarPercentage: Int = 0,
+        val isOutOfStock: Boolean = false,
+        val addToCardText: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

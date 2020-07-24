@@ -1,9 +1,12 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.common.utils.ProductDraftErrorHandler;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductLegacyUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -21,12 +24,15 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
+    private FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase;
 
     public ProductDraftListPresenterImpl(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
+                                         FetchAllDraftProductLegacyUseCase fetchAllDraftProductLegacyUseCase,
                                          DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase) {
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
+        this.fetchAllDraftProductLegacyUseCase = fetchAllDraftProductLegacyUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
@@ -34,8 +40,13 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
 
     @Override
     public void fetchAllDraftData() {
-        fetchAllDraftProductUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
-                getSubscriber());
+        if (GlobalConfig.isSellerApp()) {
+            fetchAllDraftProductUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
+                    getSubscriber());
+        } else {
+            fetchAllDraftProductLegacyUseCase.execute(FetchAllDraftProductUseCase.createRequestParams(),
+                    getSubscriber());
+        }
     }
 
     @Override
@@ -63,8 +74,9 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 getView().onErrorDeleteAllDraft();
+                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
             }
 
             @Override
@@ -86,6 +98,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                 if (isViewAttached()) {
                     getView().onLoadSearchError(t);
                 }
+                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
             }
 
             @Override
@@ -122,6 +135,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     @Override
     public void detachView() {
         super.detachView();
+        fetchAllDraftProductLegacyUseCase.unsubscribe();
         fetchAllDraftProductUseCase.unsubscribe();
         deleteSingleDraftProductUseCase.unsubscribe();
         updateUploadingDraftProductUseCase.unsubscribe();
@@ -135,8 +149,9 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 fetchAllDraftData();
+                ProductDraftErrorHandler.INSTANCE.logExceptionToCrashlytics(t);
             }
 
             @Override

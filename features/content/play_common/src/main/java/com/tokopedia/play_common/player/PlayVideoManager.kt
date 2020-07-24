@@ -127,7 +127,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 //For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stop()
+                    release()
+                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }

@@ -177,7 +177,6 @@ public interface ApplinkConst {
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
     String PRODUCT_EDIT = "tokopedia://product/edit/{product_id}";
     String SELLER_TRANSACTION = "tokopedia://seller";
-    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
@@ -255,6 +254,7 @@ public interface ApplinkConst {
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
     String CREATE_PASSWORD = "tokopedia://createpassword";
+    String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
@@ -302,8 +302,12 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
+
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
+
+    String MERCHANT_VOUCHER_LIST = "tokopedia://merchant-voucher/list";
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
@@ -346,6 +350,7 @@ public interface ApplinkConst {
 
         String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
+
     }
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 
@@ -363,7 +368,13 @@ public interface ApplinkConst {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
+        String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
+        String TOPADS_CREATE_ADS = "sellerapp://topads/create-ads";
+        String TOPADS_CREATE_AUTO_ADS = "sellerapp://topads/create-autoads";
+        String TOPADS_EDIT_AUTO_ADS = "sellerapp://topads/edit-autoads";
+        String TOPADS_CREDIT_HISTORY = "sellerapp://topads/history-credit";
+        String TOPADS_CREATE_CHOOSER = "sellerapp://topads/ad-picker";
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
@@ -374,6 +385,12 @@ public interface ApplinkConst {
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
+        String VOUCHER_LIST = "sellerapp://voucher-list";
+        String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
+        String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
+        String VOUCHER_DETAIL = "sellerapp://voucher-detail";
+        String CREATE_VOUCHER = "sellerapp://create-voucher";
+        String SELLER_SEARCH = "sellerapp://seller-search";
     }
 
     interface Query {
@@ -509,5 +526,10 @@ public interface ApplinkConst {
         String EXTRA_TITLE = "title";
         String EXTRA_SUBTITLE = "subtitle";
         String EXTRA_BUTTON = "button";
+    }
+
+    interface ResCenter {
+        String MOBILE =  "/mobile";
+        String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
 }

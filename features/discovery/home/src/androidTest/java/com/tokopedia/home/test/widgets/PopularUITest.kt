@@ -53,7 +53,7 @@ class PopularUITest : BaseWidgetUiTest(){
         val json = GraphqlHelper.loadRawString(context.resources, R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
-        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
+        coEvery{getHomeReviewSuggestedUseCase.get().executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
         coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
@@ -63,7 +63,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -83,7 +83,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -101,7 +101,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -114,7 +114,7 @@ class PopularUITest : BaseWidgetUiTest(){
         val json = GraphqlHelper.loadRawString(context.resources, R.raw.popular_keyword_json)
         val popularData = GraphqlHelper.loadRawString(context.resources, R.raw.get_popular_keyword_query_data_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getPopularKeywordUseCase.executeOnBackground() } coAnswers  {
+        coEvery { getPopularKeywordUseCase.get().executeOnBackground() } coAnswers  {
             delay(2000)
             Gson().fromJson<HomeWidget.PopularKeywordQuery>(popularData, HomeWidget.PopularKeywordQuery::class.java)
         }
@@ -124,7 +124,7 @@ class PopularUITest : BaseWidgetUiTest(){
             emit(data)
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)

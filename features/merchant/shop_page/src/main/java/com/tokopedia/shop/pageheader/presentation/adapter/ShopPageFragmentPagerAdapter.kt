@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
@@ -25,8 +26,7 @@ internal class ShopPageFragmentPagerAdapter(
         fragmentManager: FragmentManager
 ) : FragmentStatePagerAdapter(fragmentManager) {
     private val registeredFragments = SparseArrayCompat<Fragment>()
-    private var listTitleIcon = listOf<Int>()
-    private var listFragment = listOf<Fragment>()
+    private var listShopPageTabModel = listOf<ShopPageTabModel>()
 
     private companion object {
         val tabViewLayout = R.layout.shop_page_tab_view
@@ -34,10 +34,10 @@ internal class ShopPageFragmentPagerAdapter(
 
     private val ctxRef = WeakReference(ctx)
 
-    override fun getCount(): Int = listFragment.size
+    override fun getCount(): Int = listShopPageTabModel.size
 
     override fun getItem(position: Int): Fragment {
-        return listFragment[position]
+        return listShopPageTabModel[position].tabFragment
     }
 
     fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
@@ -54,7 +54,7 @@ internal class ShopPageFragmentPagerAdapter(
     private fun getTabIconDrawable(position: Int, isActive: Boolean = false): Drawable? = ctxRef.get()?.run {
         MethodChecker.getDrawable(
                 this,
-                listTitleIcon[position]
+                listShopPageTabModel[position].tabIcon
         )?.let { iconDrawable ->
             DrawableCompat.wrap(iconDrawable)
         }?.also { iconDrawable ->
@@ -84,20 +84,23 @@ internal class ShopPageFragmentPagerAdapter(
         return registeredFragments.get(position)
     }
 
-    fun setTabData(tabData: Pair<List<Int>, List<Fragment>>) {
-        listTitleIcon = tabData.first
-        listFragment = tabData.second
+    fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {
+        this.listShopPageTabModel = listShopPageTabModel
     }
 
     fun getFragmentPosition(classType: Class<*>): Int {
-        return listFragment.filterIsInstance(classType).firstOrNull()?.let {
-            return listFragment.indexOf(it).takeIf { index ->
-                index >= 0
-            } ?: 0
-        } ?: 0
+        var fragmentPosition = 0
+        listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
+            if(shopPageTabModel.tabFragment::class.java == classType){
+                fragmentPosition = index
+            }
+        }
+        return fragmentPosition
     }
 
     fun isFragmentObjectExists(classType: Class<*>): Boolean {
-        return listFragment.filterIsInstance(classType).firstOrNull() != null
+        return listShopPageTabModel.firstOrNull {
+            it.tabFragment::class.java == classType
+        } != null
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.util.Log;
 
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.exception.ServerErrorRequestDeniedException;
@@ -10,7 +11,7 @@ import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneExceptio
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.IOException;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
                     );
                 } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
                         ServerErrorHandler.STATUS_FORBIDDEN
-                ) && MethodChecker.isTimezoneNotAutomatic()) {
+                ) && MethodChecker.isTimezoneNotAutomatic(CoreNetworkApplication.getAppContext())) {
                     throw new ServerErrorTimeZoneException(
                             digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
                             response.code(), response.request().url().toString()

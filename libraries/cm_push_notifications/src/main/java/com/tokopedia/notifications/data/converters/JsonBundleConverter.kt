@@ -11,21 +11,26 @@ object JsonBundleConverter {
     private const val HOURS_24_IN_MILLIS = 24 * 60 * 60 * 1000L
     private const val DAYS_7 = HOURS_24_IN_MILLIS * 7
 
+    private const val OFFLINE_MODE = "true"
+
     private val mapType by lazy(LazyThreadSafetyMode.NONE) {
         object : TypeToken<Map<String?, String>>() {}.type
     }
 
-    private fun setOfflineData(): Map<String, String> {
+    private fun setOfflineData(hasTime: Boolean): Map<String, String> {
         return mutableMapOf<String, String>().apply {
-            put(NOTIFICATION_MODE, "true")
-            put(NOTIFICATION_START_TIME, System.currentTimeMillis().toString())
-            put(NOTIFICATION_END_TIME, (System.currentTimeMillis() + DAYS_7).toString())
+            put(NOTIFICATION_MODE, OFFLINE_MODE)
+            if (!hasTime) {
+                put(NOTIFICATION_START_TIME, System.currentTimeMillis().toString())
+                put(NOTIFICATION_END_TIME, (System.currentTimeMillis() + DAYS_7).toString())
+            }
         }
     }
 
     fun jsonToBundle(json: String): Bundle {
         val toMap = fromJson<Map<String, String>>(json, mapType).toMutableMap()
-        toMap.putAll(setOfflineData())
+        val hasTime = toMap.contains(NOTIFICATION_START_TIME)
+        toMap.putAll(setOfflineData(hasTime))
         return PayloadConverter.convertMapToBundle(toMap)
     }
 

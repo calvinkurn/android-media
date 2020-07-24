@@ -158,11 +158,13 @@ object PlayBroadcastUiMapper {
                 timeElapsed = (maxDuration - remainingTime).convertMillisToMinuteSecond(),
                 durationConfig = DurationConfigUiModel(
                         duration = maxDuration,
+                        maxDurationDesc = config.maxDurationDesc,
                         pauseDuration = config.maxPauseDuration * 1000,
                         errorMessage = config.maxDurationDesc),
                 productTagConfig = ProductTagConfigUiModel(
                         maxProduct = config.maxTaggedProduct,
                         minProduct = config.minTaggedProduct,
+                        maxProductDesc = config.maxTaggedProductDesc,
                         errorMessage = config.maxTaggedProductDesc
                 ),
                 coverConfig = CoverConfigUiModel(

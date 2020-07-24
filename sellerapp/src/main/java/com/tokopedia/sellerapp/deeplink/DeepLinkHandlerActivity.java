@@ -15,8 +15,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
@@ -28,8 +26,6 @@ import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
@@ -49,8 +45,6 @@ import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.transaction.applink.TransactionApplinkModule;
-import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
@@ -69,13 +63,10 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @DeepLinkHandler({
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
-        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
-        InboxDeeplinkModule.class,
         TrackingAppLinkModule.class,
         TopChatAppLinkModule.class,
-        CoreDeeplinkModule.class,
         SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
@@ -100,13 +91,10 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return new DeepLinkDelegate(
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),

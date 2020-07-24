@@ -45,20 +45,20 @@ object DFInstallerLogUtil {
 
             //Size information
             messageBuilder.append(";mod_size=")
-            if (moduleSize > 0) {
+            if (moduleSize >= 0) {
                 messageBuilder.append(Utils.getSizeInMB(moduleSize))
             } else {
                 messageBuilder.append(-1)
             }
             messageBuilder.append(";phone_size=")
             val phoneSize = StorageUtils.getTotalInternalSpaceBytes(context)
-            if (phoneSize > 0) {
+            if (phoneSize >= 0) {
                 messageBuilder.append(Utils.getSizeInMB(phoneSize))
             } else {
                 messageBuilder.append(-1)
             }
             messageBuilder.append(";free_bef=")
-            if (freeInternalStorageBeforeDownload > 0) {
+            if (freeInternalStorageBeforeDownload >= 0) {
                 messageBuilder.append(Utils.getSizeInMB(freeInternalStorageBeforeDownload))
             } else {
                 messageBuilder.append(-1)
@@ -74,7 +74,7 @@ object DFInstallerLogUtil {
             // Additional download information
             messageBuilder.append(";dl_duration=${Utils.getDownloadDuration(startDownloadTime, endDownloadTime)}")
             messageBuilder.append(";start_progress=")
-            if (startDownloadPercentage < 0) {
+            if (startDownloadPercentage <= 0) {
                 messageBuilder.append("0")
             } else {
                 messageBuilder.append(Utils.getFormattedNumber(startDownloadPercentage))

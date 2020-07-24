@@ -161,14 +161,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_SHOP_ID = "shop_id"
 
-    // TalkProductActivity
-    // tokopedia-android-internal://global/product-talk
+    // TalkReadingActivity
+    // tokopedia-android-internal://talk/product-talk
     @JvmField
     val PRODUCT_TALK_BASE = "$INTERNAL_GLOBAL/product-talk/"
     @JvmField
     val PRODUCT_TALK = "$PRODUCT_TALK_BASE{product_id}/"
     @JvmField
     val PARAM_PRODUCT_ID = "product_id"
+
+    // TalkReplyActivity
+    // tokopedia-android-internal://talk/reply-talk
+    @JvmField
+    val TALK_REPLY_BASE = "$INTERNAL_GLOBAL/reply-talk/"
+    @JvmField
+    val TALK_REPLY = "$TALK_REPLY_BASE{question_id}/"
 
     // TalkDetailsActivity
     // tokopedia-android-internal://global/detail-talk
@@ -370,6 +377,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
+    // InstantDebitBcaActivity
+    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
+    @JvmField
+    val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
+
+    // BcaEditLimitActivity
+    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
+    @JvmField
+    val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
@@ -447,4 +463,8 @@ object ApplinkConstInternalGlobal {
     //ManageNotificationActivity
     @JvmField
     val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

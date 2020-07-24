@@ -4,4 +4,5 @@
     <dimen name="notif_image_height">55dp</dimen>
     <dimen name="notif_dp_8">8dp</dimen>
     <dimen name="notif_dp_16">16dp</dimen>
+    <dimen name="notif_dp_292">292dp</dimen>
 </resources>

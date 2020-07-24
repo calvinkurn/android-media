@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 const val ERROR_CODE = 403
 const val HEADER_AKAMAI_KEY = "server"
 const val HEADER_AKAMAI_VALUE = "akamai"
-const val ERROR_MESSAGE_AKAMAI = "Kami mendeteksi aktivitas tidak biasa dari akunmu. Harap hubungi Pusat Bantuan."
+const val ERROR_MESSAGE_AKAMAI = "Oops, ada kendala pada akunmu. Silakan coba kembali atau hubungi Tokopedia Care untuk bantuan lanjutan."
 
 private val getAnyPattern = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
 val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")

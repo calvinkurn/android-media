@@ -127,4 +127,18 @@ object TrackingUtil {
     fun getFormattedPrice(price: Int): String {
         return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
     }
+
+    fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {
+        with(ProductTrackingConstant.Tracking) {
+            mapEvent.putAll(
+                    mapOf(
+                            KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                            KEY_CURRENT_SITE to CURRENT_SITE,
+                            KEY_DISCUSSION_USER_ID to "{{$userId}}",
+                            KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
+                    )
+            )
+        }
+        return mapEvent
+    }
 }

@@ -135,7 +135,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
         view.tickerShopStatus.show()
-        view.tickerShopStatus.tickerTitle = shopInfo.statusInfo.statusTitle
+        view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopInfo.statusInfo.statusTitle).toString()
         view.tickerShopStatus.setHtmlDescription(shopInfo.statusInfo.statusMessage)
         view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

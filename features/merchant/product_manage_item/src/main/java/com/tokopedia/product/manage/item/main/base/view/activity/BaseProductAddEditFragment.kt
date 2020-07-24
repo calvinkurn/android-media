@@ -5,13 +5,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.crashlytics.android.Crashlytics
-import com.tkpd.library.utils.CommonUtils
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
@@ -63,7 +64,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
-import java.lang.Exception
 import javax.inject.Inject
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
@@ -330,10 +330,10 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
         if (isUploading) {
-            CommonUtils.UniversalToast(activity, getString(R.string.upload_product_waiting))
+            Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.upload_product_waiting)), Toast.LENGTH_LONG).show()
             startUploadProduct(productId)
         } else {
-            CommonUtils.UniversalToast(activity, getString(R.string.product_draft_product_has_been_saved_as_draft))
+            Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.upload_product_waiting)), Toast.LENGTH_LONG).show()
         }
         redirectToProductManagePage()
         activity?.finish()
@@ -343,14 +343,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (addEditPageType == AddEditPageType.ADD)
             eventServerValidationAddProduct(userSessionInterface.shopId, errorMessage ?: "")
         logException(errorMessage ?: "")
-        CommonUtils.UniversalToast(activity, getString(R.string.upload_product_waiting))
+        Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.upload_product_waiting)), Toast.LENGTH_LONG).show()
         startUploadProductServiceWithoutSaveToDraft()
         redirectToProductManagePage()
         activity?.finish()
     }
 
     override fun onErrorStoreProductToDraftWhenBackPressed(errorMessage: String?) {
-        CommonUtils.UniversalToast(activity, errorMessage)
+        Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.upload_product_waiting)), Toast.LENGTH_LONG).show()
         activity?.finish()
         if (addEditPageType == AddEditPageType.ADD)
             eventServerValidationAddProduct(userSessionInterface.shopId, errorMessage ?: "")

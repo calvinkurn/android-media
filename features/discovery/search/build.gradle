@@ -19,6 +19,20 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        defaultConfig {
+            multiDexEnabled true
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -51,6 +65,7 @@ dependencies {
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.features.carouselProductCard)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -97,6 +112,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.json
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {

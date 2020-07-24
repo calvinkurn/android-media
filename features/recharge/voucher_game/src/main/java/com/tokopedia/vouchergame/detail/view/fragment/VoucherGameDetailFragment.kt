@@ -234,7 +234,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
             voucherGameAnalytics.categoryName = data.catalog.label
-            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+            (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
 
@@ -522,8 +522,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            getMenuDetail(it)
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                    R.raw.query_voucher_game_products),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }

@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -35,9 +37,15 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_NETWORK_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_PREPARE_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
@@ -53,6 +61,7 @@ import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -129,11 +138,41 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPltMonitoring()
         getIntentData()
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    private fun initPltMonitoring() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.initShopPageHomeTabPerformanceMonitoring()
+    }
+
+
+    private fun startMonitoringPltNetworkRequest(){
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltNetworkRequest(it)
+            }
+        }
+    }
+
+    private fun startMonitoringPltRenderPage() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltRenderPage(it)
+            }
+        }
+    }
+
+    private fun stopMonitoringPltRenderPage() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltRenderPage(it)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -183,6 +222,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         globalError_shopPage.hide()
         showLoading()
         shopHomeAdapter.isOwner = isOwner
+        startMonitoringPltNetworkRequest()
         viewModel?.getShopPageHomeData(shopId)
     }
 
@@ -199,6 +239,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun observeLiveData() {
         viewModel?.shopHomeLayoutData?.observe(this, Observer {
+            startMonitoringPltRenderPage()
             hideLoading()
             when (it) {
                 is Success -> {
@@ -209,6 +250,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     stopPerformanceMonitor()
                 }
             }
+            stopMonitoringPltRenderPage()
         })
 
         viewModel?.productListData?.observe(this, Observer {
@@ -244,17 +286,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
-    private fun onSuccessCheckWishlist(data: List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>) {
-        data.onEach {
-            it.second.onEach { checkWishlistResult ->
-                val productData = it.first.productList.find { shopHomeProductViewModel ->
-                    shopHomeProductViewModel.id == checkWishlistResult.productId
+    private fun onSuccessCheckWishlist(data: List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>) {
+        data.onEach { pairCheckWishlistData ->
+            pairCheckWishlistData?.let {
+                it.second.onEach { checkWishlistResult ->
+                    val productData = it.first.productList.find { shopHomeProductViewModel ->
+                        shopHomeProductViewModel.id == checkWishlistResult.productId
+                    }
+                    productData?.let { shopHomeProductViewModel ->
+                        shopHomeProductViewModel.isWishList = checkWishlistResult.isWishlist
+                    }
                 }
-                productData?.let { shopHomeProductViewModel ->
-                    shopHomeProductViewModel.isWishList = checkWishlistResult.isWishlist
-                }
+                shopHomeAdapter.updateProductWidgetData(it.first)
             }
-            shopHomeAdapter.updateProductWidgetData(it.first)
         }
     }
 
@@ -350,12 +394,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerShopPageHomeComponent
-                .builder()
-                .shopPageHomeModule(ShopPageHomeModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.run {
+            DaggerShopPageHomeComponent
+                    .builder()
+                    .shopPageHomeModule(ShopPageHomeModule())
+                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .build()
+                    .inject(this@ShopPageHomeFragment)
+            }
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -512,7 +558,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     "",
                     "",
                     0,
-                    customDimensionShopPage
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id,
+                            shopAttribution,
+                            shopRef
+                    )
             )
             goToPDP(it.id ?: "")
         }
@@ -534,7 +587,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     "",
                     "",
                     0,
-                    customDimensionShopPage
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id,
+                            shopAttribution,
+                            shopRef
+                    )
             )
         }
     }
@@ -567,7 +627,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeCarousellProductUiModel?.widgetId ?: "",
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
                     shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
-                    customDimensionShopPage
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id,
+                            shopAttribution,
+                            shopRef
+                    )
             )
             goToPDP(it.id ?: "")
         }
@@ -592,7 +659,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
-                customDimensionShopPage
+                CustomDimensionShopPageAttribution.create(
+                        shopId,
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopHomeProductViewModel?.id.orEmpty(),
+                        shopAttribution,
+                        shopRef
+                )
         )
     }
 

@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
 import javax.inject.Inject
 
-class DeletePreferenceUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<DeletePreferenceGqlResponse>) {
+class DeletePreferenceUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<DeletePreferenceGqlResponse>) {
 
     fun execute(profileId: Int, onSuccess: (DeletePreferenceGqlResponse) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)

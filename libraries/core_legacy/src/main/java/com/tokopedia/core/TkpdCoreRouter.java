@@ -46,21 +46,6 @@ public interface TkpdCoreRouter {
     }
 
     @Deprecated
-    static Intent getActivitySellingTransactionList(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionListReal(mContext);
-    }
-
-    @Deprecated
-    static Class<?> getSellingActivityClass(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getSellingActivityClassReal();
-    }
-
-    @Deprecated
-    static Intent getActivitySellingTransactionShippingStatus(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionShippingStatusReal(mContext);
-    }
-
-    @Deprecated
     static Class<?> getInboxResCenterActivityClass(Context mContext) {
         return RouterUtils.getRouterFromContext(mContext).getInboxResCenterActivityClassReal();
     }
@@ -82,12 +67,6 @@ public interface TkpdCoreRouter {
     Class<?> getInboxMessageActivityClass();
 
     Class<?> getInboxResCenterActivityClassReal();
-
-    Intent getActivitySellingTransactionShippingStatusReal(Context mContext);
-
-    Class getSellingActivityClassReal();
-
-    Intent getActivitySellingTransactionListReal(Context mContext);
 
     Intent getHomeIntent(Context context);
 
