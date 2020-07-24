@@ -48,7 +48,7 @@ class PartialContentView(private val view: View,
                 renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
             }
             campaign.isActive -> {
-                renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording), false)
+                renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
             }
             else -> {
                 renderCampaignInactive(data.price.value.getCurrencyFormatted())
@@ -76,11 +76,9 @@ class PartialContentView(private val view: View,
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNpl: Boolean = false) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
         setTextCampaignActive(campaign)
-        if (!isNpl) {
-            renderFlashSale(campaign, stockWording)
-        }
+        renderFlashSale(campaign, stockWording)
     }
 
     private fun renderCampaignInactive(price: String) = with(view) {

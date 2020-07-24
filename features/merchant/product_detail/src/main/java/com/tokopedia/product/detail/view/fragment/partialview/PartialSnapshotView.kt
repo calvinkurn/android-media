@@ -51,7 +51,7 @@ class PartialSnapshotView(private val view: View,
                 renderCampaignInactiveNpl(data.price.value.getCurrencyFormatted())
             }
             campaign.isActive -> {
-                renderCampaignActive(campaign, nearestWarehouseStockWording, false)
+                renderCampaignActive(campaign, nearestWarehouseStockWording)
             }
             else -> {
                 renderCampaignInactive(data.price.value.getCurrencyFormatted())
@@ -81,11 +81,9 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String, isNpl: Boolean = false) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
         setTextCampaignActive(campaign)
-        if (!isNpl) {
-            renderFlashSale(campaign, stockWording)
-        }
+        renderFlashSale(campaign, stockWording)
     }
 
     private fun renderCampaignInactive(price: String) = with(view) {
@@ -169,11 +167,11 @@ class PartialSnapshotView(private val view: View,
         setProgressStockBar(campaign, stockWording)
     }
 
-    private fun renderSlashPriceFlashSale(){
+    private fun renderSlashPriceFlashSale() {
         hideStockBarAndBackgroundColor()
     }
 
-    private fun renderNplRibbon(ribbonCopy: String, startDate:String, campaign: CampaignModular) = with(view) {
+    private fun renderNplRibbon(ribbonCopy: String, startDate: String, campaign: CampaignModular) = with(view) {
         if (startDate.isGivenDateIsBelowThan24H()) {
             text_title_discount_timer.text = context.getString(R.string.campaign_npl_start)
             showCountDownTimerUpcomingNpl(startDate, campaign)
