@@ -5,9 +5,10 @@ import com.tokopedia.product.addedit.tracking.ProductVariantTracking.sendOpenPro
 
 object ProductEditVariantDetailTracking {
     private const val SCREEN_NAME = "/editproductpage - variant detail"
+    private const val CURRENT_SITE = "tokopediamarketplace"
 
     fun trackScreen(isLoggedInStatus: String, userId: String) {
-        sendOpenProductVariantPage(SCREEN_NAME, isLoggedInStatus, userId)
+        sendOpenProductVariantPage(SCREEN_NAME, isLoggedInStatus, userId, CURRENT_SITE)
     }
 
     // 3.1
@@ -40,8 +41,18 @@ object ProductEditVariantDetailTracking {
         sendEditProductVariantDetailClick("click toggle sku", label, shopId, SCREEN_NAME)
     }
 
+    // 3.7 label = on/off
+    fun clickVariantStatusToggle(label: String, shopId: String) {
+        sendEditProductVariantDetailClick("click toggle variant status", label, shopId, SCREEN_NAME)
+    }
+
     // 3.8
     fun saveVariantDetail(shopId: String) {
         sendEditProductVariantDetailClick("click simpan variant detail", "", shopId, SCREEN_NAME)
+    }
+
+    // 3.9 label = contains variant utama
+    fun saveMainVariant(label: String, shopId: String) {
+        sendEditProductVariantDetailClick("click simpan variant utama", label, shopId, SCREEN_NAME)
     }
 }
