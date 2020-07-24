@@ -1,4 +1,4 @@
-package com.tokopedia.linter
+package com.tokopedia.linter.detectors
 
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiMethod

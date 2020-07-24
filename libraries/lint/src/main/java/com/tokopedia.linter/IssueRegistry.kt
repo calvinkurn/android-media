@@ -1,10 +1,12 @@
-@file:Suppress("UnstableApiUsage")
 
 package com.tokopedia.linter
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.android.tools.lint.detector.api.Issue
+import com.tokopedia.linter.detectors.CoreResourcesDetector
+import com.tokopedia.linter.detectors.SetColourDetector
+import com.tokopedia.linter.detectors.TypographyDetector
 
 class IssueRegistry : IssueRegistry() {
     override val issues: List<Issue>

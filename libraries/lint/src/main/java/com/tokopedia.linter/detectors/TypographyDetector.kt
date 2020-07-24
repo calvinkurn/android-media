@@ -1,4 +1,4 @@
-package com.tokopedia.linter
+package com.tokopedia.linter.detectors
 
 import com.android.SdkConstants.TEXT_VIEW
 import com.android.tools.lint.detector.api.*
