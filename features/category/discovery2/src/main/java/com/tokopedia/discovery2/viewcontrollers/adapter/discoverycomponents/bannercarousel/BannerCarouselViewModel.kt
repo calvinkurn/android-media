@@ -35,8 +35,4 @@ class BannerCarouselViewModel(val application: Application, val components: Comp
         }
         return ""
     }
-
-    fun getComponentName(): String {
-        return components.name ?: ""
-    }
 }
