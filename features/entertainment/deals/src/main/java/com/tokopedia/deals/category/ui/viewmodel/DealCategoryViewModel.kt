@@ -85,6 +85,7 @@ class DealCategoryViewModel @Inject constructor(
     }
 
     fun updateChips(location: Location, categoryId: String, isFilter: Boolean) {
+        getInitialData()
         getCategoryBrandData(categoryId, location.coordinates, location.locType.name, isFilter = isFilter)
     }
 
