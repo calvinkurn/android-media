@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.domain.interactor
+package com.tokopedia.shop.pageheader.domain.interactor
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -6,10 +6,12 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
+/**
+ * Created by jegul on 24/07/20
+ */
 class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Broadcaster.Config>() {
 
     var params: RequestParams = RequestParams.EMPTY
