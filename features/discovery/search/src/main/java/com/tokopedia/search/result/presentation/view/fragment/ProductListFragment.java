@@ -887,7 +887,7 @@ public class ProductListFragment
     public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
         redirectionStartActivity(item.getApplink(), item.getUrl());
 
-        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(item.getName()),
                 keyword, item.getName(), item.getApplink());
     }
 
@@ -1536,7 +1536,7 @@ public class ProductListFragment
     public void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel) {
         List<Object> dataLayerList = new ArrayList<>();
         for (GlobalNavViewModel.Item item : globalNavViewModel.getItemList()) {
-            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer());
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.getApplink()));
         }
         SearchTracking.trackEventImpressionGlobalNavWidgetItem(trackingQueue, dataLayerList, globalNavViewModel.getKeyword());
     }
