@@ -207,11 +207,25 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun updatePrimaryVariant(combination: List<Int>) {
-        val variantInputModel = productInputModel.value?.variantInputModel?.products
-        variantInputModel?.forEach {
-            it.isPrimary = it.combination == combination
+    fun updatePrimaryVariant(combination: List<Int>): Int {
+        var updatedPosition = -1 // -1 for not found
+        val variantInputModels = productInputModel.value?.variantInputModel?.products
+        var variantInputModelsIndex = 0
+
+        inputLayoutModelMap.toSortedMap().forEach { variantDetailInputModel ->
+            variantInputModels?.getOrNull(variantInputModelsIndex)?.let {
+                if (it.combination == combination) {
+                    it.isPrimary = true
+                    it.status = STATUS_ACTIVE_STRING
+                    updatedPosition = variantDetailInputModel.key
+                } else {
+                    it.isPrimary = false
+                }
+            }
+            variantInputModelsIndex++
         }
+
+        return updatedPosition
     }
 
     fun getPrimaryVariantTitle(combination: List<Int>): String {

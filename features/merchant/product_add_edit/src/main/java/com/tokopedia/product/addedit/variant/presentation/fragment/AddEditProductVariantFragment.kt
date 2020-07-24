@@ -863,7 +863,7 @@ class AddEditProductVariantFragment :
             setSecondaryCTAText(getString(R.string.action_confirm_exit))
             setSecondaryCTAClickListener {
                 dialog.dismiss()
-                activity?.onBackPressed()
+                activity?.finish()
             }
         }
         dialog.show()
