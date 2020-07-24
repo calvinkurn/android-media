@@ -10,7 +10,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
@@ -36,7 +35,6 @@ import java.util.List;
 public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<SellerReputationView> {
     public static final String REPUTATION_DATE = "dd-MM-yyyy";
     private SellerReputationRequest sellerReputationRequest;
-    private SessionHandler sessionHandler;
     private UserSessionInterface userSession;
     private NetworkStatus networkStatus;
     private GCMHandler gcmHandler;
@@ -91,10 +89,6 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         );
     }
 
-    public void setSessionHandler(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
-    }
-
     public void setUserSession(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
@@ -117,7 +111,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
 
     private TKPDMapParam<String, String> fillParam() {
         return AuthUtil.generateParamsNetwork(
-                sessionHandler.getLoginID(), gcmHandler.getRegistrationId(),
+                userSession.getUserId(), gcmHandler.getRegistrationId(),
                 sellerReputationRequest.getParamSummaryReputation());
     }
 
@@ -127,7 +121,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
     }
 
     private RequestParams fillParamShopInfo2() {
-        return ShopNetworkController.RequestParamFactory.generateRequestParam(sessionHandler.getLoginID(),
+        return ShopNetworkController.RequestParamFactory.generateRequestParam(userSession.getUserId(),
                 gcmHandler.getRegistrationId(), fillParamShopInfo());
     }
 

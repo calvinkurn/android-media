@@ -3,10 +3,12 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_NOTIFICATION
 import com.tokopedia.topchat.chatlist.pojo.NotificationsPojo
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,6 +22,7 @@ import javax.inject.Inject
 class ChatTabCounterViewModel @Inject constructor(
         private val chatNotificationUseCase: GraphqlUseCase<NotificationsPojo>,
         private val queries: Map<String, String>,
+        private val sharedPref: SharedPreferences,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -58,8 +61,17 @@ class ChatTabCounterViewModel @Inject constructor(
                 .getInt(KEY_LAST_POSITION, -1)
     }
 
+    fun isSearchOnBoardingTooltipHasShown(): Boolean {
+        return sharedPref.getBoolean(SEARCH_TOOLTIP_ONBOARDING, false)
+    }
+
+    fun toolTipOnBoardingShown() {
+        sharedPref.edit().putBoolean(SEARCH_TOOLTIP_ONBOARDING, true).apply()
+    }
+
     companion object {
         private const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
         private const val KEY_LAST_POSITION = "key_last_seen_tab_position"
+        const val SEARCH_TOOLTIP_ONBOARDING = "search_tooltip_onboarding"
     }
 }

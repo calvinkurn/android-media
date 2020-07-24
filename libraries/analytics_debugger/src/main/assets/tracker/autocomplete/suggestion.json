@@ -1,0 +1,17 @@
+{
+  "readme": "Autocomplete Suggestion Tracking",
+  "query" : [
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - shop - carousel",
+      "eventLabel": "{{.* - keyword: .*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - lihat toko lainnya - carousel",
+      "eventLabel": "{{keyword: .*}}"
+    }
+  ]
+}

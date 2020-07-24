@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.analytics
 
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Level
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -78,7 +80,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
                     KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
-                    KEY_CREATIVE to it.persona.toString(),
+                    KEY_CREATIVE to it.name.toString(),
                     KEY_POSITION to bannerPosition + 1
             ))
         }
@@ -123,7 +125,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_CATEGORY_NAVIGATION, eventLabel = "${categoryItem?.dynamicComponentId} - ${categoryItem?.name}")
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_CATEGORY_NAVIGATION, eventLabel = "${categoryItem?.id} - ${categoryItem?.name}")
         val list = ArrayList<Map<String, Any>>()
         categoryItem?.let {
             list.add(mapOf(
@@ -145,11 +147,6 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    fun trackTabsClick(tabName: String) {
-        val map = createGeneralEvent(eventAction = CLICK_TAB, eventLabel = tabName)
-        getTracker().sendGeneralEvent(map)
-    }
-
     fun trackBackClick() {
         val map = createGeneralEvent(eventAction = CLICK_BACK_BUTTON_ACTION)
         getTracker().sendGeneralEvent(map)
@@ -157,6 +154,16 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
 
     fun trackShareClick() {
         val map = createGeneralEvent(eventAction = CLICK_SOCIAL_SHARE_ACTION)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun trackSearchClick() {
+        val eventCategory = "$TOP_NAV - $VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
+        val map : MutableMap<String, Any>  = mutableMapOf(
+                KEY_EVENT to CLICK_TOP_NAV,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to CLICK_SEARCH_BOX,
+                KEY_EVENT_LABEL to "")
         getTracker().sendGeneralEvent(map)
     }
 
@@ -350,12 +357,12 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
 
-    fun getNotificationStatus(componentsItems: ComponentsItem): Boolean {
+    private fun getNotificationStatus(componentsItems: ComponentsItem): String {
         val parentProductContainer = getComponent(componentsItems.parentComponentId, pageIdentifier)
         parentProductContainer?.let {
-            return it.properties?.buttonNotification ?: false
+            return if(it.properties?.buttonNotification == true) NOTIFY_ON else NOTIFY_OFF
         }
-        return false
+        return NOTIFY_ON
     }
 
     fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
@@ -528,14 +535,14 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    fun trackOpenScreen(screenName: String, userLoggedIn: Boolean) {
+    fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {
         if (screenName.isNotEmpty()) {
-            val map = getTrackingMapOpenScreen(screenName, userLoggedIn)
+            val map = getTrackingMapOpenScreen(screenName, additionalInfo, userLoggedIn)
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
         }
     }
 
-    private fun getTrackingMapOpenScreen(pageIdentifier: String, userLoggedIn: Boolean): MutableMap<String, String> {
+    private fun getTrackingMapOpenScreen(pageIdentifier: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[KEY_EVENT] = OPEN_SCREEN
         map[EVENT_NAME] = OPEN_SCREEN
@@ -543,11 +550,40 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         map[IS_LOGGED_IN_STATUS] = userLoggedIn.toString()
         map[DISCOVERY_NAME] = pageIdentifier
         map[DISCOVERY_SLUG] = pageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = DISCOVERY
         map[CATEGORY] = EMPTY_STRING
         map[CATEGORY_ID] = EMPTY_STRING
         map[SUB_CATEGORY] = EMPTY_STRING
         map[SUB_CATEGORY_ID] = EMPTY_STRING
+
+        additionalInfo?.category?.levels?.let { categoryListLevels ->
+            addCategoryData(categoryListLevels)?.let {
+                map.putAll(it)
+            }
+        }
         return map
+    }
+
+    private fun addCategoryData(categoryListLevelsInfo: List<Level>?): MutableMap<String, String>? {
+        val categoryMap = mutableMapOf<String, String>()
+
+        if (!categoryListLevelsInfo.isNullOrEmpty()) {
+            categoryListLevelsInfo.forEach { levelData ->
+                when (levelData.level) {
+                    CATEGORY_LEVEL_1 -> {
+                        categoryMap[CATEGORY] = levelData.name ?: EMPTY_STRING
+                        categoryMap[CATEGORY_ID] = levelData.categoryId?.toString() ?: EMPTY_STRING
+                    }
+                    CATEGORY_LEVEL_2 -> {
+                        categoryMap[SUB_CATEGORY] = levelData.name ?: EMPTY_STRING
+                        categoryMap[SUB_CATEGORY_ID] = levelData.categoryId?.toString()
+                                ?: EMPTY_STRING
+                    }
+                }
+            }
+        }
+        return categoryMap
     }
 
     private fun removeDashPageIdentifier(identifier: String): String {
@@ -555,6 +591,22 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
             return identifier.replace("-", " ")
         }
         return EMPTY_STRING
+    }
+
+    fun trackTabsClick(id: String, parentPosition: Int, dataItem: DataItem, tabPosition1: Int) {
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_TAB, eventLabel = dataItem.name ?: "")
+        val list = ArrayList<Map<String, Any>>()
+            list.add(mapOf(
+                    KEY_ID to id,
+                    KEY_NAME to "/$pagePath - $pageType - ${parentPosition + 1} - - $MEGA_TAB_COMPONENT",
+                    KEY_CREATIVE to (dataItem.name ?: EMPTY_STRING),
+                    KEY_POSITION to tabPosition1 + 1
+            ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
 }

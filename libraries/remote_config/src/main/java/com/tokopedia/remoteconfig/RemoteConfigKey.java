@@ -51,8 +51,6 @@ public class RemoteConfigKey {
 
     public static final String IMAGE_HOST = "image_host";
 
-    public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
-    public static final String ENABLE_TRACKING_VIEW_PORT = "android_customer_enable_search_tracking_view_port";
     public static final String ENABLE_BOTTOM_SHEET_FILTER_REVAMP = "android_customer_enable_bottom_sheet_filter_revamp";
 
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
@@ -111,8 +109,6 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
-    public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
-
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
     public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
@@ -129,7 +125,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
-    public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
@@ -180,10 +175,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
 
-    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
-
-
-
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 
@@ -219,6 +210,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
+    public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
+    public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
+
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
@@ -228,4 +222,9 @@ public class RemoteConfigKey {
 
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
+    public static final String NEW_SELLER_HOME_DISABLED = "android_new_seller_home_disabled";
+    public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
+
+    public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+
 }

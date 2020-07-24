@@ -8,12 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -27,6 +29,8 @@ import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.BaseNotificationFragment
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
@@ -99,7 +103,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     * the id comes from tokopedia://notif-center/{id}
     * */
     private val notificationId by lazy {
-        (activity as NotificationActivity).notificationId
+        (activity as? NotificationActivity)?.notificationId ?: ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -156,10 +160,23 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun initInjector() {
-        (activity as NotificationActivity)
-                .notificationComponent
-                .inject(this)
+        if (GlobalConfig.isSellerApp()) {
+            initSellerAppInjector()
+        } else {
+            (activity as NotificationActivity)
+                    .notificationComponent
+                    .inject(this)
+        }
         presenter.attachView(this)
+    }
+
+    private fun initSellerAppInjector() {
+        val component = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+        DaggerNotificationComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(requireContext()))
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -287,8 +304,8 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         presenter.addProductToCart(product, onSuccessAddToCart)
     }
 
-    override fun trackOnClickCtaButton(templateKey: String) {
-        analytics.trackOnClickLongerContentBtn(templateKey)
+    override fun trackOnClickCtaButton(templateKey: String, notificationId: String) {
+        analytics.trackOnClickLongerContentBtn(templateKey, notificationId)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = view?.findViewById(R.id.swipeToRefresh)

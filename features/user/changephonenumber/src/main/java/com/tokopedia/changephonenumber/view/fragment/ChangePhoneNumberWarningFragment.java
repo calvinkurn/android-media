@@ -27,8 +27,7 @@ import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberInputActiv
 import com.tokopedia.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.verification.domain.data.OtpConstant;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -288,11 +287,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     private void goToNextActivity() {
-        Intent intent = VerificationActivity.
-                getShowChooseVerificationMethodIntent(getContext(),
-                        RequestOtpUseCase.OTP_TYPE_VERIFY_USER_CHANGE_PHONE_NUMBER,
-                        phoneNumber,
-                        email);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.COTP);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.VERIFY_USER_CHANGE_PHONE_NUMBER);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
         startActivityForResult(intent, VERIFY_USER_CHANGE_PHONE_NUMBER);
     }
 
