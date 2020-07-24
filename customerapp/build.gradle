@@ -97,7 +97,8 @@ buildscript {
 ext.lintchecks = [
         'SetColourUsageError',
         'CoreResourcesUsageError',
-        'VectorDrawableCompat'
+        'VectorDrawableCompat',
+        'TypographyOverTextViewUsage'
 ] as String[]
 
 
