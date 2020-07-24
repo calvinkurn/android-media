@@ -9,8 +9,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetBroadcasterShopConfigUseCase;
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope;
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
@@ -49,6 +49,12 @@ public class ShopPageModule {
     @Provides
     public DeleteShopProductUseCase provideDeleteShopProductUseCase(@ApplicationContext Context context) {
         return new DeleteShopProductUseCase(provideDeleteShopProductAceUseCase(context), provideDeleteShopProductTomeUseCase(context));
+    }
+
+    @ShopPageScope
+    @Provides
+    public DeleteShopNoteUseCase provideDeleteShopNoteUseCase(@ApplicationContext Context context) {
+        return new DeleteShopNoteUseCase(context);
     }
 
     @ShopPageScope

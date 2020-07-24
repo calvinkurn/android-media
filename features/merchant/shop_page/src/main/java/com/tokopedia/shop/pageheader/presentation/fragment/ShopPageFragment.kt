@@ -126,7 +126,6 @@ class ShopPageFragment :
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
-    var titles = listOf<String>()
     private var shopId = ""
     var shopRef: String = ""
     var shopDomain: String? = null

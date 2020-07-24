@@ -6,7 +6,11 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -74,7 +78,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private fun setupTextContentSgcWidget(){
         if(view.shop_page_sgc_title.text.isBlank()) {
             val text = context.getString(R.string.shop_page_play_widget_title)
-            view.shop_page_sgc_title.text = Html.fromHtml(text)
+            view.shop_page_sgc_title.text = MethodChecker.fromHtml(text)
         }
     }
 
@@ -93,7 +97,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                         shopPageHeaderDataModel.isOfficial,
                         shopPageHeaderDataModel.isGoldMerchant
                 ))
-                RouteManager.route(view.context, "tokopedia-android-internal://play-broadcaster")
+                RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
             }
         }
     }
