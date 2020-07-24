@@ -1,13 +1,12 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
-import com.crashlytics.android.Crashlytics
 import com.google.gson.Gson
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
+import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import javax.inject.Inject
 
 /**
@@ -41,9 +40,7 @@ class GetConfigurationUseCase @Inject constructor(
         return try {
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
-            if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, TAG, e.localizedMessage)
-            }
+            sendCrashlyticsLog(0, e.localizedMessage)
             Config()
         }
     }

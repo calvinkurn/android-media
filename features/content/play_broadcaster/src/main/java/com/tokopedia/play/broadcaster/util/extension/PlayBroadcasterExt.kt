@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 
@@ -181,4 +182,10 @@ internal fun Dialog.updateNavigationBarColors(colorResArray: IntArray, useDarkIc
 @RequiresApi(Build.VERSION_CODES.M)
 internal fun Dialog.updateNavigationBarColor(@ColorRes colorRes: Int, useDarkIcon: Boolean = true) {
     updateNavigationBarColors(intArrayOf(colorRes), useDarkIcon)
+}
+
+internal fun sendCrashlyticsLog(priority: Int, message: String) {
+    try {
+        Crashlytics.log(priority, "tkpd-play-broadcaster", message)
+    } catch (e: Exception) {}
 }
