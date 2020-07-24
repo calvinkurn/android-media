@@ -93,15 +93,19 @@ class AddEditProductVariantViewModel @Inject constructor(
         it.productId > 0
     }
 
-    val isSelectedVariantUnitValuesEmpty =  MediatorLiveData<Boolean>().apply {
+    val isSelectedVariantUnitValuesEmpty = MediatorLiveData<Boolean>().apply {
         addSource(mSelectedVariantUnitValuesLevel1) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty() ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty() ?: true
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
+                    ?: true
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
+                    ?: true
             this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
         }
         addSource(mSelectedVariantUnitValuesLevel2) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty() ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty() ?: true
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
+                    ?: true
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
+                    ?: true
             this.value = isVariantUnitValuesLevel1Empty && isVariantUnitValuesLevel2Empty
         }
     }
@@ -245,7 +249,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
-        return if (selectedVariantUnitMap.containsKey(layoutPosition)) {
+        val selectedVariantUnit = selectedVariantUnitMap[layoutPosition] ?: Unit()
+        return if (selectedVariantUnit.unitName.isNotBlank()) {
             selectedVariantUnitMap[layoutPosition] ?: Unit()
         } else {
             // return either the first unit (default selection case) or empty unit (no variant unit)
@@ -277,7 +282,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                 val selectedVariants = mSelectedVariantUnitValuesLevel1.value
                 selectedVariants?.remove(removedUnitValue)
-                mSelectedVariantUnitValuesLevel1.value =  selectedVariants
+                mSelectedVariantUnitValuesLevel1.value = selectedVariants
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 val selectedVariants = mSelectedVariantUnitValuesLevel2.value
@@ -288,8 +293,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun removeVariant() {
-        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.
-                isRemoteDataHasVariant ?: false // keep isRemoteDataHasVariant old data
+        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
+                ?: false // keep isRemoteDataHasVariant old data
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
@@ -476,16 +481,18 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun getProductVariantPhotos(productInputModel: ProductInputModel): List<VariantPhoto> {
         val variantPhotos = mutableListOf<VariantPhoto>()
         // get variant photo name
+        var colorVariantLevel = -1
         val colorVariant = productInputModel.variantInputModel.selections.firstOrNull {
+            colorVariantLevel++
             it.variantId == COLOUR_VARIANT_TYPE_ID.toString()
-        } ?: SelectionInputModel()
+        }
 
         // compile variant photos
-        colorVariant.options.forEachIndexed { index, optionInputModel ->
+        colorVariant?.options?.forEachIndexed { index, optionInputModel ->
             val variantUnitValueName = optionInputModel.value
             // get variant image url
             val photoUrl = productInputModel.variantInputModel.products.find {
-                it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) == index
+                it.combination.getOrNull(colorVariantLevel) == index
             }?.pictures?.firstOrNull()?.urlOriginal.orEmpty()
 
             variantPhotos.add(VariantPhoto(variantUnitValueName, photoUrl))

@@ -204,13 +204,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
-        viewModel.updatePrimaryVariant(combination)
+        val updatedFieldPosition = viewModel.updatePrimaryVariant(combination)
 
-        // update switch status to be true if primary selected
-        combination.getOrNull(0)?.let {
-            val updatedInputModel = viewModel.updateSwitchStatus(true, it)
-            viewModel.editVariantDetailInputMap(it, updatedInputModel)
-            variantDetailFieldsAdapter?.updateDetailInputField(it, updatedInputModel)
+        // update switch status if primary variant changed (index bigger than -1)
+        if (updatedFieldPosition > -1) {
+            val updatedInputModel = viewModel.updateSwitchStatus(true, updatedFieldPosition)
+            variantDetailFieldsAdapter?.updateDetailInputField(updatedFieldPosition, updatedInputModel)
         }
 
         // tracking
@@ -399,6 +398,4 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             }
         }
     }
-
-
 }
