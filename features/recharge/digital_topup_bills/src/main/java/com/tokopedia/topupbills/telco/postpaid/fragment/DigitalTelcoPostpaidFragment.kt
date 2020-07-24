@@ -42,6 +42,7 @@ import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryView
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -60,7 +61,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var loadingShimmering: LinearLayout
     private lateinit var viewPager: ViewPager2
-    private lateinit var tabLayout: TabLayout
+    private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
 
     private var traceStop = false
@@ -125,8 +126,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         })
         viewPager.adapter = pagerAdapter
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout.customTabMode = TabLayout.MODE_FIXED
+        tabLayout.customTabGravity = TabLayout.GRAVITY_FILL
+        tabLayout.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {
                 //do nothing
             }
@@ -143,7 +145,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            tabLayout.getTabAt(position)?.let {
+            tabLayout.getUnifyTabLayout().getTabAt(position)?.let {
                 it.select()
             }
             setTrackingOnTabMenu(listMenu[position].title)
@@ -160,9 +162,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun renderPromoAndRecommendation() {
         if (listMenu.size > 0) {
-            tabLayout.removeAllTabs()
+            tabLayout.getUnifyTabLayout().removeAllTabs()
             for (i in 0 until listMenu.size) {
-                tabLayout.addTab(tabLayout.newTab().setText(listMenu[i].title))
+                tabLayout.addNewTab(listMenu[i].title)
             }
             changeDataSet { telcoTabViewModel.addAll(listMenu) }
             viewPager.show()

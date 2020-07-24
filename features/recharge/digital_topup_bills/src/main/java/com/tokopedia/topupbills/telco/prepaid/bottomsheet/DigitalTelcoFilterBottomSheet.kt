@@ -113,9 +113,11 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
         listener.resetFilter()
         adapter.resetCheckedItemSet()
         adapter.notifyDataSetChanged()
+        setVisibilityBtnFilter()
     }
 
     override fun isChecked(position: Int): Boolean {
+        setVisibilityBtnFilter()
         return adapter.isChecked(position)
     }
 
@@ -124,7 +126,13 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
     }
 
     override fun onItemChecked(t: FilterTagDataCollection?, isChecked: Boolean) {
-        //do nothing
+        setVisibilityBtnFilter()
+    }
+
+    private fun setVisibilityBtnFilter() {
+        with(childView) {
+            btn_filter.isEnabled = adapter.totalChecked > 0
+        }
     }
 
     interface ActionListener {

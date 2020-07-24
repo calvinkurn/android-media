@@ -5,30 +5,33 @@
     android:id="@+id/input_number_layout_result"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/fontSize_lvl2"
+    android:layout_margin="@dimen/layout_lvl1"
     android:visibility="gone">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/phone_number_result"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        tools:text="08123223232" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/img_operator_result"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_25"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@+id/title_enquiry_result"
-        app:layout_constraintLeft_toLeftOf="@+id/title_enquiry_result"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="contentDescription" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/phone_number_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textColor="@color/Neutral_N700_96"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            app:typographyType="heading_4"
+            tools:text="08123223232" />
+
+        <ImageView
+            android:id="@+id/img_operator_result"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_25"
+            tools:ignore="contentDescription" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

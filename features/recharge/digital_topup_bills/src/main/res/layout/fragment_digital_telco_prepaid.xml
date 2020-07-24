@@ -55,25 +55,18 @@
 
             </androidx.cardview.widget.CardView>
 
-            <com.tokopedia.design.component.Tabs
+            <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl5"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/input_number_area"
-                android:theme="@style/ThemeOverlay.AppCompat.Light"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/tkpd_main_green"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/tkpd_main_green"
-                app:tabTextAppearance="@style/Tabs.Secondary.Bold"
-                app:tabTextColor="@color/Neutral_N700_68"
                 tools:visibility="visible" />
 
             <View
                 android:id="@+id/separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:background="@drawable/bg_line_separator"/>
+                android:background="@drawable/bg_line_separator" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -89,22 +82,30 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:layout_above="@id/buy_widget"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:orientation="horizontal" />
 
         </androidx.core.widget.NestedScrollView>
 
     </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
 
-    <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-        android:id="@+id/buy_widget"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4" />
+        android:layout_marginTop="@dimen/dp_2"
+        app:cardElevation="@dimen/dp_4">
+
+        <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+            android:id="@+id/buy_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4" />
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
 
