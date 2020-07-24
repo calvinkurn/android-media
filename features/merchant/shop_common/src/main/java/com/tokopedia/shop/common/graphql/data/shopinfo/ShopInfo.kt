@@ -68,8 +68,7 @@ data class ShopInfo(
 
         @SerializedName("shopHomeType")
         @Expose
-        val shopHomeType: String = "",
-        val broadcasterConfig: Broadcaster.Config? = null
+        val shopHomeType: String = ""
 
 ) {
     fun mapToShopInfoData(): ShopInfoData {

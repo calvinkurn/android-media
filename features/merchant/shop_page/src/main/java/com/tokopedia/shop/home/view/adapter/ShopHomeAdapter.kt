@@ -124,12 +124,6 @@ class ShopHomeAdapter(
         })
     }
 
-    private fun getPositionPlayCarousel(): Int{
-        var index = -1
-        visitables.withIndex().find { (index, data) -> data is ShopHomePlayCarouselUiModel}?.let {
-            index = it.index
-        }
-        return index
-    }
+    private fun getPositionPlayCarousel(): Int = visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }
 
 }
