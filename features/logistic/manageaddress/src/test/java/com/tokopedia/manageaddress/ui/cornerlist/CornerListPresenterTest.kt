@@ -118,7 +118,7 @@ class CornerListPresenterTest {
 
 
     @Test
-    fun `on Destroy`() {
+    fun `Detach View`() {
         presenter.detachView()
 
         useCase.unsubscribe()
