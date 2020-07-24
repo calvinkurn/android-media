@@ -147,7 +147,7 @@ class ShopHomeViewModel @Inject constructor(
     fun onRefreshPlayBanner(shopId: String){
          val result = _shopHomeLayoutData.value
         if(result is Success){
-            launchCatchError(block = {
+            launchCatchError(dispatcherProvider.io(), block = {
                 result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->
                     getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
                     val playWidgetEntity = getPlayWidgetUseCase.executeOnBackground()
@@ -160,7 +160,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean, position: Int){
-        launchCatchError(block = {
+        launchCatchError(dispatcherProvider.io(), block = {
             playToggleChannelReminderUseCase.setParams(channelId, isSet)
             val reminder = playToggleChannelReminderUseCase.executeOnBackground()
             if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
@@ -174,20 +174,22 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
-        getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
-        val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
-        shopPageHomeLayoutUiModel.listWidget.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
+        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomePlayCarouselUiModel }
+        if(index != -1){
+            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
+            getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+            val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
             val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
             if(playBannerDataModel.channelList.isNotEmpty()){
-                newHomeLayout[index] = (uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playBannerDataModel)
+                newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
             }else{
-                newHomeLayout.remove(uiModel)
+                newHomeLayout.remove(data)
             }
             return shopPageHomeLayoutUiModel.copy(
                     listWidget = newHomeLayout
             )
         }
-        return null
+        return shopPageHomeLayoutUiModel
     }
 
     fun addProductToCart(

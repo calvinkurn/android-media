@@ -25,6 +25,9 @@ class ShopHomePlayCarouselViewHolder(
         val LAYOUT = R.layout.item_shop_home_play_carousel
         private const val IS_AUTO_PLAY_SUCCESS = "success"
         private const val IS_AUTO_PLAY_FAILED = "failed"
+        const val ON_PAUSE = "on_pause"
+        const val ON_RESUME = "on_resume"
+        const val ON_DESTROY = "on_resume"
     }
 
     private var playCarouselCardDataModel: ShopHomePlayCarouselUiModel? = null
@@ -42,13 +45,13 @@ class ShopHomePlayCarouselViewHolder(
     override fun bind(element: ShopHomePlayCarouselUiModel?, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
             when {
-                payloads.contains(ShopHomeAdapter.ON_DESTROY) -> {
+                payloads.contains(ON_DESTROY) -> {
                     itemView.play_banner_carousel?.onDestroy()
                 }
-                payloads.contains(ShopHomeAdapter.ON_RESUME) -> {
+                payloads.contains(ON_RESUME) -> {
                     itemView.play_banner_carousel?.onResume()
                 }
-                payloads.contains(ShopHomeAdapter.ON_PAUSE) -> {
+                payloads.contains(ON_PAUSE) -> {
                     itemView.play_banner_carousel?.onPause()
                 }
                 payloads.contains(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
