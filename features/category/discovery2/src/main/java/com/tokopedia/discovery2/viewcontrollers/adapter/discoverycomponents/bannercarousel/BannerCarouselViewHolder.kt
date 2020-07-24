@@ -69,7 +69,7 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         } else {
             titleTextView.show()
             titleTextView.text = title
-            if (mBannerCarouselComponentViewModel.getLihatUrl()?.isEmpty()) {
+            if (mBannerCarouselComponentViewModel.getLihatUrl().isEmpty()) {
                 lihatSemuaTextView.hide()
             } else {
                 lihatSemuaTextView.show()
