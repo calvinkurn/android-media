@@ -19,8 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="6x Cicilan 0%" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_detail_service_fee"
@@ -32,8 +31,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_installment_detail_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_installment_detail_name"
         app:typographyType="small"
-        app:typographyWeight="reguler"
-        tools:text="+ Biaya Layanan Rp100.000" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_detail_final_fee"
@@ -50,8 +48,7 @@
         app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="Rp7.500.000/bulan" />
+        app:typographyWeight="bold"/>
 
     <RadioButton
         android:id="@+id/rb_installment_detail"

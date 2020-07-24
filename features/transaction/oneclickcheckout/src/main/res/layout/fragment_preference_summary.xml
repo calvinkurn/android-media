@@ -30,9 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_3"
-                app:typographyWeight="bold"
-                tools:text="Preferensi Utama"
-                tools:visibility="visible" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_name"
@@ -46,8 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_preference_name"
                 app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Kantor asdf asd f" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_receiver"
@@ -60,8 +57,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_address_name"
                 app:layout_constraintTop_toTopOf="@+id/tv_address_name"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="- Tari (08xxxxxxxxxxxx)" />
+                app:typographyWeight="reguler"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_detail"
@@ -77,8 +73,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_address_name"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="tokopedia tower lantai asdfl jalan lasdfj lajsdf lkasjdf lj" />
+                app:typographyWeight="reguler"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_change_address"
@@ -122,8 +117,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider"
                 app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="pengiriman instan" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_shipping_duration"
@@ -136,8 +130,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="durasi 3 jam" />
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_change_duration"
@@ -179,8 +172,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_payment_detail"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider2"
-                tools:ignore="ContentDescription"
-                tools:srcCompat="@drawable/ic_delete_cart" />
+                tools:ignore="ContentDescription" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_name"
@@ -197,8 +189,7 @@
                 app:layout_constraintStart_toEndOf="@+id/iv_payment"
                 app:layout_constraintTop_toBottomOf="@+id/divider2"
                 app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Kartu Kredit / Kartu Debit / Cicilan" />
+                app:typographyWeight="bold"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_payment_detail"
@@ -212,8 +203,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
                 app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="8098097230948209384" />
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_change_payment"

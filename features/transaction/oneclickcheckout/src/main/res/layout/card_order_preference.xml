@@ -44,8 +44,7 @@
                 app:layout_constraintStart_toStartOf="@+id/iv_card_header"
                 app:layout_constraintTop_toTopOf="@+id/iv_card_header"
                 app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:text="Rekomendasi Pilihan" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/lbl_main_preference"
@@ -83,8 +82,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_card_header"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="Kantor baba asd a sdf asdf " />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_receiver"
@@ -100,8 +98,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_address_name"
                 app:layout_constraintTop_toTopOf="@+id/tv_address_name"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="- Tari (08xxxxxxxxxxxx)" />
+                app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_address_detail"
@@ -119,8 +116,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_address_name"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                tools:text="tokopedia tower lantai asdfl jalan lasdfj lajsdf lkasjdf lj" />
+                app:typographyWeight="reguler" />
 
             <View
                 android:id="@+id/divider"

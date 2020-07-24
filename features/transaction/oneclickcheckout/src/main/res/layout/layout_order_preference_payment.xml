@@ -35,8 +35,7 @@
         app:layout_constraintStart_toEndOf="@+id/iv_payment"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Virtual Account" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_detail"
@@ -53,8 +52,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="8098097230948209384 " />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_error_message"
@@ -73,9 +71,7 @@
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:ignore="RtlSymmetry"
-        tools:text="Expired"
-        tools:visibility="visible" />
+        tools:ignore="RtlSymmetry" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_error_action"
@@ -93,9 +89,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Update"
-        tools:visibility="visible" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_type"
@@ -106,13 +100,12 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:text="@string/lbl_installment_type"
         android:textColor="@color/Neutral_N700_68"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:visibility="visible" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_detail"
@@ -120,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/Neutral_N700_96"
-        android:visibility="visible"
+        android:visibility="gone"
         app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"
         app:layout_constraintEnd_toEndOf="@+id/tv_installment_type"
         app:layout_constraintHorizontal_bias="0"
@@ -128,8 +121,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_installment_type"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="6 bulan x Rp185.000"
-        tools:visibility="visible" />
+        app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

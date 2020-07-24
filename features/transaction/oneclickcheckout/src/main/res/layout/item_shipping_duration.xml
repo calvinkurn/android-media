@@ -14,39 +14,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_18"
-        android:text="@string/text_shipping_duration"
         android:textColor="#31353B"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
-        app:typographyWeight="bold"
-        tools:text="@string/text_shipping_duration" />
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_shipping_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
-        android:text="@string/text_shipping_price"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_shipping_item"
-        app:typographyType="body_3"
-        tools:text="@string/text_shipping_price" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_shipping_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:text="@string/text_shipping_desc"
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_shipping_price"
-        app:typographyType="small"
-        tools:text="@string/text_shipping_desc" />
+        app:typographyType="small" />
 
     <View
         android:layout_width="wrap_content"
