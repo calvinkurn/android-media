@@ -139,8 +139,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
     private fun mapToSectionWidget(widget: WidgetModel): SectionWidgetUiModel {
         return SectionWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
-                title = widget.title.orEmpty(),
-                subtitle = widget.subtitle.orEmpty(),
+                title = "Cuman mau nyoba set title jadi banyak kata gini, buat make sure aja apakah bener bakal 2 lines dan ellipsize end adalah titik2",//widget.title.orEmpty(),
+                subtitle = "Cuman mau nyoba set title jadi banyak kata gini, buat make sure aja apakah bener bakal 2 lines dan ellipsize end adalah titik2",//widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
                 url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),

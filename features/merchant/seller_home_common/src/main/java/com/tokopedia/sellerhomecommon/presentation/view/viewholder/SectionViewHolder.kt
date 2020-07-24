@@ -26,7 +26,7 @@ class SectionViewHolder(
 
     override fun bind(element: SectionWidgetUiModel) {
         with(itemView) {
-            tvSectionTitle.text = getSectionTitle(element.title)
+            tvSectionTitle.text = element.title
             tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
             tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
 
@@ -42,15 +42,6 @@ class SectionViewHolder(
                 } else
                     btnSectionInfo.gone()
             }
-        }
-    }
-
-    private fun getSectionTitle(title: String): String {
-        val maxLength = 30
-        return if (title.length > maxLength) {
-            title.substring(0, maxLength) + "..."
-        } else {
-            title
         }
     }
 
