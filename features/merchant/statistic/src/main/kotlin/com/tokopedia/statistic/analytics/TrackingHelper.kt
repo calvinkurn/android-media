@@ -28,9 +28,9 @@ object TrackingHelper {
 
     fun getShopStatus(userSession: UserSessionInterface): String {
         return when {
-            userSession.isShopOfficialStore -> "OS"
-            userSession.isPowerMerchantIdle -> "PM"
-            else -> "RM"
+            userSession.isShopOfficialStore -> TrackingConstant.SHOP_OS
+            userSession.isPowerMerchantIdle || userSession.isGoldMerchant -> TrackingConstant.SHOP_PM
+            else -> TrackingConstant.SHOP_RM
         }
     }
 }
