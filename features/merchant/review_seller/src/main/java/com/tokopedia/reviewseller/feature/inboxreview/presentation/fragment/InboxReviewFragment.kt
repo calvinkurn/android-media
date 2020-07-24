@@ -450,13 +450,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
+        bottomSheet?.dismiss()
         isFilter = true
         val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
         sortFilterInboxReview?.hide()
         updatedFilterRatingInboxReview(filterRatingList)
         selectedRatingsFilter(countSelected)
-        endlessRecyclerViewScrollListener?.resetState()
-        bottomSheet?.dismiss()
     }
 
     private fun selectedRatingsFilter(countSelected: Int) {
@@ -544,6 +543,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
         inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
+        endlessRecyclerViewScrollListener?.resetState()
     }
 
     private fun isUnAnsweredHasNextFalse(data: InboxReviewUiModel): Boolean {
