@@ -53,7 +53,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             setupVariant(element.variantName)
             setActionReply(element)
             setFeedbackReply(element)
-            setupFeedbackReview(element.reviewText, element.feedbackId.toString())
+            setupFeedbackReview(element.reviewText, element.feedbackId.toString(), element.productID.toString())
             setImageAttachment(element)
         }
     }
@@ -71,7 +71,7 @@ class InboxReviewFeedbackViewHolder(view: View,
         }
     }
 
-    private fun setupFeedbackReview(feedbackText: String, feedbackId: String) {
+    private fun setupFeedbackReview(feedbackText: String, feedbackId: String, productID: String) {
         with(itemView) {
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview?.text = getString(R.string.review_not_found)
@@ -81,6 +81,10 @@ class InboxReviewFeedbackViewHolder(view: View,
                     setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
                     text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR)
                     setOnClickListener {
+                        feedbackInboxReviewListener.onInFullReviewClicked(
+                                feedbackId,
+                                productID
+                        )
                         maxLines = Integer.MAX_VALUE
                         text = feedbackText
                     }
@@ -103,10 +107,6 @@ class InboxReviewFeedbackViewHolder(view: View,
                 tvReplyComment?.let {
                     it.text = element.replyText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
                     it.setOnClickListener { _ ->
-                        feedbackInboxReviewListener.onInFullReviewClicked(
-                                element.feedbackId.toString(),
-                                element.productID.toString()
-                        )
                         it.maxLines = Integer.MAX_VALUE
                         it.text = MethodChecker.fromHtml(element.replyText)
                     }

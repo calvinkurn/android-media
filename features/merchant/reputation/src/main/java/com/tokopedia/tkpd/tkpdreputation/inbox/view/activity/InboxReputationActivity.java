@@ -121,7 +121,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                     canFireTracking = true;
                     return;
                 }
-                reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                if(!GlobalConfig.isSellerApp()) {
+                    reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                }
                 if(tickerTitle != null) {
                     reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
                 }

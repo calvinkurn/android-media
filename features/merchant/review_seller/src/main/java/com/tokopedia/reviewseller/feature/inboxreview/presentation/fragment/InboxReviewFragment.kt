@@ -160,7 +160,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         endlessRecyclerViewScrollListener?.resetState()
         showLoading()
         if (countStatusIsZero()) {
-            inboxReviewViewModel.getInitInboxReview()
+            inboxReviewViewModel.getInitInboxReview(statusFilter = statusFilter)
         } else {
             inboxReviewViewModel.getInboxReview()
         }
@@ -337,9 +337,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
-            if(data.feedbackInboxList.isNotEmpty()) {
+            if(data.feedbackInboxList.isNotEmpty() && inboxReviewAdapter.itemCount.isZero()) {
                 endlessRecyclerViewScrollListener?.resetState()
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
+                endlessRecyclerViewScrollListener?.loadMoreNextPage()
             } else {
                 sortFilterInboxReview?.hide()
                 isLoadingInitialData = true
@@ -450,10 +451,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
-        bottomSheet?.dismiss()
         isFilter = true
         val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
         sortFilterInboxReview?.hide()
+        endlessRecyclerViewScrollListener?.resetState()
         updatedFilterRatingInboxReview(filterRatingList)
         selectedRatingsFilter(countSelected)
     }
@@ -543,7 +544,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         inboxReviewViewModel.updateRatingFilterData(ArrayList(filterRatingList))
         inboxReviewViewModel.setFilterRatingDataText(filterRatingList)
-        endlessRecyclerViewScrollListener?.resetState()
     }
 
     private fun isUnAnsweredHasNextFalse(data: InboxReviewUiModel): Boolean {

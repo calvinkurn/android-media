@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class FilterRatingBottomSheet(mActivity: FragmentActivity?,
-                              private val listener: (List<ListItemRatingWrapper>) -> Unit) : BottomSheetUnify(), RatingListListener {
+                              val listener: (List<ListItemRatingWrapper>) -> Unit) : BottomSheetUnify(), RatingListListener {
 
     companion object {
         const val BOTTOM_SHEET_TITLE = "Filter Rating"
@@ -58,7 +58,6 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
         }
         setOnDismissListener {
             InboxReviewTracking.eventClickOutsideRatingFilterBottomSheet(shopId)
-            listener.invoke(ratingFilterAdapter?.ratingFilterList?.toList() ?: listOf())
         }
         setChild(view)
     }
@@ -72,7 +71,14 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
         btnFilter?.setOnClickListener {
             val starSelected = ratingFilterAdapter?.ratingFilterList?.filter { it.isSelected }?.joinToString(separator = ",") { it.sortValue }.orEmpty()
             InboxReviewTracking.eventClickSelectedRatingFilterBottomSheet(starSelected, shopId)
-            listener.invoke(ratingFilterAdapter?.ratingFilterList?.toList() ?: listOf())
+            dismiss()
+        }
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        ratingFilterAdapter?.ratingFilterList?.toList()?.let {
+            listener.invoke(it)
         }
     }
 
@@ -86,7 +92,6 @@ class FilterRatingBottomSheet(mActivity: FragmentActivity?,
         rvRatingFilter?.layoutManager = layoutManager
         rvRatingFilter?.adapter = ratingFilterAdapter
     }
-
 
     private fun resetRatingFilter() {
         val starSelected = ratingFilterAdapter?.ratingFilterList?.filter { it.isSelected }?.joinToString(separator = ",") { it.sortValue }.orEmpty()
