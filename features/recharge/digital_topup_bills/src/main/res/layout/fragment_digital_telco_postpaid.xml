@@ -67,13 +67,21 @@
                 android:orientation="horizontal"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-                android:id="@+id/buy_widget"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
+                android:layout_marginTop="@dimen/dp_2"
+                app:cardElevation="@dimen/dp_4">
+
+                <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+                    android:id="@+id/buy_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4" />
+
+            </androidx.cardview.widget.CardView>
 
         </RelativeLayout>
     </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>

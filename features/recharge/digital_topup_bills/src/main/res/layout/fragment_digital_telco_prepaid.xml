@@ -66,7 +66,7 @@
                 android:id="@+id/separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:background="@drawable/bg_line_separator"/>
+                android:background="@drawable/bg_line_separator" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -82,22 +82,30 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:layout_above="@id/buy_widget"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:orientation="horizontal" />
 
         </androidx.core.widget.NestedScrollView>
 
     </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
 
-    <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-        android:id="@+id/buy_widget"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4" />
+        android:layout_marginTop="@dimen/dp_2"
+        app:cardElevation="@dimen/dp_4">
+
+        <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+            android:id="@+id/buy_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4" />
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
 
