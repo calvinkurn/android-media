@@ -1,16 +1,13 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
-import android.text.Html
 import android.view.View
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalPlay
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,6 +37,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
+        private const val LOTTIE_URL = "https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json"
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
@@ -86,6 +84,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.play_seller_widget_container.visibility = if(isMyShop && shopPageHeaderDataModel.broadcaster.streamAllowed) View.VISIBLE else View.GONE
         if(isMyShop){
             setupTextContentSgcWidget()
+            setLottieAnimationFromUrl(LOTTIE_URL)
             shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId, customDimensionShopPage = CustomDimensionShopPage.create(
                     shopPageHeaderDataModel.shopId,
                     shopPageHeaderDataModel.isOfficial,
@@ -267,6 +266,21 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_badge.setImageResource(R.drawable.ic_badge_shop_official)
     }
 
+    /**
+     * Fetch the animation from http URL and play the animation
+     */
+    private fun setLottieAnimationFromUrl(animationUrl: String) {
+        context?.let {
+            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
+
+            lottieCompositionLottieTask.addListener { result ->
+                view.lottie?.setComposition(result)
+                view.lottie?.playAnimation()
+            }
+
+            lottieCompositionLottieTask.addFailureListener { }
+        }
+    }
 
     fun toggleFavourite() {
         isShopFavorite = !isShopFavorite
