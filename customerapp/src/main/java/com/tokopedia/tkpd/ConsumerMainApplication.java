@@ -160,8 +160,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private Boolean getTwoFactorRemoteConfig() {
-//        return remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_2FA, true);
-        return true;
+        return remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_2FA, false);
     }
 
     private void createAndCallPreSeq(){
