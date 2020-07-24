@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.PlayWidgetCarouselTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.PlayBannerCarousel
@@ -54,7 +54,7 @@ class PlayBannerCardViewHolder(
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
         listener.sendEETracking(
-                HomePageTrackingV2.PlayWidgetCarousel.getClickBanner(
+                PlayWidgetCarouselTracking.getClickBanner(
                         channelId = dataModel.channelId,
                         channelName = dataModel.channelTitle,
                         autoPlay = autoPlay,
@@ -71,7 +71,7 @@ class PlayBannerCardViewHolder(
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
-        listener.putEEToTrackingQueue(HomePageTrackingV2.PlayWidgetCarousel.getImpressionBanner(
+        listener.putEEToTrackingQueue(PlayWidgetCarouselTracking.getImpressionBanner(
                 channelId = dataModel.channelId,
                 channelName = dataModel.channelTitle,
                 autoPlay = autoPlay,
@@ -87,13 +87,13 @@ class PlayBannerCardViewHolder(
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.sendEETracking(
                 if(dataModel.remindMe) {
-                    HomePageTrackingV2.PlayWidgetCarousel.getClickRemoveRemind(
+                    PlayWidgetCarouselTracking.getClickRemoveRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
                             notifierId = (position + 1).toString()
                     )
                 } else {
-                    HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+                    PlayWidgetCarouselTracking.getClickAddRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
                             notifierId = (position + 1).toString()
@@ -104,17 +104,17 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
-        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(dataModel.imageUrl, listener.userId))
         RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
-        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(dataModel.imageUrl, listener.userId))
         RouteManager.route(itemView.context, dataModel.seeMoreApplink)
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickLeftBanner(
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickLeftBanner(
                 channelId = playCarouselCardDataModel?.channel?.id ?: "",
                 widgetPosition = adapterPosition.toString(),
                 creativeName = dataModel.imageUrl,
@@ -127,7 +127,7 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.putEEToTrackingQueue(HomePageTrackingV2.PlayWidgetCarousel.getImpressionLeftBanner(
+        listener.putEEToTrackingQueue(PlayWidgetCarouselTracking.getImpressionLeftBanner(
                 channelId = playCarouselCardDataModel?.channel?.id ?: "",
                 widgetPosition = adapterPosition.toString(),
                 creativeName = dataModel.imageUrl,
