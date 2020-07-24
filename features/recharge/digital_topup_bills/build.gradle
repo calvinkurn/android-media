@@ -95,6 +95,7 @@ dependencies {
     }
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
 }
 
 project.ext {
