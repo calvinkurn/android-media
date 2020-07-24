@@ -1365,7 +1365,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         List<ShipmentStateRequestData> saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
         List<ShipmentStateRequestData> tmpSaveShipmentDataArray = new ArrayList<>();
         for (ShipmentStateRequestData requestData : saveShipmentDataArray) {
-            if (!requestData.getShopProductDataList().isEmpty()) {
+            if (requestData.getShopProductDataList() != null && !requestData.getShopProductDataList().isEmpty()) {
                 tmpSaveShipmentDataArray.add(requestData);
             }
         }
@@ -1448,7 +1448,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel,
                                           List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
-        shipmentCartItemModel = null;
         if (shipmentCartItemModel == null) return;
         CourierItemData courierData = null;
         if (getView().isTradeInByDropOff()) {
