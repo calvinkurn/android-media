@@ -18,7 +18,7 @@ class TypographyDetector : Detector(), XmlScanner {
                 "TypographyOverTextViewUsage",
                 "TextView should probably be Typography",
                 """
-                Using a `<TextView>` is not recommended, you should be using `<TypoGraphy>` instead.
+                Using a `<TextView>` is not recommended, you should be using `<Typography>` instead.
                 """.trimIndent(),
                 Category.CORRECTNESS,
                 3,
@@ -42,7 +42,7 @@ class TypographyDetector : Detector(), XmlScanner {
                 .independent(true)
                 .build()
 
-        context.report(ISSUE, location = context.getLocation(element), message = "consider using typography", quickfixData = typography)
+        context.report(ISSUE, location = context.getLocation(element), message = "consider using Typography", quickfixData = typography)
 
     }
 }
