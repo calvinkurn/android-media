@@ -42,7 +42,7 @@ class AddProductInputMapper @Inject constructor() {
                 detailInputModel.price,
                 PRICE_CURRENCY,
                 detailInputModel.stock,
-                getActiveStatus(detailInputModel.status),
+                STOCK_STATUS,
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
                 mapShipmentUnit(shipmentInputModel.weightUnit),
