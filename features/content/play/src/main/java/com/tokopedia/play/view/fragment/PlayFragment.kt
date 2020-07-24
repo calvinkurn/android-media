@@ -89,7 +89,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
 
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_TOTAL_ID"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         fun newInstance(channelId: String?): PlayFragment {
             return PlayFragment().apply {
