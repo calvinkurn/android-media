@@ -8,5 +8,6 @@ data class OrderData(
         var profileIndex: String = "",
         var profileRecommendation: String = "",
         var preference: OrderProfile = OrderProfile(),
-        var promo: OrderPromo = OrderPromo()
+        var promo: OrderPromo = OrderPromo(),
+        var payment: OrderPayment = OrderPayment()
 )

@@ -164,10 +164,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 _orderShipment = OrderShipment()
                 orderShipment.value = _orderShipment
             }
-            val payment = _orderPreference.preference.payment
-            _orderPayment = OrderPayment(payment.enable != 0, false, payment.gatewayCode,
-                    payment.gatewayName, payment.image, payment.description, payment.minimumAmount,
-                    payment.maximumAmount, payment.fee, payment.walletAmount, payment.metadata, payment.creditCard, payment.errorMessage)
+            _orderPayment = orderData.payment
             orderPayment.value = _orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
@@ -180,6 +177,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 sendViewOspEe()
             }
         }, { throwable: Throwable ->
+            throwable.printStackTrace()
             _orderPreference = OrderPreference()
             orderCart = OrderCart()
             validateUsePromoRevampUiModel = null

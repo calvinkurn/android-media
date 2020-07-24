@@ -52,8 +52,13 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                     }
                     kero = OrderKero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
-                return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation,
-                        mapProfile(response.response.data.profileResponse), LastApplyMapper.mapPromo(response.response.data.promo))
+                return OrderData(response.response.data.occMainOnboarding,
+                        orderCart,
+                        response.response.data.profileIndex,
+                        response.response.data.profileRecommendation,
+                        mapProfile(response.response.data.profileResponse),
+                        LastApplyMapper.mapPromo(response.response.data.promo),
+                        mapOrderPayment(response.response.data.profileResponse.payment))
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
@@ -137,7 +142,11 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = product.freeShipping.badgeUrl
             wholesalePrice = mapWholesalePrice(product.wholesalePrice)
-            notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH) else product.productNotes
+            notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) {
+                product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH)
+            } else {
+                product.productNotes
+            }
             cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             warehouseId = product.wareHouseId
             isPreorder = product.isPreorder
@@ -177,9 +186,10 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
-        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference, profileResponse.isChangedProfile,
-                profileResponse.profileId, profileResponse.status, profileResponse.enable, profileResponse.message, mapAddress(profileResponse.address),
-                mapPayment(profileResponse.payment), mapShipment(profileResponse.shipment))
+        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
+                profileResponse.isChangedProfile, profileResponse.profileId, profileResponse.status, profileResponse.enable,
+                profileResponse.message, mapAddress(profileResponse.address), mapPayment(profileResponse.payment),
+                mapShipment(profileResponse.shipment))
     }
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {
@@ -187,10 +197,17 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
-        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image, payment.description,
-                payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount, payment.metadata, payment.mdr,
-                mapPaymentCreditCard(payment.creditCard), mapPaymentErrorMessage(payment.errorMessage)
+        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
+                "payment.description", payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
+                payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard),
+                mapPaymentErrorMessage(payment.errorMessage)
         )
+    }
+
+    private fun mapOrderPayment(payment: Payment): OrderPayment {
+        return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
+                payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
+                payment.metadata, mapPaymentCreditCard(payment.creditCard), mapPaymentErrorMessage(payment.errorMessage))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -211,7 +228,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                 InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
                 InstallmentTerm(6, 1.5f, 0.5f, 200000, false)
         ))
-        return OrderPaymentCreditCard(OrderPaymentCreditCardsNumber(2, 0, 2), availableTerms, "bankCode", "cardType",
+        return OrderPaymentCreditCard(OrderPaymentCreditCardsNumber(2, 0, 2),
+                availableTerms, "bankCode", "cardType",
                 false, "tncInfo", availableTerms.firstOrNull { it.isSelected })
     }
 
