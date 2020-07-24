@@ -225,23 +225,23 @@ class HomeRecommendationTrackerTest : Spek({
                         "currencyCode","IDR",
                         "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf(
-                        "list", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell"
-                ),
-                        "products", DataLayer.listOf(
-                        DataLayer.mapOf(
-                                "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
-                                "id","679625601",
-                                "price","40000",
-                                "brand", "none / other",
-                                "variant","none / other",
-                                "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
-                                "position","10",
-                                "dimension83","bebas ongkir",
-                                "list", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell",
-                                "dimension40", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell"
+                            "list", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell"),
+                            "products", DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
+                                        "id","679625601",
+                                        "price","40000",
+                                        "brand", "none / other",
+                                        "variant","none / other",
+                                        "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
+                                        "position","10",
+                                        "dimension83","bebas ongkir",
+                                        "list", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell",
+                                        "dimension40", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell",
+                                        "dimension11", "123"
+                                )
+                            )
                         )
-                )
-                )
                 )
                 )
             }
