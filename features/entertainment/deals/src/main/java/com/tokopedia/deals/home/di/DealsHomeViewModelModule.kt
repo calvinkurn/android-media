@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,6 +20,11 @@ abstract class DealsHomeViewModelModule {
     @Binds
     @DealsHomeScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DealsBaseViewModel::class)
+    abstract fun dealsBaseViewModel(viewModel: DealsBaseViewModel): ViewModel
 
     @Binds
     @IntoMap
