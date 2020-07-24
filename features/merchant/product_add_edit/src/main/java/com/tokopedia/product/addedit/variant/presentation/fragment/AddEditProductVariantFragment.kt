@@ -638,6 +638,7 @@ class AddEditProductVariantFragment :
         variantValuePicker?.showCloseIcon = false
         variantValuePicker?.clearContentPadding = true
         variantValuePicker?.showKnob = true
+        variantValuePicker?.clearContentPadding = true
         // set the bottom sheet to full screen
         variantValuePicker?.setShowListener {
             variantValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
