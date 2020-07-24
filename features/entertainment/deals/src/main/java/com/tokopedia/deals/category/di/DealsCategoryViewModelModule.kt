@@ -26,7 +26,7 @@ abstract class DealsCategoryViewModelModule{
     @Binds
     @IntoMap
     @ViewModelKey(DealsBrandCategoryActivityViewModel::class)
-    internal abstract fun dealsCategoryViewModel(activityViewModelBrand: DealsBrandCategoryActivityViewModel): ViewModel
+    internal abstract fun dealsBrandCategoryViewModel(activityViewModelBrand: DealsBrandCategoryActivityViewModel): ViewModel
 
     @Binds
     @IntoMap
