@@ -36,5 +36,5 @@ class UohModule {
 
     @UohScope
     @Provides
-    fun provideSomDispatcherProvider(): BuyerDispatcherProvider = BuyerProductionDispatcherProvider()
+    fun provideUohDispatcherProvider(): BuyerDispatcherProvider = BuyerProductionDispatcherProvider()
 }

@@ -39,4 +39,11 @@ object UohConsts {
     const val APPLINK_BASE = "tokopedia://"
     const val APPLINK_PATH_ORDER = "order"
     const val APPLINK_PATH_UPSTREAM = "upstream="
+
+    const val XSOURCE = "recom_widget"
+    const val PAGE_NAME = "bom_empty"
+
+    const val LIST_TYPE = "list"
+    const val EMPTY_TYPE = "empty"
+    const val RECOMMENDATION_TYPE = "recommendation"
 }

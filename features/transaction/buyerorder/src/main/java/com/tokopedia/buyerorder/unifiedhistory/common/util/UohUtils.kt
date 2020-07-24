@@ -2,6 +2,8 @@ package com.tokopedia.buyerorder.unifiedhistory.common.util
 
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
 /**
  * Created by fwidjaja on 10/07/20.
@@ -54,4 +56,7 @@ object UohUtils {
             }
         }
     }
+
+    fun <T : Any> T.asSuccess(): Success<T> = Success(this)
+    fun Throwable.asFail(): Fail = Fail(this)
 }
