@@ -1,11 +1,17 @@
 {
   "readme": "Homescreen Tracker",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
-      "screenName": "/",
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
       "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "/",
       "event": "",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
     }
   ]
 }

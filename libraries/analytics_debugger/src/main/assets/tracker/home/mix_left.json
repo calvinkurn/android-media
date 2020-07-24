@@ -50,7 +50,7 @@
       "eventCategory": "homepage",
       "event": "clickHomepage",
       "eventAction": "click view all on dynamic channel left carousel",
-      "screenName": "/",
+      "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}"
     },
@@ -104,7 +104,7 @@
       "affinityLabel": "{{.*}}",
       "currentSite": "tokopediamarketplace",
       "attribution": "{{.*}}",
-      "shop_id": "{{.*}}",
+      "shopId": "{{.*}}",
       "event": "select_content",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",

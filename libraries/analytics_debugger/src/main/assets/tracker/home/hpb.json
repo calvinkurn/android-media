@@ -1,25 +1,50 @@
 {
   "readme": "Home Page Banner, view, click, and click all",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "promo_code": "{{.*}}",
+        "promo_id": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
       "eventCategory": "homepage",
       "event": "view_item",
       "eventAction": "slider banner impression",
-      "promotions": "{{.*}}",
+      "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     },
     {
+      "promotions": [{
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "promo_code": "{{.*}}",
+        "promo_id": "{{.*}}",
+        "creative_url": "{{.*}}"
+      }],
       "eventCategory": "homepage",
+      "affinityLabel": "{{.*}}",
+      "attribution": "{{.*}}",
+      "shopId": "{{.*}}",
       "event": "select_content",
       "eventAction": "slider banner click",
-      "promotions": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "categoryId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "campaignCode": "{{.*}}"
     },
     {
       "eventCategory": "homepage",
       "event": "clickHomepage",
       "eventAction": "slider banner click view all",
+      "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}"
     }
   ]
