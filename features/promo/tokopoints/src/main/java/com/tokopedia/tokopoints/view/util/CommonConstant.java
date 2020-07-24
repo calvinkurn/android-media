@@ -95,7 +95,7 @@ public interface CommonConstant {
     }
 
     interface WebLink {
-        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "reward/membership";
+        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "rewards/membership";
         String INFO = WEB_DOMAIN_MOBILE + "rewards/intro";
         String DETAIL = WEB_DOMAIN_MOBILE + "rewards/kupon/detail";
     }
