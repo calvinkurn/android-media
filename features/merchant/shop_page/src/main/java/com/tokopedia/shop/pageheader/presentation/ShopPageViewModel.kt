@@ -49,7 +49,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
                                             private val gqlGetShopOperationalHourStatusUseCase: GQLGetShopOperationalHourStatusUseCase,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    fun isMyShop(shopId: String) = true
+    fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
