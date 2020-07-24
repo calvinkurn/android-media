@@ -2,6 +2,7 @@ package com.tokopedia.deals.common.ui.activity
 
 import android.os.Bundle
 import android.view.ViewTreeObserver
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -148,7 +149,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - searchBarDealsBaseSearch.height ) {
                 //collapse
-                appBarLayout.elevation = 0f
+                ViewCompat.setElevation(appBarLayout,0f)
                 imgDealsSearchIcon.show()
             } else {
                 imgDealsSearchIcon.hide()
