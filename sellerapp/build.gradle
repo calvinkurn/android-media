@@ -288,8 +288,6 @@ dependencies {
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
 
-    implementation project(rootProject.ext.features.playBroadcaster)
-
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

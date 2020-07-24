@@ -26,6 +26,11 @@ object DeeplinkMapperContent {
         else deeplink
     }
 
+    fun getRegisteredNavigationPlayBroadcaster(deeplink: String): String {
+        return if (deeplink.startsWithPattern(ApplinkConst.PLAY_BROADCASTER)) getRegisteredNavigation(deeplink)
+        else deeplink
+    }
+
     /**
      * tokopedia://people/{user_id}
      * tokopedia://people/{user_id}?after_post=true
