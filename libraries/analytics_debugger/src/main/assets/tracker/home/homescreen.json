@@ -9,7 +9,7 @@
       "appsflyerId": "{{.*}}",
       "shopId": "{{.*}}",
       "screenName": "/",
-      "event": "",
+      "event": "{{.*}}",
       "userId": "{{.*}}",
       "sessionIris": "{{.*}}"
     }
