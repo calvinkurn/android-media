@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/medium_green_70">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageInactiveBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageInactive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="@dimen/gami_inactive_vertical_bias" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvInactiveTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center_horizontal"
+        android:paddingStart="@dimen/dp_32"
+        android:paddingLeft="@dimen/dp_32"
+        android:paddingEnd="@dimen/dp_32"
+        android:paddingRight="@dimen/dp_32"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageInactive"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="Buat akun dulu yuk, untuk dapat hadiah menarik dari toped" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvInactiveMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center_horizontal"
+        android:paddingStart="@dimen/dp_32"
+        android:paddingLeft="@dimen/dp_32"
+        android:paddingEnd="@dimen/dp_32"
+        android:paddingRight="@dimen/dp_32"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInactiveTitle"
+        app:typographyType="body_2"
+        tools:text="Kamu bisa dapat hadiah ini setelah buat akun baru tokopediamu" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btnInactiveFirst"
+        style="@style/GiftTapTapCampaignOverButton"
+        android:layout_height="@dimen/dp_40"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_40"
+        android:background="@drawable/gf_bg_white_3d"
+        android:gravity="center"
+        android:textColor="@color/gf_n600"
+        android:paddingBottom="@dimen/dp_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInactiveMessage"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Cek Hadiah" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

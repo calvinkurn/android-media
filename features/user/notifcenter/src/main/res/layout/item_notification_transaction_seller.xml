@@ -11,16 +11,16 @@
         android:id="@+id/lstMenuItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"/>
+        android:layout_marginStart="@dimen/notif_dp_16"
+        android:layout_marginLeft="@dimen/notif_dp_16"
+        android:layout_marginRight="@dimen/notif_dp_16"
+        android:layout_marginEnd="@dimen/notif_dp_16"
+        android:layout_marginTop="@dimen/notif_dp_16"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="@dimen/notif_dp_8"
         android:background="@color/divider_notif_big"
-        android:layout_marginTop="@dimen/dp_16"/>
+        android:layout_marginTop="@dimen/notif_dp_16"/>
 
 </LinearLayout>

@@ -1,11 +1,14 @@
 package com.tokopedia.product.util.processor
 
 
+import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.Key
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
+import com.tokopedia.checkers.ProductListImpressionProductChecker
+import com.tokopedia.util.GTMErrorHandlerImpl
+import com.tokopedia.util.logger.GTMLoggerImpl
 
 private const val KEY_DIMENSION_40 = "dimension40"
 
@@ -30,7 +33,7 @@ object ProductTrackingConstant {
                 const val KEY_DIMENSION_54 = "dimension54"
                 const val KEY_DIMENSION_55 = "dimension55"
                 const val KEY_DIMENSION_38 = "dimension38"
-            const val KEY_DIMENSION_98 = "dimension98"
+                const val KEY_DIMENSION_98 = "dimension98"
         }
 
 
@@ -47,13 +50,15 @@ object ProductTrackingConstant {
         }
 }
 
+@ErrorHandler(GTMErrorHandlerImpl::class)
+@Logger(GTMLoggerImpl::class)
 @BundleThis(false, true)
 data class Product(
-
         @Key(Param.ITEM_NAME)
         val name: String,
         @Key(Param.ITEM_ID)
         val id: String,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("none")
@@ -79,6 +84,7 @@ data class Product(
         val dimension81: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
         val dimension98: String,
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long

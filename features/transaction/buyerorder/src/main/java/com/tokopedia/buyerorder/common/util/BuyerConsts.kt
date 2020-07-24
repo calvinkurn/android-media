@@ -31,4 +31,5 @@ object BuyerConsts {
     const val KEY_HOUR = "jam"
     const val KEY_HOUR_DIVIDER = ":"
     const val KEY_MINUTE = "menit"
+    const val REASON_CODE_LAINNYA = 599
 }

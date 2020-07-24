@@ -14,7 +14,8 @@ import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.test.R
 import com.tokopedia.shop.util.Util
-import com.tokopedia.test.application.environment.MockResponseInterface
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import java.util.HashMap
 
 class PltShopPageOfficialStorePerformanceTest {
@@ -39,15 +40,16 @@ class PltShopPageOfficialStorePerformanceTest {
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            (it.applicationContext as? MockResponseInterface)?.reInitMockResponse(createShopPageOfficialStoreMockResponse(it))
+            setupGraphqlMockResponseWithCheck(createShopPageOfficialStoreMockResponse(it))
+
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
-            activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
     }
 
-    private fun createShopPageOfficialStoreMockResponse(context: Context): HashMap<String, String> {
+    private fun createShopPageOfficialStoreMockResponse(context: Context): MockModelConfig {
         val responseList = HashMap<String, String>()
         responseList["shopInfoByID"] = Util.getRawString(context, R.raw.response_mock_data_shop_os_info_native_home_type)
         responseList["getShopOperationalHourStatus"] = Util.getRawString(context, R.raw.response_mock_data_shop_operational_hour)
@@ -55,7 +57,16 @@ class PltShopPageOfficialStorePerformanceTest {
         responseList["shopPageGetLayout"] = Util.getRawString(context, R.raw.response_mock_data_shop_page_get_layout)
         responseList["membershipStampProgress"] = Util.getRawString(context, R.raw.response_mock_data_shop_membership_stamp)
         responseList["GetShopProduct"] = Util.getRawString(context, R.raw.response_mock_data_get_shop_product)
-        return responseList
+
+        return object: MockModelConfig() {
+            override fun createMockModel(context: Context): MockModelConfig {
+                responseList.forEach {
+                    addMockResponse(it.key, it.value, FIND_BY_CONTAINS)
+                }
+
+                return this
+            }
+        }
     }
 
     @Test
@@ -79,7 +90,7 @@ class PltShopPageOfficialStorePerformanceTest {
                     TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+        activityRule.activity.deleteDatabase("tokopedia_graphql")
         activityRule.activity.finishAndRemoveTask()
     }
 

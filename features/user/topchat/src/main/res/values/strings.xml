@@ -163,8 +163,10 @@ yang ditemukan</string>
     <string name="desc_empty_chat_search_result">Coba cari ulang pakai kata kunci lain.</string>
     <string name="title_cta_change_chat_search_keywoard">Ganti Kata Kunci</string>
     <string name="tittle_load_more">Lihat Lebih</string>
-    <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply </string>
-    <string name="tittle_header_auto_reply">Dibalas oleh Balasan otomatis </string>
+    <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
     <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
-    <string name="filter_chat_smart_reply">Dibalas Smart Reply</string>
+    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
+    <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
+    <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
 </resources>

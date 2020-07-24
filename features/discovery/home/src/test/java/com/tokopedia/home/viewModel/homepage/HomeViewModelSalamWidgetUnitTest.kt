@@ -246,7 +246,7 @@ class HomeViewModelSalamWidgetUnitTest : Spek({
 
             val declineSalamWidget = SalamWidget(
                    SalamWidgetData(
-                           iD = 1
+                           id = 1
                    )
             )
 
