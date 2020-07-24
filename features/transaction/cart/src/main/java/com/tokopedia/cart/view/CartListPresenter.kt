@@ -416,10 +416,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     private fun calculatePriceWholesaleProduct(originData: CartItemData.OriginData,
-                                               itemQty: Int,
-                                               parentId: String,
-                                               subtotalWholesalePriceMap: HashMap<String, Double>,
-                                               subtotalWholesaleCashbackMap: HashMap<String, Double>): Pair<Double, Double> {
+                                               itemQty: Int): Pair<Double, Double> {
         var subTotalWholesalePrice = 0.0
         var subtotalWholesaleCashback = 0.0
 
@@ -454,14 +451,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val cashbackPercentage = cashbackPercentageString?.toDouble()
                     ?: 0.toDouble()
             subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
-        }
-
-        if (subtotalWholesalePriceMap.containsKey(parentId)) {
-            subTotalWholesalePrice = 0.0
-        }
-
-        if (!subtotalWholesaleCashbackMap.containsKey(parentId)) {
-            subtotalWholesaleCashback = 0.0
         }
 
         return Pair(subTotalWholesalePrice, subtotalWholesaleCashback)
@@ -539,7 +528,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
                 if (!it.wholesalePriceData.isNullOrEmpty()) {
                     // Calculate price and cashback for wholesale marketplace product
-                    val returnValueWholesaleProduct = calculatePriceWholesaleProduct(it, itemQty, parentId, subtotalWholesalePriceMap, subtotalWholesaleCashbackMap)
+                    val returnValueWholesaleProduct = calculatePriceWholesaleProduct(it, itemQty)
+
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
                         subtotalWholesalePriceMap[parentId] = returnValueWholesaleProduct.first
                     }
