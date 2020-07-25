@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -72,7 +72,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var uohListItemAdapter: UohListItemAdapter
+    // private lateinit var uohListItemAdapter: UohListItemAdapter
     private lateinit var uohItemAdapter: UohItemAdapter
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
@@ -96,6 +96,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultEndDateStr = ""
     private var arrayFilterDate = arrayOf<String>()
     private var onLoadMore = false
+    private var onLoadMoreRecommendation = false
     private var currPage = 1
     private var currRecommendationListPage = 0
     private var textChangedJob: Job? = null
@@ -118,24 +119,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        filterStatus = arguments?.getString(SOURCE_FILTER).toString()
-        if (filterStatus.isNotEmpty()) {
-            var status = ""
-            when (filterStatus) {
-                PARAM_DALAM_PROSES -> {
-                    status = DALAM_PROSES
+        if (arguments?.getString(SOURCE_FILTER) != null) {
+            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
+            if (filterStatus.isNotEmpty()) {
+                var status = ""
+                when (filterStatus) {
+                    PARAM_DALAM_PROSES -> {
+                        status = DALAM_PROSES
+                    }
+                    PARAM_E_TIKET -> {
+                        status = E_TIKET
+                    }
+                    PARAM_SEMUA_TRANSAKSI -> {
+                        status = SEMUA_TRANSAKSI
+                    }
                 }
-                PARAM_E_TIKET -> {
-                    status = E_TIKET
-                }
-                PARAM_SEMUA_TRANSAKSI -> {
-                    status = SEMUA_TRANSAKSI
-                }
+                paramUohOrder.status = status
+                currFilterType = UohConsts.TYPE_FILTER_STATUS
+                currFilterKey = status
+                currFilterLabel = status
             }
-            paramUohOrder.status = status
-            currFilterType = UohConsts.TYPE_FILTER_STATUS
-            currFilterKey = status
-            currFilterLabel = status
         }
         loadOrderHistoryList()
     }
@@ -154,8 +157,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onRefresh(view: View?) {
         onLoadMore = false
+        onLoadMoreRecommendation = false
         currPage = 1
-        uohListItemAdapter.showLoader()
+        currRecommendationListPage = 1
+        // uohListItemAdapter.showLoader()
+        uohItemAdapter.showLoader()
         loadOrderHistoryList()
     }
 
@@ -176,8 +182,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
-        uohListItemAdapter = UohListItemAdapter()
-        uohListItemAdapter.setActionListener(this)
+        /*uohListItemAdapter = UohListItemAdapter()
+        uohListItemAdapter.setActionListener(this)*/
 
         uohItemAdapter = UohItemAdapter()
 
@@ -200,20 +206,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
         })
-        addOrderListEndlessScrollListener()
-        // addRecommendationListEndlessScrollListener()
+        // addOrderListEndlessScrollListener()
+        addRecommendationListEndlessScrollListener()
     }
 
     private fun addOrderListEndlessScrollListener() {
         rv_order_list?.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = uohListItemAdapter
+            // adapter = uohListItemAdapter
+            adapter = uohItemAdapter
             scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager as LinearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     onLoadMore = true
                     if (orderList.next.isNotEmpty()) {
                         currentPage += 1
-                        uohListItemAdapter.showLoader()
+                        // uohListItemAdapter.showLoader()
+                        uohItemAdapter.showLoader()
                         loadOrderHistoryList()
                     }
                 }
@@ -223,27 +231,28 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun addRecommendationListEndlessScrollListener() {
-        val glm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
-        rv_order_list?.apply {
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            adapter = uohItemAdapter
-            scrollListener = object : EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    currentPage += 1
-                    loadRecommendationList()
+        val glm = GridLayoutManager(activity, 2)
+        glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (uohItemAdapter.getItemViewType(position)) {
+                    UohItemAdapter.LAYOUT_EMPTY_STATE -> 2
+                    UohItemAdapter.LAYOUT_RECOMMENDATION_LIST -> 1
+                    else -> 2
                 }
             }
-            addOnScrollListener(scrollListener)
         }
 
-        val scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)) {
+        scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                onLoadMoreRecommendation = true
                 currentPage += 1
                 loadRecommendationList()
             }
         }
-        rv_order_list.addOnScrollListener(scrollRecommendationListener)
+
+        rv_order_list?.layoutManager = glm
+        rv_order_list?.adapter = uohItemAdapter
+        rv_order_list?.addOnScrollListener(scrollRecommendationListener)
     }
 
     private fun loadOrderHistoryList() {
@@ -252,11 +261,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun loadRecommendationList() {
+        println("++ currRecommendationListPage = $currRecommendationListPage")
         uohListViewModel.loadRecommendationList(currRecommendationListPage)
     }
 
     private fun observingOrderHistory() {
-        uohListItemAdapter.showLoader()
+        // uohListItemAdapter.showLoader()
+        uohItemAdapter.showLoader()
         uohListViewModel.orderHistoryListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
@@ -291,8 +302,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohListViewModel.recommendationListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    currRecommendationListPage += 1
                     recommendationList = it.data
+                    currRecommendationListPage += 1
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
@@ -462,24 +473,24 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun renderOrderList() {
         refreshHandler?.finishRefresh()
-        // empty_state_order_list?.visibility = View.GONE
-        rv_order_list?.visible()
-        addOrderListEndlessScrollListener()
+
+        val listOrder = arrayListOf<UohTypeData>()
+        orderList.orders.forEach {
+            listOrder.add(UohTypeData(it, UohConsts.ORDER_LIST_TYPE))
+        }
 
         if (!onLoadMore) {
-            uohListItemAdapter.addList(orderList.orders)
+            // uohListItemAdapter.addList(orderList.orders)
+            uohItemAdapter.addList(listOrder)
         } else {
-            uohListItemAdapter.appendList(orderList.orders)
+            // uohListItemAdapter.appendList(orderList.orders)
+            uohItemAdapter.appendList(listOrder)
             scrollListener.updateStateAfterGetData()
         }
     }
 
     private fun renderEmptyList() {
         refreshHandler?.finishRefresh()
-        addRecommendationListEndlessScrollListener()
-        // rv_empty_state?.visible()
-
-        // empty_state_order_list?.visibility = View.VISIBLE
         val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty()
         var searchBarEmpty: Boolean = false
         searchBarIsNotEmpty?.let { searchBarEmpty = it }
@@ -488,6 +499,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         when {
             searchBarEmpty -> {
                 emptyStatus = context?.let { context ->
+                    view?.let { UohUtils.hideKeyBoard(context, it) }
                     ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
                         UohEmptyState(drawable,
                                 resources.getString(R.string.uoh_search_empty),
@@ -529,11 +541,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }*/
             }
         }
-        emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.EMPTY_TYPE) }?.let { uohTypeData -> listEmptyData.add(uohTypeData) }
-        listEmptyData.add(UohTypeData(recommendationList.first().recommendationItemList.toMutableList(), UohConsts.RECOMMENDATION_TYPE))
-        uohItemAdapter.listRecommendationItem = recommendationList.first().recommendationItemList.toMutableList()
-        uohItemAdapter.listTypeData = listEmptyData.toMutableList()
-        uohItemAdapter.notifyDataSetChanged()
+
+        val listRecomm = arrayListOf<UohTypeData>()
+        if (!onLoadMoreRecommendation) {
+            emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.EMPTY_TYPE) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
+            listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.RECOMMENDATION_TITLE_TYPE))
+            recommendationList.first().recommendationItemList.forEach {
+                listRecomm.add(UohTypeData(it, UohConsts.RECOMMENDATION_TYPE))
+            }
+            uohItemAdapter.addList(listRecomm)
+        } else {
+            recommendationList.first().recommendationItemList.forEach {
+                listRecomm.add(UohTypeData(it, UohConsts.RECOMMENDATION_TYPE))
+            }
+            uohItemAdapter.appendList(listRecomm)
+            scrollRecommendationListener.updateStateAfterGetData()
+        }
     }
 
     override fun getScreenName(): String = ""

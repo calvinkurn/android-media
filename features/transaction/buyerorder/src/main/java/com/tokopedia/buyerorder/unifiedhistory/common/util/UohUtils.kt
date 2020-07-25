@@ -1,5 +1,8 @@
 package com.tokopedia.buyerorder.unifiedhistory.common.util
 
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
@@ -59,4 +62,14 @@ object UohUtils {
 
     fun <T : Any> T.asSuccess(): Success<T> = Success(this)
     fun Throwable.asFail(): Fail = Fail(this)
+
+    fun hideKeyBoard(context: Context, view: View) {
+        try {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
 }

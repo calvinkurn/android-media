@@ -6,10 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EMPTY_TYPE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ORDER_LIST_TYPE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_TITLE_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.RECOMMENDATION_TYPE
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohEmptyStateViewHolder
+import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohOrderListViewHolder
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
+import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationTitleViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -17,13 +22,15 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() {
     var listTypeData = mutableListOf<UohTypeData>()
-    var listRecommendationItem = mutableListOf<RecommendationItem>()
     private var actionListener: ActionListener? = null
     private var isEmptyState: Boolean = false
+    private var isLoading = false
+
     companion object {
-        private const val LAYOUT_ORDER_LIST = 0
-        private const val LAYOUT_EMPTY_STATE = 1
-        private const val LAYOUT_RECOMMENDATION_LIST = 2
+        const val LAYOUT_ORDER_LIST = 0
+        const val LAYOUT_EMPTY_STATE = 1
+        const val LAYOUT_RECOMMENDATION_TITLE = 2
+        const val LAYOUT_RECOMMENDATION_LIST = 3
     }
 
     interface ActionListener {
@@ -41,9 +48,17 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         return when (viewType) {
+            LAYOUT_ORDER_LIST -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_list_item, parent, false)
+                UohOrderListViewHolder(view, isLoading)
+            }
             LAYOUT_EMPTY_STATE -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_empty_state, parent, false)
                 UohEmptyStateViewHolder(view)
+            }
+            LAYOUT_RECOMMENDATION_TITLE -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_title, parent, false)
+                UohRecommendationTitleViewHolder(view)
             }
             LAYOUT_RECOMMENDATION_LIST -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_item, parent, false)
@@ -59,7 +74,9 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     override fun getItemViewType(position: Int): Int {
         return when (listTypeData[position].typeLayout) {
+            ORDER_LIST_TYPE -> LAYOUT_ORDER_LIST
             EMPTY_TYPE -> LAYOUT_EMPTY_STATE
+            RECOMMENDATION_TITLE_TYPE -> LAYOUT_RECOMMENDATION_TITLE
             RECOMMENDATION_TYPE -> LAYOUT_RECOMMENDATION_LIST
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -71,14 +88,37 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
         val element = listTypeData[position]
-        val recommendationItem = listRecommendationItem[position]
         when (holder) {
+            is UohOrderListViewHolder-> {
+                holder.bind(element, position)
+            }
             is UohEmptyStateViewHolder-> {
                 holder.bind(element, position)
             }
+            is UohRecommendationTitleViewHolder-> {
+                holder.bind(element, position)
+            }
             is UohRecommendationItemViewHolder-> {
-                holder.bind(recommendationItem, position)
+                holder.bind(element, position)
             }
         }
+    }
+
+    fun showLoader() {
+        isLoading = true
+        notifyDataSetChanged()
+    }
+
+    fun addList(list: List<UohTypeData>) {
+        isLoading = false
+        listTypeData.clear()
+        listTypeData.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun appendList(list: List<UohTypeData>) {
+        isLoading = false
+        listTypeData.addAll(list)
+        notifyDataSetChanged()
     }
 }

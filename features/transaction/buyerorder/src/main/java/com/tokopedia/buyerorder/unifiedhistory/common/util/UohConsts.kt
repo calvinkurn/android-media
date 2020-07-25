@@ -43,7 +43,8 @@ object UohConsts {
     const val XSOURCE = "recom_widget"
     const val PAGE_NAME = "bom_empty"
 
-    const val LIST_TYPE = "list"
+    const val ORDER_LIST_TYPE = "list"
     const val EMPTY_TYPE = "empty"
+    const val RECOMMENDATION_TITLE_TYPE = "recommendation_title"
     const val RECOMMENDATION_TYPE = "recommendation"
 }
