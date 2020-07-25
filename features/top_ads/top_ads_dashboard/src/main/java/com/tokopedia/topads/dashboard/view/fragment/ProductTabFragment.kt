@@ -353,17 +353,19 @@ class ProductTabFragment : BaseDaggerFragment() {
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     delay(TOASTER_DURATION)
-                    if (!deleteCancel) {
-                        totalProductCount -= getAdIds().size
-                        viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
-                        if (totalProductCount == 0) {
-                            viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
-                                    resources)
-                            activity?.finish()
+                    if (activity != null && isAdded) {
+                        if (!deleteCancel) {
+                            totalProductCount -= getAdIds().size
+                            viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                            if (totalProductCount == 0) {
+                                viewModel.setGroupAction(ACTION_DELETE, listOf(arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()),
+                                        resources)
+                                activity?.finish()
+                            }
                         }
+                        deleteCancel = false
+                        setSelectMode(false)
                     }
-                    deleteCancel = false
-                    setSelectMode(false)
                 }
             }
             ACTION_MOVE -> {
