@@ -335,7 +335,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun getSuggestedReview() {
         if(getSuggestedReviewJob?.isActive == true) return
-        if (!isNeedShowGeoLocation) {
+        if (!isNeedShowGeoLocation && userSession.get().isLoggedIn) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
                 val data = getHomeReviewSuggestedUseCase.get().executeOnBackground()
                 insertSuggestedReview(data)
@@ -1213,7 +1213,8 @@ open class HomeViewModel @Inject constructor(
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
 
-        getTokopointJob = launchCatchError(coroutineContext, block={
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            getHomeTokopointsDataUseCase.get().setParams("2.0.0")
             val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
             updateHeaderViewModel(
                     isTokoPointDataError = false,

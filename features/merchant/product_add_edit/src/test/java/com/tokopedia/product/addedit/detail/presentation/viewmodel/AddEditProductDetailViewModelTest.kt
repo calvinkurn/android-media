@@ -6,7 +6,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -21,7 +20,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
 @RunWith(JUnitPlatform::class)
-class GetCategoryRecommendationUseCaseTest : Spek({
+class AddEditProductDetailViewModelTest : Spek({
 
     this.beforeGroup {
         ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
@@ -51,31 +50,6 @@ class GetCategoryRecommendationUseCaseTest : Spek({
 
         val viewmodel by lazy {
             AddEditProductDetailViewModel(provider, dispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase)
-        }
-
-        Scenario("success get category recommendation") {
-            val successResult = listOf(ListItemUnify("", ""), ListItemUnify("", ""), ListItemUnify("", ""))
-
-            Given("getCategoryRecommendation return list of category recommendation") {
-                coEvery {
-                    getCategoryRecommendationUseCase.executeOnBackground()
-                } returns successResult
-            }
-
-            When("get category recommendation") {
-                viewmodel.getCategoryRecommendation("baju")
-            }
-
-            Then("run use case") {
-                coVerify {
-                    getCategoryRecommendationUseCase.executeOnBackground()
-                }
-            }
-
-            Then("get category recommendation result is success") {
-                val result = viewmodel.productCategoryRecommendationLiveData.value
-                Assert.assertTrue(result != null && result == Success(successResult))
-            }
         }
 
         Scenario("failed get category recommendation") {

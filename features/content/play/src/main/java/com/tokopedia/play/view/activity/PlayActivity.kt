@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -23,7 +22,6 @@ import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -49,9 +47,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     @Inject
     lateinit var playVideoUtilObserver: PlayVideoUtilObserver
-
-    @Inject
-    lateinit var playProcessLifecycleObserver: PlayProcessLifecycleObserver
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -111,8 +106,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
         lifecycle.addObserver(playVideoUtilObserver)
-        ProcessLifecycleOwner.get()
-                .lifecycle.addObserver(playProcessLifecycleObserver)
     }
 
     private fun setupView(channelId: String?) {
@@ -142,12 +135,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     override fun onBackPressed() {
         onBackPressed(true)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        ProcessLifecycleOwner.get()
-                .lifecycle.removeObserver(playProcessLifecycleObserver)
     }
 
     private fun startPageMonitoring() {
