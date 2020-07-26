@@ -156,23 +156,6 @@ open class WishlistViewModel @Inject constructor(
 
                 if (data.items.size >= recommendationPositionInPage ) {
                     getTopAdsBannerData(visitableWishlist)
-//                    val recommendationData = getRecommendationUseCase.getData(
-//                            GetRecommendationRequestParam(
-//                                    pageNumber = currentPage,
-//                                    productIds = data.items.map { it.id },
-//                                    pageName = "wishlist"
-//                            )
-//                    )
-//                    if(recommendationData.isNotEmpty()) {
-//                        visitableWishlist = mappingRecommendationToWishlist(
-//                                currentPage = currentPage,
-//                                recommendationList = recommendationData,
-//                                wishlistVisitable = visitableWishlist,
-//                                recommendationPositionInPage = recommendationPositionInPage,
-//                                maxItemInPage = maxItemInPage
-//                        ).toMutableList()
-//                        wishlistData.value = visitableWishlist
-//                    }
                 }
             }
         }){
@@ -255,7 +238,7 @@ open class WishlistViewModel @Inject constructor(
             newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(widget.title, it) })
             wishlistData.value = newList
         }){
-            it.message
+            it.printStackTrace()
         }
     }
 
@@ -521,7 +504,7 @@ open class WishlistViewModel @Inject constructor(
             listOfPosition.forEachIndexed { _, it ->
                 wishlistData.value[it].run {
                     if (this is WishlistItemDataModel) {
-                        listForBulkRemoveCandidate.put(this.productItem.id, this)
+                        listForBulkRemoveCandidate[this.productItem.id] = this
                         productRequestId.add(this.productItem.id)
                     }
                 }
@@ -735,6 +718,9 @@ open class WishlistViewModel @Inject constructor(
                     if (isBulkMode) {
                         listRecommendationCarouselOnMarked[i] = newVisitable[i] as RecommendationCarouselDataModel
                     }
+                }
+                is BannerTopAdsDataModel -> {
+                    if(isBulkMode) listRecommendationCarouselOnMarked[i] = newVisitable[i]
                 }
             }
         }
@@ -959,9 +945,7 @@ open class WishlistViewModel @Inject constructor(
 
     private fun removeLoadMore(): List<WishlistDataModel>{
         val list = wishlistData.value.copy()
-        if(list.size > 0 && list.last() is LoadMoreDataModel){
-            list.remove(list.last())
-        }
+        list.removeAll { it is LoadMoreDataModel }
         return list
     }
 
