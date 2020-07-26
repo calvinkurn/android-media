@@ -1,8 +1,9 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
     private final int size;
@@ -16,9 +17,6 @@ public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.right += size;
-        } else {
-            outRect.left += size;
             outRect.right += size;
         }
     }
