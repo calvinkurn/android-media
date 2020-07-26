@@ -157,16 +157,6 @@ public class FCMCacheManager {
         userSession.setFcmTimestamp();
     }
 
-    public static boolean isFcmExpired(Context context) {
-        long lastFCMUpdate = new UserSession(context).getFcmTimestamp();
-        if (lastFCMUpdate <= 0) {
-            FCMCacheManager.storeFcmTimestamp(context);
-            return false;
-        }
-
-        return (System.currentTimeMillis() - lastFCMUpdate) >= GCM_ID_EXPIRED_TIME;
-    }
-
     public static String getRegistrationId(Context context) {
         return new UserSession(context).getDeviceId();
     }
@@ -180,10 +170,6 @@ public class FCMCacheManager {
             return tempID;
         }
         return deviceId;
-    }
-
-    public String getRegistrationId() {
-        return getRegistrationId(context);
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
