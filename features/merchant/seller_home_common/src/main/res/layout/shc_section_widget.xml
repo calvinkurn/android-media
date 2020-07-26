@@ -21,8 +21,8 @@
         android:maxLines="2"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingLeft="@dimen/layout_lvl0"
-        android:paddingEnd="@dimen/layout_lvl4"
-        android:paddingRight="@dimen/layout_lvl4"
+        android:paddingEnd="@dimen/layout_lvl3"
+        android:paddingRight="@dimen/layout_lvl3"
         android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,6 +45,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tvSectionTitle"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintTop_toTopOf="@+id/tvSectionTitle"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_info"
         tools:visibility="visible" />
 
