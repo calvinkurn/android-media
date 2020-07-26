@@ -55,11 +55,6 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private int position = 0;
     private List<String> sectionList = new ArrayList<>();
 
-    public static Intent getCallingIntent(Context context, Uri uri) {
-        return new Intent(context, ExploreActivity.class)
-                .setData(uri);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
