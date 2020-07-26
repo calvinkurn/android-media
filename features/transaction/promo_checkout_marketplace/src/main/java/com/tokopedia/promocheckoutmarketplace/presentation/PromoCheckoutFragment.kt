@@ -80,6 +80,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
@@ -87,6 +88,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var showBottomsheetJob: Job? = null
     private var keyboardHeight = 0
     private var isPromoCheckoutlastSeenBottomsheetShown = false
+    private var hasTriedToGetLastSeenData = false
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -178,7 +180,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 keyboardHeight = heightDiff
                 if (!isPromoCheckoutlastSeenBottomsheetShown) {
                     isPromoCheckoutlastSeenBottomsheetShown = true
-                    getOrShowLastSeenData()
+                    if (!hasTriedToGetLastSeenData) {
+                        getOrShowLastSeenData()
+                    }
                 }
             } else {
                 keyboardHeight = 0
@@ -539,6 +543,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         showPromoCheckoutLastSeenBottomsheet(it)
                     }
                 }
+                it.state == GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG -> {
+                    hasTriedToGetLastSeenData = false
+                }
             }
         })
     }
@@ -573,6 +580,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+                viewModel.sendAnalyticsViewLastSeenPromo()
+                hasTriedToGetLastSeenData = false
             }
         }
     }
@@ -812,18 +822,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoManualInputTextField() {
-        getOrShowLastSeenData()
+        if (!hasTriedToGetLastSeenData) {
+            getOrShowLastSeenData()
+        }
     }
 
     private fun getOrShowLastSeenData() {
+        hasTriedToGetLastSeenData = true
+        viewModel.sendAnalyticsClickPromoInputField()
         view?.let {
             if (promoCheckoutLastSeenBottomsheet?.state == BottomSheetBehavior.STATE_HIDDEN) {
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
                 viewModel.loadPromoLastSeen(query)
             } else {
-                viewModel.promoLastSeenUiModel.value?.let {
-                    showPromoCheckoutLastSeenBottomsheet(it)
-                }
+                hasTriedToGetLastSeenData = false
             }
         }
     }
