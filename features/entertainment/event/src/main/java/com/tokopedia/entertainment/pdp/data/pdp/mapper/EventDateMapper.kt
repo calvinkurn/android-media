@@ -33,7 +33,7 @@ object EventDateMapper{
 
     fun checkDate(listActiveDate : List<String>, selectedDate: String): Boolean {
         for(date in listActiveDate){
-            if (selectedDate.isNotEmpty() && listActiveDate.size == 1)
+            if (selectedDate.isEmpty() && listActiveDate.size == 1)
                 return true
             else if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
                 return true
