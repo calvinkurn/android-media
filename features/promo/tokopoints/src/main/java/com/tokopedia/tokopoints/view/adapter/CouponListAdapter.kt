@@ -20,6 +20,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity.Companion.getCouponDetail
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import java.util.*
 
 class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

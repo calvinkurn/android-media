@@ -44,6 +44,7 @@ import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
+import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
