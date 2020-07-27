@@ -14,7 +14,7 @@ data class SearchProductModel(
 
         @SerializedName("quick_filter")
         @Expose
-        val quickFilterModel: DataValue = DataValue(),
+        var quickFilterModel: DataValue = DataValue(),
 
         @SerializedName("productAds")
         @Expose
@@ -291,6 +291,10 @@ data class SearchProductModel(
             @SerializedName("boosterList")
             @Expose
             val boosterList: String = "",
+
+            @SerializedName("source_engine")
+            @Expose
+            val sourceEngine: String = "",
 
             @SerializedName("labelGroups")
             @Expose

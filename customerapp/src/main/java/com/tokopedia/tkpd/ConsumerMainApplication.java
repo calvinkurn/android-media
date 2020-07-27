@@ -166,7 +166,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 return executePreCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(preWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context);
     }
 
     private void createAndCallPostSeq(){
@@ -178,7 +178,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 return executePostCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(postWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
     }
 
     private void createAndCallFontLoad(){
@@ -190,7 +190,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 return loadFontsInBg();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(fontWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context);
     }
 
     @NotNull

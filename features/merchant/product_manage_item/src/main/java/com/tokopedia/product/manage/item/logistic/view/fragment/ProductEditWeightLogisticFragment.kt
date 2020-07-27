@@ -3,20 +3,24 @@ package com.tokopedia.product.manage.item.logistic.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.crashlytics.android.Crashlytics
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.product.manage.item.R
-import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
 import com.tokopedia.product.manage.item.logistic.view.model.ProductLogistic
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_LOGISTIC
 import com.tokopedia.product.manage.item.utils.ProductEditOptionMenuAdapter
 import com.tokopedia.product.manage.item.utils.ProductEditOptionMenuBottomSheets
-import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_FREE_RETURN
 import com.tokopedia.product.manage.item.utils.ProductEditPreOrderTimeType
 import com.tokopedia.product.manage.item.utils.ProductEditWeightType
 import kotlinx.android.synthetic.main.fragment_product_edit_weightlogistic.*
@@ -42,11 +46,11 @@ class ProductEditWeightLogisticFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         activity?.let {
-            productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC)
+            productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC) ?: ProductLogistic()
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_LOGISTIC)) {
-                productLogistic = savedInstanceState.getParcelable(SAVED_PRODUCT_LOGISTIC)
+                productLogistic = savedInstanceState.getParcelable(SAVED_PRODUCT_LOGISTIC)?: ProductLogistic()
             }
         }
     }
@@ -275,7 +279,12 @@ class ProductEditWeightLogisticFragment : Fragment() {
             when (type) {
                 ProductEditWeightType.GRAM ->  R.string.product_label_gram
                 ProductEditWeightType.KILOGRAM ->  R.string.product_label_kilogram
-                else -> -1
+                else -> {
+                    if (!GlobalConfig.DEBUG) {
+                        Crashlytics.logException(IllegalStateException("product_weight_unit is not 1 or 2: $type"))
+                    }
+                    R.string.product_label_gram
+                }
             }
 
         fun createInstance() = ProductEditWeightLogisticFragment()

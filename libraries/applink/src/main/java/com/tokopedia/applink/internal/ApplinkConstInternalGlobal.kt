@@ -260,11 +260,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
-    // ValidatorActivity
-    // tokopedia-android-internal://global/otp-validator
-    @JvmField
-    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
-
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -447,6 +442,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
 
+    // AccountSettingActivity
+    // tokopedia-android-internal://global/account-setting
+    @JvmField
+    val ACCOUNT_SETTING = "$INTERNAL_GLOBAL/account-setting"
+
     // GeneralSettingActivity
     // tokopedia-android-internal://global/general-setting
     @JvmField
@@ -489,4 +489,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     @JvmField
     val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

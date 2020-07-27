@@ -48,7 +48,6 @@ import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEM
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
 import com.tokopedia.home.account.di.module.SettingsModule
-import com.tokopedia.home.account.presentation.activity.AccountSettingActivity
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
@@ -224,7 +223,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         when (settingId) {
             SettingConstant.SETTING_ACCOUNT_ID -> {
                 accountAnalytics.eventClickSetting(ACCOUNT)
-                startActivity(AccountSettingActivity.createIntent(activity))
+                RouteManager.route(activity, ApplinkConstInternalGlobal.ACCOUNT_SETTING)
             }
             SettingConstant.SETTING_SHOP_ID -> {
                 accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING))
