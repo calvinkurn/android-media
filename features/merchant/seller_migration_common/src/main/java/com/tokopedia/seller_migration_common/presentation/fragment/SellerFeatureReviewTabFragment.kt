@@ -1,0 +1,5 @@
+package com.tokopedia.seller_migration_common.presentation.fragment
+
+import com.tokopedia.seller_migration_common.presentation.SellerFeatureReviewStaticDataProvider
+
+class SellerFeatureReviewTabFragment(listener: RecyclerViewListener): BaseSellerFeatureFragment(listener, SellerFeatureReviewStaticDataProvider)

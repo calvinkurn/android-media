@@ -45,4 +45,52 @@
 
     <string name="seller_migration_voucher_toko_title">Buat Voucher Toko Cashback di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_voucher_toko_content">Gunakan Voucher Toko Cashback untuk meningkatkan &lt;b&gt;lebih banyak pelanggan&lt;/b&gt;, dengan tetap mempertahankan citra brand toko dan harga barang.</string>
+
+    <string name="seller_migration_fragment_header_title">Feature unggulan dapat diakses melalui aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_advantages_title">Keunggulan aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_body_title">Fitur unggulan yang bisa kamu gunakan di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_fragment_footer">Untuk pelajari selengkapnya, klik &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
+
+    <!--    seller migration fragment tabs-->
+    <string name="seller_migration_fragment_tab_product">Produk</string>
+    <string name="seller_migration_fragment_tab_chat">Chat</string>
+    <string name="seller_migration_fragment_tab_review">Ulasan</string>
+    <string name="seller_migration_fragment_tab_promo_and_ads">Iklan &amp; Promosi</string>
+    <string name="seller_migration_fragment_tab_statistic">Statistik</string>
+
+    <!--    seller migration product seller features-->
+    <string name="seller_migration_fragment_product_tab_set_variant_title">ATUR VARIANT</string>
+    <string name="seller_migration_fragment_product_tab_set_variant_description">Kelola varian warna dan ukuran produk dengan mudah.</string>
+    <string name="seller_migration_fragment_product_tab_multi_edit_title">EDIT SEKALIGUS</string>
+    <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produkmu sekaligus.</string>
+    <string name="seller_migration_fragment_product_tab_instagram_import_title">INSTOPED</string>
+    <string name="seller_migration_fragment_product_tab_instagram_import_description">Upload produk langsung dari akun Instagram tokomu.</string>
+    <string name="seller_migration_fragment_product_tab_featured_product_title">PRODUK UNGGULAN</string>
+    <string name="seller_migration_fragment_product_tab_featured_product_description">Tampilkan produk andalanmu dan tarik perhatian pembeli.</string>
+    <string name="seller_migration_fragment_product_tab_set_cashback_title">ATUR CASHBACK</string>
+    <string name="seller_migration_fragment_product_tab_set_cashback_description">Berikan cashback senilai 3% - 5% ke pembeli.</string>
+
+    <!--    seller migration chat seller features-->
+    <string name="seller_migration_fragment_chat_tab_template_chat_title">TEMPLATE CHAT</string>
+    <string name="seller_migration_fragment_chat_tab_template_chat_description">Atur pesan cepat untuk langsung balas chat dari pembeli.</string>
+    <string name="seller_migration_fragment_chat_tab_attach_voucher_title">PASANG VOUCHER</string>
+    <string name="seller_migration_fragment_chat_tab_attach_voucher_description">Kirimkan voucher tokomu ke pembeli via pesan chat.</string>
+
+    <!--    seller migration review seller features-->
+    <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE REVIEW</string>
+    <string name="seller_migration_fragment_review_tab_template_review_description">Atur pesan otomatis untuk membalas ulasan dari pembeli.</string>
+    <string name="seller_migration_fragment_review_tab_review_statistic_title">STATISTIK ULASAN</string>
+    <string name="seller_migration_fragment_review_tab_review_statistic_description">Pantau ulasan untuk melihat tingkat kepuasan pembeli.</string>
+
+    <!--    seller migration ads and promo seller features-->
+    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_title">VOUCHER TOKO</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_description">Berikan voucher cashback atau gratis ongkir ke pembelimu.</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_topads_title">TOPADS</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_topads_description">Beriklan agar produk dan tokomu lebih mudah ditemukan.</string>
+
+    <!--    seller migration statistic seller features-->
+    <string name="seller_migration_fragment_statistic_tab_shop_insight_title">WAWASAN TOKO</string>
+    <string name="seller_migration_fragment_statistic_tab_shop_insight_description">Cek perkembangan statistik produk dan tokomu.</string>
+    <string name="seller_migration_fragment_statistic_tab_market_insight_title">WAWASAN PASAR</string>
+    <string name="seller_migration_fragment_statistic_tab_market_insight_description">Khusus Power Merchant, pantau info pasar agar tokomu jadi lebih kompetitif.</string>
 </resources>
