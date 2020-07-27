@@ -117,4 +117,5 @@ const val TOP_NAV  = "top nav"
 const val MEGA_TAB_COMPONENT  = "mega_tab_component"
 const val NOTIFY_ON  = "ON"
 const val NOTIFY_OFF  = "OFF"
+const val KEY_CAMPAIGN_CODE  = "campaignCode"
 
