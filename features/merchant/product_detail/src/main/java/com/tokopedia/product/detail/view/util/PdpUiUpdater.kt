@@ -184,8 +184,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             productInfoMap?.run {
-                dynamicProductInfoP1 = it
-                shopName = it.basic.shopName
+                videos = it.data.videos
             }
 
             productWholesaleInfoMap?.run {

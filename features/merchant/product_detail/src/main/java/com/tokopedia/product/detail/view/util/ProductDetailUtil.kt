@@ -6,7 +6,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.format.Time
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -16,6 +15,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -38,6 +39,17 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
+
+    fun generateDescriptionData(productInfo: DynamicProductInfoP1, textDescription: String) = DescriptionData(
+            basicId = productInfo.basic.productID,
+            basicName = productInfo.getProductName,
+            basicPrice = productInfo.data.price.value.toFloat(),
+            shopName = productInfo.basic.shopName,
+            thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
+            basicDescription = textDescription,
+            videoUrlList = productInfo.data.videos.map { it.url },
+            isOfficial = productInfo.data.isOS)
+
 }
 
 fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {

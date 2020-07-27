@@ -31,7 +31,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_INFO -> {
-                    listOfComponent.add(ProductInfoDataModel(mapToProductInfoContent(component.componentData), type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductInfoDataModel(type = component.type, name = component.componentName, data = mapToProductInfoContent(component.componentData)))
                 }
                 ProductDetailConstant.SHOP_INFO -> {
                     listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))

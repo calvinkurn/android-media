@@ -108,10 +108,7 @@ import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.PdpUiUpdater
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
-import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.share.ProductData
@@ -570,12 +567,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun gotoDescriptionTab(data: DescriptionData, componentTrackDataModel: ComponentTrackDataModel) {
-        context?.let {
-            startActivity(ProductFullDescriptionTabActivity.createIntent(it,
-                    data, viewModel.getDynamicProductInfoP1?.basic?.catalogID ?: ""))
-            activity?.overridePendingTransition(R.anim.pull_up, 0)
-            DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+    override fun gotoDescriptionTab(textDescription: String, componentTrackDataModel: ComponentTrackDataModel) {
+        viewModel.getDynamicProductInfoP1?.let {
+            val data = ProductDetailUtil.generateDescriptionData(it, textDescription)
+            context?.let { ctx ->
+                startActivity(ProductFullDescriptionTabActivity.createIntent(ctx,
+                        data, viewModel.getDynamicProductInfoP1?.basic?.catalogID ?: ""))
+                activity?.overridePendingTransition(R.anim.pull_up, 0)
+                DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+            }
         }
     }
 
