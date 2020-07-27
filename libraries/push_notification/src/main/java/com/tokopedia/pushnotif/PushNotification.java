@@ -41,7 +41,7 @@ public class PushNotification {
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
-        if (allowToShowNotification(context, applinkNotificationModel, data)) {
+        if (allowToShowNotification(context, applinkNotificationModel)) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
             logEvent(context, applinkNotificationModel, data,
@@ -83,15 +83,15 @@ public class PushNotification {
 
     private static boolean allowToShowNotification(
             Context context,
-            ApplinkNotificationModel applinkNotificationModel,
-            Bundle data
+            ApplinkNotificationModel applinkNotificationModel
     ) {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
-        return sameUserId && allowInLocalNotificationSetting && isTargetApp;
+        Boolean isRendered = HistoryNotification.isRenderable(context, applinkNotificationModel.getTransactionId());
+        return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRendered;
     }
 
 

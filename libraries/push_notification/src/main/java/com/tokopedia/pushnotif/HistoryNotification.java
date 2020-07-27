@@ -56,4 +56,12 @@ public class HistoryNotification {
         return PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
                 .countNotification(notificationType) == 0;
     }
+
+    public static Boolean isRenderable(Context context, String transId) {
+        return PushNotificationDB.Companion
+                .getInstance(context)
+                .historyNotificationDao()
+                .isRenderable(transId) == 0;
+    }
+
 }

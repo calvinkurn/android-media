@@ -10,6 +10,7 @@ import com.tokopedia.pushnotif.db.model.HistoryNotificationDB
  */
 @Dao
 interface HistoryNotificationDao {
+    
     @Insert
     fun storeNotification(data: HistoryNotificationDB): Long
 
@@ -24,4 +25,8 @@ interface HistoryNotificationDao {
 
     @Query("SELECT COUNT(id) FROM HistoryNotificationDB WHERE notification_type=:notificationType")
     fun countNotification(notificationType: Int): Int
+    
+    @Query("SELECT COUNT(id) FROM HistoryNotificationDB WHERE trans_id=:transId")
+    fun isRenderable(transId: String): Int
+    
 }
