@@ -21,8 +21,6 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
 
     @Override
     public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
-        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel);
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(applinkNotificationModel.getDesc());
         builder.setContentText(applinkNotificationModel.getFullName()+" : "+applinkNotificationModel.getSummary());
