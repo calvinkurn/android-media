@@ -3,13 +3,18 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.*
 import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -101,7 +106,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var tvSectionSubtitleCateory: TextView
     lateinit var appBarHeader: AppBarLayout
     lateinit var categorySeeAll: TextView
-    lateinit var cardTierInfo: CardUnify
+    lateinit var cardTierInfo: ConstraintLayout
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val dynamicItem = "dynamicItem"
     private val toolbarItemList = mutableListOf<NotificationUnify>()
@@ -274,7 +279,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         rewardsPointLayout = view.findViewById(R.id.card_point)
         ivPointStack = view.findViewById(R.id.img_points_stack)
         dynamicAction = view.findViewById(R.id.dynamic_widget)
-        cardTierInfo = view.findViewById(R.id.card_hightier_info)
+        cardTierInfo = view.findViewById(R.id.container_target)
 
         setStatusBarViewHeight()
     }
@@ -400,8 +405,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             } else {
                 mTargetText?.text = Html.fromHtml(it.text)
             }
-            container_target.setBackgroundColor(Color.parseColor("#" + it.backgroundColor))
-            container_target.setOnClickListener {
+            cardTierInfo.background.setColorFilter(Color.parseColor("#" + it.backgroundColor), PorterDuff.Mode.SRC_OVER)
+            cardTierInfo.setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
             }
         }
