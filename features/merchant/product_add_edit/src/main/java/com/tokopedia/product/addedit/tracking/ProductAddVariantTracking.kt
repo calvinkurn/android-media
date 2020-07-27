@@ -5,9 +5,10 @@ import com.tokopedia.product.addedit.tracking.ProductVariantTracking.sendOpenPro
 
 object ProductAddVariantTracking {
     private const val SCREEN_NAME = "/addproductpage - variant"
+    private const val CURRENT_SITE = "tokopediaseller"
 
     fun trackScreen(isLoggedInStatus: String, userId: String) {
-        sendOpenProductVariantPage(SCREEN_NAME, isLoggedInStatus, userId)
+        sendOpenProductVariantPage(SCREEN_NAME, isLoggedInStatus, userId, CURRENT_SITE)
     }
 
     // 2.1 label = variant type

@@ -75,12 +75,12 @@ object ProductVariantTracking {
         return gtmTracker!!
     }
 
-    fun sendOpenProductVariantPage(screenName: String, isLoggedInStatus: String, userId: String) {
+    fun sendOpenProductVariantPage(screenName: String, isLoggedInStatus: String, userId: String, currentSite: String) {
         val map = mapOf(
                 KEY_EVENT to EVENT_OPEN_SCREEN,
                 KEY_SCREEN_NAME to screenName,
                 KEY_IS_LOGGED_IN_STATUS to isLoggedInStatus,
-                KEY_CURRENT_SITE to screenName,
+                KEY_CURRENT_SITE to currentSite,
                 KEY_USER_ID to userId
         )
         getTracker().sendGeneralEvent(map)

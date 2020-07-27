@@ -213,9 +213,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
 
         // tracking
-        ProductAddVariantDetailTracking.saveMainVariant(
-                viewModel.getPrimaryVariantTitle(combination),
-                userSession.shopId)
+        sendTrackerSaveMainVariant(combination)
     }
 
     private fun observeSelectedVariantSize() {
@@ -334,8 +332,24 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun sendTrackerSaveMainVariant(combination: List<Int>) {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.saveMainVariant(
+                    viewModel.getPrimaryVariantTitle(combination),
+                    userSession.shopId)
+        } else {
+            ProductAddVariantDetailTracking.saveMainVariant(
+                    viewModel.getPrimaryVariantTitle(combination),
+                    userSession.shopId)
+        }
+    }
+
     private fun sendClickVariantStatusToggleData(isChecked: Boolean) {
-        if (!viewModel.isEditMode) {
+        if (viewModel.isEditMode) {
+            ProductEditVariantDetailTracking.clickVariantStatusToggle(
+                    if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
+                    userSession.shopId)
+        } else {
             ProductAddVariantDetailTracking.clickVariantStatusToggle(
                     if (isChecked) VARIANT_TRACKER_ON else VARIANT_TRACKER_OFF,
                     userSession.shopId)
