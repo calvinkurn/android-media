@@ -30,15 +30,15 @@ class FlexBoxChatLayout : FrameLayout {
 
     private var showCheckMark = defaultShowCheckMark
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         initConfig(context, null)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initConfig(context, attrs)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
             context,
             attrs,
             defStyleAttr
@@ -48,7 +48,7 @@ class FlexBoxChatLayout : FrameLayout {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
-            context: Context?,
+            context: Context,
             attrs: AttributeSet?,
             defStyleAttr: Int,
             defStyleRes: Int

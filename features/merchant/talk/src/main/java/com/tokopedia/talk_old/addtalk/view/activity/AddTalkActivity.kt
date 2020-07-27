@@ -50,7 +50,7 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             bundle.putAll(intent.extras)
         }
 
-        return AddTalkFragment.newInstance(intent.extras)
+        return AddTalkFragment.newInstance(intent.extras ?: Bundle())
     }
 
     override fun isShowCloseButton(): Boolean {

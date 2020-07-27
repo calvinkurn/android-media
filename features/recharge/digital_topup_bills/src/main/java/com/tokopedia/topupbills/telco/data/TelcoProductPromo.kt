@@ -1,13 +1,14 @@
 package com.tokopedia.topupbills.telco.data
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by nabillasabbaha on 16/05/19.
  */
+@Parcelize
 data class TelcoProductPromo(
         @SerializedName("id")
         @Expose
@@ -24,34 +25,4 @@ data class TelcoProductPromo(
         @SerializedName("value_text")
         @Expose
         val valueText: String = "")
-    : Parcelable {
-
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readString())
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeInt(id)
-                parcel.writeString(bonusText)
-                parcel.writeString(newPrice)
-                parcel.writeInt(newPricePlain)
-                parcel.writeString(valueText)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<TelcoProductPromo> {
-                override fun createFromParcel(parcel: Parcel): TelcoProductPromo {
-                        return TelcoProductPromo(parcel)
-                }
-
-                override fun newArray(size: Int): Array<TelcoProductPromo?> {
-                        return arrayOfNulls(size)
-                }
-        }
-}
+    : Parcelable
