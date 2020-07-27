@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import com.google.gson.Gson
@@ -35,7 +34,6 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
@@ -66,6 +64,7 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
+import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -73,7 +72,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import okhttp3.Interceptor
 import okhttp3.WebSocket
-import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
@@ -87,6 +85,7 @@ class TopChatRoomPresenter @Inject constructor(
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
         userSession: UserSessionInterface,
+        private val webSocketUtil: RxWebSocketUtil,
         private var getChatUseCase: GetChatUseCase,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
@@ -110,6 +109,7 @@ class TopChatRoomPresenter @Inject constructor(
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
+    var autoRetryConnectWs = true
     var newUnreadMessage = 0
     var thisMessageId: String = ""
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -145,55 +145,32 @@ class TopChatRoomPresenter @Inject constructor(
 
         val subscriber = object : WebSocketSubscriber() {
             override fun onOpen(webSocket: WebSocket) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", " on WebSocket open")
-                }
                 view?.showErrorWebSocket(false)
-                networkMode = WebsocketEvent.Mode.MODE_WEBSOCKET
+                networkMode = MODE_WEBSOCKET
                 readMessage()
             }
 
-            override fun onMessage(text: String) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", text)
-                }
-            }
-
             override fun onMessage(webSocketResponse: WebSocketResponse) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "item")
-                }
                 mappingEvent(webSocketResponse, messageId)
             }
 
-
-            override fun onMessage(byteString: ByteString) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", byteString.toString())
-                }
-            }
-
             override fun onReconnect() {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "onReconnect")
-                }
-                networkMode = WebsocketEvent.Mode.MODE_API
+                networkMode = MODE_API
                 view?.showErrorWebSocket(true)
             }
 
             override fun onClose() {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "onClose")
-                }
-                networkMode = WebsocketEvent.Mode.MODE_API
+                networkMode = MODE_API
                 destroyWebSocket()
                 view?.showErrorWebSocket(true)
-                connectWebSocket(messageId)
+                if (autoRetryConnectWs) {
+                    connectWebSocket(messageId)
+                }
             }
 
         }
 
-        var rxWebSocket = RxWebSocket[webSocketUrl, userSession.accessToken]
+        val rxWebSocket = webSocketUtil.getWebSocketInfo(webSocketUrl, userSession.accessToken)
         val subscription = rxWebSocket?.subscribe(subscriber)
 
         mSubscription?.add(subscription)
