@@ -34,6 +34,9 @@ class ReviewSmileyWidget : BaseCustomView {
         private const val BAD_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad.json"
         private const val MEDIOCRE_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre.json"
         private const val EXCELLENT_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent.json"
+        private const val BAD_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad_reverse.json"
+        private const val MEDIOCRE_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre_reverse.json"
+        private const val EXCELLENT_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent_reverse.json"
     }
 
     private var isActive = false
@@ -56,6 +59,7 @@ class ReviewSmileyWidget : BaseCustomView {
         } else {
             setInActiveImage(score)
         }
+        setAnimations()
         typedArray.recycle()
     }
 
@@ -85,52 +89,13 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setInActiveImage(score: Int) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.apply {
-                    loadImageDrawable(R.drawable.ic_smiley_bad_inactive)
-                    setOnClickListener {
-                        if(!isActive) {
-                            isActive = true
-                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION)
-                            setBadSmileyText()
-                        } else {
-                            isActive = false
-                            setLottieAnomationFromUrlReverse(BAD_SMILEY_ANIMATION)
-                            hideSmileyText()
-                        }
-                    }
-                }
+                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_inactive)
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.apply {
-                    loadImageDrawable(R.drawable.ic_smiley_neutral_inactive)
-                    setOnClickListener {
-                        if(!isActive) {
-                            isActive = true
-                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION)
-                            setMediocreSmileyText()
-                        } else {
-                            isActive = false
-                            setLottieAnomationFromUrlReverse(MEDIOCRE_SMILEY_ANIMATION)
-                            hideSmileyText()
-                        }
-                    }
-                }
+                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_neutral_inactive)
             }
             else -> {
-                this.reviewEditableSmiley.apply {
-                    loadImageDrawable(R.drawable.ic_smiley_great_inactive)
-                    setOnClickListener {
-                        if(!isActive) {
-                            isActive = true
-                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION)
-                            setExcellentSmileyText()
-                        } else {
-                            isActive = false
-                            setLottieAnomationFromUrlReverse(EXCELLENT_SMILEY_ANIMATION)
-                            hideSmileyText()
-                        }
-                    }
-                }
+                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_great_inactive)
             }
         }
     }
@@ -139,7 +104,7 @@ class ReviewSmileyWidget : BaseCustomView {
         this.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_bad)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
-            show()
+            animate().alpha(1.0f)
         }
     }
 
@@ -147,7 +112,7 @@ class ReviewSmileyWidget : BaseCustomView {
         this.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_mediocre)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
-            show()
+            animate().alpha(1.0f)
         }
     }
 
@@ -155,12 +120,62 @@ class ReviewSmileyWidget : BaseCustomView {
         this.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_excellent)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
-            show()
+            animate().alpha(1.0f)
         }
     }
 
     private fun hideSmileyText() {
-        this.reviewEditableText.hide()
+        this.reviewEditableText.animate().alpha(0.0f)
+    }
+
+    private fun setAnimations() {
+        when (score) {
+            ReviewConstants.REPUTATION_SCORE_BAD -> {
+                this.reviewEditableSmiley.apply {
+                    setOnClickListener {
+                        if(!isActive) {
+                            isActive = true
+                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION)
+                            setBadSmileyText()
+                        } else {
+                            isActive = false
+                            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
+                            hideSmileyText()
+                        }
+                    }
+                }
+            }
+            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
+                this.reviewEditableSmiley.apply {
+                    setOnClickListener {
+                        if(!isActive) {
+                            isActive = true
+                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION)
+                            setMediocreSmileyText()
+                        } else {
+                            isActive = false
+                            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
+                            hideSmileyText()
+                        }
+                    }
+                }
+            }
+            else -> {
+                this.reviewEditableSmiley.apply {
+                    setOnClickListener {
+                        if(!isActive) {
+                            isActive = true
+                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION)
+                            setExcellentSmileyText()
+                        } else {
+                            isActive = false
+                            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
+                            hideSmileyText()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setLottieAnimationFromUrl(animationUrl: String) {
@@ -169,20 +184,6 @@ class ReviewSmileyWidget : BaseCustomView {
 
             lottieCompositionLottieTask.addListener { result ->
                 this.reviewEditableSmiley.setComposition(result)
-                this.reviewEditableSmiley.playAnimation()
-            }
-
-            lottieCompositionLottieTask.addFailureListener { throwable -> }
-        }
-    }
-
-    private fun setLottieAnomationFromUrlReverse(animationUrl: String) {
-        context?.let {
-            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
-
-            lottieCompositionLottieTask.addListener { result ->
-                this.reviewEditableSmiley.setComposition(result)
-                this.reviewEditableSmiley.reverseAnimationSpeed()
                 this.reviewEditableSmiley.playAnimation()
             }
 

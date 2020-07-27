@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -8,18 +8,16 @@
         android:id="@+id/reviewEditableSmiley"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_centerHorizontal="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewEditableText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:typographyType="body_2"
-        app:layout_constraintStart_toStartOf="@id/reviewEditableSmiley"
-        app:layout_constraintEnd_toEndOf="@id/reviewEditableSmiley"
-        app:layout_constraintTop_toBottomOf="@id/reviewEditableSmiley"/>
+        android:animateLayoutChanges="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/reviewEditableSmiley"
+        app:typographyType="body_2" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
