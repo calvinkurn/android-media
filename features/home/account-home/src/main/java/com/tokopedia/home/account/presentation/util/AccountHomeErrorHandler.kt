@@ -39,4 +39,18 @@ object AccountHomeErrorHandler {
 
         }
     }
+
+    @JvmStatic
+    fun logDataNull(source: String, t: Throwable) {
+        val exception = AccountHomeException(t.message ?: "", t)
+
+        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed parsing model'; $source;'$exception'")
+        try {
+            Crashlytics.logException(exception)
+        } catch (exception: Exception) {
+
+        }
+    }
+
+    // add handler
 }

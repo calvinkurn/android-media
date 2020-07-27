@@ -13,6 +13,7 @@ import com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.constant.SettingConstant
 import com.tokopedia.home.account.data.model.ShopInfoLocation
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel
@@ -40,7 +41,12 @@ class SellerAccountMapper @Inject constructor(
 
     override fun call(graphqlResponse: GraphqlResponse): SellerViewModel {
         val sellerViewModel: SellerViewModel
-        val accountDataModel: AccountDataModel = graphqlResponse.getData(AccountDataModel::class.java)
+        var accountDataModel: AccountDataModel = graphqlResponse.getData(AccountDataModel::class.java)
+
+        if (accountDataModel == null) {
+            accountDataModel = AccountDataModel()
+            AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("AccountDataModel"))
+        }
 
         if (accountDataModel.shopInfo.info.shopId != "-1" && isShopHaveProvinceId(graphqlResponse)) {
             sellerViewModel = getSellerModel(context, accountDataModel, getDataDeposit(graphqlResponse))
@@ -55,15 +61,27 @@ class SellerAccountMapper @Inject constructor(
     private fun isShopHaveProvinceId(graphqlResponse: GraphqlResponse): Boolean {
         val error = graphqlResponse.getError(ShopInfoLocation::class.java)
         if (error.isNullOrEmpty()) {
-            val data : ShopInfoLocation = graphqlResponse.getData(ShopInfoLocation::class.java)
+            var data : ShopInfoLocation = graphqlResponse.getData(ShopInfoLocation::class.java)
+            if (data == null) {
+                data = ShopInfoLocation()
+                AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("ShopInfoLocation"))
+            }
             return data.shopInfoByID.result[0].shippingLoc.provinceID != 0
         }
         return false
     }
 
     private fun getDataDeposit(graphqlResponse: GraphqlResponse): DataDeposit {
-        val data : DataDeposit.Response = graphqlResponse.getData(DataDeposit.Response::class.java)
-        return data.dataResponse.dataDeposit
+        val error = graphqlResponse.getError(DataDeposit.Response::class.java)
+        if (error.isNullOrEmpty()) {
+            var data : DataDeposit.Response = graphqlResponse.getData(DataDeposit.Response::class.java)
+            if (data == null) {
+                data = DataDeposit.Response()
+                AccountHomeErrorHandler.logDataNull("SellerAccountMapper", Throwable("DataDeposit.Response"))
+            }
+            return data.dataResponse.dataDeposit
+        }
+        return DataDeposit()
     }
 
     private fun getSellerModel(context: Context, accountDataModel: AccountDataModel, dataDeposit: DataDeposit): SellerViewModel {
@@ -78,9 +96,7 @@ class SellerAccountMapper @Inject constructor(
             items.add(tickerViewModel)
         }
 
-        if (accountDataModel.shopInfo.info != null) {
-            items.add(getShopInfoMenu(accountDataModel, dataDeposit))
-        }
+        items.add(getShopInfoMenu(accountDataModel, dataDeposit))
 
         if (accountDataModel.saldo.depositLong != 0L) {
             items.add(getSaldoInfo(accountDataModel.saldo))

@@ -25,7 +25,12 @@ import java.util.List;
 
 /**
  * @author okasurya on 7/20/18.
+ *
+ *
+ * please use AccountDataModel.kt instead
  */
+
+@Deprecated
 public class AccountModel {
     @SerializedName("isAuthenticated")
     @Expose
