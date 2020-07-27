@@ -84,7 +84,7 @@ class ShopHomePageYoutubePlayerActivity : AppCompatActivity(), YouTubePlayer.OnI
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setDisplayShowTitleEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_video_close)
+            setHomeAsUpIndicator(R.drawable.ic_video_close_shop_page)
             title = getString(R.string.close_youtube)
         }
     }
