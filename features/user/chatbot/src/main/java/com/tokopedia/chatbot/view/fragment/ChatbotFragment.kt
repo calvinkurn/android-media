@@ -90,6 +90,7 @@ private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down 
 private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
+private const val FIRST_PAGE = 1
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
@@ -671,7 +672,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
-                loadData(page)
+                if (page != FIRST_PAGE) {
+                    loadData(page)
+                }
             }
         }
     }
