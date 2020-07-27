@@ -152,7 +152,7 @@ open class WishlistViewModel @Inject constructor(
                 val visitableWishlist = mappingWishlistToVisitable(data.items)
 
                 if (data.items.size >= recommendationPositionInPage ) {
-                    wishlistData.postValue(getTopAdsBannerData(visitableWishlist))
+                    wishlistData.postValue(getTopAdsBannerData(visitableWishlist, currentPage))
                 } else {
                     wishlistData.postValue(visitableWishlist)
                 }
@@ -190,7 +190,7 @@ open class WishlistViewModel @Inject constructor(
                 if (data.items.size >= recommendationPositionInPage && currentPage % 2 == 0) {
                     wishlistData.postValue(getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id }))
                 } else {
-                    wishlistData.postValue(getTopAdsBannerData(newPageVisitableData))
+                    wishlistData.postValue(getTopAdsBannerData(newPageVisitableData, currentPage))
                 }
                 loadMoreWishlistAction.postValue(Event(LoadMoreWishlistActionData(
                         isSuccess = true,
@@ -342,14 +342,22 @@ open class WishlistViewModel @Inject constructor(
     /**
      * Void [getTopAdsBannerData]
      */
-    private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>): List<WishlistDataModel>{
+    private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistDataModel>, currentPage: Int): List<WishlistDataModel>{
         return withContext(wishlistCoroutineDispatcherProvider.io()){
             if(wishlistVisitable.isNotEmpty()) {
+                val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
+                var pageToken = ""
+                // 1 = 0 * 21 + 4
+                // 2 = 1 * 21 + 4
+                // 3 = 2 * 21 + 4
+                if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable[recommendationPositionInPreviousPage] is BannerTopAdsDataModel){
+                    pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
+                }
                 val results = topAdsImageViewUseCase.getImageData(
                         topAdsImageViewUseCase.getQueryMap(
                                 "",
                                 "6",
-                                "",
+                                pageToken,
                                 1,
                                 3,
                                 ""

@@ -383,7 +383,7 @@ object WishlistTracking {
     }
 
 
-    fun impressionTopAdsBanner(trackingQueue: TrackingQueue, item: BannerTopAdsDataModel, userId: String, position: Int){
+    fun impressionTopAdsBanner(item: BannerTopAdsDataModel, userId: String, position: Int){
         val map = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
@@ -404,7 +404,7 @@ object WishlistTracking {
                     )
                 )
         )
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+        getTracker().sendGeneralEvent(map as HashMap<String, Any>)
     }
 
     fun clickTopAdsBanner(item: BannerTopAdsDataModel, userId: String, position: Int){

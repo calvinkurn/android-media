@@ -505,7 +505,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
                 "",
                 item.topAdsDataModel.imageUrl
         )
-        WishlistTracking.impressionTopAdsBanner(trackingQueue, item, viewModel.getUserId(), position)
+        WishlistTracking.impressionTopAdsBanner(item, viewModel.getUserId(), position)
     }
 
     private fun handleAddToCartActionData(addToCartActionData: AddToCartActionData?){
