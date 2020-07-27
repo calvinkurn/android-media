@@ -277,7 +277,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val showFreeShipping = isFreeShippingEligible && chargePeriod
 
         if(showFreeShipping) {
-            trackSuccessBottomSheetPopUp(freeShipping)
+            trackFreeShippingSuccessBottomSheet(freeShipping)
         }
 
         val primaryBtnLabel = if(showFreeShipping) {
@@ -321,8 +321,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         startActivityForResult(intent, FREE_SHIPPING_INTENT_CODE)
     }
 
-    private fun trackSuccessBottomSheetPopUp(freeShipping: PowerMerchantFreeShippingStatus) {
-        PowerMerchantFreeShippingTracker.sendSuccessBottomSheetPopUp(
+    private fun trackFreeShippingSuccessBottomSheet(freeShipping: PowerMerchantFreeShippingStatus) {
+        PowerMerchantFreeShippingTracker.eventFreeShippingSuccessBottomSheet(
             userSessionInterface,
             freeShipping
         )
