@@ -1,20 +1,27 @@
 package com.tokopedia.pushnotif.db
 
-import androidx.sqlite.db.SupportSQLiteDatabase
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
-import android.content.Context
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tokopedia.pushnotif.db.dao.HistoryNotificationDao
+import com.tokopedia.pushnotif.db.dao.TransactionNotificationDao
 import com.tokopedia.pushnotif.db.model.HistoryNotificationDB
+import com.tokopedia.pushnotif.db.model.TransactionNotification
 
 /**
  * @author okasurya on 5/22/19.
  */
-@Database(entities = [HistoryNotificationDB::class], version = 3)
+@Database(entities = [
+    HistoryNotificationDB::class,
+    TransactionNotification::class
+], version = 3)
 abstract class PushNotificationDB : RoomDatabase() {
+
     abstract fun historyNotificationDao(): HistoryNotificationDao
+    abstract fun transactionNotificationDao(): TransactionNotificationDao
 
     companion object {
         // For Singleton instantiation
@@ -22,7 +29,16 @@ abstract class PushNotificationDB : RoomDatabase() {
 
         private val migration_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE $HISTORY_NOTIFICATION_TABLE ADD COLUMN `trans_id` TEXT")
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS $TRANSACTION_TABLE(
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `sender_name` TEXT,
+                        `message` TEXT,
+                        `notification_type` INTEGER,
+                        `notification_id` INTEGER,
+                        `transaction_id` TEXT
+                    )
+                """.trimIndent())
             }
         }
 
