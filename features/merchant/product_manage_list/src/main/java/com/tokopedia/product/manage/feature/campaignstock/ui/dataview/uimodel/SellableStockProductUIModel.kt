@@ -10,7 +10,7 @@ data class SellableStockProductUIModel(
         val productId: String,
         val productName: String,
         val stock: String,
-        val isActive: Boolean): Parcelable, Visitable<CampaignStockTypeFactory> {
+        var isActive: Boolean): Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
             typeFactory.type(this)

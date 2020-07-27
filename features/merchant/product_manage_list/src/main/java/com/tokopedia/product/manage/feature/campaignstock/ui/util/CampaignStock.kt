@@ -19,7 +19,7 @@ fun String.convertCheckMaximumStockLimit(context: Context?): String {
         if (stock <= CampaignStock.MAX_STOCK_COUNT) {
             stock.getNumberFormatted()
         } else {
-            context?.getString(R.string.product_manage_max_count, stock.getNumberFormatted()).orEmpty()
+            context?.getString(R.string.product_manage_max_count, CampaignStock.MAX_STOCK_COUNT.getNumberFormatted()).orEmpty()
         }
     }
 }
