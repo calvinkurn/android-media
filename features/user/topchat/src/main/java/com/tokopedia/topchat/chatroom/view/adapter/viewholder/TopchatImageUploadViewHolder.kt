@@ -36,14 +36,14 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
             ImageHandler.loadImageRounded2(
                     itemView.context,
                     attachment,
-                    element.imageUrlThumbnail
+                    element.imageUrl
             )
         } else {
             setVisibility(progressBarSendImage, View.GONE)
             ImageHandler.loadImageRounded2(
                     itemView.context,
                     attachment,
-                    element.imageUrlThumbnail
+                    element.imageUrl
             )
         }
     }
