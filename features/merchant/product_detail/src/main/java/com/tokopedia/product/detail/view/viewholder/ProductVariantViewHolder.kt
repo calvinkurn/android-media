@@ -1,8 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.graphics.Color
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -56,12 +54,17 @@ class ProductVariantViewHolder(val view: View,
         }
     }
 
-    fun showError() = with(view) {
+    private fun showError() = with(view) {
         variant_local_load.show()
+        renderError()
         rvContainerVariant.hide()
     }
 
-    fun hideError() = with(view) {
+    private fun renderError() = with(view) {
+        //TODO
+    }
+
+    private fun hideError() = with(view) {
         rvContainerVariant.show()
         variant_local_load.hide()
     }

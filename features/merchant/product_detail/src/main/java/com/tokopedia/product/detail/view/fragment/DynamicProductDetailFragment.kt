@@ -66,8 +66,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -90,7 +90,9 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
@@ -496,8 +498,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.p2ShopDataResp.removeObservers(this)
         viewModel.p2General.removeObservers(this)
         viewModel.p2Login.removeObservers(this)
-        viewModel.productInfoP3RateEstimate.removeObservers(this)
-        viewModel.p3VariantResponse.removeObservers(this)
+        viewModel.productInfoP3.removeObservers(this)
         viewModel.loadTopAdsProduct.removeObservers(this)
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
@@ -653,7 +654,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel) {
         when (name) {
             ProductDetailConstant.PRODUCT_SHIPPING_INFO -> {
-                val productP3Resp = viewModel.productInfoP3RateEstimate.value ?: ProductInfoP3()
+                val productP3Resp = viewModel.productInfoP3.value ?: ProductInfoP3()
 
                 DynamicProductDetailTracking.Click.eventShippingRateEstimationClicked(
                         productP3Resp.addressModel?.postalCode ?: "",
@@ -951,7 +952,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel) {
         val productInfo = viewModel.getDynamicProductInfoP1
         if (viewModel.isUserSessionActive) {
-            val productP3value = viewModel.productInfoP3RateEstimate.value
+            val productP3value = viewModel.productInfoP3.value
             if (productP3value != null) {
                 if (isActive) {
                     productInfo?.basic?.productID?.let {
@@ -1095,8 +1096,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeP2Login()
         observeP2Shop()
         observeP2General()
-        observeP3RateEstimate()
-        observeP3Variant()
+        observeP3()
         observeToggleFavourite()
         observeToggleNotifyMe()
         observeMoveToWarehouse()
@@ -1293,15 +1293,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun observeP3Variant() {
-        observe(viewModel.p3VariantResponse) {
-            onSuccessGetDataP3Variant()
-        }
-    }
-
-    private fun observeP3RateEstimate() {
-        observe(viewModel.productInfoP3RateEstimate) {
-            onSuccessGetDataP3RateEstimate(it)
+    private fun observeP3() {
+        viewLifecycleOwner.observe(viewModel.productInfoP3) {
+            onSuccessGetDataP3(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
         }
     }
@@ -1510,10 +1504,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
         pdpUiUpdater?.updateDataP2Shop(it)
 
-        if (pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
-        }
-
         adapter.notifyDataSetChanged()
     }
 
@@ -1607,21 +1597,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         adapter.notifyDataSetChanged()
     }
 
-    private fun onSuccessGetDataP3Variant() {
-    }
-
-    private fun onSuccessGetDataP3RateEstimate(it: ProductInfoP3) {
+    private fun onSuccessGetDataP3(it: ProductInfoP3) {
         shouldShowCodP3 = it.userCod
         pdpUiUpdater?.updateBasicContentCodData(shouldShowCodP1 && shouldShowCodP3)
 
-        pdpUiUpdater?.productShipingInfoMap?.let { productShippingInfoMap ->
-            if (it.ratesModel?.getServicesSize() == 0) {
-                dynamicAdapter.removeComponentSection(productShippingInfoMap)
-            } else {
-                pdpUiUpdater?.updateDataP3(context, it)
-            }
-            dynamicAdapter.notifyShipingInfo(productShippingInfoMap)
+        if (it.ratesModel?.getServicesSize() == 0) {
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productShipingInfoMap)
         }
+
+        if (pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
+        }
+
+        pdpUiUpdater?.updateDataP3(context, it)
+        dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap, pdpUiUpdater?.productShipingInfoMap)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_P3)
         dynamicAdapter.notifySnapshotWithPayloads(pdpUiUpdater?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
     }
@@ -1751,7 +1740,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onShipmentClicked() {
         if (viewModel.isUserSessionActive) {
-            val productP3value = viewModel.productInfoP3RateEstimate.value
+            val productP3value = viewModel.productInfoP3.value
             if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
                 gotoRateEstimation()
             } else {

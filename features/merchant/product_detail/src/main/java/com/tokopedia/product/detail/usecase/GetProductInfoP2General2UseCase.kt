@@ -14,8 +14,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
@@ -68,12 +66,8 @@ class GetProductInfoP2General2UseCase @Inject constructor(private val rawQueries
                 DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
         //endregion
 
-        //region Ticker
-        val tickerParams = generateTickerParam()
-        val tickerRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TICKER], StickyLoginTickerPojo.TickerResponse::class.java, tickerParams)
-        //endregion
 
-        val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest, tickerRequest)
+        val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
@@ -108,13 +102,6 @@ class GetProductInfoP2General2UseCase @Inject constructor(private val rawQueries
             }
             //endregion
 
-            //region Ticker
-            if (gqlResponse.getError(StickyLoginTickerPojo.TickerResponse::class.java)?.isNotEmpty() != true) {
-                val tickerData = gqlResponse.getData<StickyLoginTickerPojo.TickerResponse>(StickyLoginTickerPojo.TickerResponse::class.java)
-                p2GeneralData.tickerInfo = DynamicProductDetailMapper.getTickerInfoData(tickerData)
-            }
-            //endregion
-
         } catch (e: Throwable) {
             Timber.d(e)
         }
@@ -137,8 +124,5 @@ class GetProductInfoP2General2UseCase @Inject constructor(private val rawQueries
                 ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
     }
 
-    private fun generateTickerParam(): Map<String, Any> {
-        return mapOf(StickyLoginConstant.PARAMS_PAGE to StickyLoginConstant.Page.PDP.toString())
-    }
 
 }

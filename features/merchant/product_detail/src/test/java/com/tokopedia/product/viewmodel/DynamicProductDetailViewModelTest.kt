@@ -30,13 +30,10 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.util.JsonFormatter
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
@@ -64,11 +61,6 @@ import rx.Observable
 @ExperimentalCoroutinesApi
 class DynamicProductDetailViewModelTest {
 
-    companion object {
-        const val RECOM_WIDGET_WITH_ONE_TOPADS_JSON = "json/recom_widget_with_one_topads.json"
-        const val RECOM_WIDGET_WITH_ZERO_TOPADS_JSON = "json/recom_widget_with_zero_topads.json"
-    }
-
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
@@ -88,7 +80,7 @@ class DynamicProductDetailViewModelTest {
     lateinit var getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase
+    lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
 
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
@@ -127,13 +119,13 @@ class DynamicProductDetailViewModelTest {
     lateinit var addToCartOccUseCase: AddToCartOccUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase
-
-    @RelaxedMockK
     lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
 
     @RelaxedMockK
     lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
+
+    @RelaxedMockK
+    lateinit var getProductInfoP2General2UseCase: GetProductInfoP2General2UseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -145,13 +137,12 @@ class DynamicProductDetailViewModelTest {
 
     @After
     fun setupAfter() {
-        viewModel.p3VariantResponse.removeObserver { }
-        viewModel.productInfoP3RateEstimate.removeObserver { }
+        viewModel.productInfoP3.removeObserver { }
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
+        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2General2UseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, toggleNotifyMeUseCase, discussionMostHelpfulUseCase, userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
@@ -446,10 +437,8 @@ class DynamicProductDetailViewModelTest {
         val dataP2General = ProductInfoP2General()
 
         val dataP3RateEstimate = ProductInfoP3(SummaryText(), RatesModel(), false, AddressModel())
-        val dataP3Variant = ProductInfoP3Variant(CartRedirectionResponse())
 
-        viewModel.p3VariantResponse.observeForever { }
-        viewModel.productInfoP3RateEstimate.observeForever { }
+        viewModel.productInfoP3.observeForever { }
 
         every {
             viewModel.userId
@@ -480,12 +469,8 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2General
 
         coEvery {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
+            getProductInfoP3UseCase.executeOnBackground()
         } returns dataP3RateEstimate
-
-        coEvery {
-            getProductInfoP3VariantUseCase.executeOnBackground()
-        } returns dataP3Variant
 
         viewModel.getProductP1(productParams)
 
@@ -521,17 +506,13 @@ class DynamicProductDetailViewModelTest {
 
         //P3
         coVerify {
-            getProductInfoP3VariantUseCase.executeOnBackground()
-        }
-        coVerify {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
+            getProductInfoP3UseCase.executeOnBackground()
         }
 
-        Assert.assertNotNull(viewModel.p3VariantResponse.value)
-        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value)
-        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.rateEstSummarizeText)
-        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.ratesModel)
-        Assert.assertEquals(viewModel.productInfoP3RateEstimate.value?.userCod, anyBoolean())
+        Assert.assertNotNull(viewModel.productInfoP3.value)
+        Assert.assertNotNull(viewModel.productInfoP3.value?.rateEstSummarizeText)
+        Assert.assertNotNull(viewModel.productInfoP3.value?.ratesModel)
+        Assert.assertEquals(viewModel.productInfoP3.value?.userCod, anyBoolean())
     }
 
     @Test
@@ -562,11 +543,9 @@ class DynamicProductDetailViewModelTest {
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
 
-        coVerify(inverse = true) { getProductInfoP3VariantUseCase.executeOnBackground() }
-
         //P3
         coVerify(inverse = true) {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
+            getProductInfoP3UseCase.executeOnBackground()
         }
     }
 
@@ -581,10 +560,7 @@ class DynamicProductDetailViewModelTest {
         val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
         val dataP2General = ProductInfoP2General()
 
-        val dataP3Variant = ProductInfoP3Variant(CartRedirectionResponse())
         val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
-
-        viewModel.p3VariantResponse.observeForever { }
 
         every {
             userSessionInterface.isLoggedIn
@@ -607,11 +583,7 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2General
 
         coEvery {
-            getProductInfoP3VariantUseCase.executeOnBackground()
-        } returns dataP3Variant
-
-        coEvery {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
+            getProductInfoP3UseCase.executeOnBackground()
         } returns dataP3
 
         viewModel.getProductP1(productParams)
@@ -641,15 +613,10 @@ class DynamicProductDetailViewModelTest {
         }
         Assert.assertNotNull(viewModel.p2General.value)
 
-        //P3
-        //Variant
-        coVerify { getProductInfoP3VariantUseCase.executeOnBackground() }
-        Assert.assertNotNull(viewModel.p3VariantResponse.value)
-
         //RateEstimate
         //Make sure not called
         coVerify(inverse = true) {
-            getProductInfoP3RateEstimateUseCase.executeOnBackground()
+            getProductInfoP3UseCase.executeOnBackground()
         }
     }
 
@@ -1109,7 +1076,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         verify {
-            getProductInfoP3RateEstimateUseCase.cancelJobs()
+            getProductInfoP3UseCase.cancelJobs()
         }
 
         verify {

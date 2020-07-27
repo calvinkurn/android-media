@@ -262,7 +262,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             tickerInfoMap?.run {
-                generalTickerInfo = it.tickerInfo
                 statusInfo = it.shopInfo?.statusInfo
                 closedInfo = it.shopInfo?.closedInfo
             }
@@ -374,6 +373,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         productShipingInfoMap?.run {
             data.first().subtitle = context?.getString(R.string.ongkir_pattern_string_dynamic_pdp, it.rateEstSummarizeText?.minPrice, "${it.rateEstSummarizeText?.destination}")
                     ?: ""
+        }
+
+        tickerInfoMap?.run {
+            generalTickerInfo = it.tickerInfo
         }
     }
 
