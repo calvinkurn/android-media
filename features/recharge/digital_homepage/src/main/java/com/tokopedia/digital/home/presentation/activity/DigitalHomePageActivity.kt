@@ -33,7 +33,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
         val platformId = bundle?.getString(PARAM_PLATFORM_ID)?.toIntOrNull() ?: 0
-        val enablePersonalize = bundle?.getBoolean(PARAM_ENABLE_PERSONALIZE, false) ?: false
+        val enablePersonalize = (bundle?.getString(PARAM_ENABLE_PERSONALIZE) ?: "false").toBoolean()
         return DigitalHomePageFragment.newInstance(platformId, enablePersonalize)
     }
 
