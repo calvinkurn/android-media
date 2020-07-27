@@ -468,6 +468,23 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+    fun eventShowDialogKyc() {
+        val category = getCategory()
+
+        val event = TrackAppUtils.gtmData(
+            GMParamTracker.EVENT_CLICK_POWER_MERCHANT,
+            category,
+            GMParamTracker.Action.POP_UP_DATA_VERIFICATION,
+            ""
+        )
+
+        event[CustomDimension.USER_ID] = user.userId
+        event[CustomDimension.SHOP_ID] = user.shopId
+        event[CustomDimension.SHOP_TYPE] = getShopType()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
     private fun getShopType(): String {
         val isPowerMerchant = user.isGoldMerchant
 
