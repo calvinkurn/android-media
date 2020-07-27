@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
@@ -77,7 +78,11 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
                 it.apply { this.isVariant = isVariant }
             })
         }
-        renderList(reservedStockList)
+        if (reservedStockList.isNullOrEmpty()) {
+            rv_campaign_stock?.gone()
+        } else {
+            renderList(reservedStockList)
+        }
     }
 
     private fun onVariantAccordionStateChanged(position: Int) {
