@@ -3,7 +3,10 @@ package com.tokopedia.shop.home.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
@@ -18,8 +21,11 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
 
 @ShopPageHomeScope
@@ -199,6 +205,28 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
+    fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
+        return CommonErrorResponseInterceptor()
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideInterceptors(loggingInterceptor: HttpLoggingInterceptor,
+                            commonErrorResponseInterceptor: CommonErrorResponseInterceptor): MutableList<Interceptor> {
+        return mutableListOf(loggingInterceptor, commonErrorResponseInterceptor)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideRestRepository(interceptors: MutableList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
+    }
+
+    @ShopPageHomeScope
+    @Provides
     fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
         return CoroutineDispatcherProviderImpl
     }
@@ -222,6 +250,12 @@ class ShopPageHomeModule {
     @Provides
     fun provideRemoveFromWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideGetYoutubeVideoUseCase(restRepository: RestRepository): GetYoutubeVideoDetailUseCase {
+        return GetYoutubeVideoDetailUseCase(restRepository)
     }
 
     @ShopPageHomeScope

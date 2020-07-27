@@ -16,7 +16,8 @@ class ProgressWidgetUiModel(
         override val dataKey: String,
         override val ctaText: String,
         override var data: ProgressDataUiModel?,
-        override val impressHolder: ImpressHolder = ImpressHolder()
+        override val impressHolder: ImpressHolder = ImpressHolder(),
+        override var isLoaded: Boolean
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)

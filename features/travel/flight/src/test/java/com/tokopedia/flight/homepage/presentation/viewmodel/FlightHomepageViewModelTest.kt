@@ -710,7 +710,7 @@ class FlightHomepageViewModelTest {
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
 
         // then
-        pair.second.compareTo(maxDateCalendar.time) shouldBe 0
+        assert(pair.second >= maxDateCalendar.time)
     }
 
     @Test

@@ -72,4 +72,11 @@ object DeeplinkMapperHome {
         return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params)
     }
 
+    fun getRegisteredExplore(deeplink: String): String{
+        val uri = Uri.parse(deeplink)
+        return when {
+            uri.pathSegments.size > 0 -> ApplinkConsInternalHome.EXPLORE + uri.path
+            else -> ApplinkConsInternalHome.EXPLORE
+        }
+    }
 }

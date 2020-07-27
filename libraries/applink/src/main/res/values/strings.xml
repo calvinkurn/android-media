@@ -41,6 +41,7 @@
     <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
+    <string name="title_recent_view">Terakhir Dilihat</string>
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
@@ -55,6 +56,7 @@
 
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+    <string name="title_otp">Verifikasi</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>
@@ -65,4 +67,18 @@
     <!--Official Store -->
     <string name="title_brandlist">Brand List</string>
 
+    <!-- Voucher Creation -->
+    <string name="title_voucher_creation">Voucher Creation</string>
+
+    <!-- Shop Score -->
+    <string name="title_shop_score_sellerapp">Performa Toko Penjual</string>
+    
+    <!--Product Add Edit-->
+    <string name="title_product_add_edit">Product Add Edit</string>
+
+    <!-- Seller Search -->
+    <string name="title_global_search_seller">Seller Search</string>
+
+    <!-- ATC Variant -->
+    <string name="title_normal_checkout">Detail Produk</string>
 </resources>

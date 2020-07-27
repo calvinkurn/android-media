@@ -512,27 +512,22 @@ public class AccountAnalytics {
         }
     }
 
-    public void eventAccountPromoClick(String creativeName, String label, int position) {
-        final Analytics tracker = TrackApp.getInstance().getGTM();
-        if (tracker != null) {
-            Map<String, Object> map = DataLayer.mapOf(
-                    EVENT, EVENT_PROMO_CLICK,
-                    EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI,
-                    EVENT_ACTION, EVENT_ACTION_ACCOUNT_PROMOTION_CLICK,
-                    EVENT_LABEL, label,
-                    ECOMMERCE, DataLayer.mapOf(
-                            PROMOTION_CLICK, DataLayer.mapOf(
-                                    PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
-                                            FIELD_ID, 0,
-                                            FIELD_NAME, VALUE_ACCOUNT_PROMOTION_NAME,
-                                            FIELD_CREATIVE, creativeName,
-                                            FIELD_CREATIVE_URL, NONE_OTHER,
-                                            FIELD_POSITION, String.valueOf(position)
-                                    )))
-                    )
-            );
-            tracker.sendEnhanceEcommerceEvent(map);
-        }
+    public void eventAccountPromoClick(String label) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY_AKUN_PEMBELI,
+                AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_CLICK, label
+        ));
+    }
+
+    public void eventAccountPromoRewardClick() {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT,
+                EVENT_CATEGORY_AKUN_PEMBELI,
+                AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_REWARD_CLICK, ""
+        ));
     }
 
     public static HashMap<String, Object> getAccountPromoImpression(String creativeName, int position) {

@@ -684,13 +684,13 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
     }
 
-    fun trackOnClickLongerContentBtn(templateKey: String) {
+    fun trackOnClickLongerContentBtn(templateKey: String, notificationId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
                         EVENT_NAME_CLICK_NOTIF_CENTER,
                         CATEGORY_NOTIF_CENTER,
                         ACTION_CLICK_LONGER_CONTENT_BUTTON,
-                        templateKey
+                        "$templateKey - $notificationId"
                 )
         )
     }

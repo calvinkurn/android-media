@@ -149,9 +149,7 @@ class DiscoveryHomeFactory {
         }
 
 
-        fun createViewHolder(parent: ViewGroup, viewType: Int, fragment: Fragment): AbstractViewHolder? {
-            val itemView: View =
-                    LayoutInflater.from(parent.context).inflate(ComponentsList.values()[viewType].id, parent, false)
+        fun createViewHolder(itemView: View, viewType: Int, fragment: Fragment): AbstractViewHolder? {
             return componentMapper[viewType]?.getViewHolder(itemView, fragment)
         }
 
@@ -160,6 +158,14 @@ class DiscoveryHomeFactory {
                 return componentMapper[viewType]!!.getComponentModels()
             }
             return ::ComingSoonViewModel
+        }
+
+        fun isStickyHeader(viewType:Int):Boolean {
+            return if(viewType != null) {
+                 viewType == ComponentsList.Tabs.ordinal
+            }else {
+                false
+            }
         }
     }
 }

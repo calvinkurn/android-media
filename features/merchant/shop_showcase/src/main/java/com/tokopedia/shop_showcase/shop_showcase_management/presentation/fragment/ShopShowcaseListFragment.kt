@@ -21,12 +21,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
@@ -50,6 +52,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
+        const val SHOP_SHOWCASE_TRACE = "mp_shop_showcase"
+
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
@@ -86,10 +90,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var emptyStateContainer: LinearLayout
     private lateinit var imgEmptyState: ImageView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var globalError: GlobalError
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShowcaseItem> = listOf()
     private var tracking: ShopShowcaseTracking? = null
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     private var shopId: String = "0"
     private var selectedEtalaseId: String? = null
@@ -98,7 +104,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
-    private var routingPage: String = ""
+    private var isReorderList = false
 
 
     override fun getScreenName(): String {
@@ -130,8 +136,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if (routingPage == PageType.ADD_SHOWCASE_PAGE) {
-                        routingPage = ""
+                    if (isNeedToGoToAddShowcase) {
+                        isNeedToGoToAddShowcase = false
                         activity?.let {
                             val intent = Intent()
                             it.setResult(Activity.RESULT_OK, intent)
@@ -140,8 +146,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     activity?.let {
-                        if (routingPage == PageType.ADD_SHOWCASE_PAGE) {
-                            routingPage = ""
+                        if (isNeedToGoToAddShowcase) {
+                            isNeedToGoToAddShowcase = false
                             val intent = Intent()
                             it.setResult(Activity.RESULT_CANCELED, intent)
                             it.finish()
@@ -162,16 +168,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { tracking = ShopShowcaseTracking(it) }
         arguments?.let {
-            shopId = it.getString(ShopShowcaseListParam.EXTRA_SHOP_ID)
-            shopType = it.getString(ShopShowcaseListParam.EXTRA_SHOP_TYPE)
+            shopId = it.getString(ShopShowcaseListParam.EXTRA_SHOP_ID, "")
+            shopType = it.getString(ShopShowcaseListParam.EXTRA_SHOP_TYPE, "")
             selectedEtalaseId = it.getString(ShopShowcaseListParam.EXTRA_ETALASE_ID)
             isShowDefault = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT)
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
-        }
-        if (isNeedToGoToAddShowcase) {
-            routingPage = PageType.ADD_SHOWCASE_PAGE
         }
         super.onCreate(savedInstanceState)
     }
@@ -180,6 +183,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         headerUnify = view.findViewById(R.id.showcase_list_toolbar)
         headerLayout = view.findViewById(R.id.header_layout)
+        globalError = view.findViewById(R.id.globalError)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
@@ -197,6 +201,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_SHOWCASE_TRACE)
         showLoading(true)
         initHeaderUnify()
         initSearchbar()
@@ -210,7 +215,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeTotalProduct()
 
         btnAddEtalase.setOnClickListener {
-            routingPage = PageType.ADD_SHOWCASE_FROM_SHOWCASE_LIST
+//            isNeedToGoToAddShowcase = true
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
         }
@@ -218,9 +223,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun initSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
-            showLoadingSwipeToRefresh(true)
-            loadData()
+            refreshData()
         }
+    }
+
+    private fun refreshData() {
+        showLoadingSwipeToRefresh(true)
+        loadData()
     }
 
     private fun initSearchbar() {
@@ -318,12 +327,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getListBuyerShopShowcaseResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    stopPerformanceMonitoring()
                     showLoading(false)
                     showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcasesByShopID.error.message
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
                     } else {
+                        hideGlobalError()
                         showcaseList = it.data.shopShowcasesByShopID.result
                         shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
                     }
@@ -331,6 +342,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 is Fail -> {
                     showLoading(false)
                     showErrorMessage(it.throwable)
+                    showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
         })
@@ -340,12 +352,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getListSellerShopShowcaseResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    stopPerformanceMonitoring()
                     showLoading(false)
                     showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcases.error.message
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
                     } else {
+                        hideGlobalError()
                         showcaseList = it.data.shopShowcases.result
                         shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
                     }
@@ -353,6 +367,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 is Fail -> {
                     showLoading(false)
                     showErrorMessage(it.throwable)
+                    showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
         })
@@ -371,10 +386,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         if (totalProduct < 1) {
                             showErrorResponse(getString(R.string.error_product_less_than_one))
                         } else if (totalProduct > 0) {
-                            if (routingPage == PageType.ADD_SHOWCASE_PAGE || routingPage == PageType.ADD_SHOWCASE_FROM_SHOWCASE_LIST) {
-                                routingPage = ""
-                                goToAddShowcase()
-                            }
+                            goToAddShowcase()
                         }
                     }
                 }
@@ -412,7 +424,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
-        if (routingPage == PageType.ADD_SHOWCASE_PAGE && isMyShop) {
+        if (isNeedToGoToAddShowcase && isMyShop) {
             checkTotalProduct()
             Handler().postDelayed({
                 viewModel.getShopShowcaseListAsSeller()
@@ -525,6 +537,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         headerUnify.actionTextView?.visibility = View.VISIBLE
     }
 
+    private fun stopPerformanceMonitoring() {
+        performanceMonitoring?.stopTrace()
+    }
+
     private fun showErrorMessage(t: Throwable) {
         view?.let {
             Toaster.showError(it,
@@ -536,6 +552,30 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showErrorResponse(message: String) {
         view?.let {
             Toaster.showError(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun showSuccessMessage(message: String) {
+        view?.let {
+            Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun hideGlobalError() {
+        globalError.visibility = View.GONE
+        headerLayout.visibility = View.VISIBLE
+        swipeRefreshLayout.visibility = View.VISIBLE
+    }
+
+    private fun showGlobalError(errorType: Int) {
+        globalError.setType(errorType)
+        globalError.visibility = View.VISIBLE
+        headerLayout.visibility = View.GONE
+        swipeRefreshLayout.visibility = View.GONE
+        loading.visibility = View.GONE
+        emptyStateContainer.visibility = View.GONE
+        globalError.setActionClickListener {
+            refreshData()
         }
     }
 
@@ -561,7 +601,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
             tracking?.clickSusun(shopId, shopType)
 
-            routingPage = PageType.REORDER_SHOWCASE_PAGE
             shopShowcaseFragmentNavigation.navigateToPage(
                     PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
                     null, shopShowcaseViewModelList)

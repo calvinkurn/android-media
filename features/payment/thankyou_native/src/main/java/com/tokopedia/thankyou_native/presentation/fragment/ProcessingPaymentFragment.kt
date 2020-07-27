@@ -23,7 +23,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
     }
@@ -59,6 +59,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
             refreshThanksPageData()
         }
         btnShopAgain.setOnClickListener {
