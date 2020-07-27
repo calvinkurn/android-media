@@ -8,20 +8,31 @@ import org.jetbrains.annotations.Nullable
 
 @Entity(tableName = HISTORY_NOTIFICATION_TABLE)
 data class HistoryNotificationDB(
+
+    @Nullable
     @ColumnInfo(name = "sender_name")
+    var senderName: String? = "",
+
     @Nullable
-    var senderName: String?,
     @ColumnInfo(name = "message")
+    var message: String? = "",
+
     @Nullable
-    var message: String?,
     @ColumnInfo(name = "notification_type")
+    var notificationType: Int? = 0,
+
     @Nullable
-    var notificationType: Int?,
     @ColumnInfo(name = "notification_id")
+    var notificationId: Int? = 0,
+
     @Nullable
-    var notificationId: Int?
+    @ColumnInfo(name = "trans_id")
+    var transId: Int? = 0
+
 ) {
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = 0
+
 }
