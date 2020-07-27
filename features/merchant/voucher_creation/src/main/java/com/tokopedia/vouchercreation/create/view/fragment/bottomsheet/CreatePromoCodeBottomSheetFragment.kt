@@ -113,11 +113,6 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
         }
     }
 
-    override fun onDestroy() {
-        viewModel.flush()
-        super.onDestroy()
-    }
-
     private fun initInjector() {
         DaggerVoucherCreationComponent.builder()
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)

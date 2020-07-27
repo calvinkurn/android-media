@@ -192,10 +192,15 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
 
 
     private fun showBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
-        if (bottomSheetType == CreateVoucherBottomSheetType.VOUCHER_DISPLAY) {
-            onBeforeShowBottomSheet(bottomSheetType)
+        when(bottomSheetType) {
+            CreateVoucherBottomSheetType.CREATE_PROMO_CODE -> {
+                getCreatePromoCodeBottomSheet().show(childFragmentManager, bottomSheetType.tag)
+            }
+            CreateVoucherBottomSheetType.VOUCHER_DISPLAY -> {
+                onBeforeShowBottomSheet(bottomSheetType)
+                bottomSheetViewArray.get(bottomSheetType.key)?.show(childFragmentManager, bottomSheetType.tag)
+            }
         }
-        bottomSheetViewArray.get(bottomSheetType.key)?.show(childFragmentManager, bottomSheetType.tag)
     }
 
     override fun onDestroy() {
@@ -423,5 +428,19 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
 
     private fun getClickedVoucherDisplayType() : VoucherTargetCardType = lastClickedVoucherDisplayType
 
+    private fun getCreatePromoCodeBottomSheet() =
+            CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix).apply {
+                setCloseClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = VoucherCreationStep.TARGET,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.CLOSE_PRIVATE,
+                            userId = userSession.userId
+                    )
+                    dismiss()
+                }
+                setOnDismissListener {
+                    onDismissBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE)
+                }
+            }
 
 }
