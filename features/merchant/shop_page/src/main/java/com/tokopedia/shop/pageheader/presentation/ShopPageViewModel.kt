@@ -142,7 +142,7 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
             sortId: Int,
             isRefresh: Boolean
     ): Pair<Boolean, List<ShopProductViewModel>> {
-        useCase.isFromCacheFirst = !isRefresh
+        useCase.isFromCacheFirst = isRefresh
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
                 page,perPage,keyword,etalaseId,sortId
         ))
