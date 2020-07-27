@@ -25,8 +25,8 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
-import com.tokopedia.statistic.presentation.model.DateRangeItem
-import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
+import com.tokopedia.statistic.presentation.model.DateFilterItem
+import com.tokopedia.statistic.presentation.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.presentation.view.itemdecoration.StatisticItemDecoration
 import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener
@@ -69,7 +69,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private val mLayoutManager by lazy { StatisticLayoutManager(context, 2) }
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext(), childFragmentManager) }
+    private val dateFilterBottomSheet by lazy { DateFilterBottomSheet(requireContext(), childFragmentManager) }
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
     private val defaultEndDate = Date()
     private val job = Job()
@@ -282,7 +282,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun selectDateRange() {
         if (!isAdded) return
-        dateRangeBottomSheet
+        dateFilterBottomSheet
                 .setOnApplyChanges {
                     setHeaderSubTitle(it.getHeaderSubTitle())
                     applyDateRange(it)
@@ -290,7 +290,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 .show()
     }
 
-    private fun applyDateRange(item: DateRangeItem) {
+    private fun applyDateRange(item: DateFilterItem) {
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
         mViewModel.setDateRange(startDate, endDate)

@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_calendar_picker.view.*
 import java.util.*
@@ -119,7 +119,7 @@ class CalendarPicker(
                 valueStr = if (mode == CalendarPickerView.SelectionMode.SINGLE) {
                     DateTimeUtil.format(startDate.time, "dd MMM yyyy")
                 } else {
-                    DateRangeFormatUtil.getDateRangeStr(startDate, endDate)
+                    DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
                 }
             }
         }

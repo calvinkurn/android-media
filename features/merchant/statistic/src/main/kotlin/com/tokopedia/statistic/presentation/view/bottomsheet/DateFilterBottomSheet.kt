@@ -7,9 +7,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.presentation.model.DateRangeItem
-import com.tokopedia.statistic.presentation.view.adapter.DateRangeAdapter
-import com.tokopedia.statistic.presentation.view.adapter.factory.DateRangeAdapterFactoryImpl
+import com.tokopedia.statistic.presentation.model.DateFilterItem
+import com.tokopedia.statistic.presentation.view.adapter.DateFilterAdapter
+import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactoryImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_select_date_range.view.*
 import java.util.*
@@ -19,28 +19,28 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class SelectDateRageBottomSheet(
+class DateFilterBottomSheet(
         private val mContext: Context,
         private val fm: FragmentManager
-) : BottomSheetUnify(), DateRangeAdapterFactoryImpl.Listener {
+) : BottomSheetUnify(), DateFilterAdapterFactoryImpl.Listener {
 
     companion object {
         private const val DAYS_7 = 7
         private const val DAYS_30 = 30
     }
 
-    private var applyChangesCallback: (DateRangeItem) -> Unit = {}
-    private val mAdapter by lazy { DateRangeAdapter(this, fm) }
-    private val items: MutableList<DateRangeItem> by lazy {
+    private var applyChangesCallback: (DateFilterItem) -> Unit = {}
+    private val mAdapter by lazy { DateFilterAdapter(this, fm) }
+    private val items: MutableList<DateFilterItem> by lazy {
         mutableListOf(
                 getDateRangeItemToday(),
-                getDateRangeItemClick(DAYS_7, DateRangeItem.TYPE_LAST_7_DAYS, true),
-                getDateRangeItemClick(DAYS_30, DateRangeItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                DateRangeItem.Divider,
-                getDateRangePerDay(),
-                getDateRangePerWeek(),
+                getDateFilterItemClick(DAYS_7, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                getDateFilterItemClick(DAYS_30, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                DateFilterItem.Divider,
+                getDateFilterPerDay(),
+                getDateFilterPerWeek(),
                 //getDateRangePerMonth(),
-                DateRangeItem.ApplyButton
+                DateFilterItem.ApplyButton
         )
     }
 
@@ -54,7 +54,7 @@ class SelectDateRageBottomSheet(
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
-    override fun onItemDateRangeClick(model: DateRangeItem) {
+    override fun onItemDateRangeClick(model: DateFilterItem) {
         items.forEach {
             if (it != model) {
                 it.isSelected = false
@@ -69,7 +69,7 @@ class SelectDateRageBottomSheet(
         dismissAllowingStateLoss()
     }
 
-    fun setOnApplyChanges(callback: (DateRangeItem) -> Unit): SelectDateRageBottomSheet {
+    fun setOnApplyChanges(callback: (DateFilterItem) -> Unit): DateFilterBottomSheet {
         this.applyChangesCallback = callback
         return this
     }
@@ -88,13 +88,13 @@ class SelectDateRageBottomSheet(
         mAdapter.addElement(items)
     }
 
-    private fun getDateRangePerDay(): DateRangeItem.Pick {
+    private fun getDateFilterPerDay(): DateFilterItem.Pick {
         val label = mContext.getString(R.string.stc_per_day)
         val today = Date()
-        return DateRangeItem.Pick(label, today, today, type = DateRangeItem.TYPE_PER_DAY)
+        return DateFilterItem.Pick(label, today, today, type = DateFilterItem.TYPE_PER_DAY)
     }
 
-    private fun getDateRangePerWeek(): DateRangeItem.Pick {
+    private fun getDateFilterPerWeek(): DateFilterItem.Pick {
         val calendar: Calendar = Calendar.getInstance()
         calendar.firstDayOfWeek = Calendar.MONDAY
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
@@ -107,19 +107,19 @@ class SelectDateRageBottomSheet(
         }
         val lastDateOfWeek = Date(firstDateOfWeek.time + m6Day)
         val label = mContext.getString(R.string.stc_per_week)
-        return DateRangeItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateRangeItem.TYPE_PER_WEEK)
+        return DateFilterItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK)
     }
 
-    private fun getDateRangeItemClick(nPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateRangeItem.Click {
+    private fun getDateFilterItemClick(nPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateFilterItem.Click {
         val label: String = mContext.getString(R.string.stc_last_n_days, nPastDays)
         val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.minus(1).toLong()))
         val endDate = Date()
-        return DateRangeItem.Click(label, startDate, endDate, isSelected, type, showBottomBorder)
+        return DateFilterItem.Click(label, startDate, endDate, isSelected, type, showBottomBorder)
     }
 
-    private fun getDateRangeItemToday(): DateRangeItem {
+    private fun getDateRangeItemToday(): DateFilterItem {
         val label = mContext.getString(R.string.stc_today_real_time)
         val today = Date()
-        return DateRangeItem.Click(label, today, today, false, DateRangeItem.TYPE_TODAY)
+        return DateFilterItem.Click(label, today, today, false, DateFilterItem.TYPE_TODAY)
     }
 }
