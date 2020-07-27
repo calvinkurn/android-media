@@ -133,6 +133,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         viewModel.detachView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        trackOpenScreen()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
@@ -144,6 +149,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         } else if (requestCode == FREE_SHIPPING_INTENT_CODE){
             refreshData()
         }
+    }
+
+    private fun trackOpenScreen() {
+        powerMerchantTracking.eventOpenScreen(screenName)
     }
 
     private fun showEmptyState(throwable: Throwable) {
