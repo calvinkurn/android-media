@@ -67,10 +67,11 @@ internal open class SearchShopViewModelTestFixtures {
     }
 
     protected fun `Then assert quick filter is shown`(filterList: List<Filter>, selectedFilterIndexList: List<Int> = listOf(0)) {
-        val searchShopQuickFilterLiveData = searchShopViewModel.getSortFilterItemListLiveData().value!!
-        searchShopQuickFilterLiveData.shouldBeInstanceOf<State.Success<*>>()
+        searchShopViewModel.getQuickFilterIsVisibleLiveData().value shouldBe true
+        searchShopViewModel.getShimmeringQuickFilterIsVisibleLiveData().value shouldBe false
 
-        val sortFilterItemList = searchShopQuickFilterLiveData.data!!
+        val sortFilterItemList = searchShopViewModel.getSortFilterItemListLiveData().value!!
+
         sortFilterItemList.shouldHaveSize(filterList.size)
         sortFilterItemList.forEachIndexed { index, sortFilterItem ->
             val option = filterList.map { it.options }.flatten()[index]

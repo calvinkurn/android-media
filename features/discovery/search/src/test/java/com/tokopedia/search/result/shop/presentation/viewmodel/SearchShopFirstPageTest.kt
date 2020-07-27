@@ -2,14 +2,13 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
-import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.search.TestException
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.*
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.utils.createDefaultQuickFilter
+import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
 import org.junit.Test
 
 internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
@@ -198,7 +197,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop state is error with no data`()
         `Then assert has next page is false`()
         `Then assert get dynamic filter API never called`()
-        `Then assert quick filter is not shown`()
+        `Then assert all view is hidden`()
     }
 
     private fun `Given search shop API call will fail`(exception: Exception) {
@@ -220,10 +219,10 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         getDynamicFilterUseCase.isNeverExecuted()
     }
 
-    private fun `Then assert quick filter is not shown`() {
-        val searchShopQuickFilterLiveData = searchShopViewModel.getSortFilterItemListLiveData().value!!
-
-        searchShopQuickFilterLiveData.shouldBeInstanceOf<State.Error<*>>()
+    private fun `Then assert all view is hidden`() {
+        searchShopViewModel.getQuickFilterIsVisibleLiveData().value shouldBe false
+        searchShopViewModel.getShimmeringQuickFilterIsVisibleLiveData().value shouldBe false
+        searchShopViewModel.getRefreshLayoutIsVisibleLiveData().value shouldBe false
     }
 
     @Test
@@ -235,7 +234,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         `Then assert search shop page first page is successful`()
         `Then assert has next page is true`()
         `Then assert get dynamic filter API called once`()
-        `Then assert quick filter is shown`(createDefaultQuickFilter().filter)
+        `Then assert quick filter is shown`(createSearchShopDefaultQuickFilter().filter)
     }
 
     private fun `Given search shop API call will be successful and return search shop data with empty quick filter`() {

@@ -29,7 +29,7 @@ internal class SearchShopClickQuickFilterTest: SearchShopViewModelTestFixtures()
     private fun SearchShopModel.FilterSort.getOptionList() = data.filter.map { it.options }.flatten()
 
     private fun `When click quick filter`(index: Int) {
-        val sortFilterItemList = searchShopViewModel.getSortFilterItemListLiveData().value?.data
+        val sortFilterItemList = searchShopViewModel.getSortFilterItemListLiveData().value
                 ?: throw AssertionError("Sort Filter Item List is null")
 
         sortFilterItemList[index].listener()

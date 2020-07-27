@@ -21,7 +21,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.utils.convertValuesToString
-import com.tokopedia.search.utils.createDefaultQuickFilter
+import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -72,7 +72,10 @@ internal class SearchShopViewModel(
     private val routePageEventLiveData = MutableLiveData<Event<String>>()
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
-    private val sortFilterItemListLiveData = MutableLiveData<State<List<SortFilterItem>>>()
+    private val sortFilterItemListLiveData = MutableLiveData<List<SortFilterItem>>()
+    private val quickFilterIsVisible = MutableLiveData<Boolean>()
+    private val shimmeringQuickFilterIsVisible = MutableLiveData<Boolean>()
+    private val refreshLayoutIsVisible = MutableLiveData<Boolean>()
     var dynamicFilterModel: DynamicFilterModel? = null
 
     init {
@@ -145,7 +148,10 @@ internal class SearchShopViewModel(
 
     private fun updateSearchShopLiveDataStateToLoading() {
         searchShopLiveData.postValue(Loading())
-        sortFilterItemListLiveData.postValue(Loading())
+
+        quickFilterIsVisible.value = false
+        shimmeringQuickFilterIsVisible.value = true
+        refreshLayoutIsVisible.value = true
     }
 
     private fun createSearchShopParam(): RequestParams {
@@ -423,12 +429,14 @@ internal class SearchShopViewModel(
 
     private fun processQuickFilter(searchShopModel: SearchShopModel) {
         if (searchShopModel.getFilterList().size < QUICK_FILTER_MINIMUM_SIZE)
-            searchShopModel.quickFilter.data = createDefaultQuickFilter()
+            searchShopModel.quickFilter.data = createSearchShopDefaultQuickFilter()
 
         filterController.initFilterController(searchParameter.convertValuesToString(), searchShopModel.getFilterList())
 
         val sortFilterItemList = createSortFilterItemList(searchShopModel)
-        sortFilterItemListLiveData.postValue(Success(sortFilterItemList))
+        sortFilterItemListLiveData.value = sortFilterItemList
+        quickFilterIsVisible.value = true
+        shimmeringQuickFilterIsVisible.value = false
     }
 
     private fun createSortFilterItemList(searchShopModel: SearchShopModel): List<SortFilterItem> {
@@ -466,8 +474,11 @@ internal class SearchShopViewModel(
         hasNextPage = false
         searchShopLiveData.postValue(Error("", searchShopMutableList))
 
-        if (searchShopMutableList.isEmpty())
-            sortFilterItemListLiveData.value = Error("")
+        if (searchShopMutableList.isEmpty()) {
+            quickFilterIsVisible.value = false
+            shimmeringQuickFilterIsVisible.value = false
+            refreshLayoutIsVisible.value = false
+        }
     }
 
     private fun getDynamicFilter() {
@@ -763,6 +774,12 @@ internal class SearchShopViewModel(
     fun getClickProductRecommendationItemTrackingEventLiveData(): LiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>> =
             clickProductRecommendationItemTrackingEventLiveData
 
-    fun getSortFilterItemListLiveData(): LiveData<State<List<SortFilterItem>>> =
+    fun getSortFilterItemListLiveData(): LiveData<List<SortFilterItem>> =
             sortFilterItemListLiveData
+
+    fun getQuickFilterIsVisibleLiveData(): LiveData<Boolean> = quickFilterIsVisible
+
+    fun getShimmeringQuickFilterIsVisibleLiveData(): LiveData<Boolean> = shimmeringQuickFilterIsVisible
+
+    fun getRefreshLayoutIsVisibleLiveData(): LiveData<Boolean> = refreshLayoutIsVisible
 }

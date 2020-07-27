@@ -25,6 +25,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
@@ -177,6 +178,9 @@ internal class ShopListFragment:
         observeTrackingClickProductItem()
         observeTrackingClickProductRecommendation()
         observeQuickFilterLiveData()
+        observeRefreshLayoutVisibility()
+        observeShimmeringLayoutVisibility()
+        observeQuickFilterVisibility()
     }
 
     private fun observeSearchShopLiveData() {
@@ -233,16 +237,32 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewClickRetry()
             }
 
-            if (isSearchShopLiveDataContainItems(searchShopLiveData)) {
-                NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+            if (isSearchShopDataEmpty(searchShopLiveData)) {
+                showNetworkErrorOnEmptyList(activity, retryClickedListener)
             } else {
-                NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+                showNetworkErrorOnLoadMore(activity, retryClickedListener)
             }
         }
     }
 
-    private fun isSearchShopLiveDataContainItems(searchShopLiveData: State<List<Visitable<*>>>): Boolean {
+    private fun isSearchShopDataEmpty(searchShopLiveData: State<List<Visitable<*>>>): Boolean {
         return searchShopLiveData.data?.size == 0
+    }
+
+    private fun showNetworkErrorOnEmptyList(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener) {
+        hideViewOnError()
+
+        NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+    }
+
+    private fun hideViewOnError() {
+        searchShopQuickSortFilter?.hide()
+        shimmeringViewShopQuickFilter?.hide()
+        refreshLayout?.hide()
+    }
+
+    private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener) {
+        NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
     }
 
     private fun observeGetDynamicFilterEvent() {
@@ -455,25 +475,8 @@ internal class ShopListFragment:
 
     private fun observeQuickFilterLiveData() {
         searchShopViewModel?.getSortFilterItemListLiveData()?.observe(viewLifecycleOwner, Observer {
-            updateQuickFilterView(it)
+            showQuickFilterView(it)
         })
-    }
-
-    private fun updateQuickFilterView(quickFilterState: State<List<SortFilterItem>>) {
-        when(quickFilterState) {
-            is State.Success -> {
-                showQuickFilterView(quickFilterState.data)
-                shimmeringViewShopQuickFilter?.hide()
-            }
-            is State.Loading -> {
-                shimmeringViewShopQuickFilter?.visible()
-                searchShopQuickSortFilter?.hide()
-            }
-            is State.Error -> {
-                shimmeringViewShopQuickFilter?.hide()
-                searchShopQuickSortFilter?.hide()
-            }
-        }
     }
 
     private fun showQuickFilterView(sortFilterItemList: List<SortFilterItem>?) {
@@ -489,6 +492,24 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewOpenFilterPage()
             }
         }
+    }
+
+    private fun observeRefreshLayoutVisibility() {
+        searchShopViewModel?.getRefreshLayoutIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
+            refreshLayout?.showWithCondition(it)
+        })
+    }
+
+    private fun observeShimmeringLayoutVisibility() {
+        searchShopViewModel?.getShimmeringQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
+            shimmeringViewShopQuickFilter?.showWithCondition(it)
+        })
+    }
+
+    private fun observeQuickFilterVisibility() {
+        searchShopViewModel?.getQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
+            searchShopQuickSortFilter?.showWithCondition(it)
+        })
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
