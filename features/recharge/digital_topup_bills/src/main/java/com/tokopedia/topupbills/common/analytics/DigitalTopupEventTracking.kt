@@ -17,6 +17,8 @@ interface DigitalTopupEventTracking {
             const val IS_LOGIN_STATUS = "isLoggedInStatus"
             const val CATEGORY = "category"
             const val CATEGORY_ID = "digitalCategoryId"
+            const val VALUE_ITEMS = "items"
+            const val VALUE_ITEM_LIST = "item_list"
         }
     }
 
@@ -27,7 +29,10 @@ interface DigitalTopupEventTracking {
             val PROMO_CLICK = "promoClick"
             val PRODUCT_VIEW = "productView"
             val PRODUCT_CLICK = "productClick"
-            val ADD_TO_CART = "addToCart"
+
+            val VIEW_ITEM_LIST = "view_item_list"
+            val SELECT_CONTENT = "select_content"
+            val ADD_TO_CART = "add_to_cart"
         }
     }
 
@@ -45,7 +50,7 @@ interface DigitalTopupEventTracking {
             val INPUT_FROM_WIDGET = "input from widget"
             val INPUT_FROM_FAVORITE_NUMBER = "input from favorite number"
             val CLEAR_INPUT_NUMBER = "click x on input number"
-            val PRODUCT_CARD_IMPRESSION = "impression on product cluster"
+            val PRODUCT_CARD_IMPRESSION = "impression product cluster"
             val CLICK_PRODUCT_CARD = "click product cluster"
             val CLICK_BACK_BUTTON = "user click back button"
             val CLICK_SEE_MORE = "user click see more"
@@ -70,6 +75,16 @@ interface DigitalTopupEventTracking {
 
     interface EnhanceEccomerce {
         companion object {
+            const val PARAM_ITEM_ID = "item_id"
+            const val PARAM_ITEM_NAME = "item_name"
+            const val PARAM_ITEM_BRAND = "item_brand"
+            const val PARAM_ITEM_CATEGORY = "item_category"
+            const val PARAM_ITEM_VARIANT = "item_variant"
+            const val PARAM_QUANTITY = "quantity"
+            const val PARAM_PRICE = "price"
+            const val PARAM_INDEX = "index"
+            const val PARAM_DIMENSION = "dimension40"
+
             internal var NAME = "name"
             internal var ID = "id"
             internal var PRICE = "price"
