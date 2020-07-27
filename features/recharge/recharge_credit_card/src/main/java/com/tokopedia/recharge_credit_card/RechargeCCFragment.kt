@@ -126,8 +126,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun getDataBundle() {
         arguments?.let {
-            categoryId = it.getString(CATEGORY_ID)
-            menuId = it.getString(MENU_ID)
+            categoryId = it.getString(CATEGORY_ID, "")
+            menuId = it.getString(MENU_ID, "")
         }
     }
 

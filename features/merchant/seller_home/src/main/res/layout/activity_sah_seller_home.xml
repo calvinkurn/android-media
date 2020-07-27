@@ -4,10 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.sellerhome.view.widget.toolbar.SellerHomeToolbar
+        android:id="@+id/sahToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Neutral_N0"
+        android:minHeight="?attr/actionBarSize" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sahContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/sahToolbar"
         android:layout_above="@+id/sahBottomNav"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

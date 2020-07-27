@@ -45,7 +45,7 @@ class InvoiceFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
     }

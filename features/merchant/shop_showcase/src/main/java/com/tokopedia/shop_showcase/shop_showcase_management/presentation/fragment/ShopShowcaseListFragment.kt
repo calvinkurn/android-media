@@ -168,8 +168,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { tracking = ShopShowcaseTracking(it) }
         arguments?.let {
-            shopId = it.getString(ShopShowcaseListParam.EXTRA_SHOP_ID)
-            shopType = it.getString(ShopShowcaseListParam.EXTRA_SHOP_TYPE)
+            shopId = it.getString(ShopShowcaseListParam.EXTRA_SHOP_ID, "")
+            shopType = it.getString(ShopShowcaseListParam.EXTRA_SHOP_TYPE, "")
             selectedEtalaseId = it.getString(ShopShowcaseListParam.EXTRA_ETALASE_ID)
             isShowDefault = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT)
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)

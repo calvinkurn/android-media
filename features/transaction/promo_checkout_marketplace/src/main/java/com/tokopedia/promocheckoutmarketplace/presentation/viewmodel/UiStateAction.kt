@@ -46,5 +46,6 @@ data class GetPromoLastSeenAction(
 ) {
     companion object {
         val ACTION_SHOW = 1
+        val ACTION_RELEASE_LOCK_FLAG = 2
     }
 }

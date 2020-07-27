@@ -143,7 +143,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             categoryId = product.categoryId
             category = product.category
             productFinsurance = product.productFinsurance
-            isSlashPrice = product.isSlashPrice
+            isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
         }
         return orderProduct

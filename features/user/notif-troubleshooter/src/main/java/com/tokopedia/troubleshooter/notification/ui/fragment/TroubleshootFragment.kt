@@ -30,8 +30,10 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.ConfigUIView.Companion.importantNotification
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
 import com.tokopedia.troubleshooter.notification.util.gotoNotificationSetting
+import com.tokopedia.troubleshooter.notification.util.isNotNull
 import com.tokopedia.troubleshooter.notification.util.prefixToken
 import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
@@ -103,19 +105,37 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener {
 
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
             setUpdateTokenStatus(newToken)
+            Timber.d("Troubleshoot Token $newToken")
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer { status ->
             setNotificationSettingStatus(status)
+            Timber.d("Troubleshoot Setting $status")
         })
 
         viewModel.notificationImportance.observe(viewLifecycleOwner, Observer { status ->
             setNotificationImportanceStatus(status)
+            Timber.d("Troubleshoot Importance $status")
         })
 
         viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer { ringtone ->
             adapter.setRingtoneStatus(ringtone, ringtone != null)
         })
+
+        viewModel.combineTuple(viewModel.token, viewModel.notificationSetting, viewModel.notificationImportance)
+                .observe(viewLifecycleOwner, Observer {triple ->
+                    Timber.d("Troubleshoot Triple $triple")
+                    sendLog(triple)
+        })
+    }
+
+    private fun sendLog(triple: Triple<String?, Boolean?, Int?>) {
+        if(triple.first.isNullOrEmpty() || !triple.second.isNotNull() || !triple.third.isNotNull()) return
+
+        Timber.w("P2#LOG_PUSH_NOTIF#'Troubleshooter';token='%s';setting='%s';importance='%s';",
+                triple.first,
+                triple.second,
+                triple.third)
     }
 
     private fun setUpdateTokenStatus(newToken: String) {

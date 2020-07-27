@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUsePromoRevamp
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -40,6 +41,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
                                                  private val analytics: PromoCheckoutAnalytics,
+                                                 private val userSession: UserSessionInterface,
                                                  private val gson: Gson)
     : BaseViewModel(dispatcher) {
 
@@ -966,7 +968,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         launchCatchError(block = {
             doGetPromoLastSeen(query)
         }) {
-            // no-op
+            getPromoLastSeenResponse.value?.let {
+                it.state = GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG
+                _getPromoLastSeenResponse.value = it
+            }
         }
     }
 
@@ -1655,5 +1660,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     fun sendAnalyticsDismissLastSeen() {
         analytics.eventDismissLastSeen(getPageSource())
+    }
+
+    fun sendAnalyticsClickPromoInputField() {
+        analytics.eventClickInputField(getPageSource(), userSession.userId)
+    }
+
+    fun sendAnalyticsViewLastSeenPromo() {
+        analytics.eventShowLastSeenPopUp(getPageSource(), userSession.userId)
     }
 }

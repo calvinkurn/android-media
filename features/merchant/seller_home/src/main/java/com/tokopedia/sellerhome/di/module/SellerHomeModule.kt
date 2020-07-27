@@ -30,7 +30,6 @@ import javax.inject.Named
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-@SellerHomeScope
 @Module
 class SellerHomeModule {
 
