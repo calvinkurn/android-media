@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 
 object CampaignStock {
-    const val MAX_STOCK_COUNT = 999_999
+    const val MAX_STOCK_COUNT = 999999
 }
 
 /**
