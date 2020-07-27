@@ -10,7 +10,9 @@ import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.home.ui.dataview.BannersDataView
-import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
+import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
+import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.track.TrackApp
@@ -370,23 +372,10 @@ class DealsAnalytics @Inject constructor(
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.Event.PROMO_VIEW, DataLayer.mapOf(
-                DealsAnalyticsConstants.PROMOTIONS, getECommerceDataHomePageBanner(promotions, bannerPosition)
+                DealsAnalyticsConstants.PROMOTIONS, getECommerceHomePageBannerData(listOf(promotions), bannerPosition)
         )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
-    }
-
-
-    private fun getECommerceDataHomePageBanner(promotions: BannersDataView.BannerDataView, position: Int): MutableMap<String, Any> {
-        return DataLayer.mapOf(
-                DealsAnalyticsConstants.Promotions.id, promotions.bannerId,
-                DealsAnalyticsConstants.Promotions.name, promotions.bannerName,
-                DealsAnalyticsConstants.Promotions.creative, promotions.bannerName,
-                DealsAnalyticsConstants.Promotions.creative_url, promotions.bannerImageUrl,
-                DealsAnalyticsConstants.Promotions.position, position + 1,
-                DealsAnalyticsConstants.Promotions.category, DealsAnalyticsConstants.Category.DIGITAL_DEALS
-        )
-
     }
 
     fun eventClickHomePageBanner(bannerId: String, bannerPosition: Int, promotions: BannersDataView.BannerDataView) {
@@ -398,22 +387,25 @@ class DealsAnalytics @Inject constructor(
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.Event.PROMO_CLICK, DataLayer.mapOf(
-                DealsAnalyticsConstants.PROMOTIONS, getECommerceDataClickHomePageBanner(promotions, bannerPosition)
+                DealsAnalyticsConstants.PROMOTIONS, getECommerceHomePageBannerData(listOf(promotions), bannerPosition)
         )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getECommerceDataClickHomePageBanner(promotions: BannersDataView.BannerDataView, position: Int): MutableMap<String, Any> {
-        return DataLayer.mapOf(
-                DealsAnalyticsConstants.Promotions.id, promotions.bannerId,
-                DealsAnalyticsConstants.Promotions.name, promotions.bannerName,
-                DealsAnalyticsConstants.Promotions.creative, promotions.bannerName,
-                DealsAnalyticsConstants.Promotions.creative_url, promotions.bannerImageUrl,
-                DealsAnalyticsConstants.Promotions.position, position + 1,
-                DealsAnalyticsConstants.Promotions.category, DealsAnalyticsConstants.Category.DIGITAL_DEALS
-        )
-
+    private fun getECommerceHomePageBannerData(promotions: List<BannersDataView.BannerDataView>, startPosition: Int = 0): MutableList<MutableMap<String, Any>> {
+        val data = mutableListOf<MutableMap<String, Any>>()
+        for ((index, banner) in promotions.withIndex()) {
+            data.add(DataLayer.mapOf(
+                    DealsAnalyticsConstants.Promotions.id, banner.bannerId,
+                    DealsAnalyticsConstants.Promotions.name, banner.bannerName,
+                    DealsAnalyticsConstants.Promotions.creative, banner.bannerName,
+                    DealsAnalyticsConstants.Promotions.creative_url, banner.bannerImageUrl,
+                    DealsAnalyticsConstants.Promotions.position, startPosition + index + 1,
+                    DealsAnalyticsConstants.Promotions.category, DealsAnalyticsConstants.Category.DIGITAL_DEALS
+            ))
+        }
+        return data
     }
 
     fun eventClickAllBanner() {
@@ -538,9 +530,9 @@ class DealsAnalytics @Inject constructor(
                 String.format(DealsAnalyticsConstants.Label.BRAND_CLICK, item.title, position + 1)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
-                DealsAnalyticsConstants.PRODUCTS, getECommerceDataClickBrandPopular(item, position)
-        )
+                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(
+                    DealsAnalyticsConstants.ACTION_FIELD, DataLayer.mapOf(DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST),
+                    DealsAnalyticsConstants.PRODUCTS, getECommerceDataClickBrandPopular(item, position))
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -558,7 +550,7 @@ class DealsAnalytics @Inject constructor(
         return listProduct
     }
 
-    fun eventClickCategorySectionOne() {
+    fun eventClickViewAllProductCardInHomepage() {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.CLICK_DEALS,
@@ -612,8 +604,9 @@ class DealsAnalytics @Inject constructor(
         )
 
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD, DealsAnalyticsConstants.PRODUCT_HOME_PAGE_LIST,
-                DealsAnalyticsConstants.PRODUCTS, getCuratedProductClick(productCardDataView, position)
+                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(
+                    DealsAnalyticsConstants.ACTION_FIELD, DataLayer.mapOf(DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.PRODUCT_HOME_PAGE_LIST),
+                    DealsAnalyticsConstants.PRODUCTS, getCuratedProductClick(productCardDataView, position)
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -731,102 +724,97 @@ class DealsAnalytics @Inject constructor(
         return dataImpressions
     }
 
-    fun eventSeePopularLandmarkView(item: ProductCardDataView, position: Int) {
+    fun eventSeePopularLandmarkView(voucherPlaceCard: VoucherPlacePopularDataView, position: Int) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PROMO_VIEW,
                 DealsAnalyticsConstants.Action.IMPRESSION_ON_POPULAR_LANDMARK,
-                String.format(DealsAnalyticsConstants.Label.POPULAR_LANDMARK_VIEW, item.title, position)
+                String.format(DealsAnalyticsConstants.Label.POPULAR_LANDMARK_VIEW, voucherPlaceCard.title, position)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.Event.PROMO_VIEW, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS, getECommerceLandmarkPopular(item, position)
+                DealsAnalyticsConstants.Event.PROMO_VIEW, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS,
+                getECommerceLandmarkPopular(voucherPlaceCard.voucherPlaceCards)
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getECommerceLandmarkPopular(item: ProductCardDataView, position: Int): MutableList<MutableMap<String, Any>> {
-        val dataPromotions = mutableListOf<MutableMap<String, Any>>()
-        item.apply {
-            val promotions = DataLayer.mapOf(
-                    DealsAnalyticsConstants.Promotions.id, item.id,
-                    DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_POPULAR_LANDMARK,
-                    DealsAnalyticsConstants.Promotions.creative, title,
-                    DealsAnalyticsConstants.Promotions.position, position + 1
-
-            )
-            dataPromotions.add(promotions)
-        }
-        return dataPromotions
-    }
-
-    fun eventClickLandmarkPopular(item: ProductCardDataView, position: Int) {
+    fun eventClickLandmarkPopular(item: VoucherPlaceCardDataView, position: Int) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PROMO_CLICK,
                 DealsAnalyticsConstants.Action.CLICK_ON_POPULAR_LANDMARK,
-                String.format(DealsAnalyticsConstants.Label.POPULAR_LANDMARK_CLICK, item.title, position)
+                String.format(DealsAnalyticsConstants.Label.POPULAR_LANDMARK_CLICK, item.name, position)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.Event.PROMO_VIEW, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS, getECommerceClickLandmarkPopular(item, position)
-        ))
+                DealsAnalyticsConstants.Event.PROMO_CLICK, DataLayer.mapOf(
+                    DealsAnalyticsConstants.PROMOTIONS, getECommerceLandmarkPopular(listOf(item), position))
+        )
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getECommerceClickLandmarkPopular(item: ProductCardDataView, position: Int): MutableList<MutableMap<String, Any>> {
+    private fun getECommerceLandmarkPopular(items: List<VoucherPlaceCardDataView>, startPosition: Int = 0): MutableList<MutableMap<String, Any>> {
         val dataPromotions = mutableListOf<MutableMap<String, Any>>()
-        item.apply {
-            val promotions = DataLayer.mapOf(
-                    DealsAnalyticsConstants.Promotions.id, item.id,
-                    DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_CURATED_CARD,
-                    DealsAnalyticsConstants.Promotions.creative, title,
-                    DealsAnalyticsConstants.Promotions.creative_url, imageUrl,
-                    DealsAnalyticsConstants.Promotions.position, position + 1
+        for ((index, item) in items.withIndex()) {
+            item.apply {
+                val promotions = DataLayer.mapOf(
+                        DealsAnalyticsConstants.Promotions.id, item.id,
+                        DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_POPULAR_LANDMARK,
+                        DealsAnalyticsConstants.Promotions.creative, item.name,
+                        DealsAnalyticsConstants.Promotions.creative_url, imageUrl,
+                        DealsAnalyticsConstants.Promotions.position, index + 1 + startPosition
 
-            )
-            dataPromotions.add(promotions)
+                )
+                dataPromotions.add(promotions)
+            }
         }
         return dataPromotions
     }
 
-    fun eventSeeCuratedSection(place: FavouritePlacesDataView.Place, position: Int) {
+
+    fun eventSeeCuratedSection(curatedCategoryDataView: CuratedCategoryDataView, position: Int) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PROMO_VIEW,
                 DealsAnalyticsConstants.Action.IMPRESSION_ON_CURATED_CARD,
-                String.format(DealsAnalyticsConstants.Label.CURATED_CARD_VIEW, place.name, position)
+                String.format(DealsAnalyticsConstants.Label.CURATED_CARD_VIEW, curatedCategoryDataView.title, position)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.Event.PROMO_VIEW, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS, getECommerceViewCurated(place, position)
+                DealsAnalyticsConstants.Event.PROMO_VIEW, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS,
+                getECommerceViewCurated(curatedCategoryDataView.curatedCategories)
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun eventClickCuratedSection(place: FavouritePlacesDataView.Place, position: Int) {
+    fun eventClickCuratedSection(curatedCategory: CuratedCategoryDataView.CuratedCategory, position: Int) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PROMO_CLICK,
                 DealsAnalyticsConstants.Action.IMPRESSION_ON_CURATED_CARD,
-                String.format(DealsAnalyticsConstants.Label.CURATED_CARD_VIEW, place.name, position)
+                String.format(DealsAnalyticsConstants.Label.CURATED_CARD_VIEW, curatedCategory.name, position)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.Event.PROMO_CLICK, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS, getECommerceViewCurated(place, position)
+                DealsAnalyticsConstants.Event.PROMO_CLICK, DataLayer.mapOf(DealsAnalyticsConstants.PROMOTIONS, getECommerceViewCurated(listOf(curatedCategory))
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getECommerceViewCurated(item: FavouritePlacesDataView.Place, position: Int): MutableList<MutableMap<String, Any>> {
+    private fun getECommerceViewCurated(items: List<CuratedCategoryDataView.CuratedCategory>, startingPosition: Int = 0): MutableList<MutableMap<String, Any>> {
         val dataPromotions = mutableListOf<MutableMap<String, Any>>()
-        item.apply {
-            val promotions = DataLayer.mapOf(
-                    DealsAnalyticsConstants.Promotions.id, item.id,
-                    DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_CURATED_CARD,
-                    DealsAnalyticsConstants.Promotions.creative, item.name,
-                    DealsAnalyticsConstants.Promotions.creative_url, item.imageUrl,
-                    DealsAnalyticsConstants.Promotions.position, position + 1
+        for ((index, item) in items.withIndex()) {
+            item.apply {
+                val promotions = DataLayer.mapOf(
+                        DealsAnalyticsConstants.Promotions.id, item.id,
+                        DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_CURATED_CARD,
+                        DealsAnalyticsConstants.Promotions.creative, item.name,
+                        DealsAnalyticsConstants.Promotions.creative_url, item.imageUrl,
+                        DealsAnalyticsConstants.Promotions.position, startingPosition + index + 1
 
-            )
-            dataPromotions.add(promotions)
+                )
+                dataPromotions.add(promotions)
+            }
         }
+
         return dataPromotions
     }
 

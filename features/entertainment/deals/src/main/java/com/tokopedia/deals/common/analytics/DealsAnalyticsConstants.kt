@@ -134,7 +134,7 @@ object DealsAnalyticsConstants {
     const val USER_ID = "userId"
     const val BUSINESS_UNIT = "businessUnit"
     const val TOKOPEDIA_DIGITAL_DEALS = "tokopediadigitaldeals"
-    const val TRAVELENTERTAINMENT_BU = "travel &  entertainment"
+    const val TRAVELENTERTAINMENT_BU = "travel & entertainment"
     const val CATEGORY_LABEL = "category"
     const val DEALS = "deals"
     const val ECOMMERCE_LABEL = "ecommerce"

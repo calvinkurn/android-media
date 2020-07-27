@@ -109,7 +109,6 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun checkCoachMark(homeLayout: List<DealsBaseItemDataView>) {
-        initTrackingSection(homeLayout)
         val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
         if (shouldShowCoachMark && homeLayout.isNotEmpty() && homeLayout.first().isLoaded) {
             recyclerView.smoothScrollToPosition(adapter.lastIndex)
@@ -120,43 +119,13 @@ class DealsHomeFragment : DealsBaseFragment(),
         }
     }
 
-    private fun initTrackingSection(homeLayout: List<DealsBaseItemDataView>){
-        homeLayout.forEach { dealsBaseItemDataView ->
-            when (dealsBaseItemDataView) {
-                is CuratedProductCategoryDataView -> {
-                    if (dealsBaseItemDataView.title.contentEquals("Voucher populer")) {
-                        dealsBaseItemDataView.productCards.forEachIndexed { index, productCardDataView ->
-                            analytics.eventSeePopularLandmarkView(productCardDataView, index)
-                        }
-                    }
-                }
-
-                is FavouritePlacesDataView -> {
-                    if (dealsBaseItemDataView.places.size > 0) {
-                        dealsBaseItemDataView.places.forEachIndexed { index, place ->
-                            analytics.eventSeeCuratedSection(place, index)
-                        }
-                    }
-                }
-
-                is BannersDataView -> {
-                    if (!dealsBaseItemDataView.list.isNullOrEmpty()) {
-                        dealsBaseItemDataView.list.forEachIndexed { index, bannerDataView ->
-                            analytics.eventSeeHomePageBanner(bannerId = bannerDataView.bannerId, promotions = bannerDataView , bannerPosition = index)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun getCoachMarkPosition(homeLayout: List<DealsBaseItemDataView>): CoachMarkPositionDataView {
         var popularPlaceIdx: Int? = null
         var favouriteCategoryIdx: Int? = null
         homeLayout.forEachIndexed { index, dealsBaseItemDataView ->
             when (dealsBaseItemDataView) {
                 is VoucherPlacePopularDataView -> popularPlaceIdx = index
-                is FavouritePlacesDataView -> favouriteCategoryIdx = index
+                is CuratedCategoryDataView -> favouriteCategoryIdx = index
             }
         }
         return CoachMarkPositionDataView(popularPlaceIdx, favouriteCategoryIdx)
@@ -250,6 +219,10 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun afterSearchBarTextChanged(text: String) {/* do nothing */ }
 
     /* BANNER SECTION ACTION */
+    override fun onBannerScroll(banner: BannersDataView.BannerDataView, position: Int) {
+        analytics.eventSeeHomePageBanner(banner.bannerId, position, banner)
+    }
+
     override fun onBannerClicked(banner: List<BannersDataView.BannerDataView>, position: Int) {
         analytics.eventClickHomePageBanner(bannerId = banner[position].bannerId, bannerPosition = position, promotions = banner[position])
         onClickBanner(banner[position].bannerUrl)
@@ -268,7 +241,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
-        analytics.eventClickCategorySectionOne()
+        analytics.eventClickViewAllProductCardInHomepage()
         val categoriesBottomSheet = DealsCategoryBottomSheet(this)
         categoriesBottomSheet.showDealsCategories(categories)
         categoriesBottomSheet.show(requireFragmentManager(), "")
@@ -289,13 +262,6 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int) {
         analytics.curatedProductClick(productCardDataView,productItemPosition)
         RouteManager.route(context, productCardDataView.appUrl)
-        trackLandmarkPopular(productCardDataView, productItemPosition)
-    }
-
-    private fun trackLandmarkPopular(productCardDataView: ProductCardDataView, position: Int) {
-        if (productCardDataView.productCategory?.name.equals("Populer")) {
-            analytics.eventClickLandmarkPopular(productCardDataView, position)
-        }
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
@@ -305,12 +271,22 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     /* NEAREST PLACE SECTION ACTION */
+    override fun onVoucherPlaceCardBind(voucherPlaceCard: VoucherPlacePopularDataView, position: Int) {
+        analytics.eventSeePopularLandmarkView(voucherPlaceCard, position)
+    }
+    
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
+        analytics.eventClickLandmarkPopular(voucherPlaceCard, position)
         (activity as DealsHomeActivity).setCurrentLocation(voucherPlaceCard.location)
     }
 
     /* FAVOURITE CATEGORY SECTION ACTION */
-    override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: FavouritePlacesDataView.Place, position: Int) {
+
+    override fun onBindFavouriteCategory(curatedCategoryDataView: CuratedCategoryDataView, position: Int) {
+        analytics.eventSeeCuratedSection(curatedCategoryDataView, position)
+    }
+
+    override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: CuratedCategoryDataView.CuratedCategory, position: Int) {
         analytics.eventClickCuratedSection(favoritePlacesDataView, position)
         val intent = RouteManager.getIntent(context, url)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
