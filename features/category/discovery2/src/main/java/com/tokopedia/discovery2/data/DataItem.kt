@@ -334,6 +334,9 @@ data class DataItem(
         @SerializedName("campaign_id")
         val campaignId: String = "",
 
+        @SerializedName("body")
+        val textComponentBody: String = "",
+
         var shopAdsClickURL : String? = "",
 
         var shopAdsViewURL : String? = "",
