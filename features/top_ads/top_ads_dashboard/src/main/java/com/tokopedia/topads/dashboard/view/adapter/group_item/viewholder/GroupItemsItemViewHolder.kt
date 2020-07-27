@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
@@ -62,7 +63,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             view.group_title.text = it.data.groupName
             view.label.text = it.data.groupStatusDesc
-            if (countList.isNotEmpty() && adapterPosition < countList.size) {
+            if (countList.isNotEmpty() && adapterPosition < countList.size &&  adapterPosition != RecyclerView.NO_POSITION) {
                 view.total_item.text = countList[adapterPosition].totalAds.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }
@@ -109,10 +110,12 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
             }
             sheet.show()
             sheet.onDeleteClick = {
-                actionDelete(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionDelete(adapterPosition)
             }
             sheet.changeStatus = {
-                actionStatusChange(adapterPosition, it)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionStatusChange(adapterPosition, it)
             }
         }
     }
