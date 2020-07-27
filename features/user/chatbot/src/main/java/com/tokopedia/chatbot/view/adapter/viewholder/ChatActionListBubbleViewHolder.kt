@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 
@@ -35,6 +36,10 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     override fun getHourId(): Int {
         return R.id.hour
+    }
+
+    override fun getHourTime(replyTime: String): String {
+        return ChatBotTimeConverter.getHourTime(replyTime)
     }
 
     override fun alwaysShowTime(): Boolean = true

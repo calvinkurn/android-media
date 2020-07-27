@@ -13,6 +13,7 @@ import com.tokopedia.chatbot.EllipsizeMaker
 import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
 
 /**
@@ -39,6 +40,10 @@ class QuickReplyViewHolder(itemView: View,
     }
 
     override fun alwaysShowTime(): Boolean = true
+
+    override fun getHourTime(replyTime: String): String {
+        return ChatBotTimeConverter.getHourTime(replyTime)
+    }
 
     private fun setMessage(element: QuickReplyListViewModel) {
         if (element.message.isNotEmpty()) {
