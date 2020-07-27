@@ -170,26 +170,30 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
-        backgroundLoader.show()
-        parallaxImage.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener{
-            override fun successLoad() {
-                if(playBannerCarouselDataModel.gradients.isNotEmpty()){
-                    parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
-                } else if(playBannerCarouselDataModel.backgroundUrl.isNotBlank()){
-                    parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+        if(playBannerCarouselDataModel.imageUrl.isNotEmpty()) {
+            backgroundLoader.show()
+            parallaxImage.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener {
+                override fun successLoad() {
+                    if (playBannerCarouselDataModel.gradients.isNotEmpty()) {
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else if (playBannerCarouselDataModel.backgroundUrl.isNotBlank()) {
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
+                    backgroundLoader.hide()
                 }
-                backgroundLoader.hide()
-            }
 
-            override fun failedLoad() {
-                if(playBannerCarouselDataModel.gradients.isNotEmpty()){
-                    parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
-                } else if(playBannerCarouselDataModel.backgroundUrl.isNotBlank()){
-                    parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                override fun failedLoad() {
+                    if (playBannerCarouselDataModel.gradients.isNotEmpty()) {
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else if (playBannerCarouselDataModel.backgroundUrl.isNotBlank()) {
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
+                    backgroundLoader.hide()
                 }
-                backgroundLoader.hide()
-            }
-        })
+            })
+        } else{
+            backgroundLoader.hide()
+        }
     }
 
     private fun configureParallax(): RecyclerView.OnScrollListener {
