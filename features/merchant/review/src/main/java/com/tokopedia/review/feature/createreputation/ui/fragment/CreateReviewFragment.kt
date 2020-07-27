@@ -285,7 +285,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         clearFocusAndHideSoftInput(view)
         context?.let {
             val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_GALLERY),
                     GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                     ImagePickerEditorBuilder(
@@ -692,7 +692,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 maxLines = 1
                 createReviewProductVariant.apply{
                     text = resources.getString(R.string.review_pending_variant, productVariant)
-                    hide()
+                    show()
                 }
             }
         }
