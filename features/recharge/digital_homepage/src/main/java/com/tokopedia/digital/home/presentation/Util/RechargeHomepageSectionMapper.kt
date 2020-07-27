@@ -7,8 +7,10 @@ import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 
 object RechargeHomepageSectionMapper {
@@ -85,10 +87,20 @@ object RechargeHomepageSectionMapper {
                     applink,
                     id = id.toString(),
                     iconURL = mediaUrl,
-                    title = title,
-                    mainText = label1,
-                    subText = label2,
-                    buttonText = label3
+                    title = section.title,
+                    mainText = title,
+                    subText = content,
+                    buttonText = textlink,
+                    buttonType = when (buttonType) {
+                        "primary" -> UnifyButton.Type.MAIN
+                        "transaction" -> UnifyButton.Type.TRANSACTION
+                        else -> UnifyButton.Type.MAIN
+                    },
+                    state = when (template) {
+                        "INFO" -> ReminderState.NEUTRAL
+                        "DANGER" -> ReminderState.ATTENTION
+                        else -> ReminderState.NEUTRAL
+                    }
             ))), ReminderEnum.RECHARGE)
         }
         return null
@@ -120,17 +132,17 @@ object RechargeHomepageSectionMapper {
     private fun mapSectionToChannel(section: RechargeHomepageSections.Section): ChannelModel? {
         section.items.firstOrNull()?.run {
             val sectionId = section.id.toString()
-            val serverTimeOffset = DateHelper.getExpiredTime(serverDate).time - Date().time
+            val serverDateMillisecond = getServerTime(serverDate).time
 
             return ChannelModel(sectionId, sectionId,
                     channelHeader = ChannelHeader(sectionId, section.title, section.subtitle, dueDate),
-                    channelConfig = ChannelConfig(serverTimeOffset = serverTimeOffset)
+                    channelConfig = ChannelConfig(serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverDateMillisecond))
             )
         }
         return null
     }
 
-    fun getSection(sections: List<RechargeHomepageSections.Section>?, sectionType: String): RechargeHomepageSections.Section? {
-        return sections?.firstOrNull { it.template == sectionType }
+    private fun getServerTime(serverTimeString: String): Date {
+        return DateHelper.getExpiredTime(serverTimeString)
     }
 }

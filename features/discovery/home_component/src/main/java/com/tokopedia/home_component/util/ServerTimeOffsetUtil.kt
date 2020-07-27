@@ -4,7 +4,7 @@ import java.util.*
 
 object ServerTimeOffsetUtil {
     private const val ONE_SECOND: Long = 1000
-    private fun getServerTimeOffset(serverTimeMillisecond: Long): Long {
+    fun getServerTimeOffset(serverTimeMillisecond: Long): Long {
         val localDate = Date()
         val localTimeMillis = localDate.time
         return serverTimeMillisecond - localTimeMillis
