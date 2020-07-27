@@ -8,12 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import androidx.core.app.NotificationManagerCompat;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.pushnotif.data.TransactionRepository;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
@@ -25,6 +24,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
 /**
@@ -89,9 +89,9 @@ public class PushNotification {
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
+        Boolean isRenderable = TransactionRepository.INSTANCE.isRenderable(context, applinkNotificationModel.getTransactionId());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
-        Boolean isRendered = HistoryNotification.isRenderable(context, applinkNotificationModel.getTransactionId());
-        return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRendered;
+        return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable;
     }
 
 
