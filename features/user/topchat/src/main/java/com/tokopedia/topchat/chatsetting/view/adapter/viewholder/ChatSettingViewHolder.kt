@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatsetting.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
@@ -20,6 +21,7 @@ class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
         if (element == null) return
         with(itemView) {
             tvTitle?.text = element.alias
+            labelSellerAppOnly.showWithCondition(isSellerTabTemplateChat(element.alias))
 
             setOnClickListener {
                 listener.eventClickChatSetting(element)
@@ -31,7 +33,11 @@ class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
         }
     }
 
+    private fun isSellerTabTemplateChat(alias: String): Boolean = listener.isTabSeller() && alias == TEMPLATE_CHAT_TITLE
+
     companion object {
+        const val TEMPLATE_CHAT_TITLE = "Template Chat"
+
         val LAYOUT = R.layout.item_chat_setting
     }
 }

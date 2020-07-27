@@ -46,6 +46,7 @@
     <string name="seller_migration_voucher_toko_title">Buat Voucher Toko Cashback di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_voucher_toko_content">Gunakan Voucher Toko Cashback untuk meningkatkan &lt;b&gt;lebih banyak pelanggan&lt;/b&gt;, dengan tetap mempertahankan citra brand toko dan harga barang.</string>
 
+    <string name="seller_migration_label_seller_app_only">Di Tokopedia Seller</string>
     <string name="seller_migration_fragment_header_title">Feature unggulan dapat diakses melalui aplikasi Tokopedia Seller</string>
     <string name="seller_migration_fragment_advantages_title">Keunggulan aplikasi Tokopedia Seller</string>
     <string name="seller_migration_fragment_body_title">Fitur unggulan yang bisa kamu gunakan di aplikasi Tokopedia Seller</string>

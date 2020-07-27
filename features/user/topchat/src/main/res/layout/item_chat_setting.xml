@@ -33,4 +33,16 @@
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Notifikasi Chat" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelSellerAppOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:text="@string/seller_migration_label_seller_app_only"
+        app:labelType="general_light_green"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toEndOf="@id/tvTitle"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>
