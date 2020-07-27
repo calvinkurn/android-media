@@ -15,6 +15,7 @@ import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
@@ -951,6 +952,8 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendCampaign(Map<String, Object> param) {
+        if(!ils.isValidCampaign(param)) return;
+
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
