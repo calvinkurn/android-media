@@ -63,4 +63,6 @@
 
     <string name="camera_recapture_text">Foto Ulang</string>
     <string name="camera_next_button">Lanjut</string>
+  
+    <string name="user_identification_default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 </resources>
