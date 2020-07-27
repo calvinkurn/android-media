@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageView
@@ -31,7 +30,7 @@ class InstallmentDetailBottomSheet {
                 isHideable = true
                 showCloseIcon = true
                 showHeader = true
-                setTitle("Pilih Jenis Pembayaran")
+                setTitle(fragment.getString(R.string.lbl_choose_installment_type))
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_installment, null)
                 setupChild(child, fragment, creditCard)
@@ -49,16 +48,20 @@ class InstallmentDetailBottomSheet {
         setupTerms(child, fragment, creditCard.tncInfo)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setupInstallments(child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
         val ll = child.findViewById<LinearLayout>(R.id.main_content)
         val installments = installmentDetails.filter { it.isEnable }
         for (i in installments.lastIndex downTo 0) {
             val installment = installmentDetails[i]
             val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)
-            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name).text = "${installment.term}x Cicilan 0%"
-            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee).text = "+ Biaya Layanan ${CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix()}"
-            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee).text = "${CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()}/bulan"
+            if (installment.term > 0) {
+                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name).text = "${installment.term}x Cicilan 0%"
+                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee).text = viewInstallmentDetailItem.context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
+            } else {
+                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name).text = viewInstallmentDetailItem.context.getString(R.string.lbl_installment_full_payment)
+                viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee).text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
+            }
+            viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee).text = viewInstallmentDetailItem.context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
             val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButton>(R.id.rb_installment_detail)
             rbInstallmentDetail.isChecked = installment.isSelected
             rbInstallmentDetail.setOnClickListener {

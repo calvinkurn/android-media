@@ -82,4 +82,8 @@
     <string name="lbl_installment_type">Jenis Pembayaran</string>
     <string name="lbl_installment_not_available">Cicilan tidak tersedia untuk jenis kartu ini</string>
     <string name="lbl_see_installment_terms_and_condition">Lihat Syarat &amp; Ketentuan</string>
+    <string name="lbl_installment_full_payment">Bayar Penuh</string>
+    <string name="lbl_installment_payment_fee">+ Biaya Layanan %1$s</string>
+    <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
+    <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
 </resources>

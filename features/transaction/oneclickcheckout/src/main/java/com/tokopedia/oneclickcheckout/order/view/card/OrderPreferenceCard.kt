@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
-import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
@@ -117,7 +116,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showShipping() {
         val shipmentModel = preference.preference.shipment
 
@@ -285,7 +283,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
         if (selectedTerm != null) {
             tvInstallmentType?.visible()
@@ -293,7 +290,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             if (selectedTerm.term > 0) {
                 tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
             } else {
-                tvInstallmentDetail?.text = "Bayar Penuh"
+                tvInstallmentDetail?.text = view.context.getString(R.string.lbl_installment_full_payment)
             }
             tvInstallmentDetail?.setOnClickListener {
                 listener.onInstallmentDetailClicked()
@@ -336,7 +333,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address
         tvAddressName?.text = addressModel.addressName
