@@ -278,6 +278,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
         if(showFreeShipping) {
             trackFreeShippingSuccessBottomSheet(freeShipping)
+        } else {
+            trackPowerMerchantSuccessBottomSheet()
         }
 
         val primaryBtnLabel = if(showFreeShipping) {
@@ -326,6 +328,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             userSessionInterface,
             freeShipping
         )
+    }
+
+    private fun trackPowerMerchantSuccessBottomSheet() {
+        powerMerchantTracking.eventPowerMerchantSuccessBottomSheet()
     }
 
     private fun trackSuccessBottomSheetClickLearnMore(freeShipping: PowerMerchantFreeShippingStatus) {

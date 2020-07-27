@@ -56,6 +56,7 @@ object GMParamTracker {
         const val CLICK_SUBMIT_FEATURES = "submit click features"
         const val POP_UP_DATA_VERIFICATION = "pop up data verification"
         const val POP_UP_SCORE_BELOW = "pop up - score below"
+        const val POP_UP_SUCCESS_PM = "pop up - sucess PM notifier"
     }
 
     object Label {
