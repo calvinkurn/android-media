@@ -53,6 +53,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var baseViewModel: DealsBaseViewModel
 
+    protected var isLandmarkPage = false
+
     var searchBarActionListener: SearchBarActionListener? = null
 
     private lateinit var locationBottomSheet: SelectLocationBottomSheet
@@ -208,7 +210,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var currentLoc = Location()
 
     private fun onClickLocation() {
-        locationBottomSheet = SelectLocationBottomSheet(currentLoc, false, object : CurrentLocationCallback {
+        locationBottomSheet = SelectLocationBottomSheet(currentLoc, isLandmarkPage, object : CurrentLocationCallback {
             override fun setCurrentLocation(location: Location) {
                 locationBottomSheet.dismiss()
                 this@DealsBaseActivity.setCurrentLocation(location)

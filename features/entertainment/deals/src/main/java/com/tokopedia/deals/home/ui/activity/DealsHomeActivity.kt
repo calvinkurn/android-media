@@ -36,7 +36,10 @@ class DealsHomeActivity : DealsBaseActivity(), HasComponent<DealsHomeComponent> 
         } else {
             if (location.locType.name.equals(DealsLocationConstants.LANDMARK, true)) {
                 dealsLocationUtils.updateLocation(location)
-                startActivityForResult(DealsCategoryActivity.getCallingIntent(this, ""), DEALS_LANDMARK_CATEGORY_REQ_CODE)
+                startActivityForResult(
+                        DealsCategoryActivity.getCallingIntent(this, "", true),
+                        DEALS_LANDMARK_CATEGORY_REQ_CODE
+                )
             } else {
                 baseViewModel.setCurrentLocation(location)
             }
