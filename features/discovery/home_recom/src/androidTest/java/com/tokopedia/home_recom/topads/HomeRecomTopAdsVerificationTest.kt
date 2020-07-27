@@ -42,7 +42,7 @@ class HomeRecomTopAdsVerificationTest {
 
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
 
-        clickOnEachItemRecyclerView(activityRule.activity.findViewById(R.id.parent_view), recyclerView.id, 0)
+        clickOnEachItemRecyclerView(activityRule.activity.findViewById(com.tokopedia.home_recom.test.R.id.container_home), recyclerView.id, 0)
         topAdsAssertion?.assert()
     }
 
