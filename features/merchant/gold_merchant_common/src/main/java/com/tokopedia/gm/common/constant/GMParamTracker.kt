@@ -44,7 +44,7 @@ object GMParamTracker {
         const val CLICK_TICK_BOX_TNC = "click tickbox term & condition"
         const val CLICK_KYC_VERIFICATION = "click data verification - kyc"
         const val CLICK_DISMISS_KYC_VERIFICATION = "click close pop up - kyc"
-        const val CLICK_SEE_SHOP_SCORE_TIPS = "power merchant - increase shop performance"
+        const val CLICK_SEE_SHOP_SCORE_TIPS = "click performance tips"
         const val CLICK_DISMISS_SHOP_SCORE = "click close pop up - score below"
         const val CLICK_START_PM_SUCCESS_NOTIFIER = "click mulai - sucess PM notifier"
         const val CLICK_CANCEL_MEMBERSHIP = "click stop subscription - power merchant page"
