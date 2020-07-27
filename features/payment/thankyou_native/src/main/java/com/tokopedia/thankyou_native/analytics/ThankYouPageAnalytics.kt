@@ -305,7 +305,6 @@ class ThankYouPageAnalytics @Inject constructor(
                     branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
                     branchIOPayment.setOrderId(shopOrder.orderId)
                     branchIOPayment.setShipping(shopOrder.shippingAmount.toString())
-                    branchIOPayment.setRevenue(thanksPageData.amount.toString())
                     branchIOPayment.setProductType(when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
                         DigitalThankPage -> LinkerConstants.PRODUCTTYPE_DIGITAL
                         else -> LinkerConstants.PRODUCTTYPE_MARKETPLACE
@@ -313,17 +312,20 @@ class ThankYouPageAnalytics @Inject constructor(
                     branchIOPayment.isNewBuyer = thanksPageData.isNewUser
                     branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
                     var price = 0F
+                    var revenue = 0F
                     shopOrder.purchaseItemList.forEach { productItem ->
                         val product = HashMap<String, String>()
                         product[LinkerConstants.ID] = productItem.productId
                         product[LinkerConstants.NAME] = productItem.productName
                         price += productItem.price
+                        revenue += productItem.totalPrice
                         product[LinkerConstants.PRICE] = productItem.price.toString()
                         product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
                         product[LinkerConstants.QTY] = productItem.quantity.toString()
                         product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
                         branchIOPayment.setProduct(product)
                     }
+                    branchIOPayment.setRevenue(revenue.toString())
                     branchIOPayment.setItemPrice(price.toString())
                     linkerCommerceData.paymentData = branchIOPayment
                     LinkerManager.getInstance()
