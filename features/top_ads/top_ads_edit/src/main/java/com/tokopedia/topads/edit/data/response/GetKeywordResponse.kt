@@ -1,8 +1,8 @@
 package com.tokopedia.topads.edit.data.response
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class GetKeywordResponse(
 
@@ -36,6 +36,7 @@ data class GetKeywordResponse(
             val title: String? = null
     )
 
+    @Parcelize
     data class KeywordsItem(
 
             @field:SerializedName("type")
@@ -56,40 +57,6 @@ data class GetKeywordResponse(
             @field:SerializedName("tag")
             val tag: String = "",
             @field:SerializedName("source")
-            val source: String = "") : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readString(),
-                parcel.readString()) {
-        }
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(type)
-            parcel.writeInt(status)
-            parcel.writeString(keywordId)
-            parcel.writeInt(priceBid)
-            parcel.writeByte(if (isChecked) 1 else 0)
-            parcel.writeString(tag)
-            parcel.writeString(source)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<KeywordsItem> {
-            override fun createFromParcel(parcel: Parcel): KeywordsItem {
-                return KeywordsItem(parcel)
-            }
-
-            override fun newArray(size: Int): Array<KeywordsItem?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
+            val source: String = "") : Parcelable
 }
 

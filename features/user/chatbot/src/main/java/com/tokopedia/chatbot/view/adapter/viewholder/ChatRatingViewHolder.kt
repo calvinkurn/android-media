@@ -59,7 +59,7 @@ class ChatRatingViewHolder(itemView: View,
         var time: String?
 
         try {
-            val myTime = java.lang.Long.parseLong(element.replyTime)
+            val myTime = (element.replyTime)?.toLong() ?: 0L
             time = DateFormat.getLongDateFormat(itemView.context).format(Date(myTime))
         } catch (e: NumberFormatException) {
             time = element.replyTime
@@ -77,7 +77,7 @@ class ChatRatingViewHolder(itemView: View,
         var hourTime: String?
 
         try {
-            hourTime = ChatTimeConverter.formatTime(java.lang.Long.parseLong(element.replyTime))
+            hourTime = ChatTimeConverter.formatTime((element.replyTime)?.toLong() ?: 0)
         } catch (e: NumberFormatException) {
             hourTime = element.replyTime
         }

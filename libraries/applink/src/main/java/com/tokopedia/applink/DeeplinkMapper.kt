@@ -24,6 +24,7 @@ import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
+import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredExplore
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeFeed
@@ -60,6 +61,8 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import java.lang.Exception
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -72,6 +75,7 @@ object DeeplinkMapper {
 
     val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
+    var mShowTokopointNative=false
 
     /**
      * Get registered deeplink navigation in manifest
@@ -94,7 +98,7 @@ object DeeplinkMapper {
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = uri.query
-                val tempDeeplink = getRegisteredNavigationFromSellerapp(context, uri, deeplink)
+                val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
                 return createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
@@ -197,8 +201,20 @@ object DeeplinkMapper {
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
-        if (uri.pathSegments.joinToString("/") == TOKOPOINTS) {
-            return ApplinkConstInternalPromo.TOKOPOINTS_HOME
+
+        //Fallback strategy for new Rewards Page
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        firebaseRemoteConfig.let {
+            mShowTokopointNative = it.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false)
+        }
+        if (mShowTokopointNative) {
+            if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
+                return ApplinkConstInternalPromo.TOKOPOINTS_HOME
+            }
+        } else {
+            if (uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS){
+               return deeplink.replaceFirst("rewards","tokopoints")
+            }
         }
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
@@ -238,7 +254,9 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, _, deeplink -> getRegisteredNavigationProductReview(deeplink) },
             DLP.startWith(ApplinkConst.REPUTATION) { _, _, deeplink -> getRegisteredNavigationReputation(deeplink) },
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink -> getRegisteredNavigationRecommendation(deeplink) },
+            DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink -> getRegisteredExplore(deeplink) },
             DLP.startWith(ApplinkConst.CHAT_BOT) { _, _, deeplink -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink -> getRegisteredNavigationCatalog(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink -> getRegisteredNavigationMoneyIn(deeplink) },
@@ -328,6 +346,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.KYC_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE),
             DLP.exact(ApplinkConst.KYC_FORM_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE),
             DLP.exact(ApplinkConst.SETTING_BANK, ApplinkConstInternalGlobal.SETTING_BANK),
+            DLP.exact(ApplinkConst.OTP, ApplinkConstInternalGlobal.COTP),
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING),
             DLP.exact(ApplinkConst.ADD_FINGERPRINT_ONBOARDING, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING),
             DLP.exact(ApplinkConst.FLIGHT, ApplinkConstInternalTravel.DASHBOARD_FLIGHT),
@@ -439,15 +458,16 @@ object DeeplinkMapper {
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
      */
-    private fun getRegisteredNavigationFromSellerapp(context: Context, uri: Uri, deeplink: String): String {
-        val trimDeeplink = trimDeeplink(uri, deeplink)
-        if (trimDeeplink == ApplinkConst.SellerApp.TOPADS_DASHBOARD) {
-            if (AppUtil.isSellerInstalled(context)) {
-                return ApplinkConst.SellerApp.TOPADS_DASHBOARD
-            } else
-                ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
-        }
-        return when (trimDeeplink) {
+    private fun getRegisteredNavigationFromSellerapp(uri: Uri, deeplink: String): String {
+        return when (val trimDeeplink = trimDeeplink(uri, deeplink)) {
+            ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+            ApplinkConst.SellerApp.TOPADS_CREDIT_HISTORY -> ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT
+            ApplinkConst.SellerApp.TOPADS_CREDIT -> ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT
+            ApplinkConst.SellerApp.TOPADS_CREATE_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE
+            ApplinkConst.SellerApp.TOPADS_CREATE_ADS -> ApplinkConstInternalTopAds.TOPADS_CREATE_ADS
+            ApplinkConst.SellerApp.TOPADS_EDIT_AUTO_ADS -> ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS
+            ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP -> ApplinkConstInternalTopAds.TOPADS_AUTO_TOPUP
+            ApplinkConst.SellerApp.TOPADS_CREATE_CHOOSER -> ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE -> ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE

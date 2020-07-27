@@ -122,13 +122,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
 
                 val now: BaseChatViewModel = visitables[position] as BaseChatViewModel
                 var next: BaseChatViewModel = visitables[position - 1] as BaseChatViewModel
-                val myTime = java.lang.Long.parseLong(now.replyTime) / SECONDS
+                val myTime = ((now.replyTime)?.toLong() ?: 0L) / SECONDS
                 var nextItemTime: Long = 0
 
                 if (visitables[position - 1] != null
                         && visitables[position - 1] is BaseChatViewModel) {
                     next = visitables[position - 1] as BaseChatViewModel
-                    nextItemTime = java.lang.Long.parseLong(next.replyTime) / SECONDS
+                    nextItemTime = ((next.replyTime)?.toLong() ?: 0L) / SECONDS
                 }
 
                 (visitables[position] as BaseChatViewModel)
@@ -161,13 +161,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                 }
 
                 var prev: SendableViewModel? = null
-                val myTime = java.lang.Long.parseLong(now.replyTime) / SECONDS
+                val myTime = ((now.replyTime)?.toLong() ?: 0) / SECONDS
                 var prevTime: Long = 0
 
                 if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
                     prev = visitables.get(position + 1) as SendableViewModel
                     if (prev.replyTime != null) {
-                        prevTime = (prev!!.replyTime)!!.toLong() / SECONDS
+                        prevTime = (prev.replyTime)!!.toLong() / SECONDS
                     }
                 }
 
