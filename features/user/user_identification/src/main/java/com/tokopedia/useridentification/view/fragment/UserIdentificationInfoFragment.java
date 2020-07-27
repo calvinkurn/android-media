@@ -175,8 +175,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                 toggleNotFoundView(true);
                 break;
             default:
-                onErrorGetUserProjectInfo(new MessageErrorException(String.format("%s (%s)", getString(R.string
-                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
+                onErrorGetUserProjectInfo(new MessageErrorException(String.format("%s (%s)", getString(
+                        com.tokopedia.abstraction.R.string.default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
                 break;
         }
     }
