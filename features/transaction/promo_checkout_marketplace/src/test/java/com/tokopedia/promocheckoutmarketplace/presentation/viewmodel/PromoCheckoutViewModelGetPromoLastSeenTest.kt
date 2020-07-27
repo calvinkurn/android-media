@@ -23,7 +23,7 @@ import org.junit.Test
 import java.lang.reflect.Type
 import kotlin.collections.set
 
-object PromoCheckoutViewModelGetPromoLastSeenTest {
+class PromoCheckoutViewModelGetPromoLastSeenTest {
 
     private lateinit var viewModel: PromoCheckoutViewModel
     private lateinit var dispatcher: CoroutineDispatcher
