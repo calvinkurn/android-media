@@ -41,7 +41,7 @@ class BenchmarkReminderWidgetComponent {
     fun benchmark_onBind_reminder_widget_recharge_component() {
         val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = ReminderWidgetViewHolder(
-                itemView, null, disablePerformanceMonitoring = true
+                itemView, null, disableNetwork = true
         )
         val data = ReminderWidgetModel(MockReminderWidget.get(), ReminderEnum.RECHARGE)
         benchmarkRule.measureRepeated {
