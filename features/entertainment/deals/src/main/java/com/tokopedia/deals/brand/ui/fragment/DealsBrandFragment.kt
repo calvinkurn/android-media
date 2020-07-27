@@ -37,12 +37,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_base_deals.*
 import kotlinx.android.synthetic.main.fragment_deals_brand.*
-import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 import javax.inject.Inject
 
 class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener,
-        SearchBarActionListener{
+        SearchBarActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -59,7 +58,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     private var childCategoryId: String? = null
 
     private var tabName: String = ""
-    private var brandAdapter = DealsBrandAdapter(this,this)
+    private var brandAdapter = DealsBrandAdapter(this, this)
 
     @Inject
     lateinit var analytics: DealsAnalytics
@@ -102,16 +101,16 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
                     } else {
                         val nextPage = totalItem >= DEFAULT_MIN_ITEMS
                         renderList(mapBrandListToBaseItemView(it.data.brands, showTitle()), nextPage)
-                        if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
-                            if (isAnalyticsInitialized) {
+
+                        if (isAnalyticsInitialized) {
+                            if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
                                 analytics.eventViewSearchResultBrandPage((activity as DealsBrandActivity).getSearchKeyword(),
                                         getCurrentLocation().name, it.data.brands, tabName)
-                            }
-                        } else {
-                            if (isAnalyticsInitialized) {
+                            } else {
                                 analytics.eventViewPopularBrandBrandPage(it.data.brands, tabName)
                             }
                         }
+
                         cacheData(nextPage)
                     }
                 }
@@ -240,7 +239,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        analytics.eventScrollToBrandPopular(brand,position)
+//        analytics.eventScrollToBrandPopular(brand, position)
     }
 
     override fun onClickSearchBar() {
@@ -265,7 +264,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
 
     override fun showTitle(brands: DealsBrandsDataView) {
-        if(!brands.title.isNullOrEmpty()) {
+        if (!brands.title.isNullOrEmpty()) {
             hideTitleShimmering()
             tv_brand_title.show()
             unused_line.show()
@@ -273,7 +272,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         }
     }
 
-    private fun hideTitleShimmering(){
+    private fun hideTitleShimmering() {
         shimmering_title.hide()
     }
 

@@ -831,7 +831,7 @@ class DealsAnalytics @Inject constructor(
         return dataPromotions
     }
 
-    fun eventSearchResultCaseShownOnCategoryPage(keyword: String, location: String, eventProductDetail: EventProductDetail, position: Int) {
+    fun eventSearchResultCaseShownOnCategoryPage(keyword: String, location: String, eventProductDetail: List<EventProductDetail>, pageSize: Int, page: Int) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PRODUCT_VIEW,
@@ -840,25 +840,29 @@ class DealsAnalytics @Inject constructor(
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
                 DealsAnalyticsConstants.CURRENCY_CODE, DealsAnalyticsConstants.IDR,
-                DealsAnalyticsConstants.IMPRESSIONS, getECommerceViewSearchResultCaseShown(eventProductDetail, position)
+                DealsAnalyticsConstants.IMPRESSIONS, getECommerceViewSearchResultCaseShown(eventProductDetail, pageSize, page)
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getECommerceViewSearchResultCaseShown(item: EventProductDetail, position: Int): MutableList<MutableMap<String, Any>> {
+    private fun getECommerceViewSearchResultCaseShown(items: List<EventProductDetail>, pageSize: Int, page: Int): MutableList<MutableMap<String, Any>> {
         val dataPromotions = mutableListOf<MutableMap<String, Any>>()
-        item.apply {
-            val promotions = DataLayer.mapOf(
-                    DealsAnalyticsConstants.Impressions.name, item.displayName,
-                    DealsAnalyticsConstants.Impressions.id, item.brandId,
-                    DealsAnalyticsConstants.Impressions.brand, item.brand.title,
-                    DealsAnalyticsConstants.Impressions.category, item.category.first().title,
-                    DealsAnalyticsConstants.Impressions.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
-                    DealsAnalyticsConstants.Impressions.position, position + 1
+        for ((index, item) in items.withIndex()) {
+            item.apply {
+                val promotions = DataLayer.mapOf(
+                        DealsAnalyticsConstants.Impressions.name, item.displayName,
+                        DealsAnalyticsConstants.Impressions.id, item.brandId,
+                        DealsAnalyticsConstants.Impressions.brand, item.brand.title,
+                        DealsAnalyticsConstants.Impressions.category, item.category.first().title,
+                        DealsAnalyticsConstants.Impressions.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
+                        DealsAnalyticsConstants.Impressions.price, item.salesPrice,
+                        DealsAnalyticsConstants.Impressions.position, (pageSize * page) + index + 1
 
-            )
-            dataPromotions.add(promotions)
+                )
+                dataPromotions.add(promotions)
+            }
         }
+
         return dataPromotions
     }
 }

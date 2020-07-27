@@ -178,10 +178,12 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                 is Success -> {
                     clearAllData()
                     totalItem = it.data.products.size
-                    it.data.products.forEachIndexed { index, eventProductDetail ->
+
+                    if (it.data.products.isNotEmpty()) {
                         analytics.eventSearchResultCaseShownOnCategoryPage(getSearchKeyword(), currentLocation?.name
-                                ?: "", eventProductDetail, index)
+                                ?: "", it.data.products, THRESHOLD_ITEMS, currentPage)
                     }
+
                     if (totalItem >= THRESHOLD_ITEMS) {
                         renderList(DealsSearchMapper.displayDataSearchResult(it.data,
                                 currentLocation?.name
@@ -198,22 +200,12 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                                         ?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
                                 searchNotFound)
                     }
-                    searchedVoucherAnalytics(DealsSearchMapper.voucherList)
                 }
                 is Fail -> {
                     createToaster(getString(R.string.deals_search_error), Toaster.TYPE_ERROR)
                 }
             }
         })
-    }
-
-    private fun searchedVoucherAnalytics(data: List<VoucherModel>) {
-        if (data.isNotEmpty()) {
-            if (isAnalyticsInitialized) {
-                analytics.eventViewSearchResultSearchPage(getSearchKeyword(), currentLocation?.name
-                        ?: "", data)
-            }
-        }
     }
 
     private fun observerNearestLocation() {

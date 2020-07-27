@@ -50,6 +50,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                 categoriesDataView.list.add(category)
 
             } else if (it.isCard == 1) {
+
                 if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION) {
 
                     val items = it.productDetails.subList(0,
@@ -80,7 +81,8 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
 
                 } else if (!it.url.equals(getString(TYPE_TOPDEALS), true) && it.isHidden == 0) {
                     if (foodSection.curatedCategories.size <= 5) {
-                        foodSection.curatedCategories.add(CuratedCategoryDataView.CuratedCategory(name = it.title, imageUrl = it.mediaUrl, url = it.appUrl))
+                        foodSection.curatedCategories.add(CuratedCategoryDataView.CuratedCategory(
+                                id = it.id, name = it.title, imageUrl = it.mediaUrl, url = it.appUrl))
                     }
                 }
             }
