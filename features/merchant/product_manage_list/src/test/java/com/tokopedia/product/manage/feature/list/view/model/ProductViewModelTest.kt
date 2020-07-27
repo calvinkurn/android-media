@@ -182,6 +182,7 @@ class ProductViewModelTest {
         val url: String? = "productUrl"
         val cashBack = 0
         val stock: Int? = 1
+        val stockReserved = 0
         val featured = false
         val isVariant: Boolean? = false
         val multiSelectActive = false
@@ -197,6 +198,7 @@ class ProductViewModelTest {
             url,
             cashBack,
             stock,
+            stockReserved,
             featured,
             isVariant,
             multiSelectActive,
