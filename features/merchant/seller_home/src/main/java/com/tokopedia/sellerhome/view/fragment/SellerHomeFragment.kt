@@ -371,12 +371,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickDescriptionEvent(descriptionTitle)
     }
 
-    override fun sendLineGraphImpressionEvent(dataKey: String, cardValue: String) {
-        SellerHomeTracking.sendImpressionLineGraphEvent(dataKey, cardValue)
+    override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
+        SellerHomeTracking.sendImpressionLineGraphEvent(model.dataKey, model.data?.header.orEmpty())
     }
 
-    override fun sendLineGraphCtaClickEvent(dataKey: String, cardValue: String) {
-        SellerHomeTracking.sendClickLineGraphEvent(dataKey, cardValue)
+    override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
+        SellerHomeTracking.sendClickLineGraphEvent(dataKey, chartValue)
     }
 
     override fun sendPostListImpressionEvent(dataKey: String) {
@@ -397,6 +397,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
         SellerHomeTracking.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
+    }
+
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+        val position = adapter.data.indexOf(model)
+        SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
+    }
+
+    override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
+        val position = adapter.data.indexOf(model)
+        SellerHomeTracking.sendPieChartImpressionEvent(model, position)
+    }
+
+    override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
+        val position = adapter.data.indexOf(model)
+        SellerHomeTracking.sendBarChartImpressionEvent(model, position)
     }
 
     private fun showNotificationBadge() {
