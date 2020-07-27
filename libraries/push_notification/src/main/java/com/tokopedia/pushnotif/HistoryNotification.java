@@ -15,10 +15,24 @@ public class HistoryNotification {
 
     private static final int HISTORY_NOTIFICATION_LIMIT = 5;
 
-    public static void storeNotification(Context context, String senderName, String message, int notificationType, int notificationId) {
+    public static void storeNotification(
+            Context context,
+            String senderName,
+            String message,
+            int notificationType,
+            int notificationId,
+            String transId
+    ) {
         HistoryNotificationDB data = new HistoryNotificationDB(
-                senderName, message, notificationType, notificationId);
-        PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+                senderName,
+                message,
+                notificationType,
+                notificationId,
+                transId
+        );
+        PushNotificationDB.Companion
+                .getInstance(context)
+                .historyNotificationDao()
                 .storeNotification(data);
     }
 
