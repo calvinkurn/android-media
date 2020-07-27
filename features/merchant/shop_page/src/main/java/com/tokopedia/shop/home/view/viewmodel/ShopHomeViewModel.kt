@@ -176,20 +176,20 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomePlayCarouselUiModel }
-//        if(index != -1){
-//            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
-//            getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
-//            val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
-//            val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
-//            if(playBannerDataModel.channelList.isNotEmpty()){
-//                newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
-//            }else{
-//                newHomeLayout.remove(data)
-//            }
-//            return shopPageHomeLayoutUiModel.copy(
-//                    listWidget = newHomeLayout
-//            )
-//        }
+        if(index != -1){
+            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
+            getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+            val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
+            val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
+            if(playBannerDataModel.channelList.isNotEmpty()){
+                newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
+            }else{
+                newHomeLayout.remove(data)
+            }
+            return shopPageHomeLayoutUiModel.copy(
+                    listWidget = newHomeLayout
+            )
+        }
         return shopPageHomeLayoutUiModel
     }
 
