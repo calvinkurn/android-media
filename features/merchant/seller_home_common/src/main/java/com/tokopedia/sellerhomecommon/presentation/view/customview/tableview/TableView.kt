@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.shc_table_view.view.*
 
 class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
+    private var slideImpressionListener: ((position: Int, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var alreadyAttachToSnapHelper = false
 
@@ -54,5 +55,12 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         }
 
         mTablePageAdapter.setItems(items)
+        slideImpressionListener?.let { onView ->
+            mTablePageAdapter.addOnImpressionListener(onView)
+        }
+    }
+
+    fun addOnSlideImpressionListener(onView: (position: Int, isEmpty: Boolean) -> Unit) {
+         this.slideImpressionListener = onView
     }
 }

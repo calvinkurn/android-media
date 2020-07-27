@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFactory
 
 /**
@@ -15,7 +16,8 @@ data class TableDataUiModel(
 
 data class TablePageUiModel(
         val headers: List<TableHeaderUiModel> = emptyList(),
-        val rows: List<TableRowsUiModel> = emptyList()
+        val rows: List<TableRowsUiModel> = emptyList(),
+        val impressHolder: ImpressHolder = ImpressHolder()
 )
 
 object TableItemDivider : Visitable<TableItemFactory> {

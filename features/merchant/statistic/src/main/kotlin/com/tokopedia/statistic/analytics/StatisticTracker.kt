@@ -1,63 +1,105 @@
-package com.tokopedia.sellerhome.analytic
+package com.tokopedia.statistic.analytics
 
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
- * Created By @ilhamsuaib on 2020-02-11
+ * Created By @ilhamsuaib on 22/07/20
  */
 
-/**
- * Seller Home Revamp Tracker
- * Data Layer : https://docs.google.com/spreadsheets/d/13WEeOReKimxp9ugeVMew6T-ma9gNQHaWJxYN6DK-1x0/edit?ts=5e395338#gid=389108416
- * */
+object StatisticTracker {
 
-object SellerHomeTracking {
-
-    fun sendImpressionCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendDateFilterEvent(userSession: UserSessionInterface) {
+        val mShopStatus = TrackingHelper.getShopStatus(userSession)
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.IMPRESSION_WIDGET_CARD, "$dataKey $state").joinToString(" - "),
-                cardValue
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                TrackingConstant.SHOP_INSIGHT,
+                TrackingConstant.CLICK_DATE_FILTER,
+                mShopStatus
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendSetDateFilterEvent(filterSubHeader: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.CLICK_WIDGET_CARD, "$dataKey $state").joinToString(" - "),
-                cardValue
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                TrackingConstant.SHOP_INSIGHT,
+                TrackingConstant.CLICK_SELECT_ON_DATE_FILTER,
+                filterSubHeader
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendImpressionLineGraphEvent(dataKey: String, cardValue: String) {
+    fun sendSelectSectionTabEvent(sectionTitle: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
-                cardValue
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                TrackingConstant.SHOP_INSIGHT,
+                TrackingConstant.CLICK_TABS,
+                sectionTitle
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickLineGraphEvent(dataKey: String, cardValue: String) {
+    fun sendCardImpressionEvent(model: CardWidgetUiModel, position: Int) {
+        val state = model.data?.state.orEmpty()
+        val cardValue = model.data?.value ?: "0"
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.PROMO_VIEW,
+                category = TrackingConstant.SHOP_INSIGHT,
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_CARD, "${model.dataKey} $state").joinToString(" - "),
+                label = cardValue
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_CARD, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendClickCardEvent(model: CardWidgetUiModel) {
+        val state = model.data?.state.orEmpty()
+        val cardValue = model.data?.value ?: "0"
+
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_CARD, "${model.dataKey} $state").joinToString(" - "),
+                cardValue
+        )
+
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel, position: Int) {
+        val eventMap = TrackingHelper.createMap(
+                TrackingConstant.PROMO_VIEW,
+                TrackingConstant.SHOP_INSIGHT,
+                arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, model.dataKey).joinToString(" - "),
+                model.data?.header.orEmpty()
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_TREND_LINE, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendClickLineGraphEvent(dataKey: String, chartValue: String) {
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
-                cardValue
+                chartValue
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
     fun sendImpressionDescriptionEvent(descriptionTitle: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                TrackingConstant.SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_DESCRIPTION, descriptionTitle).joinToString(" - "),
                 ""
         )
@@ -66,8 +108,8 @@ object SellerHomeTracking {
 
     fun sendClickDescriptionEvent(descriptionTitle: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_DESCRIPTION, descriptionTitle, TrackingConstant.SEE_MORE).joinToString(" - "),
                 ""
         )
@@ -77,7 +119,7 @@ object SellerHomeTracking {
     fun sendImpressionProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
         val map = TrackingHelper.createMap(
                 TrackingConstant.VIEW_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_PROGRESS_BAR, "$dataKey $stateColor").joinToString(" - "),
                 "$valueScore"
         )
@@ -86,8 +128,8 @@ object SellerHomeTracking {
 
     fun sendClickProgressBarEvent(dataKey: String, stateColor: String, valueScore: Int) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_PROGRESS_BAR, "$dataKey $stateColor", TrackingConstant.SEE_MORE).joinToString(" - "),
                 "$valueScore"
         )
@@ -97,7 +139,7 @@ object SellerHomeTracking {
     fun sendImpressionPostEvent(dataKey: String) {
         val map = TrackingHelper.createMap(
                 TrackingConstant.VIEW_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_POST, dataKey).joinToString(" - "),
                 ""
         )
@@ -106,8 +148,8 @@ object SellerHomeTracking {
 
     fun sendClickPostSeeMoreEvent(dataKey: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 ""
         )
@@ -116,8 +158,8 @@ object SellerHomeTracking {
 
     fun sendClickPostItemEvent(dataKey: String, title: String) {
         val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SELLER_WIDGET,
-                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                TrackingConstant.CLICK_SHOP_INSIGHT,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, dataKey, title).joinToString(" - "),
                 ""
         )
@@ -126,8 +168,8 @@ object SellerHomeTracking {
 
     fun sendClickCarouselCtaEvent(dataKey: String) {
         val map = TrackingHelper.createMap(
-                event = TrackingConstant.CLICK_SELLER_WIDGET,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                event = TrackingConstant.CLICK_SHOP_INSIGHT,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 action = arrayOf(TrackingConstant.CLICK_WIDGET_BANNER, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 label = ""
         )
@@ -139,7 +181,7 @@ object SellerHomeTracking {
                 event = TrackingConstant.PROMO_CLICK,
                 category = arrayOf(
                         TrackingConstant.SELLER_APP,
-                        TrackingConstant.HOME,
+                        TrackingConstant.SHOP_INSIGHT,
                         TrackingConstant.CLICK_WIDGET_BANNER,
                         dataKey,
                         items[position].creativeName
@@ -157,7 +199,7 @@ object SellerHomeTracking {
     fun sendImpressionCarouselItemBannerEvent(dataKey: String, items: List<CarouselItemUiModel>, position: Int) {
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.SHOP_INSIGHT).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BANNER, dataKey).joinToString(" - "),
                 label = arrayOf(items[position].appLink, position.toString()).joinToString(" - ")
         )
@@ -173,7 +215,7 @@ object SellerHomeTracking {
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                category = TrackingConstant.SHOP_INSIGHT,
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_TABLE, model.dataKey).joinToString(" - "),
                 label = "$state - $slideNumber"
         )
@@ -189,7 +231,7 @@ object SellerHomeTracking {
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                category = TrackingConstant.SHOP_INSIGHT,
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
                 label = value
         )
@@ -207,7 +249,7 @@ object SellerHomeTracking {
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                category = TrackingConstant.SHOP_INSIGHT,
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
         )
