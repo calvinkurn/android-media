@@ -128,18 +128,19 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String) {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
-        // Clear all pre selected promo on load data
-        promoRequest.attemptedCodes.clear()
-        promoRequest.codes.clear()
-        promoRequest.orders.forEach {
-            it.codes.clear()
-        }
-
         // Set param manual input
         if (promoCode.isNotBlank()) {
+            promoRequest.attemptedCodes.clear()
             promoRequest.attemptedCodes.add(promoCode)
             promoRequest.skipApply = 0
         } else {
+            // Clear all pre selected promo on load data
+            promoRequest.attemptedCodes.clear()
+            promoRequest.codes.clear()
+            promoRequest.orders.forEach {
+                it.codes.clear()
+            }
+
             promoRequest.skipApply = 1
         }
 

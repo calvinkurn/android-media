@@ -23,7 +23,6 @@ data class ProductMediaDataModel(
 }
 
 data class MediaDataModel(
-        val id:String = "",
         val type: String = "",
         val url300: String = "",
         val urlOriginal: String = "",

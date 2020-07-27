@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import android.content.Intent
+import androidx.collection.ArrayMap
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
@@ -9,9 +10,9 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.*
-import java.util.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -122,13 +123,9 @@ object VariantMapper {
 
         val newMedia = if (newData?.hasPicture == true) {
             val copyOfOldMedia = existingListMedia?.toMutableList()
-            val newMedia = Media(type = "image", uRL300 = newData.picture?.original
+            copyOfOldMedia?.add(0, Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
-                    ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = UUID.randomUUID().toString()
-            }
-
-            copyOfOldMedia?.add(0, newMedia)
+                    ?: "", uRLThumbnail = newData.picture?.original ?: ""))
             copyOfOldMedia ?: mutableListOf()
         } else {
             oldData.data.media
