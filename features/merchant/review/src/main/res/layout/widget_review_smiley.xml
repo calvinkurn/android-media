@@ -4,11 +4,23 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/reviewEditableSmiley"
+    <RelativeLayout
+        android:id="@+id/image_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/reviewEditableImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/reviewEditableSmiley"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewEditableText"
@@ -17,7 +29,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:animateLayoutChanges="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/reviewEditableSmiley"
+        android:layout_below="@id/image_container"
         app:typographyType="body_2"
         app:typographyWeight="bold"/>
 

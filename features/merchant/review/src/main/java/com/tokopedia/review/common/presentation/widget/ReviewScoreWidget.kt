@@ -40,6 +40,10 @@ class ReviewScoreWidget : BaseCustomView {
                 this.reviewEditableMediocreSmiley.setActiveMediocre()
                 setDeadline(lockTime)
             }
+            ReviewConstants.REPUTATION_SCORE_EXCELLENT -> {
+                this.reviewEditableExcellentSmiley.setActiveExcellent()
+                setDeadline(lockTime)
+            }
             else -> {
                 setEmptyScore()
             }

@@ -125,6 +125,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
         }
+        reviewHistoryDetailReputation.onScoreSelected(score)
     }
 
     private fun getDataFromArguments() {

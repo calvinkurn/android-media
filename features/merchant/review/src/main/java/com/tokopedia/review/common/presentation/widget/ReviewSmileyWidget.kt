@@ -1,10 +1,13 @@
 package com.tokopedia.review.common.presentation.widget
 
+import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
@@ -40,25 +43,33 @@ class ReviewSmileyWidget : BaseCustomView {
     private var score = 0
 
     fun setActiveBad() {
+        setBadSmileyText()
         this.isActive = true
-        this.reviewEditableSmiley.apply {
+        this.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_active))
         }
-        setBadSmileyText()
     }
 
     fun setActiveMediocre() {
+        setMediocreSmileyText()
         this.isActive = true
-        this.reviewEditableSmiley.apply {
+        this.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_active))
         }
-        setMediocreSmileyText()
+    }
+
+    fun setActiveExcellent() {
+        setExcellentSmileyText()
+        this.isActive = true
+        this.reviewEditableImageView.apply {
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_active))
+        }
     }
 
     fun deactivateBad() {
         if(isActive) {
             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
-            this.reviewEditableSmiley.apply {
+            this.reviewEditableImageView.apply {
                 setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
             }
             hideSmileyText()
@@ -69,7 +80,7 @@ class ReviewSmileyWidget : BaseCustomView {
     fun deactivateMediocre() {
         if(isActive) {
             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
-            this.reviewEditableSmiley.apply {
+            this.reviewEditableImageView.apply {
                 setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
             }
             hideSmileyText()
@@ -80,7 +91,7 @@ class ReviewSmileyWidget : BaseCustomView {
     fun deactivateExcellent() {
         if(isActive) {
             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
-            this.reviewEditableSmiley.apply {
+            this.reviewEditableImageView.apply {
                 setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
             }
             hideSmileyText()
@@ -103,8 +114,31 @@ class ReviewSmileyWidget : BaseCustomView {
         if (isActive) {
             setActiveImage(score)
         } else {
-            setInActiveImage(score)
+            setInactiveImage(score)
         }
+        this.reviewEditableSmiley.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+                // No Op
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                if (isActive) {
+                    setActiveImage(score)
+                } else {
+                    setInactiveImage(score)
+                }
+                reviewEditableImageView.show()
+                reviewEditableSmiley.hide()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+                // No Op
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+                reviewEditableImageView.hide()
+            }
+        })
         typedArray.recycle()
     }
 
@@ -117,24 +151,22 @@ class ReviewSmileyWidget : BaseCustomView {
                 setActiveMediocre()
             }
             else -> {
-                this.reviewEditableSmiley.apply {
-                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_active))
-                }
-                setExcellentSmileyText()
+                setActiveExcellent()
             }
         }
     }
 
-    private fun setInActiveImage(score: Int) {
+    private fun setInactiveImage(score: Int) {
+        hideSmileyText()
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
+                this.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
+                this.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
             }
             else -> {
-                this.reviewEditableSmiley.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
+                this.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
             }
         }
     }
@@ -172,48 +204,42 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setAnimations(reviewScoreClickListener: ReviewScoreClickListener) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.apply {
+                this.reviewEditableImageView.apply {
                     setOnClickListener {
                         if(!isActive) {
                             isActive = true
                             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION)
-                            setBadSmileyText()
                         } else {
                             isActive = false
                             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
-                            hideSmileyText()
                         }
                         reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.apply {
+                this.reviewEditableImageView.apply {
                     setOnClickListener {
                         if(!isActive) {
                             isActive = true
                             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION)
-                            setMediocreSmileyText()
                         } else {
                             isActive = false
                             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
-                            hideSmileyText()
                         }
                         reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
             else -> {
-                this.reviewEditableSmiley.apply {
+                this.reviewEditableImageView.apply {
                     setOnClickListener {
                         if(!isActive) {
                             isActive = true
                             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION)
-                            setExcellentSmileyText()
                         } else {
                             isActive = false
                             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
-                            hideSmileyText()
                         }
                         reviewScoreClickListener.onReviewScoreClicked(score)
                     }
@@ -227,8 +253,11 @@ class ReviewSmileyWidget : BaseCustomView {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
 
             lottieCompositionLottieTask.addListener { result ->
-                this.reviewEditableSmiley.setComposition(result)
-                this.reviewEditableSmiley.playAnimation()
+                this.reviewEditableSmiley.apply {
+                    this.reviewEditableSmiley.setComposition(result)
+                    show()
+                    this.reviewEditableSmiley.playAnimation()
+                }
             }
 
             lottieCompositionLottieTask.addFailureListener { throwable -> }
