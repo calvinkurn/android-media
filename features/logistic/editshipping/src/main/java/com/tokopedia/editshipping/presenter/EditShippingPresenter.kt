@@ -1,11 +1,11 @@
 package com.tokopedia.editshipping.presenter
 
 import android.os.Bundle
-import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
 import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData
+import com.tokopedia.editshipping.domain.response.ValidateShippingResponse
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticdata.data.entity.address.Token
 
@@ -33,7 +33,11 @@ interface EditShippingPresenter {
 
     fun refreshData()
 
-    fun validateBo()
+    fun getShopId(): String
+
+    fun getCompiledShippingId(): String
+
+    fun validateBo(shopId: String, compiledShippingId: String)
 
     fun editShippingParamsValid(): Boolean
 
@@ -41,7 +45,7 @@ interface EditShippingPresenter {
 
     val shopInformation: ShopShipping?
 
-    val validateBoData: ValidateShippingModel?
+    val validateBoData: ValidateShippingResponse?
 
     val shopModel: EditShippingCouriers?
 

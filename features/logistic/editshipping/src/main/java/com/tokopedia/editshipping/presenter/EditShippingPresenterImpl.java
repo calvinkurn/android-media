@@ -1,21 +1,23 @@
 package com.tokopedia.editshipping.presenter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
 import com.tokopedia.editshipping.data.interactor.EditShippingRetrofitInteractor;
 import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
 import com.tokopedia.editshipping.domain.ValidateShippingUseCase;
-import com.tokopedia.editshipping.domain.model.ValidateShippingModel;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData;
+import com.tokopedia.editshipping.domain.response.ValidateShippingResponse;
 import com.tokopedia.editshipping.ui.EditShippingFragment;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -26,6 +28,7 @@ import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +53,7 @@ import timber.log.Timber;
  * Created by Kris on 2/23/2016.
  * Presenter for EditShipping
  */
-public class EditShippingPresenterImpl implements EditShippingPresenter {
+public class EditShippingPresenterImpl extends BaseDaggerPresenter implements EditShippingPresenter {
 
     private EditShippingViewListener view;
 
@@ -59,8 +62,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     private RevGeocodeUseCase revGeocodeUseCase;
 
     private ShopShipping shopInformation;
-
-    private ValidateShippingModel validateBoData;
 
     private List<Courier> courierList;
 
@@ -84,11 +85,14 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private ValidateShippingUseCase validateShippingUseCase;
 
+    private ValidateShippingResponse validateBoData;
+
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
         revGeocodeUseCase = new RevGeocodeUseCase(view.getMainContext(), new GraphqlUseCase());
         userSession = new UserSession(view.getMainContext());
+        validateShippingUseCase = new ValidateShippingUseCase(view.getMainContext(), new GraphqlUseCase());
     }
 
     @Override
@@ -813,32 +817,52 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     @Override
-    public void validateBo() {
-        scanActivatedCourier();
-        validateShippingUseCase.execute(userSession.getShopId(), compiledShippingId());
-/*        validateShippingUseCase.execute(new Subscriber<ValidateShippingModel>() {
+    public void validateBo(String shopId, String compiledShippingId) {
+//        scanActivatedCourier();
+        Log.d("STRING_SHOPID_2", shopId);
+        Log.d("STRING_SHIPPINGIG_2", compiledShippingId);
+        validateShippingUseCase.execute(shopId, compiledShippingId)
+                .subscribe(new Subscriber<ValidateShippingResponse>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onCompleted() {
+                    }
 
-            }
+                    @Override
+                    public void onError(Throwable e) {
 
-            @Override
-            public void onError(Throwable e) {
+                    }
 
-            }
-
-            @Override
-            public void onNext(ValidateShippingModel validateShippingModel) {
-
-            }
-        });*/
+                    @Override
+                    public void onNext(ValidateShippingResponse validateShippingResponse) {
+                        setValidateBoData(validateShippingResponse);
+                    }
+                });
 
     }
 
     @Nullable
     @Override
-    public ValidateShippingModel getValidateBoData() {
+    public ValidateShippingResponse getValidateBoData() {
         return validateBoData;
     }
+
+    @Override
+    public String getShopId() {
+        return userSession.getShopId();
+    }
+
+    @NotNull
+    @Override
+    public String getCompiledShippingId() {
+        scanActivatedCourier();
+        Map<String, String> shippingUpdateParams = new HashMap<>();
+        putDataToHashMap(shippingUpdateParams);
+        return shippingUpdateParams.toString();
+    }
+
+    private void setValidateBoData(ValidateShippingResponse model) {
+        this.validateBoData = model;
+    }
+
 }

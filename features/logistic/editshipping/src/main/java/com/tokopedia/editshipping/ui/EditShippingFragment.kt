@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
@@ -20,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics
+import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
 import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData
@@ -187,6 +189,10 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         if (shopData != null) {
             fragmentShippingHeader?.renderData(shopData)
         }
+    }
+
+    override fun setValidateBoData(data: ValidateShippingModel?) {
+        data?.let { openPopupValidation(it) }
     }
 
     override val districtAndCity: String?
@@ -381,7 +387,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             return true
         } else if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
-//                editShippingPresenter?.validateBo()
+                Log.d("STRING_SHOPID", editShippingPresenter?.getShopId().toString());
+                Log.d("STRING_SHIPPINGID", editShippingPresenter?.getCompiledShippingId().toString());
+                editShippingPresenter?.validateBo(editShippingPresenter?.getShopId().toString(), "{\"1\": {\"1\": 1, \"2\": 1, \"6\": 1, \"22\": 1}, \"2\": {\"3\": 1, \"16\": 1}}")
                 ValidateShippingPopUp()
             } else showErrorToast(getString(R.string.dialog_on_process))
         }
@@ -494,23 +502,24 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun ValidateShippingPopUp() {
-        if (editShippingPresenter?.validateBoData?.data?.showPopup == true) {
-            openPopupValidation()
+        val data = ValidateShippingModel()
+        if (editShippingPresenter?.validateBoData?.response?.data?.showPopup == true) {
+            openPopupValidation(data)
         } else {
             submitData()
         }
     }
 
-    private fun openPopupValidation() {
+    private fun openPopupValidation(data: ValidateShippingModel) {
         bottomSheetValidation = BottomSheetUnify()
         val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
-            val boData = editShippingPresenter?.validateBoData
-            ticker_validation_bo.tickerTitle = boData?.data?.tickerTitle
-            boData?.data?.tickerContent?.let { ticker_validation_bo.setHtmlDescription(it) }
+            val boData = editShippingPresenter?.validateBoData?.response
+            ticker_validation_bo.tickerTitle = data.data.tickerTitle
+            boData?.data?.tickerContent?.let { data.data.tickerContent }
 
-            point_one.text = boData?.data?.popupContent?.get(0)
-            point_two.text = boData?.data?.popupContent?.get(1)
-            point_three.text = boData?.data?.popupContent?.get(2)
+            point_one.text = data.data.popupContent[0]
+            point_two.text = data.data.popupContent[1]
+            point_three.text = data.data.popupContent[2]
 
             btn_nonaktifkan.setOnClickListener {
                 submitData()

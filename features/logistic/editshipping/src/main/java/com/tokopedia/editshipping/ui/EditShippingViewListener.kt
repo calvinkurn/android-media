@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.ui
 
 import android.content.Context
+import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.Courier
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
@@ -20,6 +21,8 @@ interface EditShippingViewListener {
     fun setGeoAddress(address: String?)
 
     fun setShopLocationData(shopData: ShopShipping?)
+
+    fun setValidateBoData(data: ValidateShippingModel?)
 
     val districtAndCity: String?
 
