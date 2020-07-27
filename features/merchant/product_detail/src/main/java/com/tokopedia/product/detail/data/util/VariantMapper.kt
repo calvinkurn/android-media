@@ -10,9 +10,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.view.util.toDate
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantChildCommon
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
+import com.tokopedia.variant_common.model.*
 import java.util.*
 
 /**
