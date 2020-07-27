@@ -216,7 +216,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
-    public static final String REMOTE_CONFIG_2FA = "android_user_two_factor_check";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
 

@@ -88,6 +88,7 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
+import static com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA;
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 /**
@@ -160,7 +161,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private Boolean getTwoFactorRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_2FA, false);
+        return remoteConfig.getBoolean(REMOTE_CONFIG_2FA, false);
     }
 
     private void createAndCallPreSeq(){

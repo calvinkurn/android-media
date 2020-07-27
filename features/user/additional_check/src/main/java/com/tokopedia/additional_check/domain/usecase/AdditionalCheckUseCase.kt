@@ -1,7 +1,6 @@
 package com.tokopedia.additional_check.domain.usecase
 
 import com.tokopedia.additional_check.data.GetObjectPojo
-import com.tokopedia.additional_check.data.MockGetObjectResponse
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -29,21 +28,4 @@ class AdditionalCheckUseCase @Inject constructor(
             }, onError)
         }
     }
-
-    fun getMockBottomSheetSuccess(onSuccess: (GetObjectPojo) -> Unit, onError: (Throwable) -> Unit){
-        onSuccess(MockGetObjectResponse.getObjectSuccess())
-    }
-
-    fun getMockBottomSheetSuccessObservable(): Observable<GetObjectPojo> {
-        return Observable.just(MockGetObjectResponse.getObjectSuccess())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
-
-//    fun createRequestParam(signature: FingerprintSignature, publicKey: String): Map<String, String>{
-//        return mapOf(
-//                LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
-//                LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-//                LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime
-//        )
-//    }
 }

@@ -14,13 +14,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
  */
 class TwoFactorActivity: BaseSimpleActivity() {
 
-//    override fun getComponent(): LoginFingerprintComponent {
-//        return DaggerLoginFingerprintComponent.builder()
-//                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-//                .loginFingerprintSettingModule(LoginFingerprintSettingModule(this))
-//                .build()
-//    }
-
     var enableBackBtn: Boolean? = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
