@@ -50,7 +50,7 @@ class ProductViewHolder(
             itemView.textStockCount.text = if (this <= MAX_SHOWING_STOCK) {
                 getNumberFormatted()
             } else {
-                ">${MAX_SHOWING_STOCK.getNumberFormatted()}"
+                "${MAX_SHOWING_STOCK.getNumberFormatted()}+"
             }
             itemView.textStockCount.show()
             itemView.textStock.show()

@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Var
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.util.CampaignStockMapper
+import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
@@ -228,7 +229,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                     ImageHandler.loadImageFitCenter(context, img_campaign_stock_product, url)
                 }
                 tv_campaign_stock_product_name?.text = productName
-                tv_campaign_stock_product_total_stock_count?.text = totalStock
+                tv_campaign_stock_product_total_stock_count?.text = totalStock.convertCheckMaximumStockLimit(context)
             }
         }
     }
@@ -236,8 +237,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun setupFragmentTabs(getStockAllocation: GetStockAllocationData) {
         with(getStockAllocation.summary) {
             tabs_campaign_stock?.run {
-                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), sellableStock.toIntOrZero()))
-                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), reserveStock.toIntOrZero()))
+                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), sellableStock.convertCheckMaximumStockLimit(context)))
+                addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), reserveStock.convertCheckMaximumStockLimit(context)))
 
                 getUnifyTabLayout().addOnTabSelectedListener(onTabSelectedListener)
             }

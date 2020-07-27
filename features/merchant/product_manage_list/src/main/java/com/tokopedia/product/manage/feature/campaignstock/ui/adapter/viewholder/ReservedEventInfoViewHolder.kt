@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.util.convertCheckMaximumStockLimit
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.item_campaign_stock_reserved_event_info.view.*
 
@@ -21,7 +22,7 @@ class ReservedEventInfoViewHolder(itemView: View?,
         with(itemView) {
             label_campaign_stock_event_info?.text = element.eventType
             tv_campaign_stock_event_name?.text = element.eventName
-            tv_campaign_stock_event_count?.text = element.stock
+            tv_campaign_stock_event_count?.text = element.stock.convertCheckMaximumStockLimit(context)
             tv_campaign_stock_event_description?.text = element.eventDesc
             if (element.isVariant) {
                 accordion_campaign_stock?.run {
