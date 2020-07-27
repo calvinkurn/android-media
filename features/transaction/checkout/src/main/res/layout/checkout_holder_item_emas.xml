@@ -37,7 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/emas_checkout_title"
-            android:textColor="@color/Neutral_N700_96"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Bulatkan Tagihan dengan Nabung Emas" />
@@ -53,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/emas_checkout_desc"
-                android:textColor="@color/Neutral_N700_32"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
                 tools:text="Pembulatan Emas sebesar Rp600" />
