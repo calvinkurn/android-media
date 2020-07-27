@@ -38,6 +38,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
@@ -48,6 +49,7 @@ import com.tokopedia.review.feature.createreputation.ui.listener.ImageClickListe
 import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -59,7 +61,8 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaListener, OnBackPressedListener {
+class CreateReviewFragment : BaseDaggerFragment(),
+        ImageClickListener, TextAreaListener, OnBackPressedListener, ReviewScoreClickListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -196,7 +199,6 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isLowDevice = DevicePerformanceInfo.isLow(context)
-        initReputation()
         initCreateReviewTextArea()
         initEmptyPhoto()
         initAnonymousText()
@@ -321,6 +323,10 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
 
     }
 
+    override fun onReviewScoreClicked(score: Int) {
+        createReviewScore.onScoreSelected(score)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
@@ -399,7 +405,7 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
             shopId = shopData.shopID.toString()
             orderId = orderID
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
-            setShopName(shopData.shopName)
+            setReputation(reputation, shopData.shopName)
         }
     }
 
@@ -461,8 +467,19 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
         }
     }
 
-    private fun setReputation(reputation: ProductrevGetReviewDetailReputation) {
-
+    private fun setReputation(reputation: Reputation, shopName: String) {
+        with(reputation) {
+            if(locked) {
+                return
+            } else {
+                createReviewScore.apply {
+                    setEditableScore(score)
+                    setShopName(shopName)
+                    setReviewScoreClickListener(this@CreateReviewFragment)
+                    show()
+                }
+            }
+        }
     }
 
     private fun onFailGetReviewDetail(throwable: Throwable) {
@@ -679,14 +696,6 @@ class CreateReviewFragment : BaseDaggerFragment(), ImageClickListener, TextAreaL
                 }
             }
         }
-    }
-
-    private fun initReputation() {
-        createReviewScore.setEditableScore(0, "")
-    }
-
-    private fun setShopName(shopName: String) {
-        createReviewScore.setShopName(shopName)
     }
 
     fun showCancelDialog() {

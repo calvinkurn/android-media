@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.inbox.history.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -9,15 +8,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
-import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import kotlinx.android.synthetic.main.item_review_history.view.*
-import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
 class ReviewHistoryViewHolder(view: View,
-                              private val reviewAttachedImagesClickedListener: ReviewAttachedImagesClickedListener,
+                              private val reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
                               private val reviewHistoryItemListener: ReviewHistoryItemListener
 ) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
@@ -64,7 +61,7 @@ class ReviewHistoryViewHolder(view: View,
             setOnClickListener {
                 reviewHistoryItemListener.trackAttachedImageClicked(productId, feedbackId)
             }
-            setImages(attachedImages, productName, reviewAttachedImagesClickedListener)
+            setImages(attachedImages, productName, reviewAttachedImagesClickListener)
             show()
         }
     }

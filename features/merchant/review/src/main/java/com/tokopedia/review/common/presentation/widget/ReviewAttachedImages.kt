@@ -4,12 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
@@ -30,8 +27,8 @@ class ReviewAttachedImages : BaseCustomView {
         View.inflate(context, R.layout.widget_review_attached_images, this)
     }
 
-    fun setImages(attachedImages: List<String>, productName: String, reviewAttachedImagesClickedListener: ReviewAttachedImagesClickedListener) {
-        val attachedImageAdapter = ReviewAttachedImagesAdapter(reviewAttachedImagesClickedListener, productName)
+    fun setImages(attachedImages: List<String>, productName: String, reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener) {
+        val attachedImageAdapter = ReviewAttachedImagesAdapter(reviewAttachedImagesClickListener, productName)
         this.reviewAttachedImages.apply {
             adapter = attachedImageAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

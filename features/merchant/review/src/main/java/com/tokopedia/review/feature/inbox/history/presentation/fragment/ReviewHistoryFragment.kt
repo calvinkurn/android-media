@@ -22,7 +22,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTracking
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
@@ -40,7 +40,7 @@ import kotlinx.android.synthetic.main.partial_review_empty.view.*
 import javax.inject.Inject
 
 class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory>(),
-        HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickedListener, SearchListener, ReviewHistoryItemListener {
+        HasComponent<ReviewHistoryComponent>, ReviewAttachedImagesClickListener, SearchListener, ReviewHistoryItemListener {
 
     companion object {
         fun createNewInstance() : ReviewHistoryFragment {

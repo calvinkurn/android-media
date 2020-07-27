@@ -3,12 +3,11 @@ package com.tokopedia.review.common.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.imagepreviewslider.presentation.adapter.TouchImageListenerAdapter
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.adapter.viewholder.ReviewAttachedProductViewHolder
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 
-class ReviewAttachedImagesAdapter(private val imageClickListener: ReviewAttachedImagesClickedListener, private val productName: String) : RecyclerView.Adapter<ReviewAttachedProductViewHolder>() {
+class ReviewAttachedImagesAdapter(private val imageClickListener: ReviewAttachedImagesClickListener, private val productName: String) : RecyclerView.Adapter<ReviewAttachedProductViewHolder>() {
 
     private var attachedImages: List<String> = listOf()
 

@@ -4,12 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_review_smiley.view.*
@@ -42,8 +39,57 @@ class ReviewSmileyWidget : BaseCustomView {
     private var isActive = false
     private var score = 0
 
-    private fun isActive(): Boolean {
-        return isActive
+    fun setActiveBad() {
+        this.isActive = true
+        this.reviewEditableSmiley.apply {
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_active))
+        }
+        setBadSmileyText()
+    }
+
+    fun setActiveMediocre() {
+        this.isActive = true
+        this.reviewEditableSmiley.apply {
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_active))
+        }
+        setMediocreSmileyText()
+    }
+
+    fun deactivateBad() {
+        if(isActive) {
+            setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
+            this.reviewEditableSmiley.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
+            }
+            hideSmileyText()
+            isActive = false
+        }
+    }
+
+    fun deactivateMediocre() {
+        if(isActive) {
+            setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
+            this.reviewEditableSmiley.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
+            }
+            hideSmileyText()
+            isActive = false
+        }
+    }
+
+    fun deactivateExcellent() {
+        if(isActive) {
+            setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
+            this.reviewEditableSmiley.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
+            }
+            hideSmileyText()
+            isActive = false
+        }
+    }
+
+    fun setSmileyClickListener(reviewScoreClickListener: ReviewScoreClickListener) {
+        setAnimations(reviewScoreClickListener)
     }
 
     private fun init() {
@@ -59,27 +105,20 @@ class ReviewSmileyWidget : BaseCustomView {
         } else {
             setInActiveImage(score)
         }
-        setAnimations()
         typedArray.recycle()
     }
 
     private fun setActiveImage(score: Int) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.apply {
-                    loadImageDrawable(R.drawable.ic_smiley_bad_active)
-                }
-                setBadSmileyText()
+                setActiveBad()
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.apply {
-                    loadImageDrawable(R.drawable.ic_smiley_neutral_active)
-                }
-                setMediocreSmileyText()
+                setActiveMediocre()
             }
             else -> {
                 this.reviewEditableSmiley.apply {
-                    loadImageDrawable(R.drawable.ic_smiley_great_active)
+                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_active))
                 }
                 setExcellentSmileyText()
             }
@@ -89,13 +128,13 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setInActiveImage(score: Int) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_inactive)
+                this.reviewEditableSmiley.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_neutral_inactive)
+                this.reviewEditableSmiley.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
             }
             else -> {
-                this.reviewEditableSmiley.loadImageDrawable(R.drawable.ic_smiley_great_inactive)
+                this.reviewEditableSmiley.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
             }
         }
     }
@@ -125,10 +164,12 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     private fun hideSmileyText() {
-        this.reviewEditableText.animate().alpha(0.0f)
+        this.reviewEditableText.apply {
+            animate().alpha(0.0f)
+        }
     }
 
-    private fun setAnimations() {
+    private fun setAnimations(reviewScoreClickListener: ReviewScoreClickListener) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
                 this.reviewEditableSmiley.apply {
@@ -142,6 +183,7 @@ class ReviewSmileyWidget : BaseCustomView {
                             setLottieAnimationFromUrl(BAD_SMILEY_ANIMATION_REVERSE)
                             hideSmileyText()
                         }
+                        reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
@@ -157,6 +199,7 @@ class ReviewSmileyWidget : BaseCustomView {
                             setLottieAnimationFromUrl(MEDIOCRE_SMILEY_ANIMATION_REVERSE)
                             hideSmileyText()
                         }
+                        reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }
@@ -172,6 +215,7 @@ class ReviewSmileyWidget : BaseCustomView {
                             setLottieAnimationFromUrl(EXCELLENT_SMILEY_ANIMATION_REVERSE)
                             hideSmileyText()
                         }
+                        reviewScoreClickListener.onReviewScoreClicked(score)
                     }
                 }
             }

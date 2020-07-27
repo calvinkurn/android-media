@@ -8,38 +8,36 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_review_detail_score.view.*
 
 class ReviewScoreWidget : BaseCustomView {
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
     private var currentScore = 0
 
-    fun setEditableScore(score: Int, lockTime: String) {
+    fun setEditableScore(score: Int, lockTime: String = "") {
         currentScore = score
-        when(score) {
+        when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableBadSmiley.apply {
-                    show()
-                }
+                this.reviewEditableBadSmiley.setActiveBad()
                 setDeadline(lockTime)
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableMediocreSmiley.apply {
-                    show()
-                }
+                this.reviewEditableMediocreSmiley.setActiveMediocre()
                 setDeadline(lockTime)
             }
             else -> {
@@ -48,7 +46,13 @@ class ReviewScoreWidget : BaseCustomView {
         }
         this.reviewEditableBadSmiley.show()
         this.reviewEditableMediocreSmiley.show()
-        this.reviewEditableGreatSmiley.show()
+        this.reviewEditableExcellentSmiley.show()
+    }
+
+    fun setReviewScoreClickListener(reviewScoreClickListener: ReviewScoreClickListener) {
+        this.reviewEditableBadSmiley.setSmileyClickListener(reviewScoreClickListener)
+        this.reviewEditableMediocreSmiley.setSmileyClickListener(reviewScoreClickListener)
+        this.reviewEditableExcellentSmiley.setSmileyClickListener(reviewScoreClickListener)
     }
 
     fun setShopName(shopName: String) {
@@ -60,7 +64,7 @@ class ReviewScoreWidget : BaseCustomView {
     }
 
     fun setFinalScore(score: Int) {
-        when(score) {
+        when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
                 this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_active)
                 this.reviewDetailScoreText.apply {
@@ -92,8 +96,26 @@ class ReviewScoreWidget : BaseCustomView {
         return currentScore
     }
 
+    fun onScoreSelected(score: Int) {
+        when (score) {
+            ReviewConstants.REPUTATION_SCORE_BAD -> {
+                this.reviewEditableMediocreSmiley.deactivateMediocre()
+                this.reviewEditableExcellentSmiley.deactivateExcellent()
+            }
+            ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
+                this.reviewEditableBadSmiley.deactivateBad()
+                this.reviewEditableExcellentSmiley.deactivateExcellent()
+            }
+            // ReviewConstants.REPUTATION_SCORE_EXCELLENT
+            else -> {
+                this.reviewEditableBadSmiley.deactivateBad()
+                this.reviewEditableMediocreSmiley.deactivateMediocre()
+            }
+        }
+    }
+
     private fun setDeadline(deadline: String) {
-        if(deadline.isNotBlank()) {
+        if (deadline.isNotBlank()) {
             this.reviewScoreDeadline.apply {
                 text = deadline
                 show()

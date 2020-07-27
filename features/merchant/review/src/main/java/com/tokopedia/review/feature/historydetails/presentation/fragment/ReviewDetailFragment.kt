@@ -5,14 +5,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spannable
-import android.text.method.LinkMovementMethod
-import android.text.style.URLSpan
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -26,7 +21,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.*
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickedListener
+import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
+import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
@@ -40,7 +36,9 @@ import kotlinx.android.synthetic.main.fragment_review_detail.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.view.*
 import javax.inject.Inject
 
-class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickedListener, OnBackPressedListener {
+class ReviewDetailFragment : BaseDaggerFragment(),
+        HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickListener,
+        OnBackPressedListener, ReviewScoreClickListener {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -120,6 +118,12 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
                     onSuccessEditForm()
                 }
             }
+        }
+    }
+
+    override fun onReviewScoreClicked(score: Int) {
+        (viewModel.reviewDetails.value as? Success)?.let {
+            ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
         }
     }
 
@@ -221,6 +225,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), HasComponent<ReviewDetailComp
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
             reviewHistoryDetailReputation.apply {
+                setReviewScoreClickListener(this@ReviewDetailFragment)
                 when {
                     !editable && isLocked && score != 0  -> {
                         setFinalScore(score)

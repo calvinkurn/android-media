@@ -79,12 +79,12 @@
         app:isSelected="false"
         app:score="mediocre"
         app:layout_constraintStart_toEndOf="@id/reviewEditableBadSmiley"
-        app:layout_constraintEnd_toStartOf="@id/reviewEditableGreatSmiley"
+        app:layout_constraintEnd_toStartOf="@id/reviewEditableExcellentSmiley"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
         tools:visibility="visible"/>
 
     <com.tokopedia.review.common.presentation.widget.ReviewSmileyWidget
-        android:id="@+id/reviewEditableGreatSmiley"
+        android:id="@+id/reviewEditableExcellentSmiley"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
