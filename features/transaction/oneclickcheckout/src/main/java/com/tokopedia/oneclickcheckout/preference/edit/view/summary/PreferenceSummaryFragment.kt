@@ -410,22 +410,22 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             if (parent.getAddressId() == 0) {
                 val addressId = data.addressModel.addressId
                 parent.setAddressId(addressId)
-                viewModel.profileAddressId = addressId
+                viewModel.setProfileAddressId(addressId)
             }
             if (parent.getShippingId() == 0) {
                 val serviceId = data.shipmentModel.serviceId
                 parent.setShippingId(serviceId)
-                viewModel.profileServiceId = serviceId
+                viewModel.setProfileServiceId(serviceId)
             }
             if (parent.getGatewayCode().isEmpty()) {
                 val gatewayCode = data.paymentModel.gatewayCode
                 parent.setGatewayCode(gatewayCode)
-                viewModel.profileGatewayCode = gatewayCode
+                viewModel.setProfileGatewayCode(gatewayCode)
             }
             if (parent.getPaymentQuery().isEmpty()) {
                 val metadata = data.paymentModel.metadata
                 parent.setPaymentQuery(metadata)
-                viewModel.profilePaymentMetadata = metadata
+                viewModel.setProfilePaymentMetadata(metadata)
             }
         }
     }

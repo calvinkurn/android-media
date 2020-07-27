@@ -111,7 +111,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Success With Preference And Rates`() {
         val shipment = OrderProfileShipment(serviceId = 1)
         val profile = OrderProfile(shipment = shipment, profileId = 1)
-        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))), preference = profile)
+        val cart = OrderCart(product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1)))
+        val response = OrderData(cart = cart, preference = profile)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
 
@@ -127,6 +128,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                                     productData = ProductData().apply {
                                         shipperName = "kirimin"
                                         shipperProductId = 1
+                                        shipperId = 1
                                         insurance = InsuranceData()
                                         price = PriceData()
                                     }
@@ -144,13 +146,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
-                shipperId = 0, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
+                shipperId = 1, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
                 insuranceData = shippingRecommendationData.shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.insurance),
         orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any())
         }
+        assertEquals(cart, orderSummaryPageViewModel.orderCart)
+        assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
+        assertEquals(1, orderSummaryPageViewModel.getCurrentProfileId())
     }
 
     @Test

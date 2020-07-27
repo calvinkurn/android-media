@@ -16,8 +16,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Invalid Quantity`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment()), isValid = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
 
         orderSummaryPageViewModel.calculateTotal()
 
@@ -28,8 +29,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment()), isValid = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
 
         orderSummaryPageViewModel.calculateTotal()
 
@@ -38,43 +40,63 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
 
     @Test
     fun `Calculate Total Below Minimum`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment(minimumAmount = 10000)), isValid = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000)
 
         orderSummaryPageViewModel.calculateTotal()
 
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.DISABLE, true,
-                "Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel._orderPreference.preference.payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPreference.preference.payment.minimumAmount, false)}). Silahkan pilih pembayaran lain."),
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.NORMAL, true,
+                "Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPayment.minimumAmount, false)}). Silahkan pilih pembayaran lain."),
                 orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
     fun `Calculate Total Above Minimum`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment(maximumAmount = 10)), isValid = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10)
 
         orderSummaryPageViewModel.calculateTotal()
 
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.DISABLE, true,
-                "Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPreference.preference.payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPreference.preference.payment.maximumAmount, false)}). Silahkan pilih pembayaran lain."),
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.NORMAL, true,
+                "Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderSummaryPageViewModel._orderPayment.maximumAmount, false)}). Silahkan pilih pembayaran lain."),
                 orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
     fun `Calculate Total Above OVO Balance`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment(walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)), isValid = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)
 
         orderSummaryPageViewModel.calculateTotal()
 
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.DISABLE, true, OrderSummaryPageViewModel.OVO_INSUFFICIENT_ERROR_MESSAGE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.NORMAL, true, OrderSummaryPageViewModel.OVO_INSUFFICIENT_ERROR_MESSAGE), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Has No Available Credit Card`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(numberOfCards = OrderPaymentCreditCardsNumber(0, 1, 1)))
+
+        orderSummaryPageViewModel.calculateTotal()
+
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.NORMAL, true, null), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
     fun `Calculate Total With Promos`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(
                 summaries = listOf(SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT, amount = helper.logisticPromo.benefitAmount),
@@ -85,7 +107,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         )))
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(payment = OrderProfilePayment()), isValid = true)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 2000, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo,
                 logisticPromoShipping = ShippingCourierUiModel().apply {
                     productData = ProductData().apply {
@@ -96,11 +118,68 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                     insurancePrice = 100
                 },
                 isCheckInsurance = true, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
 
         orderSummaryPageViewModel.calculateTotal()
 
         assertEquals(OrderTotal(OrderCost(1100.0, 1000.0, 2000.0, 100.0, 0.0, 1500, 500, listOf(
                 "cashback" to "Rp1000"
         )), ButtonBayarState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Calculate Total Credit Card Mdr`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+                creditCard = OrderPaymentCreditCard(
+                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                        availableTerms = listOf(
+                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000),
+                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
+                        ),
+                        selectedTerm = OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100)
+                )
+        )
+
+        orderSummaryPageViewModel.calculateTotal()
+
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(listOf(
+                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true),
+                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isEnable = true),
+                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 23.0, monthlyAmount = 254.0, isEnable = false)
+        ), orderSummaryPageViewModel.orderPayment.value.creditCard?.availableTerms)
+    }
+
+    @Test
+    fun `Calculate Total Credit Card Mdr Subsidize`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000), shop = OrderShop(isOfficial = 1))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+                creditCard = OrderPaymentCreditCard(
+                        numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
+                        availableTerms = listOf(
+                                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100),
+                                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000),
+                                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000)
+                        ),
+                        selectedTerm = OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100)
+                )
+        )
+
+        orderSummaryPageViewModel.calculateTotal()
+
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), ButtonBayarState.NORMAL, false, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(listOf(
+                OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 15.0, monthlyAmount = 1515.0, isEnable = true),
+                OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 15.0, monthlyAmount = 505.0, isEnable = true),
+                OrderPaymentInstallmentTerm(term = 6, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 10000, fee = 15.0, monthlyAmount = 253.0, isEnable = false)
+        ), orderSummaryPageViewModel.orderPayment.value.creditCard?.availableTerms)
     }
 }

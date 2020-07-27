@@ -77,10 +77,9 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
     /*With Price*/
     fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?) {
         _shippingDuration.value = OccState.Loading
-        val ratesParamBuilder = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }
-        val ratesParam = ratesParamBuilder?.build()
-        ratesParam?.occ = "1"
+        val ratesParam = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }?.build()
         ratesParam?.let {
+            it.occ = "1"
             compositeSubscription.add(
                     useCaseRates.execute(it)
                             .subscribe(object : Observer<ShippingRecommendationData> {

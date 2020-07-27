@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePrefer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -107,6 +108,26 @@ class PreferenceSummaryViewModelTest {
     }
 
     @Test
+    fun `Delete Preference On Invalid State`() {
+//        val response = Throwable()
+//        every {
+//            getPreferenceByIdUseCase.execute(any(), any(), any())
+//        } answers {
+//            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
+//            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(ProfilesItemModel())
+//        }
+//
+//        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.deletePreference(0)
+
+        assertNull(preferenceSummaryViewModel.editResult.value)
+
+//        deletePreferenceUseCase.invokeOnError(response)
+
+//        assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.editResult.value)
+    }
+
+    @Test
     fun `Create Preference Success`() {
         preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
 
@@ -188,10 +209,12 @@ class PreferenceSummaryViewModelTest {
     fun `Is Data Changed With Same Data`() {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
-        preferenceSummaryViewModel.profileAddressId = 1
-        preferenceSummaryViewModel.profileServiceId = 1
-        preferenceSummaryViewModel.profileGatewayCode = "1"
-        preferenceSummaryViewModel.profilePaymentMetadata = "1"
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(1)
+            setProfileServiceId(1)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("1")
+        }
 
         every {
             getPreferenceByIdUseCase.execute(any(), any(), any())
@@ -211,10 +234,10 @@ class PreferenceSummaryViewModelTest {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
         preferenceSummaryViewModel.apply {
-            profileAddressId = 2
-            profileServiceId = 2
-            profileGatewayCode = "2"
-            profilePaymentMetadata = "2"
+            setProfileAddressId(2)
+            setProfileServiceId(2)
+            setProfileGatewayCode("2")
+            setProfilePaymentMetadata("2")
         }
 
         every {
@@ -235,10 +258,10 @@ class PreferenceSummaryViewModelTest {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
         preferenceSummaryViewModel.apply {
-            profileAddressId = 2
-            profileServiceId = 1
-            profileGatewayCode = "1"
-            profilePaymentMetadata = "1"
+            setProfileAddressId(2)
+            setProfileServiceId(1)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("1")
         }
 
         every {
@@ -259,10 +282,10 @@ class PreferenceSummaryViewModelTest {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
         preferenceSummaryViewModel.apply {
-            profileAddressId = 1
-            profileServiceId = 2
-            profileGatewayCode = "1"
-            profilePaymentMetadata = "1"
+            setProfileAddressId(1)
+            setProfileServiceId(2)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("1")
         }
 
         every {
@@ -283,10 +306,10 @@ class PreferenceSummaryViewModelTest {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
         preferenceSummaryViewModel.apply {
-            profileAddressId = 1
-            profileServiceId = 1
-            profileGatewayCode = "2"
-            profilePaymentMetadata = "1"
+            setProfileAddressId(1)
+            setProfileServiceId(1)
+            setProfileGatewayCode("2")
+            setProfilePaymentMetadata("1")
         }
 
         every {
@@ -307,10 +330,10 @@ class PreferenceSummaryViewModelTest {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
         preferenceSummaryViewModel.apply {
-            profileAddressId = 1
-            profileServiceId = 1
-            profileGatewayCode = "1"
-            profilePaymentMetadata = "2"
+            setProfileAddressId(1)
+            setProfileServiceId(1)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("2")
         }
 
         every {

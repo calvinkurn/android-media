@@ -100,6 +100,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
     var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
     var orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
+        private set
 
     var _orderPreference: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
