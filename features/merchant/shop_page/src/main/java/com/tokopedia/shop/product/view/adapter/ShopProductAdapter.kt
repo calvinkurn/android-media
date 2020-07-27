@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter
 
+import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -7,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
@@ -300,7 +300,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setSortFilterData(data: ShopProductSortFilterUiModel) {
         if (!mapOfDataModel.containsKey(KEY_SORT_FILTER_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            val listWithoutProductListData = getListWithoutProductCardData()
             visitables.add(listWithoutProductListData.size, data)
             notifyDataSetChanged()
         } else {
@@ -313,7 +313,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setMembershipDataModel(data: MembershipStampProgressViewModel) {
         if (!mapOfDataModel.containsKey(KEY_MEMBERSHIP_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            val listWithoutProductListData = getListWithoutProductCardData()
             visitables.add(listWithoutProductListData.size, data)
             notifyDataSetChanged()
         } else {
@@ -325,7 +325,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setMerchantVoucherDataModel(data: ShopMerchantVoucherViewModel) {
         if (!mapOfDataModel.containsKey(KEY_MERCHANT_VOUCHER_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            val listWithoutProductListData = getListWithoutProductCardData()
             visitables.add(listWithoutProductListData.size, data)
             notifyDataSetChanged()
         } else {
@@ -337,7 +337,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setShopProductFeaturedDataModel(data: ShopProductFeaturedViewModel) {
         if (!mapOfDataModel.containsKey(KEY_FEATURED_PRODUCT_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            val listWithoutProductListData = getListWithoutProductCardData()
             visitables.add(listWithoutProductListData.size, data)
             notifyDataSetChanged()
         } else {
@@ -349,7 +349,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setShopProductEtalaseHighlightDataModel(data: ShopProductEtalaseHighlightViewModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_HIGHLIGHT_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            val listWithoutProductListData = getListWithoutProductCardData()
             visitables.add(listWithoutProductListData.size, data)
             notifyDataSetChanged()
         } else {
@@ -361,7 +361,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun setShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
         if (!mapOfDataModel.containsKey(KEY_ETALASE_TITLE_DATA_MODEL)) {
-            val listWithoutProductListData = getListWithoutProductCardDataAndLoadingMoreModel()
+            val listWithoutProductListData = getListWithoutProductCardData()
             visitables.add(listWithoutProductListData.size, data)
             notifyDataSetChanged()
         } else {
@@ -509,13 +509,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         return !isComputingLayout && position >= 0
     }
 
-    private fun getListWithoutProductCardDataAndLoadingMoreModel(): List<Visitable<*>> {
+    private fun getListWithoutProductCardData(): List<Visitable<*>> {
         return visitables.filter {
             it::class.java != ShopProductViewModel::class.java &&
                     it::class.java != ShopProductAddViewModel::class.java &&
                     it::class.java != ShopSellerEmptyProductAllEtalaseViewModel::class.java &&
-                    it::class.java != ShopEmptyProductViewModel::class.java &&
-                    it::class.java != LoadingMoreModel::class.java
+                    it::class.java != ShopEmptyProductViewModel::class.java
         }
     }
 }

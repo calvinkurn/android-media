@@ -693,6 +693,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearAllElements()
         startMonitoringPltNetworkRequest()
         showLoading()
+        viewModel.setInitialProductList(initialProductListData)
         viewModel.getEtalaseData(shopId)
     }
 
@@ -1223,10 +1224,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     fun setInitialProductListData(initialProductListData: Pair<Boolean, List<ShopProductViewModel>>) {
         this.initialProductListData = initialProductListData
-    }
-
-    fun loadInitialProductListData() {
-        viewModel.setInitialProductList(initialProductListData)
     }
 
 }
