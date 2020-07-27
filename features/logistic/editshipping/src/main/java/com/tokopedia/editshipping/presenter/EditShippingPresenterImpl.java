@@ -11,13 +11,15 @@ import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
 import com.tokopedia.editshipping.data.interactor.EditShippingRetrofitInteractor;
 import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
+import com.tokopedia.editshipping.domain.ValidateShippingMapper;
 import com.tokopedia.editshipping.domain.ValidateShippingUseCase;
+import com.tokopedia.editshipping.domain.model.ValidateShippingModel;
+import com.tokopedia.editshipping.domain.model.ValidateShippingParams;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.domain.model.openshopshipping.OpenShopData;
-import com.tokopedia.editshipping.domain.response.ValidateShippingResponse;
 import com.tokopedia.editshipping.ui.EditShippingFragment;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -25,6 +27,7 @@ import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddr
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -48,6 +51,8 @@ import java.util.Set;
 
 import rx.Subscriber;
 import timber.log.Timber;
+
+import static com.tokopedia.editshipping.domain.ValidateShippingUseCase.REQUEST_PARAM_VALIDATE_BO;
 
 /**
  * Created by Kris on 2/23/2016.
@@ -85,14 +90,17 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
 
     private ValidateShippingUseCase validateShippingUseCase;
 
-    private ValidateShippingResponse validateBoData;
+    private ValidateShippingModel validateBoData;
+
+    private ValidateShippingMapper validateShippingMapper;
 
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
         revGeocodeUseCase = new RevGeocodeUseCase(view.getMainContext(), new GraphqlUseCase());
         userSession = new UserSession(view.getMainContext());
-        validateShippingUseCase = new ValidateShippingUseCase(view.getMainContext(), new GraphqlUseCase());
+        validateShippingMapper = new ValidateShippingMapper();
+        validateShippingUseCase = new ValidateShippingUseCase(view.getMainContext(), new GraphqlUseCase(), validateShippingMapper);
     }
 
     @Override
@@ -817,11 +825,32 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
     }
 
     @Override
-    public void validateBo(String shopId, String compiledShippingId) {
-//        scanActivatedCourier();
-        Log.d("STRING_SHOPID_2", shopId);
-        Log.d("STRING_SHIPPINGIG_2", compiledShippingId);
-        validateShippingUseCase.execute(shopId, compiledShippingId)
+    public void validateBo(int shopId, String compiledShippingId) {
+        ValidateShippingParams validateShippingParams = new ValidateShippingParams();
+        validateShippingParams.setShopId(shopId);
+        validateShippingParams.setShipmentId(compiledShippingId);
+        Log.d("STRING_SHOPID_2", String.valueOf(shopId));
+        Log.d("STRING_SHIPPINGID_2", compiledShippingId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(REQUEST_PARAM_VALIDATE_BO, validateShippingParams);
+        validateShippingUseCase.createObservable(requestParams)
+                .subscribe(new Subscriber<ValidateShippingModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(ValidateShippingModel validateShippingModel) {
+                        setValidateBoData(validateShippingModel);
+                    }
+                });
+       /* validateShippingUseCase.execute(shopId, compiledShippingId)
                 .subscribe(new Subscriber<ValidateShippingResponse>() {
                     @Override
                     public void onCompleted() {
@@ -837,31 +866,54 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
                     public void onNext(ValidateShippingResponse validateShippingResponse) {
                         setValidateBoData(validateShippingResponse);
                     }
-                });
+                });*/
 
     }
 
     @Nullable
     @Override
-    public ValidateShippingResponse getValidateBoData() {
+    public ValidateShippingModel getValidateBoData() {
         return validateBoData;
     }
 
     @Override
-    public String getShopId() {
-        return userSession.getShopId();
+    public int getShopId() {
+        int shopId = Integer.parseInt(userSession.getShopId());
+        return shopId;
     }
 
     @NotNull
     @Override
     public String getCompiledShippingId() {
-        scanActivatedCourier();
-        Map<String, String> shippingUpdateParams = new HashMap<>();
-        putDataToHashMap(shippingUpdateParams);
-        return shippingUpdateParams.toString();
+        return compiledShippingIdValidateBo();
     }
 
-    private void setValidateBoData(ValidateShippingResponse model) {
+    private String compiledShippingIdValidateBo() {
+        scanActivatedCourier();
+        JSONObject jsonCompiled = new JSONObject();
+        JSONObject shippingPackage;
+        try {
+            for (int i = 0; i < courierList.size(); i++) {
+                if (activatedCourier.contains(courierList.get(i).id)
+                        && courierList.get(i).available.equals("1")) {
+                    shippingPackage = new JSONObject();
+                    for (int j = 0; j < courierList.get(i).services.size(); j++) {
+                        if (activatedServices.contains(courierList.get(i).services.get(j).id)) {
+                            shippingPackage.put(courierList.get(i).services.get(j).id, "1");
+                        }
+                        jsonCompiled.put(courierList.get(i).id, shippingPackage);
+                        Log.d("JSON_COMPILE_1", courierList.get(i).toString());
+                        Log.d("JSON_COMPILE_2", shippingPackage.toString());
+                    }
+                }
+            }
+            return jsonCompiled.toString().replace("\"",  "\\\"");
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
+    private void setValidateBoData(ValidateShippingModel model) {
         this.validateBoData = model;
     }
 

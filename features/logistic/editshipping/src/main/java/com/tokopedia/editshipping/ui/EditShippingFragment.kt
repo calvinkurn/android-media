@@ -389,7 +389,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             if (fragmentHeader != null) {
                 Log.d("STRING_SHOPID", editShippingPresenter?.getShopId().toString());
                 Log.d("STRING_SHIPPINGID", editShippingPresenter?.getCompiledShippingId().toString());
-                editShippingPresenter?.validateBo(editShippingPresenter?.getShopId().toString(), "{\"1\": {\"1\": 1, \"2\": 1, \"6\": 1, \"22\": 1}, \"2\": {\"3\": 1, \"16\": 1}}")
+                editShippingPresenter?.getShopId()?.let { editShippingPresenter?.validateBo(it, editShippingPresenter?.getCompiledShippingId().toString()) }
                 ValidateShippingPopUp()
             } else showErrorToast(getString(R.string.dialog_on_process))
         }
@@ -503,7 +503,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
     private fun ValidateShippingPopUp() {
         val data = ValidateShippingModel()
-        if (editShippingPresenter?.validateBoData?.response?.data?.showPopup == true) {
+        if (editShippingPresenter?.validateBoData?.data?.showPopup == true) {
             openPopupValidation(data)
         } else {
             submitData()
@@ -513,7 +513,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     private fun openPopupValidation(data: ValidateShippingModel) {
         bottomSheetValidation = BottomSheetUnify()
         val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
-            val boData = editShippingPresenter?.validateBoData?.response
+            val boData = editShippingPresenter?.validateBoData
             ticker_validation_bo.tickerTitle = data.data.tickerTitle
             boData?.data?.tickerContent?.let { data.data.tickerContent }
 

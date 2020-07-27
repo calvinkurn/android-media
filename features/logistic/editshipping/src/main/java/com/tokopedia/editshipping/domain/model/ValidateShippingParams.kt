@@ -1,10 +1,13 @@
 package com.tokopedia.editshipping.domain.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ValidateShippingRequest(
+data class ValidateShippingParams(
         @SerializedName("shop_id")
-        val shopId: Int = -1,
+        @Expose
+        var shopId: Int = -1,
         @SerializedName("shipment_ids")
-        val shipmentId: String = ""
+        @Expose
+        var shipmentId: String = ""
 )

@@ -1,5 +1,5 @@
-query shippingEditorMobilePopup($inputShippingEditorMobilrPopup : KeroShippingEditorMobilePopupInput!) {
-  kero_shipping_editor_mobile_popup(input: $inputShippingEditorMobilePopup ) {
+query shippingEditorMobilePopup($inputShippingEditorMobilePopup : KeroShippingEditorMobilePopupInput!) {
+  shippingEditorMobilePopup(input: $inputShippingEditorMobilePopup ) {
     status
     config
     server_process_time
