@@ -6,6 +6,9 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.home.account.AccountConstants.VccStatus
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator.Companion.getModel
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel
@@ -53,19 +56,60 @@ class BuyerAccountMapper @Inject constructor(
     private fun getBuyerProfile(accountDataModel: AccountDataModel): BuyerCardViewModel {
         val buyerCardViewModel = BuyerCardViewModel()
 
-        buyerCardViewModel.userId = accountDataModel.profile.userId
-        buyerCardViewModel.name = accountDataModel.profile.fullName
-        buyerCardViewModel.tokopoint = accountDataModel.tokopoints.status.points.rewardStr
-        buyerCardViewModel.eggImageUrl = accountDataModel.tokopoints.status.tier.imageUrl
-        buyerCardViewModel.coupons = accountDataModel.tokopointsSumCoupon.sumCouponStr
-        buyerCardViewModel.tokomember = accountDataModel.membershipSumUserCard.sumUserCardStr
-        buyerCardViewModel.imageUrl = accountDataModel.profile.profilePicture
-        buyerCardViewModel.progress = accountDataModel.userProfileCompletion.completionScore
-        buyerCardViewModel.isAffiliate = accountDataModel.isAffiliate
+        buyerCardViewModel.apply {
+            userId = accountDataModel.profile.userId
+            name = accountDataModel.profile.fullName
+
+            setShortcutResponse(accountDataModel, this)
+
+            imageUrl = accountDataModel.profile.profilePicture
+            progress = accountDataModel.userProfileCompletion.completionScore
+            isAffiliate = accountDataModel.isAffiliate
+        }
 
         userSession.setHasPassword(accountDataModel.userProfileCompletion.isCreatedPassword)
 
         return buyerCardViewModel
+    }
+
+    private fun setShortcutResponse(accountDataModel: AccountDataModel, buyerCardViewModel: BuyerCardViewModel) {
+        val shortcutResponse: ShortcutResponse = accountDataModel.shortcutResponse
+        val shortcutListItem: ShortcutGroupListItem
+        val shortcutListItems = ArrayList<ShortcutListItem>()
+
+        if (shortcutResponse.tokopointsShortcutList.shortcutGroupList.isNotEmpty()) {
+            shortcutListItem = shortcutResponse.tokopointsShortcutList.shortcutGroupList[0]
+            shortcutListItems.addAll(shortcutListItem.shortcutList)
+        }
+
+        if (shortcutListItems.size > 0) {
+            buyerCardViewModel.tokopointSize = 1
+            buyerCardViewModel.tokopointTitle = shortcutListItems[0].cta.text
+            buyerCardViewModel.tokopoint = shortcutListItems[0].description
+            buyerCardViewModel.tokopointAppplink = shortcutListItems[0].cta.appLink
+            buyerCardViewModel.tokopointImageUrl = shortcutListItems[0].iconImageURL
+
+            if (shortcutListItems.size > 1) {
+                buyerCardViewModel.couponSize = 1
+                buyerCardViewModel.couponTitle = shortcutListItems[1].cta.text
+                buyerCardViewModel.coupons = shortcutListItems[1].description
+                buyerCardViewModel.couponApplink = shortcutListItems[1].cta.appLink
+                buyerCardViewModel.couponImageUrl = shortcutListItems[1].iconImageURL
+            }
+
+            if (shortcutListItems.size > 2) {
+                buyerCardViewModel.tokomemberSize = 2
+                buyerCardViewModel.tokomemberTitle = shortcutListItems[2].cta.text
+                buyerCardViewModel.tokomember = shortcutListItems[2].description
+                buyerCardViewModel.tokomemberApplink = shortcutListItems[2].cta.appLink
+                buyerCardViewModel.tokomemberImageUrl = shortcutListItems[2].iconImageURL
+            }
+        }
+
+        buyerCardViewModel.eggImageUrl = accountDataModel.tokopoints.status.tier.imageUrl
+        buyerCardViewModel.memberStatus = accountDataModel.tokopoints.status.tier.nameDesc
+        buyerCardViewModel.imageUrl = accountDataModel.profile.profilePicture
+        buyerCardViewModel.progress = accountDataModel.userProfileCompletion.completionScore
     }
 
     //SET BUYER PAY

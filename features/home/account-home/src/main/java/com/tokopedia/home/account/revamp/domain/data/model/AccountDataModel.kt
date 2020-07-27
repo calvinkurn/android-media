@@ -3,6 +3,7 @@ package com.tokopedia.home.account.revamp.domain.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.home.account.data.model.PremiumAccountResponse
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse
 import com.tokopedia.home.account.data.pojo.UserProfileCompletion
 import com.tokopedia.navigation_common.model.*
 import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo
@@ -79,5 +80,7 @@ data class AccountDataModel(
 
         @SerializedName("balance")
         @Expose
-        var saldo: DepositDataModel = DepositDataModel()
+        var saldo: DepositDataModel = DepositDataModel(),
+
+        var shortcutResponse: ShortcutResponse = ShortcutResponse()
 )

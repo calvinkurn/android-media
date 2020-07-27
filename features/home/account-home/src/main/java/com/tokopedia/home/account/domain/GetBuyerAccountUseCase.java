@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel;
@@ -42,7 +43,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     @Inject
     public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
                                   GetBuyerWalletBalanceUseCase getBuyerWalletBalanceUseCase,
-                                  com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper mapper,
+                                  BuyerAccountMapper mapper,
                                   WalletPref walletPref,
                                   UserSession userSession,
                                   CheckAffiliateUseCase checkAffiliateUseCase) {
@@ -79,6 +80,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
                     String query = request.getString(AccountConstants.QUERY, "");
                     String saldoQuery = request.getString(AccountConstants.SALDO_QUERY, "");
+                    String rewardQuery = request.getString(AccountConstants.REWARD_SHORTCUT_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) request.getObject(VARIABLES);
 
                     if (!TextUtils.isEmpty(query) && variables != null) {
@@ -91,6 +93,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                                 SaldoModel.class);
                         graphqlUseCase.addRequest(saldoGraphql);
 
+                        GraphqlRequest rewardGraphql = new GraphqlRequest(rewardQuery, ShortcutResponse.class);
+                        graphqlUseCase.addRequest(rewardGraphql);
 
                         return graphqlUseCase.createObservable(null);
                     }

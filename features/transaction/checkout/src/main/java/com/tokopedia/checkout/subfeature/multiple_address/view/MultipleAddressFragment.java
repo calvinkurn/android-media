@@ -12,14 +12,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.checkout.subfeature.multiple_address.domain.model.cartlist.CartListData;
@@ -39,8 +39,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT;
-import static com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS;
 import static com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
 /**
@@ -112,8 +110,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     public void onAddNewShipmentAddress(ArrayList<MultipleAddressAdapterData> dataList, int parentPosition) {
         sendAnalyticsOnClickAddNewAddressShipmentMultipleAddress();
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), dataList, parentPosition);
-        startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);
+        intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
+        intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
+        startActivityForResult(intent, CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
     }
 
     @Override
@@ -140,9 +140,12 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                                 RecipientAddressModel recipientAddressModel,
                                 int childPosition, int parentPosition) {
         sendAnalyticsOnClickChangeAddressShipmentItemMultipleAddress();
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), recipientAddressModel,
-                dataList, childPosition, parentPosition);
-        startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);
+        intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS,recipientAddressModel);
+        intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
+        intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, childPosition);
+        intent.putExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
+        startActivityForResult(intent, CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
     }
 
     @Override
@@ -159,19 +162,19 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS) {
-                ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
+            if (requestCode == CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS) {
+                ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
                 RecipientAddressModel newAddress = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
-                int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
-                int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
+                int childPosition = data.getIntExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
+                int parentPosition = data.getIntExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
                 setNewShipmentRecipientAddress(dataList, newAddress, childPosition, parentPosition);
 
                 // Re-setup recycler view adapter to prevent crash if don't keep activities is on
                 setRecyclerViewAdapter(dataList, parentPosition, false, false);
-            } else if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
-                ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
+            } else if (requestCode == CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
+                ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
                 RecipientAddressModel newAddress = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
-                int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
+                int parentPosition = data.getIntExtra(CheckoutConstant.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
                 if (newAddress != null && dataList != null && parentPosition != -1) {
                     MultipleAddressItemData newShipmentData = null;
                     for (int i = 0; i < dataList.size(); i++) {

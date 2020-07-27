@@ -40,4 +40,11 @@ class RevampedBuyerAccountModule {
     @StringKey(AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME)
     fun provideRawQueryUpdatePhoneEmail(@BuyerAccountScope context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.new_query_buyer_account_home)
+
+    @BuyerAccountScope
+    @Provides
+    @IntoMap
+    @StringKey(AccountConstants.Query.QUERY_USER_REWARDSHORCUT)
+    fun provideRawQueryShortcut(@BuyerAccountScope context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_user_rewardshorcut)
 }

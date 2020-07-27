@@ -8,6 +8,7 @@ import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
 import com.tokopedia.home.account.presentation.util.dispatchers.DispatcherProvider
 import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
+import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
@@ -34,6 +35,7 @@ class BuyerAccountViewModel @Inject constructor (
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+        private val shortcutDataUseCase: GetShortcutDataUseCase,
         private val userSession: UserSessionInterface,
         private val walletPref: WalletPref,
         private val dispatcher: DispatcherProvider
@@ -64,9 +66,11 @@ class BuyerAccountViewModel @Inject constructor (
             val accountModel = getBuyerAccountDataUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
             val isAffiliate = checkIsAffiliate()
+            val shortcutResponse = shortcutDataUseCase.executeOnBackground()
             withContext(dispatcher.main()) {
                 accountModel.wallet = walletModel
                 accountModel.isAffiliate = isAffiliate
+                accountModel.shortcutResponse = shortcutResponse
                 saveLocallyAttributes(accountModel)
                 _buyerAccountData.postValue(Success(accountModel))
             }
