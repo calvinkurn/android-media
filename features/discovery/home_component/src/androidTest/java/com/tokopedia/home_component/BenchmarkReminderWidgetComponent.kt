@@ -27,7 +27,7 @@ class BenchmarkReminderWidgetComponent {
         val viewGroup = FrameLayout(activityRule.activity)
         val recyclerViewAdapter = simpleAdapter(
                 ReminderWidgetViewHolder.LAYOUT) {
-            ReminderWidgetViewHolder(it, null, disablePerformanceMonitoring = true)
+            ReminderWidgetViewHolder(it, null, disableNetwork = true)
         }
 
         benchmarkRule.measureRepeated {
@@ -55,7 +55,7 @@ class BenchmarkReminderWidgetComponent {
     fun benchmark_onBind_reminder_widget_salam_component() {
         val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, activityRule.activity)
         val viewHolder = ReminderWidgetViewHolder(
-                itemView, null, disablePerformanceMonitoring = true
+                itemView, null, disableNetwork = true
         )
         val data = ReminderWidgetModel(MockReminderWidget.get(), ReminderEnum.SALAM)
         benchmarkRule.measureRepeated {
