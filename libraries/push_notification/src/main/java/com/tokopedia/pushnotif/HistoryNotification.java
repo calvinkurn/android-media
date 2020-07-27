@@ -20,15 +20,13 @@ public class HistoryNotification {
             String senderName,
             String message,
             int notificationType,
-            int notificationId,
-            String transId
+            int notificationId
     ) {
         HistoryNotificationDB data = new HistoryNotificationDB(
                 senderName,
                 message,
                 notificationType,
-                notificationId,
-                transId
+                notificationId
         );
         PushNotificationDB.Companion
                 .getInstance(context)
@@ -37,31 +35,38 @@ public class HistoryNotification {
     }
 
     public static List<HistoryNotificationDB> getListHistoryNotification(Context context, int notificationType) {
-        return PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
-                .getListHistoryNotification(notificationType, HISTORY_NOTIFICATION_LIMIT);
+        return PushNotificationDB.Companion
+                .getInstance(context)
+                .historyNotificationDao()
+                .getListHistoryNotification(
+                        notificationType,
+                        HISTORY_NOTIFICATION_LIMIT
+                );
     }
 
 
     public static void clearHistoryNotification(Context context, int notificationType, int notificationId) {
-        PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
-                .clearHistoryNotification(notificationType, notificationId);
+        PushNotificationDB.Companion
+                .getInstance(context)
+                .historyNotificationDao()
+                .clearHistoryNotification(
+                        notificationType,
+                        notificationId
+                );
     }
 
     public static void clearAllHistoryNotification(Context context, int notificationType) {
-        PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+        PushNotificationDB.Companion
+                .getInstance(context)
+                .historyNotificationDao()
                 .clearAllHistoryNotification(notificationType);
     }
 
     public static Boolean isSingleNotification(Context context, int notificationType) {
-        return PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
-                .countNotification(notificationType) == 0;
-    }
-
-    public static Boolean isRenderable(Context context, String transId) {
         return PushNotificationDB.Companion
                 .getInstance(context)
                 .historyNotificationDao()
-                .isRenderable(transId) == 0;
+                .countNotification(notificationType) == 0;
     }
 
 }
