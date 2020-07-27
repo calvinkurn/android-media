@@ -14,6 +14,7 @@
     <!-- margin values-->
     <dimen name="tp_margin_xsmall">4dp</dimen>
     <dimen name="tp_margin_small">8dp</dimen>
+    <dimen name="tp_margin_normal">10dp</dimen>
     <dimen name="tp_margin_regular">12dp</dimen>
     <dimen name="tp_margin_medium">16dp</dimen>
     <dimen name="tp_margin_large">24dp</dimen>
@@ -27,6 +28,7 @@
     <dimen name="tp_padding_xxsmall">2dp</dimen>
     <dimen name="tp_padding_xsmall">4dp</dimen>
     <dimen name="tp_padding_small">8dp</dimen>
+    <dimen name="tp_padding_normal">10dp</dimen>
     <dimen name="tp_padding_regular">12dp</dimen>
     <dimen name="tp_padding_medium">16dp</dimen>
     <dimen name="tp_padding_large">24dp</dimen>
@@ -39,8 +41,8 @@
     <dimen name="tp_height_bottom_membership_view">52dp</dimen>
     <dimen name="tp_tnc_height">800dp</dimen>
 
-    <dimen name="tp_home_top_bg_height">176dp</dimen>
-    <dimen name="tp_toolbar_icon_wh">38dp</dimen>
+    <dimen name="tp_home_top_bg_height">186dp</dimen>
+    <dimen name="tp_toolbar_icon_wh">24dp</dimen>
     <dimen name="tp_toolbar_icon_top_padding">5dp</dimen>
     <dimen name="tp_toolbar_icon_side_padding">5dp</dimen>
     <dimen name="tp_top_margin_big_image">62dp</dimen>
@@ -53,5 +55,6 @@
     <dimen name="tp_cta_container_nonlogin">136dp</dimen>
     <dimen name="tp_item_left_margin">22dp</dimen>
     <dimen name="tp_item_right_margin">28dp</dimen>
+    <dimen name="tp_bg_img_margintop">-13dp</dimen>
 
 </resources>

@@ -2,9 +2,6 @@ package com.tokopedia.brizzi.viewmodel
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.emoney.data.*
-import com.tokopedia.emoney.util.NFCUtils
-import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils

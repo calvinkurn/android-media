@@ -580,7 +580,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventLabel = Label.NONE,
                 promotions = listOf(
                         Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.banner.attribution, channel.categoryPersona),
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.persoType, channel.categoryID),
                                 creative = channel.banner.attribution,
                                 name = PROMOTION_BANNER_NAME.format("1", channel.header.name),
                                 position = position.toString()
@@ -601,7 +601,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 shopId = channel.brandId,
                 promotions = listOf(
                         Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.banner.attribution, channel.categoryPersona),
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.persoType, channel.categoryID),
                                 creative = channel.banner.attribution,
                                 name = PROMOTION_BANNER_NAME.format("1", channel.header.name),
                                 position = position.toString()
@@ -703,4 +703,5 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getSprintSaleSeeAllClick(channel))
         }
     }
+
 }

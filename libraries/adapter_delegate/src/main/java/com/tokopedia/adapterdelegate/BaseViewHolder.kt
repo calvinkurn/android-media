@@ -15,7 +15,7 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         return itemView.context.getString(stringRes)
     }
 
-    protected fun getString(@StringRes stringRes: Int, vararg value: String): String {
-        return itemView.context.getString(stringRes, value)
+    protected fun getString(@StringRes stringRes: Int, vararg value: Any): String {
+        return itemView.context.getString(stringRes, *value)
     }
 }
