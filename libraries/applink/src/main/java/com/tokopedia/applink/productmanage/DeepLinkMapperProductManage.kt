@@ -99,6 +99,11 @@ object DeepLinkMapperProductManage {
         val shopIdIndex = OTHER_ACTION_INDEX + 2
         val productId = pathSegments.getOrElse(productIdIndex) { "0" }
         val shopId = pathSegments.getOrElse(shopIdIndex) { "0" }
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, shopId)
+        //TODO : remove sellerapp checking after main app feature is ready
+        return if (GlobalConfig.isSellerApp()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.RESERVED_STOCK, productId, shopId)
+        } else {
+            ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+        }
     }
 }
