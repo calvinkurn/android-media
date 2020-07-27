@@ -78,8 +78,8 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
 
     override fun onErrorGetShopNoteList(e: Throwable?) {
         loadingStateView.setViewState(LoadingStateView.VIEW_ERROR)
-        val textRetryError = loadingStateView.errorView.findViewById<TextView>(R.id.message_retry)
-        val buttonRetryError = loadingStateView.errorView.findViewById<TextView>(R.id.button_retry)
+        val textRetryError = loadingStateView.errorView.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
+        val buttonRetryError = loadingStateView.errorView.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
         textRetryError.text = ErrorHandler.getErrorMessage(activity, e)
         buttonRetryError.setOnClickListener { getShopDetail() }
     }

@@ -50,6 +50,14 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
         return ShopInfoFragment.createInstance(shopId, shopData)
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
+    }
+
     companion object {
         fun createIntent(
                 context: Context,

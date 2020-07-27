@@ -78,4 +78,14 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return R.id.parent_view;
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
 }

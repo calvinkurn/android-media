@@ -44,7 +44,7 @@ class ShopInfoModule {
     @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
     @Provides
     fun getGqlQueryShopNotesByShopId(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_notes_by_shop_id)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_notes_by_shop_id)
     }
 
     @ShopInfoScope
@@ -60,7 +60,7 @@ class ShopInfoModule {
     @StringKey(GQLQueryStringConst.GET_SHOP_RATING)
     @Provides
     fun getStringQueryShopRating(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_rating)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_rating)
     }
 
     @ShopInfoScope
@@ -68,7 +68,7 @@ class ShopInfoModule {
     @StringKey(GQLQueryStringConst.GET_SHOP_SATISFACTION)
     @Provides
     fun getStringQueryShopSatisfaction(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_satisfaction)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_satisfaction)
     }
 
     @ShopInfoScope

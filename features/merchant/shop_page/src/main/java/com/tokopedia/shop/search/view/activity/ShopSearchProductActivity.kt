@@ -103,4 +103,8 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             ?: ShopComponentInstance.getComponent(application)
 
     override fun getLayoutRes() = R.layout.activity_shop_search_product
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
 }

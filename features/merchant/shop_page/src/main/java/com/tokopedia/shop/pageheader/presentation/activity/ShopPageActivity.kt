@@ -194,4 +194,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         pageLoadTimePerformanceInterface.stopMonitoring()
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
 }

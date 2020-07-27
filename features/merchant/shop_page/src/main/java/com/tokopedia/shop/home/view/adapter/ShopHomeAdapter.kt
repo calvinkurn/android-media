@@ -47,6 +47,7 @@ class ShopHomeAdapter(
         }.takeIf { it != -1 } ?: 0
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        val qwe = visitables.withIndex().find { (_, data) -> data is ShopHomeVoucherUiModel }
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = !(getItemViewType(position) == ShopHomeProductViewHolder.LAYOUT ||

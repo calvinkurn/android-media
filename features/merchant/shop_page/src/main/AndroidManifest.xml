@@ -53,7 +53,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.shop.product.view.activity.ShopProductListActivity"
+            android:name="com.tokopedia.shop.product.view.activity.ShopProductListResultActivity"
             android:exported="true"
             android:label="@string/shop_product_title"
             android:screenOrientation="portrait"

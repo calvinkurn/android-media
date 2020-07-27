@@ -40,4 +40,12 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
         super.onBackPressed()
         (fragment as? ShopPageSettingFragment)?.onBackPressed()
     }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
+    }
 }

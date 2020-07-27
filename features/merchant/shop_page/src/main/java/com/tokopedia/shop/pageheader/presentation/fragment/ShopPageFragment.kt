@@ -35,7 +35,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
@@ -58,6 +57,7 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerform
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
+import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -189,8 +189,8 @@ class ShopPageFragment :
 
     private fun initViews(view: View) {
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
-        errorTextView = view.findViewById(R.id.message_retry)
-        errorButton = view.findViewById(R.id.button_retry)
+        errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
         initToolbar()
         initAdapter()
@@ -662,8 +662,8 @@ class ShopPageFragment :
             }
         }
         if(shouldOverrideTabToReview){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
-                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(ReviewShopFragment::class.java)
             } else {
                 selectedPosition
             }
@@ -712,18 +712,15 @@ class ShopPageFragment :
                         feedFragment
                 ))
             }
-            if (activity?.application is ShopModuleRouter) {
-                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(
-                        activity,
-                        shopId,
-                        shopDomain
-                )
-                add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_review),
-                        iconTabReview,
-                        shopReviewFragment
-                ))
-            }
+            val shopReviewFragment = ReviewShopFragment.createInstance(
+                    shopId,
+                    shopDomain
+            )
+            add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_review),
+                    iconTabReview,
+                    shopReviewFragment
+            ))
         }
     }
 
