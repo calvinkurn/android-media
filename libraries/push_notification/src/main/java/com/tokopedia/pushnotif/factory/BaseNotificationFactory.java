@@ -20,6 +20,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
+import com.tokopedia.pushnotif.data.TransactionRepository;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
 import java.util.concurrent.ExecutionException;
@@ -38,7 +39,27 @@ public abstract class BaseNotificationFactory {
         this.context = context;
     }
 
-    public abstract Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId);
+    public abstract Notification createNotification(
+            ApplinkNotificationModel applinkNotificationModel,
+            int notificationType,
+            int notificationId
+    );
+
+    void storeToTransaction(
+            Context context,
+            int notificationType,
+            int notificationId,
+            ApplinkNotificationModel element
+    ) {
+        TransactionRepository.INSTANCE.insert(
+                context,
+                element.getFullName(),
+                element.getSummary(),
+                notificationType,
+                notificationId,
+                element.getTransactionId()
+        );
+    }
 
     protected String generateGroupKey(String appLink) {
         if (appLink.contains("talk")) {
