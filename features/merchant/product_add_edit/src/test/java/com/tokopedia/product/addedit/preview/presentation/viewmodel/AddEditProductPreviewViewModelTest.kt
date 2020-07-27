@@ -1,14 +1,14 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
-import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,20 +24,6 @@ import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
-
-    @Test
-    fun `When get remote product variant is success Expect set product variant`() {
-        val productVariant = ProductVariantByCatModel().apply {
-            this.name = "hello"
-            this.variantId = 3
-        }
-
-        onGetProductVariant_thenReturn(productVariant)
-        viewModel.getVariantList("3")
-
-        coVerify { getProductVariantUseCase.executeOnBackground() }
-        verifyGetProductVariantResult(Success(listOf(productVariant)))
-    }
 
     @Test
     fun `When save product draft is success Expect get saved product draft`() {
@@ -72,15 +58,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductResult(Success(product))
-    }
-
-    @Test
-    fun  `When get remote product variant is failed Expect fail object`() {
-        onGetProductVariant_thenFailed()
-        viewModel.getVariantList("")
-
-        coVerify { getProductVariantUseCase.executeOnBackground() }
-        verifyGetProductVariantFailed()
     }
 
     @Test
@@ -121,37 +98,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         detailInputModel.imageUrlOrPathList = listOf("one","two","three")
 
         assertEquals("", viewModel.validateProductInput(detailInputModel))
-    }
-
-    @Test
-    fun `When check update product input model Expect non null object`() {
-        viewModel.productAddResult.value = ProductInputModel()
-        viewModel.productInputModel.getOrAwaitValue()
-
-        viewModel.getNewProductInputModel(arrayListOf())
-        viewModel.productInputModel.getOrAwaitValue()
-
-        assertTrue(viewModel.productInputModel.value?.detailInputModel != null)
-
-        viewModel.updateSizeChart(PictureViewModel())
-        viewModel.productInputModel.getOrAwaitValue()
-
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.productSizeChart != null)
-    }
-
-    @Test
-    fun `When check update variant and option Expect non empty object`() {
-        viewModel.productAddResult.value = ProductInputModel()
-        viewModel.productInputModel.getOrAwaitValue()
-
-        val productVariantOptionParent = ProductVariantOptionParent().apply {
-            productVariantOptionChild = listOf(ProductVariantOptionChild(pvo = 10))
-        }
-        viewModel.updateVariantAndOption(arrayListOf(ProductVariantCombinationViewModel()), arrayListOf(productVariantOptionParent))
-        viewModel.productInputModel.getOrAwaitValue()
-
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.productVariant?.isNotEmpty() ?: false)
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.variantOptionParent?.isNotEmpty() ?: false)
     }
 
     @Test
@@ -203,13 +149,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `When update product status Expect updated product status`() {
-        val productVariantCombinationViewModel = ProductVariantCombinationViewModel().apply { st = 0 }
+        val productVariantInputModel = ProductVariantInputModel().apply { status = "INACTIVE" }
         val product = ProductInputModel().apply {
             draftId = 109
             productId = 211
             detailInputModel.productName = "mainan"
             detailInputModel.status = 0
-            variantInputModel.productVariant = arrayListOf(productVariantCombinationViewModel)
+            variantInputModel.products = listOf(productVariantInputModel)
         }
         viewModel.productAddResult.value = product
         viewModel.productInputModel.getOrAwaitValue()
@@ -237,25 +183,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(3, viewModel.getStatusStockViewVariant())
     }
 
-    @Test
-    fun `When check original variant level Expect variant level`() {
-        val product = ProductInputModel().apply {
-            variantInputModel = ProductVariantInputModel().apply {
-                productVariant = arrayListOf(ProductVariantCombinationViewModel())
-                variantOptionParent = arrayListOf(ProductVariantOptionParent())
-            }
-        }
-        assertEquals(false, viewModel.checkOriginalVariantLevel(product))
-
-        viewModel.setProductId("1212")
-        viewModel.isEditing.getOrAwaitValue()
-        assertEquals(true, viewModel.checkOriginalVariantLevel(product))
-    }
-
-    private fun onGetProductVariant_thenReturn(productVariant: ProductVariantByCatModel) {
-        coEvery { getProductVariantUseCase.executeOnBackground() } returns listOf(productVariant)
-    }
-
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
         coEvery { getProductDraftUseCase.executeOnBackground() } returns draft
     }
@@ -266,10 +193,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenReturn(product: Product) {
         coEvery { getProductUseCase.executeOnBackground() } returns product
-    }
-
-    private fun onGetProductVariant_thenFailed() {
-        coEvery { getProductVariantUseCase.executeOnBackground() } throws MessageErrorException("")
     }
 
     private fun onSaveProductDraft_thenFailed() {
@@ -294,25 +217,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(expectedResult, actualResult)
     }
 
-    private fun verifyGetProductVariantResult(expectedResult: Success<List<ProductVariantByCatModel>>) {
-        val actualResult = viewModel.productVariantList.value as Success<List<ProductVariantByCatModel>>
-        assertEquals(expectedResult, actualResult)
-        assertTrue(!viewModel.productVariantListData.isNullOrEmpty())
-        assertEquals(false, viewModel.isLoading.value)
-    }
-
     private fun verifyGetProductResult(expectedResult: Success<Product>) {
         val actualResult = viewModel.getProductResult.value as Success<Product>
         assertEquals(expectedResult, actualResult)
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
-    }
-
-    private fun verifyGetProductVariantFailed() {
-        val result = viewModel.productVariantList.value
-        assertTrue(result is Fail)
-        assertTrue(viewModel.productVariantListData == null)
     }
 
     private fun verifySaveProductDraftFailed() {
