@@ -540,7 +540,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         showPromoCheckoutLastSeenBottomsheet(it)
                     }
                 }
-                it.state == GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG -> {
+                GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG -> {
                     hasTriedToGetLastSeenData = false
                 }
             }
