@@ -81,34 +81,37 @@ class InstallmentDetailBottomSheet {
 <html>
 	<style>
     body {
-    background: #FAFBFC;
+        background: #FAFBFC;
     }
-     h1 {
+    h1 {
      	font-family: SF Pro Text;
         font-style: normal;
         font-weight: bold;
         font-size: 12px;
         line-height: 14px;
         color: #4A4A4A;
-     }
-     ul li {
+    }
+    ul {
+        padding-inline-start: 20px;
+    }
+    ul li {
      	color: #42B549;
-     }
-     ol li {
-     font-family: SFProText;
-    font-size: 12px;
-    line-height: 18px;
-    color: rgba(0, 0, 0, 0.38);
-    margin-top:8px;
+    }
+    ol li {
+        font-family: SFProText;
+        font-size: 12px;
+        line-height: 18px;
+        color: rgba(0, 0, 0, 0.38);
+        margin-top:8px;
     }
     ol {
-    padding-inline-start: 12px;
+        padding-inline-start: 12px;
     }
     p {
         font-family: SFProText;
-    font-size: 12px;
-    line-height: 18px;
-    color: rgba(0, 0, 0, 0.38);
+        font-size: 12px;
+        line-height: 18px;
+        color: rgba(0, 0, 0, 0.38);
     }
     </style>
     <body>

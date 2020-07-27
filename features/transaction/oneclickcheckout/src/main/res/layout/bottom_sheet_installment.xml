@@ -40,7 +40,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:src="@color/Red_R600"
+                app:srcCompat="@drawable/ic_installment_term"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -73,14 +73,15 @@
                 app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module"
                 tools:ignore="ContentDescription" />
 
-            <com.tokopedia.abstraction.base.view.webview.TkpdWebView
+            <WebView
                 android:id="@+id/web_view_terms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
                 app:layout_constraintEnd_toEndOf="@+id/iv_expand_terms"
                 app:layout_constraintStart_toStartOf="@+id/iv_installment_terms"
-                app:layout_constraintTop_toBottomOf="@+id/iv_installment_terms" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_installment_terms"
+                tools:ignore="WebViewLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
