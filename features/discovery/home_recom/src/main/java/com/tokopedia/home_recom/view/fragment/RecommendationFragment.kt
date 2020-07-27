@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -137,7 +138,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onViewCreated(view, savedInstanceState)
         displayProductInfo()
         activity?.run{
-            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
+            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
         }
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(
