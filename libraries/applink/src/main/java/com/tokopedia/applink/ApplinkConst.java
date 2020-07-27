@@ -69,7 +69,7 @@ public interface ApplinkConst {
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String REACT_DISCOVERY_PAGE = "tokopedia://reactDiscovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
-    String HOME_EXPLORE = "tokopedia://jump/{section}";
+    String HOME_EXPLORE = "tokopedia://jump";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";

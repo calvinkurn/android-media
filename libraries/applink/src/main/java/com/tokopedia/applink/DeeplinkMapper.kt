@@ -24,6 +24,7 @@ import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
+import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredExplore
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeContentExplore
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeFeed
@@ -255,6 +256,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink -> getRegisteredNavigationRecommendation(deeplink) },
+            DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink -> getRegisteredExplore(deeplink) },
             DLP.startWith(ApplinkConst.CHAT_BOT) { _, _, deeplink -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink -> getRegisteredNavigationCatalog(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink -> getRegisteredNavigationMoneyIn(deeplink) },

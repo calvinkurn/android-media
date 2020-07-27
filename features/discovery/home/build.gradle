@@ -150,8 +150,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
