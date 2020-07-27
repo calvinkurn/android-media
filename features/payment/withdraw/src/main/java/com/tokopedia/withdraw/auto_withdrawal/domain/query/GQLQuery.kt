@@ -60,3 +60,13 @@ const val GQL_GET_AUTO_WD_STATUS = "query GetAutoWDStatus {\n" +
         "    }\n" +
         "  }\n" +
         "}"
+
+const val GQL_AUTO_WD_TNC = "query GetTNCAutoWD {\n" +
+        "  GetTNCAutoWD{\n" +
+        "    code\n" +
+        "    message\n" +
+        "    data{\n" +
+        "      template\n" +
+        "    }\n" +
+        "  }\n" +
+        "}"

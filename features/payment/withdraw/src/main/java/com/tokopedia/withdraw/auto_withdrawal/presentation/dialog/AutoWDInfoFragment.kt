@@ -6,11 +6,14 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.GetInfoAutoWD
 import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.AutoWDInfoAdapter
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 
-class AutoWDInfoFragment : BottomSheetUnify() {
+class AutoWDInfoFragment : BottomSheetUnify(), TickerCallback {
 
     private var infoAutoWD: GetInfoAutoWD? = null
 
@@ -26,6 +29,9 @@ class AutoWDInfoFragment : BottomSheetUnify() {
                 .inflate(R.layout.swd_layout_awd_info, null, false)
         rootView.apply {
             setChild(this)
+            val ticker = findViewById<Ticker>(R.id.awdJoinRPTicker)
+            ticker.setHtmlDescription(getString(R.string.swd_awd_join_rp_for_autoWD))
+            ticker.setDescriptionClickEvent(this@AutoWDInfoFragment)
             findViewById<View>(R.id.btnMoreInfo).setOnClickListener { openMoreInfo() }
             val recyclerView = findViewById<RecyclerView>(R.id.rvAutoWDInfo)
             initRecyclerAdapter(recyclerView)
@@ -58,5 +64,11 @@ class AutoWDInfoFragment : BottomSheetUnify() {
         }
     }
 
+    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+        WithdrawConstant.openRekeningAccountInfoPage(context)
+    }
+
+    override fun onDismiss() {
+    }
 
 }

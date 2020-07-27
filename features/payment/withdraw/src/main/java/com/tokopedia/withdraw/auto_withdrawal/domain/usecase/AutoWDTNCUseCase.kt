@@ -2,24 +2,21 @@ package com.tokopedia.withdraw.auto_withdrawal.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.withdraw.auto_withdrawal.QUERY_GET_TNC_AUTO_WD
-import com.tokopedia.withdraw.auto_withdrawal.domain.model.AutoWDStatus
-import com.tokopedia.withdraw.auto_withdrawal.domain.model.AutoWDStatusResponse
+import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
+import com.tokopedia.withdraw.auto_withdrawal.domain.query.GQL_AUTO_WD_TNC
 import javax.inject.Inject
-import javax.inject.Named
 
-class AutoWDTNCUseCase @Inject constructor(
-        @Named(QUERY_GET_TNC_AUTO_WD) val query: String, graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<AutoWDStatusResponse>(graphqlRepository) {
+class AutoWDTNCUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
+    : GraphqlUseCase<AutoWDTNCResponse>(graphqlRepository) {
 
-    fun getAutoWDStatus(onSuccess: (AutoWDStatus) -> Unit,
+    fun getAutoWDTNC(onSuccess: (GetTNCAutoWD) -> Unit,
                         onError: (Throwable) -> Unit) {
         try {
-            this.setTypeClass(AutoWDStatusResponse::class.java)
-            this.setGraphqlQuery(query)
+            this.setTypeClass(AutoWDTNCResponse::class.java)
+            this.setGraphqlQuery(GQL_AUTO_WD_TNC)
             this.execute(
                     { result ->
-                        onSuccess(result.autoWDStatus)
+                        onSuccess(result.getTNCAutoWD)
                     }, { error ->
                 onError(error)
             }

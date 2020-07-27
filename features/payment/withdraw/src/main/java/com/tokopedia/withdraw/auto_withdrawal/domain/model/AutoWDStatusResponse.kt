@@ -17,8 +17,8 @@ data class AutoWDStatus(
 
 data class AutoWDStatusData(
         @SerializedName("auto_wd_user_id") val auto_wd_user_id: Int = 0,
-        @SerializedName("is_owner") val isOwner: Boolean = false,
-        @SerializedName("is_power_wd") val isPowerWd: Boolean = false,
+        @SerializedName("is_owner") var isOwner: Boolean = false,
+        @SerializedName("is_power_wd") var isPowerWd: Boolean = false,
         @SerializedName("schedule") val scheduleList: ArrayList<Schedule>,
         @SerializedName("status") var status: Int = -1,
         @SerializedName("user_id") val user_id: Int = 0

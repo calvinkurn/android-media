@@ -16,23 +16,27 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
 
     private var scheduleArrayList: ArrayList<Schedule>? = null
     private var scheduleChangeListener: ScheduleChangeListener? = null
+    private var currentSelectedSchedule: Schedule? = null
     private var adapter: ScheduleAdapter? = null
-    private var recyclerView : RecyclerView? = null
+    private var recyclerView: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            if (it.containsKey(ARG_SCHEDULE_LIST)) {
-                scheduleArrayList = it.getParcelableArrayList(ARG_SCHEDULE_LIST)
+        arguments?.apply {
+            if (containsKey(ARG_SCHEDULE_LIST)) {
+                scheduleArrayList = getParcelableArrayList(ARG_SCHEDULE_LIST)
+                if (containsKey(ARG_CURRENT_SELECTED_SCHEDULE_LIST)) {
+                    currentSelectedSchedule = getParcelable(ARG_CURRENT_SELECTED_SCHEDULE_LIST)
+                }
             } else
-                dismiss()
+                this@ScheduleTimingFragment.dismiss()
         }
         val rootView = LayoutInflater.from(context)
                 .inflate(R.layout.swd_layout_awd_schedule_timings, null, false)
         rootView.apply {
             setChild(this)
             findViewById<View>(R.id.btnUpdateSchedule).setOnClickListener { updateSchedule() }
-            recyclerView = findViewById<RecyclerView>(R.id.rvScheduleTiming)
+            recyclerView = findViewById(R.id.rvScheduleTiming)
             initRecyclerAdapter()
         }
     }
@@ -64,7 +68,7 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
     private fun initRecyclerAdapter() {
         recyclerView?.apply {
             scheduleArrayList?.let {
-                this@ScheduleTimingFragment.adapter = ScheduleAdapter(it,
+                this@ScheduleTimingFragment.adapter = ScheduleAdapter(it, currentSelectedSchedule,
                         this@ScheduleTimingFragment)
                 layoutManager = LinearLayoutManager(context)
                 adapter = this@ScheduleTimingFragment.adapter
@@ -75,11 +79,15 @@ class ScheduleTimingFragment : BottomSheetUnify(), ScheduleChangeListener {
 
     companion object {
         const val ARG_SCHEDULE_LIST = "arg_schedule_list"
-        fun getInstance(scheduleList: ArrayList<Schedule>)
+        const val ARG_CURRENT_SELECTED_SCHEDULE_LIST = "arg_current_selected_schedule_list"
+        fun getInstance(scheduleList: ArrayList<Schedule>, currentSelectedSchedule: Schedule?)
                 : ScheduleTimingFragment {
             return ScheduleTimingFragment().apply {
                 val bundle = Bundle()
                 bundle.putParcelableArrayList(ARG_SCHEDULE_LIST, scheduleList)
+                currentSelectedSchedule?.let {
+                    bundle.putParcelable(ARG_CURRENT_SELECTED_SCHEDULE_LIST, currentSelectedSchedule)
+                }
                 arguments = bundle
             }
         }

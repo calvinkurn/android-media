@@ -296,6 +296,26 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWdBankAccountDetail"
                 app:typographyType="body_2"
                 tools:text="Min Amount" />
+
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnAutoWDAddBankAccount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_lvl1"
+                android:text="@string/swd_add_bank_account"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvDestinationAccountTitle"
+                app:layout_constraintTop_toBottomOf="@id/tvAutoWdBankNote"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

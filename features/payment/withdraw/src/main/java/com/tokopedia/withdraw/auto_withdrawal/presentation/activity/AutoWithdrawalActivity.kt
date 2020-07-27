@@ -25,7 +25,6 @@ class AutoWithdrawalActivity : BaseSimpleActivity(), HasComponent<AutoWithdrawal
         return AutoWithdrawalSettingsFragment.getInstance(bundle)
     }
 
-
     override fun getLayoutRes() = R.layout.swd_activity_auto_withdrawal
 
     override fun getToolbarResourceID() = R.id.auto_wd_header

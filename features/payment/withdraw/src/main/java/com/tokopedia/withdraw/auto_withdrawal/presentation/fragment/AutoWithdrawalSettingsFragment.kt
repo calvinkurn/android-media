@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.*
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +18,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.AutoWDStatusData
@@ -32,8 +37,11 @@ import com.tokopedia.withdraw.auto_withdrawal.domain.model.Schedule
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
 import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoFragment
+import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ExclusiveRekPremFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ScheduleTimingFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdrawalFragment
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import kotlinx.android.synthetic.main.swd_fragment_awd_settings.*
 import javax.inject.Inject
 
@@ -47,6 +55,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private var requestedSchedule: Schedule? = null
 
     private var primaryBankAccount: BankAccount? = null
+    private var tncTemplateStr: String? = null
 
     private val autoWDSettingsViewModel: AutoWDSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -100,6 +109,19 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 is Fail -> showGlobalError(it.throwable, autoWDSettingsViewModel::getAutoWDStatus)
             }
         })
+        autoWDSettingsViewModel.autoWDTNCResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> onTermsAndConditionLoaded(it.data)
+                is Fail -> {
+                    //todo tnc load fail
+                }
+            }
+        })
+    }
+
+    private fun onTermsAndConditionLoaded(template: String) {
+        tncTemplateStr = template
+        openTNCBottomSheet()
     }
 
     private fun onWithdrawalInfoLoaded(data: GetInfoAutoWD) {
@@ -139,16 +161,19 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             tvAutoWDBankName.text = bankName
             tvAutoWdBankAccountDetail.text = "$accountNo - $accountName"
             tvAutoWdBankNote.text = copyWriting ?: ""
+            btnAutoWDAddBankAccount.gone()
         } ?: run {
+            btnAutoWDAddBankAccount.visible()
             tvAutoWDBankName.gone()
             tvAutoWdBankAccountDetail.gone()
-            tvAutoWdBankNote.gone()
+            btnAutoWDAddBankAccount.setOnClickListener { openAddBankAccount() }
+            tvAutoWdBankNote.text = "Belum ada rekening tersimpan."
         }
     }
 
     private fun onAutoWithdrawalStatusLoaded(autoWDStatusData: AutoWDStatusData) {
         groupAutoWDSaveSetting.gone()
-        autoWDStatusData.status = 2
+        autoWDStatusData.isOwner = false
         this.autoWDStatusData = autoWDStatusData
         autoWDStatusData.apply {
             setCurrentWithdrawalSchedule(this)
@@ -177,16 +202,13 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             currentSchedule?.apply {
                 tvAutoWDScheduleType.text = title
                 tvScheduleTiming.text = desc
-                //todo check from autoWDstatus
                 checkboxAutoWD.isChecked = autoWDStatusData?.status == 1
             }
         }
     }
 
     private fun setCurrentWithdrawalSchedule(autoWDStatusData: AutoWDStatusData) {
-        //todo to remove
-        currentSchedule = autoWDStatusData.scheduleList[1]
-        currentSchedule?.status = 1
+        currentSchedule = autoWDStatusData.scheduleList[0]
         autoWDStatusData.scheduleList.forEach {
             if (it.status == 1) {
                 currentSchedule = it
@@ -208,7 +230,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 && autoWDStatusData?.isOwner == true) {
             if ((checkboxAutoWD.isChecked && autoWDStatusData?.status != 1)
                     || (!checkboxAutoWD.isChecked && autoWDStatusData?.status == 1)
-                    || (requestedSchedule != null && currentSchedule?.equals(requestedSchedule) == false)) {
+                    || (checkboxAutoWD.isChecked && requestedSchedule != null && currentSchedule?.equals(requestedSchedule) == false)) {
                 setSaveSettingBottomViewVisibility(true)
                 btnAutoWDSaveSettings.isEnabled = isPrimaryAccountActive()
             } else
@@ -238,6 +260,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun setSaveSettingBottomViewVisibility(isVisible: Boolean) {
         if (isVisible) {
             groupAutoWDSaveSetting.visible()
+            btnAutoWDSaveSettings.setOnClickListener { onSaveAutoWDSettingsClick() }
         } else
             groupAutoWDSaveSetting.gone()
     }
@@ -298,7 +321,8 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun openSchedulingTimings() {
         autoWDStatusData?.apply {
             activity?.let {
-                val bottomSheet = ScheduleTimingFragment.getInstance(scheduleList)
+                val bottomSheet = ScheduleTimingFragment.getInstance(scheduleList, requestedSchedule
+                        ?: currentSchedule)
                 bottomSheet.setTitle(getString(R.string.swd_withdrawal_schedule))
                 bottomSheet.show(it.supportFragmentManager, "ScheduleTimingFragment")
             }
@@ -319,6 +343,14 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 tvDestinationAccountTitle.setTextColor(textDisabledColor)
             }
             enableBankAccountData(isEnable)
+            if (btnAutoWDAddBankAccount.visibility == View.VISIBLE) {
+                btnAutoWDAddBankAccount.isEnabled = isEnable
+                if (isEnable)
+                    tvAutoWdBankNote.visibility = View.INVISIBLE
+                else
+                    tvAutoWdBankNote.visible()
+
+            }
         }
     }
 
@@ -358,7 +390,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                //todo Exclusive RP
+                WithdrawConstant.openRekeningAccountInfoPage(context)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -367,6 +399,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 ds.color = color
             }
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tvAutoWDBannerBody.movementMethod = LinkMovementMethod.getInstance()
         tvAutoWDBannerBody.text = SpannableStringBuilder.valueOf(originalText).append(" ")
                 .append(spannableString)
     }
@@ -381,8 +414,11 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                //todo openTermsAndConditionBottomSheet()
-
+                tncTemplateStr?.let {
+                    openTNCBottomSheet()
+                } ?: run {
+                    autoWDSettingsViewModel.getAutoWDTNC()
+                }
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -391,8 +427,24 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
                 ds.color = color
             }
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        tvAutoWDTermsAndCond.movementMethod = LinkMovementMethod.getInstance()
         tvAutoWDTermsAndCond.text = SpannableStringBuilder.valueOf(originalText).append(" ")
                 .append(spannableString)
+    }
+
+    private fun openTNCBottomSheet() {
+        activity?.let { activity ->
+            tncTemplateStr?.let {
+                val bottomSheetUnify = BottomSheetUnify()
+                val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
+                        null, true)
+                val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
+                webView.loadData(tncTemplateStr, "text/html", "utf-8")
+                bottomSheetUnify.setChild(view)
+                bottomSheetUnify.show(activity.supportFragmentManager, "")
+            }
+        }
     }
 
     private fun openInfoBottomSheet() {
@@ -420,5 +472,28 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
         setScheduleData()
         showSaveButton()
+    }
+
+    private fun onSaveAutoWDSettingsClick() {
+        autoWDStatusData?.apply {
+            if (isPowerWd) {
+            } else {
+                openJoinRPProgramBottomSheet()
+            }
+        }
+    }
+
+    private fun openJoinRPProgramBottomSheet() {
+        activity?.apply {
+            val bottomSheet = ExclusiveRekPremFragment.getInstance()
+            bottomSheet.show(supportFragmentManager, "ExclusiveRekPremFragment")
+        }
+    }
+
+    private fun openAddBankAccount() {
+        activity?.apply {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_BANK)
+            startActivityForResult(intent, SaldoWithdrawalFragment.BANK_SETTING_REQUEST_CODE)
+        }
     }
 }

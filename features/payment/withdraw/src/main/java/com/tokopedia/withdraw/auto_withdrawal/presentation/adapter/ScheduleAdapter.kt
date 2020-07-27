@@ -10,6 +10,7 @@ import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.Schedule
 
 class ScheduleAdapter(private val scheduleList: ArrayList<Schedule>,
+                      private var currentSelectedSchedule: Schedule?,
                       private val scheduleChangeListener: ScheduleChangeListener?)
     : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
 
@@ -33,11 +34,15 @@ class ScheduleAdapter(private val scheduleList: ArrayList<Schedule>,
         private val rbScheduleStatus: RadioButtonUnify = itemView.findViewById(R.id.rbScheduleStatus)
 
         fun bind(schedule: Schedule, scheduleChangeListener: ScheduleChangeListener?) {
-            rbScheduleStatus.setOnCheckedChangeListener{_, _ ->  }
+            rbScheduleStatus.setOnCheckedChangeListener { _, _ -> }
             tvScheduleType.text = schedule.title
             tvScheduleTiming.text = schedule.desc
-            rbScheduleStatus.isChecked = schedule.status == 1
+            currentSelectedSchedule?.apply {
+                rbScheduleStatus.isChecked = schedule.equals(currentSelectedSchedule)
+            }
             rbScheduleStatus.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked)
+                    currentSelectedSchedule = schedule
                 scheduleChangeListener?.onScheduleSelected(schedule)
             }
         }
