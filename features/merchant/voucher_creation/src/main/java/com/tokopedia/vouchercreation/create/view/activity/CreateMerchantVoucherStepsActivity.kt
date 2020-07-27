@@ -208,7 +208,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_CANCELLED,
                             userId = userSession.userId
                     )
-                    setResult(Activity.RESULT_OK)
+                    setResult(Activity.RESULT_CANCELED)
                     finish()
                 })
     }
@@ -267,6 +267,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onBackPressed() {
         if (isEditVoucher) {
+            setResult(Activity.RESULT_CANCELED)
             finish()
         } else {
             when(currentStepPosition) {

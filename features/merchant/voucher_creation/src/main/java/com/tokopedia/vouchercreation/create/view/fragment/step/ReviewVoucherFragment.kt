@@ -385,6 +385,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     when(result) {
                         is Success -> {
                             context?.run {
+                                // Send success voucher id to voucher list to display success bottomsheet/toaster
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -394,6 +395,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     finish()
                                 }
                                 startActivity(intent)
+
+                                // Disable showing create voucher dialog upon accessing mvc after first time success
                                 sharedPref?.run {
                                     if (getBoolean(IS_MVC_FIRST_TIME, true)) {
                                         edit().putBoolean(IS_MVC_FIRST_TIME, false).apply()
