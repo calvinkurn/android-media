@@ -23,7 +23,9 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
             return SuccessCreateBottomSheet().apply {
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
 
-                arguments?.putParcelable(VOUCHER, voucherUiModel)
+                arguments = Bundle().apply {
+                    putParcelable(VOUCHER, voucherUiModel)
+                }
             }
         }
 
