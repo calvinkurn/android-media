@@ -34,6 +34,7 @@ class CreateReviewTextArea : BaseCustomView {
             setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
                     this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_selected)
+                    textAreaListener.onHasFocus()
                 } else {
                     this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_default)
                 }

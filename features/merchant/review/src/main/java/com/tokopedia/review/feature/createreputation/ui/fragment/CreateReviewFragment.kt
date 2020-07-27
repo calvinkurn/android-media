@@ -319,6 +319,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewExpandableTextArea.setText(text)
     }
 
+    override fun onHasFocus() {
+        createReviewScrollView.smoothScrollTo(0, createReviewExpandableTextArea.bottom)
+    }
+
     override fun onBackPressed() {
 
     }
@@ -611,11 +615,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun hideLayout() {
-        create_review_container.hide()
+        createReviewScrollView.hide()
     }
 
     private fun showLayout() {
-        create_review_container.show()
+        createReviewScrollView.show()
     }
 
     private fun showToasterError(message: String) {
