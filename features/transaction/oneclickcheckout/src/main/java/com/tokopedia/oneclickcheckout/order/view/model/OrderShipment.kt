@@ -52,4 +52,16 @@ data class OrderShipment(
     fun getRealChecksum(): String {
         return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
     }
+
+    fun getRealOriginalPrice(): Int {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.shippingRate
+        } else shippingPrice ?: 0
+    }
+
+    fun getRealInsurancePrice(): Int {
+        return if (isCheckInsurance && insuranceData != null) {
+            insuranceData.insurancePrice
+        } else 0
+    }
 }

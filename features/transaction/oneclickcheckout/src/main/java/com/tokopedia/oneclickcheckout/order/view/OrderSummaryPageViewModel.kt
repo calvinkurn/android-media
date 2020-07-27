@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -129,30 +128,33 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun atcOcc(productId: String) {
         globalEvent.value = OccGlobalEvent.Loading
-        atcOccExternalUseCase.createObservable(
-                RequestParams().apply {
-                    putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
-                }
-        ).subscribeOn(executorSchedulers.io).observeOn(executorSchedulers.main)
-                .subscribe(object : Observer<AddToCartDataModel> {
-                    override fun onError(e: Throwable) {
-                        globalEvent.value = OccGlobalEvent.AtcError(e)
-                    }
+        compositeSubscription.add(
+                atcOccExternalUseCase.createObservable(
+                        RequestParams().apply {
+                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+                        })
+                        .subscribeOn(executorSchedulers.io)
+                        .observeOn(executorSchedulers.main)
+                        .subscribe(object : Observer<AddToCartDataModel> {
+                            override fun onError(e: Throwable) {
+                                globalEvent.value = OccGlobalEvent.AtcError(e)
+                            }
 
-                    override fun onNext(result: AddToCartDataModel) {
-                        if (result.isDataError()) {
-                            globalEvent.value = OccGlobalEvent.AtcError(errorMessage = result.getAtcErrorMessage()
-                                    ?: "")
-                        } else {
-                            globalEvent.value = OccGlobalEvent.AtcSuccess(result.data.message.firstOrNull()
-                                    ?: "")
-                        }
-                    }
+                            override fun onNext(result: AddToCartDataModel) {
+                                if (result.isDataError()) {
+                                    globalEvent.value = OccGlobalEvent.AtcError(errorMessage = result.getAtcErrorMessage()
+                                            ?: "")
+                                } else {
+                                    globalEvent.value = OccGlobalEvent.AtcSuccess(result.data.message.firstOrNull()
+                                            ?: "")
+                                }
+                            }
 
-                    override fun onCompleted() {
-                        // do nothing
-                    }
-                })
+                            override fun onCompleted() {
+                                // do nothing
+                            }
+                        })
+        )
     }
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {
@@ -260,7 +262,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                                 shippingRecommendationData = shippingRecommendationData)
                                                     } else {
                                                         val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
-                                                        var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                                                        var selectedShippingCourierUiModel = shippingCourierViewModelList.first()
                                                         for (shippingCourierUiModel in shippingCourierViewModelList) {
                                                             if (shippingCourierUiModel.productData.shipperProductId == shipping.shipperProductId) {
                                                                 shippingCourierUiModel.isSelected = true
@@ -269,34 +271,32 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                                 shippingCourierUiModel.isSelected = false
                                                             }
                                                         }
-                                                        if (selectedShippingCourierUiModel != null) {
-                                                            var flagNeedToSetPinpoint = false
-                                                            var errorMessage: String? = null
-                                                            if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
-                                                                shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
-                                                                errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
-                                                                if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                                                                    flagNeedToSetPinpoint = true
-                                                                }
+                                                        var flagNeedToSetPinpoint = false
+                                                        var errorMessage: String? = null
+                                                        if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                            shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
+                                                            errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
+                                                            if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                                                flagNeedToSetPinpoint = true
                                                             }
-                                                            shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                                                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                                                    ratesId = selectedShippingCourierUiModel.ratesId,
-                                                                    ut = selectedShippingCourierUiModel.productData.unixTime,
-                                                                    checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                                                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                                                    needPinpoint = flagNeedToSetPinpoint,
-                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                                                                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                                                                    serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                    serviceDuration = shippingDurationViewModel.serviceData.serviceName,
-                                                                    serviceName = shippingDurationViewModel.serviceData.serviceName,
-                                                                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                                                                    isApplyLogisticPromo = false,
-                                                                    logisticPromoViewModel = null,
-                                                                    logisticPromoShipping = null,
-                                                                    shippingRecommendationData = shippingRecommendationData)
                                                         }
+                                                        shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                                                ratesId = selectedShippingCourierUiModel.ratesId,
+                                                                ut = selectedShippingCourierUiModel.productData.unixTime,
+                                                                checksum = selectedShippingCourierUiModel.productData.checkSum,
+                                                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                                                needPinpoint = flagNeedToSetPinpoint,
+                                                                serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
+                                                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                                serviceId = shippingDurationViewModel.serviceData.serviceId,
+                                                                serviceDuration = shippingDurationViewModel.serviceData.serviceName,
+                                                                serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                isApplyLogisticPromo = false,
+                                                                logisticPromoViewModel = null,
+                                                                logisticPromoShipping = null,
+                                                                shippingRecommendationData = shippingRecommendationData)
                                                     }
                                                 } else {
                                                     shippingDurationViewModel.isSelected = false
@@ -322,44 +322,39 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                                 shippingRecommendationData = shippingRecommendationData)
                                                     } else {
                                                         val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
-                                                        var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                                                        var selectedShippingCourierUiModel = shippingCourierViewModelList.first()
                                                         for (shippingCourierUiModel in shippingCourierViewModelList) {
                                                             if (shippingCourierUiModel.isSelected) {
                                                                 selectedShippingCourierUiModel = shippingCourierUiModel
                                                             }
                                                         }
-                                                        if (selectedShippingCourierUiModel == null) {
-                                                            selectedShippingCourierUiModel = shippingCourierViewModelList[0]
+                                                        selectedShippingCourierUiModel.isSelected = true
+                                                        var flagNeedToSetPinpoint = false
+                                                        var errorMessage: String? = null
+                                                        if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                            shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
+                                                            errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
+                                                            if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                                                flagNeedToSetPinpoint = true
+                                                            }
                                                         }
-                                                        if (selectedShippingCourierUiModel != null) {
-                                                            selectedShippingCourierUiModel.isSelected = true
-                                                            var flagNeedToSetPinpoint = false
-                                                            var errorMessage: String? = null
-                                                            if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
-                                                                shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
-                                                                errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
-                                                                if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                                                                    flagNeedToSetPinpoint = true
-                                                                }
-                                                            }
-                                                            shipping = OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                                                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                                                    ratesId = selectedShippingCourierUiModel.ratesId,
-                                                                    ut = selectedShippingCourierUiModel.productData.unixTime,
-                                                                    checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                                                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                                                    needPinpoint = flagNeedToSetPinpoint,
-                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
-                                                                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                                                                    serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                    serviceDuration = shippingDurationViewModel.serviceData.serviceName,
-                                                                    serviceName = shippingDurationViewModel.serviceData.serviceName,
-                                                                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                                                                    shippingRecommendationData = shippingRecommendationData)
+                                                        shipping = OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                                                ratesId = selectedShippingCourierUiModel.ratesId,
+                                                                ut = selectedShippingCourierUiModel.productData.unixTime,
+                                                                checksum = selectedShippingCourierUiModel.productData.checkSum,
+                                                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                                                needPinpoint = flagNeedToSetPinpoint,
+                                                                serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
+                                                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                                serviceId = shippingDurationViewModel.serviceData.serviceId,
+                                                                serviceDuration = shippingDurationViewModel.serviceData.serviceName,
+                                                                serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                shippingRecommendationData = shippingRecommendationData)
 
-                                                            if (shipping.serviceErrorMessage.isNullOrEmpty()) {
-                                                                preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
-                                                            }
+                                                        if (shipping.serviceErrorMessage.isNullOrEmpty()) {
+                                                            preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
                                                         }
                                                     }
                                                 } else {
@@ -374,16 +369,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     if (logisticPromo != null && !logisticPromo.disabled) {
                                         shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
                                         if (currPromo.isNotEmpty()) {
-                                            if (logisticPromo.promoCode == currPromo) {
-                                                autoApplyLogisticPromo(logisticPromo, currPromo, shipping)
-                                                return
-                                            } else {
-                                                if (currPromo.isNotEmpty()) {
-                                                    clearOldLogisticPromo(currPromo)
-                                                }
-                                                autoApplyLogisticPromo(logisticPromo, currPromo, shipping)
-                                                return
+                                            if (logisticPromo.promoCode != currPromo) {
+                                                clearOldLogisticPromo(currPromo)
                                             }
+                                            autoApplyLogisticPromo(logisticPromo, currPromo, shipping)
+                                            return
                                         } else {
                                             shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null,
                                                     logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
@@ -402,15 +392,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         validateUsePromo()
                                     } else {
                                         orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
-                                        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
-                                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
-                                        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
-                                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
-                                        }
+                                        sendViewShippingErrorMessage(shippingErrorId)
                                     }
-                                    if (preselectedSpId != null) {
-                                        orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSessionInterface.userId)
-                                    }
+                                    sendPreselectedCourierOption(preselectedSpId)
                                     calculateTotal()
                                 }
                             }
@@ -494,6 +478,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return shipping
     }
 
+    private fun sendViewShippingErrorMessage(shippingErrorId: String?) {
+        if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
+        } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
+        }
+    }
+
+    private fun sendPreselectedCourierOption(preselectedSpId: String?) {
+        if (preselectedSpId != null) {
+            orderSummaryAnalytics.eventViewPreselectedCourierOption(preselectedSpId, userSessionInterface.userId)
+        }
+    }
+
     private fun clearOldLogisticPromo(oldPromoCode: String) {
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
         compositeSubscription.add(
@@ -526,9 +524,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         validateUsePromoRequest.orders[0]?.apply {
             shippingId = logisticPromoUiModel.shipperId
             spId = logisticPromoUiModel.shipperProductId
-            if (oldCode.isNotEmpty()) {
-                codes.remove(oldCode)
-            }
+            codes.remove(oldCode)
             codes.add(logisticPromoUiModel.promoCode)
         }
         val requestParams = RequestParams.create()
@@ -541,11 +537,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                             override fun onError(e: Throwable) {
                                 orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
                                 globalEvent.value = OccGlobalEvent.Error(e)
-                                val shippingRecommendationData = shipping.shippingRecommendationData
-                                if (shippingRecommendationData != null) {
-                                    _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
-                                    orderShipment.value = _orderShipment
-                                }
+                                _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                                orderShipment.value = _orderShipment
                                 orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
                                 calculateTotal()
                             }
@@ -648,6 +641,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         orderShipment.value = _orderShipment
                         calculateTotal()
                         validateUsePromo()
+                        return
                     }
                 }
             }
@@ -706,7 +700,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             _orderShipment = newShipping
             orderShipment.value = _orderShipment
-            orderSummaryAnalytics.eventViewPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSessionInterface.userId)
+            sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
@@ -752,11 +746,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 }
 
                                 override fun onNext(stringResponse: String) {
-                                    var response: JsonObject? = null
                                     var messageError: String? = null
                                     var statusSuccess: Boolean
                                     try {
-                                        response = JsonParser().parse(stringResponse).asJsonObject
+                                        val response = JsonParser().parse(stringResponse).asJsonObject
                                         val statusCode = response.getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
                                                 .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).asInt
                                         statusSuccess = statusCode == 1
@@ -767,7 +760,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         statusSuccess = false
                                     }
 
-                                    if (response != null && statusSuccess) {
+                                    if (statusSuccess) {
                                         globalEvent.value = OccGlobalEvent.TriggerRefresh(false)
                                     } else {
                                         if (messageError.isNullOrBlank()) {
@@ -978,18 +971,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val shopPromos = generateShopPromos()
         val checkoutPromos = generateCheckoutPromos()
         val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-//        val allPromoCodes = ArrayList<String>().apply {
-//            if (checkoutPromos.isNotEmpty()) {
-//                addAll(checkoutPromos.map {
-//                    it.code
-//                })
-//            }
-//            if (shopPromos.isNotEmpty()) {
-//                addAll(shopPromos.map {
-//                    it.code
-//                })
-//            }
-//        }
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -1071,56 +1052,63 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun checkIneligiblePromo(): Boolean {
-        val notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
+        var notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
         val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = validateUsePromoRevampUiModel
         if (validateUsePromoRevampUiModel != null) {
-            if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
-                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-                notEligiblePromoHolderdata.promoTitle = validateUsePromoRevampUiModel.promoUiModel.titleDescription
-                if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
-                    notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
-                }
-                notEligiblePromoHolderdata.shopName = "Kode promo"
-                notEligiblePromoHolderdata.iconType = TYPE_ICON_GLOBAL
-                notEligiblePromoHolderdata.showShopSection = true
-                notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
-                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
-            }
-            val voucherOrdersItemUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
-            if (voucherOrdersItemUiModels.isNotEmpty()) {
-                for (i in voucherOrdersItemUiModels.indices) {
-                    val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
-                    if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
-                        val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-                        notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
-                        notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
-                        if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
-                            notEligiblePromoHolderdata.shopName = orderShop.shopName
-                            if (orderShop.isOfficial == 1) {
-                                notEligiblePromoHolderdata.iconType = TYPE_ICON_OFFICIAL_STORE
-                            } else if (orderShop.isGold == 1) {
-                                notEligiblePromoHolderdata.iconType = TYPE_ICON_POWER_MERCHANT
-                            }
-                        }
-                        if (i == 0) {
-                            notEligiblePromoHolderdata.showShopSection = true
-                        } else {
-                            notEligiblePromoHolderdata.showShopSection = voucherOrdersItemUiModels[i - 1]?.uniqueId != voucherOrdersItemUiModel.uniqueId
-                        }
-
-                        notEligiblePromoHolderdata.errorMessage = voucherOrdersItemUiModel.messageUiModel.text
-                        notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
-                    }
-                }
-            }
+            notEligiblePromoHolderdataList = addIneligibleGlobalPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
+            notEligiblePromoHolderdataList = addIneligibleVoucherPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
         }
 
         if (notEligiblePromoHolderdataList.size > 0) {
             globalEvent.value = OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
             return false
-        } else {
-            return true
         }
+        return true
+    }
+
+    private fun addIneligibleGlobalPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>): ArrayList<NotEligiblePromoHolderdata> {
+        if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+            val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+            notEligiblePromoHolderdata.promoTitle = validateUsePromoRevampUiModel.promoUiModel.titleDescription
+            if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
+                notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
+            }
+            notEligiblePromoHolderdata.shopName = "Kode promo"
+            notEligiblePromoHolderdata.iconType = TYPE_ICON_GLOBAL
+            notEligiblePromoHolderdata.showShopSection = true
+            notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+            notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+        }
+        return notEligiblePromoHolderdataList
+    }
+
+    private fun addIneligibleVoucherPromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>): ArrayList<NotEligiblePromoHolderdata> {
+        val voucherOrdersItemUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
+        for (i in voucherOrdersItemUiModels.indices) {
+            val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
+            if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
+                notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
+                if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
+                    notEligiblePromoHolderdata.shopName = orderShop.shopName
+                    if (orderShop.isOfficial == 1) {
+                        notEligiblePromoHolderdata.iconType = TYPE_ICON_OFFICIAL_STORE
+                    } else if (orderShop.isGold == 1) {
+                        notEligiblePromoHolderdata.iconType = TYPE_ICON_POWER_MERCHANT
+                    }
+                }
+                if (i == 0) {
+                    notEligiblePromoHolderdata.showShopSection = true
+                } else {
+                    notEligiblePromoHolderdata.showShopSection = voucherOrdersItemUiModels[i - 1]?.uniqueId != voucherOrdersItemUiModel.uniqueId
+                }
+
+                notEligiblePromoHolderdata.errorMessage = voucherOrdersItemUiModel.messageUiModel.text
+                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+            }
+        }
+        return notEligiblePromoHolderdataList
     }
 
     fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (Data) -> Unit) {
@@ -1217,8 +1205,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     if (!codes.contains(voucherOrder.code)) {
                         codes.add(voucherOrder.code)
                     }
-                    // todo check why break
-                    break
                 }
             }
         }
@@ -1268,6 +1254,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return validateUsePromoRequest
     }
 
+    private fun hasPromoApplied(validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
+        if (validateUsePromoRequest.codes.isNotEmpty()) return true
+        for (order in validateUsePromoRequest.orders) {
+            if (order?.codes?.isNotEmpty() == true) return true
+        }
+        return false
+    }
+
     fun generateBboPromoCodes(): ArrayList<String> {
         val shipping = _orderShipment
         if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
@@ -1279,8 +1273,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun validateUsePromo() {
         orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
         orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
+        val validateUsePromoRequest = generateValidateUsePromoRequest()
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
                         .subscribeOn(executorSchedulers.io)
@@ -1297,14 +1292,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 if (!lastResult?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
                                     isPromoReleased = true
                                 } else {
-//                                    result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
-//                                        isPromoReleased = true
-//                                    }
-                                    for (voucherOrderUiModel in result.promoUiModel.voucherOrderUiModels) {
-                                        if (voucherOrderUiModel?.messageUiModel?.state == "red") {
-                                            isPromoReleased = true
-                                            break
-                                        }
+                                    result.promoUiModel.voucherOrderUiModels.firstOrNull { it?.messageUiModel?.state == "red" }?.let {
+                                        isPromoReleased = true
                                     }
                                 }
                                 if (isPromoReleased) {
@@ -1339,35 +1328,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         val totalProductPrice = quantity.orderQuantity * orderProduct.getPrice().toDouble()
         val shipping = _orderShipment
-        val totalShippingPrice: Double = if (shipping.isApplyLogisticPromo && shipping.logisticPromoShipping != null && shipping.logisticPromoViewModel != null) {
-            shipping.logisticPromoViewModel.shippingRate.toDouble()
-        } else if (shipping.shippingPrice != null) {
-            shipping.shippingPrice.toDouble()
-        } else 0.0
-        var insurancePrice = 0.0
-        if (shipping.isCheckInsurance && shipping.insuranceData != null) {
-            insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
-        }
-        var productDiscount = 0
-        var shippingDiscount = 0
-        val cashbacks = ArrayList<Pair<String, String>>()
-        val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
-                ?: emptyList()
-        for (summary in summaries) {
-            if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
-                for (detail in summary.details) {
-                    if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
-                        shippingDiscount += detail.amount
-                    } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
-                        productDiscount += detail.amount
-                    }
-                }
-            } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                for (detail in summary.details) {
-                    cashbacks.add(detail.description to detail.amountStr)
-                }
-            }
-        }
+        val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
+        val insurancePrice = shipping.getRealInsurancePrice().toDouble()
+        val (productDiscount, shippingDiscount, cashbacks) = calculatePromo()
         var subtotal = totalProductPrice + totalShippingPrice + insurancePrice
         payment = calculateInstallmentDetails(payment, subtotal, if (orderShop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
         val fee = payment.getRealFee()
@@ -1375,6 +1338,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         subtotal -= productDiscount
         subtotal -= shippingDiscount
         val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
+
         var currentState = orderTotal.value.buttonState
         if (currentState == ButtonBayarState.NORMAL && (!shipping.isValid() || !shipping.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
             currentState = ButtonBayarState.DISABLE
@@ -1410,6 +1374,30 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
         }
+    }
+
+    private fun calculatePromo(): Triple<Int, Int, ArrayList<Pair<String, String>>> {
+        var productDiscount = 0
+        var shippingDiscount = 0
+        val cashbacks = ArrayList<Pair<String, String>>()
+        val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
+                ?: emptyList()
+        for (summary in summaries) {
+            if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
+                for (detail in summary.details) {
+                    if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
+                        shippingDiscount += detail.amount
+                    } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
+                        productDiscount += detail.amount
+                    }
+                }
+            } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
+                for (detail in summary.details) {
+                    cashbacks.add(detail.description to detail.amountStr)
+                }
+            }
+        }
+        return Triple(productDiscount, shippingDiscount, cashbacks)
     }
 
     private fun calculateMdrFee(subTotal: Double, mdr: Float, subsidize: Double, mdrSubsidize: Float): Double {
