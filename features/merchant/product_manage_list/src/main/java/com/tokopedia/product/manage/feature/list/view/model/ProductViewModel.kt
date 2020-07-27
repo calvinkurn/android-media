@@ -14,6 +14,7 @@ data class ProductViewModel(
         val url: String?,
         val cashBack: Int,
         val stock: Int?,
+        val stockReserved: Int,
         val isFeatured: Boolean?,
         val isVariant: Boolean?,
         val multiSelectActive: Boolean,

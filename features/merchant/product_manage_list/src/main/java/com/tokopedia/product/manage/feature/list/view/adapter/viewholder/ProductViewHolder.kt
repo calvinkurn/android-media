@@ -46,7 +46,13 @@ class ProductViewHolder(
     }
 
     private fun showProductStock(product: ProductViewModel) {
-        product.stock?.run {
+        val stockReserved =
+                if (product.hasStockReserved) {
+                    product.stockReserved
+                } else {
+                    0
+                }
+        product.stock?.plus(stockReserved)?.run {
             itemView.textStockCount.text = if (this <= MAX_SHOWING_STOCK) {
                 getNumberFormatted()
             } else {
