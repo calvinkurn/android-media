@@ -168,11 +168,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onGimickItemClicked(LayoutRows data) {
 
-        if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN);
-            return;
-        }
-
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
