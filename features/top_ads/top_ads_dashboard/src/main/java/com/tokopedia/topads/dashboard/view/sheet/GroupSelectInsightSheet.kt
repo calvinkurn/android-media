@@ -1,5 +1,4 @@
 package com.tokopedia.topads.dashboard.view.sheet
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,17 +16,17 @@ import kotlinx.android.synthetic.main.topads_dash_move_group_insight_sheet.*
  * Created by Pika on 22/7/20.
  */
 
-class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId: String) : BottomSheetUnify() {
+class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:String) : BottomSheetUnify() {
 
     private var contentView: View? = null
-    var selectedGroup: ((pos: Int, groupId: String) -> Unit)? = null
-    var index = 0
-    private var listOfKeys: MutableList<String> = mutableListOf()
+    var selectedGroup: ((pos:Int,groupId:String) -> Unit)? = null
+    var index =0
+    private var listOfKeys:MutableList<String> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
-        Utils.setSearchListener(context, view, ::setList)
+        Utils.setSearchListener(context,view,::setList)
     }
 
     private fun initView(view: View) {
@@ -55,23 +54,23 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
         val listUnify = ArrayList<ListItemUnify>()
         val data: HashMap<String, KeywordInsightDataMain> = response.data
         var count = 0
-        data.forEach {
-            if (it.value.name.contains(searchBar.searchBarTextField.text.toString())) {
+        data.forEach{
+            if(it.value.name.contains(searchBar.searchBarTextField.text.toString())) {
                 listOfKeys.add(it.key)
-                count++
-                if (groupId == it.key) {
+                count ++
+                if(groupId == it.key) {
                     index = count - 1
                 }
-                val list = ListItemUnify(it.value.name + " (${it.value.count})", "")
+                val list = ListItemUnify(it.value.name +" (${it.value.count})", "")
                 list.isBold = true
                 list.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
                 listUnify.add(list)
             }
         }
-        if (listUnify.isNotEmpty()) {
+        if(listUnify.isNotEmpty()) {
             listGroup?.setData(listUnify)
             txtSearch.visibility = View.GONE
-        } else {
+        }else{
             listGroup.visibility = View.GONE
             txtSearch.text = String.format(resources.getString(R.string.topads_insight_search_text), searchBar.searchBarTextField.text.toString())
             txtSearch.visibility = View.VISIBLE
@@ -81,13 +80,13 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
             onLoadFinish {
                 this.setOnItemClickListener { parent, view, position, id ->
                     setSelected(listUnify, position) {
-                        selectedGroup?.invoke(position, listOfKeys[position])
+                        selectedGroup?.invoke(position,listOfKeys[position])
                     }
                 }
                 listUnify.forEachIndexed { position, it ->
                     it.listRightRadiobtn?.setOnClickListener {
                         this.setSelected(listUnify, position) {
-                            selectedGroup?.invoke(position, listOfKeys[position])
+                            selectedGroup?.invoke(position,listOfKeys[position])
                         }
                     }
                 }
@@ -108,12 +107,11 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
         onChecked(selectedItem)
     }
 
+
     private fun ListItemUnify.getShownRadioButton() = run {
-        when {
-            listLeftRadiobtn?.visibility == View.VISIBLE -> listLeftRadiobtn
-            listRightRadiobtn?.visibility == View.VISIBLE -> listRightRadiobtn
-            else -> null
-        }
+        if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
+        else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
+        else null
     }
 
 }
