@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -123,14 +124,22 @@ public class TrackingUtils {
     public static boolean isValidCampaign(Map<String, Object> maps) {
         boolean isValid = false;
 
-        String gclid = maps.get(AppEventTracking.GTM.UTM_GCLID) != null ? maps.get(AppEventTracking.GTM.UTM_GCLID).toString() : null;
-        if(maps.containsKey(AppEventTracking.GTM.UTM_GCLID) && !TextUtils.isEmpty(gclid)){
-            isValid = true;
-        }else{
-            String utmSource = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_SOURCE).toString() : null;
-            String utmMedium = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_MEDIUM).toString() : null;
+        if(maps != null){
+            String gclid = maps.get(AppEventTracking.GTM.UTM_GCLID) != null ? maps.get(AppEventTracking.GTM.UTM_GCLID).toString() : null;
+            if(maps.containsKey(AppEventTracking.GTM.UTM_GCLID) && !TextUtils.isEmpty(gclid)){
+                isValid = true;
+            }else{
+                String utmSource = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_SOURCE).toString() : null;
+                String utmMedium = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_MEDIUM).toString() : null;
 
-            isValid = !TextUtils.isEmpty(utmSource) && !TextUtils.isEmpty(utmMedium);
+                isValid = !TextUtils.isEmpty(utmSource) && !TextUtils.isEmpty(utmMedium);
+            }
+
+            if(!isValid){
+                Log.d("TrackingUtils", "Invalid Campaigd Data = "+maps.toString());
+            }
+        }else{
+            Log.d("TrackingUtils", "Invalid Campaigd Data");
         }
 
         return isValid;

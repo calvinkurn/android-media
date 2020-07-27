@@ -952,7 +952,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendCampaign(Map<String, Object> param) {
-        if(!ils.isValidCampaign(param)) return;
+        if(!TrackingUtils.isValidCampaign(param)) return;
 
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
