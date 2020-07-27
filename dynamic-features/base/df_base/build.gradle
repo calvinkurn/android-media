@@ -63,6 +63,7 @@ dependencies {
 
     //Content
     implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
@@ -135,6 +136,7 @@ dependencies {
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.otp)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)
@@ -143,4 +145,5 @@ dependencies {
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
+    implementation project(rootProject.ext.features.atc_variant)
 }

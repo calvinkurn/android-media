@@ -1,83 +1,138 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Rule
+import org.junit.Test
 
+/**
+ * Created by Lukas on 14/05/20.
+ */
 
-@ExperimentalCoroutinesApi
-class HomeViewModelTickerUnitTest : Spek({
-    InstantTaskExecutorRuleSpek(this)
+class HomeViewModelTickerUnitTest {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    Feature("Test Ticker") {
-        lateinit var homeViewModel: HomeViewModel
-        createHomeViewModelTestInstance()
+    private val getHomeUseCase = mockk<HomeUseCase>(relaxed = true)
+    private lateinit var homeViewModel: HomeViewModel
 
-        val getHomeUseCase by memoized<HomeUseCase>()
+    @Test
+    fun `Test Ticker is need to visible`(){
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
-        Scenario("Test Ticker is need to visible") {
-            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-
-            Given("Data non ticker") {
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf()
-                        )
+        // Data non ticker
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf()
                 )
-            }
+        )
 
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel().apply {
-                    setNeedToShowGeolocationComponent(true)
-                }
-                homeViewModel.homeLiveData.observeForever(observerHome)
-            }
-
-            Then("Expect ticker not show on user screen") {
-                verifyOrder {
-                    // check on home data initial first channel is dynamic channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty()
-                    })
-                }
-                confirmVerified(observerHome)
-            }
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).apply {
+            setNeedToShowGeolocationComponent(true)
         }
+        homeViewModel.homeLiveData.observeForever(observerHome)
 
-        Scenario("Test Ticker is visible") {
-            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-            val ticker = TickerDataModel()
-            Given("Data with ticker") {
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(ticker)
-                        )
-                )
-            }
-
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel()
-                homeViewModel.homeLiveData.observeForever(observerHome)
-            }
-
-            Then("Expect ticker not show on user screen") {
-                verifyOrder {
-                    // check on home data initial first channel is dynamic channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.contains(ticker)
-                    })
-                }
-                confirmVerified(observerHome)
-            }
+        // Expect ticker not show on user screen
+        verifyOrder {
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.none { it::class.java == TickerDataModel::class.java }
+            })
         }
+        confirmVerified(observerHome)
+
     }
-})
+
+    @Test
+    fun `Test Ticker is visible`(){
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val ticker = TickerDataModel()
+        // Data with ticker
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(ticker)
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.onCloseTicker()
+
+        // Expect ticker not show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} != null
+            })
+            // check data is not available cause removed
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+
+    @Test
+    fun `Test Remove Ticker`(){
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val ticker = TickerDataModel()
+        // Data with ticker
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(ticker)
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.removeViewHolderAtPosition(0)
+
+        // Expect ticker not show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} != null
+            })
+            // check data is not available cause removed
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} == null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+
+    @Test
+    fun `Test Refresh Ticker`(){
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val ticker = TickerDataModel()
+        // Data with ticker
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        isCache = false,
+                        list = listOf(ticker)
+                )
+        )
+
+        // home viewModel
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.homeLiveData.observeForever(observerHome)
+
+        // Expect ticker not show on user screen
+        verifyOrder {
+            // check on home data initial first channel is dynamic channel
+            observerHome.onChanged(match { homeDataModel ->
+                homeDataModel.list.find{ it::class.java == ticker::class.java} != null
+            })
+        }
+        confirmVerified(observerHome)
+    }
+}

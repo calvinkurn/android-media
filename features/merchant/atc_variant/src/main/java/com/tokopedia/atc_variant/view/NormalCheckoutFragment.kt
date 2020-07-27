@@ -439,16 +439,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             button_buy_partial.text = if (action == ATC_ONLY) {
                 getString(R.string.atc_variant_label_add_to_cart)
             } else if (action == TRADEIN_BUY) {
-                getString(R.string.tukar_tambah)
+                getString(com.tokopedia.common_tradein.R.string.tukar_tambah)
             } else if (productInfo.isPreorderActive) {
                 getString(R.string.atc_variant_label_button_preorder)
             } else {
                 getString(R.string.atc_variant_label_button_buy)
             }
             if (hasError()) {
-                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, com.tokopedia.design.R.drawable.bg_button_disabled)
             } else {
-                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
+                button_buy_partial.background = ContextCompat.getDrawable(activity as Context, com.tokopedia.design.R.drawable.bg_button_orange_enabled)
             }
             if (isLeasing) {
                 button_cart.gone()
@@ -526,7 +526,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             ErrorHandler.getErrorMessage(context, throwable)
         }
         activity?.run {
-            Toaster.make(view!!, message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener {
+            Toaster.make(view!!, message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.retry_label), View.OnClickListener {
                 onRetry?.invoke(it)
             })
         }
@@ -636,6 +636,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             }
         }
     }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     private fun goToApplyLeasing() {
         val selectedProductId = if (selectedVariantId.toIntOrZero() > 0) {
@@ -930,7 +932,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         }, onRetryWhenError = { message: String ->
             hideLoadingDialog()
             var toastMessage = if (message.isNullOrBlank()) {
-                getString(R.string.default_request_error_unknown_short)
+                getString(com.tokopedia.network.R.string.default_request_error_unknown_short)
             } else {
                 message
             }

@@ -16,7 +16,7 @@ import java.util.*
 import javax.inject.Inject
 
 @TokoPointScope
-class CouponDetailRepository @Inject constructor(private val repository: GraphqlRepository,private val map : Map<String, String>) {
+class CouponDetailRepository @Inject constructor(private val repository: GraphqlRepository, private val map: Map<String, String>) {
 
     private val cacheStrategy by lazy {
         GraphqlCacheStrategy
@@ -39,6 +39,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
     suspend fun getCouponDetail(uniqueCouponCode: String) = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
         variables[CommonConstant.GraphqlVariableKeys.CODE] = uniqueCouponCode
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = CommonConstant.APIVERSION
 
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_DETAIL],
                 CouponDetailOuter::class.java,
@@ -49,6 +50,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
     suspend fun reFetchRealCode(uniqueCouponCode: String) = withContext(Dispatchers.IO) {
         val variables = HashMap<String, Any>()
         variables[CommonConstant.GraphqlVariableKeys.CODE] = uniqueCouponCode
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = CommonConstant.APIVERSION
 
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_REFETCH_REAL_CODE],
                 CouponDetailOuter::class.java,

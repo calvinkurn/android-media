@@ -8,13 +8,13 @@
     android:padding="@dimen/dp_16">
 
     <TextView
-        android:textStyle="bold"
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:lineSpacingExtra="6sp"
         android:textColor="#f531353b"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_title"
         tools:text="Cari tahu sekarang juga" />
 
-    <com.tokopedia.design.image.RoundedCornerImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_banner"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -60,7 +60,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_sub_title" />
+        app:layout_constraintTop_toBottomOf="@+id/text_sub_title"
+        app:unify_image_corner_radius="8" />
 
     <TextView
         android:id="@+id/text_title_banner"

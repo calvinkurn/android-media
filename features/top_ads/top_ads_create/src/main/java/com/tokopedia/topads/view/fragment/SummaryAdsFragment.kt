@@ -7,7 +7,6 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -42,6 +41,7 @@ import javax.inject.Inject
 
 private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
 private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
+
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var viewModel: SummaryViewModel
@@ -223,14 +223,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun convertToParam(view: View): HashMap<String, Any> {
         val userSession = UserSession(view.context)
-        if (!toggle.isChecked)
+        if (!toggle.isChecked) {
             input.group.groupBudget = UNLIMITED_BUDGET
-        else
+        } else {
             input.group.groupBudget = DEFINED_BUDGET
+            input.group.priceDaily = stepperModel?.dailyBudget ?: 0
+        }
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
         input.group.priceBid = stepperModel?.finalBidPerClick ?: 0
-        input.group.priceDaily = stepperModel?.dailyBudget ?: 0
         input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick ?: 0
         keywordsList.clear()
         adsItemsList.clear()
@@ -239,7 +240,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             stepperModel!!.selectedKeywords.forEachIndexed { index, _ ->
                 val key = KeywordsItem()
                 key.keywordTag = stepperModel?.selectedKeywords!![index]
-                key.priceBid = stepperModel?.selectedSuggestBid!![index]
+                if (stepperModel?.selectedSuggestBid!![index] > 0) {
+                    key.priceBid = stepperModel?.selectedSuggestBid!![index]
+                } else
+                    key.priceBid = stepperModel?.minSuggestBidKeyword ?: 0
                 keywordsList.add(key)
             }
             input.keywords = keywordsList
@@ -252,7 +256,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 add.ad.adID = stepperModel!!.adIds[index].toString()
                 add.ad.adType = "1"
                 adsItemsList.add(add)
-
             }
             input.group.ads = adsItemsList
         }

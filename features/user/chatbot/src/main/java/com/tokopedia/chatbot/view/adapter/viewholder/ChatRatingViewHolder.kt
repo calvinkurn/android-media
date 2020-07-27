@@ -15,6 +15,8 @@ import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chatbot.EllipsizeMaker
+import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -57,7 +59,7 @@ class ChatRatingViewHolder(itemView: View,
         var time: String?
 
         try {
-            val myTime = java.lang.Long.parseLong(element.replyTime)
+            val myTime = (element.replyTime)?.toLong() ?: 0L
             time = DateFormat.getLongDateFormat(itemView.context).format(Date(myTime))
         } catch (e: NumberFormatException) {
             time = element.replyTime
@@ -75,7 +77,7 @@ class ChatRatingViewHolder(itemView: View,
         var hourTime: String?
 
         try {
-            hourTime = ChatTimeConverter.formatTime(java.lang.Long.parseLong(element.replyTime))
+            hourTime = ChatTimeConverter.formatTime((element.replyTime)?.toLong() ?: 0)
         } catch (e: NumberFormatException) {
             hourTime = element.replyTime
         }
@@ -112,10 +114,12 @@ class ChatRatingViewHolder(itemView: View,
     }
 
     private fun setMessage(element: ChatRatingViewModel) {
-        if (!element.message.isEmpty()) {
+        if (element.message.isNotEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
             message.post {
-                if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
+                if (message.lineCount >= MESSAGE_LINE_COUNT) {
+                    message.maxLines = MESSAGE_LINE_COUNT
+                    message.text = EllipsizeMaker.getTruncatedMsg(message)
                     MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
                     mesageBottom.visibility = View.VISIBLE
                     mesageBottom.setOnClickListener {

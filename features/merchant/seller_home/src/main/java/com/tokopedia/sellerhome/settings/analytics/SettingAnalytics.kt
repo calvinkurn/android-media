@@ -30,7 +30,10 @@ fun <T : SettingShopInfoClickTrackable> T.sendSettingShopInfoClickTracking() {
             TrackingConstant.EVENT to clickEventName,
             TrackingConstant.EVENT_CATEGORY to clickEventCategory,
             TrackingConstant.EVENT_ACTION to clickEventAction,
-            TrackingConstant.EVENT_LABEL to clickEventLabel
+            TrackingConstant.EVENT_LABEL to clickEventLabel,
+            TrackingConstant.USER_ID to clickEventUserId,
+            TrackingConstant.SHOP_ID to clickEventShopId,
+            TrackingConstant.SHOP_TYPE to clickEventShopType
     )
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }

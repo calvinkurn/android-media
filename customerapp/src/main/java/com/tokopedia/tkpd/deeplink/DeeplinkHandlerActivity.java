@@ -29,14 +29,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.createpost.view.applink.CreatePostModule;
-import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
-import com.tokopedia.home.applink.HomeApplinkModule;
-import com.tokopedia.home.applink.HomeApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -94,12 +90,10 @@ import timber.log.Timber;
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
-        HomeApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        CreatePostModule.class,
         ExploreApplinkModule.class,
         HowtopayApplinkModule.class,
         LoginRegisterApplinkModule.class,
@@ -125,11 +119,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
-                    new HomeApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new CreatePostModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
