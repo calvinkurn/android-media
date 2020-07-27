@@ -20,6 +20,8 @@ import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
  */
 object PlayShareWrapper {
 
+    private const val CHANNEL_LIST_WEB_LINK = "https://www.tokopedia.com/play/channel/"
+
     fun copyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
         val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("play-broadcaster", shareContents)
@@ -69,16 +71,20 @@ object PlayShareWrapper {
 
     private fun defaultSharedContent(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
 
-    private fun generateShareData(shareData: ShareUiModel): LinkerData = LinkerData.Builder.getLinkerBuilder()
-            .setId(shareData.id)
-            .setName(shareData.title)
-            .setTextContent(shareData.description)
-            .setDescription(shareData.description)
-            .setImgUri(shareData.imageUrl)
-            .setOgImageUrl(shareData.imageUrl)
-            .setOgTitle(shareData.title)
-            .setUri(Uri.parse(shareData.redirectUrl).toString())
-            .setShareUrl(shareData.redirectUrl)
-            .setType(LinkerData.APP_SHARE_TYPE)
-            .build()
+    private fun generateShareData(shareData: ShareUiModel): LinkerData {
+        val desktopUrl  =  "$CHANNEL_LIST_WEB_LINK${shareData.id}"
+        return LinkerData.Builder.getLinkerBuilder()
+                .setId(shareData.id)
+                .setName(shareData.title)
+                .setTextContent(shareData.description)
+                .setDescription(shareData.description)
+                .setImgUri(shareData.imageUrl)
+                .setOgImageUrl(shareData.imageUrl)
+                .setOgTitle(shareData.title)
+                .setUri(Uri.parse(shareData.redirectUrl).toString())
+                .setDesktopUrl(desktopUrl)
+                .setShareUrl(shareData.redirectUrl)
+                .setType(LinkerData.PLAY_BROADCASTER)
+                .build()
+    }
 }
