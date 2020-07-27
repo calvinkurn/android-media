@@ -170,9 +170,15 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     }
 
     private fun onSuccessGetInsightData(response: InsightKeyData) {
-        if(response.data.isEmpty()){
+        if (response.data.isEmpty()) {
             insightCard.visibility = View.GONE
-        }else {
+            val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+            with(sharedPref.edit()) {
+                putBoolean(TopAdsDashboardConstant.FIRST_LAUNCH, false)
+                commit()
+            }
+        } else {
+            insightCard.visibility = View.VISIBLE
             initInsightTabAdapter(response)
             renderInsightViewPager(response.data)
         }

@@ -19,7 +19,6 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightNegKeyAdapter
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_pos_key_insight.*
 
 /**
@@ -67,10 +66,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
 
     private fun butttonClicked(position: Int) {
         itemCountCallBack?.onButtonClickedNeg(listOf(adapter.items[position].mutationData), key
-                ?: "")
-        view.let {
-            Toaster.make(it!!, String.format(getString(R.string.topads_insight_add_negative), 1), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
-        }
+                ?: "", 1)
     }
 
     private fun getfromArguments() {
@@ -90,8 +86,8 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
         }
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
-            Toaster.make(it!!, String.format(getString(R.string.topads_insight_add_negative), dataInsight?.get(key)?.negative?.size), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
-            itemCountCallBack?.onButtonClickedNeg(mutationList, key ?: "")
+            itemCountCallBack?.onButtonClickedNeg(mutationList, key
+                    ?: "", dataInsight?.get(key)?.negative?.size ?: 0)
         }
         adapter.notifyDataSetChanged()
     }
@@ -117,7 +113,7 @@ class TopAdsInsightKeyNegFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordAdded {
-        fun onButtonClickedNeg(data: List<MutationData>, groupId: String)
+        fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int)
     }
 
 }

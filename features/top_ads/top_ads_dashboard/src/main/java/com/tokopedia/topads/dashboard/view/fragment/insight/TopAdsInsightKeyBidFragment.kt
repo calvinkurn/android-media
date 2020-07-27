@@ -19,7 +19,6 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightBidKeyAdapter
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_pos_key_insight.*
 
 /**
@@ -68,10 +67,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     }
 
     private fun butttonClicked(data: MutationData) {
-        itemCountCallBack?.onButtonClickedBid(listOf(data), key ?: "")
-        view.let {
-            Toaster.make(it!!, String.format(getString(R.string.topads_insight_add_bid), 1), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
-        }
+        itemCountCallBack?.onButtonClickedBid(listOf(data), key ?: "",1)
     }
 
     private fun setView() {
@@ -85,8 +81,8 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
         }
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
-            Toaster.make(it!!, String.format(getString(R.string.topads_insight_add_bid), dataInsight?.get(key)?.bid?.size), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
-            itemCountCallBack?.onButtonClickedBid(mutationList, key ?: "")
+            itemCountCallBack?.onButtonClickedBid(mutationList, key
+                    ?: "", dataInsight?.get(key)?.bid?.size ?: 0)
         }
         adapter.notifyDataSetChanged()
     }
@@ -118,7 +114,7 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
     }
 
     interface OnKeywordBidAdded {
-        fun onButtonClickedBid(data: List<MutationData>, groupId: String)
+        fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int)
     }
 
 }

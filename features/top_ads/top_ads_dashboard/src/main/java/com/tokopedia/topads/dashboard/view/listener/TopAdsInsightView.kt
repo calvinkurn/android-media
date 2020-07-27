@@ -13,4 +13,6 @@ interface TopAdsInsightView : CustomerView{
     fun onSuccessKeywordInsight(it: InsightKeyData)
 
     fun onSuccessEditKeywords(it:FinalAdResponse)
+
+    fun onErrorEditKeyword(throwable: List<FinalAdResponse.TopadsManageGroupAds.ErrorsItem>?)
 }

@@ -142,6 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
+                    android:visibility="gone"
                     app:cardPreventCornerOverlap="false"
                     app:layout_constraintBottom_toTopOf="@id/help_section"
                     app:layout_constraintTop_toBottomOf="@id/statistic_graph">

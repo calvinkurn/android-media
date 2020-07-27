@@ -75,4 +75,8 @@ object TopAdsDashboardConstant {
     const val INDEX_1 = "1"
     const val DATA = "data"
     const val DATA_INSIGHT = "data_insight"
+    const val REQUEST_FROM_POS = "Positive"
+    const val REQUEST_FROM_NEG = "Negative"
+    const val REQUEST_FROM_BID = "Bid"
+    const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
 }

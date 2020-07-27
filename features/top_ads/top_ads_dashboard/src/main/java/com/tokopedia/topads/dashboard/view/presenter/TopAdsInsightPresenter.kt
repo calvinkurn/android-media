@@ -34,7 +34,12 @@ class TopAdsInsightPresenter @Inject constructor(private val topAdsInsightUseCas
     fun topAdsCreated(groupId: String, query: String, data: List<MutationData>) {
         topAdsEditKeywordUseCase.setParam(groupId, query, data)
         topAdsEditKeywordUseCase.executeQuerySafeMode(
-                { view?.onSuccessEditKeywords(it) },
+                {
+                    if(it.topadsManageGroupAds.keywordResponse.errors?.isEmpty()!!)
+                        view?.onSuccessEditKeywords(it)
+                    else
+                        view?.onErrorEditKeyword(it.topadsManageGroupAds.keywordResponse.errors)
+                },
                 { throwable ->
                     throwable.printStackTrace()
                 })

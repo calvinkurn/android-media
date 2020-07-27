@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_4
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INSIGHT_DATA_HEADER
@@ -22,7 +21,6 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightPosKeyAd
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.COUNT
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment.Companion.VALUE
 import com.tokopedia.topads.dashboard.view.sheet.InsightKeyBottomSheet
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_pos_key_insight.*
 
 /**
@@ -73,10 +71,8 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
     }
 
     private fun butttonClicked(position: Int) {
-        itemCountCallBack?.onButtonClicked(listOf(adapter.items[position].mutationData), key ?: "")
-        view.let {
-            Toaster.make(it!!, String.format(getString(R.string.topads_insight_add_keyword), 1), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
-        }
+        itemCountCallBack?.onButtonClicked(listOf(adapter.items[position].mutationData), key
+                ?: "", 1)
     }
 
     private fun setView() {
@@ -91,8 +87,8 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
         setTabCount()
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
-            Toaster.make(it!!, String.format(getString(R.string.topads_insight_add_keyword), dataInsight?.get(key)?.keyword?.size), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
-            itemCountCallBack?.onButtonClicked(mutationList, key ?: "")
+            itemCountCallBack?.onButtonClicked(mutationList, key
+                    ?: "", dataInsight?.get(key)?.keyword?.size ?: 0)
         }
         adapter.notifyDataSetChanged()
     }
@@ -131,6 +127,6 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
 
     interface SetCount {
         fun setCount(sizePos: Int, sizeNeg: Int, sizeBid: Int)
-        fun onButtonClicked(mutationData: List<MutationData>, groupId: String)
+        fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int)
     }
 }

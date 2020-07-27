@@ -8,9 +8,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INSIGHT_DATA_HEADER
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INVALID_KEYWORD_TAG
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_INSIGHT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_BID
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_NEG
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_POS
 import com.tokopedia.topads.dashboard.data.model.FinalAdResponse
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
@@ -24,6 +29,7 @@ import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyPosF
 import com.tokopedia.topads.dashboard.view.listener.TopAdsInsightView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightPresenter
 import com.tokopedia.topads.dashboard.view.sheet.GroupSelectInsightSheet
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_insight_key_activity_base_layout.*
 import javax.inject.Inject
 
@@ -39,6 +45,8 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     lateinit var adapter: TopAdsDashInsightKeyPagerAdapter
     lateinit var data: InsightKeyData
     private var keyList: MutableList<String> = mutableListOf()
+    private var requestFrom :String = REQUEST_FROM_POS
+    private var countToAdd:Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,8 +120,23 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         loader.visibility = View.GONE
     }
 
+
     override fun onSuccessEditKeywords(it: FinalAdResponse) {
+        when (requestFrom) {
+            REQUEST_FROM_NEG -> Toaster.make(this.findViewById(android.R.id.content), String.format(getString(R.string.topads_insight_add_negative), countToAdd), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
+            REQUEST_FROM_BID -> Toaster.make(this.findViewById(android.R.id.content), String.format(getString(R.string.topads_insight_add_bid), countToAdd), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
+            else -> Toaster.make(this.findViewById(android.R.id.content), String.format(getString(R.string.topads_insight_add_keyword), countToAdd), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
+        }
         topAdsInsightPresenter.getInsight(resources)
+    }
+
+    override fun onErrorEditKeyword(erorr: List<FinalAdResponse.TopadsManageGroupAds.ErrorsItem>?) {
+       if(erorr?.get(0)?.detail ==  INVALID_KEYWORD_TAG){
+           when(requestFrom){
+               REQUEST_FROM_POS -> Toaster.make(this.findViewById(android.R.id.content), getString(R.string.topads_insight_invalid_key_tag_pos),TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_ERROR)
+               REQUEST_FROM_NEG -> Toaster.make(this.findViewById(android.R.id.content), getString(R.string.topads_insight_invalid_key_tag_neg),  TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_ERROR)
+           }
+       }
     }
 
     override fun onDestroy() {
@@ -127,17 +150,20 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
                 String.format(resources.getString(R.string.topads_insight_bid), sizeBid))
     }
 
-    override fun onButtonClicked(mutationData: List<MutationData>, groupId: String) {
+    override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int) {
         currentGroupId = groupId
         val query = data.header.btnAction.insight
-        topAdsInsightPresenter.topAdsCreated(groupId, query, mutationData)
+        this.countToAdd = countToAdd
+        topAdsInsightPresenter.topAdsCreated(groupId, query, mutationData )
     }
 
-    override fun onButtonClickedNeg(data: List<MutationData>, groupId: String) {
-        onButtonClicked(data, groupId)
+    override fun onButtonClickedNeg(data: List<MutationData>, groupId: String,  countToAdd: Int) {
+        requestFrom = REQUEST_FROM_NEG
+        onButtonClicked(data, groupId ,countToAdd)
     }
 
-    override fun onButtonClickedBid(data: List<MutationData>, groupId: String) {
-        onButtonClicked(data, groupId)
+    override fun onButtonClickedBid(data: List<MutationData>, groupId: String,  countToAdd: Int) {
+        requestFrom = REQUEST_FROM_BID
+        onButtonClicked(data, groupId,countToAdd)
     }
 }
