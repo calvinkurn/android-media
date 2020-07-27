@@ -220,6 +220,11 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+        trackShowScoreDialog(shopScore)
+    }
+
+    private fun trackShowScoreDialog(shopScore: Int) {
+        powerMerchantTracking.eventShowDialogScore(shopScore)
     }
 
     private fun trackClickSeeShopScoreTips(shopScore: Int) {
