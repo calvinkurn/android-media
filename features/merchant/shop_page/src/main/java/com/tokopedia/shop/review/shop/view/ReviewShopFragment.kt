@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingIntent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.review.analytic.ReputationTracking
@@ -167,7 +168,7 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
     override fun onGoToReportReview(shopId: String?, reviewId: String?, adapterPosition: Int) {
         onGoToReportReviewTracking(shopId, adapterPosition)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, Integer.valueOf(shopId))
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toIntOrZero())
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         startActivity(intent)
     }
