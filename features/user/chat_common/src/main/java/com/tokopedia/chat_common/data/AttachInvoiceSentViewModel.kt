@@ -1,13 +1,20 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 /**
  * Created by Hendri on 27/03/18.
  */
 
-class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+class AttachInvoiceSentViewModel : SendableViewModel,
+        Visitable<BaseChatTypeFactory>,
+        DeferredAttachment {
+
+    override var isLoading: Boolean = true
+    override var isError: Boolean = false
+    override val id: String get() = attachmentId
 
     var imageUrl: String? = null
     var description: String? = null
@@ -52,7 +59,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             status: String,
             invoiceId: String,
             invoiceUrl: String,
-            createTime : String
+            createTime: String
     ) : super(
             msgId,
             fromUid,
@@ -112,7 +119,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             status: String,
             invoiceId: String,
             invoiceUrl: String,
-            createTime : String
+            createTime: String
     ) : super(
             msgId,
             fromUid,
@@ -166,6 +173,31 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun updateData(attribute: Any?) {
+        if (attribute is InvoiceSentPojo) {
+            this.message = attribute.invoiceLink.attributes.title
+            this.description = attribute.invoiceLink.attributes.description
+            this.imageUrl = attribute.invoiceLink.attributes.imageUrl
+            this.totalAmount = attribute.invoiceLink.attributes.totalAmount
+            this.statusId = attribute.invoiceLink.attributes.statusId
+            this.status = attribute.invoiceLink.attributes.status
+            this.invoiceId = attribute.invoiceLink.attributes.code
+            this.invoiceUrl = attribute.invoiceLink.attributes.hrefUrl
+            this.createTime = attribute.invoiceLink.attributes.createTime
+            this.isLoading = false
+        }
+    }
+
+    override fun syncError() {
+        this.isLoading = false
+        this.isError = true
+    }
+
+    override fun finishLoading() {
+        this.isLoading = false
+        this.isError = false
     }
 
 }

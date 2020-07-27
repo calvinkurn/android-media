@@ -10,5 +10,9 @@ data class CreatePreferenceRequest(
         @SerializedName("gateway_code")
         val gatewayCode: String,
         @SerializedName("metadata")
-        val metadata: String
+        val metadata: String,
+        @SerializedName("is_default_profile_checked")
+        val isDefaultProfileChecked: Boolean,
+        @SerializedName("from_flow")
+        val fromFlow: Int // OSP = 1, profile setting = 0
 )

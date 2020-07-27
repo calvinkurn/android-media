@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.analytics.v2.BaseTracking.Value.FORMAT_2_ITEMS_UNDERSCORE
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -81,6 +83,7 @@ abstract class BaseTracking {
         const val LIST_HEADER_NAME = "/ - p%s - %s - %s"
         const val EMPTY = ""
         const val FORMAT_2_ITEMS_UNDERSCORE = "%s_%s"
+        const val FORMAT_2_ITEMS_DASH = "%s - %s"
 
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
@@ -128,6 +131,15 @@ abstract class BaseTracking {
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
                     PROMO_VIEW, getPromotionsMap(promotions))
+        }
+
+        fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any>? {
+            return DataLayer.mapOf(
+                    PROMO_VIEW,
+                    DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
+                            promotions
+                    ))
+            )
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
@@ -200,8 +212,8 @@ abstract class BaseTracking {
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
             map[KEY_POSITION] = promotion.position
-            map[KEY_PROMO_ID] = promotion.promoIds
-            map[KEY_PROMO_CODE] = promotion.promoCodes
+            if(promotion.promoIds.isNotBlank()) map[KEY_PROMO_ID] = promotion.promoIds
+            if(promotion.promoCodes.isNotBlank()) map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
         }
 
@@ -266,7 +278,8 @@ abstract class BaseTracking {
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            promotions: List<Promotion>,
+            promotions: List<Promotion> = listOf(),
+            promotionObject: List<Any>? = null,
             channelId: String,
             userId: String = ""
     ): Map<String, Any>{
@@ -275,7 +288,7 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
+                Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObject)?: Ecommerce.getEcommercePromoView(promotions),
                 ChannelId.KEY, channelId
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
@@ -288,11 +301,11 @@ abstract class BaseTracking {
             eventAction: String,
             eventLabel: String,
             channelId: String,
-            affinity: String,
-            attribution: String,
-            categoryId: String,
-            shopId: String,
-            campaignCode: String,
+            affinity: String = "",
+            attribution: String = "",
+            categoryId: String = "",
+            shopId: String = "",
+            campaignCode: String = "",
             promotions: List<Promotion>,
             userId: String = ""
     ): Map<String, Any>{
@@ -302,14 +315,14 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Label.CHANNEL_LABEL, channelId,
-                Label.AFFINITY_LABEL, affinity,
-                Label.ATTRIBUTION_LABEL, attribution,
-                Label.CATEGORY_LABEL, categoryId,
-                Label.SHOP_LABEL, shopId,
-                Label.CAMPAIGN_CODE, campaignCode,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
                 ChannelId.KEY, channelId
         )
+        if(affinity.isNotBlank()) dataLayer[Label.AFFINITY_LABEL] = affinity
+        if(attribution.isNotBlank()) dataLayer[Label.ATTRIBUTION_LABEL] = attribution
+        if(categoryId.isNotBlank()) dataLayer[Label.CATEGORY_LABEL] = categoryId
+        if(shopId.isNotBlank()) dataLayer[Label.SHOP_LABEL] = shopId
+        if(campaignCode.isNotBlank()) dataLayer[Label.CAMPAIGN_CODE] = campaignCode
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
         return dataLayer
     }
@@ -399,6 +412,13 @@ abstract class BaseTracking {
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
         return dataLayer
     }
+
+    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: String) = Promotion(
+            id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
+            name = channelModel.trackingAttributionModel.promoName,
+            creative = attribution,
+            position = position
+    )
 
     protected fun convertRupiahToInt(rupiah: String): Int {
         return try {

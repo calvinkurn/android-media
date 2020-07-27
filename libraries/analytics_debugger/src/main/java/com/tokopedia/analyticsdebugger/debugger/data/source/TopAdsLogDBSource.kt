@@ -68,8 +68,13 @@ constructor(context: Context) {
                 search = "%$keyword%"
             }
 
-            val offset = 20 * page
-            topAdsLogDao.getData(search, offset)
+            if (params1.containsKey(AnalyticsDebuggerConst.ENVIRONMENT) &&
+                    params1.get(AnalyticsDebuggerConst.ENVIRONMENT) == AnalyticsDebuggerConst.ENVIRONMENT_TEST) {
+                topAdsLogDao.getAllData(search)
+            } else {
+                val offset = 20 * page
+                topAdsLogDao.getData(search, offset)
+            }
         }
     }
 }

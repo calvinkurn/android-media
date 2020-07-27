@@ -110,6 +110,7 @@ object HomeQuery{
                   position
                   type
                 }
+                has_buy_button
               }
               banner {
                 id

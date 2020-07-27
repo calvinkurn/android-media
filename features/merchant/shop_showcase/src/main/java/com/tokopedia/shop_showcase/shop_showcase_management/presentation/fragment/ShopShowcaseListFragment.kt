@@ -123,7 +123,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         return activity?.run {
             DaggerShopShowcaseManagementComponent
                     .builder()
-                    .shopShowcaseManagementModule(ShopShowcaseManagementModule())
+                    .shopShowcaseManagementModule(ShopShowcaseManagementModule(this))
                     .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
                     .build()
         }

@@ -30,6 +30,9 @@ interface TopAdsLogDao {
     @Query("SELECT * FROM topads_log WHERE url LIKE :keyword OR eventType LIKE :keyword OR sourceName LIKE :keyword " + "ORDER BY timestamp DESC LIMIT 20 OFFSET :offset")
     fun getData(keyword: String, offset: Int): List<TopAdsLogDB>
 
+    @Query("SELECT * FROM topads_log WHERE url LIKE :keyword OR eventType LIKE :keyword OR sourceName LIKE :keyword " + "ORDER BY timestamp DESC")
+    fun getAllData(keyword: String): List<TopAdsLogDB>
+
     @Update
     fun updateItem(vararg item: TopAdsLogDB)
 }

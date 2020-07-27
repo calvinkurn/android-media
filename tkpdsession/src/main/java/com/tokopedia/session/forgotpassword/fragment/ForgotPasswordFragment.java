@@ -61,6 +61,8 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     ForgotPasswordFragmentPresenter presenter;
     ForgotPasswordAnalytics tracker = new ForgotPasswordAnalytics();
 
+    UserSessionInterface userSession;
+
     public static ForgotPasswordFragment createInstance(String email, boolean isAutoReset, boolean isRemoveFooter) {
         ForgotPasswordFragment fragment = new ForgotPasswordFragment();
         Bundle bundle = new Bundle();
@@ -93,6 +95,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         tilEmail = view.findViewById(R.id.til_email);
         registerButton = view.findViewById(R.id.register_button);
 
+        userSession = new UserSession(getActivity());
         initialPresenter();
         initView(view);
         return view;
@@ -135,8 +138,10 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
         if (!getArguments().getString(ARGS_EMAIL, "").equals("")) {
             emailEditText.setText(getArguments().getString(ARGS_EMAIL));
+        } else if (userSession.isLoggedIn()) {
+            emailEditText.setText(userSession.getEmail());
         }
-        UserSessionInterface userSession = new UserSession(getActivity());
+
         if (userSession.isLoggedIn()) {
             registerButton.setVisibility(View.GONE);
         } else {

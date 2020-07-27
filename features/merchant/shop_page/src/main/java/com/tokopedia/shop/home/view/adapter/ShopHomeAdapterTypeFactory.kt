@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
@@ -14,15 +15,18 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
+        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener,
+        private val shopPageHomePlayCarouselListener: ShopPageHomePlayCarouselListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     private var previousViewHolder: AbstractViewHolder<*>? = null
@@ -31,6 +35,7 @@ class ShopHomeAdapterTypeFactory(
         when(baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
             SLIDER_SQUARE_BANNER -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
+            PLAY_CAROUSEL_WIDGET -> return ShopHomePlayCarouselViewHolder.LAYOUT
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
@@ -41,6 +46,10 @@ class ShopHomeAdapterTypeFactory(
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
         return ShopHomeProductEtalaseTitleViewHolder.LAYOUT
+    }
+
+    override fun type(shopHomePlayCarouselUiModel: ShopHomePlayCarouselUiModel): Int {
+        return ShopHomePlayCarouselViewHolder.LAYOUT
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
@@ -87,6 +96,9 @@ class ShopHomeAdapterTypeFactory(
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)
+            }
+            ShopHomePlayCarouselViewHolder.LAYOUT -> {
+                ShopHomePlayCarouselViewHolder(parent, shopPageHomePlayCarouselListener)
             }
 
             else -> return super.createViewHolder(parent, type)

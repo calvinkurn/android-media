@@ -20,7 +20,7 @@ public class LocalDiscoverDataSource {
 
     public static final String KEY_DISCOVER = "KEY_DISCOVER";
     private static final String CACHE_EXPIRED = "Cache has expired";
-    public static final long CACHE_DURATION = 86400;
+    public static final long CACHE_DURATION = 3600;
     private final CacheManager globalCacheManager;
 
     @Inject

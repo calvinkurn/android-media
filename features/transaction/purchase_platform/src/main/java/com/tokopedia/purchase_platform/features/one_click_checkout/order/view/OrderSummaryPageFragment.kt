@@ -51,9 +51,6 @@ import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiMode
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
-import com.tokopedia.purchase_platform.features.checkout.view.PromoNotEligibleActionListener
-import com.tokopedia.purchase_platform.features.checkout.view.PromoNotEligibleBottomsheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -70,10 +67,12 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.ca
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet
+import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -420,7 +419,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                                 override fun onButtonChooseOtherPromo() {
                                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_OCC)
+                                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
                                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
                                     intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
                                     intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
@@ -510,9 +509,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             val coachMark = CoachMarkBuilder().build()
             coachMark.enableSkip = true
-            if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-                coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-            }
+            // temporary removed due to coachmark crash (downgraded)
+            //if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+            //    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
+            //}
             coachMark.overlayOnClickListener = ({
                 //do nothing
             })
@@ -564,6 +564,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         buttonAturPilihan?.setOnClickListener {
             orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, "${getString(R.string.preference_number_summary)} 1")
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
@@ -769,7 +771,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             btnPromoCheckout?.setOnClickListener {
                 viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_OCC)
+                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
                     intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
@@ -830,7 +832,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun onPreferenceEditClicked(preference: OrderPreference) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, false)
+                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
@@ -860,7 +863,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, profileSize > 1)
+                                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, profileSize > 1)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
@@ -877,6 +881,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderSummaryAnalytics.eventAddPreferensiFromOSP()
                             val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, itemCount >= 1)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))

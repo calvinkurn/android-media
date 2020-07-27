@@ -266,7 +266,6 @@ dependencies {
     implementation project(rootProject.ext.features.flashsaleManagementCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.opportunity)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
@@ -291,6 +290,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
+
+    implementation project(rootProject.ext.features.playBroadcaster)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components

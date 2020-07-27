@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProductDataResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ShopDataResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ShopShipment
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.mapper.LastApplyMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*

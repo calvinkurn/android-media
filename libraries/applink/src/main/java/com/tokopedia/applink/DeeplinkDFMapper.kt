@@ -43,6 +43,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.EDIT_BCA_ONE_KLICK_ENTRY_PATTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
@@ -52,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INSTANT_DEBIT_BCA_ENTRY_PATTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
@@ -78,7 +80,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICAT
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
@@ -131,9 +132,11 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
+    const val DF_TRAVEL = "df_travel"
     private const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
-    const val DF_GAMIFICATION = "df_gamification"
+    const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
+    const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
@@ -183,8 +186,10 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(OVO_PAY_WITH_QR_ENTRY) }, DF_BASE, R.string.ovo_pay_with_qr_title))
             add(DFP({ it.startsWith(OQR_PIN_URL_ENTRY) }, DF_BASE, R.string.ovo_pay_with_qr_title))
             add(DFP({ it.startsWith(OVO_WALLET) }, DF_BASE, R.string.applink_wallet_title))
-            add(DFP({ it.startsWith(SALDO_DEPOSIT) }, DF_BASE, R.string.applink_saldo_deposit_title))
-            add(DFP({ it.startsWith(SALDO_INTRO) }, DF_BASE, R.string.applink_saldo_intro_title))
+
+            add(DFP({ it.startsWith(SALDO_DEPOSIT) ||
+                    it.startsWith(SALDO_INTRO)}, DF_USER_SETTINGS, R.string.applink_saldo_deposit_title, { DFWebviewFallbackUrl.FINTECH_SALDO }))
+
             add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DF_BASE, R.string.title_ovop2p))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DF_BASE, R.string.instant_loan_title))
             add(DFP({
@@ -207,7 +212,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
-            add(DFP({ it.startsWith(OPPORTUNITY) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.OPPORTUNITY }))
             add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
 
@@ -220,15 +224,17 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
+            add(DFP({ it.startsWith(INSTANT_DEBIT_BCA_ENTRY_PATTERN) || it.startsWith(EDIT_BCA_ONE_KLICK_ENTRY_PATTERN)}, DF_BASE, R.string.payment_instant_debit_bca_title))
 
             // Promo
-            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_BASE, R.string.title_tokopoints))
+            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints, { DFWebviewFallbackUrl.PROMO_TOKOPOINTS }))
+
             add(DFP({
                 it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT)
-            }, DF_GAMIFICATION, R.string.internet_title_gamification))
+            }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification))
 
             //Entertainment
             add(DFP({ it.startsWith(EVENT_HOME) }, DF_BASE, R.string.title_home_event))
@@ -238,8 +244,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
-            add(DFP({ it.startsWith(FLIGHT) }, DF_BASE, R.string.title_flight))
-            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DF_BASE, R.string.title_flight))
+            add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT)}, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
             add(DFP({ it.startsWith(HOTEL) }, DF_BASE, R.string.title_hotel))
 
             // User
@@ -263,7 +268,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
-            add(DFP({ it.startsWith(SETTING_BANK) }, DF_BASE, R.string.applink_setting_bank_title))
+            add(DFP({ it.startsWith(SETTING_BANK) }, DF_USER_SETTINGS, R.string.applink_setting_bank_title, { DFWebviewFallbackUrl.USER_SETTING_BANK }))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DF_BASE, R.string.notif_settings_title))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DF_BASE, R.string.title_module_attachinvoice))

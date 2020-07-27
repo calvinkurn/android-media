@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 
@@ -26,6 +26,6 @@ class ChatScrollDownView : ConstraintLayout {
     }
 
     fun showIndicatorRed(isShow: Boolean) {
-        if (isShow) vIndicatorRed.show() else vIndicatorRed.gone()
+        if (isShow) vIndicatorRed.show() else vIndicatorRed.hide()
     }
 }

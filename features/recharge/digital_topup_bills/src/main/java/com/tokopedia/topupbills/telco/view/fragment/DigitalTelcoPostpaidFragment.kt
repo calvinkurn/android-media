@@ -11,10 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -153,6 +150,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun getCatalogMenuDetail() {
+        onLoadingMenuDetail(true)
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
         getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_POSTPAID)
     }
@@ -317,6 +315,15 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun clickCopyOnPromoCode(promoId: Int) {
         sharedModel.setPromoSelected(promoId)
+    }
+
+    override fun errorMenuDetail() {
+        onLoadingMenuDetail(false)
+    }
+
+    override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        onLoadingMenuDetail(false)
+        super.processMenuDetail(data)
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
