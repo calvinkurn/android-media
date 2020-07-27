@@ -31,10 +31,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
@@ -142,21 +139,20 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         setupToolbarActions()
     }
 
-    override fun onHeaderClicked(headerName: String): Boolean {
-        val headerPosition = viewModel.getHeaderPosition(headerName)
-        val visitablePosition = viewModel.getHeaderVisitablePosition(headerPosition)
+    override fun onHeaderClicked(headerPosition:Int): Boolean {
+        val currentHeaderPosition = viewModel.getCurrentHeaderPosition(headerPosition)
         val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(headerPosition)
         if (!isCollapsed) {
-            variantDetailFieldsAdapter?.collapseUnitValueHeader(visitablePosition, viewModel.getInputFieldSize())
+            variantDetailFieldsAdapter?.collapseUnitValueHeader(currentHeaderPosition, viewModel.getInputFieldSize())
             viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, true)
-            viewModel.collapseHeaderVisitablePositions(headerPosition)
+            viewModel.collapseHeader(headerPosition)
         } else {
-            variantDetailFieldsAdapter?.expandDetailFields(visitablePosition, viewModel.getVariantDetailHeaderData(headerPosition))
+            variantDetailFieldsAdapter?.expandDetailFields(currentHeaderPosition, viewModel.getVariantDetailHeaderData(headerPosition))
             recyclerViewVariantDetailFields.scrollToPosition(headerPosition)
             viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
-            viewModel.expandHeaderVisitablePositions(headerPosition)
+            viewModel.expandHeader(headerPosition)
         }
         return viewModel.isVariantDetailHeaderCollapsed(headerPosition)
     }
@@ -164,6 +160,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
         viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+
+        // change primary variant if primary position equals adapter position
+        viewModel.productInputModel.value?.variantInputModel?.products?.let { variants ->
+            variants.getOrNull(adapterPosition)?.let { variant ->
+                if(variant.isPrimary) {
+                    variant.isPrimary = isChecked
+                }
+            }
+        }
 
         // tracking
         sendClickVariantStatusToggleData(isChecked)
@@ -199,7 +204,13 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
-        viewModel.updatePrimaryVariant(combination)
+        val updatedFieldPosition = viewModel.updatePrimaryVariant(combination)
+
+        // update switch status if primary variant changed (index bigger than -1)
+        if (updatedFieldPosition > -1) {
+            val updatedInputModel = viewModel.updateSwitchStatus(true, updatedFieldPosition)
+            variantDetailFieldsAdapter?.updateDetailInputField(updatedFieldPosition, updatedInputModel)
+        }
 
         // tracking
         ProductAddVariantDetailTracking.saveMainVariant(
@@ -248,8 +259,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             val isSkuVisible = switchUnifySku.isChecked // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
                     productVariantIndex, 0, unitValue.value, isSkuVisible)
-            val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
-            fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
+            val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
+            fieldVisitablePosition?.let { viewModel.updateVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
         }
     }
 
@@ -263,21 +274,20 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val selectedVariantLevel2 = selectedVariants[VARIANT_VALUE_LEVEL_TWO_POSITION]
         val unitValueLevel2 = selectedVariantLevel2.options
         // start rendering
-        unitValueLevel1.forEachIndexed { index, level1Value ->
+        unitValueLevel1.forEach { level1Value ->
             // render collapsible header
-            val headerPosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value, index)
+            val headerVisitablePosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value)
                     ?: 0
-            viewModel.updateVariantDetailHeaderMap(headerPosition, false)
-            viewModel.updateHeaderPositionMap(level1Value.value, headerPosition)
-            // init header position - visitable position map values
-            viewModel.updateHeaderVisitablePositionMap(headerPosition, headerPosition)
+            viewModel.updateVariantDetailHeaderMap(headerVisitablePosition, false)
+            // init header position - current header visitable position map values
+            viewModel.updateCurrentHeaderPositionMap(headerVisitablePosition, headerVisitablePosition)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
                 val isSkuVisible = switchUnifySku.isChecked // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                        productVariantIndex, headerPosition, level2Value.value, isSkuVisible)
-                val fieldAdapterPosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
-                fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
+                        productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
+                val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
+                fieldVisitablePosition?.let { viewModel.updateVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
                 productVariantIndex++
             }
         }

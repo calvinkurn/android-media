@@ -9,17 +9,18 @@ import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInp
 class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInputTypeFactoryImpl) :
         BaseAdapter<VariantDetailInputTypeFactoryImpl>(variantDetailTypeFactoryImpl) {
 
-    fun addUnitValueHeader(unitValueHeader: String, position: Int): Int {
-        visitables.add(VariantDetailHeaderViewModel(unitValueHeader, position))
+    fun addUnitValueHeader(unitValueHeader: String): Int {
+        val variantDetailHeaderUiModel = VariantDetailHeaderViewModel(unitValueHeader, lastIndex + 1)
+        visitables.add(variantDetailHeaderUiModel)
         notifyItemInserted(this.lastIndex)
         return this.lastIndex
     }
 
     fun addVariantDetailField(variantDetailInputLayoutModel: VariantDetailInputLayoutModel): Int {
+        variantDetailInputLayoutModel.visitablePosition = lastIndex + 1
         visitables.add(VariantDetailFieldsViewModel(variantDetailInputLayoutModel))
-        val position = this.lastIndex
-        notifyItemInserted(position)
-        return position
+        notifyItemInserted(this.lastIndex)
+        return this.lastIndex
     }
 
     fun collapseUnitValueHeader(visitablePosition: Int, fieldSize: Int) {
@@ -36,6 +37,11 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         inputLayoutModels.forEach { viewModels.add(VariantDetailFieldsViewModel(it)) }
         visitables.addAll(targetPosition, viewModels)
         notifyItemRangeInserted(targetPosition, viewModels.size)
+    }
+
+    fun updateDetailInputField(adapterPosition: Int, variantDetailInputModel: VariantDetailInputLayoutModel) {
+        val variantDetailFieldsViewModel = VariantDetailFieldsViewModel(variantDetailInputModel)
+        notifyElement(adapterPosition, variantDetailFieldsViewModel)
     }
 
     fun updateSkuVisibilityStatus(variantDetailFieldMapLayout: Map<Int, VariantDetailInputLayoutModel>, isVisible: Boolean) {

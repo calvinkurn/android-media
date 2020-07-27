@@ -45,8 +45,9 @@ class VariantDetailFieldsViewHolder(itemView: View?,
     private var stockField: TextFieldUnify? = null
     private var skuField: TextFieldUnify? = null
 
-    var isRendered = false
-    var isPriceFieldEdited = false
+    private var isRendered = false
+    private var visitablePosition = 0
+    private var isPriceFieldEdited = false
 
     init {
         unitValueLabel = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tv_unit_value_label)
@@ -57,7 +58,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
 
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
-            onStatusSwitchCheckedChangeListener.onCheckedChanged(isChecked, adapterPosition)
+            onStatusSwitchCheckedChangeListener.onCheckedChanged(isChecked, visitablePosition)
         }
 
         priceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -76,7 +77,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                     // remove scientific notation e.g. 20E7
                     priceInput.format("%f")
                     // handle the price input
-                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(priceInput, adapterPosition)
+                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(priceInput, visitablePosition)
                     priceField?.setError(validatedInputModel.isPriceError)
                     priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
                     // format the price with period delimiter
@@ -113,7 +114,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                     // remove scientific notation e.g. 20E7
                     stockInput.format("%f")
                     // handle the stock input
-                    val validatedInputModel = onStockInputTextChangedListener.onStockInputTextChanged(stockInput, adapterPosition)
+                    val validatedInputModel = onStockInputTextChangedListener.onStockInputTextChanged(stockInput, visitablePosition)
                     stockField?.setError(validatedInputModel.isStockError)
                     stockField?.setMessage(validatedInputModel.stockFieldErrorMessage)
                     // format the stock with period delimiter
@@ -146,7 +147,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 if (isRendered) {
                     val skuInput = charSequence?.toString() ?: ""
-                    onSkuInputTextChangedListener.onSkuInputTextChanged(skuInput, adapterPosition)
+                    onSkuInputTextChangedListener.onSkuInputTextChanged(skuInput, visitablePosition)
                 }
             }
         })
@@ -155,10 +156,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
     override fun bind(element: VariantDetailFieldsViewModel?) {
         element?.run {
             val variantDetailInputLayoutModel = this.variantDetailInputLayoutModel
-
+            // update visitable position before bind the data
+            visitablePosition = variantDetailInputLayoutModel.visitablePosition
             // render input data to
             unitValueLabel?.text = variantDetailInputLayoutModel.unitValueLabel
-            statusSwitch?.isChecked = variantDetailInputLayoutModel.isActive
+            statusSwitch?.isChecked = variantDetailInputLayoutModel.isActive || variantDetailInputLayoutModel.isPrimary
             priceField?.textFieldInput?.setText(variantDetailInputLayoutModel.price)
             priceField?.setError(variantDetailInputLayoutModel.isPriceError)
             priceField?.setMessage(variantDetailInputLayoutModel.priceFieldErrorMessage)
@@ -166,14 +168,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
             stockField?.setError(variantDetailInputLayoutModel.isStockError)
             stockField?.setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
-
             // show / hide sku field
             if (variantDetailInputLayoutModel.isSkuFieldVisible) skuField?.show()
             else skuField?.hide()
-
             // enable / disable priceField
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
-
             // flag to prevent exception from
             isRendered = true
         }

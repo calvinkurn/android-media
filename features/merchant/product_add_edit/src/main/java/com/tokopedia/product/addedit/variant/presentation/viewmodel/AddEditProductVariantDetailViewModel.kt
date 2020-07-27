@@ -59,8 +59,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     private var collapsedFields = 0
 
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
-    private val headerPositionMap: HashMap<String, Int> = hashMapOf()
-    private val headerVisitablePositionMap: HashMap<Int, Int> = hashMapOf()
+    private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
     private val inputPriceErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val inputStockErrorStatusMap: HashMap<Int, Boolean> = hashMapOf()
@@ -95,48 +94,44 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         headerStatusMap[adapterPosition] = isCollapsed
     }
 
-    fun updateHeaderPositionMap(headerName: String, headerPosition: Int) {
-        headerPositionMap[headerName] = headerPosition
+    fun updateCurrentHeaderPositionMap(headerPosition: Int, visitablePosition: Int) {
+        currentHeaderPositionMap[headerPosition] = visitablePosition
     }
 
-    fun updateHeaderVisitablePositionMap(headerPosition: Int, visitablePosition: Int) {
-        headerVisitablePositionMap[headerPosition] = visitablePosition
-    }
-
-    fun collapseHeaderVisitablePositions(collapsedHeaderPosition: Int) {
-        val firstHeaderPosition = headerPositionMap.minBy { it.value } ?: 0
-        val lastHeaderPosition = headerPositionMap.maxBy { it.value }?.value ?: 0
+    fun collapseHeader(collapsedHeaderPosition: Int) {
+        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.value } ?: 0
+        val lastHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
         // collapsing last header position creates no impact
         if (collapsedHeaderPosition == lastHeaderPosition) return
         else {
-            headerVisitablePositionMap.forEach {
-                val headerMapPosition = it.key
+            currentHeaderPositionMap.forEach {
+                val headerPosition = it.key
                 // first header position cannot be moved
-                if (headerMapPosition != firstHeaderPosition) {
+                if (headerPosition != firstHeaderPosition) {
                     // only affecting the header position after the collapsing one
-                    if (headerMapPosition > collapsedHeaderPosition) {
-                        val newVisitablePosition = it.value - inputFieldSize
-                        headerVisitablePositionMap[headerMapPosition] = newVisitablePosition
+                    if (headerPosition > collapsedHeaderPosition) {
+                        val currentHeaderPosition = it.value - inputFieldSize
+                        currentHeaderPositionMap[headerPosition] = currentHeaderPosition
                     }
                 }
             }
         }
     }
 
-    fun expandHeaderVisitablePositions(expandedHeaderPosition: Int) {
-        val firstHeaderPosition = headerPositionMap.minBy { it.value } ?: 0
-        val lastHeaderPosition = headerPositionMap.maxBy { it.value }?.value ?: 0
+    fun expandHeader(expandedHeaderPosition: Int) {
+        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.value } ?: 0
+        val lastHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
         // expanding last header position creates no impact
         if (expandedHeaderPosition == lastHeaderPosition) return
         else {
-            headerVisitablePositionMap.forEach {
-                val headerMapPosition = it.key
+            currentHeaderPositionMap.forEach {
+                val headerPosition = it.key
                 // first header position cannot be moved
-                if (headerMapPosition != firstHeaderPosition) {
+                if (headerPosition != firstHeaderPosition) {
                     // only affecting the header position after the expanding one
-                    if (headerMapPosition > expandedHeaderPosition) {
-                        val newVisitablePosition = it.value + inputFieldSize
-                        headerVisitablePositionMap[headerMapPosition] = newVisitablePosition
+                    if (headerPosition > expandedHeaderPosition) {
+                        val currentHeaderPosition = it.value + inputFieldSize
+                        currentHeaderPositionMap[headerPosition] = currentHeaderPosition
                     }
                 }
             }
@@ -212,11 +207,25 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun updatePrimaryVariant(combination: List<Int>) {
-        val variantInputModel = productInputModel.value?.variantInputModel?.products
-        variantInputModel?.forEach {
-            it.isPrimary = it.combination == combination
+    fun updatePrimaryVariant(combination: List<Int>): Int {
+        var updatedPosition = -1 // -1 for not found
+        val variantInputModels = productInputModel.value?.variantInputModel?.products
+        var variantInputModelsIndex = 0
+
+        inputLayoutModelMap.toSortedMap().forEach { variantDetailInputModel ->
+            variantInputModels?.getOrNull(variantInputModelsIndex)?.let {
+                if (it.combination == combination) {
+                    it.isPrimary = true
+                    it.status = STATUS_ACTIVE_STRING
+                    updatedPosition = variantDetailInputModel.key
+                } else {
+                    it.isPrimary = false
+                }
+            }
+            variantInputModelsIndex++
         }
+
+        return updatedPosition
     }
 
     fun getPrimaryVariantTitle(combination: List<Int>): String {
@@ -238,12 +247,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun getHeaderPosition(headerName: String): Int {
-        return headerPositionMap[headerName] ?: 0
-    }
-
-    fun getHeaderVisitablePosition(headerPosition: Int): Int {
-        return headerVisitablePositionMap[headerPosition] ?: 0
+    fun getCurrentHeaderPosition(headerPosition: Int): Int {
+        return currentHeaderPositionMap[headerPosition] ?: 0
     }
 
     fun getVariantDetailHeaderData(headerPosition: Int): MutableList<VariantDetailInputLayoutModel> {
@@ -383,6 +388,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val productVariant = productVariants
                 .getOrElse(productVariantIndex) { ProductVariantInputModel() }
         val priceString = productVariant.price.toString()
+        val isPrimary = productVariant.isPrimary
 
         return VariantDetailInputLayoutModel(
                 price = InputPriceUtil.formatProductPriceInput(priceString),
@@ -391,7 +397,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 stock = productVariant.stock.toString(),
                 headerPosition = headerPosition,
                 isSkuFieldVisible = isSkuFieldVisible,
-                unitValueLabel = unitValueLabel)
+                unitValueLabel = unitValueLabel,
+                isPrimary = isPrimary)
     }
 
 }

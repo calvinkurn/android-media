@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailHeaderViewModel
 
 class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHeaderClickListener) : AbstractViewHolder<VariantDetailHeaderViewModel>(itemView) {
@@ -19,8 +18,7 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
         accordionIndicator = itemView?.findViewById(com.tokopedia.product.addedit.R.id.iv_accordion_indicator)
 
         itemView?.setOnClickListener {
-            val headerName = unitValueHeader?.text.toString()
-            val isCollapsed = listener.onHeaderClicked(headerName)
+            val isCollapsed = listener.onHeaderClicked(headerPosition)
             if (isCollapsed) accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_chevron_up)
             else accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_chevron_down)
         }
@@ -39,6 +37,6 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
     }
 
     interface OnCollapsibleHeaderClickListener {
-        fun onHeaderClicked(headerName: String): Boolean
+        fun onHeaderClicked(headerPosition:Int): Boolean
     }
 }
