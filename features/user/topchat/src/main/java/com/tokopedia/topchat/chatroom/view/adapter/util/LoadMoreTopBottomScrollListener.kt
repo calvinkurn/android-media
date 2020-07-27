@@ -25,30 +25,11 @@ abstract class LoadMoreTopBottomScrollListener(
         if (hasNextPage && !isLoadingTop && shouldLoadMoreTop(lastVisiblePosition, totalItem)) {
             isLoadingTop = true
             loadMoreTop()
-//                Toast.makeText(context, "Load more top", Toast.LENGTH_SHORT).show()
         }
         if (hasNextAfterPage && !isLoadingBottom && shouldLoadMoreDown(firstVisiblePosition)) {
-//                Toast.makeText(context, "Load more down", Toast.LENGTH_SHORT).show()
             isLoadingBottom = true
             loadMoreDown()
         }
-//        if (dy < 0) {
-//            // scroll down
-//            return
-//        }
-//        if (dy > 0) {
-//            // scroll down
-//            return
-//        }
-//        if (dy == 0) {
-//            if (shouldLoadMoreTop(lastVisiblePosition, totalItem, hasNextPage)) {
-////                Toast.makeText(context, "Load more top", Toast.LENGTH_SHORT).show()
-//            }
-//            if (shouldLoadMoreDown(firstVisiblePosition, hasPreviousPage)) {
-////                Toast.makeText(context, "Load more down", Toast.LENGTH_SHORT).show()
-//            }
-//            return
-//        }
     }
 
     private fun shouldLoadMoreTop(lastVisiblePosition: Int, totalItem: Int): Boolean {
