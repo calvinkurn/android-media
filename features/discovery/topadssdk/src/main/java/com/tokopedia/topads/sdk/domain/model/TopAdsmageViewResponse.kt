@@ -21,7 +21,7 @@ data class TopAdsmageViewResponse(
         @SerializedName("banner")
         val banner: Banner?,
         @SerializedName("id")
-        val id: Int?,
+        val id: String?,
         @SerializedName("redirect")
         val redirect: String?
     ) {
