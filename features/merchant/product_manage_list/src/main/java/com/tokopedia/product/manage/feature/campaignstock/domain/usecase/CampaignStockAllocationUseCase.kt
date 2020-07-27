@@ -16,7 +16,7 @@ class CampaignStockAllocationUseCase @Inject constructor(
 
     companion object {
         private const val QUERY = "query getStockAllocation (\$productIds: String!, \$shopId: String!) {\n" +
-                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId) {\n" +
+                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true) {\n" +
                 "    header {\n" +
                 "      process_time\n" +
                 "      messages\n" +

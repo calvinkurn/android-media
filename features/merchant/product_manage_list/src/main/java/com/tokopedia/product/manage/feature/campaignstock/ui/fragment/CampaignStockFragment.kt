@@ -265,12 +265,16 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun setupNonVariantFragmentViewPager(getStockAllocation: GetStockAllocationData,
                                                  otherCampaignStockData: OtherCampaignStockData) {
         with(getStockAllocation) {
+            val nonVariantStock = summary.sellableStock.toIntOrZero()
+
+            mViewModel.updateNonVariantStockCount(nonVariantStock)
+
             vp2_campaign_stock?.run {
                 adapter = activity?.let {
                     CampaignStockAdapter(it, getFragmentList(
                             summary.isVariant,
                             otherCampaignStockData.getIsActive(),
-                            summary.sellableStock.toIntOrZero(),
+                            nonVariantStock,
                             arrayListOf(),
                             detail.reserve.map { reserved ->
                                 CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
