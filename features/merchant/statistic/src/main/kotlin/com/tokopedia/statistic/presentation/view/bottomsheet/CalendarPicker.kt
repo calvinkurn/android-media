@@ -18,14 +18,14 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 16/06/20
  */
 
-class CalendarPicker(
-        private val mContext: Context
-) : BottomSheetUnify() {
+class CalendarPicker(mContext: Context) : BottomSheetUnify() {
 
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     var selectedDates: List<Date> = emptyList()
 
     private val calendarView: CalendarPickerView?
+    private val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(90L))
+    private val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1L))
 
     init {
         val child = View.inflate(mContext, R.layout.bottomsheet_stc_calendar_picker, null)
@@ -43,9 +43,6 @@ class CalendarPicker(
 
     fun init(mode: CalendarPickerView.SelectionMode): CalendarPicker {
         this.mode = mode
-        val days90 = 90L
-        val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(days90))
-        val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1))
         calendarView?.let { cpv ->
             cpv.init(minDate, maxDate, emptyList()).inMode(mode)
             cpv.scrollToDate(maxDate)
@@ -95,20 +92,38 @@ class CalendarPicker(
     private fun selectDateRange(cpv: CalendarPickerView) {
         if (cpv.selectedDates.isNotEmpty()) {
             val selected: Date = cpv.selectedDates.first()
-            val nextSixDays = Date(selected.time.plus(TimeUnit.DAYS.toMillis(6)))
+            val selectedPair = getPerWeekSelectedPair(selected)
 
             try {
-                cpv.selectDate(nextSixDays)
+                cpv.selectDate(selected)
+                cpv.selectDate(selectedPair.first)
+                cpv.selectDate(selectedPair.second)
             } catch (e: IllegalArgumentException) {
-                val today = Date()
-                val sixDaysBefore = Date(today.time.minus(TimeUnit.DAYS.toMillis(6)))
-                cpv.selectDate(sixDaysBefore)
-                cpv.selectDate(today, true)
+                val m6Days = TimeUnit.DAYS.toMillis(6)
+                val minDateMillis = minDate.time.plus(m6Days)
+                val mSelectedPair = if (minDateMillis >= selected.time) {
+                    getPerWeekSelectedPair(Date(minDateMillis))
+                } else {
+                    val maxDateMillis = maxDate.time.minus(m6Days)
+                    getPerWeekSelectedPair(Date(maxDateMillis))
+                }
+                cpv.selectDate(mSelectedPair.first)
+                cpv.selectDate(mSelectedPair.second, true)
             }
         }
-        DateTimeUtil
         this.selectedDates = cpv.selectedDates
         dismiss()
+    }
+
+    private fun getPerWeekSelectedPair(selected: Date): Pair<Date, Date> {
+        val m6Day = TimeUnit.DAYS.toMillis(6)
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.time = selected
+        calendar.firstDayOfWeek = Calendar.MONDAY
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        val firstDateOfWeek = calendar.time
+        val lastDateOfWeek = Date(firstDateOfWeek.time + m6Day)
+        return Pair(firstDateOfWeek, lastDateOfWeek)
     }
 
     private fun showSelectedDate() {
