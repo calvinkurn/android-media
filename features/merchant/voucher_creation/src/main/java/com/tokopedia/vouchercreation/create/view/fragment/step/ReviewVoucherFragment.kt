@@ -328,9 +328,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         context?.getString(R.string.mvc_oke).toBlankOrString(),
                         View.OnClickListener { })
             }
-            with(adapter) {
-                notifyItemChanged(data.indexOf(buttonUiModel))
-            }
+            refreshFooterButton()
             return
         }
         if (!isPromoCodeEligible) {
@@ -342,9 +340,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         context?.getString(R.string.mvc_oke).toBlankOrString(),
                         View.OnClickListener { })
             }
-            with(adapter) {
-                notifyItemChanged(data.indexOf(buttonUiModel))
-            }
+            refreshFooterButton()
             return
         }
         isWaitingForResult = true
@@ -652,6 +648,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private fun refreshFooterButton() {
         adapter?.run {
             data?.indexOf(buttonUiModel)?.let { index ->
+                (adapter.data[index] as? FooterButtonUiModel)?.isLoading = false
                 notifyItemChanged(index)
             }
         }
