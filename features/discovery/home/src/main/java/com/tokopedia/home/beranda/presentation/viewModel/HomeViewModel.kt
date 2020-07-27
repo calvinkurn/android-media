@@ -335,7 +335,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun getSuggestedReview() {
         if(getSuggestedReviewJob?.isActive == true) return
-        if (!isNeedShowGeoLocation) {
+        if (!isNeedShowGeoLocation && userSession.get().isLoggedIn) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
                 val data = getHomeReviewSuggestedUseCase.get().executeOnBackground()
                 insertSuggestedReview(data)

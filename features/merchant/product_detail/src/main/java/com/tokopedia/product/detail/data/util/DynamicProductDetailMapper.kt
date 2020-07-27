@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.ProductVariantCommon
+import java.util.*
 
 object DynamicProductDetailMapper {
 
@@ -118,8 +119,15 @@ object DynamicProductDetailMapper {
         ) ?: ComponentData()
 
         val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
+        assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, campaignStatus = data.temporaryInfo.campaignStatus)
+    }
+
+    private fun assignIdToMedia(listOfMedia: List<Media>){
+        listOfMedia.forEach {
+            it.id = UUID.randomUUID().toString()
+        }
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
@@ -200,7 +208,7 @@ object DynamicProductDetailMapper {
 
     fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
         return media.map { it ->
-            MediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
+            MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
 
