@@ -135,6 +135,8 @@ class DynamicChannelHeaderView: FrameLayout {
             seeAllButton?.setOnClickListener {
                 listener?.onSeeAllClick(channel.channelHeader.getLink())
             }
+        } else {
+            seeAllButton?.hide()
         }
     }
 

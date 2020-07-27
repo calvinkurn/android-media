@@ -33,6 +33,28 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.analytics.CheckoutAnalyticsMacroInsurance;
+import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
+import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
+import com.tokopedia.checkout.domain.model.checkout.TrackerData;
+import com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
+import com.tokopedia.checkout.subfeature.cod_bottomsheet.CodBottomSheetFragment;
+import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity;
+import com.tokopedia.checkout.subfeature.webview.CheckoutWebViewActivity;
+import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
+import com.tokopedia.checkout.view.converter.RatesDataConverter;
+import com.tokopedia.checkout.view.di.CheckoutModule;
+import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
+import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.component.Tooltip;
@@ -49,7 +71,6 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -57,6 +78,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -73,56 +95,34 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.cod.Data;
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails;
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct;
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops;
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
-import com.tokopedia.checkout.domain.model.checkout.TrackerData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
-import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsMacroInsurance;
-import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.checkout.analytics.CornerAnalytics;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
-import com.tokopedia.checkout.subfeature.cod_bottomsheet.CodBottomSheetFragment;
-import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity;
-import com.tokopedia.checkout.subfeature.webview.CheckoutWebViewActivity;
-import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
-import com.tokopedia.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.checkout.view.di.CheckoutModule;
-import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
-import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
-import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
-import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener;
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomsheet;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -965,13 +965,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
-        shipmentCartItemModel.setStateLoadingCourierState(false);
-        if (isTradeInDropOff) {
-            shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-        } else {
-            shipmentCartItemModel.setStateHasLoadCourierState(true);
+        if (shipmentCartItemModel != null) {
+            shipmentCartItemModel.setStateLoadingCourierState(false);
+            if (isTradeInDropOff) {
+                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+            } else {
+                shipmentCartItemModel.setStateHasLoadCourierState(true);
+            }
+            onNeedUpdateViewItem(itemPosition);
         }
-        onNeedUpdateViewItem(itemPosition);
     }
 
     @Override
@@ -1147,8 +1149,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 PromoUiModel promoUiModel = new PromoUiModel();
                 promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
 
-                if (!TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
-                    shipmentPresenter.getTickerAnnouncementHolderData().setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
+                TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
+                if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
+                    tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
                     updateTickerAnnouncementMessage();
                 }
 
@@ -2522,19 +2525,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onShow() {
         if (promoNotEligibleBottomsheet != null) {
             BottomSheetBehavior bottomSheetBehavior = promoNotEligibleBottomsheet.getBottomSheetBehavior();
-            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                    if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (bottomSheetBehavior != null) {
+                bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
                     }
-                }
 
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                    @Override
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -2678,10 +2683,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (data != null) {
             LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
             RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-            recipientAddressModel.setLocationDataModel(locationDataModel);
-            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
-            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
+            if (recipientAddressModel != null) {
+                recipientAddressModel.setLocationDataModel(locationDataModel);
+                recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
+                recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
+            }
         }
     }
 

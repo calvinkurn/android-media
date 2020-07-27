@@ -30,8 +30,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
-import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
@@ -147,6 +147,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(R.color.tkpd_main_green))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
+                            tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)

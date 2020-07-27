@@ -44,7 +44,6 @@ import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
-import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
@@ -525,7 +524,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs(),details.getHelpLink());
 
-        if(details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)){
+        if(details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)){
             getView().setActionButtonsVisibility(View.GONE, View.GONE);
         } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
