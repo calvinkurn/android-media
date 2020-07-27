@@ -78,10 +78,11 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         }
         containerLike.setOnClickListener {
             viewListener.onLikeDislikePressed(element.reviewId, if (element.isLikeStatus) UNLIKE_STATUS else LIKE_STATUS_ACTIVE, element.productId,
-                    element.isLikeStatus, adapterPosition)
-            element.isLikeStatus = !element.isLikeStatus
-            element.totalLike = (if (element.isLikeStatus) element.totalLike + 1 else element.totalLike - 1)
-            setLikeStatus(element)
+                    element.isLikeStatus, adapterPosition){
+                element.isLikeStatus = !element.isLikeStatus
+                element.totalLike = (if (element.isLikeStatus) element.totalLike + 1 else element.totalLike - 1)
+                setLikeStatus(element)
+            }
         }
         setLikeStatus(element)
         if (element.reviewAttachment != null && element.reviewAttachment!!.isNotEmpty()) {
@@ -236,7 +237,7 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         fun onDeleteReviewResponse(element: ReviewProductModelContent, adapterPosition: Int)
         fun onSmoothScrollToReplyView(adapterPosition: Int)
         fun onGoToReportReview(shopId: String?, reviewId: String?, adapterPosition: Int)
-        fun onLikeDislikePressed(reviewId: String?, likeStatus: Int, productId: String?, status: Boolean, adapterPosition: Int)
+        fun onLikeDislikePressed(reviewId: String?, likeStatus: Int, productId: String?, status: Boolean, adapterPosition: Int, alreadyLogin :() -> Unit)
         fun onMenuClicked(adapterPosition: Int)
         fun onSeeReplied(adapterPosition: Int)
     }

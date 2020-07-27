@@ -186,11 +186,12 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
         reputationTracking!!.eventClickSeeRepliesPage(getString(R.string.review), adapterPosition, shopId, shopReviewPresenter!!.isMyShop(shopId))
     }
 
-    override fun onLikeDislikePressed(reviewId: String?, likeStatus: Int, productId: String?, status: Boolean, adapterPosition: Int) {
+    override fun onLikeDislikePressed(reviewId: String?, likeStatus: Int, productId: String?, status: Boolean, adapterPosition: Int, alreadyLogin: () -> Unit) {
         onLikeDislikeTracking(productId, status, adapterPosition)
-        if(shopReviewPresenter?.isLogin == true)
+        if (shopReviewPresenter?.isLogin == true) {
+            alreadyLogin.invoke()
             shopReviewPresenter!!.postLikeDislikeReview(reviewId, likeStatus, productId)
-        else
+        } else
             redirectToLoginPage()
     }
 
