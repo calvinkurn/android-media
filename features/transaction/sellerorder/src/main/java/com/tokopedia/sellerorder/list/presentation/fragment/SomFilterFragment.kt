@@ -19,9 +19,14 @@ import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickTerapkanOnFilterPage
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
@@ -38,7 +43,9 @@ import com.tokopedia.sellerorder.list.data.model.SomSubFilter
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomSubFilterActivity
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomFilterViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_filter.*
 import java.util.*
 import javax.inject.Inject
@@ -69,6 +76,11 @@ class SomFilterFragment : BaseDaggerFragment() {
         private const val REQUEST_SHIPPING_LIST = 2880
         private const val REQUEST_ORDER_TYPE_LIST = 2881
         private const val REQUEST_ORDER_STATUS_LIST = 2882
+
+        private const val ERROR_GET_FILTER_DATA = "Error When get filters data."
+        private const val ERROR_GET_ORDER_TYPE_FILTER = "Error When get order type filters."
+        private const val ERROR_GET_COURIER_TYPE_FILTER = "Error When get courier type filters."
+        private const val ERROR_GET_STATUS_ORDER_TYPE_FILTER = "Error When get status order type filters."
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomFilterFragment {
@@ -105,9 +117,11 @@ class SomFilterFragment : BaseDaggerFragment() {
 
         setListeners()
         setupDatePickers()
+        setupErrorState()
         observingCourierList()
         observingOrderTypeList()
         observingStatusOrderList()
+        observingGetFilterStatus()
     }
 
     private fun setListeners() {
@@ -199,7 +213,23 @@ class SomFilterFragment : BaseDaggerFragment() {
         et_end_date?.setOnClickListener { showDatePicker(END_DATE) }
     }
 
+    private fun setupErrorState() {
+        title_empty?.text = getString(R.string.error_list_title)
+        desc_empty?.text = getString(R.string.error_list_desc)
+        ic_empty?.loadImageDrawable(R.drawable.ic_som_error_list)
+        btn_cek_peluang?.apply {
+            visibility = View.VISIBLE
+            text = getString(R.string.retry_load_list)
+            setOnClickListener {
+                loadAllFilter()
+            }
+        }
+    }
+
     private fun loadAllFilter() {
+        progressSomFilter?.show()
+        layoutEmpty?.hide()
+        layoutSuccess?.hide()
         somFilterViewModel.loadSomFilterData(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_som_all_filter))
     }
@@ -211,6 +241,7 @@ class SomFilterFragment : BaseDaggerFragment() {
                     orderTypeList = it.data
                     renderOrderType()
                 }
+                is Fail -> SomErrorHandler.logMessage(it.throwable, ERROR_GET_ORDER_TYPE_FILTER)
             }
         })
     }
@@ -222,6 +253,7 @@ class SomFilterFragment : BaseDaggerFragment() {
                     courierList = it.data
                     renderCourierList()
                 }
+                is Fail -> SomErrorHandler.logMessage(it.throwable, ERROR_GET_COURIER_TYPE_FILTER)
             }
         })
     }
@@ -233,8 +265,28 @@ class SomFilterFragment : BaseDaggerFragment() {
                     statusList = it.data
                     renderStatusList()
                 }
+                is Fail -> SomErrorHandler.logMessage(it.throwable, ERROR_GET_STATUS_ORDER_TYPE_FILTER)
             }
         })
+    }
+
+    private fun observingGetFilterStatus() {
+        somFilterViewModel.filterListResult.observe(this, Observer {
+            when (it) {
+                is Success -> toggleFilterView(true)
+                is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_FILTER_DATA)
+                    toggleFilterView(false)
+                }
+            }
+        })
+    }
+
+    private fun toggleFilterView(isSuccess: Boolean) {
+        progressSomFilter?.hide()
+        layoutEmpty?.showWithCondition(!isSuccess)
+        layoutSuccess?.showWithCondition(isSuccess)
+        rl_button?.showWithCondition(isSuccess)
     }
 
     private fun renderOrderType() {

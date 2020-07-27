@@ -260,11 +260,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
-    // ValidatorActivity
-    // tokopedia-android-internal://global/otp-validator
-    @JvmField
-    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
-
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField

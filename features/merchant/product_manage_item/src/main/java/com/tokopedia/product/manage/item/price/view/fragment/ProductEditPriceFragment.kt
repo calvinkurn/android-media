@@ -26,6 +26,7 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_MOVE_TO_GM
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_PRICE
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.price.model.ProductPrice
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.product.manage.item.variant.dialog.ProductChangeVariantPriceDialogFragment
@@ -41,6 +42,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
 
     private var productPrice = ProductPrice()
+    private var productStock = 0
     private val isOfficialStore by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false) ?: false }
     private val hasVariant by lazy { activity?.intent?.getBooleanExtra(EXTRA_HAS_VARIANT, false) ?: false }
     private val isGoldMerchant by lazy { activity?.intent?.getBooleanExtra(EXTRA_IS_GOLD_MERCHANT, false) ?: false}
@@ -54,7 +56,11 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         setHasOptionsMenu(true)
         activity?.run {
             if(intent.hasExtra(EXTRA_PRICE)) {
-            productPrice = intent.getParcelableExtra(EXTRA_PRICE) }
+                productPrice = intent.getParcelableExtra(EXTRA_PRICE)
+            }
+            if(intent.hasExtra(EXTRA_STOCK)) {
+                productStock = intent.getIntExtra(EXTRA_STOCK, 0)
+            }
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_PRICE)) {
@@ -180,6 +186,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun isMinOrderValid(): Boolean {
         if (MIN_ORDER.removeCommaToInt() > getMinOrderValue() || getMinOrderValue() > MAX_ORDER.removeCommaToInt()) {
             editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid, MIN_ORDER, MAX_ORDER))
+            return false
+        }
+        else if (getMinOrderValue() > productStock) {
+            editTextMinOrder.setError(getString(R.string.product_error_product_minimum_order_not_valid_3))
             return false
         }
         editTextMinOrder.setError(null)

@@ -30,6 +30,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
+    lateinit var thanksPageData: ThanksPageData
+
     fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
@@ -68,6 +70,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
+        this.thanksPageData = thanksPageData
         postEventOnThankPageDataLoaded(thanksPageData)
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
@@ -137,7 +140,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        thankYouPageAnalytics.get().sendBackPressedEvent()
+        if(::thanksPageData.isInitialized)
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()

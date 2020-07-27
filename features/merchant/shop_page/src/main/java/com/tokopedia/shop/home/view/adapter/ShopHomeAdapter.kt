@@ -11,15 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -84,6 +82,16 @@ class ShopHomeAdapter(
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
         visitables.addAll(data)
         notifyChangedDataSet()
+    }
+
+    fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+        visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
+                .find {
+                    it.widgetId == widgetId
+                }?.let {
+                    it.data?.firstOrNull()?.youTubeVideoDetail = data
+                    notifyChangedItem(visitables.indexOf(it))
+                }
     }
 
     override fun hideLoading() {
