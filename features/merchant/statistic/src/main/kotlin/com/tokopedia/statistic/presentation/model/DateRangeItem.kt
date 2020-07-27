@@ -5,6 +5,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.presentation.view.adapter.factory.DateRangeAdapterFactory
 import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 15/06/20
@@ -26,7 +27,7 @@ sealed class DateRangeItem(
         const val TYPE_PER_WEEK = 4
         const val TYPE_PER_MONTH = 5
         const val TYPE_BUTTON = 6
-        const val TYPE_DIVIDER = 6
+        const val TYPE_DIVIDER = 7
     }
 
     fun getHeaderSubTitle(): String {
@@ -34,7 +35,7 @@ sealed class DateRangeItem(
             TYPE_TODAY -> {
                 val startDateMillis = startDate?.time ?: return ""
                 val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
-                val hourStr = DateTimeUtil.format(System.currentTimeMillis(), "hh:mm")
+                val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
                 return "Hari Ini ($dateStr 00:00 - $hourStr)"
             }
             TYPE_LAST_7_DAYS -> {
