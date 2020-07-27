@@ -2,7 +2,6 @@ package com.tokopedia.additional_check.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
-import com.tokopedia.additional_check.view.BottomSheetCheck
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
@@ -18,6 +17,5 @@ import dagger.Component
     AdditionalCheckQueryModules::class,
     SessionModule::class], dependencies = [BaseAppComponent::class])
 interface AdditionalCheckComponents {
-    fun inject(view: BottomSheetCheck?)
     fun inject(view: TwoFactorCheckerSubscriber?)
 }
