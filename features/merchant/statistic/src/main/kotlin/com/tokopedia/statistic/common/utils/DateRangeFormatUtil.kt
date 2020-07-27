@@ -2,6 +2,7 @@ package com.tokopedia.statistic.common.utils
 
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 23/06/20
@@ -22,7 +23,7 @@ object DateRangeFormatUtil {
         val endYear = DateTimeUtil.format(endDate.time, PATTERN_YEAR)
 
         if (areStartAndEndDateSame(startDate, endDate)) {
-            val hourStr = DateTimeUtil.format(System.currentTimeMillis(), "hh:mm")
+            val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
             val singleDayPattern = "$PATTERN_DAY $PATTERN_MONTH_MMMM (00:00 - $hourStr)"
             return DateTimeUtil.format(startDate.time, pattern = singleDayPattern)
         }
