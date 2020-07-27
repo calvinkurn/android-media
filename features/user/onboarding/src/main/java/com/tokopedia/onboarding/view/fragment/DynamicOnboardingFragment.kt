@@ -65,7 +65,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            dynamicOnboardingDataModel = it.getParcelable(ARG_DYNAMIC_ONBAORDING_DATA) as ConfigDataModel
+            dynamicOnboardingDataModel = it.getParcelable(ARG_DYNAMIC_ONBAORDING_DATA) ?: ConfigDataModel()
         }
 
         val executeViewCreatedWeave = object : WeaveInterface {
