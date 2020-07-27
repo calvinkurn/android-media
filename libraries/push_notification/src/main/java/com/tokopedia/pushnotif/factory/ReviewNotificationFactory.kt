@@ -56,11 +56,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         }
     }
 
-    override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notifcationType: Int, notificationId: Int): Notification {
+    override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notificationType: Int, notificationId: Int): Notification {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel)
+
         cacheManager.delete(TAG)
         cacheManager.put(TAG, ReviewNotificationModel(
                 applinkNotificationModel,
-                notifcationType,
+                notificationType,
                 notificationId
         ), TimeUnit.DAYS.toMillis(7))
 

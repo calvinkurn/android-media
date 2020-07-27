@@ -20,7 +20,9 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(applinkNotificationModel.getDesc());
         builder.setContentText(applinkNotificationModel.getFullName()+" : "+applinkNotificationModel.getSummary());
@@ -31,8 +33,8 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
+        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId));
         builder.setAutoCancel(true);
 
         if (isAllowBell()) {

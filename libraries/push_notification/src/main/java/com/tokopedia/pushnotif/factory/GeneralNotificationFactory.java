@@ -21,7 +21,9 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(TextUtils.isEmpty(applinkNotificationModel.getTitle()) ? context.getResources().getString(R.string.title_general_push_notification) : applinkNotificationModel.getTitle());
         builder.setContentText(applinkNotificationModel.getDesc());

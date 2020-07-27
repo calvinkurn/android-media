@@ -36,7 +36,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(applinkNotificationModel.getDesc());
         builder.setContentText(applinkNotificationModel.getSummary());
@@ -47,8 +49,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
+        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId));
         builder.setAutoCancel(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 

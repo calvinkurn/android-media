@@ -31,6 +31,8 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
     @Override
     public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(getTitleSummary(notificationType));
         builder.setSmallIcon(getDrawableIcon());
@@ -42,8 +44,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getSummary(),
                 notificationType,
-                ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks()),
-                applinkNotificationModel.getTransactionId()
+                ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks())
         );
 
         listHistoryNotification = HistoryNotification.getListHistoryNotification(context, notificationType);
