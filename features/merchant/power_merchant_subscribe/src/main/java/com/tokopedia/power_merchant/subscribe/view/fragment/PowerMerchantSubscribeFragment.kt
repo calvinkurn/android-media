@@ -248,7 +248,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                 onClickCancelMembership()
                 bottomSheetCancel?.dismiss()
             }
+
+            override fun onClickBackButton() {
+                trackClickBackCancelMembership()
+            }
         })
+    }
+
+    private fun trackClickBackCancelMembership() {
+        powerMerchantTracking.eventClickBackCancelMembership()
     }
 
     private fun onClickCancelMembership() {
