@@ -146,7 +146,6 @@ object DynamicProductDetailMapper {
             listOfFlags.add(createCartParam(ProductDetailConstant.KEY_CAMPAIGN_ID, campaignId))
             listOfFlags.add(createCartParam(ProductDetailConstant.KEY_CAMPAIGN_TYPE_ID, campaignTypeId))
             listOfFlags.add(createCartParam(ProductDetailConstant.KEY_CAMPAIGN_STATUS, campaignStatus))
-            listOfFlags.add(createCartParam("product_stock", "1")) // remove soon
 
             listOfFlags
         } ?: listOf()
@@ -166,7 +165,6 @@ object DynamicProductDetailMapper {
         listOfFlags.add(createCartParam(ProductDetailConstant.KEY_CAMPAIGN_ID, campaignId.toString()))
         listOfFlags.add(createCartParam(ProductDetailConstant.KEY_CAMPAIGN_TYPE_ID, campaignTypeId.toString()))
         listOfFlags.add(createCartParam(ProductDetailConstant.KEY_CAMPAIGN_STATUS, campaignStatus))
-        listOfFlags.add(createCartParam("product_stock", "1")) // remove soon
 
         return listOf(listOfFlags)
     }
