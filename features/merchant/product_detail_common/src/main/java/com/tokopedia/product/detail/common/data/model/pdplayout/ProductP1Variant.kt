@@ -16,10 +16,6 @@ data class ProductP1Variant(
         @Expose
         val v: String? = null, //ex:1
 
-        @SerializedName("variantUnitID")
-        @Expose
-        val vu: String? = null, // ex: 0
-
         @SerializedName("name")
         @Expose
         val name: String? = null, //ex:Warna

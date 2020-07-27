@@ -141,6 +141,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             miniShopInfo?.run {
+                shopName = it.basic.shopName
                 isOS = it.data.isOS
                 isGoldMerchant = it.data.isPowerMerchant
             }
@@ -184,6 +185,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             productInfoMap?.run {
                 dynamicProductInfoP1 = it
+                shopName = it.basic.shopName
             }
 
             productWholesaleInfoMap?.run {
@@ -254,19 +256,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopRating = it.shopRating
             }
 
-            miniShopInfo?.run {
-                shopName = it.shopInfo?.shopCore?.name ?: ""
-            }
-
             tickerInfoMap?.run {
                 generalTickerInfo = it.tickerInfo
                 statusInfo = it.shopInfo?.statusInfo
                 closedInfo = it.shopInfo?.closedInfo
             }
 
-            productInfoMap?.run {
-                shopName = it.shopInfo?.shopCore?.name ?: ""
-            }
         }
     }
 

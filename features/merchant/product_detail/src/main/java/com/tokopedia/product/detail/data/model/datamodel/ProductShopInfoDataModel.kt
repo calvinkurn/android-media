@@ -35,7 +35,6 @@ class ProductShopInfoDataModel(
 
     override fun type(): String = type
 
-
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }

@@ -1126,7 +1126,7 @@ object DynamicProductDetailTracking {
         }
 
         val generateProduct = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
-                                shopInfo: ShopInfo?, trackerAttribution: String?,
+                                trackerAttribution: String?,
                                 isTradeIn: Boolean, isDiagnosed: Boolean,
                                 multiOrigin: Boolean, deeplinkUrl: String,
                                 isStockAvailable: String ->
@@ -1194,7 +1194,7 @@ object DynamicProductDetailTracking {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
 
-            val products = generateProduct(irisSessionId, trackerListName, productInfo, shopInfo,
+            val products = generateProduct(irisSessionId, trackerListName, productInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable)
 
             val label = productInfo?.shopTypeString ?: "" + " - " + shopInfo?.shopCore?.name+ " - " + productInfo?.data?.name

@@ -7,6 +7,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
     }
     basicInfo {
       alias
+      shopName
       productID
       shopID
       minOrder
@@ -186,29 +187,16 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             text
           }
         }
-        ... on pdpDataUpcomingCampaign {
-          campaignID
-          campaignType
-          campaignTypeName
-          startDate
-          endDate
-          notifyMe
-          ribbonCopy
-          upcomingType
-        }
         ... on pdpDataProductVariant {
           errorCode
           parentID
-          isVariant
           defaultChild
           sizeChart
           variants {
             productVariantID
             variantID
-            variantUnitID
             name
             identifier
-            unitName
             option {
               productVariantOptionID
               variantUnitValueID
@@ -235,13 +223,9 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             stock {
               stock
               isBuyable
-              alwaysAvailable
-              isLimitedStock
               stockWording
               stockWordingHTML
-              otherVariantStock
               minimumOrder
-              maximumOrder
             }
             isCOD
             isWishlist

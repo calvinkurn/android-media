@@ -158,9 +158,7 @@ object DynamicProductDetailMapper {
             Variant(pv = it.pv.toIntOrZero(),
                     v = it.v.toIntOrZero(),
                     name = it.name,
-                    vu = it.vu.toIntOrZero(),
                     identifier = it.identifier,
-                    unitName = it.unitName,
                     options = newOption)
         }
 
