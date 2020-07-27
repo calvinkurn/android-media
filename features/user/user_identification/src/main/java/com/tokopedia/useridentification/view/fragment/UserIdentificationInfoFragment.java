@@ -196,7 +196,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     public void onErrorGetUserProjectInfoWithErrorCode(String errorCode) {
         if (getContext() != null) {
             hideLoading();
-            String error = String.format("%s (%s)", getContext().getString(R.string.default_request_error_unknown), errorCode);
+            String error = String.format("%s (%s)", getContext().getString(R.string.user_identification_default_request_error_unknown), errorCode);
             NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
