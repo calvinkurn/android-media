@@ -18,7 +18,8 @@ import com.tokopedia.kotlin.extensions.view.*
 
 class ReminderWidgetViewHolder(
         itemView: View,
-        val reminderWidgetListener : ReminderWidgetListener?
+        val reminderWidgetListener : ReminderWidgetListener?,
+        val disablePerformanceMonitoring: Boolean = false
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -33,7 +34,7 @@ class ReminderWidgetViewHolder(
     }
 
     override fun bind(element: ReminderWidgetModel) {
-        performanceMonitoring?.startTrace(performanceTraceName)
+        if (!disablePerformanceMonitoring) performanceMonitoring?.startTrace(performanceTraceName)
         initView(element, itemView)
     }
 
@@ -46,7 +47,7 @@ class ReminderWidgetViewHolder(
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
                 reminderWidgetListener?.getReminderWidget(element.source)
-                performanceMonitoring?.stopTrace()
+                if (!disablePerformanceMonitoring) performanceMonitoring?.stopTrace()
                 performanceMonitoring = null
             } else {
                 home_reminder_recommendation_loading.hide()
@@ -85,7 +86,7 @@ class ReminderWidgetViewHolder(
                 ic_close_reminder_recommendation.setOnClickListener {
                     reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, true)
                 }
-                performanceMonitoring?.stopTrace()
+                if (!disablePerformanceMonitoring) performanceMonitoring?.stopTrace()
                 performanceMonitoring = null
             }
         }
