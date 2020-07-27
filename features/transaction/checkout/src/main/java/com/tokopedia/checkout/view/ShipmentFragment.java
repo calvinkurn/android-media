@@ -965,13 +965,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
-        shipmentCartItemModel.setStateLoadingCourierState(false);
-        if (isTradeInDropOff) {
-            shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-        } else {
-            shipmentCartItemModel.setStateHasLoadCourierState(true);
+        if (shipmentCartItemModel != null) {
+            shipmentCartItemModel.setStateLoadingCourierState(false);
+            if (isTradeInDropOff) {
+                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+            } else {
+                shipmentCartItemModel.setStateHasLoadCourierState(true);
+            }
+            onNeedUpdateViewItem(itemPosition);
         }
-        onNeedUpdateViewItem(itemPosition);
     }
 
     @Override
@@ -1147,8 +1149,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 PromoUiModel promoUiModel = new PromoUiModel();
                 promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
 
-                if (!TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
-                    shipmentPresenter.getTickerAnnouncementHolderData().setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
+                TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
+                if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
+                    tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
                     updateTickerAnnouncementMessage();
                 }
 
@@ -2522,19 +2525,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onShow() {
         if (promoNotEligibleBottomsheet != null) {
             BottomSheetBehavior bottomSheetBehavior = promoNotEligibleBottomsheet.getBottomSheetBehavior();
-            bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                    if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (bottomSheetBehavior != null) {
+                bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        }
                     }
-                }
 
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                    @Override
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -2678,10 +2683,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (data != null) {
             LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
             RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-            recipientAddressModel.setLocationDataModel(locationDataModel);
-            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
-            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
+            if (recipientAddressModel != null) {
+                recipientAddressModel.setLocationDataModel(locationDataModel);
+                recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
+                recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
+            }
         }
     }
 
