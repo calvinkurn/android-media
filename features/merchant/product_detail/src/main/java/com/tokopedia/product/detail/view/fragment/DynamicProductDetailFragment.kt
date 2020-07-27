@@ -78,7 +78,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -92,9 +91,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -589,7 +586,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      */
     override fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickShopMiniShopInfo(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
-        scrollToPosition(dynamicAdapter.getShopInfoPosition(pdpUiUpdater?.shopInfoMap))
+        scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.shopInfoMap))
     }
 
     /**
@@ -917,7 +914,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickTradeInRibbon(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-        scrollToPosition(dynamicAdapter.getTradeinPosition(pdpUiUpdater?.productTradeinMap))
+        scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productTradeinMap))
     }
 
     override fun onAccept() {
@@ -1110,13 +1107,32 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeInitialVariantData()
         observeonVariantClickedData()
         observeDiscussionData()
+        observeP2GeneralData()
+    }
+
+    private fun observeP2GeneralData() {
+        viewLifecycleOwner.observe(viewModel.p2GeneralData) {
+            if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMap)
+            } else {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMostHelpfulMap)
+            }
+
+            if (it.helpfulReviews.isEmpty() && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.orZero() == 0) {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productReviewMap)
+            }
+
+            pdpUiUpdater?.updateDataP2GeneralNew(it)
+            dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap, pdpUiUpdater?.productDiscussionMap, pdpUiUpdater?.productReviewMap)
+            dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_MEDIA_UPDATE_IMAGE_REVIEW)
+        }
     }
 
     private fun observeDiscussionData() {
         viewLifecycleOwner.observe(viewModel.discussionMostHelpful) { data ->
             data.doSuccessOrFail({
                 pdpUiUpdater?.updateDiscussionData(it.data.discussionMostHelpful)
-                dynamicAdapter.notifyDiscussion(pdpUiUpdater?.productDiscussionMostHelpfulMap)
+                dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.productDiscussionMostHelpfulMap)
             }, {
                 // No Op
             })
@@ -1170,7 +1186,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.getDynamicProductInfoP1,
                     pdpUiUpdater?.productNewVariantDataModel,
                     viewModel.variantData,
-                    dynamicAdapter.getVariantPosition(pdpUiUpdater?.productNewVariantDataModel))
+                    dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
         }
 
         dynamicAdapter.notifyMediaWithPayload(pdpUiUpdater?.mediaMap, ProductDetailConstant.PAYLOAD_UPDATE_IMAGE)
@@ -1554,11 +1570,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
         viewModel.installmentData = it.productFinancingCalculationData
-        if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMap)
-        } else {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMostHelpfulMap)
-        }
 
         if (it.vouchers.isNullOrEmpty()) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMerchantVoucherMap)
@@ -1568,10 +1579,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         viewModel.getDynamicProductInfoP1?.basic?.shopID.toIntOrZero(),
                         it.vouchers, viewModel.getDynamicProductInfoP1)
             }
-        }
-
-        if (it.helpfulReviews.isEmpty() && it.rating.totalRating == 0) {
-            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMostHelpfulMap)
         }
 
         if (!it.shopCommitment.isNowActive) {
@@ -1665,7 +1672,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onVariantGuideLineClicked(url: String) {
         activity?.let {
             DynamicProductDetailTracking.Click.onVariantGuideLineClicked(viewModel.getDynamicProductInfoP1, pdpUiUpdater?.productNewVariantDataModel,
-                    dynamicAdapter.getVariantPosition(pdpUiUpdater?.productNewVariantDataModel))
+                    dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
             startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
         }
     }
@@ -2372,7 +2379,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showErrorVariantUnselected() {
         DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
-        scrollToPosition(dynamicAdapter.getVariantPosition(pdpUiUpdater?.productNewVariantDataModel))
+        scrollToPosition(dynamicAdapter.getItemComponentIndex(pdpUiUpdater?.productNewVariantDataModel))
         showToasterError(getString(R.string.add_to_cart_error_variant))
     }
 

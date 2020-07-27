@@ -72,6 +72,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                              private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
                                                              private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
+                                                             private val getProductInfoP2General2UseCase: GetProductInfoP2General2UseCase,
                                                              private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
                                                              private val getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase,
                                                              private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
@@ -106,6 +107,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _p2General = MutableLiveData<ProductInfoP2General>()
     val p2General: LiveData<ProductInfoP2General>
         get() = _p2General
+
+    private val _p2GeneralData = MutableLiveData<ProductInfoP2GeneralData>()
+    val p2GeneralData: LiveData<ProductInfoP2GeneralData>
+        get() = _p2GeneralData
 
     private val _productInfoP3RateEstimate = MediatorLiveData<ProductInfoP3>()
     val productInfoP3RateEstimate: LiveData<ProductInfoP3>
@@ -202,7 +207,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 //        }
 
         _productInfoP3RateEstimate.addSource(_p2ShopDataResp) { p2Shop ->
-            launchCatchError(block = {
+            launchCatchError(context = dispatcher.io(), block = {
                 getDynamicProductInfoP1?.let {
                     getProductInfoP3RateEstimate(shopDomain, it)?.let { p3Data ->
                         updateShippingValue(p3Data.ratesModel?.getMinimumShippingPrice())
@@ -222,6 +227,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getProductInfoP2ShopUseCase.cancelJobs()
         getProductInfoP2LoginUseCase.cancelJobs()
         getProductInfoP2GeneralUseCase.cancelJobs()
+        getProductInfoP2General2UseCase.cancelJobs()
         getProductInfoP3RateEstimateUseCase.cancelJobs()
         toggleFavoriteUseCase.cancelJobs()
         trackAffiliateUseCase.cancelJobs()
@@ -415,6 +421,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         it.basic.getProductId())
             } else null
 
+            val p2GeneralData: Deferred<ProductInfoP2GeneralData> = getProductInfoP2GeneralDataAsync(it.basic.getProductId(), it.basic.getShopId())
+
             val userIdInt = userId.toIntOrNull() ?: 0
             val categoryId = it.basic.category.id.toIntOrNull() ?: 0
 
@@ -440,6 +448,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             p2LoginDeferred?.let {
                 _p2Login.value = it.await()
             }
+
+            _p2GeneralData.value = p2GeneralData.await()
         }
     }
 
@@ -696,6 +706,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId),
                     DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1, variantData), warehouseId, shopCredibilityExist)
             getProductInfoP2ShopUseCase.executeOnBackground()
+        }
+    }
+
+    private fun getProductInfoP2GeneralDataAsync(productId: Int, shopId: Int): Deferred<ProductInfoP2GeneralData> {
+        return async {
+            getProductInfoP2General2UseCase.executeOnBackground(GetProductInfoP2General2UseCase.createParams(productId, shopId), forceRefresh)
         }
     }
 

@@ -1,5 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
+import android.util.SparseArray
+import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
+import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
@@ -287,5 +290,22 @@ object DynamicProductDetailMapper {
         return tickerData.response.tickers.filter {
             it.layout != StickyLoginConstant.LAYOUT_FLOATING
         }
+    }
+
+    fun generateImageReviewUiData(data: ImageReviewGqlResponse): List<ImageReviewItem> {
+        val images = SparseArray<ImageReviewGqlResponse.Image>()
+        val reviews = SparseArray<ImageReviewGqlResponse.Review>()
+        val hasNext = data.productReviewImageListQuery?.isHasNext ?: false
+
+        data.productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
+        data.productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
+
+        return data.productReviewImageListQuery?.list?.map {
+            val image = images[it.imageID]
+            val review = reviews[it.reviewID]
+            ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
+                    review.reviewer?.fullName, image.uriThumbnail,
+                    image.uriLarge, review.rating, hasNext, data.productReviewImageListQuery?.detail?.imageCount)
+        } ?: listOf()
     }
 }

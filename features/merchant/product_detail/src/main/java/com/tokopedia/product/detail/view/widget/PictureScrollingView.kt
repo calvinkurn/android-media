@@ -10,18 +10,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
-import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import com.tokopedia.product.detail.view.adapter.VideoPicturePagerAdapter
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 
 class PictureScrollingView @JvmOverloads constructor(
@@ -35,7 +29,7 @@ class PictureScrollingView @JvmOverloads constructor(
     var shouldRenderViewPager: Boolean = true
 
     init {
-        instantiateView()
+        View.inflate(context, R.layout.widget_picture_scrolling, this)
         pdp_view_pager.offscreenPageLimit = 2
     }
 
@@ -89,26 +83,6 @@ class PictureScrollingView @JvmOverloads constructor(
         resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
     }
 
-    fun renderShopStatusDynamicPdp(shopStatus: Int, statusTitle: String, statusMessage: String, productStatus: String, productStatusTitle: String = "", productStatusMessage: String = "") {
-        when {
-            shopStatus != SHOP_STATUS_ACTIVE -> {
-                error_product_container.visible()
-                error_product_title.text = MethodChecker.fromHtml(statusTitle)
-                error_product_descr.text = MethodChecker.fromHtml(statusMessage)
-            }
-            productStatus != ProductStatusTypeDef.ACTIVE -> {
-                error_product_container.showWithCondition(productStatus != ProductStatusTypeDef.WAREHOUSE)
-                error_product_title.text = productStatusTitle
-                error_product_descr.text = productStatusMessage
-            }
-            else -> error_product_container.gone()
-        }
-    }
-
-    private fun instantiateView() {
-        View.inflate(context, R.layout.widget_picture_scrolling, this)
-    }
-
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
         return if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
@@ -128,7 +102,6 @@ class PictureScrollingView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val SHOP_STATUS_ACTIVE = 1
         private const val SWIPE_RIGHT_DIRECTION = "right"
         private const val SWIPE_LEFT_DIRECTION = "left"
     }

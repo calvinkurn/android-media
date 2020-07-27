@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.ProductInfoP2GeneralData
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
@@ -54,7 +55,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
-    val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
+    val productReviewMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
 
     val productTradeinMap: ProductGeneralInfoDataModel?
@@ -193,6 +194,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                         ?: ""
             }
 
+            productReviewMap?.run {
+                totalRating = it.basic.stats.countReview
+                ratingScore = it.basic.stats.rating
+            }
+
             productLastSeenMap?.run {
                 /*
                  * Sometimes this lastUpdateUnix doesn't has Long value like "123"
@@ -303,20 +309,16 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopFeature = it.shopFeature
             }
 
-            mediaMap?.run {
-                shouldShowImageReview = it.imageReviews.isNotEmpty()
-            }
-
             orderPriorityMap?.run {
                 data.first().subtitle = it.shopCommitment.staticMessages.pdpMessage
             }
 
             productProtectionMap?.run {
-                if (it.productPurchaseProtectionInfo.ppItemDetailPage?.title?.isNotEmpty() == true) {
-                    title = it.productPurchaseProtectionInfo.ppItemDetailPage?.title
+                if (it.productPurchaseProtectionInfo.ppItemDetailPage.title?.isNotEmpty() == true) {
+                    title = it.productPurchaseProtectionInfo.ppItemDetailPage.title
                             ?: ""
                 }
-                data.first().subtitle = it.productPurchaseProtectionInfo.ppItemDetailPage?.subTitlePDP
+                data.first().subtitle = it.productPurchaseProtectionInfo.ppItemDetailPage.subTitlePDP
                         ?: ""
             }
 
@@ -333,12 +335,29 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shouldRenderSocialProof = true
             }
 
+            productMerchantVoucherMap?.run {
+                voucherData = ArrayList(it.vouchers)
+            }
+        }
+    }
+
+    fun updateDataP2GeneralNew(data: ProductInfoP2GeneralData?) {
+        data?.let {
+            productReviewMap?.run {
+                listOfReviews = it.helpfulReviews
+                imageReviews = it.imageReviews
+            }
+
             productDiscussionMap?.run {
                 latestTalk = it.latestTalk
             }
 
+            mediaMap?.run {
+                shouldShowImageReview = it.imageReviews.isNotEmpty()
+            }
+
             productDiscussionMostHelpfulMap?.run {
-                if(it.discussionMostHelpful == null) {
+                if (it.discussionMostHelpful == null) {
                     isShimmering = true
                 } else {
                     it.discussionMostHelpful?.let {
@@ -347,16 +366,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                         isShimmering = false
                     }
                 }
-            }
-
-            productMostHelpfulMap?.run {
-                listOfReviews = it.helpfulReviews
-                imageReviews = it.imageReviews
-                rating = it.rating
-            }
-
-            productMerchantVoucherMap?.run {
-                voucherData = ArrayList(it.vouchers)
             }
         }
     }
