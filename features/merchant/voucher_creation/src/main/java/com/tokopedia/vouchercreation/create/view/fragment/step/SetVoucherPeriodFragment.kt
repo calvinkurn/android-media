@@ -270,6 +270,7 @@ class SetVoucherPeriodFragment : Fragment() {
 
             observe(viewModel.startDateCalendarLiveData) { startDate ->
                 startCalendar = startDate as? GregorianCalendar
+                endDateString = startDate.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 val formattedDate = startDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
                 startDateTextField?.textFieldInput?.setText(formattedDate)
             }
@@ -405,7 +406,7 @@ class SetVoucherPeriodFragment : Fragment() {
                     endCalendar?.let { currentDate ->
                         getMaxEndDate(startCalendar)?.let { maxDate ->
                             val title = getString(R.string.mvc_end_date_title)
-                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), startDateString).parseAsHtml()
+                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), endDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()
                             DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                                 setTitle(title)

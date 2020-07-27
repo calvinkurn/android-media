@@ -209,6 +209,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
             observe(viewModel.startDateCalendarLiveData) { startDate ->
                 (startDate as? GregorianCalendar)?.run {
                     edtMvcStartDate?.setDateText(this)
+                    endDateString = time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 }
             }
             observe(viewModel.endDateCalendarLiveData) { endDate ->
@@ -277,7 +278,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                     endCalendar?.let { currentDate ->
                         DateTimeUtils.getMaxEndDate(startCalendar)?.let { maxDate ->
                             val title = getString(R.string.mvc_end_date_title)
-                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), startDateString).parseAsHtml()
+                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), endDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()
                             DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                                 setTitle(title)
