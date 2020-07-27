@@ -270,7 +270,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
         getCurrentLocation()
         dealCategoryViewModel.shimmeringCategory()
         loadData(1)
-        analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
+
+        if (getCurrentLocation() != location) {
+            analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
+        }
     }
 
     override fun hasInitialLoadingModel(): Boolean = false

@@ -231,7 +231,9 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     override fun onBaseLocationChanged(location: Location) {
         if (isAnalyticsInitialized) {
-            analytics.eventClickChangeLocationBrandPage(getCurrentLocation().name, location.name)
+            if (getCurrentLocation() != location) {
+                analytics.eventClickChangeLocationBrandPage(getCurrentLocation().name, location.name)
+            }
         }
         setCurrentLocation(location)
         loadData(1)

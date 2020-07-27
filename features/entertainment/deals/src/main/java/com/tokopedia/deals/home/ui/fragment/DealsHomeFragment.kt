@@ -296,7 +296,10 @@ class DealsHomeFragment : DealsBaseFragment(),
     private fun setCurrentLocation(location: Location) {
         val previousLocation = (activity as DealsBaseActivity).currentLoc
         (activity as DealsBaseActivity).currentLoc = location
-        analytics.eventChangeLocationHomePage(prevLocation = previousLocation.name, newLocation = location.name)
+
+        if (previousLocation != location) {
+            analytics.eventChangeLocationHomePage(prevLocation = previousLocation.name, newLocation = location.name)
+        }
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
