@@ -439,7 +439,8 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         bottomSheet?.dismiss()
     }
 
-    private var isAnalyticsInitialized: Boolean = this::analytics.isInitialized
+    private val isAnalyticsInitialized: Boolean
+        get() = this::analytics.isInitialized
 
     companion object {
         const val SCREEN_NAME = "deals search"

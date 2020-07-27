@@ -254,7 +254,8 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         (activity as DealsBaseActivity).currentLoc = location
     }
 
-    private var isAnalyticsInitialized: Boolean = this::analytics.isInitialized
+    private val isAnalyticsInitialized: Boolean
+        get() = this::analytics.isInitialized
 
     override fun resetFilter() {}
 

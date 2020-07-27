@@ -156,7 +156,8 @@ class DealsAnalytics @Inject constructor(
                 String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_CLICK, item.voucherName, item.merchantName, item.position + 1)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD, DealsAnalyticsConstants.SEARCH_RESULT_LIST,
+                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD,
+                    DataLayer.mapOf(DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.SEARCH_RESULT_LIST),
                 DealsAnalyticsConstants.PRODUCTS, getECommerceDataVoucherSearchPage(item)
         )
         )
@@ -185,7 +186,9 @@ class DealsAnalytics @Inject constructor(
                 String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, item.title, position + 1)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD, DealsAnalyticsConstants.SEARCH_RESULT_LIST,
+                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(
+                    DealsAnalyticsConstants.ACTION_FIELD, DataLayer.mapOf(
+                        DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.SEARCH_RESULT_LIST),
                 DealsAnalyticsConstants.PRODUCTS, getECommerceDataBrandSearchPage(item, position)
         )
         )
@@ -790,7 +793,7 @@ class DealsAnalytics @Inject constructor(
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
                 DealsAnalyticsConstants.Event.PROMO_CLICK,
-                DealsAnalyticsConstants.Action.IMPRESSION_ON_CURATED_CARD,
+                DealsAnalyticsConstants.Action.CLICK_ON_CURATED_CARD,
                 String.format(DealsAnalyticsConstants.Label.CURATED_CARD_VIEW, curatedCategory.name, position)
         )
         map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(

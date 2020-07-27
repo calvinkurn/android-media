@@ -294,7 +294,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page: Int) {
-        analytics.impressionProductCategory(productCardDataView,productItemPosition, page)
+        analytics.impressionProductCategory(productCardDataView, productItemPosition, page)
     }
 
     override fun resetFilter() {
