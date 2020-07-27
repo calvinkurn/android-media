@@ -536,6 +536,13 @@ class PowerMerchantTracking @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
+    fun eventOpenScreen(screeName: String) {
+        val event = mapOf(
+            CustomDimension.SHOP_TYPE to getShopType()
+        )
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screeName, event)
+    }
+
     private fun getShopType(): String {
         val isPowerMerchant = user.isGoldMerchant
 
