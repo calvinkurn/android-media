@@ -109,6 +109,42 @@
             app:srcCompat="@drawable/product_card_ic_three_dots"
             tools:visibility="visible" />
 
+        <ProgressBar
+            android:id="@+id/progressBarStock"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/product_card_flashsale_progressbar_height"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
+            android:layout_marginLeft="@dimen/product_card_content_margin"
+            android:layout_marginRight="@dimen/product_card_content_margin"
+            android:layout_marginBottom="@dimen/product_card_flashsale_label_margintop"
+            android:max="100"
+            android:progressDrawable="@drawable/progressbar_flashsale"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textViewStockLabel"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewStockLabel"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_label_height"
+            app:srcCompat="@drawable/ic_pdp_view"
+            android:textStyle="bold"
+            android:textColor="@color/charcoal_grey_68"
+            android:textSize="@dimen/sp_10"
+            android:layout_marginLeft="@dimen/product_card_content_margin"
+            android:layout_marginRight="@dimen/product_card_content_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="989jt orang"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/buttonAddToCart"
             android:layout_width="@dimen/dp_0"

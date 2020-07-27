@@ -16,15 +16,18 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.Status
-import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
+import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
+import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import org.hamcrest.Matcher
-import org.junit.Assert.assertEquals
+import org.junit.After
+import org.junit.Assert.assertThat
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,6 +39,9 @@ class PreferenceListActivityTrackingTest {
 
     @get:Rule
     var activityRule = ActivityTestRule(PreferenceListActivity::class.java, false, false)
+
+    @get:Rule
+    val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
 
     private val cls: String? = null
     private val activityMonitor = Instrumentation.ActivityMonitor(cls, null, true)
@@ -64,31 +70,30 @@ class PreferenceListActivityTrackingTest {
         }
     }
 
-    private fun setup() {
+    @Before
+    fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
         setupGraphqlMockResponse()
 
-        activityRule.launchActivity(null)
-
-        idlingResource = SwipeRefreshIdlingResource(activityRule.activity, R.id.swipe_refresh_layout)
+        idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
+        activityRule.launchActivity(null)
 
         InstrumentationRegistry.getInstrumentation().addMonitor(activityMonitor)
     }
 
-    private fun cleanup() {
+    @After
+    fun cleanup() {
+        gtmLogDBSource.deleteAll().subscribe()
+
         IdlingRegistry.getInstance().unregister(idlingResource)
 
         InstrumentationRegistry.getInstrumentation().removeMonitor(activityMonitor)
-
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @Test
     fun testTracking() {
-        setup()
-
         // perform click add button
         onView(withId(R.id.btn_preference_list_action)).perform(click())
 
@@ -117,10 +122,6 @@ class PreferenceListActivityTrackingTest {
             }))
         }
 
-        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
-            assertEquals(Status.SUCCESS, it.status)
-        }
-
-        cleanup()
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 }

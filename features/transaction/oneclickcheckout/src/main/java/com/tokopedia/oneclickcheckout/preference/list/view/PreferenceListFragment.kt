@@ -59,7 +59,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     private val adapter = PreferenceListAdapter(this)
 
-    var progressDialog: AlertDialog? = null
+    private var progressDialog: AlertDialog? = null
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
     private val preferenceList by lazy { view?.findViewById<RecyclerView>(R.id.rv_preference_list) }
@@ -141,9 +141,9 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 is OccState.Failed -> {
                     swipeRefreshLayout?.isRefreshing = false
                     it.getFailure()?.let { failure ->
-                        handleError(failure.throwable)
+                            handleError(failure.throwable)
+                        }
                     }
-                }
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })

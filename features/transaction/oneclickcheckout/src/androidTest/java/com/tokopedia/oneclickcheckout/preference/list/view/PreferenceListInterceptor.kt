@@ -243,3 +243,7 @@ class PreferenceListActivityTestInterceptor : Interceptor {
                 .build()
     }
 }
+
+object PreferenceListInterceptor {
+    val interceptor = PreferenceListActivityTestInterceptor()
+}

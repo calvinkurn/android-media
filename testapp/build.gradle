@@ -173,6 +173,9 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.akamaiBotLib)
 
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.iris)
+
     //you can delete below line if you use old login, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
