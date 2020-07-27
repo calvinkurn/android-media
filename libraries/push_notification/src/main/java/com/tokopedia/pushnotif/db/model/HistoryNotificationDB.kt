@@ -27,7 +27,7 @@ data class HistoryNotificationDB(
 
     @Nullable
     @ColumnInfo(name = "trans_id")
-    var transId: Int? = 0
+    var transId: String? = ""
 
 ) {
 
