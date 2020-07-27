@@ -47,6 +47,10 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
 
+    var isAddingWholeSale = false
+
+    var isAddingValidationWholeSale = false
+
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
     var isProductNameChanged = false
@@ -67,6 +71,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isWholeSalePriceActivated = MutableLiveData<Boolean>(false)
     var wholeSaleErrorCounter = MutableLiveData(0)
+    var isTheLastOfWholeSale = MutableLiveData<Boolean>()
 
     private val mIsProductStockInputError = MutableLiveData<Boolean>()
     val isProductStockInputError: LiveData<Boolean>
@@ -99,6 +104,12 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         addSource(wholeSaleErrorCounter) {
             this.value = isInputValid()
+            // to avoid using default value of wholeSaleErrorCounter
+            // so we must check manual validation if we are in adding whole sale
+            if (isAddingWholeSale) {
+                this.value = !(isAddingValidationWholeSale)
+                isAddingWholeSale = false
+            }
         }
         addSource(mIsProductStockInputError) {
             this.value = isInputValid()
@@ -110,6 +121,9 @@ class AddEditProductDetailViewModel @Inject constructor(
             this.value = isInputValid()
         }
         addSource(mIsPreOrderDurationInputError) {
+            this.value = isInputValid()
+        }
+        addSource(isTheLastOfWholeSale) {
             this.value = isInputValid()
         }
     }
@@ -142,7 +156,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
         // if not activated; wholesale error is not countable
         val isWholeSaleActivated = isWholeSalePriceActivated.value ?: false
-        val isProductWholeSaleError = isWholeSaleActivated && wholeSaleErrorCounter.value?.let { it > 0 } ?: false
+        val isProductWholeSaleError = isWholeSaleActivated && wholeSaleErrorCounter.value?.let { it > 0 } ?: false || isTheLastOfWholeSale.value ?: false
 
         // if not activated; pre order duration error is not countable
         val isPreOrderActivated = isPreOrderActivated.value ?: false

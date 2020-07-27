@@ -86,7 +86,9 @@ import javax.inject.Inject
 class AddEditProductDetailFragment : BaseDaggerFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
-        WholeSaleInputViewHolder.TextChangedListener {
+        WholeSaleInputViewHolder.TextChangedListener,
+        WholeSaleInputViewHolder.OnAddButtonClickListener
+{
 
     companion object {
         private const val TAG_BULK_EDIT_PRICE: String = "TAG_BULK_EDIT_PRICE"
@@ -279,19 +281,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleSwitch = view.findViewById(R.id.su_wholesale)
         productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
         productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
-        wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
+        wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this, this,
                 onDeleteWholesale = {
                     if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
                     }
+                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
+                    val deletePosition = wholeSaleInputFormsAdapter?.getDeletePosition()
                     wholeSaleInputFormsAdapter?.itemCount?.let {
                         if (it == 1) {
                             productWholeSaleSwitch?.isChecked = false
                         }
+                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1,  deletePosition ?: -1)
+                        // to avoid enable button submit when we delete the last of whole sale
+                        if(deletePosition == it - 1) {
+                            viewModel.isTheLastOfWholeSale.value = false
+                        }
                     }
-                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -313,6 +321,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
             wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+            validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
+            viewModel.isAddingWholeSale = true
         }
 
         // add edit product stock views
@@ -562,7 +572,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product wholesale input validation
         viewModel.isWholeSalePriceActivated.value?.run {
-            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
+            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
         }
 
         // product stock validation
@@ -704,32 +714,44 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onWholeSaleQuantityItemTextChanged(position: Int, input: String) {
-        val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
-        val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
-        val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
-        val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position) ?: ""
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, minOrderInput, previousQuantity)
-        quantityField?.setError(errorMessage.isNotEmpty())
-        quantityField?.setMessage(errorMessage)
-        updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
-        wholeSaleInputFormsAdapter?.run {
-            if (input.isNotBlank()) this.updateWholeSaleQuantityInputModel(position, input)
+        if ( productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
+            val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
+            val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
+            val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+            val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position) ?: ""
+            val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, minOrderInput, previousQuantity)
+            // to avoid enable button submit when we edit the last of whole sale
+            if(position == wholeSaleInputFormsAdapter?.itemCount?.minus(1)) {
+                viewModel.isTheLastOfWholeSale.value = errorMessage.isNotEmpty()
+            }
+            quantityField?.setError(errorMessage.isNotEmpty())
+            quantityField?.setMessage(errorMessage)
+            updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+            wholeSaleInputFormsAdapter?.run {
+                if (input.isNotBlank()) this.updateWholeSaleQuantityInputModel(position, input)
+            }
         }
     }
 
     override fun onWholeSalePriceItemTextChanged(position: Int, input: String) {
-        val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
-        val priceField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_price)
-        val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position)?.replace(".", "")
-                ?: ""
-        val errorMessage = viewModel.validateProductWholeSalePriceInput(input, productPriceInput, previousPrice)
-        priceField?.setError(errorMessage.isNotEmpty())
-        priceField?.setMessage(errorMessage)
-        updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
-        wholeSaleInputFormsAdapter?.run {
-            if (input.isNotBlank()) this.updateWholeSalePriceInputModel(position, input)
-        }
+       if (productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
+           val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
+           val priceField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_price)
+           val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+           val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position)?.replace(".", "")
+                   ?: ""
+           val errorMessage = viewModel.validateProductWholeSalePriceInput(input, productPriceInput, previousPrice)
+           // to avoid enable button submit when we edit the last of whole sale
+           if(position == wholeSaleInputFormsAdapter?.itemCount?.minus(1)) {
+               viewModel.isTheLastOfWholeSale.value = errorMessage.isNotEmpty()
+           }
+           priceField?.setError(errorMessage.isNotEmpty())
+           priceField?.setMessage(errorMessage)
+           updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+           wholeSaleInputFormsAdapter?.run {
+               if (input.isNotBlank()) this.updateWholeSalePriceInputModel(position, input)
+           }
+       }
     }
 
     fun sendDataBack() {
@@ -774,11 +796,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
-        wholesaleInputForms?.childCount?.let {
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1) {
+        itemCount?.let {
             var wholeSaleErrorCounter = 0
             for (index in 0 until it) {
-                val productWholeSaleFormView = wholesaleInputForms.layoutManager?.getChildAt(index)
+                // to avoid counting error of whole sale that we removed
+                if (specialIndex == index) {
+                    continue
+                }
+                val productWholeSaleFormView = wholesaleInputForms?.layoutManager?.getChildAt(index)
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
@@ -807,6 +833,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 isPriceError?.let { isError -> if (isError) wholeSaleErrorCounter++ }
             }
             viewModel.wholeSaleErrorCounter.value = wholeSaleErrorCounter
+            viewModel.isAddingValidationWholeSale = wholeSaleErrorCounter > 0
         }
     }
 
@@ -1079,8 +1106,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         val imagePickerPickerTabTypeDef = intArrayOf(
                 ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA,
-                ImagePickerTabTypeDef.TYPE_INSTAGRAM
+                ImagePickerTabTypeDef.TYPE_CAMERA
         )
 
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
@@ -1381,5 +1407,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         detailInputModel.pictureList = newPictureList
         detailInputModel.imageUrlOrPathList = imageUrlOrPathList
+    }
+
+    override fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int): String {
+        val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+        val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position - 1) ?: ""
+        val validation = viewModel.validateProductWholeSaleQuantityInput(quantity, minOrderInput, previousQuantity)
+        viewModel.isTheLastOfWholeSale.value = validation.isNotEmpty()
+        return validation
+    }
+
+    override fun getValidationCurrentWholeSalePrice(price: String, position: Int): String {
+        val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.replace(".", "") ?: ""
+        val validation = viewModel.validateProductWholeSalePriceInput(price, productPriceInput, previousPrice)
+        viewModel.isTheLastOfWholeSale.value = validation.isNotEmpty()
+        return validation
     }
 }
