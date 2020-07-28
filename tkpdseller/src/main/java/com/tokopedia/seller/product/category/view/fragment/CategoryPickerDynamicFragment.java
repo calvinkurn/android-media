@@ -71,7 +71,7 @@ public class CategoryPickerDynamicFragment extends CategoryPickerFragment implem
 
     @Override
     protected void initVar() {
-        presenter.fetchCategoryLevelOne();
+        presenter.getCategoryLiteTree();
     }
 
     @Override

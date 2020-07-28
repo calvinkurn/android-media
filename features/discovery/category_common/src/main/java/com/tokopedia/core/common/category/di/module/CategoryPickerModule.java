@@ -75,10 +75,9 @@ public class CategoryPickerModule {
 
     @Provides
     CategoryPickerPresenter provideCategoryPickerPresenter(
-            FetchCategoryWithParentChildUseCase fetchCategoryChildUseCase,
-            FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase
+            GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase
     ) {
-        return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchCategoryFromSelectedUseCase);
+        return new CategoryPickerPresenterImpl(getCategoryLiteTreeUseCase);
     }
 
     @Provides
