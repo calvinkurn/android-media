@@ -14,6 +14,7 @@ class OrderHistoryAnalytic @Inject constructor() {
     private val EVENT_LABEL = "eventLabel"
     private val USER_ID = "userId"
     private val ECOMMERCE = "ecommerce"
+    private val ITEM_LIST = "item_list"
 
     object Name {
         const val PRODUCT_PREVIEW = "productView"
@@ -38,6 +39,7 @@ class OrderHistoryAnalytic @Inject constructor() {
                         EVENT_ACTION, Action.VIEW_PRODUCT_PRODUCT_HISTORY,
                         EVENT_LABEL, "buyer",
                         USER_ID, session.userId,
+                        ITEM_LIST, "/chat - buy again",
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
@@ -47,7 +49,6 @@ class OrderHistoryAnalytic @Inject constructor() {
                                                 "price", product.priceInt,
                                                 "brand", "",
                                                 "category", product.categoryId,
-                                                "list", "/chat",
                                                 "position", position,
                                                 "dimension40", "/chat - buy again"
                                         )
