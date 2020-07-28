@@ -174,7 +174,7 @@ open class WishlistViewModel @Inject constructor(
         }){
             isWishlistErrorInFirstPage.value = true
             it.printStackTrace()
-            wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            wishlistData.value = listOf(ErrorWishlistDataModel())
             currentPage--
         }
     }
