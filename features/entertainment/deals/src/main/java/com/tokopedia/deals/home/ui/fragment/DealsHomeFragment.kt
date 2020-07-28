@@ -3,6 +3,7 @@ package com.tokopedia.deals.home.ui.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
@@ -16,7 +17,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
-import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
@@ -31,6 +31,7 @@ import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
+import com.tokopedia.deals.home.ui.activity.DealsHomeActivity
 import com.tokopedia.deals.home.ui.adapter.DealsHomeAdapter
 import com.tokopedia.deals.home.ui.dataview.*
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
@@ -108,7 +109,6 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun checkCoachMark(homeLayout: List<DealsBaseItemDataView>) {
-        initTrackingSection(homeLayout)
         val shouldShowCoachMark = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
         if (shouldShowCoachMark && homeLayout.isNotEmpty() && homeLayout.first().isLoaded) {
             recyclerView.smoothScrollToPosition(adapter.lastIndex)
@@ -119,43 +119,13 @@ class DealsHomeFragment : DealsBaseFragment(),
         }
     }
 
-    private fun initTrackingSection(homeLayout: List<DealsBaseItemDataView>){
-        homeLayout.forEach { dealsBaseItemDataView ->
-            when (dealsBaseItemDataView) {
-                is CuratedProductCategoryDataView -> {
-                    if (dealsBaseItemDataView.title.contentEquals("Voucher populer")) {
-                        dealsBaseItemDataView.productCards.forEachIndexed { index, productCardDataView ->
-                            analytics.eventSeePopularLandmarkView(productCardDataView, index)
-                        }
-                    }
-                }
-
-                is FavouritePlacesDataView -> {
-                    if (dealsBaseItemDataView.places.size > 0) {
-                        dealsBaseItemDataView.places.forEachIndexed { index, place ->
-                            analytics.eventSeeCuratedSection(place, index)
-                        }
-                    }
-                }
-
-                is BannersDataView -> {
-                    if (!dealsBaseItemDataView.list.isNullOrEmpty()) {
-                        dealsBaseItemDataView.list.forEachIndexed { index, bannerDataView ->
-                            analytics.eventSeeHomePageBanner(bannerId = bannerDataView.bannerId, promotions = bannerDataView , bannerPosition = index)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun getCoachMarkPosition(homeLayout: List<DealsBaseItemDataView>): CoachMarkPositionDataView {
         var popularPlaceIdx: Int? = null
         var favouriteCategoryIdx: Int? = null
         homeLayout.forEachIndexed { index, dealsBaseItemDataView ->
             when (dealsBaseItemDataView) {
                 is VoucherPlacePopularDataView -> popularPlaceIdx = index
-                is FavouritePlacesDataView -> favouriteCategoryIdx = index
+                is CuratedCategoryDataView -> favouriteCategoryIdx = index
             }
         }
         return CoachMarkPositionDataView(popularPlaceIdx, favouriteCategoryIdx)
@@ -242,35 +212,39 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun onClickSearchBar() {
-        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
         analytics.eventClickSearchHomePage()
+        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
     override fun afterSearchBarTextChanged(text: String) {/* do nothing */ }
 
     /* BANNER SECTION ACTION */
+    override fun onBannerScroll(banner: BannersDataView.BannerDataView, position: Int) {
+        analytics.eventSeeHomePageBanner(banner.bannerId, position, banner)
+    }
+
     override fun onBannerClicked(banner: List<BannersDataView.BannerDataView>, position: Int) {
-        RouteManager.route(context, banner[position].bannerUrl)
         analytics.eventClickHomePageBanner(bannerId = banner[position].bannerId, bannerPosition = position, promotions = banner[position])
+        onClickBanner(banner[position].bannerUrl)
     }
 
     override fun onBannerSeeAllClick(bannerSeeAllUrl: String) {
-        RouteManager.route(context, bannerSeeAllUrl)
         analytics.eventClickAllBanner()
+        RouteManager.route(context, bannerSeeAllUrl)
     }
 
     /* CATEGORY SECTION ACTION */
     override fun onDealsCategoryClicked(dealsCategory: DealsCategoryDataView, position: Int) {
+        analytics.eventClickCategoryIcon(dealsCategory.title, position)
         val intent = RouteManager.getIntent(requireContext(), dealsCategory.appUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
-        analytics.eventClickCategoryIcon(dealsCategory.title, position)
     }
 
     override fun onDealsCategorySeeAllClicked(categories: List<DealsCategoryDataView>) {
+        analytics.eventClickViewAllProductCardInHomepage()
         val categoriesBottomSheet = DealsCategoryBottomSheet(this)
         categoriesBottomSheet.showDealsCategories(categories)
         categoriesBottomSheet.show(requireFragmentManager(), "")
-        analytics.eventClickCategorySectionOne()
     }
 
     /* BRAND SECTION ACTION */
@@ -288,39 +262,44 @@ class DealsHomeFragment : DealsBaseFragment(),
     override fun onProductClicked(productCardDataView: ProductCardDataView, productItemPosition: Int) {
         analytics.curatedProductClick(productCardDataView,productItemPosition)
         RouteManager.route(context, productCardDataView.appUrl)
-        trackLandmarkPopular(productCardDataView, productItemPosition)
-    }
-
-    private fun trackLandmarkPopular(productCardDataView: ProductCardDataView, position: Int) {
-        if (productCardDataView.productCategory?.name.equals("Populer")) {
-            analytics.eventClickLandmarkPopular(productCardDataView, position)
-        }
     }
 
     override fun onSeeAllProductClicked(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
+        analytics.clickAllCuratedProduct()
         val intent = RouteManager.getIntent(context, curatedProductCategoryDataView.seeAllUrl)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
-        analytics.clickAllCuratedProduct()
     }
 
     /* NEAREST PLACE SECTION ACTION */
+    override fun onVoucherPlaceCardBind(voucherPlaceCard: VoucherPlacePopularDataView, position: Int) {
+        analytics.eventSeePopularLandmarkView(voucherPlaceCard, position)
+    }
+    
     override fun onVoucherPlaceCardClicked(voucherPlaceCard: VoucherPlaceCardDataView, position: Int) {
-        (activity as DealsBaseActivity).setCurrentLocation(voucherPlaceCard.location)
-        startActivityForResult(DealsCategoryActivity.getCallingIntent(requireContext()), DEALS_CATEGORY_REQUEST_CODE)
+        analytics.eventClickLandmarkPopular(voucherPlaceCard, position)
+        (activity as DealsHomeActivity).setCurrentLocation(voucherPlaceCard.location)
     }
 
     /* FAVOURITE CATEGORY SECTION ACTION */
-    override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: FavouritePlacesDataView.Place, position: Int) {
+
+    override fun onBindFavouriteCategory(curatedCategoryDataView: CuratedCategoryDataView, position: Int) {
+        analytics.eventSeeCuratedSection(curatedCategoryDataView, position)
+    }
+
+    override fun onClickFavouriteCategory(url: String, favoritePlacesDataView: CuratedCategoryDataView.CuratedCategory, position: Int) {
+        analytics.eventClickCuratedSection(favoritePlacesDataView, position)
         val intent = RouteManager.getIntent(context, url)
         startActivityForResult(intent, DEALS_CATEGORY_REQUEST_CODE)
-        analytics.eventClickCuratedSection(favoritePlacesDataView, position)
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
     private fun setCurrentLocation(location: Location) {
         val previousLocation = (activity as DealsBaseActivity).currentLoc
         (activity as DealsBaseActivity).currentLoc = location
-        analytics.eventChangeLocationHomePage(prevLocation = previousLocation.name, newLocation = location.name)
+
+        if (previousLocation != location) {
+            analytics.eventChangeLocationHomePage(prevLocation = previousLocation.name, newLocation = location.name)
+        }
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
@@ -333,6 +312,28 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onImpressionCuratedProduct(curatedProductCategoryDataView: CuratedProductCategoryDataView, position: Int) {
         analytics.impressionCuratedProduct(curatedProductCategoryDataView,position)
+    }
+
+    override fun showTitle(brand: DealsBrandsDataView) {
+        /* do nothing */
+    }
+
+    private fun onClickBanner(bannerlink:String) {
+        val deeplink = "tokopedia://"
+        val fullPathWWW = "https://www.tokopedia.com/"
+        val domainWithWWW = "www.tokopedia.com/"
+        val domainWithoutWWW = "tokopedia.com/"
+        var applink = ""
+        if (!TextUtils.isEmpty(bannerlink)) {
+            applink = if (bannerlink.contains(domainWithWWW)) {
+                bannerlink.replace(fullPathWWW, deeplink)
+            } else if (bannerlink.contains(domainWithoutWWW)) {
+                bannerlink.replace(domainWithoutWWW, deeplink)
+            } else {
+                bannerlink
+            }
+            RouteManager.route(context, applink)
+        }
     }
 
     companion object {

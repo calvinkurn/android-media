@@ -34,7 +34,7 @@ class SelectLocationBottomSheet (private val currentLocation: Location?, private
     }
 
     private fun setLayoutMargin() {
-        val padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
+        val padding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
         bottomSheetWrapper.setPadding(0, padding, 0, 0)
         bottomSheetHeader.setPadding(padding, 0, padding, 0)
     }

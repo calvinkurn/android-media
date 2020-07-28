@@ -1,11 +1,12 @@
 package com.tokopedia.deals.home.listener
 
-import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 
 /**
  * @author by jessica on 24/06/20
  */
 
 interface DealsFavouriteCategoriesListener {
-    fun onClickFavouriteCategory(url: String, favoritePlacesDataView: FavouritePlacesDataView.Place, position: Int)
+    fun onBindFavouriteCategory(curatedCategoryDataView: CuratedCategoryDataView, position: Int)
+    fun onClickFavouriteCategory(url: String, favoritePlacesDataView: CuratedCategoryDataView.CuratedCategory, position: Int)
 }

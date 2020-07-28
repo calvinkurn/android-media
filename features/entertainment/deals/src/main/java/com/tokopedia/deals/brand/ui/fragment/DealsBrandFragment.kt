@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
@@ -21,19 +22,26 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
+import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
+import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.activity_base_deals.*
+import kotlinx.android.synthetic.main.fragment_deals_brand.*
 import javax.inject.Inject
 
 class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
-        DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener{
+        DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener,
+        SearchBarActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,7 +58,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     private var childCategoryId: String? = null
 
     private var tabName: String = ""
-    private var brandAdapter = DealsBrandAdapter(this,this)
+    private var brandAdapter = DealsBrandAdapter(this, this)
 
     @Inject
     lateinit var analytics: DealsAnalytics
@@ -59,6 +67,8 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         super.onViewCreated(view, savedInstanceState)
         childCategoryId = arguments?.getString(CHILD_CATEGORY_ID)
         tabName = arguments?.getString(TAB_NAME) ?: ""
+
+        (activity as DealsBaseActivity).searchBarActionListener = this
 
         loadInitialData()
     }
@@ -91,16 +101,16 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
                     } else {
                         val nextPage = totalItem >= DEFAULT_MIN_ITEMS
                         renderList(mapBrandListToBaseItemView(it.data.brands, showTitle()), nextPage)
-                        if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
-                            if (isAnalyticsInitialized) {
+
+                        if (isAnalyticsInitialized) {
+                            if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
                                 analytics.eventViewSearchResultBrandPage((activity as DealsBrandActivity).getSearchKeyword(),
                                         getCurrentLocation().name, it.data.brands, tabName)
-                            }
-                        } else {
-                            if (isAnalyticsInitialized) {
+                            } else {
                                 analytics.eventViewPopularBrandBrandPage(it.data.brands, tabName)
                             }
                         }
+
                         cacheData(nextPage)
                     }
                 }
@@ -126,6 +136,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     private fun renderNotFound() {
         clearAllData()
+        hideTitleShimmering()
         renderList(listOf(DealsEmptyDataView(getString(R.string.deals_category_empty_title), getString(R.string.deals_category_empty_description))), false)
     }
 
@@ -219,14 +230,24 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     override fun onBaseLocationChanged(location: Location) {
         if (isAnalyticsInitialized) {
-            analytics.eventClickChangeLocationBrandPage(getCurrentLocation().name, location.name)
+            if (getCurrentLocation() != location) {
+                analytics.eventClickChangeLocationBrandPage(getCurrentLocation().name, location.name)
+            }
         }
         setCurrentLocation(location)
         loadData(1)
     }
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        analytics.eventScrollToBrandPopular(brand,position)
+        analytics.eventScrollToBrandPopular(brand, position)
+    }
+
+    override fun onClickSearchBar() {
+        (activity as DealsBaseBrandCategoryActivity).appBarLayoutSearchContent.setExpanded(true)
+    }
+
+    override fun afterSearchBarTextChanged(text: String) {
+
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
@@ -234,11 +255,27 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         (activity as DealsBaseActivity).currentLoc = location
     }
 
-    private var isAnalyticsInitialized: Boolean = this::analytics.isInitialized
+    private val isAnalyticsInitialized: Boolean
+        get() = this::analytics.isInitialized
 
-    override fun resetFilter() {
+    override fun resetFilter() {}
 
+    override fun getInitialLayout(): Int = R.layout.fragment_deals_brand
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
+
+    override fun showTitle(brands: DealsBrandsDataView) {
+        if (!brands.title.isNullOrEmpty()) {
+            hideTitleShimmering()
+            tv_brand_title.show()
+            unused_line.show()
+            tv_brand_title.text = brands.title
+        }
     }
+
+    private fun hideTitleShimmering() {
+        shimmering_title.hide()
+    }
+
 
     companion object {
         const val TAG = "DealsBrandFragment"

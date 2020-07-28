@@ -23,4 +23,6 @@ object ApplinkConstInternalDeals {
 
     @JvmField
     val DEALS_BRAND_PAGE = "$INTERNAL_DEALS/brand-new/page"
+
+    const val DEALS_PROMO = "tokopedia://promoNative?menuID=4&categoryID=371"
 }

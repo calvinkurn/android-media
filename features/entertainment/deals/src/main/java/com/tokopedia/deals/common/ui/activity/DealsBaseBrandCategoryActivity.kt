@@ -1,10 +1,13 @@
 package com.tokopedia.deals.common.ui.activity
 
 import android.os.Bundle
+import android.view.ViewTreeObserver
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.deals.R
@@ -13,9 +16,13 @@ import com.tokopedia.deals.common.ui.adapter.DealsFragmentPagerAdapter
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.getCustomText
 import kotlinx.android.synthetic.main.activity_base_brand_category_deals.*
+import kotlinx.android.synthetic.main.content_base_deals_search_bar.*
+import kotlinx.android.synthetic.main.content_base_toolbar.*
+import java.lang.Math.abs
 
 open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
@@ -26,6 +33,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
     protected var childCategoryList: ArrayList<String?> = arrayListOf()
 
+    var isEnableTabClickAnalytics = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +43,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         dealBrandCategoryActivityViewModel.getCategoryCombindedData()
 
         observerLayout()
+        setUpScrollView()
     }
 
     private fun observerLayout() {
@@ -41,6 +51,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()
                 vp_deals_brand_category.currentItem = tab.position
+
+                if (isEnableTabClickAnalytics) tabAnalytics(tab.getCustomText(), tab.position)
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {
@@ -56,7 +68,6 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             override fun onPageSelected(position: Int) {
                 val tab = tab_deals_brand_category?.getUnifyTabLayout()?.getTabAt(position)
                 tab?.select()
-                tabAnalytics(tab?.getCustomText() ?: "", position)
             }
         })
 
@@ -70,10 +81,11 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
                 tabNameList.add(ALL_ITEM_PAGE)
             }
 
-            childCategoryList = ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
-                    .map { category -> category.id })
+            childCategoryList.addAll(ArrayList(it.eventChildCategory.categories.filter { ct -> ct.isCard == 0 && ct.isHidden == 0 }
+                    .map { category -> category.id }))
 
-            val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID) ?: ""
+            val categoryId: String = intent.getStringExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID)
+                    ?: ""
             val position = findCategoryPosition(categoryId)
 
             if (position != null) {
@@ -89,7 +101,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
                 vp_deals_brand_category.adapter = adapter
 
                 redirectsToSpecificCategory(position)
-            } else  {
+            } else {
                 tab_deals_brand_category.hide()
                 adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId))
                 vp_deals_brand_category.offscreenPageLimit = 1
@@ -103,11 +115,17 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     }
 
     private fun redirectsToSpecificCategory(position: Int?) {
-        position?.let {
-            tab_deals_brand_category.getUnifyTabLayout().isSmoothScrollingEnabled = true
-
-            val tab = tab_deals_brand_category.getUnifyTabLayout().getTabAt(position)
-            tab?.select()
+        val tabLayout = tab_deals_brand_category.getUnifyTabLayout()
+        val observer = tab_deals_brand_category.getUnifyTabLayout().viewTreeObserver
+        if (observer.isAlive) {
+            observer.dispatchOnGlobalLayout()
+            observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    observer.removeOnGlobalLayoutListener(this)
+                    isEnableTabClickAnalytics = true
+                    position?.let { tabLayout.getTabAt(it)?.select() }
+                }
+            })
         }
     }
 
@@ -130,6 +148,24 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     open fun tabAnalytics(categoryName: String, position: Int) {
         //no-op
     }
+
+    private fun setUpScrollView() {
+        appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - searchBarDealsBaseSearch.height ) {
+                //collapse
+                ViewCompat.setElevation(appBarLayout,0f)
+                imgDealsSearchIcon.show()
+            } else {
+                imgDealsSearchIcon.hide()
+            }
+        })
+
+        imgDealsSearchIcon.setOnClickListener {
+            searchBarActionListener?.onClickSearchBar()
+        }
+    }
+
+    override fun getParentViewResourceID(): Int = R.id.ll_main
 
     companion object {
         private const val ALL_ITEM_PAGE = "Semua"

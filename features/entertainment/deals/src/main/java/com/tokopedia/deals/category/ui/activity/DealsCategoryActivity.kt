@@ -29,6 +29,7 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
             }
         }
 
+        isLandmarkPage = intent.getBooleanExtra(IS_LANDMARK_PAGE, false)
         super.onCreate(savedInstanceState)
         initInjector()
     }
@@ -65,10 +66,13 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
     companion object {
         const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
         const val PARAM_CATEGORY_ID = "category_id"
+        const val IS_LANDMARK_PAGE = "is_landmark_page"
 
         const val TAG = "DealsCategoryActivity"
-        fun getCallingIntent(context: Context, categoryId: String? = null): Intent = Intent(context, DealsCategoryActivity::class.java).apply {
+        fun getCallingIntent(context: Context, categoryId: String? = null,
+                             isLandmarkPage: Boolean = false): Intent = Intent(context, DealsCategoryActivity::class.java).apply {
             putExtra(EXTRA_CATEGORY_ID, categoryId)
+            putExtra(IS_LANDMARK_PAGE, isLandmarkPage)
         }
     }
 

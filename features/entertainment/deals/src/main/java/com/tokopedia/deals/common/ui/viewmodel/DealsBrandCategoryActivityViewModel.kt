@@ -3,13 +3,10 @@ package com.tokopedia.deals.common.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.deals.common.domain.GetDealsBrandCategoryActivityUseCase
+import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.common.utils.DealsDispatcherProvider
 import com.tokopedia.deals.search.model.response.CuratedData
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 
 /**
@@ -17,7 +14,7 @@ import javax.inject.Inject
  */
 
 class DealsBrandCategoryActivityViewModel @Inject constructor(
-        private val dealsBrandCategoryActivityUseCase: GetDealsBrandCategoryActivityUseCase,
+        private val chipsCategoryUseCase: GetChipsCategoryUseCase,
         dispatcher: DealsDispatcherProvider
 ) : BaseViewModel(dispatcher.io()) {
 
@@ -30,17 +27,18 @@ class DealsBrandCategoryActivityViewModel @Inject constructor(
         get() = privateErrorMessage
 
     fun getCategoryCombindedData() {
-        launch {
-            val result = dealsBrandCategoryActivityUseCase.getChildCategoryResult()
-            when (result) {
-                is Success -> {
-                    privateCuratedData.postValue(result.data)
-                }
+        launchCatchError(block = {
+            privateCuratedData.postValue(getChipCategory())
+        }){
+            privateErrorMessage.postValue(it)
+        }
+    }
 
-                is Fail -> {
-                    privateErrorMessage.postValue(result.throwable)
-                }
-            }
+    private suspend fun getChipCategory(): CuratedData {
+        return try {
+            return chipsCategoryUseCase.executeOnBackground()
+        } catch (t: Throwable) {
+            throw t
         }
     }
 }

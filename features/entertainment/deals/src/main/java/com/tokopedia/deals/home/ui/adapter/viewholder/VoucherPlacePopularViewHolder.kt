@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
 
 class VoucherPlacePopularViewHolder(
         itemView: View,
-        voucherPlaceCardListener: DealsVoucherPlaceCardListener
+        private val voucherPlaceCardListener: DealsVoucherPlaceCardListener
 ) : BaseViewHolder(itemView) {
 
     private val voucherPlaceCardAdapter = DealsVoucherPlaceCardAdapter(voucherPlaceCardListener)
@@ -33,6 +33,7 @@ class VoucherPlacePopularViewHolder(
 
             ViewCompat.setNestedScrollingEnabled(lst_voucher_popular_place_card, false)
         }
+        voucherPlaceCardListener.onVoucherPlaceCardBind(voucherPlacePopular, adapterPosition)
     }
 
     companion object {

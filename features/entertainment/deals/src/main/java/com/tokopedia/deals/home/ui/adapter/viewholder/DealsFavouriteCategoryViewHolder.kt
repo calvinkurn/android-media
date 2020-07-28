@@ -3,7 +3,7 @@ package com.tokopedia.deals.home.ui.adapter.viewholder
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
-import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_deals_voucher_place_card.view.*
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_deals_voucher_place_card.view.*
 class DealsFavouriteCategoryViewHolder(itemView: View, private val listener: DealsFavouriteCategoriesListener)
     : BaseViewHolder(itemView) {
 
-    fun bindData(places: FavouritePlacesDataView.Place, position: Int)  {
+    fun bindData(places: CuratedCategoryDataView.CuratedCategory, position: Int)  {
         itemView.run {
             img_voucher_place_card.loadImage(places.imageUrl)
 

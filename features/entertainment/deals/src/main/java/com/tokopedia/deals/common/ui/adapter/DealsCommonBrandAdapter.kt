@@ -31,11 +31,11 @@ class DealsCommonBrandAdapter(private val brandActionListener: DealsBrandActionL
     override fun getItemCount(): Int = brandList.size
 
     override fun onBindViewHolder(holder: DealsBrandViewHolder, position: Int) {
-        val item = brandList.get(position)
+        val item = brandList[position]
         holder.bind(brandList[position])
-        holder.itemView.addOnImpressionListener(item, {
+        holder.itemView.addOnImpressionListener(item) {
             brandActionListener.onImpressionBrand(item,position)
-        })
+        }
     }
 
     private class ProductCardDiffCallback(
