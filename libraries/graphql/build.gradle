@@ -1,0 +1,80 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+android {
+    configurations {
+        all {
+            resolutionStrategy {
+                force "androidx.arch.core:core-runtime:2.0.0-rc01"
+            }
+        }
+    }
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'graphql']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'graphql'
+    groupId = 'com.tokopedia.graphql'
+    versionName = "1.1.14-debug"
+    artifactName = "graphql-debug"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    /*
+    1. ContraintLayout is required, because fakeresponse is has impl of constraintLayout
+    And without adding ContraintLayout, we will get error in assembleRelease of Graphql
+    2. Adding impl of constraintLayout does not increase the aar size of graphql
+    * */
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
+
+}
+
+project.ext {
+    artifactId = 'graphql'
+    groupId = 'com.tokopedia.graphql'
+    versionName = "1.1.13-debug"
+    artifactName = "graphql-debug"
+}
+
+apply from: '../../publish_local.gradle'

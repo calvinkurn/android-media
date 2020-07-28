@@ -43,9 +43,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
+        buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
+
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+
+        setAddToCartButtonText(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -65,12 +69,21 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageThreeDots?.setOnClickListener(threeDotsClickListener)
     }
 
+    fun setDeleteProductOnClickListener(deleteProductClickListener: (View) -> Unit) {
+        buttonDeleteProduct?.setOnClickListener(deleteProductClickListener)
+    }
+
     fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) {
         buttonRemoveFromWishlist?.setOnClickListener(removeWishlistClickListener)
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
+        if (productCardModel.addToCardText.isNotEmpty())
+            buttonAddToCart?.text = productCardModel.addToCardText
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -94,6 +107,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         imageProduct?.layoutParams = layoutParams
     }
+
 
     override fun recycle() {
         imageProduct?.glideClear(context)

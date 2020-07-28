@@ -22,9 +22,9 @@ class CouponView @JvmOverloads constructor(
         super.readAttrs(attrs)
         if (attrs != null) {
             val typedArray =
-                    context.theme.obtainStyledAttributes(attrs, R.styleable.GfCouponView, 0, 0)
-            circleColor = typedArray.getColor(R.styleable.GfCouponView_gfCvCircleColor, Color.TRANSPARENT)
-            circleRadius = typedArray.getDimension(R.styleable.GfCouponView_gfCvCircleRadius, dpToPx(context, 24))
+                    context.theme.obtainStyledAttributes(attrs, com.tokopedia.gamification.R.styleable.GfCouponView, 0, 0)
+            circleColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GfCouponView_gfCvCircleColor, Color.TRANSPARENT)
+            circleRadius = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCouponView_gfCvCircleRadius, dpToPx(context, 24))
             typedArray.recycle()
         }
     }

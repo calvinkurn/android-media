@@ -12,7 +12,6 @@ import android.webkit.URLUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -21,21 +20,17 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
@@ -52,10 +47,8 @@ import timber.log.Timber;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
+public class SplashScreen extends AppCompatActivity {
 
-    public static final int DAYS_IN_SECONDS = 86400;
-    public static final int STATUS_FINISHED = 1;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
     private PasswordGenerator Pgenerator;
@@ -67,17 +60,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         resetAllDatabaseFlag();
-        decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -85,7 +69,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 return fetchRemoteConfig();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(remoteConfigWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, getApplicationContext());
     }
 
     @NotNull
@@ -109,17 +93,18 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 return getBranchDefferedDeeplink();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(branchDefferedDeeplinkWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, getApplicationContext());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
-                return executeMoveToHomeFlow();
+                return executeMoveToHomeFlow(status);
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
@@ -127,16 +112,13 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     @NotNull
-    private boolean executeMoveToHomeFlow(){
-        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
+    private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
-            Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
-                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
-                    + " | "+Build.TAGS);
+            Timber.w("P1#PLAY_SERVICE_ERROR#splash_screen;fingerprint='%s'", Build.FINGERPRINT);
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
-        registerFCMDeviceID();
+        registerFCMDeviceID(status);
         return true;
     }
 
@@ -157,21 +139,15 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         };
     }
 
-    private void registerFCMDeviceID() {
+    private void registerFCMDeviceID(boolean isPlayServiceAvailable) {
         GCMHandler gcm = new GCMHandler(this);
-        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
+        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
     public void finishSplashScreen() {
-        Intent intent = HomeRouter.getHomeActivity(this);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Timber.d(resultData.toString());
-        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {
@@ -232,6 +208,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
+                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", tokopediaDeeplink);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();

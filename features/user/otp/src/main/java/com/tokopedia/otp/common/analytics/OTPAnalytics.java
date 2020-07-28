@@ -54,6 +54,7 @@ public class OTPAnalytics {
         public static final String CHOOSE_OTP_PAGE = "choose otp page";
         private static final String CLICK_ON_BUTTON_VERIFIKASI = "click on button verifikasi";
         private static final String CLICK_KIRIM_ULANG = "click kirim ulang";
+        private static final String CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER = "click on button nomor saya sudah tidak aktif";
     }
 
     public static class Label {
@@ -188,6 +189,15 @@ public class OTPAnalytics {
                 Category.REGISTER_WITH_PHONE_NUMBER_OTP,
                 Action.CLICK_KIRIM_ULANG,
                 Label.FAILED + failedMessage
+        ));
+    }
+
+    public void eventClickInactivePhoneNumber(String otpType) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_OTP,
+                otpType,
+                Action.CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER,
+                ""
         ));
     }
 }

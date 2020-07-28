@@ -3,12 +3,12 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
-import com.tokopedia.productcard.ProductCardFlashSaleView
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class ProductFlashSaleViewHolder(
         view: View,
@@ -18,6 +18,7 @@ class ProductFlashSaleViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_product_card_carousel_item
+        private const val className: String = "com.tokopedia.officialstore.official.presentation.dynamic_channel.ProductFlashSaleViewHolder"
     }
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
@@ -30,11 +31,26 @@ class ProductFlashSaleViewHolder(
         productCardView?.apply {
             applyCarousel()
             setProductModel(element.productModel)
-            addOnImpressionListener(element) {
-                if (element.productModel.isTopAds) {
-                    ImpresionTask().execute(element.grid.impression)
+            channel.grids?.getOrNull(adapterPosition)?.let {grid ->
+                val impressHolder = ImpressHolder().apply {
+                    if (grid.isImpressed)
+                        invoke()
                 }
-                dcEventHandler.onFlashSaleCardImpressed(adapterPosition, element.grid , channel)
+                addOnImpressionListener(impressHolder) {
+                    if (element.productModel.isTopAds) {
+                        context?.run {
+                            TopAdsUrlHitter(className).hitImpressionUrl(
+                                    this,
+                                    element.grid.impression,
+                                    element.grid.id.toString(),
+                                    element.grid.name,
+                                    element.grid.imageUrl
+                            )
+                        }
+                    }
+                    dcEventHandler.onFlashSaleCardImpressed(adapterPosition, element.grid, channel)
+                    grid.isImpressed = true
+                }
             }
             setOnClickListener {
                 dcEventHandler.onFlashSaleCardClicked(adapterPosition, channel, element.grid, element.applink)

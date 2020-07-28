@@ -167,8 +167,8 @@ class AddEditProductVariantFragment :
         // setup base cancellation dialog
         context?.run {
             cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
-            cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
+            cancellationDialog?.setPrimaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_cancel_cancellation))
+            cancellationDialog?.setSecondaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_confirm_cancellation))
             cancellationDialog?.setPrimaryCTAClickListener {
                 cancellationDialog?.dismiss()
             }
@@ -969,7 +969,7 @@ class AddEditProductVariantFragment :
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
@@ -985,14 +985,14 @@ class AddEditProductVariantFragment :
         flexboxLayoutManager.alignItems = AlignItems.FLEX_START
         recyclerView.apply {
             layoutManager = flexboxLayoutManager
-            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.spacing_lvl3)))
+            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         }
     }
 
     private fun setRecyclerViewToHorizontal(recyclerView: RecyclerView) {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.spacing_lvl3)))
+            addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         }
     }
 

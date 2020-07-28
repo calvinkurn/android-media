@@ -1,52 +1,56 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.app.Activity
-import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
-import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
-import com.tokopedia.power_merchant.subscribe.ACTION_KEY
-import com.tokopedia.power_merchant.subscribe.ACTION_KYC
-import com.tokopedia.power_merchant.subscribe.ACTION_SHOP_SCORE
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
+import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity.Companion.EXTRA_SHOP_SCORE
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.*
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantActivationResult.*
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState.*
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmTermsViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
-import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_terms.*
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 14/06/19.
  */
-class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
+class PowerMerchantTermsFragment : BaseWebViewFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
-    lateinit var presenter: PmTermsContract.Presenter
+    lateinit var viewModel: PmTermsViewModel
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
+
     private var isTermsAgreed: Boolean = false
-    private var action: String = ""
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
@@ -57,7 +61,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_TERMS_AND_CONDITION_PAGE
 
     override fun initInjector() {
         activity?.let {
@@ -70,14 +74,15 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.attachView(this)
-        initVar()
+        observeActivatePm()
+        observeViewState()
+
         initView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        viewModel.detachView()
     }
 
     override fun getLayout(): Int {
@@ -89,25 +94,31 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         footer?.visible()
     }
 
-    override fun showLoading() {
+    private fun showLoading() {
         mainView.showLoading()
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         mainView.hideLoading()
     }
 
-    override fun onSuccessActivate() {
-        resultOkAndFinish()
+    private fun onSuccessActivate(result: PowerMerchantActivationResult) {
+        when(result)  {
+            is ActivationSuccess -> resultOkAndFinish()
+            is KycNotVerified -> showDialogKyc()
+            is ShopScoreNotEligible -> showShopScoreBottomSheet()
+            is GeneralError -> showErrorToast(result.message)
+        }
     }
 
-    override fun onSuccessAutoExtend() {
-        resultOkAndFinish()
+    private fun onErrorActivate(error: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, error)
+        showErrorToast(message)
     }
 
-    override fun onError(throwable: Throwable?) {
+    private fun showErrorToast(message: String) {
         view?.let {
-            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -119,8 +130,22 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         return R.id.progressbarPm
     }
 
-    private fun initVar() {
-        setAction(arguments?.getString(ACTION_KEY) ?: "")
+    private fun observeActivatePm() {
+        observe(viewModel.activatePmResult) {
+            when(it) {
+                is Success -> onSuccessActivate(it.data)
+                is Fail -> onErrorActivate(it.throwable)
+            }
+        }
+    }
+
+    private fun observeViewState() {
+        observe(viewModel.viewState) {
+            when(it) {
+                is ShowLoading -> showLoading()
+                is HideLoading -> hideLoading()
+            }
+        }
     }
 
     private fun initView() {
@@ -143,12 +168,12 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
     }
 
     private fun onClickActivateButton() {
-        when(action) {
-            ACTION_ACTIVATE,
-            ACTION_AUTO_EXTEND -> presenter.activatePowerMerchant()
-            ACTION_SHOP_SCORE -> setupDialogScore()?.show()
-            ACTION_KYC -> openKycPage()
-        }
+        trackClickTermsAndConditionUpgradeBtn()
+        viewModel.activatePowerMerchant()
+    }
+
+    private fun trackClickTermsAndConditionUpgradeBtn() {
+        powerMerchantTracking.eventClickTermsAndConditionUpgradeBtn()
     }
 
     private fun openKycPage() {
@@ -159,12 +184,13 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
     }
 
     private fun onCheckBoxClicked() {
+        trackClickTermsAndConditionTickBox()
         isTermsAgreed = !isTermsAgreed
         checkbox.isChecked = isTermsAgreed
     }
 
-    private fun setAction(action: String) {
-        this.action = action
+    private fun trackClickTermsAndConditionTickBox() {
+        powerMerchantTracking.eventClickTermsAndConditionTickBox()
     }
 
     private fun resultOkAndFinish() {
@@ -172,23 +198,64 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         activity?.finish()
     }
 
-    private fun setupDialogScore(): Dialog? {
-        context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_score_verification)
+    private fun showShopScoreBottomSheet() {
+        val shopScore = arguments?.getInt(EXTRA_SHOP_SCORE).orZero()
+        val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
+            getString(R.string.power_merchant_bottom_sheet_score_title),
+            getString(R.string.power_merchant_bottom_sheet_score_description),
+            R.drawable.ic_pm_score,
+            CTAMode.DOUBLE
+        )
 
-            dialog.btn_submit_score.setOnClickListener {
-                powerMerchantTracking.eventIncreaseScorePopUp()
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-            }
-            dialog.btn_close_score.setOnClickListener {
-                dialog.hide()
-            }
-            return dialog
+        bottomSheet.setPrimaryButtonText(getString(R.string.power_merchant_see_tips))
+        bottomSheet.setSecondaryButtonText(getString(R.string.pm_label_button_close))
+        bottomSheet.setPrimaryButtonClickListener {
+            trackClickSeeShopScoreTips(shopScore)
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
+            bottomSheet.dismiss()
         }
-        return null
+        bottomSheet.setSecondaryButtonClickListener {
+            trackClickDismissShopScorePopUp(shopScore)
+            activity?.finish()
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun trackClickSeeShopScoreTips(shopScore: Int) {
+        powerMerchantTracking.eventClickSeeShopScoreTips(shopScore)
+    }
+
+    private fun trackClickDismissShopScorePopUp(shopScore: Int) {
+        powerMerchantTracking.eventClickDismissShopScorePopUp(shopScore)
+    }
+
+    private fun showDialogKyc() {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.pm_label_kyc_verification_header))
+                setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
+                setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
+                setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
+                setPrimaryCTAClickListener {
+                    trackClickKycVerification()
+                    openKycPage()
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    trackClickDismissKycPopUp()
+                    activity?.finish()
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
+    private fun trackClickDismissKycPopUp() {
+        powerMerchantTracking.eventClickDismissKycPopUp()
+    }
+
+    private fun trackClickKycVerification() {
+        powerMerchantTracking.eventClickKycVerification()
     }
 }

@@ -45,8 +45,10 @@ fun TextFieldUnify?.setModeToNumberInput() {
                             .format(parsedLong)
                             .toString()
                             .replace(",", ".")
+                    val lengthDiff = formattedText.length - charSequence.length
+                    val cursorPosition = start + count + lengthDiff
                     textFieldInput.setText(formattedText)
-                    textFieldInput.setSelection(formattedText.length)
+                    textFieldInput.setSelection(cursorPosition.coerceIn(0, formattedText.length))
                     textFieldInput.addTextChangedListener(this)
                 }
             }

@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
@@ -21,28 +21,24 @@ import com.tokopedia.user.session.UserSession
 
 class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
-    private var mUserSession: UserSession? = null
-    private var initialLoggedInState = false
+    lateinit var mUserSession: UserSession
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)
-        initialLoggedInState = mUserSession!!.isLoggedIn
         toolbar.visibility = View.GONE
         updateTitle(getString(R.string.tp_title_tokopoints))
     }
 
-    override fun getNewFragment(): Fragment {
-        val loginStatusBundle = Bundle()
-        val isLogin = mUserSession!!.isLoggedIn
-        val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
-        return if (isLogin) {
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
+    override fun getNewFragment(): Fragment? {
+        if (mUserSession.isLoggedIn) {
+            val loginStatusBundle = Bundle()
+            val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
+            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, mUserSession.isLoggedIn)
             tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-            tokoPointsHomeFragmentNew
+            return tokoPointsHomeFragmentNew
         } else {
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
-            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-            tokoPointsHomeFragmentNew
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            return null
         }
     }
 
@@ -50,7 +46,7 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         return tokoPointComponent
     }
 
-    private fun initInjector() : TokopointBundleComponent {
+    private fun initInjector(): TokopointBundleComponent {
         return DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .tokopointsQueryModule(TokopointsQueryModule(this))
@@ -59,22 +55,10 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
             inflateFragment()
-        }
-    }
-
-    protected fun openApplink(applink: String?) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(this, applink)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (mUserSession!!.isLoggedIn != initialLoggedInState) {
-            inflateFragment()
-        }
+        } else
+            finish()
     }
 
     override fun showToolbarElevation() {

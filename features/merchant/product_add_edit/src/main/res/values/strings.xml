@@ -212,6 +212,7 @@
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
 
     <!-- image picker -->
+    <string name="choose_image">Pilih Gambar</string>
     <string name="error_image_under_x_resolution">Minimum file foto harus %1$dx%2$d piksel</string>
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
 

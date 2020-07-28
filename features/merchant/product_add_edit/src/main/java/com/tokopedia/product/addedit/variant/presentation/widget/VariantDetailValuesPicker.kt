@@ -126,7 +126,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
             variantUnitData.add(data)
         }
 
-        val addCustomValueTitle = context.getString(R.string.action_variant_add) + " " + unitName
+        val addCustomValueTitle = context.getString(com.tokopedia.product.addedit.R.string.action_variant_add) + " " + unitName
         val addCustomValueButton = ListItemUnify(addCustomValueTitle, "")
         variantUnitData.add(addCustomValueButton)
 
@@ -173,7 +173,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                     }
                 } else {
                     listItemUnify.isBold = false
-                    listItemUnify.listTitle?.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
+                    listItemUnify.listTitle?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
                 }
                 listItemUnify.listRightCheckbox?.setPadding(0,0,0,0)
                 listItemUnify.listRightCheckbox?.setMargin(0,0,0,0)

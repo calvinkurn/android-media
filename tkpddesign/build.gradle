@@ -21,6 +21,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation project(rootProject.ext.libraries.utils)
+
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
 }
 

@@ -297,6 +297,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     private void goToRequestChangePhoneNumberUploadKTP() {
         if (getActivity() != null) {
+            analytics.eventClickInactivePhoneNumber(Integer.toString(otpType));
             Intent intent = RouteManager.getIntent(getActivity(),
                     ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM);
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_USER_ID,

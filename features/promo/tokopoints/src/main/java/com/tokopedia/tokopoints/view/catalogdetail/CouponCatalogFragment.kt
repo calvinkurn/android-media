@@ -10,10 +10,12 @@ import android.os.CountDownTimer
 import android.view.*
 import android.webkit.WebView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -21,23 +23,33 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
-import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
+import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -47,7 +59,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener {
+class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var serverErrorView: ServerErrorView? = null
     private val mSubscriptionCouponTimer: Subscription? = null
@@ -55,7 +67,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private val mRefreshRepeatCount = 0
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
-    private var fpmDetailTokopoint: PerformanceMonitoring? = null
     var mUserSession: UserSession? = null
     private var catalogsValueEntity: CatalogsValueEntity? = null
     private var pointValueText: TextView? = null
@@ -67,11 +78,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     @Inject
     lateinit var factory: ViewModelFactory
 
-     private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this,factory)[CouponCatalogViewModel::class.java] }
+    private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this, factory)[CouponCatalogViewModel::class.java] }
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
         mUserSession = UserSession(appContext)
-        fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -111,6 +123,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         code = arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE)
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         mViewModel.getCatalogDetail(code ?: "")
         initObserver()
     }
@@ -122,63 +136,62 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         addLatestStatusObserver()
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
-        addPointQueryObserver()
     }
 
-    private fun addPointQueryObserver() = mViewModel.pointQueryLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it){
-            is Success -> onSuccessPoints(it.data)
-            is ErrorMessage -> onErrorPoint(null)
-        }
-    })
-
     private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
     private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
-            is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
-            is ValidationError<*,*> -> {
-                if (it.data is ValidateMessageDialog){
-                    showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
+        when (it) {
+            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
+            is ValidationError<*, *> -> {
+                if (it.data is ValidateMessageDialog) {
+                    checkValidation(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                 }
             }
         }
     })
 
     private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it)}
+        it?.let { refreshCatalog(it) }
     })
 
     private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
+            checkValidation(it.item, it.title, it.desc, it.messageCode)
         }
     })
 
     private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
-            is Success -> gotoSendGiftPage(it.data.id,it.data.title,it.data.pointStr,it.data.banner)
+        when (it) {
+            is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
                 if (it.data is PreValidateError)
-                onPreValidateError(it.data.title, it.data.message)
+                    onPreValidateError(it.data.title, it.data.message)
             }
         }
     })
 
     private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
+        when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
                 hideLoader()
-                showError(NetworkDetector.isConnectedToInternet(context))
-                onFinishRendering()
+                val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                if (!internetStatus) {
+                    showError(internetStatus)
+                } else {
+                    showCouponError()
+                }
             }
             is Success -> {
+                stopNetworkRequestPerformanceMonitoring()
+                startRenderPerformanceMonitoring()
                 hideLoader()
                 populateDetail(it.data)
-                onFinishRendering()
+                stopRenderPerformanceMonitoring()
+                stopPerformanceMonitoring()
             }
         }
     })
@@ -215,6 +228,20 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         serverErrorView!!.showErrorUi(hasInternet)
     }
 
+    private fun showCouponError() {
+        container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+        invalidateOptionsMenu(activity)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val registrar = menu.findItem(R.id.action_menu_share)
+        registrar.isVisible = false
+        return
+    }
+
     override fun hideLoader() {
         mContainerMain!!.displayedChild = CONTAINER_DATA
     }
@@ -234,7 +261,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun initInjector() {
         getComponent(TokopointBundleComponent::class.java)
-            .inject(this)
+                .inject(this)
     }
 
     override fun onClick(source: View) {
@@ -252,77 +279,49 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
-        serverErrorView!!.setErrorButtonClickListener { view: View? -> mViewModel.getCatalogDetail(code ?: "") }
+        serverErrorView!!.setErrorButtonClickListener { view: View? ->
+            mViewModel.getCatalogDetail(code ?: "")
+        }
     }
 
     override fun openWebView(url: String) {
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setTitle(R.string.tp_label_use_coupon)
-        val messageBuilder = StringBuilder()
-                .append(getString(R.string.tp_label_coupon))
-                .append(" ")
-                .append("<strong>")
-                .append(title)
-                .append("</strong>")
-                .append(" ")
-                .append(getString(R.string.tp_mes_coupon_part_2))
-        adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-        adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            //Call api to validate the coupon
+    override fun redeemCoupon(cta: String, code: String, title: String, description: String) {
+        //Call api to validate the coupon
+
+        val btn1: UnifyButton
+        val btn2: UnifyButton
+        val titleDialog: TextView
+        val descDialog: Typography
+        val adb = AlertDialog.Builder(context!!)
+        val altTitle = "Kupon berhasil diklaim"
+        val altDescription = "Selamat! Kamu berhasil klaim kupon ini. Yuk pakai kuponnya supaya belanjamu lebih hemat."
+        val view = LayoutInflater.from(context).inflate(R.layout.tp_upcoming_feature_dialog, null)
+        adb.setView(view)
+        btn1 = view.findViewById(R.id.btn_route)
+        btn2 = view.findViewById(R.id.btn_route_kupon)
+        titleDialog = view.findViewById(R.id.tv_dialogTitle)
+        descDialog = view.findViewById(R.id.tv_dialogDesc)
+        titleDialog.text = altTitle
+        descDialog.text = altDescription
+        val alertDialog = adb.create()
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.setCancelable(true)
+        alertDialog.setCanceledOnTouchOutside(true)
+        btn1.setOnClickListener { v: View? ->
             mViewModel.redeemCoupon(code, cta)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
+            alertDialog.dismiss()
         }
-        adb.setNegativeButton(R.string.tp_label_later) { dialogInterface: DialogInterface?, i: Int ->
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                    title)
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
-    override fun showConfirmRedeemDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setNegativeButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            showRedeemCouponDialog(cta, code, title)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setPositiveButton(R.string.tp_label_view_coupon
-        ) { dialogInterface: DialogInterface?, i: Int ->
+        btn2.setOnClickListener {
             startActivity(getCallingIntent(activityContext))
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
-                    "")
+            alertDialog.dismiss()
         }
-        adb.setTitle(R.string.tp_label_successful_exchange)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
-                title)
+        alertDialog.show()
     }
 
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    private fun showErrorDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int){
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -331,10 +330,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
                 labelPositive = getString(R.string.tp_label_complete_profile)
                 labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                labelPositive = getString(R.string.tp_label_exchange)
-                labelNegative = getString(R.string.tp_label_betal)
             }
             CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
             else -> labelPositive = getString(R.string.tp_label_ok)
@@ -382,20 +377,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
                             AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
                             "")
-                }
-                CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    mViewModel.startSaveCoupon(item)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                            title)
                 }
                 else -> dialogInterface.cancel()
             }
@@ -405,16 +393,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         decorateDialog(dialog)
     }
 
-    override fun onSuccessPoints(point: String) {
-        if (view == null) {
-            return
-        }
-        userPoints = point
-        textUserPoint = view!!.findViewById(R.id.text_point_value)
-        textUserPoint?.setText(point)
-    }
-
-    override fun onErrorPoint(errorMessage: String?) { //TODO @lavekush need to handle it
+    override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+       if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS){
+           mViewModel.startSaveCoupon(item)
+           AnalyticsTrackerUtil.sendEvent(context,
+                   AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                   AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                   AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                   title)
+       } else {
+           showErrorDialog(item,title,message,resCode)
+       }
     }
 
     override fun onRealCodeReFresh(realCode: String) {
@@ -451,7 +440,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         val quota: Typography = view!!.findViewById(R.id.text_quota_count)
-        pointValue = view!!.findViewById(R.id.text_point_value_coupon)
         val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
         val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
         btnAction2.isEnabled = !data.isDisabledButton
@@ -513,6 +501,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
+        if (data.id == 0) {
+            showCouponError()
+            return
+        }
         mCouponName = data.title
         val quota: Typography = view!!.findViewById(R.id.text_quota_count)
         val description: Typography = view!!.findViewById(R.id.text_description)
@@ -541,12 +533,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         tncSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.tnc, getString(R.string.tnc_coupon_catalog)) }
         howToUseSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.howToUse, getString(R.string.how_to_use_coupon_catalog)) }
         val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
-        if (data.pointsStr == null || data.pointsStr.isEmpty()) {
-            pointValue.visibility = View.GONE
-        } else {
-            pointValue.visibility = View.VISIBLE
-            pointValue.text = data.pointsStr
-        }
+        pointValue.text = "Gratis"
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
             quota.visibility = View.GONE
@@ -575,7 +562,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
         } else {
             ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.orange_red))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
         }
         if (data.isDisabledButton) {
             giftSectionMainLayout.visibility = View.GONE
@@ -653,16 +640,23 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     private fun loadWebViewInBottomsheet(data: String, title: String) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, true)
+        val bottomSheet = BottomSheetUnify()
+        bottomSheet.setShowListener {
+            val sideMargin = 16.toPx()
+            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
+            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
+        }
+        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        val closeBtn = view.findViewById<ImageView>(R.id.close_button)
-        val titleView: Typography = view.findViewById(R.id.title_closeable)
         webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        closeBtn.setOnClickListener { v: View? -> bottomSheet.dismiss() }
-        titleView.text = title
-        bottomSheet.setCustomContentView(view, title, false)
-        bottomSheet.show()
+        bottomSheet.apply {
+            setChild(view)
+            setTitle(title)
+            showCloseIcon = true
+            isDragable = true
+            isHideable = true
+        }
+        bottomSheet.show(childFragmentManager, "")
     }
 
     override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {
@@ -676,11 +670,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
     }
 
-    override fun onFinishRendering() {
-        if (fpmDetailTokopoint != null) fpmDetailTokopoint!!.stopTrace()
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
@@ -692,16 +681,57 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     companion object {
-        private const val FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail"
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
         private const val REQUEST_CODE_LOGIN = 1
+        private const val CONTAINER_COUPON_ERROR = 3
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CouponCatalogFragment()
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATALOGDETAIL_TOKOPOINT_PLT_PREPARE_METRICS,
+                CATALOGDETAIL_TOKOPOINT_PLT_NETWORK_METRICS,
+                CATALOGDETAIL_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGDETAIL_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

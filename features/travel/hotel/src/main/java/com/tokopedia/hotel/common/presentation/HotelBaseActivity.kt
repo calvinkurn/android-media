@@ -7,9 +7,11 @@ import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,6 +26,9 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +45,12 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     private fun initInjector() {
         getHotelComponent().inject(this)
+    }
+
+    override fun sendScreenAnalytics() {
+        screenName?.let {
+            trackingHotelUtil.openScreen(this, it)
+        }
     }
 
     override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
@@ -75,7 +86,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     }
 
     override fun onPromoClicked() {
-        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+        RouteManager.route(this, ApplinkConstInternalTravel.HOTEL_PROMO_LIST)
     }
 
     override fun onHelpClicked() {

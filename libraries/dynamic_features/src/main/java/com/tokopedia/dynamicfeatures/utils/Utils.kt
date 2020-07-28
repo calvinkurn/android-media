@@ -1,6 +1,7 @@
 package com.tokopedia.dynamicfeatures.utils
 
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
+import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import java.util.*
 
 object Utils {
@@ -21,9 +22,12 @@ object Utils {
         return getFormattedNumber(diffTime)
     }
 
-    fun getError(errorList: List<String>): String {
+    fun getError(success:Boolean, errorList: List<String>): String {
+        if (success) {
+            return ErrorConstant.ERROR_SUCCESS
+        }
         if (errorList.isEmpty()) {
-            return "0"
+            return ErrorConstant.ERROR_NOT_AVAILABLE
         }
         var errorText = errorList.first()
         for (error in errorList) if (error != errorText) {

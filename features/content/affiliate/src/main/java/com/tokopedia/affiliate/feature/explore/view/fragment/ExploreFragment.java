@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.explore.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,14 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -59,13 +63,14 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem;
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +79,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -122,7 +129,8 @@ public class ExploreFragment
     private SwipeToRefresh swipeRefreshLayout;
     private ExploreSearchView searchView;
     private FrameLayout layoutEmpty;
-    private BottomActionView bottomActionView;
+    private FloatingButtonUnify floatingButton;
+    private ArrayList<FloatingButtonItem> floatingItems = new ArrayList<>();
     private FloatingActionButton btnBackToTop;
 
     private boolean isCanDoAction;
@@ -139,6 +147,7 @@ public class ExploreFragment
 
     @Inject
     AffiliatePreference affiliatePreference;
+    private List<SortViewModel> mSortList;
 
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();
@@ -164,7 +173,7 @@ public class ExploreFragment
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
-        bottomActionView = view.findViewById(R.id.bav);
+        floatingButton = view.findViewById(R.id.bav);
         btnBackToTop = view.findViewById(R.id.btn_back_to_top);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         return view;
@@ -221,6 +230,7 @@ public class ExploreFragment
 
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this, this), new ArrayList<>());
         rvExplore.setAdapter(adapter);
+        initFloatingItems();
     }
 
     private void initEmptyResultModel() {
@@ -231,6 +241,46 @@ public class ExploreFragment
         );
     }
 
+    private void initFloatingItems() {
+        if (getContext() != null) {
+            Drawable sortDrawable = ContextCompat.getDrawable(getContext(),
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_sort_grayscale_24);
+            String sortStr = getContext().getString(R.string.text_button_sort);
+            Drawable filterDrawable = ContextCompat.getDrawable(getContext(),
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_filter_grayscale_24);
+            String filterStr = getContext().getString(R.string.text_title_filter);
+            floatingItems.add(new FloatingButtonItem(sortDrawable, sortStr, false, () -> {
+                if (mSortList != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
+                            new ArrayList<>(mSortList));
+                    bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
+                    startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
+                            REQUEST_DETAIL_SORT);
+                    affiliateAnalytics.onSortClicked(userSession.getUserId());
+                } else {
+                    Toast.makeText(getContext(), "No sorting list found", Toast.LENGTH_SHORT).show();
+                }
+
+                return Unit.INSTANCE;
+            }));
+            floatingItems.add(new FloatingButtonItem(filterDrawable, filterStr, false, () -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(
+                        FilterActivity.PARAM_FILTER_LIST,
+                        new ArrayList<>(getAllFilterList())
+                );
+                startActivityForResult(
+                        FilterActivity.getIntent(getActivity(), bundle),
+                        REQUEST_DETAIL_FILTER
+                );
+                affiliateAnalytics.onFilterClicked(userSession.getUserId());
+                return Unit.INSTANCE;
+            }));
+        }
+        floatingButton.addItem(floatingItems);
+    }
+
     private void initListener() {
         if (getActivity() == null) {
             return;
@@ -239,18 +289,6 @@ public class ExploreFragment
         ivBack.setOnClickListener(view -> getActivity().onBackPressed());
 
         btnBackToTop.setOnClickListener(view -> rvExplore.scrollToPosition(0));
-        bottomActionView.setButton2OnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(
-                    FilterActivity.PARAM_FILTER_LIST,
-                    new ArrayList<>(getAllFilterList())
-            );
-            startActivityForResult(
-                    FilterActivity.getIntent(getActivity(), bundle),
-                    REQUEST_DETAIL_FILTER
-            );
-            affiliateAnalytics.onFilterClicked(userSession.getUserId());
-        });
     }
 
     @Override
@@ -387,7 +425,7 @@ public class ExploreFragment
         }
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
-        bottomActionView.show(false);
+        floatingButton.show();
         populateLocalDataToAdapter();
     }
 
@@ -507,7 +545,7 @@ public class ExploreFragment
         }
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
-        bottomActionView.setVisibility(View.VISIBLE);
+        floatingButton.setVisibility(View.VISIBLE);
         populateExploreItem(itemList, cursor);
     }
 
@@ -542,8 +580,14 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
         }
-        if (adapter.getFilterList().isEmpty()) {
-            bottomActionView.hideBav2();
+        if (adapter.getFilterList().isEmpty() && getContext() != null) {
+            String filterStr = getContext().getString(R.string.text_title_filter);
+            for (FloatingButtonItem floatingItem : floatingItems) {
+                if (floatingItem.getTitle().toString().equalsIgnoreCase(filterStr)) {
+                    floatingItems.remove(floatingItem);
+                }
+            }
+            floatingButton.addItem(floatingItems);
         }
     }
 
@@ -565,20 +609,12 @@ public class ExploreFragment
         //1. show button sort
         //2. handle onclick and passing sortlist and current selected sort (default is first data)
         if (sortList.size() > 0) {
-            bottomActionView.setVisibility(View.VISIBLE);
+            floatingButton.setVisibility(View.VISIBLE);
             sortList.get(0).setSelected(true);
             exploreParams.setSort(sortList.get(0));
-            bottomActionView.setButton1OnClickListener(view -> {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(SortActivity.PARAM_SORT_LIST,
-                        new ArrayList<>(sortList));
-                bundle.putParcelable(SortActivity.PARAM_SORT_SELECTED, exploreParams.getSort());
-                startActivityForResult(SortActivity.getIntent(getActivity(), bundle),
-                        REQUEST_DETAIL_SORT);
-                affiliateAnalytics.onSortClicked(userSession.getUserId());
-            });
+            mSortList = sortList;
         } else {
-            bottomActionView.setVisibility(View.GONE);
+            floatingButton.setVisibility(View.GONE);
         }
     }
 
@@ -610,7 +646,7 @@ public class ExploreFragment
         trackImpression(products);
 
         exploreParams.setLoading(false);
-        bottomActionView.show(false);
+        floatingButton.show();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -639,7 +675,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
-        bottomActionView.setVisibility(View.GONE);
+        floatingButton.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) {
@@ -686,7 +722,7 @@ public class ExploreFragment
     public void onEmptySearchResult() {
         exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
-        bottomActionView.hide();
+        floatingButton.hide();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -702,7 +738,7 @@ public class ExploreFragment
     public void onEmptyProduct() {
         exploreParams.setLoading(false);
         presenter.unsubscribeAutoComplete();
-        bottomActionView.hide();
+        floatingButton.hide();
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -842,7 +878,7 @@ public class ExploreFragment
     @Override
     public void refresh() {
         presenter.unsubscribeAutoComplete();
-        bottomActionView.show();
+        floatingButton.show();
         exploreParams.resetParams();
         exploreParams.setLoading(false);
         searchView.getSearchTextView().setText("");
@@ -984,9 +1020,8 @@ public class ExploreFragment
     }
 
     private void showError(String message, View.OnClickListener listener) {
-        ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
-                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
-                .show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), listener);
     }
 
     private void goToEducation() {

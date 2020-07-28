@@ -40,6 +40,8 @@ public class PaymentData {
     @SerializedName("voucher")
     @Expose
     private Voucher voucher;
+    @SerializedName("payment_features")
+    private List<String> paymentFeatures;
 
     private List<OrderData> orders;
 
@@ -125,5 +127,9 @@ public class PaymentData {
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public List<String> getPaymentFeatures() {
+        return paymentFeatures;
     }
 }

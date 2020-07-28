@@ -73,22 +73,6 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
     }
 
     @Override
-    public Observable<Boolean> deleteSavedPushNotificationByCategory(String category) {
-        return Observable.just(category).map(category1 -> {
-            pushNotificationDao.deleteByCategory(category1);
-            return true;
-        }).onErrorReturn(throwable -> false);
-    }
-
-    @Override
-    public Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, final String serverId) {
-        return Observable.just(category).map(category1 -> {
-            pushNotificationDao.deleteByCategoryAndServerId(category1, serverId);
-            return true;
-        }).onErrorReturn(throwable -> false);
-    }
-
-    @Override
     public Observable<Boolean> deleteSavedPushNotification() {
         return Observable.just(true).map(aBoolean -> {
             pushNotificationDao.drop();

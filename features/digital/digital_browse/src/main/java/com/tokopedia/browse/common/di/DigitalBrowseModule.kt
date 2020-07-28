@@ -1,13 +1,7 @@
 package com.tokopedia.browse.common.di
 
-import android.content.Context
-
-import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.browse.common.DigitalBrowseRouter
 import com.tokopedia.browse.common.data.DigitalBrowseRepositoryImpl
 import com.tokopedia.browse.common.domain.DigitalBrowseRepository
-
 import dagger.Module
 import dagger.Provides
 
@@ -17,15 +11,6 @@ import dagger.Provides
 
 @Module
 class DigitalBrowseModule {
-
-    @DigitalBrowseScope
-    @Provides
-    fun provideDigitalBrowseRouter(@ApplicationContext context: Context): DigitalBrowseRouter {
-        if (context is DigitalBrowseRouter) {
-            return context
-        }
-        throw RuntimeException("Application must implement " + DigitalBrowseRouter::class.java.canonicalName)
-    }
 
     @DigitalBrowseScope
     @Provides

@@ -75,6 +75,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHOP_PROFILE = "click shop profile";
     public static final String CLICK_ADD_ETALASE_BUTTON = "click add etalase button";
     public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
+    public static final String CLICK_CLOSE_FILTER = "click close filter";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -149,7 +150,8 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_ID = "shopId";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "pageType";
-    public static final String PRODUCT_ID = "product_id";
+    public static final String PRODUCT_ID = "productId";
+    public static final String PAGE_SOURCE = "pageSource";
     public static final String ECOMMERCE = "ecommerce";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE = "/shoppage";
@@ -201,6 +203,7 @@ public class ShopPageTrackingConstant {
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
     public static final String SCREEN_SEARCH_BAR = "Search Bar";
+    public static final String SCREEN_ADD_PRODUCT = "/add-product";
 
     //value
     public static final String VALUE_PRODUCT = "Product";

@@ -59,6 +59,6 @@ class RecommendationVH(itemView: View, val recommendationListener: GamiPdpRecomm
     }
 
     companion object {
-        val LAYOUT = R.layout.item_recommendation_pdp_gami
+        val LAYOUT = com.tokopedia.gamification.R.layout.item_recommendation_pdp_gami
     }
 }

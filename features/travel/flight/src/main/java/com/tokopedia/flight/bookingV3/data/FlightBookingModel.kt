@@ -2,8 +2,8 @@ package com.tokopedia.flight.bookingV3.data
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 
 /**
  * @author by jessica on 2019-11-05
@@ -18,8 +18,8 @@ data class FlightBookingModel (
         var cartId: String = "",
         var isDomestic: Boolean = true,
         var isMandatoryDob: Boolean = false,
-        var flightPriceViewModel: FlightPriceViewModel = FlightPriceViewModel(),
-        var searchParam: FlightSearchPassDataViewModel = FlightSearchPassDataViewModel(),
+        var flightPriceModel: FlightPriceModel = FlightPriceModel(),
+        var searchParam: FlightSearchPassDataModel = FlightSearchPassDataModel(),
         var insurances: List<FlightCart.Insurance> = arrayListOf()
 ): Parcelable {
     constructor(parcel: Parcel) : this(
@@ -31,8 +31,8 @@ data class FlightBookingModel (
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
-            parcel.readParcelable(FlightPriceViewModel::class.java.classLoader),
-            parcel.readParcelable(FlightSearchPassDataViewModel::class.java.classLoader),
+            parcel.readParcelable(FlightPriceModel::class.java.classLoader),
+            parcel.readParcelable(FlightSearchPassDataModel::class.java.classLoader),
             parcel.createTypedArrayList(FlightCart.Insurance.CREATOR)) {
     }
 
@@ -45,7 +45,7 @@ data class FlightBookingModel (
         parcel.writeString(cartId)
         parcel.writeByte(if (isDomestic) 1 else 0)
         parcel.writeByte(if (isMandatoryDob) 1 else 0)
-        parcel.writeParcelable(flightPriceViewModel, flags)
+        parcel.writeParcelable(flightPriceModel, flags)
         parcel.writeParcelable(searchParam, flags)
         parcel.writeTypedList(insurances)
     }

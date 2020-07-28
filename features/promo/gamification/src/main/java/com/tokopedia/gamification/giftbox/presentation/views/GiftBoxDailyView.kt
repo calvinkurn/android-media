@@ -2,18 +2,22 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.presentation.LidImagesDownloader
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
@@ -25,10 +29,12 @@ open class GiftBoxDailyView : FrameLayout {
 
     lateinit var imageGiftBoxLid: AppCompatImageView
     lateinit var fmGiftBox: FrameLayout
-    lateinit var imageFlatGlow: AppCompatImageView
+    lateinit var imageFlatGlow: DeferredImageView
     lateinit var imageBoxFront: AppCompatImageView
     lateinit var imageBg: AppCompatImageView
     lateinit var imageShadow: AppCompatImageView
+    val lidImagesDownloader = LidImagesDownloader()
+    val lidImages = arrayListOf<Bitmap>()
 
     var boxCallback: BoxCallback? = null
     var initialBounceAnimatorSet: AnimatorSet? = null
@@ -36,7 +42,7 @@ open class GiftBoxDailyView : FrameLayout {
 
     open var TOTAL_ASYNC_IMAGES = 3
     var imagesLoaded = AtomicInteger(0)
-    val GIFT_BOX_START_DELAY = 300L
+    open var GIFT_BOX_START_DELAY = 300L
     var LID_ANIMATION_DURATION = 450L
     var SCALE_UP_ANIMATION_DURATION = 500L
 
@@ -56,7 +62,7 @@ open class GiftBoxDailyView : FrameLayout {
         setup(null)
     }
 
-    open fun getLayout() = R.layout.view_gift_box_daily
+    open fun getLayout() = com.tokopedia.gamification.R.layout.view_gift_box_daily
 
     private fun setup(attrs: AttributeSet?) {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
@@ -82,7 +88,7 @@ open class GiftBoxDailyView : FrameLayout {
             startBoxOpenAnimation()
         }
     }
-    
+
     fun startBoxOpenAnimation() {
         initialBounceAnimatorSet?.end()
 
@@ -92,6 +98,8 @@ open class GiftBoxDailyView : FrameLayout {
         animatorSet.addListener(onEnd = {
             boxCallback?.onBoxOpened()
         })
+
+        //total duration ins 750
         boxCallback?.onBoxOpenAnimationStart(pairAnimation.second + GIFT_BOX_START_DELAY - NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM)
         animatorSet.start()
 
@@ -100,27 +108,30 @@ open class GiftBoxDailyView : FrameLayout {
     fun loadFiles(@TokenUserState state: String,
                   imageFrontUrl: String?,
                   imageBgUrl: String,
-                  lidImages: ArrayList<String>,
+                  lidImageList: List<String>,
                   imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
-        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
-        if (state == TokenUserState.ACTIVE) {
-            drawableRedForLid = R.drawable.gf_ic_lid_frame_0
+        lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
+            if (images.isNullOrEmpty()) {
+                imageCallback.invoke(false)
+            } else {
+                lidImages.addAll(images)
+                var bmp = images.last()
+                if (state == TokenUserState.ACTIVE) {
+                    bmp = images.first()
+                }
+                loadOriginalImages(bmp, imageCallback)
+            }
         }
-        Glide.with(this)
-                .load(drawableRedForLid)
-                .dontAnimate()
-                .addListener(getGlideListener(imageCallback))
-                .into(imageGiftBoxLid)
 
-        Glide.with(this)
+        Glide.with(imageBoxFront)
                 .load(imageFrontUrl)
                 .dontAnimate()
                 .addListener(getGlideListener(imageCallback))
                 .into(imageBoxFront)
 
 
-        Glide.with(this)
+        Glide.with(imageBg)
                 .load(imageBgUrl)
                 .dontAnimate()
                 .addListener(getGlideListener(imageCallback))
@@ -226,20 +237,16 @@ open class GiftBoxDailyView : FrameLayout {
         return Pair(animatorSet, totalDuration)
     }
 
-
-    fun loadLidFrames(): Animator {
-
-        //todo Rahul Need to chang logic once images will come from backend
-        //ImageHandler.loadImageWithSignature(imageGiftBoxLid, url, GLIDE_SIGNATURE)
+    private fun loadBackupImages(): Animator {
         val drawableArray = arrayOf(
-                R.drawable.gf_ic_lid_frame_0,
-                R.drawable.gf_ic_lid_frame_1,
-                R.drawable.gf_ic_lid_frame_2,
-                R.drawable.gf_ic_lid_frame_3,
-                R.drawable.gf_ic_lid_frame_4,
-                R.drawable.gf_ic_lid_frame_5,
-                R.drawable.gf_ic_lid_frame_6,
-                R.drawable.gf_ic_lid_frame_7
+                R.drawable.gf_ic_lid_0,
+                R.drawable.gf_ic_lid_0,
+                R.drawable.gf_ic_lid_0,
+                R.drawable.gf_ic_lid_3,
+                R.drawable.gf_ic_lid_3,
+                R.drawable.gf_ic_lid_5,
+                R.drawable.gf_ic_lid_6,
+                R.drawable.gf_ic_lid_7
         )
         val valueAnimator = ValueAnimator.ofInt(drawableArray.size - 1)
         valueAnimator.addUpdateListener {
@@ -247,6 +254,46 @@ open class GiftBoxDailyView : FrameLayout {
         }
         valueAnimator.duration = LID_ANIMATION_DURATION
         return valueAnimator
+    }
+
+    open fun loadLidFrames(): Animator {
+        return if (lidImages.isEmpty()) {
+            loadBackupImages()
+        } else {
+            val valueAnimator = ValueAnimator.ofInt(lidImages.size - 1)
+            valueAnimator.addUpdateListener {
+                imageGiftBoxLid.setImageBitmap(lidImages[it.animatedValue as Int])
+            }
+            valueAnimator.duration = LID_ANIMATION_DURATION
+            valueAnimator
+        }
+    }
+
+    fun loadOriginalImages(bmp: Bitmap?, imageCallback: ((isLoaded: Boolean) -> Unit), @DrawableRes resId: Int = R.drawable.gf_ic_lid_0) {
+        val rp = if (bmp != null) {
+            Glide.with(this)
+                    .load(bmp)
+
+        } else {
+            Glide.with(this)
+                    .load(resId)
+        }
+        rp.dontAnimate()
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        imageCallback.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        val count = imagesLoaded.incrementAndGet()
+                        if (count == TOTAL_ASYNC_IMAGES) {
+                            imageCallback.invoke(true)
+                        }
+                        return false
+                    }
+                })
+                .into(imageGiftBoxLid)
     }
 
     enum class GiftBoxState {
@@ -257,11 +304,5 @@ open class GiftBoxDailyView : FrameLayout {
         fun onBoxScaleDownAnimationStart()
         fun onBoxOpenAnimationStart(startDelay: Long)
         fun onBoxOpened()
-    }
-
-    interface BoxRewardCallback {
-        fun showPoints(): Animator
-        fun showPointsWithCoupons(): Animator
-        fun showCoupons(): Animator
     }
 }

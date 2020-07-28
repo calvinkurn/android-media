@@ -7,6 +7,10 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
+import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
+import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
+import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcherImpl
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -16,8 +20,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 /**
@@ -31,8 +33,7 @@ class HomeRecommendationModule {
 
     @HomeRecommendationScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideDispatchers(): RecommendationDispatcher = RecommendationDispatcherImpl()
 
     @Provides
     @HomeRecommendationScope
@@ -48,41 +49,33 @@ class HomeRecommendationModule {
 
     @Provides
     @HomeRecommendationScope
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
+    fun provideGetRecommendationUseCase(@ApplicationContext context: Context,
                                         graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
+        val recomQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
+        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+    }
     @Provides
     @HomeRecommendationScope
-    fun provideGetSingleRecommendationUseCase(@Named("singleProductRecommendation") recomQuery: String,
-                                        graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+    fun provideGetSingleRecommendationUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase, userSessionInterface: UserSessionInterface): GetSingleRecommendationUseCase {
+        val recomQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.gql_single_product_recommendation)
+        return GetSingleRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+    }
 
     @Provides
     @HomeRecommendationScope
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_recommendation_widget)
-
-    @Provides
-    @HomeRecommendationScope
-    @Named("singleProductRecommendation")
-    fun provideSingleProductRecommendationRawQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    R.raw.gql_single_product_recommendation)
-
-    @Provides
-    @HomeRecommendationScope
-    @Named("primaryQuery")
-    fun providePrimaryProductRawQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    R.raw.gql_primary_product)
+    fun provideGetPrimaryProductUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): GetPrimaryProductUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
+        useCase.setGraphqlQuery(query)
+        return GetPrimaryProductUseCase(useCase)
+    }
 
     @Provides
     @HomeRecommendationScope
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.mutation_add_to_cart)
+                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
 }

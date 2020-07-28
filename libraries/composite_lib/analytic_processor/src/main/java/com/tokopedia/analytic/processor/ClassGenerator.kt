@@ -1,15 +1,17 @@
 package com.tokopedia.analytic.processor
 
-import com.tokopedia.analytic.processor.*
-import com.tokopedia.analytic.processor.utils.*
 import com.squareup.javapoet.*
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
+import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic.processor.utils.*
 import java.io.Serializable
 import java.lang.reflect.Constructor
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
+import javax.lang.model.element.VariableElement
+import javax.lang.model.type.MirroredTypeException
+import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
 import javax.tools.Diagnostic
 
@@ -18,6 +20,10 @@ abstract class ClassGenerator(
 ) {
 
     companion object {
+        const val BUNDLE_NAME = "bundle"
+        const val objectTypeConditionCheckFormat = "\$T.INSTANCE.\$N(\$L)"
+        const val mapTypeConditionCheckFormat = "\$T.INSTANCE.\$N((\$T) \$L)"
+
         val bundleClassName = ClassName.get("android.os", "Bundle")
         val iteratorClassName = ClassName.get("java.util", "Iterator")
         val collectionClassName = ClassName.get("java.util", "Collection")
@@ -25,12 +31,16 @@ abstract class ClassGenerator(
         val listClassName = ClassName.get("java.util", "List")
         val setClassName = ClassName.get("java.util", "Set")
         val mapClassName = ClassName.get("java.util", "Map")
-        val BUNDLE_NAME = "bundle"
+        val entryClassName = ClassName.get("java.util.Map", "Entry")
+        val levelClassName: ClassName = ClassName.get("com.tokopedia.analytic.annotation", "Level")
+        val bundlerUtilClassName: ClassName = ClassName.get("com.tokopedia.gtmutil", "BundlerUtil")
     }
 
     private val CLASS_NAME_SUFFIX = "Bundler"
+    private val CUSTOM_CHECKER_NAME_SUFFIX = "Checkers"
 
     protected val classBuilder: TypeSpec.Builder
+    private val customCheckerClass: TypeSpec.Builder
     protected abstract val getBundleFuncBuilder: MethodSpec.Builder
     protected abstract val getBundleFromMap: MethodSpec.Builder
 
@@ -39,14 +49,31 @@ abstract class ClassGenerator(
             TypeSpec.classBuilder("${clazz.getClassName()}$CLASS_NAME_SUFFIX")
                 .addOriginatingElement(clazz.element)
                 .addModifiers(Modifier.PUBLIC)
+
+        customCheckerClass =
+                TypeSpec.interfaceBuilder("${clazz.getClassName()}$CUSTOM_CHECKER_NAME_SUFFIX")
+                        .addOriginatingElement(clazz.element)
+                        .addModifiers(Modifier.PUBLIC)
     }
 
     abstract fun generate(): JavaFile
 
+    fun hasCustomChecker() = customCheckerClass.build().methodSpecs.isNotEmpty()
+
+    fun generateCheckerInterface(): JavaFile {
+        val customCheckerClass = customCheckerClass.build()
+        return JavaFile.builder(
+                clazz.pack,
+                customCheckerClass
+        )
+                .indent("    ")
+                .build()
+    }
+
     // this function is called for every class field to generate a put statement based on it's type
     protected fun createPutStatement(field: ModelClassField): CodeBlock {
         val fieldTypeName = TypeName.get(field.element.asType())
-        return if (isRawType(fieldTypeName)) {
+        val putStatement = if (isRawType(fieldTypeName)) {
             createPutRawStatement(field)
         } else if (isBundleable(field.element)) {
             createPutBundleStatement(field)
@@ -60,6 +87,100 @@ abstract class ClassGenerator(
             createPutSerializableStatement(field)
         } else {
             throw IllegalArgumentException("Unknown put statement")
+        }
+
+        val checkerStatement = addCheckerStatement(field, putStatement)
+
+        return checkerStatement.build()
+    }
+
+    open fun addCheckerStatement(field: ModelClassField, putStatement: CodeBlock): CodeBlock.Builder {
+        val checkerStatement = CodeBlock.builder()
+        if (field.element.getAnnotation(CustomChecker::class.java) != null) {
+            createCustomCheckerCondition(field, checkerStatement, false)
+            checkerStatement.add(putStatement)
+            createCheckerSuccessBlock(field, checkerStatement)
+            createCheckerFailedBlock(field, checkerStatement)
+            checkerStatement.endControlFlow()
+        } else {
+            checkerStatement.add(putStatement)
+        }
+        return checkerStatement
+    }
+
+    protected fun createCheckerFailedBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
+        val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
+        val customCheckerAnnotation = field.element.getAnnotation(CustomChecker::class.java)
+        var checkerClass: TypeMirror? = null
+        try {
+            customCheckerAnnotation.checkerClass
+        } catch (e: MirroredTypeException) {
+            checkerClass = e.typeMirror
+        }
+        if (checkerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Checker class not found", clazz.element)
+        if (loggerAnnotation != null) {
+            var loggerClass: TypeMirror? = null
+            try {
+                loggerAnnotation.loggerClass
+            } catch (e: MirroredTypeException) {
+                loggerClass = e.typeMirror
+            }
+            if (loggerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Logger class not found", clazz.element)
+            checkerStatement.nextControlFlow("else")
+            checkerStatement.addStatement("\$T.INSTANCE.log(\$T.\$L, \$S)",
+                    ClassName.get(loggerClass),
+                    levelClassName,
+                    customCheckerAnnotation.level,
+                    "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName.joinToString(", ")}")
+
+            val errorHandlerAnnotation = clazz.element.getAnnotation(ErrorHandler::class.java)
+            var errorHandlerClass: TypeMirror? = null
+            if (errorHandlerAnnotation != null) {
+                try {
+                    errorHandlerAnnotation.errorHandler
+                } catch (e: MirroredTypeException) {
+                    errorHandlerClass = e.typeMirror
+                }
+            } else {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "You must specify an error handler when using custom checker with ERROR level", clazz.element)
+            }
+            if (customCheckerAnnotation.level == Level.ERROR && errorHandlerClass == null) {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Error handler class not found", clazz.element)
+            }
+
+            if (customCheckerAnnotation.level == Level.ERROR)
+                checkerStatement.addStatement("\$T.INSTANCE.onError(new \$T(\$S))",
+                    ClassName.get(errorHandlerClass),
+                    ClassName.get("java.lang", "Exception"),
+                    "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName.joinToString(", ")}")
+        }
+    }
+
+    protected fun createCheckerSuccessBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
+        val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
+        val customCheckerAnnotation = field.element.getAnnotation(CustomChecker::class.java)
+        if (loggerAnnotation != null) {
+            var loggerClass: TypeMirror? = null
+            try {
+                loggerAnnotation.loggerClass
+            } catch (e: MirroredTypeException) {
+                loggerClass = e.typeMirror
+            }
+            if (loggerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Logger class not found", clazz.element)
+            var checkerClass: TypeMirror? = null
+            try {
+                customCheckerAnnotation.checkerClass
+            } catch (e: MirroredTypeException) {
+                checkerClass = e.typeMirror
+            }
+            if (checkerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Checker class not found", clazz.element)
+            checkerStatement.addStatement("\$T.INSTANCE.log(\$T.\$L, \$S)",
+                    ClassName.get(loggerClass),
+                    levelClassName,
+                    Level.SUCCESS,
+                    "${checkerClass.toString().split(".").last()} successfully check ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName.joinToString(", ")}")
+        } else {
+            AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
         }
     }
 
@@ -78,15 +199,35 @@ abstract class ClassGenerator(
 
     protected fun createPutStatementFromMap(field: ModelClassField): CodeBlock {
         val fieldTypeName = TypeName.get(field.element.asType())
-        return when {
+        val putStatement = when {
             isRawType(fieldTypeName) -> createPutRawStatementFromMap(field)
             isBundleable(field.element) -> createPutBundleStatementFromMap(field)
             isList(fieldTypeName) || isSet(fieldTypeName) -> createPutListStatementFromMap(field)
-            isMap(fieldTypeName) -> createPutMapStatementFromMap(field)
+            isMap(fieldTypeName) -> {
+                if (field.element.getAnnotation(CustomChecker::class.java) != null) {
+                    createPutMapStatementFromMap(field)
+                } else {
+                    AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Map data type must have a custom checker!", field.element)
+                    throw Exception("Map data type must have a custom checker!")
+                }
+            }
             isSerializable(field.element) -> createPutSerializableStatementFromMap(field)
             isParcelable(field.element) -> createPutParcelableStatementFromMap(field)
             else -> throw java.lang.IllegalArgumentException("Unknown put statement")
         }
+
+        val checkerStatement = CodeBlock.builder()
+        if (field.element.getAnnotation(CustomChecker::class.java) != null) {
+            createCustomCheckerCondition(field, checkerStatement, true)
+            checkerStatement.add(putStatement)
+            createCheckerSuccessBlock(field, checkerStatement)
+            createCheckerFailedBlock(field, checkerStatement)
+            checkerStatement.endControlFlow()
+        } else {
+            checkerStatement.add(putStatement)
+        }
+
+        return checkerStatement.build()
     }
 
     private fun createPutParcelableStatementFromMap(field: ModelClassField): CodeBlock {
@@ -128,8 +269,9 @@ abstract class ClassGenerator(
     private fun createPutMapStatementFromMap(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
 
-        statementBuilder.beginControlFlow("if (data.containsKey(\$S))", field.key)
-
+        statementBuilder.beginControlFlow("if (data.containsKey(\$S))", field.element.simpleName)
+        val keyType = (field.element.asType() as Type.ClassType).typeArguments[0]
+        val keyTypeName = TypeName.get(keyType)
         val valueType = (field.element.asType() as Type.ClassType).typeArguments[1]
         val valueTypeName = TypeName.get(valueType)
 
@@ -163,50 +305,49 @@ abstract class ClassGenerator(
             )
             statementBuilder.add(createPutParcelableArrayListStatement(field))
         } else if (isRawType(valueTypeName)) {
-            // get values
-            val collectionOfType = ParameterGenerator.createParameterizedParameter(
-                    "data",
-                    collectionClassName,
-                    valueTypeName
-            )
-            val collectionName = "${field.key}Values"
-            val mapOfType = ParameterGenerator.createParameterizedParameter(
-                    "data",
-                    mapClassName,
-                    TypeName.get(String::class.java),
-                    valueTypeName
-            )
-            statementBuilder.addStatement(
-                "\$T \$N = ((\$T) data.get(\$S)).values()",
-                collectionOfType.type,
-                collectionName,
-                mapOfType.type,
-                field.key
-            )
-            val arrayListOfType = ParameterGenerator.createParameterizedParameter(
-                    "data",
-                    arrayListClassName,
-                    valueTypeName
-            )
-            val arrayListName = "${field.key}ArrayList"
+            val parameterizedMapEntryTypeName = ParameterizedTypeName.get(entryClassName, keyTypeName, valueTypeName)
+            val parameterizedIteratorTypeName = ParameterizedTypeName.get(iteratorClassName, parameterizedMapEntryTypeName)
 
-            // to arraylist
-            statementBuilder.addStatement(
-                "\$T \$N = new \$T(\$N)",
-                arrayListOfType.type,
-                arrayListName,
-                arrayListOfType.type,
-                collectionName
-            )
+            statementBuilder
+                    .addStatement("\$T \$N = (\$T) data.get(\$S)",
+                            field.element.asType(),
+                            field.element.simpleName,
+                            field.element.asType(),
+                            field.element.simpleName)
+                    .addStatement(
+                    "\$T \$N = \$N.entrySet().iterator()",
+                    parameterizedIteratorTypeName,
+                    "${field.element.simpleName}Entries",
+                    field.element.simpleName)
 
-            // put to bundle
-            statementBuilder.addStatement(
-                "\$N.put\$TArrayList(\$S, \$N)",
-                BUNDLE_NAME,
-                valueType,
-                field.key,
-                arrayListName
-            )
+            statementBuilder.beginControlFlow("while (\$N.hasNext())", "${field.element.simpleName}Entries")
+                    .addStatement("\$T \$N = \$N.next()",
+                            parameterizedMapEntryTypeName,
+                            "entry",
+                            "${field.element.simpleName}Entries")
+                    .addStatement("\$N.put\$N(entry.getKey(), entry.getValue())",
+                            BUNDLE_NAME,
+                            RAW_BUNDLE_TYPE[valueType.toString()])
+
+            val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
+            if (loggerAnnotation != null) {
+                var loggerClass: TypeMirror? = null
+                try {
+                    loggerAnnotation.loggerClass
+                } catch (e: MirroredTypeException) {
+                    loggerClass = e.typeMirror
+                }
+                if (loggerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Logger class not found", clazz.element)
+                statementBuilder.addStatement("\$T.INSTANCE.log(\$T.\$L, \$S + entry.getKey())",
+                        ClassName.get(loggerClass),
+                        levelClassName,
+                        Level.SUCCESS,
+                        "${clazz.getClassName()}: ")
+            } else {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
+            }
+
+            statementBuilder.endControlFlow()
         }
 
         statementBuilder.endControlFlow()
@@ -262,8 +403,8 @@ abstract class ClassGenerator(
         val statementBuilder = CodeBlock.builder()
 
         statementBuilder.addStatement(
-            "\$T.put\$L(\$S, (\$T) \$L, \$L, \$N)",
-                PutHelperGenerator.bundleUtilClassName,
+                "\$T.INSTANCE.put\$L(\$S, (\$T) \$L, \$L, \$N)",
+                bundlerUtilClassName,
             "${RAW_BUNDLE_TYPE[parameterTypeName.toString()]}List",
             field.key,
             ArrayList::class.java,
@@ -374,11 +515,9 @@ abstract class ClassGenerator(
     private fun createPutRawStatementFromMap(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
 
-        statementBuilder.beginControlFlow("if (data.containsKey(\$S))", field.key)
-
         statementBuilder.addStatement(
-            "\$T.put\$L(\$S, (\$L) \$L, \$L, \$N)",
-                PutHelperGenerator.bundleUtilClassName,
+                "\$T.INSTANCE.put\$L(\$S, (\$L) \$L, \$L, \$N)",
+                bundlerUtilClassName,
             RAW_BUNDLE_TYPE[field.element.asType().toString()],
             field.key,
             CAST[field.element.asType().toString()],
@@ -386,8 +525,6 @@ abstract class ClassGenerator(
             createDefaultValueCaster(field),
             BUNDLE_NAME
         )
-
-        statementBuilder.endControlFlow()
 
         return statementBuilder.build()
     }
@@ -416,13 +553,14 @@ abstract class ClassGenerator(
         }
     }
 
+
     // this function is used to generate put expression for primitive + string data type
     private fun createPutRawStatement(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
 
         statementBuilder.addStatement(
-            "\$T.put\$L(\$S, \$L, \$L, \$N)",
-                PutHelperGenerator.bundleUtilClassName,
+                "\$T.INSTANCE.put\$L(\$S, \$L, \$L, \$N)",
+                bundlerUtilClassName,
             RAW_BUNDLE_TYPE[field.element.asType().toString()],
             field.key,
             getValueStatement(field),
@@ -433,11 +571,13 @@ abstract class ClassGenerator(
         return statementBuilder.build()
     }
 
+    private fun getType(field: ModelClassField) = getValueStatement(field)
+
     // Some data may have an owner so that we need to specify the owner in order to get the data
     // We first check whether the data is owned by an instance
     // If true (not empty) then we need to make a getter expression for that owner instance (owner.getXXX())
     // If false (empty) then we can access that data directly by using it's name
-    private fun getValueStatement(field: ModelClassField): String {
+    protected fun getValueStatement(field: ModelClassField): String {
         val ownerName = getOwnerName(field)
         return if (ownerName.isEmpty()) {
             field.element.simpleName.toString()
@@ -459,7 +599,9 @@ abstract class ClassGenerator(
     // this function is used to generate a put expression for a map data type field
     private fun createPutMapStatement(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
+        val keyType = (field.element.asType() as Type.ClassType).typeArguments[0]
         val valueType = (field.element.asType() as Type.ClassType).typeArguments[1]
+        val keyTypeName = TypeName.get(keyType)
         val valueTypeName = TypeName.get(valueType)
 
         if (isBundleable(valueType.asElement())) {
@@ -492,24 +634,46 @@ abstract class ClassGenerator(
             )
             statementBuilder.add(createPutParcelableArrayListStatement(field))
         } else if (isRawType(valueTypeName)) {
-            val parameterizedArrayListTypeName =
-                ParameterizedTypeName.get(arrayListClassName, valueTypeName)
-            val arrayListName = "${field.element.simpleName}ArrayList"
-            statementBuilder.addStatement(
-                "\$T \$N = new \$T(\$L.values())",
-                parameterizedArrayListTypeName,
-                arrayListName,
-                parameterizedArrayListTypeName,
-                getValueStatement(field)
-            )
-            statementBuilder.addStatement(
-                "\$N.put\$N(\$S, (\$T) \$L)",
-                BUNDLE_NAME,
-                RAW_LIST_BUNDLE_TYPE[valueType.toString()],
-                field.key,
-                parameterizedArrayListTypeName,
-                arrayListName
-            )
+            val parameterizedMapEntryTypeName = ParameterizedTypeName.get(entryClassName, keyTypeName, valueTypeName)
+            val parameterizedIteratorTypeName = ParameterizedTypeName.get(iteratorClassName, parameterizedMapEntryTypeName)
+
+            if (field.element.getAnnotation(DefinedInCollections::class.java) != null) {
+                statementBuilder.addStatement(
+                        "\$T \$N = \$N.entrySet().iterator()",
+                        parameterizedIteratorTypeName,
+                        "${field.element.simpleName}Entries",
+                        field.element.simpleName
+                )
+            }
+
+            statementBuilder.beginControlFlow("while (\$N.hasNext())", "${field.element.simpleName}Entries")
+                    .addStatement("\$T \$N = \$N.next()",
+                            parameterizedMapEntryTypeName,
+                            "entry",
+                            "${field.element.simpleName}Entries")
+                    .addStatement("\$N.put\$N(entry.getKey(), entry.getValue())",
+                            BUNDLE_NAME,
+                            RAW_BUNDLE_TYPE[valueType.toString()])
+
+            val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
+            if (loggerAnnotation != null) {
+                var loggerClass: TypeMirror? = null
+                try {
+                    loggerAnnotation.loggerClass
+                } catch (e: MirroredTypeException) {
+                    loggerClass = e.typeMirror
+                }
+                if (loggerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Logger class not found", clazz.element)
+                statementBuilder.addStatement("\$T.INSTANCE.log(\$T.\$L, \$S + entry.getKey())",
+                        ClassName.get(loggerClass),
+                        levelClassName,
+                        Level.SUCCESS,
+                        "${clazz.getClassName()}: ")
+            } else {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
+            }
+
+            statementBuilder.endControlFlow()
         }
 
         return addNullCheck(field, statementBuilder.build(), "ParcelableArrayList")
@@ -554,8 +718,8 @@ abstract class ClassGenerator(
         val statementBuilder = CodeBlock.builder()
 
         statementBuilder.addStatement(
-            "\$T.put\$L(\$S, \$L, \$L, \$N)",
-                PutHelperGenerator.bundleUtilClassName,
+                "\$T.INSTANCE.put\$L(\$S, \$L, \$L, \$N)",
+                bundlerUtilClassName,
             "${RAW_BUNDLE_TYPE[parameterTypeName.toString()]}List",
             field.key,
             getValueStatement(field),
@@ -745,5 +909,66 @@ abstract class ClassGenerator(
                 "$bundlerClassName.getBundle(new $emptyConstructor)"
             }
         }
+    }
+
+    protected fun createCustomCheckerCondition(
+            field: ModelClassField,
+            checkerStatement: CodeBlock.Builder,
+            isFromMap: Boolean
+    ) {
+        val checkerAnnotation = field.element.getAnnotation(CustomChecker::class.java)
+        if (checkerAnnotation != null) {
+            var checkerClass: TypeMirror? = null
+            try {
+                checkerAnnotation.checkerClass
+            } catch (e: MirroredTypeException) {
+                checkerClass = e.typeMirror
+            }
+            if (checkerClass == null) {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Checker class not found", clazz.element)
+            }
+            if (!isFromMap) {
+                checkerStatement.beginControlFlow("if (${generateCheckerFormat(checkerAnnotation.functionName.size, objectTypeConditionCheckFormat)})", *getObjectTypeCheckerParams(ClassName.get(checkerClass), checkerAnnotation.functionName, field.element).toTypedArray())
+            } else {
+                checkerStatement.beginControlFlow("if (${generateCheckerFormat(checkerAnnotation.functionName.size, mapTypeConditionCheckFormat)})", *getMapTypeCheckerParams(field.key, ClassName.get(checkerClass), checkerAnnotation.functionName, field.element).toTypedArray())
+            }
+        } else {
+            AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
+        }
+    }
+
+    private fun generateCheckerFormat(size: Int, format: String): String {
+        val stringBuilder = StringBuilder()
+        for (i in 0 until size) {
+            if (stringBuilder.isNotBlank()) stringBuilder.append(" && ")
+            stringBuilder.append(format)
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun getObjectTypeCheckerParams(checkerClass: TypeName, functionNames: Array<out String>, element: VariableElement): List<Any> {
+        val params = mutableListOf<Any>()
+        functionNames.forEach {
+            params.add(checkerClass)
+            params.add(it)
+            params.add(element)
+        }
+
+        return params
+    }
+
+    private fun getMapTypeCheckerParams(key: String, checkerClass: TypeName, functionNames: Array<out String>, element: VariableElement): List<Any> {
+        val params = mutableListOf<Any>()
+        functionNames.forEach {
+            params.add(checkerClass)
+            params.add(it)
+            params.add(element)
+            if (element.getAnnotation(DefinedInCollections::class.java) == null) {
+                params.add("data.get(\"$key\")")
+            } else {
+                params.add("data.get(\"${element.simpleName}\")")
+            }
+        }
+        return params
     }
 }

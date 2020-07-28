@@ -1,18 +1,19 @@
 package com.tokopedia.home.explore.data.source;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
-import androidx.annotation.NonNull;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.constant.ConstantKey;
@@ -26,6 +27,9 @@ import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewMod
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,6 +114,7 @@ public class ExploreDataSource {
             @Override
             public List<ExploreSectionViewModel> call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
+                    UserSessionInterface userSession = new UserSession(context);
                     List<ExploreSectionViewModel> models = new ArrayList<>();
 
                     DynamicHomeIcon model = response.body().getData().getDynamicHomeIcon();
@@ -122,7 +127,7 @@ public class ExploreDataSource {
                             sectionViewModel.addVisitable(mappingFavoriteCategory(model.getFavCategory()));
                         }
                         if (i == 4) {
-                            if (SessionHandler.isUserHasShop(context)) {
+                            if (userSession.hasShop()) {
                                 sectionViewModel.addVisitable(mappingManageShop(response.body().getData()
                                         .getShopInfo().getData()));
                             } else {
@@ -208,7 +213,10 @@ public class ExploreDataSource {
                 if (cache != null) {
                     DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
                     String cachedShopDomain = data.getShopInfo().getData().getDomain();
-                    if (!SessionHandler.getShopDomain(context).equals(cachedShopDomain)) {
+
+                    SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(context);
+                    String shopDomainPreference = mSettings.getString("shopDomain","");
+                    if (!shopDomainPreference.equals(cachedShopDomain)) {
                         throw new RuntimeException("Cached data shopInfo mismatch!!");
                     }
                     GraphqlResponse<DataResponseModel> graphqlResponse = new GraphqlResponse<>();

@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white">
 
-                    <com.tokopedia.design.component.Tabs
+                    <com.google.android.material.tabs.TabLayout
                         android:id="@+id/tabs_sort_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -93,6 +93,7 @@
         <com.tokopedia.tokopoints.view.customview.ServerErrorView
             android:id="@+id/server_error_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
+
     </ViewFlipper>
 </FrameLayout>

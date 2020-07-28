@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment;
 
 public interface ShopModuleRouter {
 
-    void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
-
     Fragment getReviewFragment(Activity activity, String shopId, String shopDomain);
+
+    Class getReviewFragmentClass();
 
 }
