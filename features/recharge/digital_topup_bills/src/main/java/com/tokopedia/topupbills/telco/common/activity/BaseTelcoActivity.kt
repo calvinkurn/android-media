@@ -78,7 +78,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                         (toolbar as HeaderUnify).transparentMode = false
                         menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
                                 com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
-                        if (fragment != null) {
+                        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
                             (fragment as DigitalBaseTelcoFragment).onCollapseAppBar()
                         }
                     } else {
@@ -86,7 +86,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                         (toolbar as HeaderUnify).transparentMode = true
                         menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
                                 com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
-                        if (fragment != null) {
+                        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
                             (fragment as DigitalBaseTelcoFragment).onExpandAppBar()
                         }
                     }
@@ -170,7 +170,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     override fun onBackPressed() {
-        if (fragment != null) {
+        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
             (fragment as DigitalBaseTelcoFragment).onBackPressed()
         }
         super.onBackPressed()
