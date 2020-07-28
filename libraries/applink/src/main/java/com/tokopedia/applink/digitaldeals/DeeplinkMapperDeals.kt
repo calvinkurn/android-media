@@ -51,7 +51,7 @@ object DeeplinkMapperDeals {
 
             //tokopedia://deals/category/page
             uri.pathSegments.size == 2 -> {
-                if (remoteConfig.getBoolean(MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW)) {
+                if (true) {
                     "${ApplinkConstInternalDeals.DEALS_CATEGORY_PAGE}?${uri.query}"
                 }
                 else ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY

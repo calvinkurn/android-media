@@ -1,6 +1,8 @@
 package com.tokopedia.deals.category
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.deals.category.domain.GetBrandProductCategoryUseCase
 import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.category.ui.dataview.ProductListDataView
@@ -17,7 +19,11 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import com.tokopedia.deals.DealsJsonMapper
 
+@RunWith(JUnit4::class)
 class DealsCategoryViewModelTest {
 
     @get:Rule
@@ -26,16 +32,18 @@ class DealsCategoryViewModelTest {
 
     private val getChipsCategoryUseCase: GetChipsCategoryUseCase = mockk()
     private val getBrandProductCategoryUseCase: GetBrandProductCategoryUseCase = mockk()
-    private val mapper: MapperCategoryLayout = mockk()
     private lateinit var viewModel: DealCategoryViewModel
+    val mContextMock = mockk<Context>(relaxed = true)
+
+    private var mapper : MapperCategoryLayout = MapperCategoryLayout(mContextMock)
 
     @Before
     fun setup() {
         viewModel = DealCategoryViewModel(
-            mapper,
-            getChipsCategoryUseCase,
-            getBrandProductCategoryUseCase,
-            dispatcher
+                mapper,
+                getChipsCategoryUseCase,
+                getBrandProductCategoryUseCase,
+                dispatcher
         )
     }
 
@@ -71,12 +79,10 @@ class DealsCategoryViewModelTest {
 
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryShouldContainsData() {
+        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
         // given
-        coEvery { getChipsCategoryUseCase.executeOnBackground() } returns CuratedData()
         coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns SearchData()
-        coEvery { mapper.mapCategoryLayout(any(), any()) } returns listOf(DealsBaseItemDataView())
-
+        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns mockEvent
         // when
         viewModel.getCategoryBrandData("", "", "", 1, true)
 
@@ -87,10 +93,9 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageGreaterThanOne_productsShouldContainsData() {
         // given
-        coEvery { getChipsCategoryUseCase.executeOnBackground() } returns CuratedData()
         coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
         coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns SearchData()
-        coEvery { mapper.mapProducttoLayout(any()) } returns ProductListDataView()
+        coEvery { mapper.mapProducttoLayout(any(), any()) } returns ProductListDataView()
 
 
         // when
