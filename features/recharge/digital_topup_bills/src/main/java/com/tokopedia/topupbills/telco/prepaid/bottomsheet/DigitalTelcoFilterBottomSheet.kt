@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.common.getColorFromResources
 import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoFilterAdapterTypeFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -67,7 +68,7 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
             setTitle(it.getString(TITLE))
         }
         setAction(getString(R.string.telco_reset_filter)) {
-            resetFilter()
+            if (adapter.totalChecked > 0) resetFilter()
         }
 
         childView = View.inflate(requireContext(), R.layout.bottom_sheet_telco_filter, null)
@@ -130,8 +131,18 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun setVisibilityBtnFilter() {
+        val filterChecked = adapter.totalChecked > 0
+        if (filterChecked) {
+            bottomSheetAction.setTextColor(resources.getColorFromResources(requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.light_G500))
+        } else {
+            bottomSheetAction.setTextColor(resources.getColorFromResources(requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.dark_N75))
+        }
+
         with(childView) {
-            btn_filter.isEnabled = adapter.totalChecked > 0
+            btn_filter.isEnabled = filterChecked
+            bottomSheetAction.isEnabled = filterChecked
         }
     }
 
