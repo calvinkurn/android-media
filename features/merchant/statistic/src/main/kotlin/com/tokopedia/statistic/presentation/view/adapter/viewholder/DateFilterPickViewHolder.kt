@@ -33,14 +33,14 @@ class DateFilterPickViewHolder(
 
     private var element: DateFilterItem.Pick? = null
     private val datePicker: CalendarPicker by lazy {
-        val picker = CalendarPicker(this.itemView.context)
+        val picker = CalendarPicker.newInstance()
         if (element?.type == DateFilterItem.TYPE_PER_WEEK) {
             val title = itemView?.context?.getString(R.string.stc_per_week).orEmpty()
-            picker.init(CalendarPickerView.SelectionMode.RANGE)
+            picker.setMode(CalendarPickerView.SelectionMode.RANGE)
             picker.setTitle(title)
         } else if (element?.type == DateFilterItem.TYPE_PER_DAY) {
             val title = itemView?.context?.getString(R.string.stc_per_day).orEmpty()
-            picker.init(CalendarPickerView.SelectionMode.SINGLE)
+            picker.setMode(CalendarPickerView.SelectionMode.SINGLE)
             picker.setTitle(title)
         }
         return@lazy picker

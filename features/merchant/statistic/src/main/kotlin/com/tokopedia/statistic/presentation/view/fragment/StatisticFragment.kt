@@ -74,7 +74,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private val mLayoutManager by lazy { StatisticLayoutManager(context, 2) }
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private val dateFilterBottomSheet by lazy { DateFilterBottomSheet(requireContext(), childFragmentManager) }
+    private val dateFilterBottomSheet by lazy { DateFilterBottomSheet.newInstance() }
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
     private val defaultEndDate = Date()
     private val job = Job()
@@ -361,9 +361,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun selectDateRange() {
-        if (!isAdded) return
+        if (!isAdded || context == null) return
         StatisticTracker.sendDateFilterEvent(userSession)
         dateFilterBottomSheet
+                .setFragmentManager(childFragmentManager)
                 .setOnApplyChanges {
                     setHeaderSubTitle(it.getHeaderSubTitle())
                     applyDateRange(it)

@@ -1,8 +1,9 @@
 package com.tokopedia.statistic.presentation.view.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
@@ -18,31 +19,55 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 16/06/20
  */
 
-class CalendarPicker(mContext: Context) : BottomSheetUnify() {
+class CalendarPicker : BottomSheetUnify() {
 
-    private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
+    companion object {
+        fun newInstance(): CalendarPicker {
+            return CalendarPicker().apply {
+                isFullpage = true
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
+            }
+        }
+    }
+
     var selectedDates: List<Date> = emptyList()
 
-    private val calendarView: CalendarPickerView?
+    private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
+    private var calendarView: CalendarPickerView? = null
     private val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(90L))
     private val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1L))
 
-    init {
-        val child = View.inflate(mContext, R.layout.bottomsheet_stc_calendar_picker, null)
-        calendarView = child.calendarPickerStc.calendarPickerView
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setChild(inflater, container)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
+        val child = inflater.inflate(R.layout.bottomsheet_stc_calendar_picker, container, false)
+        child.calendarPickerStc.calendarPickerView
         setChild(child)
-        setupView(child)
-        isFullpage = true
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
+        calendarView = child.calendarPickerStc.calendarPickerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupView()
         setDefaultSelectedDate()
     }
 
-    fun init(mode: CalendarPickerView.SelectionMode): CalendarPicker {
+    fun setMode(mode: CalendarPickerView.SelectionMode): CalendarPicker {
         this.mode = mode
+        return this
+    }
+
+    fun showDatePicker(fm: FragmentManager, tag: String = CalendarPicker::class.java.simpleName) {
+        show(fm, tag)
+    }
+
+    private fun setupView() = view?.run {
+        edtStcDate.label = context.getString(R.string.stc_date)
+
         calendarView?.let { cpv ->
             cpv.init(minDate, maxDate, emptyList()).inMode(mode)
             cpv.scrollToDate(maxDate)
@@ -64,15 +89,6 @@ class CalendarPicker(mContext: Context) : BottomSheetUnify() {
                 }
             })
         }
-        return this
-    }
-
-    fun showDatePicker(fm: FragmentManager, tag: String = CalendarPicker::class.java.simpleName) {
-        show(fm, tag)
-    }
-
-    private fun setupView(child: View) = with(child) {
-        edtStcDate.label = context.getString(R.string.stc_date)
     }
 
     private fun setDefaultSelectedDate() {
