@@ -277,6 +277,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var shouldPausePlay = true
     private var lock = Object()
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
@@ -586,6 +587,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
+        shouldPausePlay = true
         createAndCallSendScreen()
         adapter?.onResume()
         conditionalViewModelRefresh()
@@ -623,7 +625,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        adapter?.onPause()
+        if(shouldPausePlay) adapter?.onPause()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
@@ -1947,6 +1949,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onOpenPlayActivity(root: View, channelId: String?) {
+        shouldPausePlay = false
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, channelId)
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!,
                 Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
