@@ -89,7 +89,6 @@ ext {
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
 
             homecredit                      : ":features:fintech:home_credit",
-            instantLoan                     : ":features:fintech:instant_loan",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
