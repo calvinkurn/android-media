@@ -115,7 +115,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
             _loadingProductList.postValue(false)
@@ -132,7 +132,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     fun setExpandInputNumberView(expand: Boolean) {
         launch {
-            delay(100)
+            delay(DELAY_TIME)
             _expandView.postValue(expand)
         }
     }
@@ -141,5 +141,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         const val KEY_MENU_ID = "menuID"
         const val KEY_OPERATOR_ID = "operatorID"
         const val KEY_FILTER_DATA = "filterData"
+
+        const val EXP_TIME = 10
+        const val DELAY_TIME: Long = 100
     }
 }

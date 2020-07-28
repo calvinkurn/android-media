@@ -72,7 +72,7 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 
             _catalogPrefixSelect.postValue(Success(data))
@@ -83,6 +83,7 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     companion object {
         const val KEY_MENU_ID = "menuID"
+        const val EXP_TIME = 10
     }
 
 }
