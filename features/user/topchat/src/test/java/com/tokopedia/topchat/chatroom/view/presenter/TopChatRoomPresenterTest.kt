@@ -12,15 +12,16 @@ import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.websocket.WebSocketInfo
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
+import okhttp3.Interceptor
 import okhttp3.WebSocket
 import org.junit.Before
 import org.junit.Rule
@@ -110,15 +111,21 @@ class TopChatRoomPresenterTest {
     @RelaxedMockK
     private lateinit var view: TopChatContract.View
 
-    lateinit var presenter: TopChatRoomPresenter
+    private lateinit var presenter: TopChatRoomPresenter
+
+    private lateinit var listInterceptor: ArrayList<Interceptor>
+
+    private lateinit var wsOpen: WebSocketInfo
 
     object Dummy {
-        val exMessageId = "1234051"
+        const val exMessageId = "1234051"
+        val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
     }
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
+        mockSingletonObject()
         presenter = TopChatRoomPresenter(
                 tkpdAuthInterceptor,
                 fingerprintInterceptor,
@@ -147,19 +154,27 @@ class TopChatRoomPresenterTest {
         )
         presenter.attachView(view)
         presenter.autoRetryConnectWs = false
+        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        wsOpen = WebSocketInfo(webSocket, true)
+    }
+
+    private fun mockSingletonObject() {
+        mockkObject(RxWebSocket)
+        mockkObject(RxWebSocketUtil)
     }
 
     @Test
     fun `onOpen connect to webscoket`() {
         // Given
-        val wsOpen = WebSocketInfo(webSocket, true)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsOpen)
+        every { RxWebSocketUtil.getInstance(any()) } returns webSocketUtil
 
         // When
         presenter.connectWebSocket(exMessageId)
 
         // Then
         verify(exactly = 1) { view.showErrorWebSocket(false) }
+        verify(exactly = 1) { RxWebSocket.send(readParam, listInterceptor) }
     }
 
 
