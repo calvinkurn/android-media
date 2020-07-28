@@ -145,6 +145,7 @@ include "features:user:kyc_centralized"
 include "features:user:profilecommon"
 include "features:user:liveness"
 include "features:user:loginfingerprint"
+include 'features:user:notif-troubleshooter'
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"

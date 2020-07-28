@@ -95,4 +95,5 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
 }
