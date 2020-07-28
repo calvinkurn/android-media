@@ -32,4 +32,8 @@ object BuyerConsts {
     const val KEY_HOUR_DIVIDER = ":"
     const val KEY_MINUTE = "menit"
     const val REASON_CODE_LAINNYA = 599
+    const val TICKER_URL = "#ticker_url"
+    const val TICKER_LABEL = "#ticker_label"
+    const val BUTTON_INSTANT_CANCELATION = "Batalkan Pesanan"
+    const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
 }

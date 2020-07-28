@@ -33,7 +33,41 @@ data class BuyerGetCancellationReasonData(
 
 				@SerializedName("is_requested_cancel_available")
 				@Expose
-				val isRequestedCancelAvailable: Boolean = false) {
+				val isRequestedCancelAvailable: Boolean = false,
+
+				@SerializedName("is_eligible_instant_cancel")
+				@Expose
+				val isEligibleInstantCancel: Boolean = false,
+
+				@SerializedName("is_show_ticker")
+				@Expose
+				val isShowTicker: Boolean = false,
+
+				@SerializedName("ticker_info")
+				@Expose
+				val tickerInfo: TickerInfo = TickerInfo()) {
+
+			data class TickerInfo (
+					@SerializedName("label")
+					@Expose
+					val label: String = "",
+
+					@SerializedName("color")
+					@Expose
+					val color: String = "",
+
+					@SerializedName("bg_color")
+					@Expose
+					val bgColor: String = "",
+
+					@SerializedName("link_text")
+					@Expose
+					val linkText: String = "",
+
+					@SerializedName("link_url")
+					@Expose
+					val linkUrl: String = ""
+			)
 
 			data class ReasonsItem(
 					@SerializedName("question")

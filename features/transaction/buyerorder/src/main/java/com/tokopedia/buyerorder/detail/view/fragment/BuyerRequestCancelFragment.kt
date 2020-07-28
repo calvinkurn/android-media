@@ -20,20 +20,25 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
+import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
+import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
+import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerGetCancellationReasonViewModel
 import com.tokopedia.buyerorder.list.common.OrderListContants
-import com.tokopedia.buyerorder.list.data.ticker.Input
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -71,6 +76,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listProductsSerializable : Serializable? = null
     private var listProduct = emptyList<Items>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
+    private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var bottomSheet = BottomSheetUnify()
     private var reasonCancel = ""
     private var reasonCode = -1
@@ -145,6 +151,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observingCancelReasons()
+        observingInstantCancel()
+
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
         tf_choose_sub_reason?.textFieldInput?.isClickable = false
@@ -263,35 +271,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         tf_choose_reason?.textFieldIcon1?.setOnClickListener {
             showReasonBottomSheet()
         }
-
-        btn_req_cancel?.setOnClickListener {
-            if (reasonCancel.isNotEmpty()) {
-                if (reasonCode == BuyerConsts.REASON_CODE_LAINNYA) {
-                    when {
-                        tf_choose_sub_reason_editable.textFieldInput.text.isEmpty() -> {
-                            showToaster(getString(R.string.toaster_lainnya_empty), Toaster.TYPE_NORMAL)
-                        }
-                        tf_choose_sub_reason_editable.textFieldInput.text.length < 15 -> {
-                            showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
-                        }
-                        tf_choose_sub_reason_editable.textFieldInput.text.length > 160 -> {
-                            showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
-                        }
-                        else -> {
-                            val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text
-                            if (subReasonLainnya.isNotEmpty()) {
-                                reasonCancel += " - $subReasonLainnya"
-                            }
-                            submitResultReason()
-                        }
-                    }
-                } else {
-                    if (reasonCode != -1) {
-                        submitResultReason()
-                    }
-                }
-            }
-        }
     }
 
     private fun setListenerCancelRequestedAlready() {
@@ -380,9 +359,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     cancelReasonResponse = it.data.getCancellationReason
-                    cancelReasonResponse.reasons.forEach { reasonItem ->
-                        arrayListOfReason.add(reasonItem.title)
-                    }
+                    renderPage()
                 }
                 is Fail -> {
                     val toasterFail = Toaster
@@ -392,6 +369,64 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun renderPage() {
+        // cancel reasons
+        cancelReasonResponse.reasons.forEach { reasonItem ->
+            arrayListOfReason.add(reasonItem.title)
+        }
+
+        // ticker
+        if (cancelReasonResponse.isShowTicker) {
+            renderTicker(cancelReasonResponse.tickerInfo)
+        } else {
+            buyer_ticker_info?.gone()
+        }
+
+        // button
+        btn_req_cancel?.apply {
+            text = when (cancelReasonResponse.isEligibleInstantCancel) {
+                true -> {
+                    BuyerConsts.BUTTON_INSTANT_CANCELATION
+                }
+                false -> {
+                    BuyerConsts.BUTTON_REGULER_CANCELATION
+                }
+            }
+            setOnClickListener { cancelBtnClickListener(cancelReasonResponse.isEligibleInstantCancel) }
+        }
+    }
+
+    private fun cancelBtnClickListener(isEligibleInstantCancel: Boolean) {
+        if (reasonCancel.isNotEmpty()) {
+            if (reasonCode == BuyerConsts.REASON_CODE_LAINNYA) {
+                when {
+                    tf_choose_sub_reason_editable.textFieldInput.text.isEmpty() -> {
+                        showToaster(getString(R.string.toaster_lainnya_empty), Toaster.TYPE_NORMAL)
+                    }
+                    tf_choose_sub_reason_editable.textFieldInput.text.length < 15 -> {
+                        showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
+                    }
+                    tf_choose_sub_reason_editable.textFieldInput.text.length > 160 -> {
+                        showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
+                    }
+                    else -> {
+                        val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text
+                        if (subReasonLainnya.isNotEmpty()) {
+                            reasonCancel += " - $subReasonLainnya"
+                        }
+                        if (isEligibleInstantCancel) submitInstantCancel()
+                        else submitResultReason()
+                    }
+                }
+            } else {
+                if (reasonCode != -1) {
+                    if (isEligibleInstantCancel) submitInstantCancel()
+                    else submitResultReason()
+                }
+            }
+        }
     }
 
     override fun onReasonClicked(reason: String) {
@@ -487,6 +522,65 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
+    private fun submitInstantCancel() {
+        buyerGetCancellationReasonViewModel.instantCancellation(
+                GraphqlHelper.loadRawString(resources, R.raw.buyer_instant_cancel), orderId, "$reasonCode", reasonCancel)
+    }
+
+    private fun observingInstantCancel() {
+        buyerGetCancellationReasonViewModel.buyerInstantCancelResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    instantCancelResponse = it.data.buyerInstantCancel
+                    renderInstantCancellation()
+                }
+                is Fail -> {
+                    showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun renderInstantCancellation() {
+        when (instantCancelResponse.success) {
+            0 -> {
+                showToaster(instantCancelResponse.message, Toaster.TYPE_ERROR)
+            }
+            1 -> {
+                showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
+            }
+            2 -> {
+                showPopupWithTwoButtons()
+            }
+            3 -> {
+                showPopupWithSingleButton()
+            }
+        }
+    }
+
+    private fun showPopupWithTwoButtons() {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.apply {
+            setTitle(instantCancelResponse.popup.title)
+            setDescription(instantCancelResponse.popup.body)
+            setPrimaryCTAText(getString(R.string.button_order_detail_request_cancel))
+            setPrimaryCTAClickListener { submitResultReason() }
+            setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
+            setSecondaryCTAClickListener { dismiss() }
+        }
+        dialog?.show()
+    }
+
+    private fun showPopupWithSingleButton() {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.apply {
+            setTitle(instantCancelResponse.popup.title)
+            setDescription(instantCancelResponse.popup.body)
+            setPrimaryCTAText(getString(R.string.mengerti_button))
+            setPrimaryCTAClickListener { dismiss() }
+        }
+    }
+
     private fun goToChatSeller() {
         if (shopId != -1) {
             val applink = "tokopedia://topchat/askseller/$shopId"
@@ -509,6 +603,17 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         val toaster = Toaster
         view?.let { v ->
             toaster.make(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK)
+        }
+    }
+
+    private fun renderTicker(tickerInfo: TickerInfo) {
+        buyer_ticker_info?.apply {
+            visible()
+            tickerType = Ticker.TYPE_ANNOUNCEMENT
+            tickerShape = Ticker.SHAPE_LOOSE
+            setHtmlDescription(tickerInfo.label + " ${getString(R.string.ticker_info_selengkapnya)
+                    .replace(TICKER_URL, tickerInfo.linkUrl)
+                    .replace(TICKER_LABEL, tickerInfo.linkText)}")
         }
     }
 }

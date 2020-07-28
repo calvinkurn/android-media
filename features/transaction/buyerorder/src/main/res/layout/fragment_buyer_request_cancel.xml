@@ -6,11 +6,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/buyer_ticker_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        android:layout_margin="@dimen/dp_16"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buyer_ticker_info"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/store_name_placeholder"
         android:text="@string/store_name_placeholder"
