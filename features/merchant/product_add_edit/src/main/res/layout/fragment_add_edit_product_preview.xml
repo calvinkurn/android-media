@@ -117,7 +117,7 @@
                 layout="@layout/add_edit_product_no_variant_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_35"
+                android:layout_marginTop="@dimen/layout_lvl3"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

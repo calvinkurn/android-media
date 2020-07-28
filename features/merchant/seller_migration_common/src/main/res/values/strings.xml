@@ -97,4 +97,12 @@
     <string name="seller_migration_fragment_statistic_tab_market_insight_title">WAWASAN PASAR</string>
     <string name="seller_migration_fragment_statistic_tab_market_insight_description">Khusus Power Merchant, pantau info pasar agar tokomu jadi lebih kompetitif.</string>
     <string name="title_fetured_product">Fitur Unggulan</string>
+
+    <!--    product add edit-->
+    <string name="seller_migration_add_edit_no_variant_title">Varian Produk</string>
+    <string name="seller_migration_add_edit_no_variant_description">Kelola varian warna, ukuran, dan detil lainnya secara mudah hanya di aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt;</string>
+
+    <!--    product manage list-->
+    <string name="seller_migration_add_product_in_mainapp_title">Tambah produk</string>
+    <string name="seller_migration_add_product_in_mainapp_desc">Tambah produk tanpa varian dan promosi</string>
 </resources>

@@ -62,8 +62,7 @@ class ProductManageAddEditMenuBottomSheet(
     fun show() {
         if (!GlobalConfig.isSellerApp()) {
             sellerFeatureCarousel?.setItems(listOf(
-                    SellerFeatureUiModel.SetVariantFeatureWithDataUiModel(Any()),
-                    SellerFeatureUiModel.ImportInstagramFeatureWithDataUiModel(Any())
+                    SellerFeatureUiModel.SetVariantFeatureWithDataUiModel(Any())
             ))
         }
 

@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -282,6 +283,7 @@ class AddEditProductDescriptionFragment:
         with (GlobalConfig.isSellerApp()) {
             containerAddEditDescriptionFragmentNoInputVariant.showWithCondition(!this)
             containerAddEditDescriptionFragmentInputVariant.showWithCondition(this)
+            tvNoVariantDescription.text = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_add_edit_no_variant_description).parseAsHtml()
         }
 
         descriptionViewModel.getVariants(descriptionViewModel.categoryId)

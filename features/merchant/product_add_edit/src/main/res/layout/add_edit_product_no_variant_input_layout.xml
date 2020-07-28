@@ -10,7 +10,7 @@
         android:id="@+id/tv_no_variant_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_no_variant_layout"
+        android:text="@string/seller_migration_add_edit_no_variant_title"
         android:textColor="@color/Neutral_N700_32"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_no_variant_title" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_no_variant_description"
+        android:id="@+id/tvNoVariantDescription"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -41,6 +41,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_no_variant_title"
         app:typographyType="body_3"
-        android:text="@string/description_no_variant_layout" />
+        tools:text="@string/seller_migration_add_edit_no_variant_description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
