@@ -934,7 +934,7 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        jobChannel = launch(homeDispatcher.get().ui()) {
+        runBlocking {
             updateChannel(channel)
         }
     }
