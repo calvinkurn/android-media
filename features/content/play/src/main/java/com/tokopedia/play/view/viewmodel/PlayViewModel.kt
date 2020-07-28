@@ -23,6 +23,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -98,7 +99,7 @@ class PlayViewModel @Inject constructor(
         }
     val videoPlayer: VideoPlayerUiModel
         get() {
-            val videoPlayer = _observableCompleteInfo.value?.videoPlayer
+            val videoPlayer = _observableVideoPlayer.value
             return videoPlayer ?: Unknown
         }
     val contentId: Int

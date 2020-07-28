@@ -22,6 +22,15 @@ data class Properties(
         val dynamic: Boolean,
 
         @SerializedName("sticky")
-        val sticky: Boolean
+        val sticky: Boolean,
+
+        @SerializedName("banner_title")
+        val bannerTitle: String,
+
+        @SerializedName("cta_app")
+        val ctaApp: String?,
+
+        @SerializedName("design")
+        val design: String
 
 )

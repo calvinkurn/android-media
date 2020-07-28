@@ -17,8 +17,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
 import dagger.Lazy
@@ -48,11 +51,13 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
     val userSessionInterface by memoized<UserSessionInterface>()
     val closeChannelUseCase by memoized<CloseChannelUseCase>()
-    val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase>()
     val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>()
+    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>()
+    val getPlayBannerUseCase by memoized<GetPlayWidgetUseCase>()
+    val playToggleChannelReminderUseCase by memoized<PlayToggleChannelReminderUseCase>()
+    val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase>()
     val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>()
     val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>()
-    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>()
     return HomeViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
@@ -77,6 +82,8 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             declineSalamWIdgetUseCase = Lazy{declineSalamWIdgetUseCase},
             declineRechargeRecommendationUseCase = Lazy { declineRechargeRecommendationUseCase },
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
+            getPlayBannerUseCase = Lazy{getPlayBannerUseCase},
+            playToggleChannelReminderUseCase = Lazy{playToggleChannelReminderUseCase}
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase }
     )
 }
@@ -102,10 +109,13 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val closeChannelUseCase by memoized<CloseChannelUseCase> { mockk(relaxed = true) }
     val injectCouponTimeBasedUseCase by memoized<InjectCouponTimeBasedUseCase> { mockk(relaxed = true) }
     val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
-    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>{ mockk(relaxed = true)}
+    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>() { mockk(relaxed = true)}
+    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>() { mockk(relaxed = true)}
+    val getPlayBannerUseCase by memoized<GetPlayWidgetUseCase>() { mockk(relaxed = true) }
+    val playToggleChannelReminderUseCase by memoized<PlayToggleChannelReminderUseCase>() { mockk(relaxed = true) }
     val getSalamWidgetUseCase by memoized<GetSalamWidgetUseCase>{ mockk(relaxed = true)}
     val declineSalamWIdgetUseCase by memoized<DeclineSalamWIdgetUseCase>{ mockk(relaxed = true)}
-    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>{ mockk(relaxed = true)}
+
 }
 
 fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {
