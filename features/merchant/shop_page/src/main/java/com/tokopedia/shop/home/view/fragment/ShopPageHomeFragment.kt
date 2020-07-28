@@ -183,6 +183,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun startMonitoringPltNetworkRequest(){
         (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }

@@ -72,6 +72,36 @@ public class ShopCommonModule {
     }
 
     @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_OS)
+    public String provideGqlQueryShopInfoForOs(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(GqlQueryConstant.SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING);
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_GOLD)
+    public String provideGqlQueryShopInfoForGold(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(GqlQueryConstant.SHOP_INFO_FOR_GOLD_REQUEST_QUERY_STRING);
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
+    public String provideGqlQueryShopInfoForTopContent(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(GqlQueryConstant.SHOP_INFO_FOR_TOP_CONTENT_REQUEST_QUERY_STRING);
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HOME_TYPE)
+    public String provideGqlQueryShopInfoForHomeType(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(GqlQueryConstant.SHOP_INFO_FOR_HOME_TYPE_REQUEST_QUERY_STRING);
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
+    public String provideGqlQueryShopInfoForCoreAndAssets(@ApplicationContext Context context){
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(GqlQueryConstant.SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING);
+    }
+
+    @Provides
     @Named(GQLQueryNamedConstant.SHOP_REPUTATION)
     public String provideGqlQueryShopReputation(@ApplicationContext Context context){
         return SHOP_REPUTATION_QUERY_STRING;
@@ -197,4 +227,45 @@ public class ShopCommonModule {
                                                                             String gqlQuery) {
         return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
+
+    @GqlGetShopInfoUseCaseOsQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseOs(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_OS)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @GqlGetShopInfoUseCaseGoldQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseGold(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_GOLD)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @GqlGetShopInfoUseCaseTopContentQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseTopContent(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @GqlGetShopInfoUseCaseHomeTypeQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseHomeType(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HOME_TYPE)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCaseCoreAndAssets(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                                    @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS)
+                                                                            String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
+    }
+
 }

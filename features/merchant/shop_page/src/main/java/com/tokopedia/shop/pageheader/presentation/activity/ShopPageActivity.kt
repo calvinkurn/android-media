@@ -179,8 +179,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return shopPageProductTabLoadTimePerformanceCallback
     }
 
-    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+    override fun stopMonitoringPltPreparePage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.startNetworkRequestPerformanceMonitoring()
     }
 

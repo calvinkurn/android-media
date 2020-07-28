@@ -45,7 +45,7 @@ import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabData
+import com.tokopedia.shop.pageheader.data.model.ShopPageP1Data
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
@@ -183,7 +183,7 @@ class ShopPageFragment :
 
 
     override fun onDestroy() {
-        shopViewModel.shopPageHeaderTabData.removeObservers(this)
+        shopViewModel.shopPageP1Data.removeObservers(this)
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
@@ -244,7 +244,7 @@ class ShopPageFragment :
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
-        shopViewModel.shopPageHeaderTabData.observe(owner, Observer { result ->
+        shopViewModel.shopPageP1Data.observe(owner, Observer { result ->
             startShopPageHeaderMonitoringPltRenderPage()
             when (result) {
                 is Success -> {
@@ -272,7 +272,6 @@ class ShopPageFragment :
     }
 
     private fun onErrorGetShopPageHeaderContentData(error: Throwable) {
-        shopPageFragmentHeaderViewHolder.showShopPageHeaderContentError()
         val errorMessage = ErrorHandler.getErrorMessage(context, error)
         view?.let { view ->
             Toaster.make(
@@ -288,7 +287,6 @@ class ShopPageFragment :
     }
 
     private fun getShopPageHeaderContentData() {
-        shopPageFragmentHeaderViewHolder.showShopPageHeaderContentLoading()
         shopViewModel.getShopPageHeaderContentData(shopId, shopDomain ?: "", isRefresh)
     }
 
@@ -354,6 +352,7 @@ class ShopPageFragment :
     private fun startPltNetworkPerformanceMonitoring() {
         (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }
@@ -573,17 +572,19 @@ class ShopPageFragment :
         }
     }
 
-    private fun onSuccessGetShopPageTabData(shopPageHeaderTabData: ShopPageHeaderTabData) {
+    private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1Data) {
         stopPreparePltShopPage()
-        isShowFeed = shopPageHeaderTabData.feedWhitelist.isWhitelist
-        createPostUrl = shopPageHeaderTabData.feedWhitelist.url
+        isShowFeed = shopPageP1Data.isWhitelist
+        createPostUrl = shopPageP1Data.url
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageFragment.shopId
-            isOfficial = shopPageHeaderTabData.shopInfo.os.isOfficial == 1
-            isGoldMerchant = shopPageHeaderTabData.shopInfo.gold.isGold == 1
-            shopName = shopPageHeaderTabData.shopInfo.shopCore.name
-            shopHomeType = shopPageHeaderTabData.shopInfo.shopHomeType
-            topContentUrl = shopPageHeaderTabData.shopInfo.topContent.topUrl
+            isOfficial = shopPageP1Data.isOfficial
+            isGoldMerchant = shopPageP1Data.isGoldMerchant
+            shopHomeType = shopPageP1Data.shopHomeType
+            topContentUrl = shopPageP1Data.topContentUrl
+            shopName = shopPageP1Data.shopName
+            shopDomain = shopPageP1Data.shopDomain
+            avatar = shopPageP1Data.shopAvatar
         }
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
@@ -600,11 +601,15 @@ class ShopPageFragment :
         setupTabs()
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
+        shopPageHeaderDataModel?.let{
+            shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
+        }
     }
 
     protected fun stopPreparePltShopPage(){
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }
@@ -612,8 +617,6 @@ class ShopPageFragment :
 
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
         shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
-            shopPageHeaderDataModel.avatar = shopPageHeaderContentData.shopInfo.shopAssets.avatar
-            shopPageHeaderDataModel.domain = shopPageHeaderContentData.shopInfo.shopCore.domain
             shopPageHeaderDataModel.location = shopPageHeaderContentData.shopInfo.location
             shopPageHeaderDataModel.isFreeOngkir = shopPageHeaderContentData.shopInfo.freeOngkir.isActive
             shopPageHeaderDataModel.statusTitle = shopPageHeaderContentData.shopInfo.statusInfo.statusTitle
@@ -629,7 +632,6 @@ class ShopPageFragment :
                 button_chat.hide()
             }
             updateFavouriteResult(shopPageHeaderContentData.favoriteData.alreadyFavorited == 1)
-            shopPageFragmentHeaderViewHolder.showShopPageHeaderContent()
             shopPageFragmentHeaderViewHolder.bind(shopPageHeaderDataModel, isMyShop, remoteConfig)
             shopPageFragmentHeaderViewHolder.updateFavoriteData(shopPageHeaderContentData.favoriteData)
             if (!shopPageHeaderDataModel.isOfficial) {
