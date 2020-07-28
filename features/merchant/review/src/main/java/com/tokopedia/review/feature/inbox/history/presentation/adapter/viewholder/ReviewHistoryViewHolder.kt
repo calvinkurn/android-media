@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
+import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
@@ -53,7 +54,7 @@ class ReviewHistoryViewHolder(view: View,
         }
     }
 
-    private fun showAttachedImages(attachedImages: List<String>, productName: String, productId: Int, feedbackId: Int) {
+    private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: Int, feedbackId: Int) {
         if(attachedImages.isEmpty()) {
             return
         }

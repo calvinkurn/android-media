@@ -29,6 +29,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val submitReviewUseCase: ProductrevSubmitReviewUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.io()) {
 
+    companion object {
+        private const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
+    }
+
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 

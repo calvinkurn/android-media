@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.history.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.review.common.data.ProductrevReviewAttachment
 
 data class ProductrevFeedbackHistoryReview(
         @SerializedName("feedbackID")
@@ -18,5 +19,5 @@ data class ProductrevFeedbackHistoryReview(
         val reviewText: String = "",
         @SerializedName("attachmentsURL")
         @Expose
-        val attachments: List<String> = emptyList()
+        val attachments: List<ProductrevReviewAttachment> = emptyList()
 )

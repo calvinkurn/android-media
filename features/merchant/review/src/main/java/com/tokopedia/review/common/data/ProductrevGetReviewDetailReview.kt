@@ -18,7 +18,7 @@ data class ProductrevGetReviewDetailReview(
         val reviewTimeFormatted: String = "",
         @SerializedName("attachmentsURL")
         @Expose
-        val attachments: List<String> = emptyList(),
+        val attachments: List<ProductrevReviewAttachment> = emptyList(),
         @SerializedName("editable")
         @Expose
         val editable: Boolean = false,

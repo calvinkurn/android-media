@@ -26,7 +26,10 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                       rating
                       reviewText
                       reviewTimeFormatted
-                      attachmentsURL
+                      attachmentsURL {
+                        fullSize
+                        thumbnail
+                      }
                       editable
                       reviewerName
                       sentAsAnonymous
