@@ -44,15 +44,11 @@ class PatchService : JobIntentService() {
 
     override fun onCreate() {
         super.onCreate()
-        logger = PatchLogger()
-        logger.logMessage(applicationContext,"P1#ROBUST#PatchService created")
+        logger = PatchLogger.instance
+        logger.logMessage(applicationContext, "P1#ROBUST#PatchService created")
         val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
-        repository = PatchRepository(
-                dataDao,
-                Utils.versionCode(applicationContext)
-        )
+        repository = PatchRepository.getInstance(dataDao, Utils.versionCode(applicationContext))
 //        allResult = repository.allData
-//
 //        allResult.observe(PatchLifecycle(), Observer {
 //            val patchList: MutableList<Patch> = mutableListOf()
 //            it.forEachIndexed { index, result ->

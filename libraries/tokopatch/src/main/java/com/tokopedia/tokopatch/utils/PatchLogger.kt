@@ -14,6 +14,10 @@ import timber.log.Timber
  */
 class PatchLogger : PatchCallBack {
 
+    private object HOLDER {
+        val INSTANCE = PatchLogger()
+    }
+
     override fun onPatchListFetched(
             context: Context,
             result: Boolean,
@@ -43,15 +47,14 @@ class PatchLogger : PatchCallBack {
 
     override fun logMessage(context: Context, log: String) {
         Timber.i("P1#ROBUST#$log")
-
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {
         Timber.e(throwable, "P1#ROBUST#exceptionNotify where: $where")
-
     }
 
     companion object {
         const val TAG = "ROBUST_LOGS"
+        val instance: PatchLogger by lazy { HOLDER.INSTANCE }
     }
 }
