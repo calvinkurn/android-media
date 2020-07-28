@@ -12,23 +12,23 @@ data class OrderPayment(
         val fee: Double = 0.0,
         val walletAmount: Long = 0,
         val metadata: String = "",
-        val creditCard: OrderPaymentCreditCard? = null,
-        val errorMessage: OrderPaymentErrorMessage? = null
+        val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
+        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage()
 ) {
     fun isError(): Boolean {
-        return isCalculationError || !errorMessage?.message.isNullOrEmpty()
+        return isCalculationError || errorMessage.message.isNotEmpty()
     }
 
     fun getRealFee(): Double {
-        return creditCard?.selectedTerm?.fee ?: fee
+        return creditCard.selectedTerm?.fee ?: fee
     }
 
     fun hasBlockingError(): Boolean {
-        return !errorMessage?.message.isNullOrEmpty()
+        return errorMessage.message.isNotEmpty()
     }
 
     fun hasNoCreditCardOption(): Boolean {
-        if (creditCard != null && creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards < 1) return true
+        if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards < 1) return true
         return false
     }
 }

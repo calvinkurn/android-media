@@ -828,7 +828,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     _orderShipment.getRealShipperProductId()
             )
             var metadata = pref.preference.payment.metadata
-            val selectedTerm = _orderPayment.creditCard?.selectedTerm
+            val selectedTerm = _orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
                 val parse = JsonParser().parse(metadata)
                 parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM).addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
@@ -1379,7 +1379,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun calculateInstallmentDetails(payment: OrderPayment, subTotal: Double, subsidize: Double, discount: Int): OrderPayment {
-        if (payment.creditCard?.selectedTerm == null) {
+        if (payment.creditCard.selectedTerm == null) {
             return payment
         }
         val installments = payment.creditCard.availableTerms
@@ -1411,7 +1411,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         var param = generateUpdateCartParam()
         val creditCard = _orderPayment.creditCard
-        if (param != null && creditCard != null) {
+        if (param != null) {
             globalEvent.value = OccGlobalEvent.Loading
             try {
                 val parse = JsonParser().parse(param.profile.metadata)
