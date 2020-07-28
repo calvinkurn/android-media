@@ -30,11 +30,23 @@ class TextComponentViewHolder(itemView: View, private val fragment: Fragment) : 
         })
     }
 
+    fun trimTrailingWhitespace(source: CharSequence?): CharSequence? {
+        if (source == null) return ""
+        var i = source.length
+
+        // loop back to the first non-whitespace character
+        do {
+            --i
+        } while (i >= 0 && Character.isWhitespace(source[i]))
+
+        return source.subSequence(0, i + 1)
+    }
+
     private fun showBodyInWebView(textComponentBody: String) {
-        bodyTypography.text = MethodChecker.fromHtmlPreserveLineBreak(textComponentBody)
+        bodyTypography.text = trimTrailingWhitespace(MethodChecker.fromHtml(textComponentBody))
     }
 
     private fun showTitleInWebView(title: String?) {
-        titleTypography.text = MethodChecker.fromHtmlPreserveLineBreak(title)
+        titleTypography.text = trimTrailingWhitespace(MethodChecker.fromHtml(title))
     }
 }
