@@ -39,9 +39,14 @@ class DateFilterBottomSheet(
                 DateFilterItem.Divider,
                 getDateFilterPerDay(),
                 getDateFilterPerWeek(),
-                //getDateRangePerMonth(),
+                getFilterPerMonth(),
                 DateFilterItem.ApplyButton
         )
+    }
+
+    private fun getFilterPerMonth(): DateFilterItem.MonthPickerItem {
+        val perMonthLabel = context?.getString(R.string.stc_per_month) ?: "Per Bulan"
+        return DateFilterItem.MonthPickerItem(perMonthLabel, Date())
     }
 
     init {

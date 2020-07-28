@@ -107,4 +107,14 @@ sealed class DateFilterItem(
             return typeFactory.type(this)
         }
     }
+
+    data class MonthPickerItem(
+            override val label: String,
+            val selectedMonth: Date
+    ): DateFilterItem(type = TYPE_PER_MONTH) {
+
+        override fun type(typeFactory: DateFilterAdapterFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
 }
