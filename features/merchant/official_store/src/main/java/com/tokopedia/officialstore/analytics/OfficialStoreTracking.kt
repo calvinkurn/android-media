@@ -822,7 +822,7 @@ class OfficialStoreTracking(context: Context) {
     // No 31
     fun eventClickMixLeftImageBanner(channel: Channel, categoryName: String, bannerPosition: Int) {
         val eventDataLayer = Bundle()
-        eventDataLayer.putString(CLICK, PROMO_CLICK)
+        eventDataLayer.putString(EVENT, PROMO_CLICK)
         eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
         eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
         eventDataLayer.putString(EVENT_LABEL, channel.id)
@@ -864,10 +864,10 @@ class OfficialStoreTracking(context: Context) {
 
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {
         val promotion = Bundle()
-        promotion.putString("id", channelId)
-        promotion.putString("name", arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName).joinToString(" - "))
-        promotion.putString("position", "$bannerPosition")
-        promotion.putString("creative", creative)
+        promotion.putString("item_id", channelId)
+        promotion.putString("item_name", arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName).joinToString(" - "))
+        promotion.putString("creative_slot", "$bannerPosition")
+        promotion.putString("creative_name", creative)
         promotion.putString("creative_url", creativeUrl)
         return arrayListOf(promotion)
     }
