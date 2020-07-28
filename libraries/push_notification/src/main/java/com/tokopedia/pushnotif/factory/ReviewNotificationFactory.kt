@@ -20,8 +20,8 @@ import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.R
 import com.tokopedia.pushnotif.data.model.ReviewNotificationModel
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
+import com.tokopedia.pushnotif.services.ReviewNotificationBroadcastReceiver
 import com.tokopedia.pushnotif.util.PendingIntentUtil
-import com.tokopedia.pushnotif.util.ReviewNotificationBroadcastReceiver
 import java.util.concurrent.TimeUnit
 
 class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(context) {
