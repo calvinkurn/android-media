@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -41,12 +42,13 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
-import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_DESCRIPTION_EDIT
@@ -86,14 +88,13 @@ import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProdu
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
-import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
-import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -106,8 +107,8 @@ import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
-    private var isProductStatusSwitchFirstTime = false
     private var countTouchPhoto = 0
+    private var dataBackPressed: Int? = null
 
     private var toolbar: Toolbar? = null
 
@@ -213,15 +214,27 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     fun isEditing(): Boolean {
         return viewModel.isEditing.value ?: false
     }
 
+    fun isDrafting(): Boolean {
+        return viewModel.getDraftId() > 0L
+    }
+
+    fun dataBackPressedLoss(): Boolean {
+        // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
+        // dataBackPressed is a sign of activity where data is obtained
+        if(dataBackPressed == null) {
+            return true
+        }
+        return false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -229,7 +242,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.label_title_add_product)
+        toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -281,11 +294,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
-
             // tracking
+            val buttonTextStart: String = getString(R.string.action_start)
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
-            } else {
+            } else if (addEditProductPhotoButton?.text == buttonTextStart){
                 ProductAddStepperTracking.trackStart(shopId)
             }
 
@@ -306,14 +319,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime) {
-                if (viewModel.isEditing.value == true) {
-                    ProductEditStepperTracking.trackChangeProductStatus(shopId)
-                }
-            }
-            isProductStatusSwitchFirstTime = true
+        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateProductStatus(isChecked)
+        }
+
+        // track switch status on click
+        productStatusSwitch?.setOnClickListener {
+            val isChecked = productStatusSwitch?.isChecked
+            if (isChecked == true && viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            }
         }
 
         doneButton?.setOnClickListener {
@@ -325,12 +340,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-
-                // increment wholesale min order by one because of > symbol
-                viewModel.productInputModel.value?.run {
-                    this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
-                }
-
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
                 // when we perform open draft, previous state before we save the product to draft will be the same
@@ -342,6 +351,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
+                        activity?.setResult(RESULT_OK)
                         activity?.finish()
                     }
                 }
@@ -406,6 +416,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
+        context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
@@ -413,6 +424,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeIsLoading()
+        observeSaveProductDraft()
     }
 
     override fun onDestroyView() {
@@ -444,11 +456,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     }
                 }
                 REQUEST_CODE_DETAIL -> {
-                    val dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
+                    dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productAddResult.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                     }
+                    viewModel.productAddResult.value?.didBackPress = true
                     when (dataBackPressed) {
                         DETAIL_DATA -> {
                             viewModel.productAddResult.value?.let { displayAddModeDetail(it) }
@@ -532,21 +545,32 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        //countTouchPhoto is used for count how many times images hit
+        //we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
-        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
-            if (viewModel.isEditing.value == true && !viewModel.isAdding) {
-                ProductEditMainTracking.trackDragPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackDragPhoto(shopId)
+        //countTouchPhoto can increment 1 every time we come or back to this page
+        //if we back from ActivityOnResult countTouchPhoto still increment
+        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        if(countTouchPhoto > 2) {
+            countTouchPhoto = 1
+        }
+        // tracker only hit when there are two images of product
+        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+            // to avoid double hit tracker when dragging or touching image product, we have to put if here
+            if(countTouchPhoto == 2) {
+                if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
+                    ProductAddStepperTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductEditStepperTracking.trackDragPhoto(shopId)
+                }
             }
-            countTouchPhoto = 0
         }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing.value == true) {
+        if (viewModel.productInputModel.value?.didBackPress == true || viewModel.isAdding) {
+            ProductAddStepperTracking.trackRemoveProductImage(shopId)
+        } else {
             ProductEditStepperTracking.trackRemoveProductImage(shopId)
         }
     }
@@ -609,7 +633,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableDetailEdit() {
         context?.let {
             addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductDetailButton?.text = getString(R.string.label_change)
+            addEditProductDetailButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
         }
@@ -618,7 +642,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableDescriptionEdit() {
         context?.let {
             addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductDescriptionButton?.text = getString(R.string.label_change)
+            addEditProductDescriptionButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductDescriptionButton?.show()
         }
     }
@@ -630,7 +654,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun enableShipmentEdit() {
         context?.let {
             addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
-            addEditProductShipmentButton?.text = getString(R.string.label_change)
+            addEditProductShipmentButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addEditProductShipmentButton?.show()
         }
     }
@@ -674,6 +698,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 is Fail -> {
                     context?.let {
                         showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                     }
                 }
             }
@@ -713,6 +738,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
+    private fun observeSaveProductDraft() {
+        viewModel.saveProductDraftResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                }
+            }
+        })
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -724,9 +760,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun setCashback() {
         viewModel.productInputModel.value?.let { productInputModel ->
-            val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId(), productInputModel.detailInputModel.productName)
+            val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId())
             val uri = Uri.parse(newUri)
                     .buildUpon()
+                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_NAME, productInputModel.detailInputModel.productName)
                     .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
                     .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
                     .build()
@@ -756,10 +793,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun showEmptyVariantState(isVariantEmpty: Boolean) {
         if (isVariantEmpty) {
-            addEditProductVariantButton?.text = getString(R.string.label_add)
+            addEditProductVariantButton?.text = getString(com.tokopedia.abstraction.R.string.label_add)
             addProductVariantTipsLayout?.show()
         } else {
-            addEditProductVariantButton?.text = getString(R.string.label_change)
+            addEditProductVariantButton?.text = getString(com.tokopedia.design.R.string.label_change)
             addProductVariantTipsLayout?.hide()
         }
     }
@@ -810,7 +847,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
+                    actionText = getString(com.tokopedia.imagepicker.R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         viewModel.getProductData(viewModel.getProductId())
@@ -830,17 +867,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         val title = getString(R.string.action_pick_photo)
 
         val placeholderDrawableRes = arrayListOf(
-                R.drawable.ic_utama,
-                R.drawable.ic_depan,
-                R.drawable.ic_samping,
-                R.drawable.ic_atas,
-                R.drawable.ic_detail
+                com.tokopedia.product.addedit.R.drawable.ic_utama,
+                com.tokopedia.product.addedit.R.drawable.ic_depan,
+                com.tokopedia.product.addedit.R.drawable.ic_samping,
+                com.tokopedia.product.addedit.R.drawable.ic_atas,
+                com.tokopedia.product.addedit.R.drawable.ic_detail
         )
 
         val imagePickerPickerTabTypeDef = intArrayOf(
                 ImagePickerTabTypeDef.TYPE_GALLERY,
-                ImagePickerTabTypeDef.TYPE_CAMERA,
-                ImagePickerTabTypeDef.TYPE_INSTAGRAM
+                ImagePickerTabTypeDef.TYPE_CAMERA
         )
 
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
@@ -935,6 +971,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
+        // increment wholesale min order by one because of > symbol
+        productInputModel.run {
+            this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+        }
+
         context?.let {
             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
@@ -946,6 +987,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun startProductEditService(productInputModel: ProductInputModel) {
+        // increment wholesale min order by one because of > symbol
+        productInputModel.run {
+            this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+        }
+
         context?.let {
             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)

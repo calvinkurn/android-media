@@ -52,7 +52,7 @@ class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
 
     companion object {
 
-        fun newInstance(context: Context, callbackUrl: String, xcoid: String): Fragment {
+        fun newInstance(callbackUrl: String, xcoid: String): Fragment {
             val fragment = EditLimitFragment()
             val bundle = Bundle()
             bundle.putString(InstantDebitBcaActivity.CALLBACK_URL, callbackUrl)

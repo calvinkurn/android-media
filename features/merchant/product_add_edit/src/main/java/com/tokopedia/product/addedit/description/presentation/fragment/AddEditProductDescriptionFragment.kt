@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.description.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -14,16 +15,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.common.util.setTextOrGone
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
@@ -109,7 +108,7 @@ class AddEditProductDescriptionFragment:
         }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
-        refreshSubmitButton()
+        updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -175,13 +174,17 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
+        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_description, container, false)
     }
 
     override fun onResume() {
         super.onResume()
         btnNext.isLoading = false
         btnSave.isLoading = false
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.product.addedit.R.id.recycler_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -254,12 +257,20 @@ class AddEditProductDescriptionFragment:
 
         if (descriptionViewModel.isEditMode) applyEditMode()
 
+        hideKeyboardWhenTouchOutside()
         observeProductInputModel()
         observeProductVideo()
     }
 
     private fun addEmptyVideoUrl() {
-        loadData(adapter.dataSize + 1)
+        val lastData = adapter.data.lastOrNull()
+        if (lastData == null) {
+            loadData(adapter.dataSize + 1)
+        } else {
+            if (lastData.inputUrl.isNotEmpty()) {
+                loadData(adapter.dataSize + 1)
+            }
+        }
     }
 
     override fun loadInitialData() {
@@ -355,6 +366,7 @@ class AddEditProductDescriptionFragment:
                     }
                 }
                 is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
                     displayErrorOnSelectedVideo(position)
                 }
             }
@@ -363,7 +375,7 @@ class AddEditProductDescriptionFragment:
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
-            refreshSubmitButton()
+            updateSaveButtonStatus()
         })
     }
 
@@ -405,16 +417,6 @@ class AddEditProductDescriptionFragment:
                 }
             }
         }
-    }
-
-    // button will disabled if there is an video link error
-    private fun refreshSubmitButton() {
-        val enabled = adapter.data.all { video ->
-            video.errorMessage.isEmpty()
-        }
-
-        btnSave.isEnabled = enabled
-        btnNext.isEnabled = enabled
     }
 
     private fun applyEditMode() {
@@ -525,6 +527,16 @@ class AddEditProductDescriptionFragment:
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
+    }
+
     private fun moveToShipmentActivity() {
         // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
@@ -586,5 +598,13 @@ class AddEditProductDescriptionFragment:
 
     private fun getFilteredValidVideoLink() = adapter.data.filter {
         it.inputUrl.isNotBlank() && it.errorMessage.isBlank()
+    }
+
+    // button will disabled if there is an video link error
+    private fun updateSaveButtonStatus() {
+        with (descriptionViewModel.validateInputVideo(adapter.data)) {
+            btnSave.isEnabled = this
+            btnNext.isEnabled = this
+        }
     }
 }

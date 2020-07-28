@@ -1,60 +1,48 @@
 package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 
-/**
- * Created by faisalramd on 2020-05-08.
- */
-class AddEditProductShipmentViewModelTest: AddEditProductShipmentViewModelTestFixture() {
+@ExperimentalCoroutinesApi
+class AddEditProductShipmentViewModelTest {
 
-    @Test
-    fun `When the weight is below zero Expect invalid weight`() {
-        val weight = "-1"
-        val unit = UNIT_GRAM
+    private val coroutineDispatcher = TestCoroutineDispatcher()
 
-        val result = shipmentViewModel.isWeightValid(weight, unit)
-        assertFalse(result)
+    private val viewModel: AddEditProductShipmentViewModel by lazy {
+        AddEditProductShipmentViewModel(coroutineDispatcher)
+    }
+
+    @Before
+    fun setup() {
+        viewModel.isAddMode = true
+        viewModel.isEditMode = true
     }
 
     @Test
-    fun `When the weight is gram and weight is below maximum Expect valid weight`() {
-        val weight = MAX_WEIGHT_GRAM.toString()
-        val unit = UNIT_GRAM
-
-        val result = shipmentViewModel.isWeightValid(weight, unit)
-        assertTrue(result)
+    fun `isWeightValid should valid when unit is gram and weight is in allowed range`() {
+        val isValid = viewModel.isWeightValid(AddEditProductShipmentConstants.MIN_WEIGHT.toString(), AddEditProductShipmentConstants.MAX_WEIGHT_GRAM)
+        Assert.assertTrue(isValid)
     }
 
     @Test
-    fun `When the weight is gram and weight is exceed maximum Expect invalid weight`() {
-        val weight = (MAX_WEIGHT_GRAM + 1).toString()
-        val unit = UNIT_GRAM
-
-        val result = shipmentViewModel.isWeightValid(weight, unit)
-        assertFalse(result)
+    fun `isWeightValid should valid when unit is kg and weight is in allowed range`() {
+        val isValid = viewModel.isWeightValid(AddEditProductShipmentConstants.MIN_WEIGHT.toString(), AddEditProductShipmentConstants.UNIT_KILOGRAM)
+        Assert.assertTrue(isValid)
     }
 
     @Test
-    fun `When the weight is kilogram and weight is below maximum Expect valid weight`() {
-        val weight = MAX_WEIGHT_KILOGRAM.toString()
-        val unit = UNIT_KILOGRAM
-
-        val result = shipmentViewModel.isWeightValid(weight, unit)
-        assertTrue(result)
+    fun `isWeightValid should invalid when unit is gram and weight isn't in allowed range`() {
+        val isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MIN_WEIGHT - 1}", AddEditProductShipmentConstants.MAX_WEIGHT_GRAM)
+        Assert.assertFalse(isValid)
     }
 
     @Test
-    fun `When the weight is kilogram and weight is exceed maximum Expect invalid weight`() {
-        val weight = (MAX_WEIGHT_KILOGRAM + 1).toString()
-        val unit = UNIT_KILOGRAM
-
-        val result = shipmentViewModel.isWeightValid(weight, unit)
-        assertFalse(result)
+    fun `isWeightValid should valid when unit is kg and weight isn't in allowed range`() {
+        val isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MIN_WEIGHT - 1}", AddEditProductShipmentConstants.UNIT_KILOGRAM)
+        Assert.assertFalse(isValid)
     }
 }

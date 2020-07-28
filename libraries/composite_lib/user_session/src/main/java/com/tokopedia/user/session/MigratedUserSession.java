@@ -21,7 +21,7 @@ public class MigratedUserSession {
     }
 
     protected long getLong(String prefName, String keyName, long defValue) {
-        if(!IS_ENABLE){
+        if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }

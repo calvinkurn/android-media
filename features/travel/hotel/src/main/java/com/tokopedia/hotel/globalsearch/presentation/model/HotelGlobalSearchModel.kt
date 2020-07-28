@@ -15,4 +15,6 @@ class HotelGlobalSearchModel(
         var destinationType: String = "",
         var destinationName: String = "",
         var locationLong: Double = 0.0,
-        var locationLat: Double = 0.0)
+        var locationLat: Double = 0.0,
+        var searchId: String = "",
+        var searchType: String = "")

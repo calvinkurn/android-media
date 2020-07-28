@@ -1,0 +1,22 @@
+
+// For instrumentation test
+android {
+    defaultConfig {
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+}
+
+dependencies {
+    androidTestImplementation (project(rootProject.ext.libraries.core_legacy)){
+        exclude group: 'com.google.android.gms'
+        exclude group: 'com.google.firebase'
+    }
+    androidTestImplementation (project(rootProject.ext.libraries.instrumentation_test)){
+        exclude group: 'com.google.android.gms'
+        exclude group: 'com.google.firebase'
+    }
+}

@@ -6,6 +6,7 @@ package com.tokopedia.play.view.uimodel
 data class PlayCompleteInfoUiModel(
         val channelInfo: ChannelInfoUiModel,
         val videoStream: VideoStreamUiModel,
+        val videoPlayer: VideoPlayerUiModel,
         val totalView: TotalViewUiModel,
         val pinnedMessage: PinnedMessageUiModel?,
         val pinnedProduct: PinnedProductUiModel?,

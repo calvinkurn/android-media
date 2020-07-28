@@ -12,7 +12,7 @@
         android:layout_width="@dimen/shop_recommendation_width"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.topads.sdk.view.SquareImageView
             android:id="@+id/ivImageLeft"
             android:layout_width="@dimen/dp_72"
             android:layout_height="0dp"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.topads.sdk.view.SquareImageView
             android:id="@+id/ivImageMiddle"
             android:layout_width="@dimen/dp_72"
             android:layout_height="0dp"
@@ -58,7 +58,7 @@
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnFollow"
             android:layout_width="@dimen/dp_72"
             android:layout_height="wrap_content"
@@ -67,8 +67,8 @@
             android:layout_marginTop="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_8"
             android:textAllCaps="false"
-            app:buttonCompatSize="small"
-            app:buttonCompatType="primary"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="parent"

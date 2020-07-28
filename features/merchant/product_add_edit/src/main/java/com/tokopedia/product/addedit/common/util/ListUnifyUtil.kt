@@ -59,10 +59,14 @@ internal fun ListItemUnify.setPrimarySelected(context: Context?, isChecked: Bool
         if (isChecked) {
             val label = Label(this)
             val parentLayout = (it.listTitle?.parent as LinearLayout)
-            label.setLabel(getString(R.string.label_primary))
+            label.setLabel(getString(com.tokopedia.product.addedit.R.string.label_primary))
             label.setLabelType(Label.GENERAL_DARK_GREEN)
             parentLayout.addView(label, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
             parentLayout.orientation = LinearLayout.HORIZONTAL
         }
     }
+}
+
+internal fun ListItemUnify.getCategoryName() = run {
+    listTitleText.replace(" / ", "/")
 }

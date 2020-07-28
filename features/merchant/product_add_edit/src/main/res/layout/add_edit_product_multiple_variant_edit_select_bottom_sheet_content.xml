@@ -24,8 +24,8 @@
         android:id="@+id/checkboxSelectAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/layout_lvl0"
+        android:layout_marginEnd="@dimen/layout_lvl0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/typographySelectAll" />
 

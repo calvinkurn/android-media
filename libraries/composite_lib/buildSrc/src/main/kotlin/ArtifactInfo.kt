@@ -5,8 +5,7 @@ data class ArtifactInfo(
     val groupId: String,
     val artifactId: String,
     val artifactName: String,
-    val versionName: String) {
-
-    var maxCurrentVersionName:String = ""
-    var increaseVersionString:String = ""
+    val versionName: String,
+    var maxCurrentVersionName:String = "",
+    var increaseVersionString:String = "") {
 }

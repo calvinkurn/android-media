@@ -1,11 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -19,7 +18,7 @@ import java.util.ArrayList
 @Deprecated("")
 class UseCaseIconSectionDataModel : HomeVisitable {
 
-    private val itemList: MutableList<HomeIconItem>
+    private val itemList: MutableList<DynamicHomeIcon.DynamicIcon>
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
@@ -48,12 +47,8 @@ class UseCaseIconSectionDataModel : HomeVisitable {
         itemList = ArrayList()
     }
 
-    fun getItemList(): List<HomeIconItem> {
+    fun getItemList(): List<DynamicHomeIcon.DynamicIcon> {
         return itemList
-    }
-
-    fun addItem(item: HomeIconItem) {
-        this.itemList.add(item)
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {

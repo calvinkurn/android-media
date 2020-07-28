@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -27,7 +28,6 @@ import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.IS_RESULT_FOUND;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.RELATED_KEYWORD;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
-import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -35,7 +35,9 @@ import com.tokopedia.iris.util.ConstantKt;
 
 public class SearchTracking {
 
-    private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+    private static final String ACTION_FIELD = "/searchproduct - %s";
+    private static final String ORGANIC = "organic";
+    private static final String ORGANIC_ADS = "organic ads";
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
     public static final String EVENT_CATEGORY_SEARCH_RESULT = "search result";
@@ -174,13 +176,8 @@ public class SearchTracking {
         );
     }
 
-    public static String getActionFieldString(int pageNumber) {
-        return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
-    }
-
-    public static void trackEventClickSearchResultProduct(ProductItemViewModel productItemViewModel,
-                                                          Object item,
-                                                          int pageNumber,
+    public static void trackEventClickSearchResultProduct(Object item,
+                                                          boolean isOrganicAds,
                                                           String eventLabel,
                                                           String filterSortParams) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -190,7 +187,7 @@ public class SearchTracking {
                         "eventLabel", eventLabel,
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", getActionFieldString(pageNumber)),
+                                        DataLayer.mapOf("list", getActionFieldString(isOrganicAds)),
                                         "products", DataLayer.listOf(item)
                                 )
                         ),
@@ -199,9 +196,14 @@ public class SearchTracking {
         );
     }
 
+    private static String getActionFieldString(boolean isOrganicAds) {
+        String organicStatus = isOrganicAds ? ORGANIC_ADS : ORGANIC;
+
+        return String.format(ACTION_FIELD, organicStatus);
+    }
+
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
                                                           List<Object> list,
-                                                          List<ProductItemViewModel> productItemViewModels,
                                                           String eventLabel,
                                                           String irisSessionId) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
@@ -557,12 +559,12 @@ public class SearchTracking {
                 String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId));
     }
 
-    public static void trackEventClickSearchBar() {
+    public static void trackEventClickSearchBar(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,
-                "");
+                keyword);
     }
 
     public static void trackEventImpressionBannedProductsEmptySearch(String keyword) {
@@ -592,21 +594,21 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventImpressionSortPriceMinTicker(String keyword) {
+    public static void trackEventImpressionTicker(String keyword, int typeId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
                 SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_SORT_PRICE_MIN_TICKER,
-                keyword
+                SearchEventTracking.Action.IMPRESSION_TICKER,
+                typeId + " - " + keyword
         );
     }
 
-    public static void trackEventClickSortPriceMinTicker(String keyword) {
+    public static void trackEventClickTicker(String keyword, int typeId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_SORT_PRICE_MIN_TICKER,
-                keyword
+                SearchEventTracking.Action.CLICK_TICKER,
+                typeId + " - " + keyword
         );
     }
 
@@ -788,6 +790,59 @@ public class SearchTracking {
                                 )
                         )
                 )
+        );
+    }
+
+    public static void trackEventImpressionBroadMatch(String keyword, String alternativeKeyword, List<Object> broadMatchItems) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        broadMatchItems.toArray(new Object[broadMatchItems.size()])
+                                ))
+                )
+        );
+    }
+
+    public static void trackEventClickBroadMatchSeeMore(String keyword, String alternativeKeyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH_LIHAT_SEMUA,
+                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword)
+                )
+        );
+    }
+
+    public static void trackEventClickBroadMatchItem(String keyword, String alternativeKeyword, List<Object> broadMatchItems) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
+                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        ECOMMERCE, DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", "/search - broad match"),
+                                        "products", DataLayer.listOf(
+                                                broadMatchItems.toArray(new Object[broadMatchItems.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventClickInspirationCardOption(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+            SearchEventTracking.Event.SEARCH_RESULT,
+            SearchEventTracking.Category.SEARCH_RESULT,
+            SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
+            label
         );
     }
 }

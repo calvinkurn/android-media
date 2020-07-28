@@ -13,13 +13,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_ICON_VIEWHOLDER
 import com.tokopedia.home.beranda.helper.glide.FPM_USE_CASE_ICON
 import com.tokopedia.home.beranda.helper.glide.loadMiniImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -70,11 +72,15 @@ class DynamicIconSectionViewHolder(val view: View,
         recyclerView.clearOnScrollListeners()
     }
     override fun bind(element: DynamicIconSectionDataModel) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_ICON_VIEWHOLDER)
         adapter?.run { setSectionData(element) }
+        BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: DynamicIconSectionDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_ICON_VIEWHOLDER)
         adapter?.run { setSectionData(element) }
+        BenchmarkHelper.endSystraceSection()
     }
 
     private class DynamicIconAdapter(
@@ -94,9 +100,9 @@ class DynamicIconSectionViewHolder(val view: View,
         }
 
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
-            holder.title.text = sectionViewModel.itemList[position].title
+            holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].icon, 150, 150, FPM_USE_CASE_ICON, object : ImageHandler.ImageLoaderStateListener{
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
                     holder.shimmeringIcon.hide()
                 }
@@ -107,23 +113,26 @@ class DynamicIconSectionViewHolder(val view: View,
             })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
-                listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))
+                val link = DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position])
+                link?.let {
+                    listener.onSectionItemClicked(it)
+                }
             }
 
             if(!sectionViewModel.isCache) {
                 holder.itemView.addOnImpressionListener(
-                        sectionViewModel.itemList[position], OnIconImpressedListener(
+                        sectionViewModel.itemList[position] , OnIconImpressedListener(
                         sectionViewModel.itemList[position], listener, position
-                )
-                )
+                ))
+
             }
         }
 
-        private fun eventClickDynamicIcon(context: Context, homeIconItem: HomeIconItem, position: Int) {
+        private fun eventClickDynamicIcon(context: Context, homeIconItem: DynamicHomeIcon.DynamicIcon, position: Int) {
             HomePageTracking.eventEnhancedClickDynamicIconHomePage(context, homeIconItem, position);
 
             HomeTrackingUtils.homeUsedCaseClick(context,
-                    homeIconItem.title, position + 1, homeIconItem.applink)
+                    homeIconItem.name, position + 1, homeIconItem.applinks)
         }
 
         override fun getItemCount(): Int {
@@ -144,7 +153,7 @@ class DynamicIconSectionViewHolder(val view: View,
         val LAYOUT = R.layout.layout_dynamic_icon_section
     }
 
-    class OnIconImpressedListener(private val homeIconItem: HomeIconItem,
+    class OnIconImpressedListener(private val homeIcon: DynamicHomeIcon.DynamicIcon,
                                   private val listener: HomeCategoryListener,
                                   private val position: Int) : ViewHintListener {
 

@@ -35,7 +35,7 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(com.tokopedia.product.manage.R.layout.item_chips, parent, false)
+                .inflate(com.tokopedia.product.manage.R.layout.item_chips_product_manage, parent, false)
         return ItemViewHolder(itemView, listener)
     }
 

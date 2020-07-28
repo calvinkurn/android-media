@@ -29,7 +29,7 @@ import javax.inject.Named
  */
 @WishlistScope
 @Module(includes = [TopAdsWishlistModule::class])
-class WishlistModule {
+open class WishlistModule {
     @WishlistScope
     @Provides
     fun provideExecutors(): SmartExecutors = SmartExecutors()
@@ -52,7 +52,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
+    open fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
 
     @Provides
     @WishlistScope
@@ -64,7 +64,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
+    open fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
 
     @Provides
     @WishlistScope

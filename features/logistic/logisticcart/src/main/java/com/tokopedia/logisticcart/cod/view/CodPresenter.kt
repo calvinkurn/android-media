@@ -24,7 +24,7 @@ class CodPresenter @Inject constructor(val useCase: CodConfirmUseCase) : CodCont
             }
 
             override fun onCompleted() {
-
+                //no-op
             }
 
             override fun onError(e: Throwable?) {

@@ -72,8 +72,6 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
 
-        fun onGoToCreatePassword(): Function2<String, String, Unit>
-
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
         fun onGoToSecurityQuestion(email: String): Function0<Unit>

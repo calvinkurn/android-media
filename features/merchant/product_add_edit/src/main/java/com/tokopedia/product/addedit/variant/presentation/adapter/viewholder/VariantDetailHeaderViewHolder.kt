@@ -5,27 +5,26 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailHeaderViewModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 
-class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHeaderClickListener) : AbstractViewHolder<VariantDetailHeaderViewModel>(itemView) {
+class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHeaderClickListener) : AbstractViewHolder<VariantDetailHeaderUiModel>(itemView) {
 
     private var unitValueHeader: AppCompatTextView? = null
     private var accordionIndicator: AppCompatImageView? = null
     private var headerPosition = 0
 
     init {
-        unitValueHeader = itemView?.findViewById(R.id.tv_unit_value_header)
-        accordionIndicator = itemView?.findViewById(R.id.iv_accordion_indicator)
+        unitValueHeader = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tv_unit_value_header)
+        accordionIndicator = itemView?.findViewById(com.tokopedia.product.addedit.R.id.iv_accordion_indicator)
 
         itemView?.setOnClickListener {
             val isCollapsed = listener.onHeaderClicked(headerPosition)
-            if (isCollapsed) accordionIndicator?.setImageResource(R.drawable.ic_chevron_up)
-            else accordionIndicator?.setImageResource(R.drawable.ic_chevron_down)
+            if (isCollapsed) accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_chevron_up)
+            else accordionIndicator?.setImageResource(com.tokopedia.product.addedit.R.drawable.ic_chevron_down)
         }
     }
 
-    override fun bind(element: VariantDetailHeaderViewModel?) {
+    override fun bind(element: VariantDetailHeaderUiModel?) {
         element?.run {
             headerPosition = element.position
             unitValueHeader?.text = element.header
@@ -34,7 +33,7 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.product_variant_detail_header_layout
+        val LAYOUT = com.tokopedia.product.addedit.R.layout.product_variant_detail_header_layout
     }
 
     interface OnCollapsibleHeaderClickListener {

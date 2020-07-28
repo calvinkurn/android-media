@@ -3,14 +3,14 @@ package com.tokopedia.applink.category
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 object DeeplinkMapperCategory {
-    fun getRegisteredCategoryNavigation(segmentList: List<String>, deplink: String): String {
-        val uri = Uri.parse(deplink)
+    fun getRegisteredCategoryNavigation(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        val segmentList = uri.pathSegments
         var identifier: String? = null
-        val url: String
         for (segment in segmentList.indices) {
             identifier = if (segment == 0) {
                 segmentList[segment]
@@ -18,12 +18,9 @@ object DeeplinkMapperCategory {
                 identifier + "_" + segmentList[segment]
             }
         }
-        url = if (uri.query != null) {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL_QUERY, identifier, uri.query)
-        } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, identifier)
-        }
-        return url
+
+        return UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, identifier)
+
     }
 
     fun getRegisteredNavigationExploreCategory(deeplink: String): String {
@@ -41,5 +38,9 @@ object DeeplinkMapperCategory {
                 deeplink
             }
         }
+    }
+
+    fun getRegisteredNavigationCatalog(deeplink: String): String {
+        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 }

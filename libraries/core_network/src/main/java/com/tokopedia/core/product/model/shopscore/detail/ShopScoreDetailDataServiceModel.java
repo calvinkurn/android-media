@@ -31,16 +31,7 @@ public class ShopScoreDetailDataServiceModel {
         return badgeScore;
     }
 
-    public void setBadgeScore(Integer badgeScore) {
-        this.badgeScore = badgeScore;
-    }
-
     public SumData getSumData() {
         return sumData;
     }
-
-    public void setSumData(SumData sumData) {
-        this.sumData = sumData;
-    }
-
 }

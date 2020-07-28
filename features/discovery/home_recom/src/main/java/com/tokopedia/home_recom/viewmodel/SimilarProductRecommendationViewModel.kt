@@ -1,9 +1,11 @@
 package com.tokopedia.home_recom.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_recom.util.Response
+import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -13,48 +15,45 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Lukas on 26/08/19
  */
+@SuppressLint("SyntheticAccessor")
 open class SimilarProductRecommendationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-        @Named("singleProductRecommendation") private val recommendationProductQuery: String,
-        @Named("Main") val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher){
+        dispatcher: RecommendationDispatcher
+) : BaseViewModel(dispatcher.getMainDispatcher()){
 
-    internal val recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
-    private var hasNextPage = true
+    private val _recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
+    val recommendationItem: LiveData<Response<List<RecommendationItem>>> get() = _recommendationItem
+
 
     fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
-        if(page == 1 && recommendationItem.value != null) recommendationItem.value = null
-        if (recommendationItem.value == null) recommendationItem.postValue(Response.loading())
-        else recommendationItem.postValue(Response.loadingMore(recommendationItem.value?.data))
+        if(page == 1 && _recommendationItem.value != null) _recommendationItem.value = null
+        if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
+        else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
         val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
         singleRecommendationUseCase.execute(params,object: Subscriber<List<RecommendationItem>>(){
             override fun onNext(list: List<RecommendationItem>) {
-                recommendationItem.postValue(Response.success(combineList(recommendationItem.value?.data
+                _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data
                         ?: emptyList(), list)))
             }
 
             override fun onCompleted() {}
 
             override fun onError(throwable: Throwable) {
-                recommendationItem.postValue(Response.error(throwable.localizedMessage, recommendationItem.value?.data))
+                _recommendationItem.postValue(Response.error(throwable.localizedMessage, _recommendationItem.value?.data))
             }
 
         })
     }
-
-    fun getRecommendationItem(): LiveData<Response<List<RecommendationItem>>> = recommendationItem
 
     /**
      * [isLoggedIn] is the function get user session is login or not login

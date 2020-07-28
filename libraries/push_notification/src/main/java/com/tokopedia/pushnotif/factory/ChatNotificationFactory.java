@@ -29,6 +29,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private static String MESSAGE_ID = "message_chat_id";
     private static String NOTIFICATION_ID = "notification_id";
     private static String USER_ID = "user_id";
+    private static int REQUEST_CODE_REPLY = 527;
 
     public ChatNotificationFactory(Context context) {
         super(context);
@@ -49,6 +50,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notifcationType, notificationId));
         builder.setDeleteIntent(createDismissPendingIntent(notifcationType, notificationId));
         builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
 
         if (isAllowBell()) {
             builder.setSound(getRingtoneUri());
@@ -90,7 +92,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         intent.putExtra(NOTIFICATION_ID, notificationId);
         intent.putExtra(USER_ID, userSession.getUserId());
 
-        return PendingIntent.getBroadcast(context, 100, intent,
+        return PendingIntent.getBroadcast(context, REQUEST_CODE_REPLY, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

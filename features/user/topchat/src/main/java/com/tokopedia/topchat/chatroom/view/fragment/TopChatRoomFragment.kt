@@ -12,8 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.annotation.StringRes
+import androidx.collection.ArrayMap
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.crashlytics.android.Crashlytics
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -37,10 +40,9 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
@@ -54,18 +56,25 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -80,30 +89,36 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
+class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
+        SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener {
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
+        TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
+
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
+
     @Inject
     lateinit var analytics: TopChatAnalytics
+
     @Inject
     lateinit var settingAnalytics: ChatSettingsAnalytics
+
     @Inject
     lateinit var session: UserSessionInterface
 
@@ -111,9 +126,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
+    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
+    private var sourcePage: String = ""
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -126,23 +143,34 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
     private var composeArea: EditText? = null
+    private var orderProgress: TransactionOrderProgressLayout? = null
+    private var chatMenu: ChatMenuView? = null
+    private var rvLayoutManager: LinearLayoutManager? = null
 
-    override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getAnalytic(): TopChatAnalytics = analytics
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initFireBase()
+        initTooltipPopup()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initStickerView()
         }
     }
 
     private fun bindView(view: View?) {
         composeArea = view?.findViewById(R.id.new_comment)
+        orderProgress = view?.findViewById(R.id.ll_transaction_progress)
+        chatMenu = view?.findViewById(R.id.fl_chat_menu)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initFireBase()
+    private fun initStickerView() {
+        chatMenu?.setStickerListener(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -151,19 +179,23 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
         setupAlertDialog()
+        setupAnalytic()
         loadInitialData()
+    }
+
+    private fun initTooltipPopup() {
+        toolTip = ToolTipStickerPopupWindow(context, presenter)
+    }
+
+    private fun setupAnalytic() {
+        analytics.setSourcePage(sourcePage)
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
-                view,
-                this,
-                this,
-                this,
-                this,
-                this,
-                (activity as BaseChatToolbarActivity).getToolbar(),
-                analytics
+                view, this, this, this,
+                this, this, this,
+                (activity as BaseChatToolbarActivity).getToolbar(), analytics
         )
     }
 
@@ -180,6 +212,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        val manager = super.getRecyclerViewLayoutManager()
+        if (manager is LinearLayoutManager) {
+            rvLayoutManager = manager
+        }
+        return manager
+    }
+
     override fun loadInitialData() {
         if (messageId.isNotEmpty()) {
             presenter.getExistingChat(
@@ -188,6 +228,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     ::onSuccessGetExistingChatFirstTime
             )
             presenter.connectWebSocket(messageId)
+            presenter.getOrderProgress(messageId)
         } else {
             presenter.getMessageId(
                     toUserId,
@@ -200,8 +241,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        fpm = PerformanceMonitoring.start(getFpmKey())
         remoteConfig = FirebaseRemoteConfigImpl(activity)
+    }
+
+    private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
+        TopChatAnalytics.FPM_DETAIL_CHAT_SELLERAPP
+    } else {
+        TopChatAnalytics.FPM_DETAIL_CHAT
     }
 
     private fun setupPresenter(savedInstanceState: Bundle?) {
@@ -210,6 +257,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
     }
 
@@ -235,8 +283,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
         return {
-            ToasterNormal.make(view, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
-                    opponentName), ToasterNormal.LENGTH_SHORT).show()
+            view?.let {
+                Toaster.make(it, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
+                        opponentName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            }
             getViewState().removeChatBlocked(it)
         }
     }
@@ -250,24 +300,34 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
         updateViewData(chatRoom)
-        checkCanAttachVoucher(chatRoom)
+        checkCanAttachVoucher()
         presenter.updateMinReplyTime(chatRoom)
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                 onSuccessGetShopFollowingStatus())
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
         loadChatRoomSettings(chatRoom)
+        presenter.getStickerGroupList(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        showStickerOnBoardingTooltip()
 
         fpm.stopTrace()
     }
 
-    private fun checkCanAttachVoucher(room: ChatroomViewModel) {
-        if (room.isSeller()) {
-            addVoucherAttachmentMenu()
+    private fun showStickerOnBoardingTooltip() {
+        if (!presenter.isStickerTooltipAlreadyShow()) {
+            toolTip.showAtTop(getViewState().chatStickerMenuButton)
+        }
+    }
+
+    private fun checkCanAttachVoucher() {
+        if (amISeller) {
+            chatMenu?.addVoucherAttachmentMenu()
         }
     }
 
@@ -313,6 +373,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
             presenter.updateMinReplyTime(it)
+            presenter.loadAttachmentData(messageId.toInt(), it)
         }
     }
 
@@ -431,39 +492,42 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return TopChatTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                isUseNewCard()
+                this, this, this, this,
+                this, this, this, this,
+                this, this
         )
     }
 
-    override fun isUseNewCard(): Boolean {
-        val defaultUseNewCard = true
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
-        } catch (e: Exception) {
-            e.printStackTrace()
-            logUnknownError(e)
-            defaultUseNewCard
-        }
+    override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
+        orderProgress?.render(this, chatOrder)
     }
 
-    private fun logUnknownError(exception: Exception) {
-        try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(exception)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    override fun getChatMenuView(): ChatMenuView? {
+        return getViewState().chatMenu
     }
 
-    override fun isUseCarousel(): Boolean? {
-        return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
+    override fun updateAttachmentsView(attachments: ArrayMap<String, Attachment>) {
+        val firstVisible = getFirstVisibleItemPosition() ?: return
+        val lastVisible = getLastVisibleItemPosition() ?: return
+        adapter.updateAttachmentView(firstVisible, lastVisible, attachments)
+    }
+
+    private fun getFirstVisibleItemPosition(): Int? {
+        var firstVisible = rvLayoutManager?.findFirstVisibleItemPosition() ?: return null
+        val partialVisible = firstVisible - 1
+        if (adapter.dataExistAt(partialVisible)) {
+            firstVisible = partialVisible
+        }
+        return firstVisible
+    }
+
+    private fun getLastVisibleItemPosition(): Int? {
+        var lastVisible = rvLayoutManager?.findLastVisibleItemPosition() ?: return null
+        val partialVisible = lastVisible + 1
+        if (adapter.dataExistAt(partialVisible)) {
+            lastVisible = partialVisible
+        }
+        return lastVisible
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -504,11 +568,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 sendMessage,
                 startTime,
                 opponentId,
-                onSendingMessage(sendMessage, startTime)
+                onSendingMessage()
         )
     }
 
-    private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
+    override fun onClickSticker(sticker: Sticker) {
+        val startTime = SendableViewModel.generateStartTime()
+        presenter.sendAttachmentsAndSticker(
+                messageId,
+                sticker,
+                startTime,
+                opponentId,
+                onSendingMessage()
+        )
+    }
+
+    private fun onSendingMessage(): () -> Unit {
         return {
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
@@ -524,8 +599,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun showSnackbarError(stringResource: String) {
-        if (view != null) {
-            ToasterError.make(view, stringResource, BaseToaster.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, stringResource, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -629,6 +704,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
         return View.OnClickListener {
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
+            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
     }
 
@@ -703,13 +779,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = presenter.getBuyPageIntent(context, element)
+        val buyPageIntent = presenter.getBuyPageIntent(context, element, sourcePage)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = presenter.getAtcPageIntent(context, element)
+        val atcPageIntent = presenter.getAtcPageIntent(context, element, sourcePage)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
@@ -847,6 +923,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session)
+
+            // this for experimentation of DATA
+            if(remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false)?:false){
+                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
+            }
         }
     }
 
@@ -931,9 +1012,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun pickVoucherToUpload() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER).apply {
-            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId.toString())
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER)
         startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
     }
 
@@ -978,6 +1057,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 success()
                 showSuccessToastWishListCta(R.string.title_topchat_success_atw)
             }
+
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 if (errorMessage == null) return
                 view?.let {
@@ -1047,13 +1127,31 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     companion object {
-        private const val abNewThumbnailKey = "Topchat Product Thumbnail"
-        private const val variantNewThumbnail = "New Thumbnail"
-
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle
             }
         }
+    }
+
+    override fun onStickerOpened() {
+        getViewState().onStickerOpened()
+        toolTip.dismissOnBoarding()
+    }
+
+    override fun onStickerClosed() {
+        getViewState().onStickerClosed()
+    }
+
+    override fun getFragmentActivity(): FragmentActivity? {
+        return activity
+    }
+
+    override fun getLoadedChatAttachments(): ArrayMap<String, Attachment> {
+        return presenter.attachments
+    }
+
+    override fun isSeller(): Boolean {
+        return amISeller
     }
 }

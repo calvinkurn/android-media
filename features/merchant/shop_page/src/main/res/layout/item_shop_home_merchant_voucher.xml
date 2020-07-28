@@ -9,8 +9,7 @@
     android:layout_marginLeft="@dimen/dp_minus4"
     android:layout_marginRight="@dimen/dp_minus4"
     android:clipToPadding="false"
-    android:clipChildren="false"
-    android:background="#FFFFFF">
+    android:clipChildren="false">
 
     <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
         android:id="@+id/merchantVoucherListWidget"

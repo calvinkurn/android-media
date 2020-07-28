@@ -3,7 +3,7 @@ package com.tokopedia.flight.cancellation.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetReasonsUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationChooseReasonContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class FlightCancellationChooseReasonPresenter extends BaseDaggerPresenter
 
     @Override
     public void getReasonList() {
-        flightCancellationGetReasonsUseCase.execute(new Subscriber<List<FlightCancellationReasonViewModel>>() {
+        flightCancellationGetReasonsUseCase.execute(new Subscriber<List<FlightCancellationReasonModel>>() {
             @Override
             public void onCompleted() {
 
@@ -40,8 +40,8 @@ public class FlightCancellationChooseReasonPresenter extends BaseDaggerPresenter
             }
 
             @Override
-            public void onNext(List<FlightCancellationReasonViewModel> flightCancellationReasonViewModels) {
-                getView().renderReasonList((ArrayList<FlightCancellationReasonViewModel>) flightCancellationReasonViewModels);
+            public void onNext(List<FlightCancellationReasonModel> flightCancellationReasonViewModels) {
+                getView().renderReasonList((ArrayList<FlightCancellationReasonModel>) flightCancellationReasonViewModels);
             }
         });
     }

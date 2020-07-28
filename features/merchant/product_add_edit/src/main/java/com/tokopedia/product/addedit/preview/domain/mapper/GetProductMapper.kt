@@ -157,7 +157,7 @@ class GetProductMapper @Inject constructor() {
             UNIT_DAY_STRING -> UNIT_DAY
             UNIT_WEEK_STRING -> UNIT_WEEK
             UNIT_MONTH_STRING -> UNIT_MONTH
-            else -> -1
+            else -> UNIT_DAY
         }
         return PreorderInputModel(
                 preorder.duration,
@@ -191,7 +191,7 @@ class GetProductMapper @Inject constructor() {
         val weightUnit: Int = when (product.weightUnit) {
             UNIT_GRAM_SRING -> UNIT_GRAM
             UNIT_KILOGRAM_SRING -> UNIT_KILOGRAM
-            else -> -1
+            else -> UNIT_GRAM
         }
         return ShipmentInputModel(
                 product.weight,

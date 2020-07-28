@@ -1,28 +1,29 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,19 @@ public class ShippingCourierBottomsheet extends BottomSheets
     @Override
     public int getLayoutResourceId() {
         return R.layout.fragment_shipment_courier_choice;
+    }
+
+    @Override
+    public int getBaseLayoutResourceId() {
+        return R.layout.widget_bottomsheet_shipping;
+    }
+
+    @Override
+    public void setupDialog(android.app.Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        if (dialog != null) {
+            dialog.findViewById(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent);
+        }
     }
 
     @Override

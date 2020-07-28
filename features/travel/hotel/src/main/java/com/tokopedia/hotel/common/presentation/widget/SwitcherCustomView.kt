@@ -2,8 +2,8 @@ package com.tokopedia.hotel.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_widget_switcher.view.*
 
 /**

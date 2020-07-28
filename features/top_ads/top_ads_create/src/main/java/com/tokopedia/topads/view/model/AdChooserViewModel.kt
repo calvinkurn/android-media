@@ -12,13 +12,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.param.AutoAdsParam
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.data.response.TopAdsAutoAds
-import com.tokopedia.topads.internal.ParamObject.SHOP_Id
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,17 +34,11 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                                              private val dispatcher: CoroutineDispatcher,
                                              private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
-    val REQUEST_CODE_CONFIRMATION = 8903
-    val KEY_DAILY_BUDGET = "BUDGET"
-    val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
-    val REQUEST_CODE_AD_OPTION = 3
-    val SELECTED_OPTION = "selected_option"
     val CHANNEL = "topchat"
     val SOURCE = "one_click_promo"
     val autoAdsData = MutableLiveData<TopAdsAutoAds.Response.TopAdsAutoAdsData>()
 
-      fun getAdsState(onSuccess: ((AdCreationOption) -> Unit),
-                      onError: ((Throwable) -> Unit)) {
+    fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
@@ -55,11 +49,11 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<AdCreationOption>().let {
-                            onSuccess(it)
+                        onSuccess(it)
                     }
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 }
         )
     }
@@ -74,8 +68,8 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     SOURCE
             ))
             val data = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,R.raw.query_ads_create_post_autoads)
-                        , TopAdsAutoAds.Response::class.java,getParams(param).parameters)
+                val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_post_autoads)
+                        , TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = GraphqlCacheStrategy
                         .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
@@ -87,6 +81,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
             it.printStackTrace()
         }
     }
+
     fun getParams(dataParams: AutoAdsParam): RequestParams {
         val params = RequestParams.create()
         try {
@@ -98,8 +93,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
         }
     }
 
-    fun getAutoAdsStatus(onSuccess: ((AutoAdsResponse) -> Unit),
-                         onError: ((Throwable) -> Unit)) {
+    fun getAutoAdsStatus(onSuccess: ((AutoAdsResponse) -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
@@ -114,11 +108,8 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
                     }
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 }
         )
-
     }
-
-
 }

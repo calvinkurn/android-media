@@ -7,16 +7,19 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieTask
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import java.util.zip.ZipInputStream
 
 class GiftBoxTapTapView : GiftBoxDailyView {
 
@@ -29,12 +32,17 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     var isBoxAlreadyOpened = false
     var tapCount = 0
     var targetTapCount = 0
-    var boxRewardCallback: BoxRewardCallback? = null
-    var isTimeOut = false
 
     var disableConfettiAnimation = false
 
     override var TOTAL_ASYNC_IMAGES = 5
+    override var GIFT_BOX_START_DELAY = 0L
+    val GLIDE_TIME_OUT = 6000
+
+    companion object {
+        const val REWARD_START_DELAY = 300L // added because GIFT_BOX_START_DELAY was 300L in base class
+    }
+
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
@@ -46,7 +54,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
 
     constructor(context: Context) : super(context)
 
-    override fun getLayout(): Int = R.layout.view_gift_box_tap_tap
+    override fun getLayout(): Int = com.tokopedia.gamification.R.layout.view_gift_box_tap_tap
 
     override fun initViews() {
 
@@ -54,23 +62,12 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         imageBoxWhite = findViewById(R.id.image_box_white)
         imageBoxGlow = findViewById(R.id.image_box_glow)
         super.initViews()
+        val task = prepareLoaderLottieTask(Constants.CONFETTI_ZIP_FILE)
+        if (task != null)
+            addLottieAnimationToView(confettiView, task)
     }
 
-    override fun handleTapOnGiftBox() {
-        if (isTimeOut) {
-            //Do nothing
-        } else if (isGiftTapAble) {
-            if (isBoxAlreadyOpened) {
-                secondTimeBoxOpenAnimation()
-            } else {
-                //first time animations
-                isGiftTapAble = false
-                isBoxAlreadyOpened = true
-                firstTimeBoxOpenAnimation()
-                targetTapCount = getRandomNumber()
-            }
-        }
-    }
+    override fun handleTapOnGiftBox() {}
 
     fun firstTimeBoxOpenAnimation() {
         boxCallback?.onBoxScaleDownAnimationStart()
@@ -78,50 +75,16 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         startBoxOpenAnimation()
     }
 
-    //-----------NEW CODE STARTS===============
-    fun showRewardAnimation(){
-        showRewardsForNextTap()
-        boxBounceAnimation().start()
-        //todo Rahul set isGiftTapAble = true here as well, when animation ends
-        //todo Rahul enable disableConfettiAnimation after animation is ended before enabling tap
-    }
-    fun showConfettiAnimation(){
+    fun showConfettiAnimation() {
         showParticleAnimation()
         val bounceAnim = boxBounceAnimation()
         bounceAnim.addListener(onEnd = { isGiftTapAble = true })
         bounceAnim.start()
     }
 
-    //-----------NEW CODE ENDS===============
-
-
-    fun secondTimeBoxOpenAnimation() {
-        //show particles or show prize based on random number
-        //todo Rahul later hasRewardFromBackend
-        //todo Reset the tap count next rewards are dissappeared
-        //todo need to handle rapid taps
-        val hasRewardFromBackend = true
-        isGiftTapAble = false
-
-        if (tapCount == targetTapCount && hasRewardFromBackend) {
-            //show reward
-            resetTapCount()
-            showRewardsForNextTap()
-            boxBounceAnimation().start()
-        } else {
-            // show confetti
-            showParticleAnimation()
-            val bounceAnim = boxBounceAnimation()
-            bounceAnim.addListener(onEnd = { isGiftTapAble = true })
-            bounceAnim.start()
-        }
-        incrementTapCount()
-
-    }
-
     fun boxBounceAnimation(): Animator {
         fmGiftBox.pivotY = fmGiftBox.height.toFloat()
-        val duration = 500L
+        val duration = 350L
 
         val scaleYAnimDown = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.9f, 1f)
         val bounceAnimDown: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(fmGiftBox, scaleYAnimDown)
@@ -130,38 +93,16 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         return bounceAnimDown
     }
 
-    fun showRewardsForNextTap():Animator {
-        //todo Rahul take care of these !!
-        if(true){
-            return boxRewardCallback?.showPointsWithCoupons()!!
-        }
-        val rand = (0..2).random()
-        when (rand) {
-            0 -> {
-                //showPoints
-                return boxRewardCallback?.showPoints()!!
-            }
-            1 -> {
-                //showPointsWithCoupons
-                return boxRewardCallback?.showPointsWithCoupons()!!
-            }
-            else -> {
-                //showCoupons
-                return boxRewardCallback?.showCoupons()!!
-            }
-        }
-    }
-
     fun incrementTapCount() {
-        ++tapCount
+        tapCount += 1
     }
 
     fun resetTapCount() {
-        tapCount = 0
+        tapCount = -1
     }
 
     fun getRandomNumber(): Int {
-        return (2..5).random()
+        return (3..5).random()
     }
 
     fun showParticleAnimation() {
@@ -202,28 +143,34 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         return animatorSet
     }
 
-    fun loadFilesForTapTap(@TokenUserState state: String,
-                           glowImageUrl: String?,
+    fun loadFilesForTapTap(glowImageUrl: String?,
                            glowImageShadowUrl: String?,
                            imageFrontUrl: String,
                            bgUrl: String,
+                           lidImageList: List<String>,
                            imageCallback: ((isLoaded: Boolean) -> Unit)) {
+
+        fun incrementAndSendCallback() {
+            val count = imagesLoaded.incrementAndGet()
+            if (count == TOTAL_ASYNC_IMAGES) {
+                imageCallback.invoke(true)
+            }
+        }
 
         if (glowImageUrl != null) {
             Glide.with(this)
                     .load(glowImageUrl)
                     .dontAnimate()
+                    .timeout(GLIDE_TIME_OUT)
+                    .error(R.drawable.gf_gift_white_waktu)
                     .addListener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            imageCallback.invoke(false)
+                            incrementAndSendCallback()
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            val count = imagesLoaded.incrementAndGet()
-                            if (count == TOTAL_ASYNC_IMAGES) {
-                                imageCallback.invoke(true)
-                            }
+                            incrementAndSendCallback()
                             return false
                         }
                     })
@@ -232,91 +179,86 @@ class GiftBoxTapTapView : GiftBoxDailyView {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
-        if(glowImageShadowUrl!=null) {
+        if (glowImageShadowUrl != null) {
             Glide.with(this)
                     .load(glowImageShadowUrl)
                     .dontAnimate()
+                    .timeout(GLIDE_TIME_OUT)
+                    .error(R.drawable.gf_gift_glow)
                     .addListener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            imageCallback.invoke(false)
+                            incrementAndSendCallback()
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            val count = imagesLoaded.incrementAndGet()
-                            if (count == TOTAL_ASYNC_IMAGES) {
-                                imageCallback.invoke(true)
-                            }
+                            incrementAndSendCallback()
                             return false
                         }
                     })
                     .into(imageBoxGlow)
-        }else{
+        } else {
             TOTAL_ASYNC_IMAGES -= 1
         }
 
-//        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
-//        if (state == TokenUserState.ACTIVE) {
-            var drawableRedForLid = R.drawable.gf_ic_lid_frame_0
-//        }
+        lidImagesDownloader.downloadBgImage(context, bgUrl) { bmp ->
+            val rp = if (bmp != null) {
+                Glide.with(this)
+                        .load(bmp)
 
-        Glide.with(this)
-                .load(drawableRedForLid)
-                .dontAnimate()
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
-                        return false
-                    }
-                })
-                .into(imageGiftBoxLid)
-
-        Glide.with(this)
-                .load(bgUrl)
-                .dontAnimate()
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
-                        return false
-                    }
-                })
-                .into(imageBg)
+            } else {
+                Glide.with(this)
+                        .load(R.drawable.gf_gift_bg)
+            }
+            rp.dontAnimate()
+                    .into(imageBg)
+            incrementAndSendCallback()
+        }
 
         Glide.with(this)
                 .load(imageFrontUrl)
                 .dontAnimate()
+                .timeout(GLIDE_TIME_OUT)
+                .error(R.drawable.gf_gift_green_front)
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
+                        incrementAndSendCallback()
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
+                        incrementAndSendCallback()
                         return false
                     }
                 })
                 .into(imageBoxFront)
+
+        //Download lid images
+
+        lidImagesDownloader.downloadImages(this.context, lidImageList) { images ->
+            if (images.isNullOrEmpty()) {
+                loadOriginalImages(null, imageCallback)
+            } else {
+                lidImages.addAll(images)
+                loadOriginalImages(images[0], imageCallback)
+
+            }
+        }
     }
 
+    private fun prepareLoaderLottieTask(fileName: String): LottieTask<LottieComposition>? {
+        context?.let { c ->
+            val lottieFileZipStream = ZipInputStream(c.assets.open(fileName))
+            return LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        }
+        return null
+    }
 
+    private fun addLottieAnimationToView(lottie: LottieAnimationView, task: LottieTask<LottieComposition>) {
+        task.addListener { result: LottieComposition? ->
+            result?.let {
+                lottie.setComposition(result)
+            }
+        }
+    }
 }

@@ -10,27 +10,6 @@
         </attr>
     </declare-styleable>
 
-
-    <declare-styleable name="TopAdsView">
-        <attr name="items" format="integer" />
-        <attr name="ep" format="enum">
-            <enum name="none" value="0" />
-            <enum name="product" value="1" />
-            <enum name="shop" value="2" />
-        </attr>
-        <attr name="display_type" format="enum">
-            <enum name="grid" value="0" />
-            <enum name="list" value="1" />
-        </attr>
-    </declare-styleable>
-
-    <declare-styleable name="TopAdsWidgetView">
-        <attr name="enable_wishlist" format="boolean"  />
-    </declare-styleable>
-    <declare-styleable name="TopAdsCarouselView" tools:ignore="MissingDefaultResource">
-        <attr name="ads_title" format="string" />
-        <attr name="ads_offset" format="dimension" />
-    </declare-styleable>
     <declare-styleable name="ImpressedImageView">
         <attr name="corner_radius" format="dimension" />
     </declare-styleable>

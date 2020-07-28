@@ -19,7 +19,7 @@ class NotificationFilterViewHolder(
         val view: View,
         val listener: NotificationFilterListener,
         val userSession: UserSessionInterface
-): AbstractViewHolder<NotificationFilterSectionViewBean>(view), NotificationFilterListener {
+) : AbstractViewHolder<NotificationFilterSectionViewBean>(view), NotificationFilterListener {
 
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null

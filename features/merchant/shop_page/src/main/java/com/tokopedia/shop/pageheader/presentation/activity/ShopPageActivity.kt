@@ -2,30 +2,51 @@ package com.tokopedia.shop.pageheader.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_PREPARE_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_NETWORK_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_PREPARE_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_NETWORK_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_PREPARE_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_RENDER_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_PRODUCT_TAB_RESULT_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 
-class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
+class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
+        ShopPageHeaderPerformanceMonitoringListener,
+        ShopPageHomeTabPerformanceMonitoringListener,
+        ShopPageProductTabPerformanceMonitoringListener {
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val PATH_INFO = "info"
-        const val SHOP_HEADER_TRACE = "mp_shop_header"
-        const val SHOP_PRODUCT_TAB_TRACE = "mp_shop_product"
-        const val SHOP_HOME_TAB_TRACE = "mp_shop_home"
-        const val SHOP_HOME_WEB_VIEW_TRACE = "mp_shop_home_web_view"
-
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)
@@ -35,13 +56,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
                 }
     }
 
+    private var performanceMonitoringShop: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringShopHeader: PerformanceMonitoring? = null
     private var performanceMonitoringShopProductTab: PerformanceMonitoring? = null
     private var performanceMonitoringShopHomeTab: PerformanceMonitoring? = null
     private var performanceMonitoringShopHomeWebViewTab: PerformanceMonitoring? = null
-
+    private var shopPageHeaderLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
+    private var shopPageHomeTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
+    private var shopPageProductTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initShopPageHeaderPerformanceMonitoring()
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         super.onCreate(savedInstanceState)
@@ -62,6 +87,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         (fragment as? ShopPageFragment)?.onBackPressed()
     }
 
+    override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
+        return performanceMonitoringShop
+    }
+
     fun stopShopHeaderPerformanceMonitoring() {
         performanceMonitoringShopHeader?.stopTrace()
     }
@@ -79,10 +108,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
     }
 
     private fun initPerformanceMonitoring() {
+        performanceMonitoringShop = PageLoadTimePerformanceCallback(
+                SHOP_TRACE_PREPARE,
+                SHOP_TRACE_MIDDLE,
+                SHOP_TRACE_RENDER
+        )
+        performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
-        performanceMonitoringShopProductTab= PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
-        performanceMonitoringShopHomeTab= PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
-        performanceMonitoringShopHomeWebViewTab= PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
+        performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
+        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
+        performanceMonitoringShopHomeWebViewTab = PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
     }
 
     private fun checkIfAppLinkToShopInfo() {
@@ -98,4 +135,63 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
     private fun getShopInfoIntent(context: Context): Intent {
         return Intent(context, ShopInfoActivity::class.java)
     }
+
+    override fun initShopPageHeaderPerformanceMonitoring() {
+        shopPageHeaderLoadTimePerformanceCallback = PageLoadTimePerformanceCallback(
+                SHOP_PAGE_HEADER_RESULT_PLT_PREPARE_METRICS,
+                SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS,
+                SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS
+        )
+        shopPageHeaderLoadTimePerformanceCallback?.startMonitoring(SHOP_PAGE_HEADER_RESULT_TRACE)
+        shopPageHeaderLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun initShopPageHomeTabPerformanceMonitoring() {
+        shopPageHomeTabLoadTimePerformanceCallback = PageLoadTimePerformanceCallback(
+                SHOP_PAGE_HOME_TAB_RESULT_PLT_PREPARE_METRICS,
+                SHOP_PAGE_HOME_TAB_RESULT_PLT_NETWORK_METRICS,
+                SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS
+        )
+        shopPageHomeTabLoadTimePerformanceCallback?.startMonitoring(SHOP_PAGE_HOME_TAB_RESULT_TRACE)
+        shopPageHomeTabLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun initShopPageProductTabPerformanceMonitoring() {
+        shopPageProductTabLoadTimePerformanceCallback = PageLoadTimePerformanceCallback(
+                SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_PREPARE_METRICS,
+                SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_NETWORK_METRICS,
+                SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_RENDER_METRICS
+        )
+        shopPageProductTabLoadTimePerformanceCallback?.startMonitoring(SHOP_PAGE_PRODUCT_TAB_RESULT_TRACE)
+        shopPageProductTabLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun getShopPageHeaderLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
+        return shopPageHeaderLoadTimePerformanceCallback
+    }
+
+    override fun getShopPageHomeTabLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
+        return shopPageHomeTabLoadTimePerformanceCallback
+    }
+
+
+    override fun getShopPageProductTabLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
+        return shopPageProductTabLoadTimePerformanceCallback
+    }
+
+    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
+        pageLoadTimePerformanceInterface.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startMonitoringPltRenderPage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.stopNetworkRequestPerformanceMonitoring()
+        pageLoadTimePerformanceInterface.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopMonitoringPltRenderPage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.stopRenderPerformanceMonitoring()
+        pageLoadTimePerformanceInterface.stopMonitoring()
+    }
+
 }

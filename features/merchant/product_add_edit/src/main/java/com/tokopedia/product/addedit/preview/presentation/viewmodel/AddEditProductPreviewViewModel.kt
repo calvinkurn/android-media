@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -134,7 +135,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         productInputModel
                     }
-                    is Fail -> ProductInputModel()
+                    is Fail -> {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                        ProductInputModel()
+                    }
                 }
             }
             addSource(productAddResult) {

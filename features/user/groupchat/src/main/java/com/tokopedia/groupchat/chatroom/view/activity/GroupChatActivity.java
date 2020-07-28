@@ -15,18 +15,6 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.Fragment.SavedState;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.collection.ArrayMap;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,6 +28,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.collection.ArrayMap;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment.SavedState;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -52,9 +53,8 @@ import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.groupchat.chatroom.utils.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
@@ -101,6 +101,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
@@ -195,8 +196,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
-
-    private Snackbar snackbarError;
 
     @Inject
     GroupChatPresenter presenter;
@@ -468,35 +467,24 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void setSnackBarErrorLoading() {
         if (userSession.isLoggedIn()) {
-            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
-            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-            snackbarError.show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.connecting),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
         }
     }
 
     public void setSnackBarRetry() {
         if (userSession.isLoggedIn()) {
-            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
-            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-            snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
-//                            , viewModel.getChannelInfoViewModel().getGroupChatToken()
-//                            , viewModel.getChannelInfoViewModel().getSettingGroupChat());
-                    presenter.getChannelInfo(viewModel.getChannelUuid(), true);
-                    setSnackBarErrorLoading();
-                }
-            });
-            snackbarError.show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry), v->{
+                        presenter.getChannelInfo(viewModel.getChannelUuid(), true);
+                        setSnackBarErrorLoading();
+                    });
         }
     }
 
     @Override
     public void onOpenWebSocket() {
-        if (snackbarError != null) {
-            snackbarError.dismiss();
-        }
+        try { Toaster.snackBar.dismiss(); } catch (Exception e) {}
     }
 
     private void initData() {

@@ -1,13 +1,16 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
@@ -35,7 +38,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
-
+  
     companion object {
         const val REQUEST_CODE_SHIPMENT = 0x04
 
@@ -46,15 +49,15 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
             }
         }
-
         fun getWeightTypeTitle(type: Int) =
                 when (type) {
-                    UNIT_GRAM -> R.string.label_weight_gram
-                    UNIT_KILOGRAM -> R.string.label_weight_kilogram
-                    else -> -1
+                    UNIT_GRAM -> com.tokopedia.product.addedit.R.string.label_weight_gram
+                    UNIT_KILOGRAM -> com.tokopedia.product.addedit.R.string.label_weight_kilogram
+                    else -> com.tokopedia.product.addedit.R.string.label_weight_gram
                 }
     }
 
+    private var mainLayout: ConstraintLayout? = null
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
@@ -107,6 +110,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
+        mainLayout = view.findViewById(R.id.main_layout)
+
         tfWeightAmount.setModeToNumberInput()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
@@ -117,6 +122,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         applyShipmentInputModel()
+        hideKeyboardWhenTouchOutside()
         tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
@@ -132,11 +138,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 submitInputEdit()
             }
         }
-        switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
-                ProductEditShippingTracking.clickInsurance(shopId)
-            } else {
-                ProductAddShippingTracking.clickInsurance(shopId)
+        switchInsurance?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)  {
+                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
+                    ProductEditShippingTracking.clickInsurance(shopId)
+                } else {
+                    ProductAddShippingTracking.clickInsurance(shopId)
+                }
             }
         }
     }
@@ -257,6 +265,16 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             textFieldInput.setText("")
             setError(false)
             setMessage("")
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
         }
     }
 

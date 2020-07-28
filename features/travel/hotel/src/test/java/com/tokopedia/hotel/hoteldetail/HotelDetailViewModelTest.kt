@@ -21,6 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 27/03/20
@@ -49,13 +50,13 @@ class HotelDetailViewModelTest {
     fun getHotelDetailData_allApiReturnSuccessData() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
-                mapOf(),
+                mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         val graphqlSuccessResponse1 = GraphqlResponse(
-                mapOf(HotelReview.Response::class.java to HotelReview.Response()),
-                mapOf(),
+                mapOf<Type, Any>(HotelReview.Response::class.java to HotelReview.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         coEvery {
@@ -67,7 +68,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -79,13 +80,13 @@ class HotelDetailViewModelTest {
     fun getHotelDetailData_failedToFetchHotelInfo() {
         //given
         val graphqlResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(PropertyDetailData.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(PropertyDetailData.Response::class.java to listOf(GraphqlError())),
                 false)
 
         val graphqlResponse1 = GraphqlResponse(
-                mapOf(HotelReview.Response::class.java to HotelReview.Response()),
-                mapOf(),
+                mapOf<Type, Any>(HotelReview.Response::class.java to HotelReview.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         coEvery {
@@ -97,7 +98,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Fail)
@@ -109,13 +110,13 @@ class HotelDetailViewModelTest {
     fun getHotelDetailData_failedToFetchReview() {
         //given
         val graphqlResponse = GraphqlResponse(
-                mapOf(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
-                mapOf(),
+                mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         val graphqlResponse1 = GraphqlResponse(
-                mapOf(),
-                mapOf(HotelReview.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(HotelReview.Response::class.java to listOf(GraphqlError())),
                 false)
 
         coEvery {
@@ -127,7 +128,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -139,13 +140,13 @@ class HotelDetailViewModelTest {
     fun getHotelDetailData_failedToFetchRoomList() {
         //given
         val graphqlResponse = GraphqlResponse(
-                mapOf(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
-                mapOf(),
+                mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         val graphqlResponse1 = GraphqlResponse(
-                mapOf(HotelReview.Response::class.java to HotelReview.Response()),
-                mapOf(),
+                mapOf<Type, Any>(HotelReview.Response::class.java to HotelReview.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         coEvery {
@@ -157,7 +158,7 @@ class HotelDetailViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -169,13 +170,13 @@ class HotelDetailViewModelTest {
     fun getHotelDetailDataWithoutRoom_allApiCallSuccess() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
-                mapOf(),
+                mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         val graphqlSuccessResponse1 = GraphqlResponse(
-                mapOf(HotelReview.Response::class.java to HotelReview.Response()),
-                mapOf(),
+                mapOf<Type, Any>(HotelReview.Response::class.java to HotelReview.Response()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
 
         coEvery {
@@ -183,7 +184,7 @@ class HotelDetailViewModelTest {
         } returnsMany listOf(graphqlSuccessResponse, graphqlSuccessResponse1)
 
         //when
-        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", 0)
+        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", 0, "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)

@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <include layout="@layout/partial_base_toolbar" />
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.hotel.destination.view.widget.HotelSearchInputView
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_height="70dp"
-        app:layout_scrollFlags="scroll|snap|enterAlways"
-        app:siv_search_hint="@string/hotel_destination_edittext_hint"
-        />
+        android:paddingLeft="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingRight="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/hotel_12dp"
+        tools:layout_height="@dimen/hotel_70dp" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/bg_line_separator" />
+        android:layout_height="@dimen/hotel_1dp"
+        android:background="@drawable/bg_hotel_line_seperator" />
 
-    <FrameLayout android:id="@+id/parent_view"
+    <FrameLayout
+        android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

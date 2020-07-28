@@ -19,9 +19,9 @@ class AddEditProductVariantSizechartDialogFragment : DialogFragment() {
                 val stringClicked = imageMenu?.getOrNull(which)
                 stringClicked?.let {
                     when (it) {
-                        getString(R.string.action_clear_sizechart) -> listener.clickRemoveImage()
-                        getString(R.string.action_edit_photo) -> listener.clickChangeImagePath()
-                        getString(R.string.action_edit_sizechart) -> listener.clickImageEditor()
+                        getString(com.tokopedia.product.addedit.R.string.action_clear_sizechart) -> listener.clickRemoveImage()
+                        getString(com.tokopedia.product.addedit.R.string.action_edit_photo) -> listener.clickChangeImagePath()
+                        getString(com.tokopedia.product.addedit.R.string.action_edit_sizechart) -> listener.clickImageEditor()
                     }
                 }
             }

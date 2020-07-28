@@ -140,7 +140,7 @@ class PlayCardViewHolder(
 
     private fun handlingTracker(model: PlayCardDataModel){
         container.addOnImpressionListener(model){
-            HomePageTracking.eventEnhanceImpressionPlayBanner(listener.trackingQueue, model)
+            HomePageTracking.eventEnhanceImpressionPlayBanner(listener.getTrackingQueueObj(), model)
             listener.sendIrisTrackerHashMap(HomePageTracking.eventEnhanceImpressionIrisPlayBanner(model))
         }
     }

@@ -3,12 +3,6 @@ package com.tokopedia.tokopoints.view.couponlisting
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
-
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -16,13 +10,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -36,12 +30,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
-
-import java.util.Arrays
-import java.util.HashMap
-import java.util.Locale
-
-import rx.Subscriber
+import java.util.*
 
 class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPromosEntity) : BaseAdapter<CouponValueEntity>(callback) {
 
@@ -215,6 +204,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
             holder.cvShadow2.hide()
             layoutParamsCv1.setMargins(0, 0, 0, 0)
             layoutParamsCvData.setMargins(0, 0, 0, 0)
+            holder.cvData.setPadding(0,0,0,0)
             holder.cvShadow1.layoutParams = layoutParamsCv1
             holder.cvData.layoutParams = layoutParamsCvData
         }
@@ -228,11 +218,12 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
             if (item.usage.expiredCountDown > 0 && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                 holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
                 holder.progressTimer.show()
+                holder.label.hide()
                 holder.timer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
                     override fun onTick(l: Long) {
                         item.usage.expiredCountDown = l / 1000
                         holder.value.text = convertLongToHourMinuteSec(l)
-                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.medium_green))
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
                         holder.progressTimer.progress = l.toInt() / 1000
                         holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
                                 holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),

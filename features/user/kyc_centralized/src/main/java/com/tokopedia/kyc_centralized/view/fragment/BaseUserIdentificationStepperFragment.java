@@ -27,8 +27,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 
-import javax.inject.Inject;
-
 import static com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
@@ -51,9 +49,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected ImageView wrongImage;
     protected UserIdentificationCommonAnalytics analytics;
     protected int projectId;
-
-    @Inject
-    public RemoteConfigInstance remoteConfigInstance;
 
     protected T stepperModel;
 
@@ -122,6 +117,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
+        } else if (resultCode == KYCConstant.IS_FILE_LIVENESS_IMAGE_NOT_EXIST) {
+            NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_liveness_image_cant_be_accessed));
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == REQUEST_CODE_CAMERA_FACE) {
             UserIdentificationFormActivity.isSupportedLiveness = false;
             Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_FACE);
@@ -161,9 +158,13 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         }
     }
 
-    protected Boolean isKycSelfie(){
-        if(UserIdentificationFormActivity.isSupportedLiveness) {
-            return !remoteConfigInstance.getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
+    protected Boolean isKycSelfie() {
+        try {
+            if(UserIdentificationFormActivity.isSupportedLiveness) {
+                return !RemoteConfigInstance.getInstance().getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return true;
     }

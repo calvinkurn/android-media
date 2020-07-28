@@ -40,6 +40,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
+import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity.Companion.ROOM_LIST_SCREEN_NAME
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
@@ -118,7 +119,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     if (firstTime) {
-                        trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId, hotelRoomListPageModel, it.data)
+                        trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
+                                hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
                     }
                     firstTime = false
                     if (!roomListViewModel.isFilter) {
@@ -147,12 +149,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     }
                 }
                 is Fail -> {
-                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
-                        navigateToAddPhonePage()
-                    } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
-                        showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
-                    } else {
-                        NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    when {
+                        ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
+                        ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
+                        ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
+                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
                 }
             }
@@ -214,7 +215,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         filter_recycler_view.listener = this
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                com.tokopedia.design.R.color.snackbar_border_normal)
+                R.color.hotel_snackbar_border)
 
         recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -283,7 +284,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onItemClicked(room: HotelRoom) {
         val position = roomList.indexOf(room)
-        trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
+        trackingHotelUtil.hotelClickRoomDetails(context, room, hotelRoomListPageModel, position, ROOM_LIST_SCREEN_NAME)
         if (room.available) {
             val objectId = System.currentTimeMillis().toString()
             context?.run {
@@ -396,7 +397,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onClickBookListener(room: HotelRoom) {
         progressDialog.show()
         val hotelAddCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-        trackingHotelUtil.hotelChooseRoom(room, hotelAddCartParam)
+        trackingHotelUtil.hotelChooseRoom(context, room, hotelAddCartParam, ROOM_LIST_SCREEN_NAME)
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     hotelAddCartParam)
@@ -406,7 +407,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onPhotoClickListener(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
+        trackingHotelUtil.hotelClickRoomListPhoto(context, room.additionalPropertyInfo.propertyId, room.roomId,
+                room.roomPrice.priceAmount.roundToLong().toString(), ROOM_LIST_SCREEN_NAME)
     }
 
     private fun navigateToLoginPage() {
@@ -414,6 +416,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             progressDialog.dismiss()
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
+    }
+
+    private fun navigateToAddEmailPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {

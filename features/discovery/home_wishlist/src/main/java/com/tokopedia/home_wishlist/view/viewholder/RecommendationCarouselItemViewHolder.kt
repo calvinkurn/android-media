@@ -56,7 +56,7 @@ class RecommendationCarouselItemViewHolder(
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener{
                 override fun onViewHint() {
                     if(element.recommendationItem.isTopAds){
-                        ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
+                        ImpresionTask(className).execute(element.recommendationItem.trackerImageUrl)
                     }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
@@ -65,7 +65,7 @@ class RecommendationCarouselItemViewHolder(
             setOnClickListener {
                 (listener as WishlistListener).onProductClick(element, element.parentPosition, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
-                    ImpresionTask().execute(element.recommendationItem.clickUrl)
+                    ImpresionTask(className).execute(element.recommendationItem.clickUrl)
                 }
             }
         }
@@ -73,6 +73,7 @@ class RecommendationCarouselItemViewHolder(
 
     companion object{
         val LAYOUT = R.layout.layout_recommendation_carousel_item
+        private const val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
     }
 
 }

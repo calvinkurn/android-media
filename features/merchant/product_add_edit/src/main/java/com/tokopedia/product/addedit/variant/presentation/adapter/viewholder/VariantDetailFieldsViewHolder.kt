@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailFieldsViewModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -21,7 +21,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                                     onPriceInputTextChangedListener: OnPriceInputTextChangedListener,
                                     onStockInputTextChangedListener: OnStockInputTextChangedListener,
                                     onSkuInputTextChangedListener: OnSkuInputTextChangedListener) :
-        AbstractViewHolder<VariantDetailFieldsViewModel>(itemView) {
+        AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface OnStatusSwitchCheckedChangeListener {
         fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int)
@@ -50,11 +50,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
     private var isPriceFieldEdited = false
 
     init {
-        unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
-        statusSwitch = itemView?.findViewById(R.id.su_variant_status)
-        priceField = itemView?.findViewById(R.id.tfu_price_field)
-        stockField = itemView?.findViewById(R.id.tfu_stock_field)
-        skuField = itemView?.findViewById(R.id.tfu_sku_field)
+        unitValueLabel = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tv_unit_value_label)
+        statusSwitch = itemView?.findViewById(com.tokopedia.product.addedit.R.id.su_variant_status)
+        priceField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_price_field)
+        stockField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_stock_field)
+        skuField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_sku_field)
 
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
@@ -153,7 +153,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
         })
     }
 
-    override fun bind(element: VariantDetailFieldsViewModel?) {
+    override fun bind(element: VariantDetailFieldsUiModel?) {
         element?.run {
             val variantDetailInputLayoutModel = this.variantDetailInputLayoutModel
             // update visitable position before bind the data

@@ -29,7 +29,7 @@
         app:typographyType="heading_4"
         tools:text="@string/shop_page_label_featured_product" />
 
-    <com.tokopedia.gm.resource.GMImageView
+    <com.tokopedia.gm.common.widget.GMImageView
         android:id="@+id/image_view_etalase_badge"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_15"

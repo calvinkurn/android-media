@@ -36,7 +36,7 @@ class DeclineRechargeRecommendationUseCase @Inject constructor(
 
         """
             mutation declineWATFRecommendation(
-              $request:rechargeDeclineAboveTheFoldRecommendationRequest
+              $request:rechargeDeclineAboveTheFoldRecommendationRequest!
             ){
               rechargeDeclineAboveTheFoldRecommendation(declineRequest:$request){
                 isError: IsError

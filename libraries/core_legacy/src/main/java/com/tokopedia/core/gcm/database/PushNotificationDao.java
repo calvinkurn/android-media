@@ -24,12 +24,6 @@ public interface PushNotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(DbPushNotification... pushNotifications);
 
-    @Query("DELETE FROM DbPushNotification WHERE category=:category")
-    void deleteByCategory(String category);
-
-    @Query("DELETE FROM DbPushNotification WHERE category=:category AND serverId=:serverId")
-    void deleteByCategoryAndServerId(String category, String serverId);
-
     @Query("DELETE FROM DbPushNotification")
     void drop();
 }
