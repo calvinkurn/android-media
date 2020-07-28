@@ -105,7 +105,7 @@ class YouTubeView(
     internal fun setYouTubeId(youtubeId: String, startMillis: Int, playOnReady: Boolean) {
         if (mVideoId == youtubeId) return
 
-        if (youTubePlayer == null) iniYouTubePlayer()
+        if (youTubePlayer == null) initYouTubePlayer()
 
         mVideoId = youtubeId
         mStartMillis = startMillis
@@ -142,7 +142,7 @@ class YouTubeView(
 
     internal fun getPlayer(): YouTubePlayer? = youTubePlayer
 
-    private fun iniYouTubePlayer() {
+    private fun initYouTubePlayer() {
         youtubeFragment.initialize(object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
                 player?.let {
