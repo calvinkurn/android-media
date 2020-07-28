@@ -13,6 +13,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.requests.LinkerShareRequest
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
+import com.tokopedia.url.TokopediaUrl
 
 
 /**
@@ -20,7 +21,7 @@ import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
  */
 object PlayShareWrapper {
 
-    private const val CHANNEL_LIST_WEB_LINK = "https://www.tokopedia.com/play/channel/"
+    private val channelListWebUrl= "${TokopediaUrl.getInstance().WEB}play/channel/"
 
     fun copyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
         val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -72,7 +73,7 @@ object PlayShareWrapper {
     private fun defaultSharedContent(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
 
     private fun generateShareData(shareData: ShareUiModel): LinkerData {
-        val desktopUrl  =  "$CHANNEL_LIST_WEB_LINK${shareData.id}"
+        val desktopUrl  =  "$channelListWebUrl${shareData.id}"
         return LinkerData.Builder.getLinkerBuilder()
                 .setId(shareData.id)
                 .setName(shareData.title)
