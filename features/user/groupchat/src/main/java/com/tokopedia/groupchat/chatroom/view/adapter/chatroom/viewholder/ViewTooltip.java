@@ -1,4 +1,4 @@
-package com.tokopedia.design.widget;
+package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

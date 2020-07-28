@@ -216,14 +216,6 @@ public class PushNotification {
 
     }
 
-    private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                         int notificationType, NotificationManagerCompat notificationManagerCompat) {
-        Notification notifChat = new GeneralNotificationFactory(context)
-                .createNotification(applinkNotificationModel, notificationType, notificationType);
-
-        notificationManagerCompat.notify(notificationType, notifChat);
-    }
-
     private static boolean isNotificationEnabled(Context context) {
         boolean isAllNotificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
