@@ -8,4 +8,5 @@ interface CampaignStockTypeFactory {
     fun type(model: StockTickerInfoUiModel): Int
     fun type(model: ReservedEventInfoUiModel): Int
     fun type(model: SellableStockProductUIModel): Int
+    fun type(model: ReservedStockRedirectionUiModel): Int
 }

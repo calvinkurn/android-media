@@ -57,4 +57,5 @@
     <dimen name="product_manage_campaign_stock_variant_desc_padding">5dp</dimen>
     <dimen name="product_manage_campaign_stock_variant_name_height">44dp</dimen>
     <dimen name="product_manage_campaign_stock_accordion_padding">6dp</dimen>
+    <dimen name="product_manage_campaign_stock_redirection_desc_margin">30dp</dimen>
 </resources>
