@@ -8,11 +8,13 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.readParam
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReply
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -117,10 +119,12 @@ class TopChatRoomPresenterTest {
 
     private lateinit var wsOpen: WebSocketInfo
     private lateinit var wsReconnect: WebSocketInfo
+    private lateinit var wsResponseReplyText: WebSocketInfo
 
     object Dummy {
         const val exMessageId = "1234051"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
+        val wsResponseReply = FileUtil.readFileContent("/ws_response_reply_text.json.json")
     }
 
     @Before
@@ -158,8 +162,9 @@ class TopChatRoomPresenterTest {
         presenter.attachView(view)
         presenter.autoRetryConnectWs = false
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        wsOpen = WebSocketInfo(webSocket, true)
         wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
+        wsOpen = WebSocketInfo(webSocket, true)
+        wsResponseReplyText = WebSocketInfo(webSocket, wsResponseReply)
     }
 
     private fun mockSingletonObject() {
