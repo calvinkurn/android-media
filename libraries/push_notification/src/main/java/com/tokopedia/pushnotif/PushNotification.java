@@ -12,7 +12,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.pushnotif.data.TransactionRepository;
+import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
@@ -26,6 +26,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
+
+import static com.tokopedia.pushnotif.domain.usecase.TrackPushNotificationUseCase.STATUS_DELIVERED;
+import static com.tokopedia.pushnotif.domain.usecase.TrackPushNotificationUseCase.STATUS_DROPPED;
 
 /**
  * @author ricoharisin .
@@ -66,7 +69,9 @@ public class PushNotification {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
             if (isNotificationEnabled(context)) {
-                NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
+                NotificationTracker
+                        .getInstance(context)
+                        .trackDeliveredNotification(applinkNotificationModel, STATUS_DELIVERED);
             }
         } else {
             UserSessionInterface userSession = new UserSession(context);
@@ -78,6 +83,9 @@ public class PushNotification {
                             + "; app " + ApplinkNotificationHelper.isTargetApp(applinkNotificationModel)
                             + "; uid " + loginId
             );
+            NotificationTracker
+                    .getInstance(context)
+                    .trackDeliveredNotification(applinkNotificationModel, STATUS_DROPPED);
         }
     }
 
@@ -89,7 +97,7 @@ public class PushNotification {
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
-        Boolean isRenderable = TransactionRepository.INSTANCE.isRenderable(context, applinkNotificationModel.getTransactionId());
+        Boolean isRenderable = TransactionRepository.isRenderable(context, applinkNotificationModel.getTransactionId());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
         return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable;
     }
