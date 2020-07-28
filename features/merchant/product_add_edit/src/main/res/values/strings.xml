@@ -230,6 +230,8 @@
     <string name="action_cancel_cancellation">Oh, jangan</string>
     <string name="action_variant_delete_all_negative">Batal</string>
     <string name="action_variant_delete_all_positive">Ya, Hapus</string>
+    <string name="action_confirm_replacement">Ya, Ganti</string>
+    <string name="action_cancel_replacement">Oh, Jangan</string>
     <string name="action_confirm_exit">Ya</string>
     <string name="action_cancel_exit">Batal</string>
     <string name="label_variant_type">Tipe Varian</string>
@@ -267,6 +269,10 @@
     <string name="label_variant_max">Max</string>
     <string name="label_variant_exit_dialog_title">Yakin ingin keluar?</string>
     <string name="label_variant_exit_dialog_desc">Datamu tidak akan tersimpan jika kamu kembali ke halaman sebelumnya.</string>
+    <string name="label_variant_replace">Ganti</string>
+    <string name="label_variant_to">ke</string>
+    <string name="label_variant_data">Data</string>
+    <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
 </resources>

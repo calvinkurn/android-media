@@ -6,9 +6,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailHeaderViewModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 
-class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHeaderClickListener) : AbstractViewHolder<VariantDetailHeaderViewModel>(itemView) {
+class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHeaderClickListener) : AbstractViewHolder<VariantDetailHeaderUiModel>(itemView) {
 
     private var unitValueHeader: AppCompatTextView? = null
     private var accordionIndicator: AppCompatImageView? = null
@@ -25,7 +25,7 @@ class VariantDetailHeaderViewHolder(itemView: View?, listener: OnCollapsibleHead
         }
     }
 
-    override fun bind(element: VariantDetailHeaderViewModel?) {
+    override fun bind(element: VariantDetailHeaderUiModel?) {
         element?.run {
             headerPosition = element.position
             unitValueHeader?.text = element.header

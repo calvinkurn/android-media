@@ -1,11 +1,11 @@
 package com.tokopedia.product.addedit.variant.presentation.adapter
 
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailFieldsViewModel
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailHeaderViewModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 
 interface VariantDetailInputTypeFactory {
 
-    fun type(variantDetailHeaderViewModel: VariantDetailHeaderViewModel): Int
+    fun type(variantDetailHeaderUiModel: VariantDetailHeaderUiModel): Int
 
-    fun type(variantDetailFieldsViewModel: VariantDetailFieldsViewModel): Int
+    fun type(variantDetailFieldsUiModel: VariantDetailFieldsUiModel): Int
 }

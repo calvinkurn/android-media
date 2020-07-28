@@ -11,14 +11,15 @@ import kotlinx.android.synthetic.main.add_edit_product_variant_unit_picker_layou
 
 class VariantUnitPicker(context: Context?) : LinearLayout(context) {
 
-    private var layoutPosition: Int? = null
-
     private var onVariantUnitPickListener: OnVariantUnitPickListener? = null
 
-    private var selectedVariantUnit: Unit? = null
+    private var layoutPosition: Int? = null
+    private var selectedVariantUnit: Unit = Unit()
+    private var currentVariantUnit: Unit = Unit()
+    private var hasSelectedValues: Boolean = false
 
     interface OnVariantUnitPickListener {
-        fun onVariantUnitPicked(selectedVariantUnit: Unit, layoutPosition: Int)
+        fun onVariantUnitPicked(selectedVariantUnit: Unit, currentVariantUnit: Unit, layoutPosition: Int, hasSelectedValues: Boolean)
     }
 
     init {
@@ -33,6 +34,10 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
 
     fun setSelectedVariantUnit(selectedVariantUnit: Unit) {
         this.selectedVariantUnit = selectedVariantUnit
+    }
+
+    fun setHasSelectedValues(hasSelectedVariantUnitValues: Boolean) {
+        this.hasSelectedValues = hasSelectedVariantUnitValues
     }
 
     fun setOnVariantUnitPickListener(onVariantUnitPickListener: OnVariantUnitPickListener) {
@@ -81,7 +86,7 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     val isChecked = listItemUnify.listRightRadiobtn?.isChecked
                     isChecked?.run {
-                        if (isChecked) selectedVariantUnit = variantUnits[position]
+                        if (isChecked) currentVariantUnit = variantUnits[position]
                         variantUnitData.forEachIndexed { index, listItemUnify ->
                             if (position != index) listItemUnify.listRightRadiobtn?.isChecked = false
                         }
@@ -95,9 +100,9 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
 
     private fun setupSaveButton() {
         buttonSave.setOnClickListener {
-            selectedVariantUnit?.let {
+            if (selectedVariantUnit.unitName.isNotBlank() && currentVariantUnit.unitName.isNotBlank()) {
                 layoutPosition?.run {
-                    onVariantUnitPickListener?.onVariantUnitPicked(it, this)
+                    onVariantUnitPickListener?.onVariantUnitPicked(selectedVariantUnit, currentVariantUnit, this, hasSelectedValues)
                 }
             }
         }
