@@ -207,7 +207,22 @@ data class DynamicHomeChannelCommon(
             var rating: Int = 0,
             @Expose
             @SerializedName("count_review")
-            val countReview: Int = 0
+            val countReview: Int = 0,
+            @Expose
+            @SerializedName("back_color")
+            val backColor: String = "",
+            @Expose
+            @SerializedName("benefit")
+            val benefit: Benefit = Benefit()
+    )
+
+    data class Benefit(
+            @Expose
+            @SerializedName("type")
+            val type: String = "",
+            @Expose
+            @SerializedName("value")
+            val value: String = ""
     )
 
     data class Header(

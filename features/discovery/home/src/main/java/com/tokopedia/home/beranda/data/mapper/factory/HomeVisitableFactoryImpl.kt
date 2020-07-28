@@ -242,6 +242,9 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
                     createTopAdsBannerModel(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
+                    createLego4AutoComponent(channel, position, isCache)
+                }
             }
         }
 
@@ -309,6 +312,14 @@ class HomeVisitableFactoryImpl(
 
     private fun createMixTopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingMixTopComponent(
+                channel, isCache, verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createLego4AutoComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingLego4BannerAutoComponent(
                 channel, isCache, verticalPosition
         ))
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
@@ -446,6 +457,14 @@ class HomeVisitableFactoryImpl(
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
         return MixTopDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+    }
+
+    private fun mappingLego4BannerAutoComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        return Lego4AutoDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
     }
