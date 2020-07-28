@@ -895,7 +895,6 @@ open class HomeViewModel @Inject constructor(
                         homeData = evaluateAvailableComponent(homeDataModel)
                         _homeLiveData.value = homeData
                     }
-                    delay(100)
                     getPlayBannerCarousel()
                     getHeaderData()
                     getReviewData()
@@ -1380,7 +1379,6 @@ open class HomeViewModel @Inject constructor(
 // ============================================================================================
 // ================================ Live Data Controller ======================================
 // ============================================================================================
-    // make coffee channel
     private suspend fun updateChannel(channel: ReceiveChannel<UpdateLiveDataModel>){
         for(data in channel){
             if(data.action == ACTION_UPDATE_HOME_DATA){

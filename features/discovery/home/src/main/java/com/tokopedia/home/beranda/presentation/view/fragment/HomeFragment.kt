@@ -655,24 +655,20 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeHome() {
-        try{
-            observeHomeData()
-            observeUpdateNetworkStatusData()
-            observeOneClickCheckout()
-            observePopupIntroOvo()
-            observeErrorEvent()
-            observeSendLocation()
-            observeStickyLogin()
-            observeTrackingData()
-            observeRequestImagePlayBanner()
-            observeViewModelInitialized()
-            observeHomeRequestNetwork()
-            observeSalamWidget()
-            observeRechargeRecommendation()
-            observePlayReminder()
-        }catch (e: Exception){
-
-        }
+        observeHomeData()
+        observeUpdateNetworkStatusData()
+        observeOneClickCheckout()
+        observePopupIntroOvo()
+        observeErrorEvent()
+        observeSendLocation()
+        observeStickyLogin()
+        observeTrackingData()
+        observeRequestImagePlayBanner()
+        observeViewModelInitialized()
+        observeHomeRequestNetwork()
+        observeSalamWidget()
+        observeRechargeRecommendation()
+        observePlayReminder()
     }
 
     private fun observeHomeRequestNetwork() {
