@@ -239,7 +239,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-//        analytics.eventScrollToBrandPopular(brand, position)
+        analytics.eventScrollToBrandPopular(brand, position)
     }
 
     override fun onClickSearchBar() {

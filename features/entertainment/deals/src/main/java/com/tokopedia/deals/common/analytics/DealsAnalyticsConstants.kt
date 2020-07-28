@@ -150,6 +150,6 @@ object DealsAnalyticsConstants {
     const val DEALS_POPULAR_LANDMARK = "/deals/popular/landmarks"
     const val DEALS_CURATED_CARD = "/deals/curated/card"
     const val SEARCH_RESULT_LIST = "/deals - search result"
-    const val FOOD_VOUCHER_LIST = "/deals"
+    const val FOOD_VOUCHER_LIST = "/food&voucher"
     const val PRODUCT_HOME_PAGE_LIST = "/deals - product card - homepage"
 }
