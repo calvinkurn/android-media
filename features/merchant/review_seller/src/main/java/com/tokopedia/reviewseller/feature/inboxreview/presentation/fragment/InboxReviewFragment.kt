@@ -110,7 +110,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private var prefs: SharedPreferences? = null
 
     override fun getScreenName(): String {
-        return getString(R.string.titlte_inbox_review)
+        return getString(R.string.title_inbox_review)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

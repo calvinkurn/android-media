@@ -3,7 +3,6 @@ package com.tokopedia.reviewseller.common.util
 import android.os.Build
 import android.text.Spanned
 import android.widget.ListView
-import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
@@ -100,16 +99,17 @@ fun ChipsUnify.toggle() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
     val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-    when (choiceMode) {
-        ListView.CHOICE_MODE_SINGLE -> {
-            items.filter {
-                it.listRightRadiobtn?.isChecked ?: false
-            }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        when (choiceMode) {
+            ListView.CHOICE_MODE_SINGLE -> {
+                items.filter {
+                    it.listRightRadiobtn?.isChecked ?: false
+                }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
 
-            clickedItem.listRightRadiobtn?.isChecked = true
+                clickedItem.listRightRadiobtn?.isChecked = true
+            }
         }
     }
 }

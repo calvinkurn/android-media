@@ -2,7 +2,6 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -402,9 +401,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         filterPeriodDetailUnify?.let { it ->
             it.onLoadFinish {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    it.setSelectedFilterOrSort(filterPeriodItemUnify, positionFilterPeriod.orZero())
-                }
+                it.setSelectedFilterOrSort(filterPeriodItemUnify, positionFilterPeriod.orZero())
 
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
@@ -432,9 +429,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
             setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
             positionFilterPeriod = position
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
-            }
+            filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
             endlessRecyclerViewScrollListener?.resetState()
             bottomSheetPeriodDetail?.dismiss()
@@ -608,7 +603,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val sortValue = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortBy)
 
         viewModelProductReviewDetail?.getSortAndFilter()?.first?.mapIndexed { index, data ->
-            if(topic.isNotEmpty()) {
+            if (topic.isNotEmpty()) {
                 isDifferent = topic.getOrNull(index)?.isSelected == data.isSelected
             }
         }
