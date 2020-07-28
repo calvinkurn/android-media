@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
-import com.tokopedia.statistic.presentation.model.DateRangeItem
+import com.tokopedia.statistic.presentation.model.DateFilterItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.CalendarPicker
-import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import kotlinx.android.synthetic.main.item_stc_date_range_pick.view.*
 import java.util.*
 
@@ -20,33 +20,33 @@ import java.util.*
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateRangePickViewHolder(
+class DateFilterPickViewHolder(
         itemView: View?,
         private val fm: FragmentManager,
-        private val onClick: (DateRangeItem) -> Unit
-) : AbstractViewHolder<DateRangeItem.Pick>(itemView) {
+        private val onClick: (DateFilterItem) -> Unit
+) : AbstractViewHolder<DateFilterItem.Pick>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_stc_date_range_pick
     }
 
-    private var element: DateRangeItem.Pick? = null
+    private var element: DateFilterItem.Pick? = null
     private val datePicker: CalendarPicker by lazy {
-        val picker = CalendarPicker(this.itemView.context)
-        if (element?.type == DateRangeItem.TYPE_PER_WEEK) {
+        val picker = CalendarPicker.newInstance()
+        if (element?.type == DateFilterItem.TYPE_PER_WEEK) {
             val title = itemView?.context?.getString(R.string.stc_per_week).orEmpty()
-            picker.init(CalendarPickerView.SelectionMode.RANGE)
+            picker.setMode(CalendarPickerView.SelectionMode.RANGE)
             picker.setTitle(title)
-        } else if (element?.type == DateRangeItem.TYPE_PER_DAY) {
+        } else if (element?.type == DateFilterItem.TYPE_PER_DAY) {
             val title = itemView?.context?.getString(R.string.stc_per_day).orEmpty()
-            picker.init(CalendarPickerView.SelectionMode.SINGLE)
+            picker.setMode(CalendarPickerView.SelectionMode.SINGLE)
             picker.setTitle(title)
         }
         return@lazy picker
     }
 
-    override fun bind(element: DateRangeItem.Pick) {
+    override fun bind(element: DateFilterItem.Pick) {
         this.element = element
         with(itemView) {
             tvStcSingleLabel.text = element.label
@@ -60,7 +60,7 @@ class DateRangePickViewHolder(
                 onClick(element)
             }
 
-            if (element.type == DateRangeItem.TYPE_PER_MONTH) {
+            if (element.type == DateFilterItem.TYPE_PER_MONTH) {
                 setupMontPicker()
             } else {
                 setupDatePicker()
@@ -92,10 +92,10 @@ class DateRangePickViewHolder(
         if (startDate != null && endDate != null) {
             element?.startDate = startDate
             element?.endDate = endDate
-            itemView.edtStcSingle.valueStr = if (element?.type == DateRangeItem.TYPE_PER_DAY) {
+            itemView.edtStcSingle.valueStr = if (element?.type == DateFilterItem.TYPE_PER_DAY) {
                 DateTimeUtil.format(startDate.time, "dd MMM yyyy")
             } else {
-                DateRangeFormatUtil.getDateRangeStr(startDate, endDate)
+                DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
             }
         }
     }

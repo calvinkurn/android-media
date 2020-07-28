@@ -2,8 +2,8 @@ package com.tokopedia.statistic.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.statistic.presentation.view.adapter.factory.DateRangeAdapterFactory
-import com.tokopedia.statistic.common.utils.DateRangeFormatUtil
+import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactory
+import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -11,13 +11,13 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 15/06/20
  */
 
-sealed class DateRangeItem(
+sealed class DateFilterItem(
         open val label: String = "",
         open val startDate: Date? = null,
         open val endDate: Date? = null,
         open var isSelected: Boolean = false,
         open val type: Int
-) : Visitable<DateRangeAdapterFactory> {
+) : Visitable<DateFilterAdapterFactory> {
 
     companion object {
         const val TYPE_TODAY = 0
@@ -41,13 +41,13 @@ sealed class DateRangeItem(
             TYPE_LAST_7_DAYS -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateRangeFormatUtil.getDateRangeStr(mStartDate, mEndDate)
+                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
                 return "7 Hari Terakhir ($dateRangeStr)"
             }
             TYPE_LAST_30_DAYS -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateRangeFormatUtil.getDateRangeStr(mStartDate, mEndDate)
+                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
                 return "30 Hari Terakhir ($dateRangeStr)"
             }
             TYPE_PER_DAY -> {
@@ -57,7 +57,7 @@ sealed class DateRangeItem(
             TYPE_PER_WEEK -> {
                 val mStartDate = startDate ?: return ""
                 val mEndDate = endDate ?: return ""
-                val dateRangeStr = DateRangeFormatUtil.getDateRangeStr(mStartDate, mEndDate)
+                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
                 return "Per Minggu ($dateRangeStr)"
             }
             TYPE_PER_MONTH -> {
@@ -74,9 +74,9 @@ sealed class DateRangeItem(
             override var isSelected: Boolean = false,
             override val type: Int,
             val showBottomBorder: Boolean = true
-    ) : DateRangeItem(label, startDate, endDate, isSelected, type) {
+    ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
-        override fun type(typeFactory: DateRangeAdapterFactory): Int {
+        override fun type(typeFactory: DateFilterAdapterFactory): Int {
             return typeFactory.type(this)
         }
     }
@@ -87,23 +87,23 @@ sealed class DateRangeItem(
             override var endDate: Date? = null,
             override var isSelected: Boolean = false,
             override val type: Int
-    ) : DateRangeItem(label, startDate, endDate, isSelected, type) {
+    ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
-        override fun type(typeFactory: DateRangeAdapterFactory): Int {
+        override fun type(typeFactory: DateFilterAdapterFactory): Int {
             return typeFactory.type(this)
         }
     }
 
-    object ApplyButton : DateRangeItem(type = TYPE_BUTTON) {
+    object ApplyButton : DateFilterItem(type = TYPE_BUTTON) {
 
-        override fun type(typeFactory: DateRangeAdapterFactory): Int {
+        override fun type(typeFactory: DateFilterAdapterFactory): Int {
             return typeFactory.type(this)
         }
     }
 
-    object Divider : DateRangeItem(type = TYPE_DIVIDER) {
+    object Divider : DateFilterItem(type = TYPE_DIVIDER) {
 
-        override fun type(typeFactory: DateRangeAdapterFactory): Int {
+        override fun type(typeFactory: DateFilterAdapterFactory): Int {
             return typeFactory.type(this)
         }
     }
