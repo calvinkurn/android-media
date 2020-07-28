@@ -27,7 +27,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data,true)
+        val list = UriUtil.destructureUri(ApplinkConstInternalGlobal.CHAT_BOT+"/{id}",intent.data!!,true)
         if(!list.isNullOrEmpty()){
             bundle.putString(MESSAGE_ID,list[0])
         }
@@ -89,6 +89,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-            inflateFragment()
+        inflateFragment()
     }
 }

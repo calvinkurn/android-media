@@ -20,7 +20,6 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
-import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst

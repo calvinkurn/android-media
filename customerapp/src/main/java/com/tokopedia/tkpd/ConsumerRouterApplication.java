@@ -422,11 +422,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
-    @Override
-    public Intent getRegisterIntent(Context context) {
-        return RegisterInitialActivity.getCallingIntent(context);
-    }
-
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
     }
@@ -765,11 +760,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void refreshFCMFromInstantIdService(String token) {
         CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
     }
 
     @Override

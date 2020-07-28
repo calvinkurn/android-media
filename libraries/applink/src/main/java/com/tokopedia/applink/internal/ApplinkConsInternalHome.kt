@@ -12,6 +12,8 @@ object ApplinkConsInternalHome {
 
     const val HOME_RECOMMENDATION = "$INTERNAL_HOME/rekomendasi/.*\\/"
 
+    const val EXPLORE = "$INTERNAL_HOME/jump"
+
     const val HOME_WISHLIST = "$INTERNAL_HOME/wishlist"
 
     const val HOME_RECENT_VIEW = "$INTERNAL_HOME/recentlyviewed"

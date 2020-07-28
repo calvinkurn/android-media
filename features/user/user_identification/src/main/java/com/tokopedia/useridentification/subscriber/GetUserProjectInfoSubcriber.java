@@ -14,7 +14,7 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     public interface GetUserProjectInfoListener {
         void onUserBlacklist();
-        void onSuccessGetUserProjectInfo(int status);
+        void onSuccessGetUserProjectInfo(int status, List<String> reasons);
         void onErrorGetUserProjectInfo(Throwable throwable);
         void onErrorGetUserProjectInfoWithErrorCode(String errorCode);
     }
@@ -53,10 +53,11 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     private void routingOnNext(KycUserProjectInfoPojo pojo) {
         if (pojo.getKycProjectInfo() != null) {
-            if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED) {
+            if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED ||
+                    pojo.getKycProjectInfo().getStatusName() != null && pojo.getKycProjectInfo().getStatusName().equals("")) {
                 listener.onUserBlacklist();
             } else {
-                listener.onSuccessGetUserProjectInfo(pojo.getKycProjectInfo().getStatus());
+                listener.onSuccessGetUserProjectInfo(pojo.getKycProjectInfo().getStatus(), pojo.getKycProjectInfo().getReasonList());
             }
         } else {
             listener.onErrorGetUserProjectInfoWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);

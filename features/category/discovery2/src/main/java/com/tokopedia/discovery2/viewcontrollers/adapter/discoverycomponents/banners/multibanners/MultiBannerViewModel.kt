@@ -77,7 +77,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     private fun copyCodeToClipboard(position: Int, view: View) {
         (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
-                ?.primaryClip = ClipData.newPlainText(PROMO_CODE, bannerData.value?.data?.get(position)?.code)
+                ?.setPrimaryClip(ClipData.newPlainText(PROMO_CODE, bannerData.value?.data?.get(position)?.code))
         if (bannerData.value?.data?.get(position)?.applinks?.isNotEmpty() == true) {
             Toaster.make(view, view.context.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
                     view.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {

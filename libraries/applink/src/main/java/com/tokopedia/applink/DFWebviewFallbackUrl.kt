@@ -36,4 +36,5 @@ object DFWebviewFallbackUrl {
 
     // Merchant
     const val FAVORITE_SHOP = "https://m.tokopedia.com/favorite"
+    const val RECENT_VIEW = "https://m.tokopedia.com/recent"
 }
