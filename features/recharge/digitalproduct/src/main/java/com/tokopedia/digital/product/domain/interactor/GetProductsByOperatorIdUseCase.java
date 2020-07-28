@@ -33,7 +33,7 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
         final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
 
         return getDigitalCategoryByIdUseCase.createObservable(getDigitalCategoryByIdUseCase.createRequestParam(categoryId))
-                .flatMapIterable((Func1<ProductDigitalData, Iterable<Operator>>) productDigitalData -> productDigitalData.getCategoryData().getOperatorList())
+                .flatMapIterable((Func1<ProductDigitalData, Iterable<Operator>>) productDigitalData -> productDigitalData.getCategoryData().operatorList)
                 .filter(operator -> operator.getOperatorId().equals(operatorId))
                 .map(Operator::getProductList);
     }

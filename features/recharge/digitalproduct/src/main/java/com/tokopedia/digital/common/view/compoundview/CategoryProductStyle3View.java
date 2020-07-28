@@ -100,7 +100,7 @@ public class CategoryProductStyle3View extends
     @Override
     protected void onInitialDataRendered() {
         if (source == NATIVE) {
-            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+            tvTitle.setText(TextUtils.isEmpty(data.titleText) ? "" : data.titleText);
         } else {
             tvTitle.setVisibility(GONE);
         }
@@ -167,13 +167,13 @@ public class CategoryProductStyle3View extends
 
     private void renderOperatorChooserOptions() {
         clearHolder(holderChooserOperator);
-        digitalOperatorChooserView.setLabelText(data.getOperatorLabel());
+        digitalOperatorChooserView.setLabelText(data.operatorLabel);
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
-        digitalOperatorChooserView.renderInitDataList(data.getOperatorList(), data.getDefaultOperatorId());
+        digitalOperatorChooserView.renderInitDataList(data.operatorList, data.defaultOperatorId);
         holderChooserOperator.addView(digitalOperatorChooserView);
 
         if (hasLastOrderHistoryData()) {
-            for (Operator operator : data.getOperatorList()) {
+            for (Operator operator : data.operatorList) {
                 if (operator.getOperatorId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
@@ -187,7 +187,7 @@ public class CategoryProductStyle3View extends
     private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
         ClientNumber clientNumber = operator.getClientNumberList().get(0);
-        if (data.getSlug().contains(SLUG_EMONEY) &&
+        if (data.slug.contains(SLUG_EMONEY) &&
                 remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_OCR, true)) {
             clientNumber.setEmoney(true);
         }
@@ -280,11 +280,11 @@ public class CategoryProductStyle3View extends
     }
 
     private void renderInstantCheckoutOptions() {
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
-                    actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
+                    actionListener.isRecentInstantCheckoutUsed(data.categoryId)
             );
         } else {
             cbInstantCheckout.setChecked(false);
@@ -346,7 +346,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void tracking() {
-                actionListener.onOperatorSelected(data.getName(), operatorSelected.getName());
+                actionListener.onOperatorSelected(data.name, operatorSelected.getName());
             }
         };
     }
@@ -429,7 +429,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void tracking() {
-                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
+                actionListener.onProductSelected(data.name, productSelected.getDesc());
             }
         };
     }
@@ -497,11 +497,11 @@ public class CategoryProductStyle3View extends
         }
         if (canBeCheckout) {
             actionListener.storeLastInstantCheckoutUsed(
-                    data.getCategoryId(), cbInstantCheckout.isChecked()
+                    data.categoryId, cbInstantCheckout.isChecked()
             );
         }
-        preCheckoutProduct.setCategoryId(data.getCategoryId());
-        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setCategoryId(data.categoryId);
+        preCheckoutProduct.setCategoryName(data.name);
         preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
         preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);

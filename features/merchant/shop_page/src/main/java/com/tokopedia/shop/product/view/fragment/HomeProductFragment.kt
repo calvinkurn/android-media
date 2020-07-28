@@ -208,7 +208,7 @@ class HomeProductFragment : BaseDaggerFragment() {
             uri.also {
                 if (url.contains(SHOP_STATIC_URL)) {
                     view.loadUrl(url)
-                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme.startsWith(ShopProductOfficialStoreUtils.HTTP)) {
+                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme?.startsWith(ShopProductOfficialStoreUtils.HTTP) == true) {
                     promoClicked(url)
                 }
             }
