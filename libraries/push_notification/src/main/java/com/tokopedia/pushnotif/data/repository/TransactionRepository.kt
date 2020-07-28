@@ -1,30 +1,26 @@
-package com.tokopedia.pushnotif.data
+package com.tokopedia.pushnotif.data.repository
 
 import android.content.Context
+import com.tokopedia.pushnotif.data.mapper.TransactionMapper.mapToTransaction
 import com.tokopedia.pushnotif.db.PushNotificationDB
-import com.tokopedia.pushnotif.db.model.TransactionNotification
+import com.tokopedia.pushnotif.model.ApplinkNotificationModel
 
 object TransactionRepository {
 
+    @JvmStatic
     fun insert(
             context: Context,
-            senderName: String,
-            message: String,
+            data: ApplinkNotificationModel,
             notificationType: Int,
-            notificationId: Int,
-            transactionId: String
+            notificationId: Int
     ) {
+        val notification = mapToTransaction(data, notificationType, notificationId)
         PushNotificationDB.getInstance(context)
                 .transactionNotificationDao()
-                .storeNotification(TransactionNotification(
-                        senderName,
-                        message,
-                        notificationType,
-                        notificationId,
-                        transactionId
-                ))
+                .storeNotification(notification)
     }
 
+    @JvmStatic
     fun isRenderable(context: Context, transactionId: String): Boolean {
         if (transactionId.isEmpty()) return true
 
