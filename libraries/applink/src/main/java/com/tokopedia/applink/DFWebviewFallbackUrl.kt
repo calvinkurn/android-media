@@ -27,6 +27,7 @@ object DFWebviewFallbackUrl {
 
     //Entertainment
     const val ENTERTAINMENT_EVENT = "https://www.tokopedia.com/events"
+    const val ENTERTAINMENT_DEALS = "https://www.tokopedia.com/deals"
 
     const val TRAVEL_FLIGHT = "https://www.tokopedia.com/flight"
 
