@@ -86,7 +86,7 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.feedComponent)
+    implementation project(rootProject.ext.features.homeComponent)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.loyalty)
@@ -205,6 +205,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -229,6 +231,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'

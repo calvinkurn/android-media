@@ -27,11 +27,9 @@ interface PreferenceEditParent {
     fun setShippingParam(shippingParam: ShippingParam)
     fun getShippingParam(): ShippingParam?
 
-    fun setListShopShipment(listShopShipment: ArrayList<ShopShipment>?)
     fun getListShopShipment(): ArrayList<ShopShipment>?
 
-    fun setShouldShowDeleteButton(shouldShowDeleteButton: Boolean)
-    fun getShouldShowDeleteButton(): Boolean
+    fun isExtraProfile(): Boolean
 
     fun setHeaderTitle(title: String)
     fun setHeaderSubtitle(subtitle: String)
@@ -50,4 +48,6 @@ interface PreferenceEditParent {
     fun showDeleteButton()
     fun hideDeleteButton()
     fun setDeleteButtonOnClickListener(onClick: () -> Unit)
+
+    fun getFromFlow(): Int
 }

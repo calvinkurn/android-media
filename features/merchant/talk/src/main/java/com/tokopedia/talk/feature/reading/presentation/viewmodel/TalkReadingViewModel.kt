@@ -119,10 +119,12 @@ class TalkReadingViewModel @Inject constructor(
 
     fun updateSelectedSort(sortOption: SortOption) {
         val sortOptions = _sortOptions.value?.toMutableList()
-        sortOptions?.forEach {
-            it.isSelected = it.id == sortOption.id
+        sortOptions?.let { list ->
+            list.forEach {
+                it.isSelected = it.id == sortOption.id
+            }
+            _sortOptions.value = list
         }
-        _sortOptions.value = sortOptions
     }
 
     fun resetSortOptions() {

@@ -12,7 +12,10 @@ import javax.inject.Named
 
 @Module(includes = [ShopShowcaseManagementViewModelModule::class])
 @ShopShowcaseManagementScope
-class ShopShowcaseManagementModule {
+class ShopShowcaseManagementModule(val context: Context) {
+
+    @Provides
+    fun provideShopShowcaseManagementContext() = context
 
     @ShopShowcaseManagementScope
     @Provides

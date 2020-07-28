@@ -270,6 +270,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
+        disableVoucherCheckoutDiscount();
     }
 
     private String getCategoryName() {
@@ -326,6 +327,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if ((requestCode == ConstantKt.getREQUEST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                disableVoucherCheckoutDiscount();
                 // Check between apply promo code or cancel promo from promo detail
                 switch (promoData.getState()) {
                     case EMPTY: {

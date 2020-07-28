@@ -25,6 +25,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
+        mResults.clear()
+
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
                 getCloudResponse(requests.toMutableList(), cacheStrategy)
@@ -69,7 +71,6 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
     private fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
-        mResults.clear()
 
         originalResponse?.forEachIndexed { index, jsonElement ->
             try {

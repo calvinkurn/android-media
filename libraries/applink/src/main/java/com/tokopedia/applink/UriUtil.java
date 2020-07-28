@@ -185,12 +185,12 @@ public class UriUtil {
     }
 
     public static String buildUriAppendParams(@NonNull String uri,
-                                              @Nullable Map<String, String> queryParameters) {
+                                              @Nullable Map<String, Object> queryParameters) {
         StringBuilder stringBuilder = new StringBuilder(uri);
         if (queryParameters != null && queryParameters.size() > 0) {
             stringBuilder.append("?");
             int i = 0;
-            for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
+            for (Map.Entry<String, Object> entry : queryParameters.entrySet()) {
                 if (i > 0) stringBuilder.append("&");
                 stringBuilder.append(entry.getKey()).append("=").append(entry.getValue());
                 i++;

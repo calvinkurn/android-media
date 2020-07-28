@@ -2,11 +2,12 @@ package com.tokopedia.purchase_platform.common.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitHelpTicketGqlResponse
-import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitHelpTicketResponse
-import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitTicketDataResponse
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.response.SubmitHelpTicketGqlResponse
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.response.SubmitHelpTicketResponse
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.response.SubmitTicketDataResponse
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
@@ -52,7 +53,7 @@ object SubmitHelpTicketUseCaseTest : Spek({
                 val objectType = SubmitHelpTicketGqlResponse::class.java
                 result[objectType] = SubmitHelpTicketGqlResponse(SubmitHelpTicketResponse(status = SubmitHelpTicketUseCase.STATUS_OK, data = SubmitTicketDataResponse(message = arrayListOf(successMessage))))
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(
-                        result, null, false))
+                    result, null, false))
             }
 
             When("create observable") {
@@ -68,7 +69,6 @@ object SubmitHelpTicketUseCaseTest : Spek({
 
             lateinit var subscriber: AssertableSubscriber<SubmitTicketResult>
             val errorMessage = "failure"
-
             Given("mock response") {
                 val result = HashMap<Type, Any>()
                 val objectType = SubmitHelpTicketGqlResponse::class.java

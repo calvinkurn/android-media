@@ -25,7 +25,7 @@ object TalkReplyMapper {
     fun mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper): List<TalkReplyUiModel> {
         val result = mutableListOf<TalkReplyUiModel>()
         discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.answer.forEach {
-            result.add(TalkReplyUiModel(it))
+            result.add(TalkReplyUiModel(it, discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.shopID))
         }
         return result
     }

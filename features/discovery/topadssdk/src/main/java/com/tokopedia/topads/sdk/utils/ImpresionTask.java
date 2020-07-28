@@ -32,14 +32,16 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
         taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
-    public ImpresionTask(UserSessionInterface userSession) {
+    public ImpresionTask(String className, UserSessionInterface userSession) {
         this.userSession = userSession;
+        taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
     @Override
     protected String doInBackground(String... params) {
         String url = params[0];
         if(url!=null) {
+            taskAlert.track(url);
             HttpRequest request = new HttpRequest.HttpRequestBuilder()
                     .setBaseUrl(url)
                     .addHeader(KEY_SESSION_ID, (userSession != null) ? userSession.getDeviceId() :"")
@@ -50,7 +52,6 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
             }
-            taskAlert.track(url);
         }
         return null;
     }

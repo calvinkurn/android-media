@@ -1,8 +1,7 @@
 package com.tokopedia.play.model
 
-import android.provider.MediaStore.Video
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
@@ -10,14 +9,14 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
-import java.util.*
+import io.mockk.mockk
 
 
 /**
@@ -1164,14 +1163,6 @@ class ModelBuilder {
 
     fun buildProduct() = gson.fromJson(product, Product::class.java)
 
-    fun buildVariantSheetUiModel() = VariantSheetUiModel(
-            product = PlayUiMapper.mapItemProduct(buildProduct()),
-            action = ProductAction.AddToCart,
-            parentVariant = gson.fromJson(parentVariant, ProductVariantCommon::class.java),
-            listOfVariantCategory = gson.fromJson(listOfVariantCategory, object : TypeToken<List<VariantCategory>>() {}.type),
-            mapOfSelectedVariants = mutableMapOf("15125086" to 0)
-    )
-
     fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
     fun buildAddToCartModelResponseFail() = AddToCartDataModel(
             errorMessage = arrayListOf("error message"),
@@ -1200,26 +1191,33 @@ class ModelBuilder {
     fun buildStateHelperUiModel(
         shouldShowPinned: Boolean = true,
         channelType: PlayChannelType = PlayChannelType.Live,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap()
+        videoPlayer: VideoPlayerUiModel = YouTube("absbrb"),
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap(),
+        screenOrientation: ScreenOrientation = ScreenOrientation.Portrait,
+        videoOrientation: VideoOrientation = VideoOrientation.Vertical,
+        videoState: PlayVideoState = PlayVideoState.Playing
     ) = StateHelperUiModel(
             shouldShowPinned = shouldShowPinned,
             channelType = channelType,
-            bottomInsets = bottomInsets
+            videoPlayer = videoPlayer,
+            bottomInsets = bottomInsets,
+            screenOrientation = screenOrientation,
+            videoOrientation = videoOrientation,
+            videoState = videoState
     )
 
     fun buildChannelInfoUiModel(
             id: String = "1230",
             title: String = "Channel live",
             description: String = "Ini Channel live",
-            channelType: PlayChannelType = PlayChannelType.Live,
             partnerId: Long = 123151,
-            partnerType: PartnerType = PartnerType.ADMIN,
+            partnerType: PartnerType = PartnerType.Admin,
             moderatorName: String = "Lisa",
             contentId: Int = 1412,
             contentType: Int = 2,
             likeType: Int = 1,
             isShowCart: Boolean = true
-    ) = ChannelInfoUiModel(id, title, description, channelType, partnerId, partnerType,
+    ) = ChannelInfoUiModel(id, title, description, partnerId, partnerType,
             moderatorName, contentId, contentType, likeType, isShowCart)
 
     fun buildVideoPropertyUiModel(
@@ -1229,11 +1227,15 @@ class ModelBuilder {
     fun buildVideoStreamUiModel(
             uriString: String = "https://tkp.me",
             channelType: PlayChannelType = PlayChannelType.Live,
-            isActive: Boolean = true
+            isActive: Boolean = true,
+            orientation: VideoOrientation = VideoOrientation.Vertical,
+            backgroundUrl: String = "https://tkp.me"
     ) = VideoStreamUiModel(
             uriString = uriString,
             channelType = channelType,
-            isActive = isActive
+            isActive = isActive,
+            orientation = orientation,
+            backgroundUrl = backgroundUrl
     )
 
     fun buildPlayChatUiModel(
@@ -1264,10 +1266,18 @@ class ModelBuilder {
             totalView = totalView
     )
 
+    fun buildLikeStateUiModel(
+            isLiked: Boolean = true,
+            fromNetwork: Boolean = false
+    ) = LikeStateUiModel(
+            isLiked = isLiked,
+            fromNetwork = fromNetwork
+    )
+
     fun buildPartnerInfoUiModel(
             id: Long = 10213,
             name: String = "Partner",
-            type: PartnerType = PartnerType.SHOP,
+            type: PartnerType = PartnerType.Shop,
             isFollowed: Boolean = false,
             isFollowable: Boolean = true
     ) = PartnerInfoUiModel(
@@ -1318,6 +1328,10 @@ class ModelBuilder {
             bufferForPlaybackAfterRebufferMs = bufferForPlaybackAfterRebufferMs
     )
 
+    fun buildGeneralVideoUiModel(exoPlayer: ExoPlayer = mockk()) = General(exoPlayer)
+
+    fun buildYouTubeVideoUiModel(videoId: String = "abacac") = YouTube(videoId)
+
     fun buildCartUiModel(
             isShow: Boolean = true,
             count: Int = 1
@@ -1328,10 +1342,12 @@ class ModelBuilder {
 
     fun buildProductSheetUiModel(
             title: String = "Yeaya",
+            partnerId: Long = 1234L,
             voucherList: List<PlayVoucherUiModel> = emptyList(),
             productList: List<PlayProductUiModel> = emptyList()
     ) = ProductSheetUiModel(
             title = title,
+            partnerId = partnerId,
             voucherList = voucherList,
             productList = productList
     )
@@ -1444,8 +1460,9 @@ class ModelBuilder {
 
     fun buildBottomInsetsState(
             isShown: Boolean = false,
-            isPreviousSameState: Boolean = false
-    ) = if (isShown) BottomInsetsState.Shown(250, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
+            isPreviousSameState: Boolean = false,
+            estimatedInsetsHeight: Int = 250
+    ) = if (isShown) BottomInsetsState.Shown(estimatedInsetsHeight, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
 
     fun <T>buildPlayResultLoading(
             showPlaceholder: Boolean = true

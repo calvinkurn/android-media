@@ -48,6 +48,8 @@ interface HomeTypeFactory {
 
     fun type(playCard: PlayCardDataModel): Int
 
+    fun type(playCard: PlayCarouselCardDataModel): Int
+
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
     fun type(homeRetryModel: HomeRetryModel): Int

@@ -1,15 +1,14 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
 import android.text.Layout
-import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.ClickableSpan
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -18,6 +17,7 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 
 class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
@@ -32,8 +32,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
             if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
                 hideNoAnswersText()
-                showProfilePicture(answer.userThumbnail, answer.userId)
-                showDisplayName(answer.userName, answer.userId)
+                showProfilePicture(answer.userThumbnail, answer.userId, answer.isSeller, element.shopId)
+                showDisplayName(answer.userName, answer.userId, answer.isSeller, element.shopId)
                 showSellerLabelWithCondition(answer.isSeller)
                 showDate(answer.createTimeFormatted)
                 if(answer.state.isMasked) {
@@ -59,7 +59,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                content
+                HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
             }
         }
     }
@@ -88,12 +88,12 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String, userId: String) {
+    private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.readingProfilePicture.apply {
                 loadImage(userThumbNail)
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
@@ -102,12 +102,12 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String) {
+    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userName.isNotEmpty()) {
             itemView.readingDisplayName.apply{
                 text = userName
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
@@ -121,32 +121,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
             itemView.readingMessage.apply {
                 isEnabled = true
                 text = HtmlLinkHelper(context, answer).spannedString
-                setOnTouchListener(object : View.OnTouchListener {
-                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                        val widget = v as TextView
-                        val text: Any = widget.text
-                        if (text is Spanned) {
-                            val action = event!!.action
-                            if (action == MotionEvent.ACTION_UP
-                                    || action == MotionEvent.ACTION_DOWN) {
-                                var x = event.x.toInt()
-                                var y = event.y.toInt()
-                                x -= widget.totalPaddingLeft
-                                y -= widget.totalPaddingTop
-                                x += widget.scrollX
-                                y += widget.scrollY
-                                val layout: Layout = widget.layout
-                                val line: Int = layout.getLineForVertical(y)
-                                val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
-                                val link = text.getSpans(off, off, URLSpan::class.java)
-                                if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                                    return threadListener.onLinkClicked(link.first().url.toString())
-                                }
-                            }
-                        }
-                        return false
-                    }
-                })
+                setCustomMovementMethod(fun(link: String) : Boolean {return threadListener.onLinkClicked(link)})
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
@@ -169,6 +144,35 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         } else {
             itemView.readingMessage.hide()
         }
+    }
+
+    private fun Typography.setCustomMovementMethod(linkAction: (String) -> Boolean) {
+        setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                val widget = v as TextView
+                val text: Any = widget.text
+                if (text is Spanned) {
+                    val action = event!!.action
+                    if (action == MotionEvent.ACTION_UP
+                            || action == MotionEvent.ACTION_DOWN) {
+                        var x = event.x.toInt()
+                        var y = event.y.toInt()
+                        x -= widget.totalPaddingLeft
+                        y -= widget.totalPaddingTop
+                        x += widget.scrollX
+                        y += widget.scrollY
+                        val layout: Layout = widget.layout
+                        val line: Int = layout.getLineForVertical(y)
+                        val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
+                        val link = text.getSpans(off, off, URLSpan::class.java)
+                        if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                            return linkAction.invoke(link.first().url.toString())
+                        }
+                    }
+                }
+                return false
+            }
+        })
     }
 
     private fun showDate(date: String) {

@@ -755,6 +755,11 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public String getIrisSessionId() {
+        return iris.getSessionId();
+    }
+
+    @Override
     public void initialize() {
         super.initialize();
     }
@@ -797,6 +802,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", bundle, context);
+        iris.saveEvent(bundleToMap(bundle));
     }
 
     public void putNetworkSpeed(Bundle bundle) {
@@ -851,9 +857,29 @@ public class GTMAnalytics extends ContextAnalytics {
         String name = eventName == null ? (String) values.get("event") : eventName;
         if (isGtmV5) name += " (v5)";
         GtmLogger.getInstance(context).save(name, values);
+        logEventSize(eventName, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);
         }
+    }
+
+    private void logEventSize(String eventName, Map<String, Object> values) {
+        String eventCategory = (String) values.get("eventCategory");
+        if (!TextUtils.isEmpty(eventCategory)) {
+            Timber.w("P1#GTM_SIZE#event_cat;name='%s';size=%s;value='%s'", eventName, values.toString().length(), eventCategory);
+            return;
+        }
+        String screenName = (String) values.get("screenName");
+        if (!TextUtils.isEmpty(screenName)) {
+            Timber.w("P1#GTM_SIZE#event_screen;name='%s';size=%s;value='%s'", eventName, values.toString().length(), screenName);
+            return;
+        }
+        String pageType = (String) values.get("pageType");
+        if (!TextUtils.isEmpty(pageType)) {
+            Timber.w("P1#GTM_SIZE#event_page;name='%s';size=%s;value='%s'", eventName, values.toString().length(), pageType);
+            return;
+        }
+        Timber.w("P1#GTM_SIZE#event_others;name='%s';size=%s", eventName, values.toString().length());
     }
 
     private static Map<String, Object> bundleToMap(Bundle extras) {

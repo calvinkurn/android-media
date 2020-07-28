@@ -171,6 +171,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include layout="@layout/partial_new_shop_page_seller_play_widget"/>
+
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerShopStatus"
         android:layout_width="match_parent"
