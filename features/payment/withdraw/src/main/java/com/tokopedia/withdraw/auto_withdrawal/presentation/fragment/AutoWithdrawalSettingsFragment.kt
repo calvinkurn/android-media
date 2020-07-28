@@ -27,6 +27,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalComponent
@@ -46,6 +47,9 @@ import kotlinx.android.synthetic.main.swd_fragment_awd_settings.*
 import javax.inject.Inject
 
 class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListener {
+
+    @Inject
+    lateinit var userSession : dagger.Lazy<UserSession>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -173,7 +177,6 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun onAutoWithdrawalStatusLoaded(autoWDStatusData: AutoWDStatusData) {
         groupAutoWDSaveSetting.gone()
-        autoWDStatusData.isOwner = false
         this.autoWDStatusData = autoWDStatusData
         autoWDStatusData.apply {
             setCurrentWithdrawalSchedule(this)
@@ -457,13 +460,6 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         }
     }
 
-    companion object {
-        fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment()
-                .apply {
-                    arguments = bundle
-                }
-    }
-
     override fun onScheduleSelected(schedule: Schedule) {
         if (currentSchedule?.equals(schedule) == false)
             requestedSchedule = schedule
@@ -477,6 +473,17 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun onSaveAutoWDSettingsClick() {
         autoWDStatusData?.apply {
             if (isPowerWd) {
+                val schedule = requestedSchedule?: currentSchedule
+                if(status == 0){
+                    //---registering for automatic withdrawal...
+                }else if(status == 1){
+                    //---unregistering for automatic withdrawal...
+                }else{
+                    //---registering for automatic withdrawal...
+                }
+                schedule?.let {
+                    verifyUserUsingOTP()
+                }
             } else {
                 openJoinRPProgramBottomSheet()
             }
@@ -496,4 +503,28 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             startActivityForResult(intent, SaldoWithdrawalFragment.BANK_SETTING_REQUEST_CODE)
         }
     }
+
+    private fun verifyUserUsingOTP(){
+        val OTP_TYPE_ADD_BANK_ACCOUNT = 146
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.get().email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.get().phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_OTP_CODE)
+    }
+
+
+    companion object {
+        private const val REQUEST_OTP_CODE = 131
+
+        fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment()
+                .apply {
+                    arguments = bundle
+                }
+    }
+
 }
