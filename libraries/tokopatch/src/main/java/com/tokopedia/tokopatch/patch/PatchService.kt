@@ -46,20 +46,20 @@ class PatchService : JobIntentService() {
         super.onCreate()
         logger = PatchLogger()
         logger.logMessage(applicationContext,"P1#ROBUST#PatchService created")
-        val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
-        repository = PatchRepository(
-                dataDao,
-                Utils.versionCode(applicationContext)
-        )
-        allResult = repository.allData
-
-        allResult.observe(PatchLifecycle(), Observer {
-            val patchList: MutableList<Patch> = mutableListOf()
-            it.forEachIndexed { index, result ->
-                decodeData(result, patchList)
-            }
-            PatchExecutors(applicationContext, patchList, logger).start()
-        })
+//        val dataDao = RobustDatabase.getDatabase(applicationContext).dataDao()
+//        repository = PatchRepository(
+//                dataDao,
+//                Utils.versionCode(applicationContext)
+//        )
+//        allResult = repository.allData
+//
+//        allResult.observe(PatchLifecycle(), Observer {
+//            val patchList: MutableList<Patch> = mutableListOf()
+//            it.forEachIndexed { index, result ->
+//                decodeData(result, patchList)
+//            }
+//            PatchExecutors(applicationContext, patchList, logger).start()
+//        })
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -86,13 +86,13 @@ class PatchService : JobIntentService() {
         GlobalScope.launch {
             repository.flush()
             data.result?.let {
-//                val patchList: MutableList<Patch> = mutableListOf()
+                val patchList: MutableList<Patch> = mutableListOf()
                 it.forEachIndexed { index, result ->
-                    result.uid = index
-                    repository.insert(result)
-//                    decodeData(result, patchList)
+//                    result.uid = index
+//                    repository.insert(result)
+                    decodeData(result, patchList)
                 }
-//                PatchExecutors(applicationContext, patchList, logger).start()
+                PatchExecutors(applicationContext, patchList, logger).start()
                 logger.onPatchFetched(applicationContext, result = true, isNet = true)
             }
         }
