@@ -69,7 +69,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
-    implementation rootProject.ext.debugToolsDependencies.chuck
     implementation "com.github.ChuckerTeam.Chucker:library:3.0.1@aar"
 
     testImplementation rootProject.ext.testDependencies.mockk
@@ -94,3 +93,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

@@ -2,6 +2,8 @@ package com.tokopedia.deals.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.google.gson.Gson
+import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
@@ -14,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,12 +31,27 @@ class DealsSearchViewModelTest {
     private val searchUseCase: DealsSearchUseCase = mockk()
 
     private lateinit var viewModel: DealsSearchViewModel
-
-    private val mockThrowable = Throwable("Fetch failed")
+    private lateinit var mockThrowable: Throwable
+    private lateinit var mockSearchLoadMore: SearchData
+    private lateinit var mockInitialLoadData: InitialLoadData
+    private lateinit var mockEventSearchData: SearchData
 
     @Before
     fun setup() {
         viewModel = DealsSearchViewModel(loadInitialDataUseCase, searchUseCase, dispatcher)
+        mockSearchLoadMore = Gson().fromJson(
+                DealsJsonMapper.getJson("search_load_more.json"),
+                SearchData::class.java
+        )
+        mockInitialLoadData = Gson().fromJson(
+                DealsJsonMapper.getJson("search_initial_load.json"),
+                InitialLoadData::class.java
+        )
+        mockEventSearchData = Gson().fromJson(
+                DealsJsonMapper.getJson("event_search.json"),
+                SearchData::class.java
+        )
+        mockThrowable = Throwable("Fetch failed")
     }
 
     @Test
@@ -41,7 +59,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             loadInitialDataUseCase.getDealsInitialLoadResult(
-                any(), any(), any(), any(), any()
+                    any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -51,16 +69,15 @@ class DealsSearchViewModelTest {
 
         val initialResponse = viewModel.dealsInitialResponse.value as Result
         assert(initialResponse is Fail)
+        assertEquals(mockThrowable, (initialResponse as Fail).throwable)
     }
 
     @Test
     fun getInitialData_fetchSuccess_initialLoadShouldBeSuccess() {
-        val mockInitialLoadData = InitialLoadData()
-
         // given
         coEvery {
             loadInitialDataUseCase.getDealsInitialLoadResult(
-                any(), any(), any(), any(), any()
+                    any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
@@ -78,7 +95,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                any(), any(), any(), any(), any(), any(), any(), any(), any()
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -93,22 +110,20 @@ class DealsSearchViewModelTest {
 
     @Test
     fun loadMoreData_fetchSuccess_loadMoreShouldBeSuccess() {
-        val mockSearchData = SearchData()
-
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                any(), any(), any(), any(), any(), any(), any(), any(), any()
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
-            firstArg<(SearchData) -> Unit>().invoke(mockSearchData)
+            firstArg<(SearchData) -> Unit>().invoke(mockSearchLoadMore)
         }
 
         // when
         viewModel.loadMoreData("", Location(), "", 0)
 
         // then
-        assert((viewModel.dealsLoadMoreResponse.value as Success).data == mockSearchData.eventSearch)
+        assert((viewModel.dealsLoadMoreResponse.value as Success).data == mockSearchLoadMore.eventSearch)
     }
 
     @Test
@@ -116,7 +131,7 @@ class DealsSearchViewModelTest {
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                any(), any(), any(), any(), any(), any(), any(), any(), any()
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -131,21 +146,19 @@ class DealsSearchViewModelTest {
 
     @Test
     fun searchDeals_fetchSuccess_searchResponseShouldBeSuccess() {
-        val mockSearchData = SearchData()
-
         // given
         coEvery {
             searchUseCase.getDealsSearchResult(
-                any(), any(), any(), any(), any(), any(), any(), any(), any()
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
-            firstArg<(SearchData) -> Unit>().invoke(mockSearchData)
+            firstArg<(SearchData) -> Unit>().invoke(mockSearchLoadMore)
         }
 
         // when
         viewModel.searchDeals("", Location(), "", 0)
 
         // then
-        assert((viewModel.dealsSearchResponse.value as Success).data == mockSearchData.eventSearch)
+        assert((viewModel.dealsSearchResponse.value as Success).data == mockEventSearchData.eventSearch)
     }
 }

@@ -18,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.Exception
 import com.tokopedia.deals.DealsJsonMapper
+import junit.framework.Assert.assertEquals
 
 class DealsBrandCategoryActivityViewModelTest {
 
@@ -36,7 +37,7 @@ class DealsBrandCategoryActivityViewModelTest {
     @Test
     fun getCategoryCombindedData_fetchFailed_shouldShowErrorMessage() {
         // given
-        coEvery { useCase.executeOnBackground() } coAnswers {throw  Exception("Error failed") }
+        coEvery { useCase.executeOnBackground() } coAnswers {throw  Throwable("Error failed") }
 
         // when
         viewModel.getCategoryCombindedData()
@@ -57,6 +58,6 @@ class DealsBrandCategoryActivityViewModelTest {
 
         // then
         val curatedData = viewModel.curatedData.value as CuratedData
-        Assert.assertEquals(curatedData, mockCuratedData)
+        assertEquals(curatedData, mockCuratedData)
     }
 }

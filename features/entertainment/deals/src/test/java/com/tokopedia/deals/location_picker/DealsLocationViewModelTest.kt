@@ -1,6 +1,8 @@
 package com.tokopedia.deals.location_picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
+import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
 import com.tokopedia.deals.location_picker.domain.usecase.DealsLandmarkLocationUseCase
@@ -14,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,16 +33,22 @@ class DealsLocationViewModelTest {
     private val landmarkLocationUseCase: DealsLandmarkLocationUseCase = mockk()
 
     private lateinit var viewModel: DealsLocationViewModel
-    private val mockThrowable = Throwable("Fetch failed")
+    private lateinit var mockThrowable: Throwable
+    private lateinit var mockEventLocationSearch: LocationData
 
     @Before
     fun setup() {
         viewModel = DealsLocationViewModel(
-            searchLocationUseCase,
-            popularCitiesUseCase,
-            popularLocationUseCase,
-            landmarkLocationUseCase,
-            dispatcher
+                searchLocationUseCase,
+                popularCitiesUseCase,
+                popularLocationUseCase,
+                landmarkLocationUseCase,
+                dispatcher
+        )
+        mockThrowable = Throwable("Fetch failed")
+        mockEventLocationSearch = Gson().fromJson(
+                DealsJsonMapper.getJson("event_location_search.json"),
+                LocationData::class.java
         )
     }
 
@@ -56,25 +65,28 @@ class DealsLocationViewModelTest {
         viewModel.getSearchedLocation("")
 
         // then
-        assert((viewModel.dealsSearchedLocationResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(
+                mockThrowable,
+                (viewModel.dealsSearchedLocationResponse.value as Fail).throwable
+        )
     }
 
     @Test
     fun getSearchedLocation_fetchSuccess_searchLocationShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             searchLocationUseCase.getSearchedLocation(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getSearchedLocation("")
 
         // then
-        assert(viewModel.dealsSearchedLocationResponse.value is Success)
+        val result = viewModel.dealsSearchedLocationResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 
     @Test
@@ -90,25 +102,28 @@ class DealsLocationViewModelTest {
         viewModel.getLoadMoreSearchedLocation("", "2")
 
         // then
-        assert((viewModel.dealsLoadMoreSearchedLocationResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(
+                mockThrowable,
+                (viewModel.dealsLoadMoreSearchedLocationResponse.value as Fail).throwable
+        )
     }
 
     @Test
     fun getLoadMoreSearchedLocation_fetchSuccess_searchLocationShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             searchLocationUseCase.getSearchedLocation(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getLoadMoreSearchedLocation("", "2")
 
         // then
-        assert(viewModel.dealsLoadMoreSearchedLocationResponse.value is Success)
+        val result = viewModel.dealsLoadMoreSearchedLocationResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 
     @Test
@@ -124,25 +139,25 @@ class DealsLocationViewModelTest {
         viewModel.getInitialPopularCities()
 
         // then
-        assert((viewModel.dealsPopularCitiesResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(mockThrowable, (viewModel.dealsPopularCitiesResponse.value as Fail).throwable)
     }
 
     @Test
     fun getInitialPopularCities_fetchSuccess_popularCitiesShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             popularCitiesUseCase.getPopularCities(any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getInitialPopularCities()
 
         // then
-        assert(viewModel.dealsPopularCitiesResponse.value is Success)
+        val result = viewModel.dealsPopularCitiesResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 
     @Test
@@ -158,25 +173,25 @@ class DealsLocationViewModelTest {
         viewModel.getInitialPopularLocation("")
 
         // then
-        assert((viewModel.dealsPopularLocationResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(mockThrowable, (viewModel.dealsPopularLocationResponse.value as Fail).throwable)
     }
 
     @Test
     fun getInitialPopularLocation_fetchSuccess_popularLocationShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             popularLocationUseCase.getPopularLocations(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getInitialPopularLocation("")
 
         // then
-        assert(viewModel.dealsPopularLocationResponse.value is Success)
+        val result = viewModel.dealsPopularLocationResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 
     @Test
@@ -192,25 +207,28 @@ class DealsLocationViewModelTest {
         viewModel.getLoadMoreDataLocation("", "2")
 
         // then
-        assert((viewModel.dealsLoadMorePopularLocationResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(
+                mockThrowable,
+                (viewModel.dealsLoadMorePopularLocationResponse.value as Fail).throwable
+        )
     }
 
     @Test
     fun getLoadMoreDataLocation_fetchSuccess_loadMoreLocationShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             popularLocationUseCase.getPopularLocations(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getLoadMoreDataLocation("", "2")
 
         // then
-        assert(viewModel.dealsLoadMorePopularLocationResponse.value is Success)
+        val result = viewModel.dealsLoadMorePopularLocationResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch,(result as Success).data)
     }
 
     @Test
@@ -226,25 +244,28 @@ class DealsLocationViewModelTest {
         viewModel.getInitialDataLandmarkLocation("")
 
         // then
-        assert((viewModel.dealsDataLandmarkLocationResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(
+                mockThrowable,
+                (viewModel.dealsDataLandmarkLocationResponse.value as Fail).throwable
+        )
     }
 
     @Test
     fun getInitialDataLandmarkLocation_fetchSuccess_landmarkLocationShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             landmarkLocationUseCase.getLandmarkLocation(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getInitialDataLandmarkLocation("")
 
         // then
-        assert(viewModel.dealsDataLandmarkLocationResponse.value is Success)
+        val result = viewModel.dealsDataLandmarkLocationResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 
     @Test
@@ -260,24 +281,27 @@ class DealsLocationViewModelTest {
         viewModel.getLoadMoreDataLandmarkLocation("", "2")
 
         // then
-        assert((viewModel.dealsLoadMoreDataLandmarkLocationResponse.value as Fail).throwable == mockThrowable)
+        assertEquals(
+                mockThrowable,
+                (viewModel.dealsLoadMoreDataLandmarkLocationResponse.value as Fail).throwable
+        )
     }
 
     @Test
     fun getLoadMoreDataLandmarkLocation_fetchSuccess_loadMoreLandmarkLocationShouldBeSuccess() {
-        val mockData = LocationData()
-
         // given
         coEvery {
             landmarkLocationUseCase.getLandmarkLocation(any(), any(), any(), any())
         } coAnswers {
-            firstArg<(LocationData) -> Unit>().invoke(mockData)
+            firstArg<(LocationData) -> Unit>().invoke(mockEventLocationSearch)
         }
 
         // when
         viewModel.getLoadMoreDataLandmarkLocation("", "2")
 
         // then
-        assert(viewModel.dealsLoadMoreDataLandmarkLocationResponse.value is Success)
+        val result = viewModel.dealsLoadMoreDataLandmarkLocationResponse.value
+        assert(result is Success)
+        assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
     }
 }

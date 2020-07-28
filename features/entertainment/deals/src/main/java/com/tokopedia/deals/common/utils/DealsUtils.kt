@@ -13,10 +13,10 @@ object DealsUtils {
     private const val RUPIAH_FORMAT = "Rp %s"
     private val locale = Locale("in", "ID")
 
-    val screenWidthDp = Resources.getSystem().displayMetrics.run { widthPixels / density }
-    val screenWidthPx = Resources.getSystem().displayMetrics.widthPixels
-    val screenHeightDp = Resources.getSystem().displayMetrics.run { heightPixels / density }
-    val screenHeightPx = Resources.getSystem().displayMetrics.heightPixels
+    fun screenWidthDp() = Resources.getSystem().displayMetrics.run { widthPixels / density }
+    fun screenWidthPx() = Resources.getSystem().displayMetrics.widthPixels
+    fun screenHeightDp() = Resources.getSystem().displayMetrics.run { heightPixels / density }
+    fun  screenHeightPx() = Resources.getSystem().displayMetrics.heightPixels
 
     fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
@@ -36,7 +36,7 @@ object DealsUtils {
         return ProductCategoryDataView(label, color)
     }
 
-    private fun getString(context: Context, @StringRes stringResId: Int): String {
+    fun getString(context: Context, @StringRes stringResId: Int): String {
         return context.getString(stringResId)
     }
 }

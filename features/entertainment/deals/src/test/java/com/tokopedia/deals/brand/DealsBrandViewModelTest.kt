@@ -20,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.DealsJsonMapper.getJson
+import junit.framework.Assert.assertEquals
 
 class DealsBrandViewModelTest {
 
@@ -61,7 +62,7 @@ class DealsBrandViewModelTest {
         viewModel.getBrandList("", Location(), "", 0)
 
         // then
-        Assert.assertEquals((viewModel.dealsSearchResponse.value as Fail).throwable, mockThrowable)
+        assertEquals((viewModel.dealsSearchResponse.value as Fail).throwable,mockThrowable)
     }
 
 
@@ -83,6 +84,6 @@ class DealsBrandViewModelTest {
 
         // then
         assert(viewModel.dealsSearchResponse.value is Success)
-        Assert.assertEquals((viewModel.dealsSearchResponse.value as Success).data, mockBrand)
+        assertEquals((viewModel.dealsSearchResponse.value as Success).data, mockBrand)
     }
 }

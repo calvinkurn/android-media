@@ -22,6 +22,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import com.tokopedia.deals.DealsJsonMapper
+import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import junit.framework.Assert.assertEquals
 
 @RunWith(JUnit4::class)
 class DealsCategoryViewModelTest {
@@ -35,16 +37,40 @@ class DealsCategoryViewModelTest {
     private lateinit var viewModel: DealCategoryViewModel
     val mContextMock = mockk<Context>(relaxed = true)
 
-    private var mapper : MapperCategoryLayout = MapperCategoryLayout(mContextMock)
+    lateinit var mapper : MapperCategoryLayout
 
     @Before
     fun setup() {
+        mapper  = MapperCategoryLayout(mContextMock)
         viewModel = DealCategoryViewModel(
                 mapper,
                 getChipsCategoryUseCase,
                 getBrandProductCategoryUseCase,
                 dispatcher
         )
+    }
+
+    @Test
+    fun getChipFilter_fetchFailed_shouldShowErrorMessage(){
+        //given
+        coEvery { getChipsCategoryUseCase.executeOnBackground() } coAnswers { throw Exception("Fetch chip failed") }
+        //when
+        viewModel.getChipsData()
+        //then
+        assert(viewModel.errorMessage.value?.message == "Fetch chip failed")
+    }
+
+    @Test
+    fun getChipFilter_fetchSuccess_shouldShowSuccessMessage(){
+        //given
+        val mockCuratedData = Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
+        val mockFilterChip = mapper.mapCategoryToChips(mockCuratedData.eventChildCategory.categories)
+        coEvery { getChipsCategoryUseCase.executeOnBackground() } returns mockCuratedData
+        //when
+        viewModel.getChipsData()
+        //then
+        val curatedData = viewModel.observableChips.value
+        assertEquals(curatedData, mockFilterChip)
     }
 
     @Test
@@ -80,6 +106,7 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryShouldContainsData() {
         val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1)
         // given
         coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
         coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns mockEvent
@@ -87,21 +114,33 @@ class DealsCategoryViewModelTest {
         viewModel.getCategoryBrandData("", "", "", 1, true)
 
         // then
-        assert(viewModel.observableDealsCategoryLayout.value.isNullOrEmpty().not())
+        assertEquals(viewModel.observableDealsCategoryLayout.value, mockResult)
     }
 
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageGreaterThanOne_productsShouldContainsData() {
+        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockResult = listOf(mapper.mapProducttoLayout(mockEvent, 2))
         // given
         coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns SearchData()
-        coEvery { mapper.mapProducttoLayout(any(), any()) } returns ProductListDataView()
-
+        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns mockEvent
 
         // when
-        viewModel.getCategoryBrandData("", "", "", 10, true)
+        viewModel.getCategoryBrandData("", "", "", 2, true)
 
         // then
-        assert(viewModel.observableProducts.value.isNullOrEmpty().not())
+        assertEquals(viewModel.observableProducts.value, mockResult)
+    }
+
+    @Test
+    fun getShimmeringData_fetchSuccess_shimmeringShouldShimmering(){
+        //given
+        val layouts = mutableListOf<DealsBaseItemDataView>()
+        layouts.add(DealCategoryViewModel.BRAND_POPULAR, DealsBrandsDataView(oneRow = true))
+        layouts.add(DealCategoryViewModel.PRODUCT_LIST, ProductListDataView())
+        //when
+        viewModel.shimmeringCategory()
+        //then
+        assertEquals(viewModel.observableDealsCategoryLayout.value,layouts)
     }
 }
