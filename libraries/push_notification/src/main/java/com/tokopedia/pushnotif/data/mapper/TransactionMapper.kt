@@ -15,7 +15,7 @@ object TransactionMapper {
                 data.summary,
                 notificationType,
                 notificationId,
-                data.transactionId
+                data.transactionId.trim()
         )
     }
 
