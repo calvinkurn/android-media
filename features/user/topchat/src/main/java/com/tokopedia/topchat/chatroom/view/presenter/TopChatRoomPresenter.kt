@@ -145,8 +145,8 @@ class TopChatRoomPresenter @Inject constructor(
 
         val subscriber = object : WebSocketSubscriber() {
             override fun onOpen(webSocket: WebSocket) {
-                view?.showErrorWebSocket(false)
                 networkMode = MODE_WEBSOCKET
+                view?.showErrorWebSocket(false)
                 readMessage()
             }
 

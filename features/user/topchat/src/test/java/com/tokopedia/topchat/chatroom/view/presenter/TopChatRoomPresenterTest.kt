@@ -116,6 +116,7 @@ class TopChatRoomPresenterTest {
     private lateinit var listInterceptor: ArrayList<Interceptor>
 
     private lateinit var wsOpen: WebSocketInfo
+    private lateinit var wsReconnect: WebSocketInfo
 
     object Dummy {
         const val exMessageId = "1234051"
@@ -126,48 +127,61 @@ class TopChatRoomPresenterTest {
     fun before() {
         MockKAnnotations.init(this)
         mockSingletonObject()
-        presenter = TopChatRoomPresenter(
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
-                userSession,
-                webSocketUtil,
-                getChatUseCase,
-                topChatRoomWebSocketMessageMapper,
-                getTemplateChatRoomUseCase,
-                replyChatUseCase,
-                getExistingMessageIdUseCase,
-                deleteMessageListUseCase,
-                changeChatBlockSettingUseCase,
-                getShopFollowingUseCase,
-                toggleFavouriteShopUseCase,
-                addToCartUseCase,
-                compressImageUseCase,
-                seamlessLoginUsecase,
-                getChatRoomSettingUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
-                uploadImageUseCase,
-                orderProgressUseCase,
-                groupStickerUseCase,
-                chatAttachmentUseCase,
-                sharedPref
+        presenter = spyk(
+                TopChatRoomPresenter(
+                        tkpdAuthInterceptor,
+                        fingerprintInterceptor,
+                        userSession,
+                        webSocketUtil,
+                        getChatUseCase,
+                        topChatRoomWebSocketMessageMapper,
+                        getTemplateChatRoomUseCase,
+                        replyChatUseCase,
+                        getExistingMessageIdUseCase,
+                        deleteMessageListUseCase,
+                        changeChatBlockSettingUseCase,
+                        getShopFollowingUseCase,
+                        toggleFavouriteShopUseCase,
+                        addToCartUseCase,
+                        compressImageUseCase,
+                        seamlessLoginUsecase,
+                        getChatRoomSettingUseCase,
+                        addWishListUseCase,
+                        removeWishListUseCase,
+                        uploadImageUseCase,
+                        orderProgressUseCase,
+                        groupStickerUseCase,
+                        chatAttachmentUseCase,
+                        sharedPref
+                )
         )
         presenter.attachView(view)
         presenter.autoRetryConnectWs = false
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         wsOpen = WebSocketInfo(webSocket, true)
+        wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
     }
 
     private fun mockSingletonObject() {
         mockkObject(RxWebSocket)
         mockkObject(RxWebSocketUtil)
+        every { RxWebSocketUtil.getInstance(any()) } returns webSocketUtil
     }
+
+    @Test
+    fun `call onDestroy when start connect ws`() {
+        // When
+        presenter.connectWebSocket(exMessageId)
+
+        // Then
+        verify(exactly = 1) { presenter.destroyWebSocket() }
+    }
+
 
     @Test
     fun `onOpen connect to webscoket`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsOpen)
-        every { RxWebSocketUtil.getInstance(any()) } returns webSocketUtil
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -181,7 +195,6 @@ class TopChatRoomPresenterTest {
     @Test
     fun `onReconnect webscoket`() {
         // Given
-        val wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsReconnect)
 
         // When
@@ -190,5 +203,20 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) { view.showErrorWebSocket(true) }
     }
+
+
+    @Test
+    fun `onClose ws`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsOpen)
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+
+        // Then
+        verify(exactly = 2) { presenter.destroyWebSocket() }
+        verify(exactly = 1) { view.showErrorWebSocket(true) }
+    }
+
 
 }
