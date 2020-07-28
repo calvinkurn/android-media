@@ -55,7 +55,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         input.addProperty(PAGE, page)
         input.addProperty(LIMIT, 10)
         input.addProperty(INCLUDE_EXTRA_INFO, 0)
-        input.addProperty(API_VERSION, "2.0.0")
+        input.addProperty(API_VERSION, API_VERSION_VALUE)
         return input
     }
 
@@ -100,5 +100,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val PAGE = "page"
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
+        private val API_VERSION_VALUE= "2.0.0"
     }
 }
