@@ -17,6 +17,7 @@ internal class SearchShopViewModelFactory(
         private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
         private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
         private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
+        private val getShopCountUseCase: UseCase<Int>,
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val userSession: UserSessionInterface
@@ -38,6 +39,7 @@ internal class SearchShopViewModelFactory(
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,
                 getDynamicFilterUseCase,
+                getShopCountUseCase,
                 shopCpmViewModelMapper,
                 shopViewModelMapper,
                 userSession

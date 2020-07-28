@@ -85,6 +85,7 @@ public interface SearchConstant {
     interface SearchShop {
         String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
         String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String GET_SHOP_COUNT_USE_CASE = "get_shop_count_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";

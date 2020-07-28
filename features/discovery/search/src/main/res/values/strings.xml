@@ -35,7 +35,7 @@
     <string name="shop_status_inactive">Toko Sudah Tidak Aktif</string>
     <string name="shop_voucher_cashback_rb">%srb</string>
     <string name="shop_see_shop_button">Lihat Toko</string>
-
+    <string name="shop_apply_filter">Tampilkan %s Toko</string>
 
     <string name="value_profile_count">%1$s profil</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>

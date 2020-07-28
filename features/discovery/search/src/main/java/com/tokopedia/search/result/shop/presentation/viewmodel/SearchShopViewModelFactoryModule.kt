@@ -38,6 +38,8 @@ internal class SearchShopViewModelFactoryModule(
             searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
             getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
+            @Named(SearchConstant.SearchShop.GET_SHOP_COUNT_USE_CASE)
+            getShopCountUseCase: UseCase<Int>,
             shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
             userSession: UserSessionInterface
@@ -48,6 +50,7 @@ internal class SearchShopViewModelFactoryModule(
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,
                 getDynamicFilterUseCase,
+                getShopCountUseCase,
                 shopCpmViewModelMapper,
                 shopViewModelMapper,
                 userSession

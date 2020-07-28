@@ -35,6 +35,7 @@ internal class SearchShopViewModel(
         private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
         private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
         private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
+        private val getShopCountUseCase: UseCase<Int>,
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val userSession: UserSessionInterface
@@ -77,6 +78,7 @@ internal class SearchShopViewModel(
     private val quickFilterIsVisible = MutableLiveData<Boolean>()
     private val shimmeringQuickFilterIsVisible = MutableLiveData<Boolean>()
     private val refreshLayoutIsVisible = MutableLiveData<Boolean>()
+    private val shopCountMutableLiveData = MutableLiveData<String>()
     var dynamicFilterModel: DynamicFilterModel? = null
 
     init {
@@ -724,6 +726,28 @@ internal class SearchShopViewModel(
         }
     }
 
+    fun onViewRequestShopCount(mapParameter: Map<String, Any>) {
+        getShopCountUseCase.execute(
+                this::setShopCount,
+                this::catchRequestShopCountError,
+                createGetShopCountRequestParams(mapParameter)
+        )
+    }
+
+    private fun setShopCount(shopCount: Int) {
+        shopCountMutableLiveData.value = shopCount.toString()
+    }
+
+    private fun catchRequestShopCountError(throwable: Throwable) {
+        setShopCount(0)
+    }
+
+    private fun createGetShopCountRequestParams(mapParameter: Map<String, Any>) =
+        RequestParams.create().also {
+            it.putAll(mapParameter)
+            it.putString(SearchApiConst.ROWS, "0")
+        }
+
     fun getSearchParameter() = searchParameter.toMap()
 
     fun getSearchParameterQuery() : String = (searchParameter[SearchApiConst.Q] ?: "").toString()
@@ -786,6 +810,9 @@ internal class SearchShopViewModel(
 
     fun getClickQuickFilterTrackingEventLiveData(): LiveData<Event<QuickFilterTrackingData>> =
             clickQuickFilterTrackingEventMutableLiveData
+
+    fun getShopCountLiveData(): LiveData<String> =
+            shopCountMutableLiveData
 
     data class QuickFilterTrackingData(val option: Option, val isSelected: Boolean)
 }

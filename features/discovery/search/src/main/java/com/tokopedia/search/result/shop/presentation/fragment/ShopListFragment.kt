@@ -51,7 +51,8 @@ internal class ShopListFragment:
         TkpdBaseV4Fragment(),
         ShopListener,
         EmptyStateListener,
-        BannerAdsListener {
+        BannerAdsListener,
+        SortFilterBottomSheet.Callback {
 
     companion object {
         private const val SHOP = "shop"
@@ -71,6 +72,7 @@ internal class ShopListFragment:
     private var searchShopViewModel: SearchShopViewModel? = null
     private var searchViewModel: SearchViewModel? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,
@@ -166,6 +168,7 @@ internal class ShopListFragment:
         observeGetDynamicFilterEvent()
         observeTrackingOpenFilterPageEvent()
         observeOpenFilterPageEvent()
+        observeShopCountLiveData()
         observeTrackingShopItemImpressionEvent()
         observeTrackingProductPreviewImpressionEvent()
         observeTrackingEmptySearchEvent()
@@ -305,24 +308,33 @@ internal class ShopListFragment:
     }
 
     private fun openFilterPage() {
-        val sortFilterBottomSheet = SortFilterBottomSheet()
-        val callback = object : SortFilterBottomSheet.Callback {
-            override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-                FilterTracking.eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
-                searchShopViewModel?.onViewApplyFilter(applySortFilterModel.mapParameter)
-            }
+        sortFilterBottomSheet = SortFilterBottomSheet()
 
-            override fun getResultCount(mapParameter: Map<String, String>) {
-                sortFilterBottomSheet.setResultCountText(getString(com.tokopedia.filter.R.string.dynamic_filter_finish_button_text))
-            }
+        sortFilterBottomSheet?.setOnDismissListener {
+            sortFilterBottomSheet = null
         }
 
-        sortFilterBottomSheet.show(
+        sortFilterBottomSheet?.show(
                 requireFragmentManager(),
                 searchShopViewModel?.getSearchParameter().convertValuesToString(),
                 searchShopViewModel?.dynamicFilterModel,
-                callback
+                this
         )
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        FilterTracking.eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
+        searchShopViewModel?.onViewApplyFilter(applySortFilterModel.mapParameter)
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        searchShopViewModel?.onViewRequestShopCount(mapParameter)
+    }
+
+    private fun observeShopCountLiveData() {
+        searchShopViewModel?.getShopCountLiveData()?.observe(viewLifecycleOwner, Observer {
+            sortFilterBottomSheet?.setResultCountText(String.format(getString(R.string.shop_apply_filter), it))
+        })
     }
 
     private fun observeTrackingShopItemImpressionEvent() {
