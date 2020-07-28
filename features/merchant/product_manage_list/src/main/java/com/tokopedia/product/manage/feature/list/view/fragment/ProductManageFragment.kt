@@ -989,8 +989,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
-        //TODO : remove sellerapp checking after main app feature is ready
-        if (GlobalConfig.isSellerApp() && product.hasStockReserved) {
+        if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
                         CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
@@ -1012,8 +1011,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-        //TODO : remove sellerapp checking after main app feature is ready
-        if (GlobalConfig.isSellerApp() && product.hasStockReserved) {
+        if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
                         CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),

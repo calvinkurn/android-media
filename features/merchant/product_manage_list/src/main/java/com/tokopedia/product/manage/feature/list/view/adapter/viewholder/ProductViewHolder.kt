@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -67,7 +66,7 @@ class ProductViewHolder(
         itemView.labelBanned.showWithCondition(product.isViolation())
         itemView.labelInactive.showWithCondition(product.isInactive())
         itemView.labelActive.showWithCondition(product.isActive())
-        itemView.labelCampaign.showWithCondition(GlobalConfig.isSellerApp() && product.hasStockReserved)
+        itemView.labelCampaign.showWithCondition(product.hasStockReserved)
     }
 
     private fun showVariantLabel(product: ProductViewModel) {
