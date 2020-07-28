@@ -28,7 +28,7 @@ import javax.inject.Inject
 class InboxReviewViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val getInboxReviewUseCase: GetInboxReviewUseCase,
-        private val userSession: UserSessionInterface
+        val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     private val _inboxReview = MutableLiveData<Result<InboxReviewUiModel>>()

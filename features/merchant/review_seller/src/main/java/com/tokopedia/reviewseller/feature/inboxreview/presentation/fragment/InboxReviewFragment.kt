@@ -53,7 +53,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
 import javax.inject.Inject
 
@@ -72,9 +71,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         private const val positionAnswered = 2
         private const val allSelected = 5
     }
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -134,7 +130,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onResume() {
         super.onResume()
-        InboxReviewTracking.openScreenInboxReview(userSession.shopId.orEmpty(), userSession.userId.orEmpty())
+        InboxReviewTracking.openScreenInboxReview(inboxReviewViewModel.userSession.shopId.orEmpty(),
+                inboxReviewViewModel.userSession.userId.orEmpty())
     }
 
     override fun onDestroy() {
@@ -206,13 +203,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         if(isEmptyReply) {
             InboxReviewTracking.eventClickReviewNotYetReplied(data.feedbackId.toString(),
                     getQuickFilter(),
-                    userSession.shopId.orEmpty(),
+                    inboxReviewViewModel.userSession.shopId.orEmpty(),
                     data.productID.toString()
             )
         } else {
             InboxReviewTracking.eventClickReviewReplied(data.feedbackId.toString(),
                     getQuickFilter(),
-                    userSession.shopId.orEmpty(),
+                    inboxReviewViewModel.userSession.shopId.orEmpty(),
                     data.productID.toString()
             )
         }
@@ -229,7 +226,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
             putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
-            putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, userSession.shopId.orEmpty())
+            putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
             putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
         })
 
@@ -243,7 +240,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         InboxReviewTracking.eventClickSpecificImageReview(
                 feedbackId,
                 getQuickFilter(),
-                userSession.shopId.orEmpty(),
+                inboxReviewViewModel.userSession.shopId.orEmpty(),
                 productId
         )
         context?.run {
@@ -260,7 +257,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onInFullReviewClicked(feedbackId: String, productId: String) {
         InboxReviewTracking.eventClickInFullReview(feedbackId, getQuickFilter(),
-                                userSession.shopId.orEmpty(), productId)
+                inboxReviewViewModel.userSession.shopId.orEmpty(), productId)
     }
 
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
@@ -441,10 +438,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun initBottomSheetFilterPeriod() {
-        InboxReviewTracking.eventClickRatingFilter(userSession.shopId.orEmpty())
+        InboxReviewTracking.eventClickRatingFilter(inboxReviewViewModel.userSession.shopId.orEmpty())
         bottomSheet = FilterRatingBottomSheet(activity, ::onRatingFilterSelected)
         inboxReviewViewModel.getRatingFilterListUpdated().toList().let { bottomSheet?.setRatingFilterList(it) }
-        bottomSheet?.setShopId(userSession.shopId.orEmpty())
+        bottomSheet?.setShopId(inboxReviewViewModel.userSession.shopId.orEmpty())
         fragmentManager?.let {
             bottomSheet?.show(it, TAG_FILTER_RATING)
         }
@@ -482,7 +479,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
             val quickFilter = itemSortFilterList[positionUnAnswered].title.toString()
             val isActive = itemSortFilterList[positionUnAnswered].type == ChipsUnify.TYPE_SELECTED
-            InboxReviewTracking.eventClickNotRepliedFilter(quickFilter, isActive.toString(), userSession.shopId.orEmpty())
+            InboxReviewTracking.eventClickNotRepliedFilter(quickFilter, isActive.toString(), inboxReviewViewModel.userSession.shopId.orEmpty())
         } else {
             val answeredSelected = itemSortFilterList[index].type == ChipsUnify.TYPE_SELECTED
             sortFilterItemInboxReviewWrapper[positionAnswered].isSelected = !answeredSelected
@@ -493,7 +490,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
             val quickFilter = itemSortFilterList[positionUnAnswered].title.toString()
             val isActive = itemSortFilterList[positionUnAnswered].type == ChipsUnify.TYPE_SELECTED
-            InboxReviewTracking.eventClickHasBeenRepliedFilter(quickFilter, isActive.toString(), userSession.shopId.orEmpty())
+            InboxReviewTracking.eventClickHasBeenRepliedFilter(quickFilter, isActive.toString(), inboxReviewViewModel.userSession.shopId.orEmpty())
         }
 
         sortFilterInboxReview?.hide()
