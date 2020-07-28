@@ -9,12 +9,13 @@
     android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginEnd="@dimen/mvc_dimen_12dp"
     android:layout_marginRight="@dimen/mvc_dimen_12dp"
-    android:layout_marginBottom="@dimen/spacing_lvl2">
+    android:layout_marginBottom="@dimen/spacing_lvl2"
+    android:background="@color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N0"
+        android:background="@color/transparent"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingLeft="@dimen/layout_lvl0"
         android:paddingTop="@dimen/layout_lvl1"

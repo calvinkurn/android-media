@@ -237,11 +237,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         return new SessionHandler(this) {
 
             @Override
-            public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
             public String getLoginID() {
                 return "null";
             }

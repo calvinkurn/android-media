@@ -612,6 +612,58 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+
+    fun trackCarouselBannerImpression(banners: List<DataItem>) {
+        if (banners.isNotEmpty()) {
+            val componentName = banners[0].parentComponentName ?: EMPTY_STRING
+            val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                    eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = componentName)
+            val list = ArrayList<Map<String, Any>>()
+            for ((index, banner) in banners.withIndex()) {
+                val hashMap = HashMap<String, Any>()
+                    hashMap[KEY_ID] = if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID
+                    hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName"
+                    hashMap[KEY_CREATIVE] = banner.name ?: EMPTY_STRING
+                    hashMap[KEY_POSITION] = index + 1
+                    hashMap[KEY_PROMO_ID] = banner.trackingFields?.promoId ?: EMPTY_STRING
+                    hashMap[PROMO_CODE] = banner.trackingFields?.promoCode ?: EMPTY_STRING
+                list.add(hashMap)
+            }
+            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                    EVENT_PROMO_VIEW to mapOf(
+                            KEY_PROMOTIONS to list))
+            map[KEY_E_COMMERCE] = eCommerce
+            trackingQueue.putEETracking(map as HashMap<String, Any>)
+        }
+    }
+
+    fun trackCarouselBannerClick(banner: DataItem, bannerPosition: Int) {
+        val componentName = banner.parentComponentName ?: EMPTY_STRING
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "$componentName - ${banner.name} - ${banner.imageClickUrl}")
+        val list = ArrayList<Map<String, Any>>()
+            list.add(mapOf(
+                    KEY_ID to if (banner.id == null) DEFAULT_ID else if (banner.id!!.isNotEmpty()) banner.id!! else DEFAULT_ID,
+                    KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - $componentName",
+                    KEY_CREATIVE to (banner.name ?: EMPTY_STRING),
+                    KEY_POSITION to bannerPosition + 1,
+                    KEY_PROMO_ID to (banner.trackingFields?.promoId ?: EMPTY_STRING),
+                    PROMO_CODE to (banner.trackingFields?.promoCode ?: EMPTY_STRING)
+            ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_ATTRIBUTION] = banner.trackingFields?.bu ?: EMPTY_STRING
+        map[KEY_AFFINITY_LABEL] = banner.name ?: EMPTY_STRING
+        map[KEY_CATEGORY_ID] = banner.trackingFields?.categoryId ?: EMPTY_STRING
+        map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    fun trackBannerCarouselLihat() {
+        val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL_BANNER_CAROUSEL, eventLabel = EMPTY_STRING)
+        getTracker().sendGeneralEvent(map)
+    }
     private fun addSourceData(productMap: HashMap<String, Any>): HashMap<String, Any> {
         if (sourceIdentifier.isEmpty()) return productMap
 
