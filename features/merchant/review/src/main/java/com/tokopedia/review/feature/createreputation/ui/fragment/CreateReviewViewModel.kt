@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.util.CoroutineDispatcherProvider
@@ -15,7 +17,10 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -26,7 +31,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val getProductReputationForm: GetProductReputationForm,
                                                 private val getProductIncentiveOvo: GetProductIncentiveOvo,
                                                 private val getReviewDetailUseCase: ProductrevGetReviewDetailUseCase,
-                                                private val submitReviewUseCase: ProductrevSubmitReviewUseCase
+                                                private val submitReviewUseCase: ProductrevSubmitReviewUseCase,
+                                                private val uploaderUseCase: UploaderUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.io()) {
 
     companion object {
@@ -57,7 +63,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         if (imageData.isEmpty()) {
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
         } else {
-//            sendReviewWithImage(reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages, utmSource)
+            sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl())
         }
     }
 
@@ -146,7 +152,47 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun sendReviewWithImage(reviewId: String, reputationId: String, productId: String, shopId: String,
-                                    reviewDesc: String, ratingCount: Int, isAnonymous: Boolean, listOfImages: List<String>) {
+    private fun sendReviewWithImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
+                                    reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
+        val uploadIdList: ArrayList<String> = ArrayList()
+        launchCatchError(block = {
+            val response = withContext(coroutineDispatcherProvider.io()) {
+                repeat(listOfImages.size) {
+                    val imageId = uploadImageAndGetId(listOfImages[it])
+                    if(imageId.isEmpty()) {
+                        _submitReviewResult.postValue(false)
+                        this@launchCatchError.cancel()
+                    }
+                    uploadIdList.add(imageId)
+                }
+                submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList)
+                submitReviewUseCase.executeOnBackground()
+            }
+            _submitReviewResult.postValue(response.productrevSubmitReview?.success ?: false)
+        }) {
+            _submitReviewResult.postValue(false)
+        }
+    }
+
+    private suspend fun uploadImageAndGetId(imagePath: String): String {
+        val filePath = File(imagePath)
+        val params = uploaderUseCase.createParams(
+                sourceId = CREATE_REVIEW_SOURCE_ID,
+                filePath = filePath
+        )
+
+        // check picture availability
+        if (!filePath.exists()) {
+            return ""
+        }
+
+        return when (val result = uploaderUseCase(params)) {
+            is UploadResult.Success -> {
+                result.uploadId
+            }
+            is UploadResult.Error -> {
+                ""
+            }
+        }
     }
 }
