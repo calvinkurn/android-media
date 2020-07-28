@@ -89,7 +89,7 @@ class ShopHomeAdapter(
         else
             notifyInsertedItemRange(lastIndex, productList.size)
     }
-
+    
     fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
         visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
