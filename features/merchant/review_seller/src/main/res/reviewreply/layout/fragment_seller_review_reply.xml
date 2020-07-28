@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintDimensionRatio="H,2:3"
+        app:layout_constraintDimensionRatio="H,2:4"
         app:layout_constraintTop_toBottomOf="@id/review_reply_toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
