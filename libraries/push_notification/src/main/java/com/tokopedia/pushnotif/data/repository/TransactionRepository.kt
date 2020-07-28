@@ -14,12 +14,11 @@ object TransactionRepository {
             notificationType: Int,
             notificationId: Int
     ) {
-        if (data.transactionId.isEmpty()) return
-
-        val notification = mapToTransaction(data, notificationType, notificationId)
-        PushNotificationDB.getInstance(context)
-                .transactionNotificationDao()
-                .storeNotification(notification)
+        if (data.transactionId.isNotEmpty()) {
+            PushNotificationDB.getInstance(context)
+                    .transactionNotificationDao()
+                    .storeNotification(mapToTransaction(data, notificationType, notificationId))
+        }
     }
 
     @JvmStatic
