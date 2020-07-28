@@ -136,10 +136,8 @@ public class TrackingUtils {
             }
 
             if(!isValid){
-                Log.d("TrackingUtils", "Invalid Campaigd Data = "+maps.toString());
+                Log.d("TrackingUtils", "Invalid Campaign Data = "+maps.toString());
             }
-        }else{
-            Log.d("TrackingUtils", "Invalid Campaigd Data");
         }
 
         return isValid;
