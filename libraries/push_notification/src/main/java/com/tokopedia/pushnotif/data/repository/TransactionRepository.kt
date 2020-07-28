@@ -14,6 +14,8 @@ object TransactionRepository {
             notificationType: Int,
             notificationId: Int
     ) {
+        if (data.transactionId.isEmpty()) return
+
         val notification = mapToTransaction(data, notificationType, notificationId)
         PushNotificationDB.getInstance(context)
                 .transactionNotificationDao()
