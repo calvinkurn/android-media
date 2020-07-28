@@ -50,7 +50,7 @@ object PlayShareWrapper {
     private fun doCopyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
         val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Tokopedia", shareContents)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
         onUrlCopied()
     }
 

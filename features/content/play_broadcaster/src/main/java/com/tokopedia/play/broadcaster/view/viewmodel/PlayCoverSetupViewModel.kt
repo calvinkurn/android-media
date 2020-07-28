@@ -115,7 +115,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         launchCatchError(block = {
             val currentCropState = cropState
             val path = if (currentCropState is CoverSetupState.Cropped) currentCropState.coverImage.path else throw IllegalStateException("Cover is not cropped yet")
-            val url = uploadCoverToCloud(path)
+            val url = uploadCoverToCloud(path!!)
 
             setupDataStore.updateCoverTitle(coverTitle)
 

@@ -63,7 +63,7 @@ class CoverDataStoreImpl @Inject constructor(
             params = AddMediaUseCase.createParams(
                     channelId = channelId,
                     coverUrl = when (val croppedCover = getSelectedCover()?.croppedCover) {
-                        is CoverSetupState.Cropped -> croppedCover.coverImage.path
+                        is CoverSetupState.Cropped -> croppedCover.coverImage.path ?: throw IllegalStateException("Cover Image path is null")
                         else -> throw IllegalStateException("Cover url must not be null")
                     })
         }.executeOnBackground()
