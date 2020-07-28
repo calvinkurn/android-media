@@ -1,13 +1,10 @@
 package com.tokopedia.notifications.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.tokopedia.notifications.data.converters.NotificationModeConverter
-import com.tokopedia.notifications.data.converters.NotificationStatusConverter
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
@@ -21,6 +18,7 @@ parcel.createTypedArrayList(Carousel.CREATOR),
 @Parcelize
 @Entity(tableName = "BaseNotificationModel")
 data class BaseNotificationModel(
+
         @ColumnInfo(name = "notificationId")
         var notificationId: Int = 0,
 
@@ -140,7 +138,10 @@ data class BaseNotificationModel(
         var blastId: String? = null,
 
         @ColumnInfo(name = "webhook_params")
-        var webHookParam: String? = null
+        var webHookParam: String? = null,
+
+        @ColumnInfo(name = "notificationProductType")
+        var notificationProductType: String? = null
 
 ) : Parcelable {
 
