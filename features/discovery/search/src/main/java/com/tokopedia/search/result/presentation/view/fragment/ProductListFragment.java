@@ -1910,7 +1910,6 @@ public class ProductListFragment
                 requireFragmentManager(),
                 searchParameter.getSearchParameterHashMap(),
                 presenter.getDynamicFilterModel(),
-                getSortFilterIndicatorCounter() > 0,
                 this
         );
 

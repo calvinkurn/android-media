@@ -7,13 +7,10 @@ import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
-import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.domain.usecase.SearchShopUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,7 +39,6 @@ internal class SearchShopViewModelFactoryModule(
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
             getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
             shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-            shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
             userSession: UserSessionInterface
     ): ViewModelProvider.Factory {
@@ -53,7 +49,6 @@ internal class SearchShopViewModelFactoryModule(
                 searchShopLoadMoreUseCase,
                 getDynamicFilterUseCase,
                 shopCpmViewModelMapper,
-                shopTotalCountViewModelMapper,
                 shopViewModelMapper,
                 userSession
         )

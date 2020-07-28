@@ -32,7 +32,6 @@ internal open class SearchShopViewModelTestFixtures {
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val shopCpmViewModelMapper = shopViewModelMapperModule.provideShopCpmViewModelMapper()
-    protected val shopTotalCountViewModelMapper = shopViewModelMapperModule.provideShopTotalCountViewModelMapper()
     protected val shopViewModelMapper = shopViewModelMapperModule.provideShopViewModelMapper()
 
     protected val searchShopParameterCommon = mapOf(
@@ -51,7 +50,7 @@ internal open class SearchShopViewModelTestFixtures {
         return SearchShopViewModel(
                 TestDispatcherProvider(), parameter,
                 searchShopFirstPageUseCase, searchShopLoadMoreUseCase, getDynamicFilterUseCase,
-                shopCpmViewModelMapper, shopTotalCountViewModelMapper, shopViewModelMapper,
+                shopCpmViewModelMapper, shopViewModelMapper,
                 userSession
         )
     }

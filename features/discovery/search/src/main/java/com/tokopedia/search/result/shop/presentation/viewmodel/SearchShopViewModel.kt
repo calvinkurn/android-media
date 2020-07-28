@@ -36,7 +36,6 @@ internal class SearchShopViewModel(
         private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
         private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
         private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-        private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.ui()) {
@@ -272,9 +271,6 @@ internal class SearchShopViewModel(
             visitableList.add(shopCpmViewModel)
         }
 
-        val shopTotalCountViewModel = createShopTotalCountViewModel(searchShopModel, shouldShowCpmShop)
-        visitableList.add(shopTotalCountViewModel)
-
         val shopViewModelList = createShopItemViewModelList(searchShopModel)
         visitableList.addAll(shopViewModelList)
 
@@ -304,14 +300,6 @@ internal class SearchShopViewModel(
 
     private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
         return shopCpmViewModelMapper.convert(searchShopModel)
-    }
-
-    private fun createShopTotalCountViewModel(searchShopModel: SearchShopModel, isAdsBannerVisible: Boolean): Visitable<*> {
-        val shopTotalCountViewModel = shopTotalCountViewModelMapper.convert(searchShopModel)
-        shopTotalCountViewModel.query = getSearchParameterQuery()
-        shopTotalCountViewModel.isAdsBannerVisible = isAdsBannerVisible
-
-        return shopTotalCountViewModel
     }
 
     private fun createShopItemViewModelList(searchShopModel: SearchShopModel): List<Visitable<*>> {

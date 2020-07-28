@@ -298,7 +298,6 @@ internal class ShopListFragment:
 
     private fun openFilterPage() {
         val sortFilterBottomSheet = SortFilterBottomSheet()
-        val isButtonResetVisible = searchShopViewModel?.getActiveFilterOptionListForEmptySearch()?.size ?: 0 > 0
         val callback = object : SortFilterBottomSheet.Callback {
             override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
                 FilterTracking.eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
@@ -306,7 +305,7 @@ internal class ShopListFragment:
             }
 
             override fun getResultCount(mapParameter: Map<String, String>) {
-                sortFilterBottomSheet.setResultCountText("Terapkan")
+                sortFilterBottomSheet.setResultCountText(getString(com.tokopedia.filter.R.string.dynamic_filter_finish_button_text))
             }
         }
 
@@ -314,7 +313,6 @@ internal class ShopListFragment:
                 requireFragmentManager(),
                 searchShopViewModel?.getSearchParameter().convertValuesToString(),
                 searchShopViewModel?.dynamicFilterModel,
-                isButtonResetVisible,
                 callback
         )
     }

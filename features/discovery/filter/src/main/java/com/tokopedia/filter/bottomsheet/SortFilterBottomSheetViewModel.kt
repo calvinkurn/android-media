@@ -37,6 +37,9 @@ internal class SortFilterBottomSheetViewModel {
 
     private var dynamicFilterModel: DynamicFilterModel? = null
 
+    var showKnob = false
+        private set
+
     private val sortFilterListMutableLiveData = MutableLiveData<List<Visitable<SortFilterBottomSheetTypeFactory>>>()
     val sortFilterListLiveData: LiveData<List<Visitable<SortFilterBottomSheetTypeFactory>>>
         get() = sortFilterListMutableLiveData
@@ -71,9 +74,20 @@ internal class SortFilterBottomSheetViewModel {
         this.mutableMapParameter = mapParameter.toMutableMap()
         this.dynamicFilterModel = dynamicFilterModel
 
+        showKnob = determineShouldShowKnob(dynamicFilterModel)
+
         filterController.initFilterController(mapParameter, dynamicFilterModel?.data?.filter)
         originalFilterViewState.addAll(filterController.filterViewStateSet)
         originalSortValue = getSelectedSortValue()
+    }
+
+    private fun determineShouldShowKnob(dynamicFilterModel: DynamicFilterModel?): Boolean {
+        dynamicFilterModel ?: return false
+
+        val hasSort = dynamicFilterModel.data.sort.isNotEmpty()
+        val sectionCount = (dynamicFilterModel.data.filter.size + if (hasSort) 1 else 0)
+
+        return sectionCount > 2
     }
 
     private fun getSelectedSortValue(): String {
@@ -99,7 +113,7 @@ internal class SortFilterBottomSheetViewModel {
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
     }
 
-    private fun isButtonResetVisible() = filterController.isFilterActive() || isSortNotDefault()
+    fun isButtonResetVisible() = filterController.isFilterActive() || isSortNotDefault()
 
     private fun isSortNotDefault(): Boolean {
         return getSelectedSortValue() != SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT

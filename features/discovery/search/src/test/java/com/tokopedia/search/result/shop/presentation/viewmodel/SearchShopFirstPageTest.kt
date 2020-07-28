@@ -155,7 +155,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         val query = searchShopViewModel.getSearchParameterQuery()
 
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
-        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel(query)
+        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel()
         searchShopState.shouldHaveShopItemCount(shopItemList.size)
     }
 
@@ -181,7 +181,7 @@ internal class SearchShopFirstPageTest: SearchShopViewModelTestFixtures() {
         val query = searchShopViewModel.getSearchParameterQuery()
 
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
-        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel(query)
+        searchShopState.shouldHaveCorrectVisitableListWithoutCpmViewModel()
         searchShopState.shouldHaveShopItemCount(shopItemList.size)
     }
 
