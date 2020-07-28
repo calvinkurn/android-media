@@ -33,9 +33,11 @@ public class NotificationTracker {
         return instance;
     }
 
-    public void trackDeliveredNotification(ApplinkNotificationModel applinkNotificationModel) {
-        RequestParams requestParams = useCase.createRequestParam(applinkNotificationModel);
-
+    public void trackDeliveredNotification(
+            ApplinkNotificationModel applinkNotificationModel,
+            String status
+    ) {
+        RequestParams requestParams = useCase.createRequestParam(applinkNotificationModel, status);
         useCase.createObservable(requestParams)
                 .take(1)
                 .timeout(10, TimeUnit.SECONDS)

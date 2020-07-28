@@ -22,12 +22,9 @@ public class TrackPushNotificationUseCase extends UseCase<TrackPushNotificationE
     private final String PARAM_RECIPIENT_ID = "recipient_id";
     private final String PARAM_STATUS = "status";
 
-    private final String STATUS_DELIVERED = "delivered";
-    private final String STATUS_CLICKED = "clicked";
-
-
-    private TrackPushNotificationUseCase() {
-    }
+    public static final String STATUS_DELIVERED = "delivered";
+    public static final String STATUS_CLICKED = "clicked";
+    public static final String STATUS_DROPPED = "dropped";
 
     public TrackPushNotificationUseCase(Context context, GraphqlUseCase gqlUseCase) {
         this.context = context;
@@ -49,13 +46,11 @@ public class TrackPushNotificationUseCase extends UseCase<TrackPushNotificationE
                 });
     }
 
-    public RequestParams createRequestParam(ApplinkNotificationModel model) {
+    public RequestParams createRequestParam(ApplinkNotificationModel model, String status) {
         RequestParams params = RequestParams.create();
-
         params.putString(PARAM_TRANSACTION_ID, model.getTransactionId());
         params.putString(PARAM_RECIPIENT_ID, model.getToUserId());
-        params.putString(PARAM_STATUS, STATUS_DELIVERED);
-
+        params.putString(PARAM_STATUS, status);
         return params;
     }
 
