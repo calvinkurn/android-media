@@ -1,12 +1,15 @@
 package com.tokopedia.tokopatch.patch
 
 import android.content.Context
-import android.os.Build
 import android.text.TextUtils
 import com.meituan.robust.ChangeQuickRedirect
 import com.meituan.robust.PatchesInfo
 import com.tokopedia.tokopatch.model.Patch
 import dalvik.system.DexClassLoader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.lang.reflect.Field
 import java.util.*
@@ -15,18 +18,21 @@ import java.util.*
  * Author errysuprayogi on 11,June,2020
  */
 class PatchExecutors(
-    context: Context,
-    patches: List<Patch>,
-    callBack: PatchCallBack
-) : Thread() {
+        context: Context,
+        patches: List<Patch>,
+        callBack: PatchCallBack
+) {
     private val context: Context = context.applicationContext
     private val callBack: PatchCallBack
     private val patchList: List<Patch>
-    override fun run() {
-        try {
-            applyPatchList(patchList)
-        } catch (e: Exception) {
-            e.printStackTrace()
+
+    fun start() {
+        GlobalScope.launch(Dispatchers.IO){
+            try {
+                applyPatchList(patchList)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -40,7 +46,8 @@ class PatchExecutors(
         patchList = patches
     }
 
-    private fun applyPatchList(patches: List<Patch>?) {
+    private suspend fun applyPatchList(patches: List<Patch>) {
+
         if (null == patches || patches.isEmpty()) {
             return
         }
@@ -69,7 +76,7 @@ class PatchExecutors(
         }
     }
 
-    private fun patch(
+    private suspend fun patch(
             context: Context,
             patch: Patch
     ): Boolean {
@@ -209,7 +216,7 @@ class PatchExecutors(
         return false
     }
 
-    private fun cleanUp(fileOrDirectory: File) {
+    private suspend fun cleanUp(fileOrDirectory: File) {
         callBack.logMessage(context, "Cleanup.. ${fileOrDirectory.absolutePath}")
         if (fileOrDirectory.isDirectory) for (child in Objects.requireNonNull(
                 fileOrDirectory.listFiles()
