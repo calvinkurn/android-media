@@ -3,7 +3,7 @@ package com.tokopedia.editshipping.domain.response
 import com.google.gson.annotations.SerializedName
 
 data class ValidateShippingResponse(
-        @SerializedName("kero_shipping_editor_mobile_popup")
+        @SerializedName("shippingEditorMobilePopup")
         var response: KeroShippingEditorPopUp = KeroShippingEditorPopUp()
 )
 

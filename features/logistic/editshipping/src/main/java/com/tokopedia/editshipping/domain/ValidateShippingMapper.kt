@@ -8,6 +8,10 @@ import rx.functions.Func1
 class ValidateShippingMapper : Func1<ValidateShippingResponse, ValidateShippingModel> {
     override fun call(response: ValidateShippingResponse): ValidateShippingModel {
         return ValidateShippingModel().apply {
+            this.status = response.response.status
+            this.config = response.response.config
+            this.serverProcessTime = response.response.serverProcessTime
+            this.messageStatus = response.response.messageStatus
             this.data = dataModel(response.response.data)
         }
     }

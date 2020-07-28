@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class ValidateShippingParams(
         @SerializedName("shop_id")
         @Expose
-        var shopId: Int = -1,
+        var shop_id: Int = -1,
         @SerializedName("shipment_ids")
         @Expose
-        var shipmentId: String = ""
+        var shipments_ids: String = ""
 )

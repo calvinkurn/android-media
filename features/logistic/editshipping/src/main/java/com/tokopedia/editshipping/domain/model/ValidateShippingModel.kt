@@ -1,6 +1,10 @@
 package com.tokopedia.editshipping.domain.model
 
 data class ValidateShippingModel (
+        var status: String = "",
+        var config: String = "",
+        var serverProcessTime: String = "",
+        var messageStatus: String  = "",
         var data: Data = Data()
 )
 

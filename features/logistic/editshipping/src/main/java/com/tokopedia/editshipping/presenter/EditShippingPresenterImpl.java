@@ -14,7 +14,6 @@ import com.tokopedia.editshipping.data.network.ShippingNetworkParam;
 import com.tokopedia.editshipping.domain.ValidateShippingMapper;
 import com.tokopedia.editshipping.domain.ValidateShippingUseCase;
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel;
-import com.tokopedia.editshipping.domain.model.ValidateShippingParams;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers;
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict;
@@ -51,8 +50,6 @@ import java.util.Set;
 
 import rx.Subscriber;
 import timber.log.Timber;
-
-import static com.tokopedia.editshipping.domain.ValidateShippingUseCase.REQUEST_PARAM_VALIDATE_BO;
 
 /**
  * Created by Kris on 2/23/2016.
@@ -826,48 +823,26 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
 
     @Override
     public void validateBo(int shopId, String compiledShippingId) {
-        ValidateShippingParams validateShippingParams = new ValidateShippingParams();
-        validateShippingParams.setShopId(shopId);
-        validateShippingParams.setShipmentId(compiledShippingId);
-        Log.d("STRING_SHOPID_2", String.valueOf(shopId));
-        Log.d("STRING_SHIPPINGID_2", compiledShippingId);
+        Map<String, Object> param = new HashMap<>();
+        param.put(ValidateShippingUseCase.SHOP_ID, shopId);
+        param.put(ValidateShippingUseCase.SHIPMENT_IDS, compiledShippingId);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(REQUEST_PARAM_VALIDATE_BO, validateShippingParams);
-        validateShippingUseCase.createObservable(requestParams)
-                .subscribe(new Subscriber<ValidateShippingModel>() {
-                    @Override
-                    public void onCompleted() {
+        requestParams.putAll(param);
+        validateShippingUseCase.execute(requestParams, new Subscriber<ValidateShippingModel>() {
+            @Override
+            public void onCompleted() {
+            }
 
-                    }
+            @Override
+            public void onError(Throwable e) {
 
-                    @Override
-                    public void onError(Throwable e) {
+            }
 
-                    }
-
-                    @Override
-                    public void onNext(ValidateShippingModel validateShippingModel) {
-                        setValidateBoData(validateShippingModel);
-                    }
-                });
-       /* validateShippingUseCase.execute(shopId, compiledShippingId)
-                .subscribe(new Subscriber<ValidateShippingResponse>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(ValidateShippingResponse validateShippingResponse) {
-                        setValidateBoData(validateShippingResponse);
-                    }
-                });*/
-
+            @Override
+            public void onNext(ValidateShippingModel validateShippingModel) {
+                setValidateBoData(validateShippingModel);
+            }
+        });
     }
 
     @Nullable
@@ -902,12 +877,13 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
                             shippingPackage.put(courierList.get(i).services.get(j).id, "1");
                         }
                         jsonCompiled.put(courierList.get(i).id, shippingPackage);
-                        Log.d("JSON_COMPILE_1", courierList.get(i).toString());
                         Log.d("JSON_COMPILE_2", shippingPackage.toString());
                     }
                 }
             }
-            return jsonCompiled.toString().replace("\"",  "\\\"");
+            Log.d("JSON_COMPILE_FINAl", jsonCompiled.toString().replace("\"",  "\\\""));
+            String compiledShipmentId = jsonCompiled.toString().replace("\"",  "\\\"");
+            return jsonCompiled.toString();
         } catch (JSONException e) {
             return "";
         }
