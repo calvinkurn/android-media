@@ -121,6 +121,15 @@ public interface CMConstant {
         String WEBHOOK_PARAM = "webhook_params";
         String NOTIFCENTER_NOTIFICATION_ID = "nc_notif_id";
         String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
+
+        String BEBAS_ONGKIR = "bebasOngkir";
+        String STOCK_AVAILABLE = "stockAvailable";
+        String REVIEW_SCORE = "reviewScore";
+    }
+
+    interface NotificationProductType {
+        String V1 = "v1";
+        String V2 = "v2";
     }
 
     interface PreDefineActionType {
