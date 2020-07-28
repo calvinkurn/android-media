@@ -7,7 +7,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.R
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.ui.adapter.DealsFavouriteCategoriesAdapter
-import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
 
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.item_deals_voucher_popular_place.view.*
 class DealsFavouriteCategoriesViewHolder(itemView: View, private val listener: DealsFavouriteCategoriesListener)
     : BaseViewHolder(itemView) {
 
-    fun bind(item: FavouritePlacesDataView) {
+    fun bind(item: CuratedCategoryDataView) {
         with(itemView) {
             txt_voucher_popular_place_title.text = item.title
             if (item.subtitle.isNotEmpty()) {
@@ -28,10 +28,11 @@ class DealsFavouriteCategoriesViewHolder(itemView: View, private val listener: D
             val adapter = DealsFavouriteCategoriesAdapter(listener)
             lst_voucher_popular_place_card.adapter = adapter
             lst_voucher_popular_place_card.layoutManager = GridLayoutManager(context, DEALS_CATEGORY_SPAN_COUNT)
-            adapter.voucherPlaceCards = item.places
+            adapter.voucherCuratedCategoryCards = item.curatedCategories
 
             ViewCompat.setNestedScrollingEnabled(lst_voucher_popular_place_card, false)
         }
+        listener.onBindFavouriteCategory(item, adapterPosition)
     }
 
     companion object {

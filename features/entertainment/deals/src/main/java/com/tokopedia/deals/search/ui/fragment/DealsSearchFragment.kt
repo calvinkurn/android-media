@@ -26,12 +26,10 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
-import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
-import com.tokopedia.deals.search.model.visitor.MoreBrandModel
-import com.tokopedia.deals.search.model.visitor.VoucherModel
+import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.search.di.component.DealsSearchComponent
 import com.tokopedia.deals.search.domain.viewmodel.DealsSearchViewModel
 import com.tokopedia.deals.search.listener.DealsSearchListener
@@ -39,13 +37,15 @@ import com.tokopedia.deals.search.mapper.DealsSearchMapper
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.model.response.InitialLoadData
 import com.tokopedia.deals.search.model.response.Item
+import com.tokopedia.deals.search.model.visitor.MoreBrandModel
+import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactory
 import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactoryImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 import kotlinx.android.synthetic.main.fragment_deals_search.*
+import kotlinx.android.synthetic.main.layout_deals_search_bar.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -122,30 +122,33 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun initialObserver() {
         viewModel.dealsInitialResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
-                    initialDataList = DealsSearchMapper.displayInitialDataSearch(it.data, currentLocation?.name?: DealsLocationUtils.DEFAULT_LOCATION_NAME)
+                    initialDataList = DealsSearchMapper.displayInitialDataSearch(it.data, currentLocation?.name
+                            ?: DealsLocationUtils.DEFAULT_LOCATION_NAME)
                     DealsSearchMapper.initialProductList = it.data.eventSearch.products
                     totalItem = it.data.eventSearch.products.size
-                    if(totalItem >= THRESHOLD_ITEMS) {
+                    if (totalItem >= THRESHOLD_ITEMS) {
                         renderList(initialDataList.toList(), true)
                     } else {
                         renderList(initialDataList.toList(), false)
                     }
                     chipsAnalytics(it.data)
                 }
-                is Fail -> {createToaster(getString(R.string.deals_search_load_initial_error), Toaster.TYPE_ERROR)}
+                is Fail -> {
+                    createToaster(getString(R.string.deals_search_load_initial_error), Toaster.TYPE_ERROR)
+                }
             }
         })
     }
 
     private fun chipsAnalytics(data: InitialLoadData) {
-        if(data.eventChildCategory.categories.isNotEmpty()) {
-                analytics.eventViewChipsSearchPage()
+        if (data.eventChildCategory.categories.isNotEmpty()) {
+            analytics.eventViewChipsSearchPage()
         }
 
-        if(data.travelCollectiveRecentSearches.items.isNotEmpty()) {
-            if(isAnalyticsInitialized) {
+        if (data.travelCollectiveRecentSearches.items.isNotEmpty()) {
+            if (isAnalyticsInitialized) {
                 analytics.eventViewLastSeenSearchPage()
             }
         }
@@ -153,55 +156,56 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun loadMoreObserver() {
         viewModel.dealsLoadMoreResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     totalItem = it.data.products.size
-                    if(totalItem >= THRESHOLD_ITEMS) {
+                    if (totalItem >= THRESHOLD_ITEMS) {
                         loadMore(DealsSearchMapper.displayMoreData(it.data, currentPage), true)
                     } else {
                         loadMore(DealsSearchMapper.displayMoreData(it.data, currentPage), false)
                     }
                 }
-                is Fail -> {createToaster(getString(R.string.deals_search_load_more_error), Toaster.TYPE_ERROR)}
+                is Fail -> {
+                    createToaster(getString(R.string.deals_search_load_more_error), Toaster.TYPE_ERROR)
+                }
             }
         })
     }
 
     private fun searchObserver() {
         viewModel.dealsSearchResponse.observe(this, androidx.lifecycle.Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     clearAllData()
                     totalItem = it.data.products.size
-                    it.data.products.forEachIndexed { index, eventProductDetail ->
-                        analytics.eventSearchResultCaseShownOnCategoryPage(getSearchKeyword(), currentLocation?.name?: "", eventProductDetail, index)
+
+                    if (it.data.products.isNotEmpty()) {
+                        analytics.eventSearchResultCaseShownOnCategoryPage(getSearchKeyword(), currentLocation?.name
+                                ?: "", it.data.products, THRESHOLD_ITEMS, currentPage)
                     }
-                    if(totalItem >= THRESHOLD_ITEMS) {
+
+                    if (totalItem >= THRESHOLD_ITEMS) {
                         renderList(DealsSearchMapper.displayDataSearchResult(it.data,
-                                currentLocation?.name?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
+                                currentLocation?.name
+                                        ?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
                                 true)
                     } else {
-                        if(totalItem == 0) {
+                        if (totalItem == 0) {
                             searchNotFound = true
-                            analytics.eventViewSearchNoResultSearchPage(getSearchKeyword(), currentLocation?.name?: "")
+                            analytics.eventViewSearchNoResultSearchPage(getSearchKeyword(), currentLocation?.name
+                                    ?: "")
                         }
                         renderList(DealsSearchMapper.displayDataSearchResult(it.data,
-                                currentLocation?.name?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
+                                currentLocation?.name
+                                        ?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()),
                                 searchNotFound)
                     }
-                    searchedVoucherAnalytics(DealsSearchMapper.voucherList)
                 }
-                is Fail -> { createToaster(getString(R.string.deals_search_error), Toaster.TYPE_ERROR) }
+                is Fail -> {
+                    createToaster(getString(R.string.deals_search_error), Toaster.TYPE_ERROR)
+                }
             }
         })
-    }
-
-    private fun searchedVoucherAnalytics(data: List<VoucherModel>) {
-        if(data.isNotEmpty()) {
-            if(isAnalyticsInitialized) {
-                analytics.eventViewSearchResultSearchPage(getSearchKeyword(), currentLocation?.name?: "", data)
-            }
-        }
     }
 
     private fun observerNearestLocation() {
@@ -230,7 +234,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     override fun loadData(page: Int) {
         var keyword = getSearchKeyword()
-        if(searchNotFound) {
+        if (searchNotFound) {
             keyword = ""
         }
         viewModel.loadMoreData(keyword, currentLocation, childCategoryIds, page)
@@ -247,7 +251,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun getSearchKeyword(): String {
         var query = ""
-        if(search_bar?.searchBarTextField?.text?.isNotEmpty() == true) {
+        if (search_bar?.searchBarTextField?.text?.isNotEmpty() == true) {
             query = search_bar?.searchBarTextField?.text.toString()
         }
         return query
@@ -273,7 +277,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         }
 
         search_bar?.searchBarTextField?.setOnEditorActionListener { textView, i, keyEvent ->
-            if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER){
+            if (i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
                 onSearchSubmitted(search_bar?.searchBarTextField?.text.toString())
                 return@setOnEditorActionListener true
             }
@@ -325,7 +329,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun TextView.afterTextChangedDelayed(afterTextChanged: (String) -> Unit) {
-        this.addTextChangedListener(object :TextWatcher{
+        this.addTextChangedListener(object : TextWatcher {
             private var searchFor = ""
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -342,7 +346,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                     } else {
                         userTyped = searchText.isEmpty() != true
                         searchNotFound = false
-                        if(!userTyped) {
+                        if (!userTyped) {
                             clearAllData()
                             renderList(initialDataList.toList(), true)
                         } else {
@@ -364,9 +368,12 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun analyticsLocation() {
-        val oldLocation = currentLocation?.name?: ""
+        val oldLocation = currentLocation?.name ?: ""
         val newLocation = onLocationUpdated()
-        analytics.eventClickChangeLocationSearchPage(oldLocation, newLocation)
+
+        if (oldLocation != newLocation) {
+            analytics.eventClickChangeLocationSearchPage(oldLocation, newLocation)
+        }
     }
 
     override val coroutineContext: CoroutineContext
@@ -395,7 +402,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     override fun onCuratedChipClicked(itemView: View, curated: Category) {
         itemView.setOnClickListener {
-            if(isAnalyticsInitialized) {
+            if (isAnalyticsInitialized) {
                 analytics.eventClickChipsSearchPage(curated.title)
             }
             RouteManager.route(itemView.context, curated.appUrl)
@@ -404,7 +411,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     override fun onLastSeenClicked(itemView: View, lastSeen: Item) {
         itemView.setOnClickListener {
-            if(isAnalyticsInitialized) {
+            if (isAnalyticsInitialized) {
                 analytics.eventClickLastSeenSearchPage(lastSeen.title)
             }
             RouteManager.route(itemView.context, lastSeen.appURL)
@@ -419,7 +426,7 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun changeLocationFromPreviousPage() {
         val previousLocation = dealsLocationUtils.getLocation()
-        if(currentLocation?.coordinates != previousLocation.coordinates) {
+        if (currentLocation?.coordinates != previousLocation.coordinates) {
             currentLocation = previousLocation
             tv_location?.text = currentLocation?.name
             viewModel.searchDeals(getSearchKeyword(), currentLocation, childCategoryIds, FIRST_PAGE)
@@ -439,7 +446,8 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         bottomSheet?.dismiss()
     }
 
-    private var isAnalyticsInitialized: Boolean = this::analytics.isInitialized
+    private val isAnalyticsInitialized: Boolean
+        get() = this::analytics.isInitialized
 
     companion object {
         const val SCREEN_NAME = "deals search"

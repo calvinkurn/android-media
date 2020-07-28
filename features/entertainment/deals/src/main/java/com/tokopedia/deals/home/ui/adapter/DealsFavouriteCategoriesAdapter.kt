@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.ui.adapter.viewholder.DealsFavouriteCategoryViewHolder
-import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 
 /**
  * @author by jessica on 24/06/20
@@ -16,7 +16,7 @@ import com.tokopedia.deals.home.ui.dataview.FavouritePlacesDataView
 class DealsFavouriteCategoriesAdapter(private val listener: DealsFavouriteCategoriesListener) :
         RecyclerView.Adapter<DealsFavouriteCategoryViewHolder>() {
 
-    var voucherPlaceCards: List<FavouritePlacesDataView.Place> = mutableListOf()
+    var voucherCuratedCategoryCards: List<CuratedCategoryDataView.CuratedCategory> = mutableListOf()
         set(value) {
             val diff = DiffUtil.calculateDiff(VoucherPlaceCardDiffCallback(field, value))
             field = value
@@ -29,27 +29,27 @@ class DealsFavouriteCategoriesAdapter(private val listener: DealsFavouriteCatego
         return DealsFavouriteCategoryViewHolder(itemView, listener)
     }
 
-    override fun getItemCount(): Int = voucherPlaceCards.size
+    override fun getItemCount(): Int = voucherCuratedCategoryCards.size
 
     override fun onBindViewHolder(holder: DealsFavouriteCategoryViewHolder, position: Int) {
-        holder.bindData(voucherPlaceCards[position],position)
+        holder.bindData(voucherCuratedCategoryCards[position],position)
     }
 
     private class VoucherPlaceCardDiffCallback(
-            private val oldVoucherPlaceCards: List<FavouritePlacesDataView.Place>,
-            private val newVoucherPlaceCards: List<FavouritePlacesDataView.Place>
+            private val oldVoucherCuratedCategoryCards: List<CuratedCategoryDataView.CuratedCategory>,
+            private val newVoucherCuratedCategoryCards: List<CuratedCategoryDataView.CuratedCategory>
     ) : DiffUtil.Callback() {
 
-        override fun getOldListSize(): Int = oldVoucherPlaceCards.size
+        override fun getOldListSize(): Int = oldVoucherCuratedCategoryCards.size
 
-        override fun getNewListSize(): Int = newVoucherPlaceCards.size
+        override fun getNewListSize(): Int = newVoucherCuratedCategoryCards.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldVoucherPlaceCards[oldItemPosition].id == newVoucherPlaceCards[newItemPosition].id
+            return oldVoucherCuratedCategoryCards[oldItemPosition].id == newVoucherCuratedCategoryCards[newItemPosition].id
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldVoucherPlaceCards[oldItemPosition] == newVoucherPlaceCards[newItemPosition]
+            return oldVoucherCuratedCategoryCards[oldItemPosition] == newVoucherCuratedCategoryCards[newItemPosition]
         }
     }
 }

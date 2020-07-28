@@ -33,6 +33,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
     protected var childCategoryList: ArrayList<String?> = arrayListOf()
 
+    var isEnableTabClickAnalytics = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,6 +51,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()
                 vp_deals_brand_category.currentItem = tab.position
+
+                if (isEnableTabClickAnalytics) tabAnalytics(tab.getCustomText(), tab.position)
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {
@@ -64,7 +68,6 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             override fun onPageSelected(position: Int) {
                 val tab = tab_deals_brand_category?.getUnifyTabLayout()?.getTabAt(position)
                 tab?.select()
-                tabAnalytics(tab?.getCustomText() ?: "", position)
             }
         })
 
@@ -119,6 +122,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     observer.removeOnGlobalLayoutListener(this)
+                    isEnableTabClickAnalytics = true
                     position?.let { tabLayout.getTabAt(it)?.select() }
                 }
             })

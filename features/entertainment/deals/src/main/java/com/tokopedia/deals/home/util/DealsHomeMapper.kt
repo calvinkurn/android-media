@@ -35,7 +35,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         val brandsDataView: DealsBrandsDataView
         val popularDataView: VoucherPlacePopularDataView
 
-        val foodSection = FavouritePlacesDataView(title = getString(FOOD_SECTION_TITLE), subtitle = getString(FOOD_SECTION_SUBTITLE))
+        val foodSection = CuratedCategoryDataView(title = getString(FOOD_SECTION_TITLE), subtitle = getString(FOOD_SECTION_SUBTITLE))
 
         homeLayout.forEach {
             if (it.title.equals(getString(TYPE_CAROUSEL), true)) {
@@ -50,6 +50,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                 categoriesDataView.list.add(category)
 
             } else if (it.isCard == 1) {
+
                 if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION) {
 
                     val items = it.productDetails.subList(0,
@@ -79,8 +80,9 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                     ))
 
                 } else if (!it.url.equals(getString(TYPE_TOPDEALS), true) && it.isHidden == 0) {
-                    if (foodSection.places.size <= 5) {
-                        foodSection.places.add(FavouritePlacesDataView.Place(name = it.title, imageUrl = it.mediaUrl, url = it.appUrl))
+                    if (foodSection.curatedCategories.size <= 5) {
+                        foodSection.curatedCategories.add(CuratedCategoryDataView.CuratedCategory(
+                                id = it.id, name = it.title, imageUrl = it.mediaUrl, url = it.appUrl))
                     }
                 }
             }
@@ -132,7 +134,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
             layouts.add(popularDataView)
         }
 
-        if (foodSection.places.isNotEmpty()) {
+        if (foodSection.curatedCategories.isNotEmpty()) {
             foodSection.isLoadedAndSuccess()
             layouts.add(foodSection)
         }
