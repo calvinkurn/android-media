@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -74,9 +75,10 @@ class TopChatRoomAdapter(
         notifyItemRangeInserted(currentLastPosition, widgets.size)
     }
 
-    fun removeLastHeaderDateIfSame(responseLatestHeaderDate: String) {
+    fun removeLastHeaderDateIfSame(chatRoom: ChatroomViewModel) {
+        if (chatRoom.listChat.isEmpty()) return
         assignLastHeaderDate()
-        if (this.topMostHeaderDate?.date == responseLatestHeaderDate) {
+        if (this.topMostHeaderDate?.date == chatRoom.latestHeaderDate) {
             topMostHeaderDateIndex?.let {
                 visitables.removeAt(it)
                 notifyItemRemoved(it)

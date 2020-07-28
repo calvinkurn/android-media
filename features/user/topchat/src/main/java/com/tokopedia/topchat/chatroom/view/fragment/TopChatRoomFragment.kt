@@ -232,7 +232,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onSuccessGetTopChat(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         rvScrollListener?.finishTopLoadingState()
-        adapter.removeLastHeaderDateIfSame(chatRoom.latestHeaderDate)
+        adapter.removeLastHeaderDateIfSame(chatRoom)
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
