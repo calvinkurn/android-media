@@ -15,35 +15,42 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
 
     private var currentMode = Mode.SUBSET_ALL
 
-    fun compute(testCases: List<Validator>, mode: String = "subset"): Observable<List<Validator>> {
+    fun computeRx(testCases: List<Validator>, mode: String = "subset"): Observable<List<Validator>> {
         setMode(mode)
 
         return dao.getAllLogs().map { logs ->
-            var ordering: Long = 0
-            val newResult: MutableList<Validator> = mutableListOf()
-            testCases.forEach { case ->
-                val matched = logs.findAllContaining(case).map { it.toUiModel() }
-                if (matched.isNotEmpty()) {
-                    // in order mode still need to be reviewed (not being used). taking last found for mvp
-                    val status = when {
-                        currentMode.isInOrder() && matched.last().timestamp < ordering -> {
-                            ordering = Long.MAX_VALUE
-                            Status.FAILURE
-                        }
-                        else -> {
-                            ordering = matched.last().timestamp
-                            Status.SUCCESS
-                        }
-                    }
-                    newResult.add(case.copy(status = status, matches = matched))
-                } else {
-                    newResult.add(case.copy(status = Status.FAILURE))
-                }
-            }
-            newResult
+            compute(testCases, logs)
         }
     }
 
+    suspend fun computeCo(testCases: List<Validator>, mode: String = "subset"): List<Validator> {
+        return compute(testCases, dao.getLogs())
+    }
+
+    fun compute(testCases: List<Validator>, logs: List<GtmLogDB>): List<Validator> {
+        var ordering: Long = 0
+        val newResult: MutableList<Validator> = mutableListOf()
+        testCases.forEach { case ->
+            val matched = logs.findAllContaining(case).map { it.toUiModel() }
+            if (matched.isNotEmpty()) {
+                // in order mode still need to be reviewed (not being used). taking last found for mvp
+                val status = when {
+                    currentMode.isInOrder() && matched.last().timestamp < ordering -> {
+                        ordering = Long.MAX_VALUE
+                        Status.FAILURE
+                    }
+                    else -> {
+                        ordering = matched.last().timestamp
+                        Status.SUCCESS
+                    }
+                }
+                newResult.add(case.copy(status = status, matches = matched))
+            } else {
+                newResult.add(case.copy(status = Status.FAILURE))
+            }
+        }
+        return newResult
+    }
 
     private fun setMode(s: String) {
         currentMode = when (s) {

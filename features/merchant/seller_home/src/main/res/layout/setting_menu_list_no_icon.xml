@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:textColor="@color/setting_black_text"
+            android:textColor="@color/default_black_text"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             app:layout_constraintStart_toEndOf="@id/settingMenuIcon"

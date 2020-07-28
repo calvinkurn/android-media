@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TopSeller</string>
+    <string name="app_name">Tokopedia Seller</string>
 
     <string name="GOOGLE_API_KEY_SA">AIzaSyA5wS94D52rNG0ygrt0Od8UdMrLUTBMyB8</string>
 
@@ -36,7 +36,7 @@
     <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
     <string name="dashboard_reason_x">Alasan : %1$s</string>
 
-    <string name="title_activity_deep_link_topseller">TopSeller</string>
+    <string name="title_activity_deep_link_topseller">Tokopedia Seller</string>
     <string name="title_activity_contact_us_drawer">Pusat Bantuan</string>
 
     <string name="transaction_success">Transaksi Sukses</string>
@@ -84,4 +84,18 @@
 
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+
+    <!-- Dynamic features Shop Showcase -->
+    <string name="title_shop_showcase">Shop Showcase</string>
+
+    <!-- Shop Score Title  -->
+    <string name="title_shopscore">Performa Toko/ Shop Score</string>
+    
+    <!-- Dynamic feature Product Add Edit -->
+    <string name="action_pick_photo">Pilih Foto</string>
+    <string name="action_edit_photo">Ubah Foto</string>
+    <string name="label_title_add_product">Tambah Produk</string>
+
+    <string name="vidpick_app_name">Video Recorder</string>
+
 </resources>

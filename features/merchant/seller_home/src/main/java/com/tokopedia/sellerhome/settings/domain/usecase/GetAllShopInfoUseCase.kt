@@ -87,7 +87,8 @@ class GetAllShopInfoUseCase @Inject constructor(
                     topAdsBalance.getCurrencyFormatted(),
                     isTopAdsAutoTopup,
                     shopBadge,
-                    totalFollowers)
+                    totalFollowers,
+                    userSession)
         }
         return SettingShopInfoUiModel()
     }

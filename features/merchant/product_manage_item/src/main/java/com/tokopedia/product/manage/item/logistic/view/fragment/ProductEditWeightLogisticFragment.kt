@@ -46,11 +46,11 @@ class ProductEditWeightLogisticFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         activity?.let {
-            productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC)
+            productLogistic = it.intent.getParcelableExtra(EXTRA_LOGISTIC) ?: ProductLogistic()
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_LOGISTIC)) {
-                productLogistic = savedInstanceState.getParcelable(SAVED_PRODUCT_LOGISTIC)
+                productLogistic = savedInstanceState.getParcelable(SAVED_PRODUCT_LOGISTIC)?: ProductLogistic()
             }
         }
     }
