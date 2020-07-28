@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
@@ -48,8 +49,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         get() = _submitReviewResult
 
     fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
-                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
-        if (listOfImages.isEmpty()) {
+                     reviewText: String, isAnonymous: Boolean) {
+        if (imageData.isEmpty()) {
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
         } else {
 //            sendReviewWithImage(reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages, utmSource)
@@ -73,23 +74,37 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         when (selectedImage.size) {
             5 -> {
                 imageData = (selectedImage.map {
-                    ImageReviewViewModel(it, shouldDisplayOverlay = true)
+                    ImageReviewViewModel(it)
                 }).toMutableList()
             }
             else -> {
                 imageData.addAll(selectedImage.map {
-                    ImageReviewViewModel(it, shouldDisplayOverlay = false)
+                    ImageReviewViewModel(it)
                 })
                 imageData.add(DefaultImageReviewModel())
             }
         }
-
         return imageData
+    }
+
+    fun removeImage(image: BaseImageReviewViewModel) {
+        imageData.remove(image)
     }
 
     fun initImageData(): MutableList<BaseImageReviewViewModel> {
         imageData.clear()
         return imageData
+    }
+
+    fun getSelectedImagesUrl(): ArrayList<String> {
+        val result = arrayListOf<String>()
+        imageData.forEach {
+            val imageUrl = (it as? ImageReviewViewModel)?.imageUrl
+            if(imageUrl?.isNotEmpty() == true) {
+                result.add(imageUrl)
+            }
+        }
+        return result
     }
 
     fun getProductReputation(productId: Int, reputationId: Int) {

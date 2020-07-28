@@ -105,7 +105,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         ImageReviewAdapter(this)
     }
     private var isLowDevice = false
-    private var selectedImage: ArrayList<String> = arrayListOf()
 
     private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
@@ -293,7 +292,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                     ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
                             false, null),
                     ImagePickerMultipleSelectionBuilder(
-                            selectedImage, null, -1, 5
+                            createReviewViewModel.getSelectedImagesUrl(), null, -1, 5
                     ))
 
             val intent = ImagePickerActivity.getIntent(it, builder)
@@ -303,6 +302,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onRemoveImageClick(item: BaseImageReviewViewModel) {
         imageAdapter.removeItem(item)
+        createReviewViewModel.removeImage(item)
         if(imageAdapter.isEmpty()) {
             rv_img_review.hide()
             createReviewAddPhotoEmpty.show()
@@ -335,7 +335,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     createReviewViewModel.initImageData()
 
                     ReviewTracking.reviewOnImageUploadTracker(
@@ -348,9 +348,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
                     val imageListData = createReviewViewModel.getImageList(selectedImage)
                     if (selectedImage.isNotEmpty()) {
-                        if (!isImageAdded) {
-                            isImageAdded = true
-                        }
                         imageAdapter.setImageReviewData(imageListData)
                         rv_img_review.show()
                         createReviewAddPhotoEmpty.hide()
@@ -382,12 +379,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 productId.toString(10),
                 reviewClickAt.toString(10),
                 reviewMessage.isEmpty(),
-                selectedImage.size.toString(10),
+                createReviewViewModel.getSelectedImagesUrl().size.toString(10),
                 createReviewAnonymousCheckbox.isChecked,
                 false
         )
         createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
-                createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked, selectedImage)
+                createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
