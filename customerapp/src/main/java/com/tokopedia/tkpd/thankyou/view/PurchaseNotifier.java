@@ -42,7 +42,7 @@ public class PurchaseNotifier {
 
                 ApplinkBuildAndShowNotification.showApplinkNotification(context, bundle);
 
-                Timber.w("P2#PUSH_NOTIF_UNUSED#'%s';","PurchaseNotifier");
+                Timber.w("P2#PUSH_NOTIF_UNUSED#'PurchaseNotifier'");
             }
         } catch (Exception e) {
             e.printStackTrace();

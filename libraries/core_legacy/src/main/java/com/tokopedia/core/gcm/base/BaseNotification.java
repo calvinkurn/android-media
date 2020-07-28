@@ -30,7 +30,7 @@ public abstract class BaseNotification implements Visitable {
         mFCMCacheManager = new FCMCacheManager(mContext);
         configuration = new NotificationConfiguration();
 
-        Timber.w("P2#PUSH_NOTIF_UNUSED#'%s';","BaseNotification");
+        Timber.w("P2#PUSH_NOTIF_UNUSED#'BaseNotification'");
     }
 
     @Override
