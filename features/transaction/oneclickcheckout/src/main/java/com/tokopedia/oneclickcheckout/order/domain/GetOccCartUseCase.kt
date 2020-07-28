@@ -187,7 +187,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
 
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
         return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
-                profileResponse.isChangedProfile, profileResponse.profileId, profileResponse.status, profileResponse.enable,
+                profileResponse.profileId, profileResponse.status, profileResponse.enable,
                 profileResponse.message, mapAddress(profileResponse.address), mapPayment(profileResponse.payment),
                 mapShipment(profileResponse.shipment))
     }
@@ -198,7 +198,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
         return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
-                "payment.description", payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
+                payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
                 payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard),
                 mapPaymentErrorMessage(payment.errorMessage)
         )
@@ -214,23 +214,25 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderPaymentErrorMessage(errorMessage.message,
                 OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
         )
-//        return OrderPaymentErrorMessage("errorMessage.message",
-//                OrderPaymentErrorMessageButton("errorMessage.button.text", "errorMessage.button.link")
-//        )
     }
 
     private fun mapPaymentCreditCard(creditCard: PaymentCreditCard): OrderPaymentCreditCard {
-//        val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
-//        return OrderPaymentCreditCard(creditCard.totalCards, availableTerms, creditCard.bankCode, creditCard.cardType,
-//                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected })
-        val availableTerms = mapPaymentInstallmentTerm(listOf(
-                InstallmentTerm(0, 1.5f, 0.5f, 10000, true),
-                InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
-                InstallmentTerm(6, 1.5f, 0.5f, 200000, false)
-        ))
-        return OrderPaymentCreditCard(OrderPaymentCreditCardsNumber(2, 0, 2),
-                availableTerms, "bankCode", "cardType",
-                false, "tncInfo", availableTerms.firstOrNull { it.isSelected })
+        val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
+        return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
+                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected })
+//        val availableTerms = mapPaymentInstallmentTerm(listOf(
+//                InstallmentTerm(0, 1.5f, 0.5f, 10000, true),
+//                InstallmentTerm(3, 1.5f, 0.5f, 100000, false),
+//                InstallmentTerm(6, 1.5f, 0.5f, 200000, false)
+//        ))
+//        return OrderPaymentCreditCard(OrderPaymentCreditCardsNumber(2, 0, 2),
+//                availableTerms, "bankCode", "cardType",
+//                false, "tncInfo", availableTerms.firstOrNull { it.isSelected })
+    }
+
+    private fun mapPaymentCreditCardNumber(numberOfCards: PaymentCreditCardsNumber): OrderPaymentCreditCardsNumber {
+        return OrderPaymentCreditCardsNumber(numberOfCards.availableCards, numberOfCards.unavailableCards,
+                numberOfCards.totalCards)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {

@@ -478,7 +478,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader2?.visible()
             tvHeader3?.visible()
         }
-        tickerPreferenceInfo?.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
         tickerPreferenceInfo?.setHtmlDescription(preference.message)
         tickerPreferenceInfo?.visibility = if (preference.message.isNotBlank()) View.VISIBLE else View.GONE
 

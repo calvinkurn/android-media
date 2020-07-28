@@ -293,6 +293,7 @@ query get_occ_cart_page($source: String) {
       profile {
         has_preference
         is_changed_profile
+        message
         onboarding_header_message
         onboarding_component {
           header_title
@@ -338,6 +339,32 @@ query get_occ_cart_page($source: String) {
           }
           wallet_amount
           metadata
+          mdr
+          credit_card {
+            number_of_cards {
+                available
+                unavailable
+                total
+            }
+            available_terms {
+                term
+                mdr
+                mdr_subsidized
+                min_amount
+                is_selected
+            }
+            bank_code
+            card_type
+            is_expired
+            tnc_info
+          }
+          error_message {
+            message
+            button {
+                text
+                link
+            }
+          }
         }
         shipment {
           service_id

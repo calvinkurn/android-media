@@ -827,10 +827,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     _orderShipment.getRealShipperId(),
                     _orderShipment.getRealShipperProductId()
             )
+            var metadata = pref.preference.payment.metadata
+            val selectedTerm = _orderPayment.creditCard?.selectedTerm
+            if (selectedTerm != null) {
+                val parse = JsonParser().parse(metadata)
+                parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM).addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
+                metadata = parse.toString()
+            }
             val profile = UpdateCartOccProfileRequest(
                     pref.preference.profileId.toString(),
                     pref.preference.payment.gatewayCode,
-                    pref.preference.payment.metadata,
+                    metadata,
                     pref.preference.shipment.serviceId,
                     pref.preference.address.addressId.toString()
             )
@@ -1406,28 +1413,28 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val creditCard = _orderPayment.creditCard
         if (param != null && creditCard != null) {
             globalEvent.value = OccGlobalEvent.Loading
-//            try {
-//                val parse = JsonParser().parse(param.profile.metadata)
-//                parse.asJsonObject.getAsJsonObject("express_checkout_param").addProperty("installment_term", selectedInstallmentTerm.term.toString())
-//                param = param.copy(profile = param.profile.copy(metadata = parse.toString()))
-//            } catch (e: Exception) {
-//                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-//                return
-//            }
-//            updateCartOccUseCase.execute(param, {
+            try {
+                val parse = JsonParser().parse(param.profile.metadata)
+                parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM).addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
+                param = param.copy(profile = param.profile.copy(metadata = parse.toString()))
+            } catch (e: Exception) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return
+            }
+            updateCartOccUseCase.execute(param, {
                 val availableTerms = creditCard.availableTerms
                 availableTerms.forEach { it.isSelected = it.term == selectedInstallmentTerm.term }
                 _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
                 calculateTotal()
                 globalEvent.value = OccGlobalEvent.Normal
-//            }, {
-//                if (it is MessageErrorException && it.message != null) {
-//                    globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
-//                            ?: DEFAULT_ERROR_MESSAGE)
-//                } else {
-//                    globalEvent.value = OccGlobalEvent.Error(it)
-//                }
-//            })
+            }, {
+                if (it is MessageErrorException && it.message != null) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
+                            ?: DEFAULT_ERROR_MESSAGE)
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(it)
+                }
+            })
         }
     }
 
