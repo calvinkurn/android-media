@@ -3,7 +3,7 @@
     android:id="@+id/product_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/layout_lvl7"
+    android:paddingBottom="@dimen/layout_lvl8"
     android:clipToPadding="false"
     android:scrollbarStyle="outsideOverlay"
     android:descendantFocusability="blocksDescendants" />
