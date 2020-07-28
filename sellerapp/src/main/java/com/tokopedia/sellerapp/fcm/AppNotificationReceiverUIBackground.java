@@ -59,6 +59,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle data) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground_Seller");
         if (isSupportedApplinkNotification(data)) {
             handleApplinkNotification(data);
         } else if (isDedicatedNotification(data)) {
