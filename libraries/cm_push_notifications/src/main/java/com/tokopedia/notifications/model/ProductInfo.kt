@@ -1,12 +1,13 @@
 package com.tokopedia.notifications.model
 
-import androidx.room.ColumnInfo
-import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ProductInfo(
 
         @SerializedName("productTitle")
@@ -52,43 +53,21 @@ data class ProductInfo(
         @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
         @ColumnInfo(name = CMConstant.PayloadKeys.ELEMENT_ID)
         @Expose
-        var element_id: String? = ""
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "",
-            parcel.readString()?.let { it } ?: "")
+        var element_id: String? = "",
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(productTitle)
-        parcel.writeString(productImage)
-        parcel.writeString(productActualPrice)
-        parcel.writeString(productCurrentPrice)
-        parcel.writeString(productPriceDroppedPercentage)
-        parcel.writeString(productMessage)
-        parcel.writeString(productButtonMessage)
-        parcel.writeString(appLink)
-        parcel.writeString(element_id)
-    }
+        @SerializedName(CMConstant.PayloadKeys.BEBAS_ONGKIR)
+        @ColumnInfo(name = CMConstant.PayloadKeys.BEBAS_ONGKIR)
+        @Expose
+        var bebasOngkir: Boolean? = false,
 
-    override fun describeContents(): Int {
-        return 0
-    }
+        @SerializedName(CMConstant.PayloadKeys.STOCK_AVAILABLE)
+        @ColumnInfo(name = CMConstant.PayloadKeys.STOCK_AVAILABLE)
+        @Expose
+        var stockAvailable: String? = "",
 
-    companion object CREATOR : Parcelable.Creator<ProductInfo> {
-        override fun createFromParcel(parcel: Parcel): ProductInfo {
-            return ProductInfo(parcel)
-        }
+        @SerializedName(CMConstant.PayloadKeys.REVIEW_SCORE)
+        @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_SCORE)
+        @Expose
+        var reviewScore: String? = ""
 
-        override fun newArray(size: Int): Array<ProductInfo?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+) : Parcelable
