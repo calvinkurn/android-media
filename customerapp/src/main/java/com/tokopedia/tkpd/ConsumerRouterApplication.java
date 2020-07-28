@@ -99,7 +99,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -419,7 +418,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         sessionHandler.forceLogout();
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
-        TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
     @Override

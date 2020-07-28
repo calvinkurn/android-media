@@ -6,7 +6,6 @@ import com.tokopedia.core.common.category.domain.model.CategoriesResponse;
 import com.tokopedia.core.common.category.domain.model.CategoryModel;
 import com.tokopedia.core.common.category.domain.model.CategorySelectedModel;
 import com.tokopedia.core.common.category.view.mapper.CategoryViewMapper;
-import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 
 import java.util.List;
@@ -23,8 +22,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     public static final int UNSELECTED = -2;
     private GetCategoryLiteTreeSubscriber subscriber;
 
-    public CategoryPickerPresenterImpl(
-            GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase) {
+    public CategoryPickerPresenterImpl(GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase) {
         this.getCategoryLiteTreeUseCase = getCategoryLiteTreeUseCase;
     }
 
@@ -49,15 +47,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     public void getCategoryChild(long categoryId) {
         checkViewAttached();
         List<CategoryModel> categoriesModel = CategoryPickerMapper.INSTANCE.findCategoryChildInCategoriesWithCategoryId(categoryId, getCategorySelectedModels());
-        getView().renderCategory(CategoryViewMapper.mapCategoryModelsToCategoryViewModels(categoriesModel), categoryId);
-    }
-
-    @Override
-    public void getCategoryFromSelected(long initSelected) {
-        checkViewAttached();
-        List<CategorySelectedModel> categorySelectedModels = CategoryPickerMapper.INSTANCE.findCategoryWithCategoryId(initSelected, getCategorySelectedModels());
-        List<CategoryLevelViewModel> categoryLevelViewModels = CategoryViewMapper.mapLevel(categorySelectedModels);
-        getView().renderCategoryFromSelected(categoryLevelViewModels);
+        getView().renderCategory(CategoryViewMapper.INSTANCE.mapCategoryModelsToCategoryViewModels(categoriesModel), categoryId);
     }
 
     private CategoriesResponse getCategoriesResponse() {
@@ -89,8 +79,8 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
             getView().dismissLoadingDialog();
 
             this.categoriesResponse = categoriesResponse;
-            List<CategoryModel> categoriesModel = CategoryPickerMapper.INSTANCE.mapCategoryResponseToCategoryModels(categoriesResponse);
-            List<CategoryViewModel> categoriesViewModel = CategoryViewMapper.mapCategoryModelsToCategoryViewModels(categoriesModel);
+            List<CategoryModel> categoriesModel = CategoryPickerMapper.INSTANCE.mapCategoryResponseIntoCategoryModels(categoriesResponse);
+            List<CategoryViewModel> categoriesViewModel = CategoryViewMapper.INSTANCE.mapCategoryModelsToCategoryViewModels(categoriesModel);
             getView().renderCategory(categoriesViewModel, UNSELECTED);
         }
     }

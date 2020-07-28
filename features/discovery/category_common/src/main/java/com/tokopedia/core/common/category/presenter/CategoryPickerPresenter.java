@@ -12,7 +12,5 @@ public abstract class CategoryPickerPresenter extends BaseDaggerPresenter<Catego
 
     public abstract void getCategoryChild(long categoryId);
 
-    public abstract void getCategoryFromSelected(long initSelected);
-
     public abstract void unsubscribe();
 }

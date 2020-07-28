@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenter;
 import com.tokopedia.core.common.category.view.listener.CategoryPickerView;
-import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -113,11 +112,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     protected void initVar() {
-        if (selectedCategoryId == INIT_UNSELECTED) {
-            presenter.getCategoryLiteTree();
-        } else {
-            presenter.getCategoryFromSelected(selectedCategoryId);
-        }
+        presenter.getCategoryLiteTree();
     }
 
     @Override
@@ -133,11 +128,6 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public void renderCategory(List<CategoryViewModel> listCategory, long categoryId) {
         adapter.addLevelItem(listCategory, categoryId);
-    }
-
-    @Override
-    public void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels) {
-        adapter.render(categoryLevelDomainModels);
     }
 
     @Override
