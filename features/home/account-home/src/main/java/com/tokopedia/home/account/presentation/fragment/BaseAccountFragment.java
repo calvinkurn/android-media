@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -45,7 +46,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
@@ -486,13 +486,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         );
     }
 
-    private void goToTrainOrderListIntent(){
-        String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getTIKET();
-        String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
-        String PATH_USER_BOOKING_LIST = "/user/bookings";
-        String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
-        String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
+    private void goToTrainOrderListIntent() {
+        RouteManager.route(getContext(), ApplinkConstInternalTravel.TRAIN_ORDER_LIST);
     }
 
     private void sendTrackingOvoActivation() {

@@ -59,7 +59,7 @@ class ChatRatingViewHolder(itemView: View,
         var time: String?
 
         try {
-            val myTime = java.lang.Long.parseLong(element.replyTime)
+            val myTime = (element.replyTime)?.toLong() ?: 0L
             time = DateFormat.getLongDateFormat(itemView.context).format(Date(myTime))
         } catch (e: NumberFormatException) {
             time = element.replyTime

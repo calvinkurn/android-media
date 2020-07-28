@@ -399,6 +399,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_MESSAGE = "view promo message";
         String SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen";
         String DISMISS_LAST_SEEN = "dismiss Last Seen";
+        String CLICK_INPUT_FIELD = "click input field";
+        String SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up";
 
         //OCC
         String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
@@ -525,6 +527,7 @@ public interface ConstantTransactionAnalytics {
 
     interface ExtraKey {
         String USER_ID = "userId";
+        String PROMO_CODE = "promoCode";
     }
 
     interface ScreenName {

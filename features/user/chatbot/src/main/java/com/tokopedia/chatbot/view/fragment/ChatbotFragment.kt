@@ -616,7 +616,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             val uri = Uri.parse(url)
             if (uri?.scheme != null) {
                 val isTargetDomainTokopedia = uri.host != null
-                        && uri.host.endsWith("tokopedia.com")
+                        && uri.host!!.endsWith("tokopedia.com")
                 val isTargetTkpMeAndNotRedirect = TextUtils.equals(uri.host, BASE_DOMAIN_SHORTENED)
                         && !TextUtils.equals(uri.encodedPath, "/r")
                 val isNeedAuthToken = isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect
