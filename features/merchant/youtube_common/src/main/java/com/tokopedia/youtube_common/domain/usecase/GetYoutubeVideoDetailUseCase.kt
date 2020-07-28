@@ -64,7 +64,7 @@ class GetYoutubeVideoDetailUseCase @Inject constructor(
                 uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("Unknown youtube url $webVideoUrl.")
             }
-            setVideoId(videoId)
+            setVideoId(videoId ?: "")
         } catch (e: NullPointerException) {
             throw MessageErrorException(e.message)
         }

@@ -102,9 +102,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return when {
             savedInstanceState != null
                     && savedInstanceState.getString(paramName, "").isNotEmpty()
-            -> savedInstanceState.getString(paramName)
+            -> savedInstanceState.getString(paramName, "")
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
-            -> arguments.getString(paramName)
+            -> arguments.getString(paramName, "")
             else -> ""
         }
     }

@@ -175,8 +175,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                 toggleNotFoundView(true);
                 break;
             default:
-                onErrorGetUserProjectInfo(new MessageErrorException(String.format("%s (%s)", getString(R.string
-                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
+                onErrorGetUserProjectInfo(
+                        new MessageErrorException(String.format("%s (%s)",
+                        getString(R.string.user_identification_default_request_error_unknown),
+                        KYCConstant.ERROR_STATUS_UNKNOWN)));
                 break;
         }
     }
@@ -194,7 +196,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     public void onErrorGetUserProjectInfoWithErrorCode(String errorCode) {
         if (getContext() != null) {
             hideLoading();
-            String error = String.format("%s (%s)", getContext().getString(R.string.default_request_error_unknown), errorCode);
+            String error = String.format("%s (%s)", getContext().getString(R.string.user_identification_default_request_error_unknown), errorCode);
             NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
