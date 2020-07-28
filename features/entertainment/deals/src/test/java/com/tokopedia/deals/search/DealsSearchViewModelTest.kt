@@ -152,7 +152,7 @@ class DealsSearchViewModelTest {
                     any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
-            firstArg<(SearchData) -> Unit>().invoke(mockSearchLoadMore)
+            firstArg<(SearchData) -> Unit>().invoke(mockEventSearchData)
         }
 
         // when

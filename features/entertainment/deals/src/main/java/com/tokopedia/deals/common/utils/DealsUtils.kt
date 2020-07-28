@@ -16,7 +16,7 @@ object DealsUtils {
     fun screenWidthDp() = Resources.getSystem().displayMetrics.run { widthPixels / density }
     fun screenWidthPx() = Resources.getSystem().displayMetrics.widthPixels
     fun screenHeightDp() = Resources.getSystem().displayMetrics.run { heightPixels / density }
-    fun  screenHeightPx() = Resources.getSystem().displayMetrics.heightPixels
+    fun screenHeightPx() = Resources.getSystem().displayMetrics.heightPixels
 
     fun dpToPx(dp: Int): Int = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
