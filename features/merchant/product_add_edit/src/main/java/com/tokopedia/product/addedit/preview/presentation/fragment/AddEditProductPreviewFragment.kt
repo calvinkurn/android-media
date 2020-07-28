@@ -340,12 +340,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
-
-                // increment wholesale min order by one because of > symbol
-                viewModel.productInputModel.value?.run {
-                    this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
-                }
-
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
                 // when we perform open draft, previous state before we save the product to draft will be the same
@@ -977,6 +971,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
+        // increment wholesale min order by one because of > symbol
+        productInputModel.run {
+            this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+        }
+
         context?.let {
             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
@@ -988,6 +987,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun startProductEditService(productInputModel: ProductInputModel) {
+        // increment wholesale min order by one because of > symbol
+        productInputModel.run {
+            this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+        }
+
         context?.let {
             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)

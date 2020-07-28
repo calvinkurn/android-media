@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.adapter.viewmodel.VariantDetailFieldsViewModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -21,7 +21,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                                     onPriceInputTextChangedListener: OnPriceInputTextChangedListener,
                                     onStockInputTextChangedListener: OnStockInputTextChangedListener,
                                     onSkuInputTextChangedListener: OnSkuInputTextChangedListener) :
-        AbstractViewHolder<VariantDetailFieldsViewModel>(itemView) {
+        AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface OnStatusSwitchCheckedChangeListener {
         fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int)
@@ -153,7 +153,7 @@ class VariantDetailFieldsViewHolder(itemView: View?,
         })
     }
 
-    override fun bind(element: VariantDetailFieldsViewModel?) {
+    override fun bind(element: VariantDetailFieldsUiModel?) {
         element?.run {
             val variantDetailInputLayoutModel = this.variantDetailInputLayoutModel
             // update visitable position before bind the data
