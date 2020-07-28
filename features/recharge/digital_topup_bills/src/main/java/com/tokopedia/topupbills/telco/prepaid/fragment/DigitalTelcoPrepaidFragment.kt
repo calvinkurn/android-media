@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -69,7 +68,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var loadingShimmering: LinearLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
-    private lateinit var nestedScrollView: NestedScrollView
     private lateinit var separator: View
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -136,11 +134,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         })
 
-        sharedModelPrepaid.positionScrollItem.observe(this, Observer {
-            nestedScrollView.fling(0)
-            nestedScrollView.smoothScrollTo(0, it)
-        })
-
         sharedModelPrepaid.expandView.observe(this, Observer {
             if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
             else telcoClientNumberWidget.setVisibleResultNumber(true)
@@ -157,7 +150,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         tabLayout = view.findViewById(R.id.tab_layout)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
-        nestedScrollView = view.findViewById(R.id.nested_scroll_view)
         loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
         separator = view.findViewById(R.id.separator)
         return view
@@ -220,8 +212,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
             val tabs = telcoTabViewModel.getAll()
             if (showProducts) {
-                nestedScrollView.fling(0)
-                nestedScrollView.smoothScrollTo(0, 0)
+                sharedModelPrepaid.setPositionScrollToItem(0)
                 categoryId = getIdCategoryCurrentItem()
                 topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
                 sharedModelPrepaid.setVisibilityTotalPrice(false)

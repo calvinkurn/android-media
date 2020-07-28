@@ -70,25 +70,16 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/buy_widget"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/buy_widget"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4"
-                android:orientation="horizontal" />
-
-        </androidx.core.widget.NestedScrollView>
-
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:orientation="horizontal"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        
     </com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout>
 
     <androidx.cardview.widget.CardView

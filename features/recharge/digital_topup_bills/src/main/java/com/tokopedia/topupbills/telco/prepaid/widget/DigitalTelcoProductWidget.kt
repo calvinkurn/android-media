@@ -155,14 +155,15 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 if (itemProduct.id == productId) {
                     listener.onClickProduct(itemProduct, i, label)
 
-                    recyclerView.getChildAt(i)?.let {
-                        val yPosition = it.y
-                        listener.onScrollToPositionItem(yPosition.toInt())
-                    }
+                    recyclerView.scrollToPosition(i)
                     break
                 }
             }
         }
+    }
+
+    fun scrollToPosition(position: Int) {
+        recyclerView.scrollToPosition(position)
     }
 
     interface ActionListener {

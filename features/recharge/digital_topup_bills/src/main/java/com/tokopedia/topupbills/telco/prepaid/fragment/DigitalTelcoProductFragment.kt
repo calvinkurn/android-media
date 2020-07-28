@@ -131,6 +131,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     hideShimmering()
                 }
             })
+
+            sharedModelPrepaid.positionScrollItem.observe(this, Observer {
+                telcoTelcoProductView.scrollToPosition(it)
+            })
         }
 
         telcoTelcoProductView.setListener(telcoProductItemCallback)
