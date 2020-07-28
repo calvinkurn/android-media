@@ -32,7 +32,7 @@ import com.tokopedia.favorite.utils.TrackingConst;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 
 import java.io.BufferedReader;
@@ -86,7 +86,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         holder.shopName.setText(Html.fromHtml(shopItem.getShopName()));
         holder.shopLocation.setText(Html.fromHtml(shopItem.getShopLocation()));
         imageLoader.loadImage(shopItem.getShopImageUrl(), shopItem.getShopImageEcs(), holder.shopIcon);
-        setShopCover(holder, shopItem.getShopCoverUrl(), shopItem.getShopCoverEcs());
+        setShopCover(holder, shopItem);
         setFavorite(holder, shopItem);
         holder.mainContent.setOnClickListener(onShopClicked(shopItem));
         holder.favButton.setOnClickListener(
@@ -95,12 +95,12 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     }
 
 
-    private void setShopCover(ViewHolder holder, final String coverUri, String ecs) {
-        if (coverUri == null) {
+    private void setShopCover(ViewHolder holder, TopAdsShopItem shopItem) {
+        if (shopItem.getShopCoverUrl() == null) {
             holder.shopCover.setImageResource(com.tokopedia.abstraction.R.drawable.ic_loading_toped);
         } else {
             Glide.with(context)
-                    .load(ecs)
+                    .load(shopItem.getShopCoverEcs())
                     .dontAnimate()
                     .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
@@ -115,8 +115,13 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            if (coverUri.contains(PATH_VIEW) && !isFirstResource) {
-                                new ImpresionTask(className).execute(coverUri);
+                            if (shopItem.getShopCoverUrl().contains(PATH_VIEW) && !isFirstResource) {
+                                new TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
+                                        className,
+                                        shopItem.getShopClickUrl(),
+                                        shopItem.getShopId(),
+                                        shopItem.getShopName(),
+                                        shopItem.getShopImageUrl());
                             }
                             return false;
                         }
