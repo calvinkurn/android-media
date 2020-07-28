@@ -1,9 +1,9 @@
-package com.tokopedia.pushnotif.db.model
+package com.tokopedia.pushnotif.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.tokopedia.pushnotif.db.TRANSACTION_TABLE
+import com.tokopedia.pushnotif.data.constant.TRANSACTION_TABLE
 import org.jetbrains.annotations.Nullable
 
 @Entity(tableName = TRANSACTION_TABLE)

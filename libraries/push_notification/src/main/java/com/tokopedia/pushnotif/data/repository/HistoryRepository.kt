@@ -1,8 +1,8 @@
 package com.tokopedia.pushnotif.data.repository
 
 import android.content.Context
-import com.tokopedia.pushnotif.db.PushNotificationDB.Companion.getInstance
-import com.tokopedia.pushnotif.db.model.HistoryNotificationDB
+import com.tokopedia.pushnotif.data.db.PushNotificationDB.Companion.getInstance
+import com.tokopedia.pushnotif.data.db.model.HistoryNotification
 
 /**
  * @author ricoharisin .
@@ -19,7 +19,7 @@ object HistoryRepository {
             notificationType: Int,
             notificationId: Int
     ) {
-        val data = HistoryNotificationDB(
+        val data = HistoryNotification(
                 senderName,
                 message,
                 notificationType,
@@ -34,7 +34,7 @@ object HistoryRepository {
     fun getListHistoryNotification(
             context: Context,
             notificationType: Int
-    ): List<HistoryNotificationDB> {
+    ): List<HistoryNotification> {
         return getInstance(context)
                 .historyNotificationDao()
                 .getListHistoryNotification(notificationType, HISTORY_NOTIFICATION_LIMIT)

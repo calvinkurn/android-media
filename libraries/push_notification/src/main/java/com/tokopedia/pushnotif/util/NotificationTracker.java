@@ -3,9 +3,9 @@ package com.tokopedia.pushnotif.util;
 import android.content.Context;
 
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.pushnotif.domain.pojo.TrackPushNotificationEntity;
-import com.tokopedia.pushnotif.domain.usecase.TrackPushNotificationUseCase;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.TrackPushNotificationEntity;
+import com.tokopedia.pushnotif.domain.TrackPushNotificationUseCase;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.concurrent.TimeUnit;

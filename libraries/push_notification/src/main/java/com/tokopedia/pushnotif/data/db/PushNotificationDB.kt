@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif.db
+package com.tokopedia.pushnotif.data.db
 
 import android.content.Context
 import androidx.room.Database
@@ -6,16 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.tokopedia.pushnotif.db.dao.HistoryNotificationDao
-import com.tokopedia.pushnotif.db.dao.TransactionNotificationDao
-import com.tokopedia.pushnotif.db.model.HistoryNotificationDB
-import com.tokopedia.pushnotif.db.model.TransactionNotification
+import com.tokopedia.pushnotif.data.constant.PUSHNOTIF_DB
+import com.tokopedia.pushnotif.data.constant.TRANSACTION_TABLE
+import com.tokopedia.pushnotif.data.db.dao.HistoryNotificationDao
+import com.tokopedia.pushnotif.data.db.dao.TransactionNotificationDao
+import com.tokopedia.pushnotif.data.db.model.HistoryNotification
+import com.tokopedia.pushnotif.data.db.model.TransactionNotification
 
 /**
  * @author okasurya on 5/22/19.
  */
 @Database(entities = [
-    HistoryNotificationDB::class,
+    HistoryNotification::class,
     TransactionNotification::class
 ], version = 3)
 abstract class PushNotificationDB : RoomDatabase() {
@@ -43,8 +45,10 @@ abstract class PushNotificationDB : RoomDatabase() {
         }
 
         fun getInstance(context: Context): PushNotificationDB {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
+            return instance
+                    ?: synchronized(this) {
+                instance
+                        ?: buildDatabase(context).also { instance = it }
             }
         }
 

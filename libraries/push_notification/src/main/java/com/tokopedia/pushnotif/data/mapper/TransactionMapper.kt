@@ -1,7 +1,7 @@
 package com.tokopedia.pushnotif.data.mapper
 
-import com.tokopedia.pushnotif.db.model.TransactionNotification
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel
+import com.tokopedia.pushnotif.data.db.model.TransactionNotification
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 
 object TransactionMapper {
 

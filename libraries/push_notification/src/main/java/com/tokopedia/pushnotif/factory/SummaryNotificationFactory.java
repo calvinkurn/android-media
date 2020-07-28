@@ -3,17 +3,16 @@ package com.tokopedia.pushnotif.factory;
 import android.app.Notification;
 import android.content.Context;
 
-import androidx.core.app.NotificationCompat;
-
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
-import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
-import com.tokopedia.pushnotif.SummaryNotification;
-import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.db.model.HistoryNotification;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 
 import java.util.List;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * @author ricoharisin .
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class SummaryNotificationFactory extends BaseNotificationFactory {
 
-    private List<HistoryNotificationDB> listHistoryNotification;
+    private List<HistoryNotification> listHistoryNotification;
 
 
     public SummaryNotificationFactory(Context context) {
@@ -48,11 +47,11 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
         listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
 
-        for (HistoryNotificationDB history : listHistoryNotification) {
+        for (HistoryNotification history : listHistoryNotification) {
             inboxStyle.addLine(genarateContentText(history));
         }
 
-        inboxStyle.setSummaryText(SummaryNotification.generateSummaryText(notificationType, listHistoryNotification.size()));
+        inboxStyle.setSummaryText(generateSummaryText(notificationType));
 
         if (listHistoryNotification!= null && listHistoryNotification.size() > 0) {
             builder.setContentText(genarateContentText(listHistoryNotification.get(0)));
@@ -76,6 +75,17 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         return builder.build();
     }
 
+    private static String generateSummaryText(int notificationType) {
+        switch (notificationType) {
+            case Constant.NotificationId.TALK:
+                return "Tokopedia - Diskusi";
+            case Constant.NotificationId.CHAT:
+                return "Tokopedia - Chat";
+            default:
+                return "Tokopedia - Notifikasi";
+        }
+    }
+
     private String getGenericApplinks(int notficationType) {
         if (notficationType == Constant.NotificationId.TALK) {
             return ApplinkConst.TALK;
@@ -96,8 +106,8 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         return listHistoryNotification.size();
     }
 
-    public String genarateContentText(HistoryNotificationDB historyNotificationDB) {
-        return historyNotificationDB.getSenderName() + " : " + historyNotificationDB.getMessage();
+    public String genarateContentText(HistoryNotification historyNotification) {
+        return historyNotification.getSenderName() + " : " + historyNotification.getMessage();
 
     }
 }

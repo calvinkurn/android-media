@@ -2,8 +2,8 @@ package com.tokopedia.pushnotif.data.repository
 
 import android.content.Context
 import com.tokopedia.pushnotif.data.mapper.TransactionMapper.mapToTransaction
-import com.tokopedia.pushnotif.db.PushNotificationDB
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel
+import com.tokopedia.pushnotif.data.db.PushNotificationDB
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 
 object TransactionRepository {
 

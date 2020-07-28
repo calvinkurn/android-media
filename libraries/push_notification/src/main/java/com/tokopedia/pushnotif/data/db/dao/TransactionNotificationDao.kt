@@ -1,10 +1,10 @@
-package com.tokopedia.pushnotif.db.dao
+package com.tokopedia.pushnotif.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.tokopedia.pushnotif.db.TRANSACTION_TABLE
-import com.tokopedia.pushnotif.db.model.TransactionNotification
+import com.tokopedia.pushnotif.data.constant.TRANSACTION_TABLE
+import com.tokopedia.pushnotif.data.db.model.TransactionNotification
 
 @Dao
 interface TransactionNotificationDao {

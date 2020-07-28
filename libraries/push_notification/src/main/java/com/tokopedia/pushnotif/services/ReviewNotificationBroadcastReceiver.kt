@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif.util
+package com.tokopedia.pushnotif.services
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,8 +6,9 @@ import android.content.Intent
 import android.os.Handler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.pushnotif.db.model.ReviewNotificationModel
+import com.tokopedia.pushnotif.data.model.ReviewNotificationModel
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory
+import com.tokopedia.pushnotif.util.PendingIntentUtil
 
 class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
     companion object {

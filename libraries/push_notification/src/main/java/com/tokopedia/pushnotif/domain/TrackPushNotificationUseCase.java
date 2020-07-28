@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif.domain.usecase;
+package com.tokopedia.pushnotif.domain;
 
 import android.content.Context;
 
@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.pushnotif.R;
-import com.tokopedia.pushnotif.domain.pojo.TrackPushNotificationEntity;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.TrackPushNotificationEntity;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

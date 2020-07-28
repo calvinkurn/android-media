@@ -12,8 +12,8 @@ import androidx.core.app.RemoteInput;
 
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
-import com.tokopedia.pushnotif.Constant;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 
 /**

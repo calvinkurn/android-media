@@ -17,11 +17,11 @@ import android.webkit.URLUtil;
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.data.repository.TransactionRepository;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

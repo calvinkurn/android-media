@@ -7,9 +7,9 @@ import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
-import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.R;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 
 /**
  * @author ricoharisin .d

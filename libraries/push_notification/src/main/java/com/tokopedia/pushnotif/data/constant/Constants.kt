@@ -1,4 +1,4 @@
-package com.tokopedia.pushnotif.db
+package com.tokopedia.pushnotif.data.constant
 
 /**
  * @author okasurya on 5/22/19.
