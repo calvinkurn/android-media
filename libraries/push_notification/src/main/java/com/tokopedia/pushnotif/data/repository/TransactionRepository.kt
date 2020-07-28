@@ -23,7 +23,7 @@ object TransactionRepository {
 
     @JvmStatic
     fun isRenderable(context: Context, transactionId: String): Boolean {
-        if (transactionId.isEmpty()) return true
+        if (transactionId.isBlank()) return true
 
         return PushNotificationDB.getInstance(context)
                 .transactionNotificationDao()
