@@ -94,6 +94,7 @@ class MultipleVariantEditInputBottomSheet(
                 updateSubmitButtonInput()
             }
         }
+        contentView?.tfuStock.setModeToNumberInput()
         contentView?.tfuStock?.textFieldInput?.afterTextChanged {
             validateStock()
             updateSubmitButtonInput()
