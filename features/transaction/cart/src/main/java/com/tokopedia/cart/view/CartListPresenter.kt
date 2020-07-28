@@ -467,8 +467,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var tmpSubTotalPrice = subtotalPrice
         var tmpSubtotalCashback = subtotalCashback
 
-        if (!cartItemParentIdMap.containsKey(parentId)) {
-            val itemPrice = itemQty * (originData.pricePlan ?: 0.toDouble())
+        val parentIdPriceIndex = parentId + originData.pricePlan.toString()
+        if (!cartItemParentIdMap.containsKey(parentIdPriceIndex)) {
+            val itemPrice = itemQty * originData.pricePlan
             if (originData.isCashBack) {
                 val cashbackPercentageString = originData.productCashBack?.replace("%", "")
                 val cashbackPercentage = cashbackPercentageString?.toDouble()
@@ -479,21 +480,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             tmpSubTotalPrice += itemPrice
             originData.wholesalePriceFormatted = null
             cartItemHolderData.cartItemData?.let {
-                cartItemParentIdMap[parentId] = it
-            }
-        } else {
-            val calculatedHolderData = cartItemParentIdMap[parentId]
-            if (calculatedHolderData?.originData?.pricePlan != originData.pricePlan) {
-                val itemPrice = itemQty * originData.pricePlan
-                if (originData.isCashBack) {
-                    val cashbackPercentageString = originData.productCashBack?.replace("%", "")
-                    val cashbackPercentage = cashbackPercentageString?.toDouble()
-                            ?: 0.toDouble()
-                    val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
-                    tmpSubtotalCashback += itemCashback
-                }
-                tmpSubTotalPrice += itemPrice
-                originData.wholesalePriceFormatted = null
+                cartItemParentIdMap[parentIdPriceIndex] = it
             }
         }
 
