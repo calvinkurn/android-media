@@ -3,6 +3,7 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel.QuickFilterTrackingData
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.searchShopQuickFilterModel
 import com.tokopedia.search.shouldBe
 import org.junit.Test
@@ -20,6 +21,7 @@ internal class SearchShopClickQuickFilterTest: SearchShopViewModelTestFixtures()
 
         `Then assert search parameter contains the clicked option`(clickedOption)
         `Then assert search shop and get dynamic filter is executed twice`()
+        `Then assert click quick filter tracking data`(QuickFilterTrackingData(clickedOption, true))
     }
 
     private fun `Given search shop view is visible and added`() {
@@ -45,6 +47,10 @@ internal class SearchShopClickQuickFilterTest: SearchShopViewModelTestFixtures()
         getDynamicFilterUseCase.isExecuted(2)
     }
 
+    private fun `Then assert click quick filter tracking data`(quickFilterTrackingData: QuickFilterTrackingData?) {
+        searchShopViewModel.getClickQuickFilterTrackingEventLiveData().value?.getContentIfNotHandled() shouldBe quickFilterTrackingData
+    }
+
     @Test
     fun `Click to un-apply Quick Filter`() {
         `Given search shop API call will be successful`()
@@ -56,6 +62,7 @@ internal class SearchShopClickQuickFilterTest: SearchShopViewModelTestFixtures()
 
         `Then assert search parameter does not contain the clicked option`(clickedOption)
         `Then assert search shop and get dynamic filter is executed twice`()
+        `Then assert click quick filter tracking data`(QuickFilterTrackingData(clickedOption, false))
     }
 
     private fun `Then assert search parameter does not contain the clicked option`(clickedOption: Option) {

@@ -73,6 +73,7 @@ internal class SearchShopViewModel(
     private val clickProductItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val clickProductRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopViewModel.ShopItem.ShopItemProduct>>()
     private val sortFilterItemListLiveData = MutableLiveData<List<SortFilterItem>>()
+    private val clickQuickFilterTrackingEventMutableLiveData = MutableLiveData<Event<QuickFilterTrackingData>>()
     private val quickFilterIsVisible = MutableLiveData<Boolean>()
     private val shimmeringQuickFilterIsVisible = MutableLiveData<Boolean>()
     private val refreshLayoutIsVisible = MutableLiveData<Boolean>()
@@ -447,6 +448,8 @@ internal class SearchShopViewModel(
         val type = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
         return SortFilterItem(title = option.name, type = type) {
+            sendTrackingClickQuickFilter(option, isSelected)
+
             filterController.setFilter(
                     option,
                     isFilterApplied = !isSelected,
@@ -455,6 +458,11 @@ internal class SearchShopViewModel(
 
             onViewApplyFilter(filterController.getParameter())
         }
+    }
+
+    private fun sendTrackingClickQuickFilter(option: Option, isSelected: Boolean) {
+        val quickFilterTrackingData = QuickFilterTrackingData(option, !isSelected)
+        clickQuickFilterTrackingEventMutableLiveData.postValue(Event(quickFilterTrackingData))
     }
 
     private fun catchSearchShopException(e: Throwable?) {
@@ -775,4 +783,9 @@ internal class SearchShopViewModel(
     fun getShimmeringQuickFilterIsVisibleLiveData(): LiveData<Boolean> = shimmeringQuickFilterIsVisible
 
     fun getRefreshLayoutIsVisibleLiveData(): LiveData<Boolean> = refreshLayoutIsVisible
+
+    fun getClickQuickFilterTrackingEventLiveData(): LiveData<Event<QuickFilterTrackingData>> =
+            clickQuickFilterTrackingEventMutableLiveData
+
+    data class QuickFilterTrackingData(val option: Option, val isSelected: Boolean)
 }

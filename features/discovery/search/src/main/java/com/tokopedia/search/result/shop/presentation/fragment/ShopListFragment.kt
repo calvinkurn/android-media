@@ -179,6 +179,7 @@ internal class ShopListFragment:
         observeTrackingClickProductItem()
         observeTrackingClickProductRecommendation()
         observeQuickFilterLiveData()
+        observeTrackingClickQuickFilterEvent()
         observeRefreshLayoutVisibility()
         observeShimmeringLayoutVisibility()
         observeQuickFilterVisibility()
@@ -497,6 +498,13 @@ internal class ShopListFragment:
                 searchShopViewModel?.onViewOpenFilterPage()
             }
         }
+    }
+
+    private fun observeTrackingClickQuickFilterEvent() {
+        searchShopViewModel?.getClickQuickFilterTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            val userId = searchShopViewModel?.getUserId() ?: "0"
+            SearchTracking.trackEventClickQuickFilter(it.option.key, it.option.value, it.isSelected, userId)
+        })
     }
 
     private fun observeRefreshLayoutVisibility() {
