@@ -43,11 +43,7 @@ class MonthPickerViewHolder(
             set(Calendar.MONTH, minMonth)
         }
         val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
-        val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            set(Calendar.MONTH, 7)
-            set(Calendar.DAY_OF_MONTH, 31)
-            set(Calendar.YEAR, 2020)
-        }
+        val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
         val listener = object : OnDateChangedListener {
             override fun onDateChanged(date: Long) {
 
