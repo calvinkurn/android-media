@@ -27,7 +27,7 @@ class FpmDebuggerDetailActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return FpmDebuggerDetailFragment.newInstance(intent.extras)
+        return FpmDebuggerDetailFragment.newInstance(intent.extras ?: Bundle())
     }
 
     companion object {

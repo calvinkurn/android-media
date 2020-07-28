@@ -207,7 +207,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation project(rootProject.ext.features.createpost)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
@@ -242,7 +241,6 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)

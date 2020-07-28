@@ -324,7 +324,7 @@ class ShopPageFragment :
                         if (pathSegments.size > 1) {
                             shopId = pathSegments[1]
                         } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
-                            shopId = getQueryParameter(SHOP_ID)
+                            shopId = getQueryParameter(SHOP_ID)!!
                         }
                     }
                     if (shopDomain.isNullOrEmpty()) {
@@ -831,14 +831,6 @@ class ShopPageFragment :
                 refreshData()
             }
         }
-//        else if (requestCode == REQUEST_CODE_SORT) {
-//            data?.let {
-//                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-//                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
-//                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
-//                redirectToShopSearchProductResultPage(sortValue)
-//            }
-//        }
         else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()

@@ -16,10 +16,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -62,7 +59,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
@@ -313,6 +309,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
         mainParentStatusBarListener?.requestStatusBarLight()
+            
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -406,7 +403,7 @@ open class HomeFragment : BaseDaggerFragment(),
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
-            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true)
+            mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
@@ -681,7 +678,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModelInitialized() {
-        getHomeViewModel().isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+        getHomeViewModel().isViewModelInitialized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
                 callSubordinateTasks();
@@ -1974,8 +1971,6 @@ open class HomeFragment : BaseDaggerFragment(),
             )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
-            DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, getHomeViewModel().getUserId(), true

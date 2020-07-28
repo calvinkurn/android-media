@@ -43,6 +43,8 @@
     <string name="ent_pdp_ticket_pilih">Pilih</string>
     <string name="ent_pdp_ticket_ubah">Ubah tanggal</string>
     <string name="ent_pdp_ticket_habis">Habis</string>
+    <string name="ent_pdp_ticket_belum_tersedia">Belum Tersedia</string>
+    <string name="ent_pdp_ticket_telah_selesai">Penjualan Berakhir</string>
     <string name="ent_pdp_date_txt">%s</string>
     <string name="ent_default_totalPrice">Rp0</string>
     <string name="ent_error_network_message">Terjadi kesalahan. Coba lagi</string>

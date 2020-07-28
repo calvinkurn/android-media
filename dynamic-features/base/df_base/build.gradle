@@ -86,7 +86,6 @@ dependencies {
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.autocomplete)
-    implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.homeWishlist)
     implementation project(rootProject.ext.features.productCardOptions)
@@ -137,6 +136,8 @@ dependencies {
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.userIdentification)
 
     //Entertainment
     implementation project(rootProject.ext.features.orderhistory)
@@ -145,4 +146,5 @@ dependencies {
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
+    implementation project(rootProject.ext.features.atc_variant)
 }

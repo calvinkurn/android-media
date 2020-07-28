@@ -22,10 +22,12 @@ import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryFromSelectedUseCase;
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryWithParentChildUseCase;
+import com.tokopedia.core.common.category.domain.interactor.GetCategoryLiteTreeUseCase;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenter;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenterImpl;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -163,5 +165,15 @@ public class CategoryPickerModule {
     @Provides
     MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase() {
         return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
+    }
+
+    @Provides
+    GraphqlUseCase provideRxGQLUseCase() {
+        return new GraphqlUseCase();
+    }
+
+    @Provides
+    GetCategoryLiteTreeUseCase povideGetCatagoryLiteTreeUseCase(GraphqlUseCase graphqlUseCase) {
+        return new GetCategoryLiteTreeUseCase(graphqlUseCase);
     }
 }
