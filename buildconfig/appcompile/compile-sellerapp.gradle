@@ -36,7 +36,6 @@ include "features:discovery:productcard_options"
 include "features:fintech:home_credit"
 include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
-include "features:fintech:instant_loan"
 include "features:fintech:layanan_finansial"
 
 include "features:user:fcm_common"
