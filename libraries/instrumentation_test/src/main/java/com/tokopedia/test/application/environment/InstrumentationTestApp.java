@@ -251,10 +251,6 @@ public class InstrumentationTestApp extends BaseMainApplication
                 return "null";
             }
 
-            @Override
-            public boolean isMsisdnVerified() {
-                return false;
-            }
         };
     }
 
@@ -270,11 +266,6 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
 
     }
 
