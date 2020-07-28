@@ -333,7 +333,6 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.firebase.crashlytics
 
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
