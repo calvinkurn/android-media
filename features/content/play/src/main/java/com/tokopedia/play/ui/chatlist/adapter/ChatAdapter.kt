@@ -2,7 +2,7 @@ package com.tokopedia.play.ui.chatlist.adapter
 
 import com.tokopedia.adapterdelegate.BaseAdapter
 import com.tokopedia.play.ui.chatlist.adapter.delegate.ChatAdapterDelegate
-import com.tokopedia.play.view.uimodel.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by jegul on 04/12/19

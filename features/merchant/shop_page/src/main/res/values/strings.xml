@@ -226,9 +226,15 @@
     <string name="video_not_found">Video tidak ditemukan</string>
 
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
+    <string name="shop_page_play_card_success_add_reminder">Berhasil pasang pengingat</string>
+    <string name="shop_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
+    <string name="shop_page_play_card_error_reminder">Oops, internet terputus. Cek ulang koneksimu.</string>
+    <string name="shop_page_play_widget_title"><![CDATA[Ayo cobain <b>live streaming</b>]]></string>
+    <string name="shop_page_play_widget_sgc_content">dan bikin tokomu makin terkenal!</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
+    <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
 
 
 </resources>

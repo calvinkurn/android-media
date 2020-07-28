@@ -1,8 +1,7 @@
 package com.tokopedia.core.common.category.data.source.cloud;
 
-import com.tokopedia.core.common.category.data.mapper.SimpleResponseMapper;
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.core.common.category.data.source.cloud.model.CategoryServiceModel;
+import com.tokopedia.core.common.category.domain.interactor.GetCategoryLiteTreeUseCase;
+import com.tokopedia.core.common.category.domain.model.CategoriesResponse;
 
 import javax.inject.Inject;
 
@@ -13,15 +12,14 @@ import rx.Observable;
  */
 public class CategoryCloud {
 
-    private final HadesCategoryApi api;
+    private final GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase;
 
     @Inject
-    public CategoryCloud(HadesCategoryApi api) {
-        this.api = api;
+    public CategoryCloud(GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase) {
+        this.getCategoryLiteTreeUseCase = getCategoryLiteTreeUseCase;
     }
 
-    public Observable<CategoryServiceModel> fetchDataFromNetwork() {
-        return api.fetchCategory()
-                .map(new SimpleResponseMapper<>());
+    public Observable<CategoriesResponse> fetchDataFromNetwork() {
+        return getCategoryLiteTreeUseCase.createObservable(GetCategoryLiteTreeUseCase.Companion.createRequestParams());
     }
 }

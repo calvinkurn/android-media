@@ -17,6 +17,8 @@ public interface ReputationRouter {
 
     Fragment getReputationHistoryFragment();
 
+    Fragment getReviewSellerFragment();
+
     void showAppFeedbackRatingDialog(
             FragmentManager fragmentManager,
             Context context,

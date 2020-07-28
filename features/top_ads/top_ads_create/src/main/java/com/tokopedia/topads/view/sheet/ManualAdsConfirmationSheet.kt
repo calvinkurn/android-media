@@ -15,8 +15,8 @@ class ManualAdsConfirmationSheet {
     private var cancel: View? = null
     private var startManualAdsButton: View? = null
 
-    private fun setupView(context: Context, manualClick: () -> Unit) {
-        dialog!!.setOnShowListener { dialogInterface ->
+    private fun setupView(manualClick: () -> Unit) {
+        dialog?.setOnShowListener { dialogInterface ->
             val dialog = dialogInterface as BottomSheetDialog
             val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (frameLayout != null) {
@@ -25,7 +25,6 @@ class ManualAdsConfirmationSheet {
             }
         }
         startManualAdsButton?.setOnClickListener {
-          //  RouteManager.route(it.context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
             dismissDialog()
             manualClick.invoke()
         }
@@ -34,11 +33,11 @@ class ManualAdsConfirmationSheet {
     }
 
     fun show() {
-        dialog!!.show()
+        dialog?.show()
     }
 
     fun dismissDialog() {
-        dialog!!.dismiss()
+        dialog?.dismiss()
     }
 
     companion object {
@@ -46,11 +45,11 @@ class ManualAdsConfirmationSheet {
         fun newInstance(context: Context, manualClick: () -> Unit): ManualAdsConfirmationSheet {
             val fragment = ManualAdsConfirmationSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog!!.setContentView(R.layout.topads_create_bottom_sheet_layout_confirmation_manual_ads)
-            fragment.closeButton = fragment.dialog!!.findViewById(com.tokopedia.design.R.id.btn_close)
-            fragment.startManualAdsButton = fragment.dialog!!.findViewById(R.id.btn_start_manual_ads)
-            fragment.cancel = fragment.dialog!!.findViewById(R.id.cancel_btn_start_manual_ads)
-            fragment.setupView(context, manualClick)
+            fragment.dialog?.setContentView(R.layout.topads_create_bottom_sheet_layout_confirmation_manual_ads)
+            fragment.closeButton = fragment.dialog?.findViewById(com.tokopedia.design.R.id.btn_close)
+            fragment.startManualAdsButton = fragment.dialog?.findViewById(R.id.btn_start_manual_ads)
+            fragment.cancel = fragment.dialog?.findViewById(R.id.cancel_btn_start_manual_ads)
+            fragment.setupView(manualClick)
             return fragment
         }
     }

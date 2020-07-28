@@ -9,15 +9,20 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.*
+import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
@@ -89,6 +94,7 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.shopInfoLayout.shopBadges?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
+                listener.onShopBadgeClicked()
                 shopBadgeUiModel.sendSettingShopInfoClickTracking()
             }
         }
@@ -103,6 +109,27 @@ class OtherMenuViewHolder(private val itemView: View,
                 listener.onFollowersCountClicked()
             }
         }
+    }
+
+    fun setupFreeShippingLayout(
+        fm: FragmentManager?,
+        user: UserSessionInterface
+    ) {
+        itemView.shopInfoLayout.freeShippingLayout?.apply {
+            val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
+
+            setOnClickListener {
+                freeShippingBottomSheet.show(fm)
+                SettingFreeShippingTracker.trackFreeShippingClick(user)
+            }
+            show()
+
+            SettingFreeShippingTracker.trackFreeShippingImpression(user)
+        }
+    }
+
+    fun hideFreeShippingLayout() {
+        itemView.shopInfoLayout.freeShippingLayout?.hide()
     }
 
     private fun setShopName(shopName: String) {
@@ -270,6 +297,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     interface Listener {
         fun onShopInfoClicked()
+        fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()

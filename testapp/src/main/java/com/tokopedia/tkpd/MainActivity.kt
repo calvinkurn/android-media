@@ -7,10 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.application.MyApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.tkpd.helper.logout
+import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,6 +29,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_testapp)
 
         userSession = UserSession(this)
+
+        if (userSession.deviceId.isNullOrEmpty()) {
+            userSession.deviceId = DataSource.MOCK_DEVICE_ID
+        }
+
         val loginButton = findViewById<Button>(R.id.loginButton)
 
         loginButton.setOnClickListener {
@@ -47,6 +54,10 @@ class MainActivity : AppCompatActivity() {
 
         testGqlButton.setOnClickListener {
             TestGqlUseCase().execute()
+        }
+
+        devOptButton.setOnClickListener {
+            RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
         }
 
         val button = findViewById<Button>(R.id.button)

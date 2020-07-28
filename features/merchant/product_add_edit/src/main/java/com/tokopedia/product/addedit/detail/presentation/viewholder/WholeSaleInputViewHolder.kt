@@ -83,6 +83,10 @@ class WholeSaleInputViewHolder(itemView: View,
 
     fun bindData(inputModel: WholeSaleInputModel) {
         wholeSaleQuantityField?.textFieldInput?.setText(inputModel.quantity)
+        wholeSaleQuantityField?.setError(false)
+        wholeSaleQuantityField?.setMessage("")
         wholeSalePriceField?.textFieldInput?.setText(inputModel.price)
+        wholeSalePriceField?.setError(false)
+        wholeSalePriceField?.setMessage("")
     }
 }

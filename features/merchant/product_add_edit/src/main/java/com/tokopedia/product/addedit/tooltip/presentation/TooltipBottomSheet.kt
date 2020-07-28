@@ -1,7 +1,5 @@
 package com.tokopedia.product.addedit.tooltip.presentation
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -49,13 +47,16 @@ class TooltipBottomSheet : BottomSheetUnify() {
     }
 
     private fun changeCloseButtonSize() {
-        val fontSize = resources.getDimension(R.dimen.fontSize_lvl5).toDp()
+        val fontSize = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl5).toDp()
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-        bottomSheetClose.drawable?.apply {
-            val bitmap = (this as BitmapDrawable).bitmap
-            val drawableSize = resources.getDimensionPixelSize(R.dimen.tooltip_close_size)
-            val scaled = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, drawableSize, drawableSize, true))
-            bottomSheetClose.setImageDrawable(scaled)
+        context?.also { context ->
+            bottomSheetClose.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
+                layoutParams.apply {
+                    width = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
+                    height = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
+                }
+            }
         }
     }
 
@@ -66,7 +67,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
     }
 
     private fun addMarginCloseButton() {
-        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
         val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
@@ -81,12 +82,12 @@ class TooltipBottomSheet : BottomSheetUnify() {
             adapter = listAdapter
             if (isDividerVisible) {
                 ContextCompat.getDrawable(context, R.drawable.tooltip_divider)?.also {
-                    addItemDecoration(ImageDividerItemDecoration(
+                    addItemDecoration(TooltipDividerItemDecoration(
                             drawable = it,
                             drawOnLastItem = false,
                             paddingLeft = context.resources.getDimension(R.dimen.tooltip_divider_padding_left).toInt(),
-                            paddingTop = context.resources.getDimension(R.dimen.layout_lvl1).toInt(),
-                            paddingBottom = context.resources.getDimension(R.dimen.layout_lvl1).toInt()))
+                            paddingTop = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt(),
+                            paddingBottom = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()))
                 }
             }
             layoutManager = LinearLayoutManager(context)
