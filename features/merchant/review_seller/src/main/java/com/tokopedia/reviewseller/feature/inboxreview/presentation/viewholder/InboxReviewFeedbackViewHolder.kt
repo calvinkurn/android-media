@@ -42,7 +42,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             if(element.replyText.isNotBlank()) {
                 containerInboxReview?.setBackgroundColor(Color.WHITE)
             } else {
-                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.clr_unanswered))
+                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.Green_G100))
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
