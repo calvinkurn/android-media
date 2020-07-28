@@ -734,7 +734,6 @@ class AddEditProductVariantFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
-            // TODO - change flow, able to causing race condition
             // extract selected variant details
             val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
             // set selected variant details
