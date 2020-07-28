@@ -14,16 +14,20 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerFeatureFragmentAdapter
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
+import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_seller_migration.*
 
-class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerViewListener {
+class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewListener {
 
     companion object {
         const val KEY_PARAM_FEATURE_NAME: String = "feature_name"
+        const val SCREEN_NAME = "/migration-page"
 
         fun createInstance(featureName: String): SellerMigrationFragment {
             return SellerMigrationFragment().apply {
@@ -35,6 +39,7 @@ class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerVi
     }
 
     private val tabList = ArrayList<SellerFeatureFragmentAdapter.SellerFeatureFragmentItem>()
+    private var lastTabPosition = -1
     private val viewPagerOnTabSelectedListener by lazy {
         object : TabLayout.TabLayoutOnPageChangeListener(tabSellerMigration.getUnifyTabLayout()) {
             override fun onPageSelected(position: Int) {
@@ -50,12 +55,17 @@ class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerVi
                                 .also { lp -> lp.height = view.measuredHeight }
                     }
                 }
+                if (position != lastTabPosition) {
+                    lastTabPosition = position
+                    SellerMigrationTracking.eventClickSellerFeatureTab(tabList[position].tabName, SCREEN_NAME, userSession.userId)
+                }
             }
         }
     }
 
     private var featureName: String = ""
     private var fragmentAdapter: SellerFeatureFragmentAdapter? = null
+    private val userSession by lazy { UserSession(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,8 +78,8 @@ class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerVi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initBody()
         initHeader()
+        initBody()
         initFooter()
     }
 
@@ -84,7 +94,7 @@ class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerVi
     }
 
     private fun initFooter() {
-        sellerMigrationButton.setOnClickListener { goToSellerApp() }
+        sellerMigrationButton.setOnClickListener { goToPlayStore() }
         sellerMigrationLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_fragment_footer)).spannedString }
         sellerMigrationLink?.setOnTouchListener(SellerMigrationTouchListener {
             goToInformationWebview(it)
@@ -116,10 +126,10 @@ class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerVi
             SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> {
                 0
             }
-            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_ATTACH_VOUCHER -> {
+            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT -> {
                 1
             }
-            SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE, SellerMigrationFeatureName.FEATURE_REVIEW_STATISTIC -> {
+            SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS -> {
                 2
             }
             SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SellerMigrationFeatureName.FEATURE_TOPADS -> {
@@ -140,30 +150,31 @@ class SellerMigrationFragment : Fragment(), BaseSellerFeatureFragment.RecyclerVi
     }
 
     private fun addTabFragments() {
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureProductTabFragment(this)))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureChatTabFragment(this)))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureReviewTabFragment(this)))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureAdsPromoTabFragment(this)))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureStatisticTabFragment(this)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureProductTabFragment(this), "product"))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureChatTabFragment(this), "chat"))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureReviewTabFragment(this), "ulasan"))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureAdsPromoTabFragment(this), "ads & promo"))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureStatisticTabFragment(this), "statistics"))
     }
 
-    private fun goToSellerApp() {
+    private fun goToPlayStore() {
         with(SellerMigrationConstants) {
             try {
-                val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
-                if (intent != null) {
-                    intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
-                    activity?.startActivity(intent)
-                } else {
-                    activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
-                }
+                activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
             } catch (anfe: ActivityNotFoundException) {
                 activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
+            } finally {
+                SellerMigrationTracking.eventClickGoToPlayStore(SCREEN_NAME, userSession.userId)
             }
         }
     }
 
     private fun goToInformationWebview(link: String): Boolean {
-        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
+        return if (RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")) {
+            SellerMigrationTracking.eventClickLearnMore(SCREEN_NAME, userSession.userId)
+            true
+        } else {
+            false
+        }
     }
 }

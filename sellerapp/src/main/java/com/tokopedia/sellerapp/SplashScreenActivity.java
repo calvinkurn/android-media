@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
@@ -54,12 +55,26 @@ public class SplashScreenActivity extends SplashScreen {
     /**
      * handle/forward app link redirection from customer app to seller app
      * */
-    private boolean handleAppLink() {
+    private boolean handleAppLink(UserSessionInterface userSession) {
         Uri uri = getIntent().getData();
         if (null != uri) {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
+            boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
-                return RouteManager.route(this, uri.toString());
+                if (isAutoLogin && userSession.getUserId().isEmpty()) {
+                    seamlessLogin(true);
+                    return true;
+                }
+                Intent intent = RouteManager.getIntent(this, uri.toString());
+                if (intent != null) {
+                    String secondAppLink = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA);
+                    if (secondAppLink != null && !secondAppLink.isEmpty()) {
+                        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink);
+                    }
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
             }
             return false;
         }
@@ -76,12 +91,12 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
-        if (handleAppLink()) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (handleAppLink(userSession)) {
             finish();
             return;
         }
 
-        UserSessionInterface userSession = new UserSession(this);
         if (userSession.hasShop()) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
@@ -105,22 +120,26 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(intent);
         } else {
             boolean isAutoLoginSeamless = getIntent().getBooleanExtra(KEY_AUTO_LOGIN, false);
-            boolean hasOnboarding = new OnboardingPreference(this)
-                    .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
-            Intent intent;
-            if (isAutoLoginSeamless){
-                intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
-                Bundle b = new Bundle();
-                b.putBoolean(KEY_AUTO_LOGIN, true);
-                intent.putExtras(b);
-            } else if (hasOnboarding) {
-                intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
-            } else {
-                intent = new Intent(this, SellerOnboardingActivity.class);
-            }
-            startActivity(intent);
+            seamlessLogin(isAutoLoginSeamless);
         }
         finish();
+    }
+
+    private void seamlessLogin(boolean isAutoLoginSeamless) {
+        boolean hasOnboarding = new OnboardingPreference(this)
+                .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
+        Intent intent;
+        if (isAutoLoginSeamless){
+            intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
+            Bundle b = new Bundle();
+            b.putBoolean(KEY_AUTO_LOGIN, true);
+            intent.putExtras(b);
+        } else if (hasOnboarding) {
+            intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
+        } else {
+            intent = new Intent(this, SellerOnboardingActivity.class);
+        }
+        startActivity(intent);
     }
 
     @NonNull

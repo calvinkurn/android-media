@@ -16,16 +16,13 @@ import androidx.annotation.StringDef
     SellerMigrationFeatureName.FEATURE_INSTAGRAM_IMPORT,
     SellerMigrationFeatureName.FEATURE_ADS,
     SellerMigrationFeatureName.FEATURE_ADS_DETAIL,
-    SellerMigrationFeatureName.FEATURE_REVIEW_STATISTIC,
-    SellerMigrationFeatureName.FEATURE_ATTACH_VOUCHER,
-    SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE,
+    SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,
     SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT,
     SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT
 ])
 annotation class SellerMigrationFeatureName {
     companion object {
         const val FEATURE_TEMPLATE_CHAT = "template_chat"
-        const val FEATURE_ATTACH_VOUCHER = "attach_voucher"
         const val FEATURE_MULTI_EDIT = "multi_edit"
         const val FEATURE_TOPADS = "topads"
         const val FEATURE_SET_CASHBACK = "set_cashback"
@@ -36,8 +33,7 @@ annotation class SellerMigrationFeatureName {
         const val FEATURE_INSTAGRAM_IMPORT = "instagram_import"
         const val FEATURE_ADS = "ads"
         const val FEATURE_ADS_DETAIL = "ads_detail"
-        const val FEATURE_REVIEW_STATISTIC = "review_statistic"
-        const val FEATURE_REVIEW_TEMPLATE = "review_template"
+        const val FEATURE_REVIEW_TEMPLATE_AND_STATISTICS = "review_template_and_statistics"
         const val FEATURE_SHOP_INSIGHT = "shop_insight"
         const val FEATURE_MARKET_INSIGHT = "market_insight"
     }

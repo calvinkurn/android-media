@@ -25,7 +25,7 @@
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="heading_2"
-                tools:text="@string/seller_migration_fragment_header_title" />
+                android:text="@string/seller_migration_fragment_header_title" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivSellerMigration"

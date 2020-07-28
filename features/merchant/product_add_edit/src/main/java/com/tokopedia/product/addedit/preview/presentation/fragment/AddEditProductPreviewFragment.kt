@@ -20,21 +20,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
@@ -104,6 +105,9 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
+import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -148,6 +152,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var addEditProductVariantLayout: ViewGroup? = null
     private var addEditProductVariantButton: Typography? = null
     private var addProductVariantTipsLayout: ViewGroup? = null
+    private var sellerFeatureCarousel: SellerFeatureCarousel? = null
 
     // shipment
     private var addEditProductShipmentTitle: Typography? = null
@@ -286,6 +291,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
         addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
         addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
+        sellerFeatureCarousel = view.findViewById(R.id.sellerFeatureCarousel)
 
         // shipment
         addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
@@ -430,6 +436,24 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 ProductEditStepperTracking.trackChangePromotion(shopId)
             }
             setCashback()
+        }
+
+        if (!GlobalConfig.isSellerApp()) {
+            sellerFeatureCarousel?.apply {
+                setListener(object: SellerFeatureCarousel.SellerFeatureClickListener {
+                    override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
+                        when (item) {
+                            is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
+                            is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
+                        }
+                    }
+                })
+                addItemDecoration()
+                setItems(listOf(
+                        SellerFeatureUiModel.SetVariantFeatureWithDataUiModel(Any()),
+                        SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(Any())
+                ))
+            }
         }
 
         context?.let { UpdateShopActiveService.startService(it) }
@@ -683,7 +707,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun enableVariantEdit() {
-        addEditProductVariantLayout?.show()
+        addEditProductVariantLayout?.showWithCondition(GlobalConfig.isSellerApp())
+        sellerFeatureCarousel?.showWithCondition(!GlobalConfig.isSellerApp())
     }
 
     private fun enableShipmentEdit() {
@@ -695,7 +720,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun enablePromotionEdit() {
-        editProductPromotionLayout?.show()
+        editProductPromotionLayout?.showWithCondition(GlobalConfig.isSellerApp())
     }
 
     private fun enableStatusEdit() {
@@ -1062,5 +1087,43 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun hideLoading() {
         loadingLayout?.hide()
+    }
+
+    private fun goToSellerAppProductManageThenSetCashback() {
+        viewModel.productInputModel.value?.let { productInputModel ->
+            val firstAppLink = Uri.parse(ApplinkConst.PRODUCT_MANAGE)
+                    .buildUpon()
+                    .build()
+                    .toString()
+            val secondAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId()))
+                    .buildUpon()
+                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_NAME, productInputModel.detailInputModel.productName)
+                    .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
+                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
+                    .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
+                    .build()
+                    .toString()
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, firstAppLink, secondAppLink)
+        }
+    }
+
+    private fun goToSellerAppEditProduct(productId: String) {
+        val secondAppLink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                .build()
+                .toString()
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, ApplinkConst.PRODUCT_MANAGE, secondAppLink)
+    }
+
+    private fun goToSellerMigrationPage(featureName: String, firstAppLink: String, secondAppLink: String = "") {
+        context?.run {
+            val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName))
+            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink)
+            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink)
+            intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
+            startActivity(intent)
+        }
     }
 }

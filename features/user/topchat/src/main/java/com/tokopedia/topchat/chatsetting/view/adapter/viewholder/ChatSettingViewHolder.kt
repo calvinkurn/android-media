@@ -15,20 +15,25 @@ class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
     interface ChatSettingListener {
         fun isTabSeller(): Boolean
         fun eventClickChatSetting(element: ChatSetting)
+        fun goToSellerMigrationPage()
     }
 
     override fun bind(element: ChatSetting?) {
         if (element == null) return
         with(itemView) {
             tvTitle?.text = element.alias
-            labelSellerAppOnly.showWithCondition(isSellerTabTemplateChat(element.alias))
+            labelSellerMigration.showWithCondition(isSellerTabTemplateChat(element.alias))
 
             setOnClickListener {
-                listener.eventClickChatSetting(element)
-                val intent = RouteManager.getIntent(itemView.context, element.link).apply {
-                    putExtra(TemplateChatActivity.PARAM_IS_SELLER, listener.isTabSeller())
+                if (isSellerTabTemplateChat(element.alias)) {
+                    listener.goToSellerMigrationPage()
+                } else {
+                    listener.eventClickChatSetting(element)
+                    val intent = RouteManager.getIntent(itemView.context, element.link).apply {
+                        putExtra(TemplateChatActivity.PARAM_IS_SELLER, listener.isTabSeller())
+                    }
+                    it.context.startActivity(intent)
                 }
-                it.context.startActivity(intent)
             }
         }
     }

@@ -46,6 +46,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -225,6 +227,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var shouldFireVariantTracker = true
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
     private var enableCheckImeiRemoteConfig = false
+    private var alreadyPerformSellerMigrationAction = false
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -1298,6 +1301,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observe(viewModel.productInfoP3RateEstimate) {
             onSuccessGetDataP3RateEstimate(it)
             (activity as? ProductDetailActivity)?.stopMonitoringFull()
+            if (!activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank() &&
+                    !alreadyPerformSellerMigrationAction) {
+                alreadyPerformSellerMigrationAction = true
+                actionButtonView.rincianTopAdsClick?.invoke()
+            }
         }
     }
 
@@ -2294,8 +2302,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         actionButtonView.rincianTopAdsClick = {
-            context?.let {
-                topAdsDetailSheet.show(topAdsGetProductManage.data.adId)
+            if (GlobalConfig.isSellerApp()) {
+                context?.let {
+                    topAdsDetailSheet.show(topAdsGetProductManage.data.adId)
+                }
+            } else {
+                val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, appLink)
             }
         }
 
@@ -2314,15 +2327,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         actionButtonView.promoTopAdsClick = {
+            var applink = ""
             viewModel.shopInfo?.let { shopInfo ->
-                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
                         .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
                         .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID
                                 ?: "")
                         .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
                                 if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
-
+            }
+            if (GlobalConfig.isSellerApp()) {
                 context?.let { RouteManager.route(it, applink) }
+            } else {
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, applink)
             }
         }
 
@@ -3010,6 +3027,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun goToProfileActivity(userId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
         startActivity(intent)
+    }
+
+    private fun goToSellerMigrationPage(featureName: String, firstAppLink: String, secondAppLink: String = "") {
+        context?.run {
+            val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName))
+            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink)
+            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink)
+            intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
+            startActivity(intent)
+        }
     }
 
     override fun showAlertUpcomingEnded() {

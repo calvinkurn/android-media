@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="160dp"
+    android:layout_height="match_parent"
+    android:padding="@dimen/layout_lvl1">
+
+    <include layout="@layout/item_seller_feature" />
+
+</com.tokopedia.unifycomponents.CardUnify>

@@ -18,6 +18,7 @@ class SellerFeatureFragmentAdapter(fm: FragmentManager):
     }
 
     data class SellerFeatureFragmentItem (
-            val fragment: Fragment
+            val fragment: Fragment,
+            val tabName: String
     )
 }

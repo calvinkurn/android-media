@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
@@ -32,15 +38,15 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking;
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants;
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationVoucherTokoBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
-import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
@@ -259,7 +265,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onMenuListClicked(MenuListViewModel item) {
         if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_voucher_toko))) {
             sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
-            showSellerMigrationVoucherTokoBottomSheet();
+            goToVoucherToko();
+        } else if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_product_feature))) {
+            goToSellerAppProductManage();
         } else {
             super.onMenuListClicked(item);
         }
@@ -318,12 +326,26 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         }
     }
 
-    private void showSellerMigrationVoucherTokoBottomSheet() {
+    private void goToSellerAppProductManage() {
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, ApplinkConst.PRODUCT_MANAGE, "");
+    }
+
+    private void goToVoucherToko() {
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO, "");
+    }
+
+    private void goToSellerMigrationPage(String featureName, String firstAppLink, String secondAppLink) {
         if (getContext() != null) {
-            if (sellerMigrationVoucherTokoBottomSheet == null) {
-                sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.Companion.createNewInstance(getContext());
-            }
-            sellerMigrationVoucherTokoBottomSheet.show(getChildFragmentManager(), SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET);
+            String sellerMigrationPageAppLink = Uri.parse(ApplinkConst.SELLER_MIGRATION)
+                    .buildUpon()
+                    .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                    .build()
+                    .toString();
+            Intent intent = RouteManager.getIntent(getContext(), sellerMigrationPageAppLink);
+            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink);
+            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink);
+            intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, getScreenName());
+            startActivity(intent);
         }
     }
 }

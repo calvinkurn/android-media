@@ -140,6 +140,8 @@
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
     <string name="error_video_is_exist">Link video tidak boleh sama</string>
     <string name="error_description_character_limit">Sudah mencapai maks. karakter</string>
+    <string name="title_no_variant_layout">Varian Produk</string>
+    <string name="description_no_variant_layout">Kelola varian warna, ukuran, dan detil lainnya secara mudah hanya di aplikasi &lt;b&gt;Tokopedia Seller&lt;/b&gt;</string>
 
     <!--Tooltip wording-->
     <string name="title_tooltip_photo_tips">Tips memilih foto produk</string>
