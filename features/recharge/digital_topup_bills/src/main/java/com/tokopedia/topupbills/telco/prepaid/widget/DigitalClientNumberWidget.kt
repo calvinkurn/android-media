@@ -1,7 +1,5 @@
 package com.tokopedia.topupbills.telco.prepaid.widget
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -130,34 +128,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     fun setVisibleResultNumber(show: Boolean) {
         inputNumberResult.text = getInputNumber()
         if (show && getInputNumber().isNotEmpty()) {
-            animateVisibilityView(layoutResult, layoutInputNumber)
+            layoutResult.show()
+            layoutInputNumber.hide()
         } else {
-            animateVisibilityView(layoutInputNumber, layoutResult)
-        }
-    }
-
-    /**
-     * @param view1 show
-     * @param view2 hide
-     */
-    private fun animateVisibilityView(view1: View, view2: View) {
-        val shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
-        view1.apply {
-            alpha = ALPHA_0F
-            view1.show()
-            animate()
-                    .alpha(ALPHA_1F)
-                    .setDuration(shortAnimationDuration.toLong())
-                    .setListener(null)
-
-            view2.animate()
-                    .alpha(ALPHA_0F)
-                    .setDuration(shortAnimationDuration.toLong())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(p0: Animator?) {
-                            view2.hide()
-                        }
-                    })
+            layoutInputNumber.show()
+            layoutResult.hide()
         }
     }
 

@@ -28,6 +28,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -65,7 +66,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     private fun setAnimationAppBarLayout() {
         appBarLayout = findViewById(R.id.app_bar_layout_telco)
 
-        appBarLayout.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener {
+        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
             override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
                 if (lastOffset == verticalOffSet) return
@@ -77,7 +78,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                         (toolbar as HeaderUnify).transparentMode = false
                         menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
                                 com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
-                        if (fragment != null) {
+                        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
                             (fragment as DigitalBaseTelcoFragment).onCollapseAppBar()
                         }
                     } else {
@@ -85,7 +86,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                         (toolbar as HeaderUnify).transparentMode = true
                         menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
                                 com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
-                        if (fragment != null) {
+                        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
                             (fragment as DigitalBaseTelcoFragment).onExpandAppBar()
                         }
                     }
@@ -166,6 +167,13 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        if (fragment != null && fragment is DigitalBaseTelcoFragment) {
+            (fragment as DigitalBaseTelcoFragment).onBackPressed()
+        }
+        super.onBackPressed()
     }
 
     abstract fun sendTrackingDotsMenuTelco(userId: String)

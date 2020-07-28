@@ -64,7 +64,7 @@
             android:id="@+id/telco_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/product_promo_price"
+            android:layout_below="@+id/telco_product_promo_price"
             android:layout_marginBottom="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"

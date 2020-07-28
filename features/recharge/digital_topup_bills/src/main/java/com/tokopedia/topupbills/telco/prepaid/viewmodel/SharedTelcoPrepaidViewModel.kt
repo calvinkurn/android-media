@@ -19,6 +19,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,6 +30,10 @@ import javax.inject.Inject
 class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                       private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
+
+    private val _expandView = MutableLiveData<Boolean>()
+    val expandView: LiveData<Boolean>
+        get() = _expandView
 
     private val _productCatalogItem = MutableLiveData<TelcoProduct>()
     val productCatalogItem: LiveData<TelcoProduct>
@@ -109,7 +115,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
             _loadingProductList.postValue(false)
@@ -124,9 +130,19 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         }
     }
 
+    fun setExpandInputNumberView(expand: Boolean) {
+        launch {
+            delay(DELAY_TIME)
+            _expandView.postValue(expand)
+        }
+    }
+
     companion object {
         const val KEY_MENU_ID = "menuID"
         const val KEY_OPERATOR_ID = "operatorID"
         const val KEY_FILTER_DATA = "filterData"
+
+        const val EXP_TIME = 10
+        const val DELAY_TIME: Long = 100
     }
 }

@@ -6,16 +6,17 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.topupbills.telco.JsonToString
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInputMultiTab
 import com.tokopedia.topupbills.telco.data.TelcoProduct
-import com.tokopedia.topupbills.telco.JsonToString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,6 +49,20 @@ class SharedTelcoPrepaidViewModelTest {
         val actualData = sharedTelcoPrepaidViewModel.productCatalogItem.value
         assertEquals(productCatalogItem.id, actualData?.id)
     }
+
+//    @Test
+//    fun setExpandInputNumberView_validData() = runBlockingTest {
+//        pauseDispatcher {
+//            sharedTelcoPrepaidViewModel.setExpandInputNumberView(true)
+//
+//            runCurrent()
+//            advanceTimeBy(200)
+//
+//            //then
+//            val actualData = sharedTelcoPrepaidViewModel.expandView.value
+//            assertEquals(true, actualData)
+//        }
+//    }
 
     @Test
     fun setProductAutoCheckout_validData() {

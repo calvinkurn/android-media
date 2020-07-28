@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
@@ -67,7 +70,9 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 
             _catalogPrefixSelect.postValue(Success(data))
@@ -78,6 +83,7 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     companion object {
         const val KEY_MENU_ID = "menuID"
+        const val EXP_TIME = 10
     }
 
 }
