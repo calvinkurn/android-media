@@ -27,7 +27,7 @@ object TransactionRepository {
 
         return PushNotificationDB.getInstance(context)
                 .transactionNotificationDao()
-                .isRenderable(transactionId) == 0
+                .isRenderable(transactionId.trim()) == 0
     }
 
 }
