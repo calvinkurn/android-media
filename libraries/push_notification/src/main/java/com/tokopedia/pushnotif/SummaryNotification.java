@@ -2,6 +2,7 @@ package com.tokopedia.pushnotif;
 
 import android.content.Context;
 
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 import com.tokopedia.pushnotif.model.SummaryNotificationModel;
 
@@ -17,7 +18,7 @@ public class SummaryNotification {
     public static SummaryNotificationModel generateSummaryNotificationModel(Context context, int notificationType) {
         SummaryNotificationModel summaryNotificationModel = new SummaryNotificationModel();
         summaryNotificationModel.setHistoryString(
-                convertHistoryToString(HistoryNotification.getListHistoryNotification(context, notificationType))
+                convertHistoryToString(HistoryRepository.getListHistoryNotification(context, notificationType))
         );
         summaryNotificationModel.setSummaryText(generateSummaryText(notificationType,
                 summaryNotificationModel.getTotalHistory()));

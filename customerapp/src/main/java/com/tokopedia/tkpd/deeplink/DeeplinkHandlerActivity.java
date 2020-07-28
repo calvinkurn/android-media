@@ -57,7 +57,7 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
-import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -214,12 +214,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 .subscribeOn(Schedulers.io())
                 .map(aBoolean -> {
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
+                        HistoryRepository.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
                     } else {
-                        HistoryNotification.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
+                        HistoryRepository.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
                     }
 
-                    return HistoryNotification.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
+                    return HistoryRepository.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {

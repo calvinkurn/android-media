@@ -20,7 +20,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
-import com.tokopedia.pushnotif.data.TransactionRepository;
+import com.tokopedia.pushnotif.data.repository.TransactionRepository;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
 import java.util.concurrent.ExecutionException;
@@ -51,13 +51,11 @@ public abstract class BaseNotificationFactory {
             int notificationId,
             ApplinkNotificationModel element
     ) {
-        TransactionRepository.INSTANCE.insert(
+        TransactionRepository.insert(
                 context,
-                element.getFullName(),
-                element.getSummary(),
+                element,
                 notificationType,
-                notificationId,
-                element.getTransactionId()
+                notificationId
         );
     }
 

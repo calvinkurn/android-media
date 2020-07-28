@@ -2,17 +2,16 @@ package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
 import android.content.Context;
-import android.os.Build;
+
 import androidx.core.app.NotificationCompat;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
-import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.pushnotif.SummaryNotification;
 import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
-import com.tokopedia.pushnotif.model.SummaryNotificationModel;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-        HistoryNotification.storeNotification(
+        HistoryRepository.storeNotification(
                 context,
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getSummary(),
@@ -47,7 +46,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
                 ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks())
         );
 
-        listHistoryNotification = HistoryNotification.getListHistoryNotification(context, notificationType);
+        listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
 
         for (HistoryNotificationDB history : listHistoryNotification) {
             inboxStyle.addLine(genarateContentText(history));
