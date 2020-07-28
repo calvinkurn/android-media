@@ -69,7 +69,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
-    implementation "com.github.ChuckerTeam.Chucker:library:3.0.1@aar"
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection

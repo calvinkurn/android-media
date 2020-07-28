@@ -76,10 +76,8 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchChipFailed_shouldShowErrorMessage() {
         // given
-        coEvery { getChipsCategoryUseCase.executeOnBackground() } coAnswers { throw Exception("Fetch chip failed") }
         coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns SearchData()
-
+        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } coAnswers { throw Exception("Fetch chip failed") }
         // when
         viewModel.getCategoryBrandData("", "", "", 1, true)
 
