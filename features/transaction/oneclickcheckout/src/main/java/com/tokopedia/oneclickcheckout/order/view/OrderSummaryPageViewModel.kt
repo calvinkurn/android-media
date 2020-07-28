@@ -831,7 +831,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val selectedTerm = _orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
                 val parse = JsonParser().parse(metadata)
-                parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM).addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
+                val expressCheckoutParams = parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
+                    // unexpected null installment term param
+                    return null
+                }
+                expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
                 metadata = parse.toString()
             }
             val profile = UpdateCartOccProfileRequest(
@@ -848,27 +853,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updatePreference(preference: ProfilesItemModel) {
         var param = generateUpdateCartParam()
-        if (param != null) {
-            param = param.copy(profile = UpdateCartOccProfileRequest(
-                    profileId = preference.profileId.toString(),
-                    addressId = preference.addressModel.addressId.toString(),
-                    serviceId = preference.shipmentModel.serviceId,
-                    gatewayCode = preference.paymentModel.gatewayCode,
-                    metadata = preference.paymentModel.metadata
-            ))
-            globalEvent.value = OccGlobalEvent.Loading
-            updateCartOccUseCase.execute(param, {
-                clearBboIfExist()
-                globalEvent.value = OccGlobalEvent.TriggerRefresh()
-            }, { throwable: Throwable ->
-                if (throwable is MessageErrorException && throwable.message != null) {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE)
-                } else {
-                    globalEvent.value = OccGlobalEvent.Error(throwable)
-                }
-            })
+        if (param == null) {
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            return
         }
+        param = param.copy(profile = UpdateCartOccProfileRequest(
+                profileId = preference.profileId.toString(),
+                addressId = preference.addressModel.addressId.toString(),
+                serviceId = preference.shipmentModel.serviceId,
+                gatewayCode = preference.paymentModel.gatewayCode,
+                metadata = preference.paymentModel.metadata
+        ))
+        globalEvent.value = OccGlobalEvent.Loading
+        updateCartOccUseCase.execute(param, {
+            clearBboIfExist()
+            globalEvent.value = OccGlobalEvent.TriggerRefresh()
+        }, { throwable: Throwable ->
+            if (throwable is MessageErrorException) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                        ?: DEFAULT_ERROR_MESSAGE)
+            } else {
+                globalEvent.value = OccGlobalEvent.Error(throwable)
+            }
+        })
     }
 
     fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
@@ -1100,22 +1107,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCartPromo(onSuccess: (ValidateUsePromoRequest, PromoRequest, ArrayList<String>) -> Unit) {
         val param = generateUpdateCartParam()
-        if (param != null) {
-            globalEvent.value = OccGlobalEvent.Loading
-            updateCartOccUseCase.execute(param, {
-                globalEvent.value = OccGlobalEvent.Normal
-                onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
-            }, { throwable: Throwable ->
-                if (throwable is MessageErrorException && throwable.message != null) {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE)
-                } else {
-                    globalEvent.value = OccGlobalEvent.Error(throwable)
-                }
-            })
-        } else {
+        if (param == null) {
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            return
         }
+        globalEvent.value = OccGlobalEvent.Loading
+        updateCartOccUseCase.execute(param, {
+            globalEvent.value = OccGlobalEvent.Normal
+            onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+        }, { throwable: Throwable ->
+            if (throwable is MessageErrorException) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                        ?: DEFAULT_ERROR_MESSAGE)
+            } else {
+                globalEvent.value = OccGlobalEvent.Error(throwable)
+            }
+        })
     }
 
     fun generatePromoRequest(): PromoRequest {
@@ -1411,31 +1418,38 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         var param = generateUpdateCartParam()
         val creditCard = _orderPayment.creditCard
-        if (param != null) {
-            globalEvent.value = OccGlobalEvent.Loading
-            try {
-                val parse = JsonParser().parse(param.profile.metadata)
-                parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM).addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
-                param = param.copy(profile = param.profile.copy(metadata = parse.toString()))
-            } catch (e: Exception) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-                return
-            }
-            updateCartOccUseCase.execute(param, {
-                val availableTerms = creditCard.availableTerms
-                availableTerms.forEach { it.isSelected = it.term == selectedInstallmentTerm.term }
-                _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-                calculateTotal()
-                globalEvent.value = OccGlobalEvent.Normal
-            }, {
-                if (it is MessageErrorException && it.message != null) {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
-                            ?: DEFAULT_ERROR_MESSAGE)
-                } else {
-                    globalEvent.value = OccGlobalEvent.Error(it)
-                }
-            })
+        if (param == null) {
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            return
         }
+        globalEvent.value = OccGlobalEvent.Loading
+        try {
+            val metadata = JsonParser().parse(param.profile.metadata)
+            val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+            if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
+                // unexpected null installment term param
+                throw MessageErrorException(DEFAULT_LOCAL_ERROR_MESSAGE)
+            }
+            expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
+            param = param.copy(profile = param.profile.copy(metadata = metadata.toString()))
+        } catch (e: Exception) {
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+            return
+        }
+        updateCartOccUseCase.execute(param, {
+            val availableTerms = creditCard.availableTerms
+            availableTerms.forEach { it.isSelected = it.term == selectedInstallmentTerm.term }
+            _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
+            calculateTotal()
+            globalEvent.value = OccGlobalEvent.Normal
+        }, {
+            if (it is MessageErrorException) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
+                        ?: DEFAULT_ERROR_MESSAGE)
+            } else {
+                globalEvent.value = OccGlobalEvent.Error(it)
+            }
+        })
     }
 
     override fun onCleared() {
