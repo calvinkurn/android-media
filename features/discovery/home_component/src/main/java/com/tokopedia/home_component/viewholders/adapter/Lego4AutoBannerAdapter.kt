@@ -43,8 +43,10 @@ class Lego4AutoBannerAdapter(
     fun addData(dataModel: Lego4AutoDataModel) {
         this.dataModel = dataModel
         itemList.clear()
-        dataModel.channelModel.channelGrids.forEach {
-            itemList.add(Lego4AutoItem(grid = it))
+        dataModel.channelModel.channelGrids.forEachIndexed { index, data ->
+            if (index < 4) {
+                itemList.add(Lego4AutoItem(grid = data))
+            }
         }
     }
 
