@@ -164,6 +164,7 @@ internal class ShopListFragment:
     private fun observeViewModelData() {
         observeSearchShopLiveData()
         observeGetDynamicFilterEvent()
+        observeTrackingOpenFilterPageEvent()
         observeOpenFilterPageEvent()
         observeTrackingShopItemImpressionEvent()
         observeTrackingProductPreviewImpressionEvent()
@@ -277,6 +278,12 @@ internal class ShopListFragment:
                 NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_get_dynamic_filter))
             }
         }
+    }
+
+    private fun observeTrackingOpenFilterPageEvent() {
+        searchShopViewModel?.getOpenFilterPageTrackingEventLiveData()?.observe(viewLifecycleOwner, Observer {
+            FilterTracking.eventOpenFilterPage(filterTrackingData)
+        })
     }
 
     private fun observeOpenFilterPageEvent() {

@@ -58,6 +58,7 @@ internal class SearchShopViewModel(
     private var isFilterDataAvailable = false
     private val filterController = FilterController()
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val openFilterPageTrackingEventMutableLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
@@ -619,6 +620,7 @@ internal class SearchShopViewModel(
 
     fun onViewOpenFilterPage() {
         if (isFilterDataAvailable) {
+            openFilterPageTrackingEventMutableLiveData.postValue(Event(true))
             openFilterPageEventLiveData.postValue(Event(true))
         }
         else {
@@ -723,6 +725,9 @@ internal class SearchShopViewModel(
     fun getHasNextPage() = hasNextPage
 
     fun getDynamicFilterEventLiveData(): LiveData<Event<Boolean>> = dynamicFilterEventLiveData
+
+    fun getOpenFilterPageTrackingEventLiveData(): LiveData<Event<Boolean>> =
+            openFilterPageTrackingEventMutableLiveData
 
     fun getOpenFilterPageEventLiveData(): LiveData<Event<Boolean>> = openFilterPageEventLiveData
 
