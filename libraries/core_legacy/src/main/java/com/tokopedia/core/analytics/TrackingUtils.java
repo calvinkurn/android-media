@@ -77,18 +77,6 @@ public class TrackingUtils{
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
-    public static void fragmentBasedAFEvent(Context context,String tag) {
-        Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(AppScreen.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT)
-                || tag.equals(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
-        } else if (tag.equals(AppScreen.IDENTIFIER_CATEGORY_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
-        }
-
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
-    }
-
     public static void eventError(Context context,String className, String errorMessage) {
         TrackApp.getInstance().getGTM()
                 .eventError(className, errorMessage);

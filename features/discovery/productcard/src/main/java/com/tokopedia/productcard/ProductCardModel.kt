@@ -1,6 +1,8 @@
 package com.tokopedia.productcard
 
+import android.os.Parcelable
 import com.tokopedia.productcard.utils.*
+import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -65,11 +67,12 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
+    @Parcelize
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = ""
-    )
+    ):Parcelable
 
     fun getLabelProductStatus(): LabelGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)

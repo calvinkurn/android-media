@@ -147,10 +147,10 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
             intent = Intent(context, DigitalBrowseHomeActivity::class.java)
 
             if (!extras.containsKey(EXTRA_TITLE)) {
-                if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
+                if (Integer.parseInt(extras.getString(EXTRA_TYPE, "")) == TYPE_BELANJA) {
                     extras.putString(EXTRA_TITLE, TITLE_BELANJA)
                     return openBelanjaActivity(context)
-                } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
+                } else if (Integer.parseInt(extras.getString(EXTRA_TYPE, "")) == TYPE_LAYANAN) {
                     intent = Intent(context, DigitalBrowseHomeActivity::class.java)
                     extras.putString(EXTRA_TITLE, TITLE_LAYANAN)
                 }

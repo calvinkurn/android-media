@@ -28,14 +28,13 @@ import androidx.annotation.NonNull;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
 /**
  * @author lalit.singh
  */
-public class CMInAppManager implements CmInAppListener {
+public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private static CMInAppManager inAppManager;
     private Application application;
@@ -80,32 +79,36 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void showInAppNotification() {
-        DataProvider dataProvider = inAppDataList -> {
-            synchronized (lock) {
-                if (canShowInApp(inAppDataList)) {
-                    CMInApp cmInApp = inAppDataList.get(0);
-                    showDialog(cmInApp);
-                    dataConsumed(cmInApp);
-                }
-            }
-        };
-
         RulesManager.getInstance().checkValidity(
                 currentActivity.get().getClass().getName(),
                 0L,
-                dataProvider
+                this
         );
     }
 
+    @Override
+    public void notificationsDataResult(List<CMInApp> inAppDataList) {
+        synchronized (lock) {
+            if (canShowInApp(inAppDataList)) {
+                CMInApp cmInApp = inAppDataList.get(0);
+                sendEventInAppPrepared(cmInApp);
+                showDialog(cmInApp);
+                dataConsumed(cmInApp);
+            }
+        }
+    }
+
+    private void sendEventInAppPrepared(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
+    }
+
+    @Override
+    public void sendEventInAppDelivered(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
+    }
+
     /**
-     * legacy dialog, such as:
-     * 1. full screen
-     * 2. full screen_img
-     * 3. border top
-     * 4. border bottom
-     * 5. alert
-     * 6. ticker top
-     * 7. ticker bottom
+     * legacy dialog
      * @param cmInApp
      */
     private void showLegacyDialog(CMInApp cmInApp) {
@@ -124,7 +127,6 @@ public class CMInAppManager implements CmInAppListener {
                 .findViewById(android.R.id.content)
                 .getRootView();
         root.addView(view);
-        dataConsumed(cmInApp);
     }
 
     /**
@@ -199,8 +201,10 @@ public class CMInAppManager implements CmInAppListener {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                if (currentActivity != null && currentActivity.get() != null)
+                if (currentActivity != null && currentActivity.get() != null) {
+                    sendEventInAppDelivered(cmInApp);
                     new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
+                }
             }
         } catch (Exception e) {
         }
@@ -229,8 +233,8 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
-        if (cmInApp == null)
-            return;
+        if (cmInApp == null) return;
+
         if (elementId != null) {
             IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {

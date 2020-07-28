@@ -70,7 +70,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
             val clip = ClipData.newPlainText(
                     CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
             )
-            clipboard.primaryClip = clip
+            clipboard.setPrimaryClip(clip)
 
             view?.run {
                 Toaster.make(this,
