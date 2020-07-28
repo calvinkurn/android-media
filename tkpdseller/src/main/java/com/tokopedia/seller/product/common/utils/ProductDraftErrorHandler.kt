@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.common.utils
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 object ProductDraftErrorHandler {
 
