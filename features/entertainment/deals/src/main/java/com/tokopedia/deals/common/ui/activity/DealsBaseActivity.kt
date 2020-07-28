@@ -53,6 +53,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var baseViewModel: DealsBaseViewModel
 
+    protected var isLandmarkPage = false
+
     var searchBarActionListener: SearchBarActionListener? = null
 
     private lateinit var locationBottomSheet: SelectLocationBottomSheet
@@ -83,7 +85,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     private fun setupView() {
         setUpScrollView()
-        showToolbarShimmering()
+        handleToolbarVisibilityWihLocName(currentLoc.name)
         setupLocation()
         setupSearchBar()
         setupBackButton()
@@ -115,13 +117,12 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     private fun observeLocation() {
         baseViewModel.observableCurrentLocation.observe(this, Observer {
-            renderLocationName(it.name)
+            handleToolbarVisibilityWihLocName(it.name)
             dealsLocationUtils.updateLocation(it)
         })
     }
 
     fun renderLocationName(name: String) {
-        hideToolbarShimmering()
         txtDealsBaseLocationTitle.text = name
     }
 
@@ -139,7 +140,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
                             dealsLocationUtils.detectAndSendLocation(this@DealsBaseActivity,
                                     permissionCheckerHelper, this@DealsBaseActivity)
                         } else {
-                            renderLocationName(dealsLocationUtils.getLocation().name)
+                            handleToolbarVisibilityWihLocName(dealsLocationUtils.getLocation().name)
                         }
                     }
 
@@ -208,7 +209,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var currentLoc = Location()
 
     private fun onClickLocation() {
-        locationBottomSheet = SelectLocationBottomSheet(currentLoc, false, object : CurrentLocationCallback {
+        locationBottomSheet = SelectLocationBottomSheet(currentLoc, isLandmarkPage, object : CurrentLocationCallback {
             override fun setCurrentLocation(location: Location) {
                 locationBottomSheet.dismiss()
                 this@DealsBaseActivity.setCurrentLocation(location)
@@ -241,19 +242,16 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     override fun getLayoutRes(): Int = R.layout.activity_base_deals
     override fun getParentViewResourceID(): Int = R.id.containerBaseDealsParentView
 
-    private fun showToolbarShimmering() {
-        shimmerSearchBar.show()
-        shimmerDealsBaseLocationTitle.show()
-
-        searchBarDealsBaseSearch.hide()
-        txtDealsBaseLocationTitle.hide()
-    }
-
-    private fun hideToolbarShimmering() {
-        shimmerSearchBar.hide()
-        shimmerDealsBaseLocationTitle.hide()
-
-        searchBarDealsBaseSearch.show()
-        txtDealsBaseLocationTitle.show()
+    fun handleToolbarVisibilityWihLocName(name: String) {
+        if (!name.isBlank()) {
+            txtDealsBaseLocationTitle.text = name
+            txtDealsBaseLocationTitle.show()
+            searchBarDealsBaseSearch.show()
+            shimmerSearchBar.hide()
+            shimmerDealsBaseLocationTitle.hide()
+        } else {
+            shimmerSearchBar.show()
+            shimmerDealsBaseLocationTitle.show()
+        }
     }
 }

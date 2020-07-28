@@ -2,6 +2,7 @@ package com.tokopedia.deals.common.ui.activity
 
 import android.os.Bundle
 import android.view.ViewTreeObserver
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -32,6 +33,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
 
     protected var childCategoryList: ArrayList<String?> = arrayListOf()
 
+    var isEnableTabClickAnalytics = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,6 +51,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()
                 vp_deals_brand_category.currentItem = tab.position
+
+                if (isEnableTabClickAnalytics) tabAnalytics(tab.getCustomText(), tab.position)
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {
@@ -63,7 +68,6 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             override fun onPageSelected(position: Int) {
                 val tab = tab_deals_brand_category?.getUnifyTabLayout()?.getTabAt(position)
                 tab?.select()
-                tabAnalytics(tab?.getCustomText() ?: "", position)
             }
         })
 
@@ -118,6 +122,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     observer.removeOnGlobalLayoutListener(this)
+                    isEnableTabClickAnalytics = true
                     position?.let { tabLayout.getTabAt(it)?.select() }
                 }
             })
@@ -148,7 +153,7 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
         appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - searchBarDealsBaseSearch.height ) {
                 //collapse
-                appBarLayout.elevation = 0f
+                ViewCompat.setElevation(appBarLayout,0f)
                 imgDealsSearchIcon.show()
             } else {
                 imgDealsSearchIcon.hide()

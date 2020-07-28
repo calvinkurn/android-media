@@ -50,7 +50,7 @@ class DealCategoryViewModel @Inject constructor(
         get() = privateObservableProducts
 
     init {
-        getInitialData()
+        shimmeringCategory()
     }
 
 
@@ -85,18 +85,8 @@ class DealCategoryViewModel @Inject constructor(
     }
 
     fun updateChips(location: Location, categoryId: String, isFilter: Boolean) {
-        loadFilterShimmering()
+        shimmeringCategory()
         getCategoryBrandData(categoryId, location.coordinates, location.locType.name, isFilter = isFilter)
-    }
-
-    fun loadFilterShimmering() {
-        privateObservablDealsCategoryLayout.value?.let {
-            val layouts = it.toMutableList()
-            layouts.subList(0, 1)
-            layouts.add(BRAND_POPULAR, DealsBrandsDataView(oneRow = true))
-            layouts.add(PRODUCT_LIST, ProductListDataView())
-            privateObservablDealsCategoryLayout.value = layouts
-        }
     }
 
     private suspend fun getChipCategory(): CuratedData {
@@ -128,7 +118,7 @@ class DealCategoryViewModel @Inject constructor(
         }
     }
 
-    private fun getInitialData() {
+    fun shimmeringCategory() {
         val layouts = mutableListOf<DealsBaseItemDataView>()
         layouts.add(BRAND_POPULAR, DealsBrandsDataView(oneRow = true))
         layouts.add(PRODUCT_LIST, ProductListDataView())

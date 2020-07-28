@@ -28,11 +28,11 @@ class DealsProductCardAdapter(private val productCardListener: ProductCardListen
     override fun getItemCount(): Int = productCards.size
 
     override fun onBindViewHolder(holder: ProductCardViewHolder, position: Int) {
-        val item = productCards.get(position)
+        val item = productCards[position]
         holder.bindData(productCards[position])
-        holder.itemView.addOnImpressionListener(item, {
+        holder.itemView.addOnImpressionListener(item) {
             productCardListener.onImpressionProduct(item, position,page)
-        })
+        }
     }
 
     private class ProductCardDiffCallback(

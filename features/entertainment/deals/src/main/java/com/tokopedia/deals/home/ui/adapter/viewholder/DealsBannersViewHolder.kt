@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.deals.R
 import com.tokopedia.deals.home.listener.DealsBannerActionListener
@@ -46,7 +47,7 @@ class DealsBannersViewHolder(itemView: View, private val dealsBannerActionListen
                 customWidth = resources.getDimensionPixelOffset(R.dimen.deals_item_banner_width)
 
                 setOnPromoAllClickListener { dealsBannerActionListener.onBannerSeeAllClick(banners.seeAllUrl) }
-                setOnPromoScrolledListener {  }
+                setOnPromoScrolledListener { position -> dealsBannerActionListener.onBannerScroll(banners.list[position], position) }
 
                 if (banners.list.size == 1) {
                     itemView.viewTreeObserver.addOnGlobalLayoutListener(

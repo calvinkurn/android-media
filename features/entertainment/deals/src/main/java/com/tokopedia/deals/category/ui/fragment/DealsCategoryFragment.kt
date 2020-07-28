@@ -268,9 +268,12 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onBaseLocationChanged(location: Location) {
         setCurrentLocation(location)
         getCurrentLocation()
-        dealCategoryViewModel.loadFilterShimmering()
+        dealCategoryViewModel.shimmeringCategory()
         loadData(1)
-        analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
+
+        if (getCurrentLocation() != location) {
+            analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
+        }
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
@@ -294,7 +297,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page: Int) {
-        analytics.impressionProductCategory(productCardDataView,productItemPosition, page)
+        analytics.impressionProductCategory(productCardDataView, productItemPosition, page)
     }
 
     override fun resetFilter() {
