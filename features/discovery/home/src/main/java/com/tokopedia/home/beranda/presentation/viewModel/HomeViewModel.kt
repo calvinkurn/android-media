@@ -934,7 +934,14 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        runBlocking {
+        launch (homeDispatcher.get().ui()){
+            updateChannel(channel)
+        }
+    }
+    private suspend fun reinitChannel(){
+        logChannelUpdate("reinit channel")
+        jobChannel?.cancelChildren()
+        withContext (homeDispatcher.get().ui()){
             updateChannel(channel)
         }
     }
@@ -1441,11 +1448,13 @@ open class HomeViewModel @Inject constructor(
             if(channel.isClosedForSend){
                 initChannel()
             }
+            delay(100)
             channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
+            logChannelUpdate("init channel")
             initChannel()
-            channel.send(updateWidget)
+            updateWidget(updateWidget)
         }
     }
 
