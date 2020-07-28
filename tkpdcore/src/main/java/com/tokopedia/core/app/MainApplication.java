@@ -28,7 +28,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -123,7 +122,6 @@ public abstract class MainApplication extends MainRouterApplication{
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
         }
-        init();
         return true;
     }
 
@@ -144,12 +142,6 @@ public abstract class MainApplication extends MainRouterApplication{
         super.onTerminate();
         if(locationUtils != null) {
             locationUtils.deInitLocationBackground();
-        }
-    }
-
-    private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         }
     }
 
