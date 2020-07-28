@@ -377,7 +377,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopPlayer() {
-        if (playVideoManager.isVideoLive() || channelType.isLive) playVideoManager.release()
+        if (playVideoManager.isVideoLive() || channelType.isLive || isFreezeOrBanned) playVideoManager.release()
         else playVideoManager.stop()
     }
     //endregion
