@@ -1502,8 +1502,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 REQUEST_CODE_PICK_ETALASE -> if (resultCode == Activity.RESULT_OK) {
                     val productIds = itemsChecked.map{ product -> product.id }
-                    val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID)
-                    val etalaseName = it.getStringExtra(EXTRA_ETALASE_NAME)
+                    val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID).orEmpty()
+                    val etalaseName = it.getStringExtra(EXTRA_ETALASE_NAME).orEmpty()
 
                     viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
                 }
