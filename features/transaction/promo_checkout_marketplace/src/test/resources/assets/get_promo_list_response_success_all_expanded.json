@@ -11,17 +11,10 @@
         ],
         "reason": "OK"
       },
-      "empty_state": {
-        "title": "",
-        "description": "",
-        "image_url": ""
-      },
-      "title": "",
-      "sub_title": "",
       "promo_recommendation": {
         "codes": [
-          "KRDCICIL598GSNML0AM",
-          "POMAH09JBL"
+          "THIRX598GSA7MADK2X7",
+          "POMA3A96FB"
         ],
         "message": "Kamu bisa hemat Rp168.100"
       },
@@ -60,26 +53,6 @@
                   "is_attempted": false,
                   "radio_check_state": "enabled",
                   "clashing_infos": []
-                },
-                {
-                  "code": "KRDCICIL598GSNML0AM",
-                  "title": "Discount Rp143.100",
-                  "message": "",
-                  "expiry_info": "Berakhir 3 hari lagi!",
-                  "expiry_count_down": 1593536399,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2020/05/Kredivo-1.png"
-                  ],
-                  "benefit_amount": 143100,
-                  "is_recommended": true,
-                  "is_selected": true,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": []
                 }
               ]
             },
@@ -88,27 +61,9 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
               "is_enabled": true,
-              "is_collapsed": true,
+              "is_collapsed": false,
               "tags": [],
               "coupons": [
-                {
-                  "code": "POMAH09JBL",
-                  "title": "Cashback Rp25.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593275350,
-                  "coupon_url": "HCKCSCP239594-",
-                  "coupon_app_link": "HCKCSCP239594-",
-                  "unique_id": "239594-0-301643",
-                  "shop_id": 239594,
-                  "tag_image_urls": [],
-                  "benefit_amount": 25000,
-                  "is_recommended": true,
-                  "is_selected": true,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": []
-                },
                 {
                   "code": "POMA3A96FB",
                   "title": "Cashback Rp15.000",
@@ -149,24 +104,6 @@
               "tags": [],
               "coupons": [
                 {
-                  "code": "REDPW73ON9",
-                  "title": "Promo Cashback REDPW73ON9",
-                  "message": "Tambah Rp434.000 untuk pakai promo",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1593275350,
-                  "coupon_url": "HCKCSCP915523-",
-                  "coupon_app_link": "HCKCSCP915523-",
-                  "unique_id": "",
-                  "shop_id": 915523,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": []
-                },
-                {
                   "code": "REDP1A5ZJR",
                   "title": "Promo Cashback REDP1A5ZJR",
                   "message": "Tambah Rp184.000 untuk pakai promo",
@@ -188,19 +125,7 @@
             }
           ]
         }
-      ],
-      "attempted_promo_code_error": {
-        "code": "",
-        "message": ""
-      },
-      "additional_message": "Kamu bisa hemat",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
-      }
+      ]
     }
   }
 }
