@@ -8,14 +8,12 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:clickable="true"
-    android:focusable="true"
-    android:background="@color/white">
+    android:focusable="true">
 
     <ScrollView
         android:id="@+id/createReviewScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/layout_lvl2">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/review_container"
@@ -273,8 +271,10 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:text="@string/txt_btn_submit_review"
+                android:layout_marginBottom="@dimen/layout_lvl2"
                 app:unifyButtonSize="large"
-                app:layout_constraintTop_toBottomOf="@id/container_anonymous"/>
+                app:layout_constraintTop_toBottomOf="@id/container_anonymous"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

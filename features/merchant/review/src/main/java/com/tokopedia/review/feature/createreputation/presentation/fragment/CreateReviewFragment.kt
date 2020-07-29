@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -137,6 +138,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         arguments?.let {
             productId = it.getString(PRODUCT_ID_REVIEW, "").toIntOrNull() ?: 0
@@ -318,12 +320,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewExpandableTextArea.setText(text)
     }
 
-    override fun onHasFocus() {
-        createReviewScrollView.post {
-            Runnable {
-                createReviewScrollView.scrollTo(0, createReviewExpandableTextArea.bottom)
-            }
-        }
+    override fun scrollToShowTextArea() {
+        createReviewScrollView.smoothScrollTo(0, createReviewDivider.bottom)
     }
 
     override fun onReviewScoreClicked(score: Int) {
