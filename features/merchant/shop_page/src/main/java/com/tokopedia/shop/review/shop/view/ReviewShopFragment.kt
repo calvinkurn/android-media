@@ -20,6 +20,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingInten
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.review.analytic.ReputationTracking
 import com.tokopedia.shop.review.analytic.ReputationTrackingConstant
 import com.tokopedia.shop.review.di.DaggerReputationComponent
@@ -105,13 +106,15 @@ class ReviewShopFragment : BaseListFragment<ReviewShopModelContent?, ReviewShopT
     }
 
     override fun initInjector() {
-        DaggerReputationComponent
-                .builder()
-                .reputationModule(ReputationModule())
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-        shopReviewPresenter!!.attachView(this)
+        activity?.let{
+            DaggerReputationComponent
+                    .builder()
+                    .reputationModule(ReputationModule())
+                    .shopComponent(ShopComponentInstance.getComponent(it.application, it))
+                    .build()
+                    .inject(this)
+            shopReviewPresenter!!.attachView(this)
+        }
     }
 
     override fun onItemClicked(productReviewModelContent: ReviewShopModelContent?) {}

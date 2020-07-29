@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.review.analytic.ReputationTracking
 import com.tokopedia.shop.review.shop.data.factory.ReputationFactory
 import com.tokopedia.shop.review.shop.data.mapper.DeleteReviewResponseMapper
@@ -29,7 +30,7 @@ import dagger.Provides
 class ReputationModule {
     @ReputationScope
     @Provides
-    fun providePersistentCacheManager(@ApplicationContext context: Context?): PersistentCacheManager {
+    fun providePersistentCacheManager(@ShopPageContext context: Context?): PersistentCacheManager {
         return PersistentCacheManager(context!!)
     }
 
@@ -68,7 +69,7 @@ class ReputationModule {
 
     @ReputationScope
     @Provides
-    fun provideReputationService(@ApplicationContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReputationService {
+    fun provideReputationService(@ShopPageContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReputationService {
         return ReputationService(
                 context,
                 networkRouter,
@@ -78,7 +79,7 @@ class ReputationModule {
 
     @ReputationScope
     @Provides
-    fun provideReviewProductService(@ApplicationContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReviewProductService {
+    fun provideReviewProductService(@ShopPageContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReviewProductService {
         return ReviewProductService(
                 context,
                 networkRouter,
@@ -88,7 +89,7 @@ class ReputationModule {
 
     @ReputationScope
     @Provides
-    fun provideReviewActService(@ApplicationContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReviewActService {
+    fun provideReviewActService(@ShopPageContext context: Context?, networkRouter: NetworkRouter?, userSession: UserSession?): ReviewActService {
         return ReviewActService(
                 context,
                 networkRouter,
@@ -134,13 +135,13 @@ class ReputationModule {
 
     @ReputationScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+    fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
 
     @ReputationScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context?): UserSession {
+    fun provideUserSession(@ShopPageContext context: Context?): UserSession {
         return UserSession(context)
     }
 

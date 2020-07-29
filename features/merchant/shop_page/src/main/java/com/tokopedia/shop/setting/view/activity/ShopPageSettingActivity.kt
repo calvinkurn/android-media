@@ -31,7 +31,7 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
 
     override fun getComponent(): ShopPageSettingComponent {
         return DaggerShopPageSettingComponent.builder()
-                .shopComponent(ShopComponentInstance.getComponent(application))
+                .shopComponent(ShopComponentInstance.getComponent(application, this))
                 .shopPageSettingModule(ShopPageSettingModule())
                 .build()
     }

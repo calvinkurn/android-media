@@ -68,12 +68,14 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
     }
 
     override fun initInjector() {
-        DaggerShopNoteComponent
-                .builder()
-                .shopNoteModule(ShopNoteModule())
-                .shopComponent(ShopComponentInstance.getComponent(activity?.application))
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopNoteComponent
+                    .builder()
+                    .shopNoteModule(ShopNoteModule())
+                    .shopComponent(ShopComponentInstance.getComponent(activity?.application, it))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onErrorGetShopNoteList(e: Throwable?) {

@@ -665,7 +665,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             DaggerShopProductComponent
                     .builder()
                     .shopProductModule(ShopProductModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .shopComponent(ShopComponentInstance.getComponent(application, this))
                     .build()
                     .inject(this@ShopPageProductListFragment)
         }

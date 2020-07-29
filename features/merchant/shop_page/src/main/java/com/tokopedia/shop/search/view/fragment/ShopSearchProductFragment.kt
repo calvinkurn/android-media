@@ -211,12 +211,14 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     override fun initInjector() {
-        DaggerShopSearchProductComponent
-                .builder()
-                .shopSearchProductModule(ShopSearchProductModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.let{
+            DaggerShopSearchProductComponent
+                    .builder()
+                    .shopSearchProductModule(ShopSearchProductModule())
+                    .shopComponent(getComponent(ShopComponent::class.java))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onSearchSubmitted(keyword: String) {

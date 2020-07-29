@@ -39,6 +39,6 @@ public class ShopFavouriteListActivity extends BaseSimpleActivity implements Has
 
     @Override
     public ShopComponent getComponent() {
-        return ShopComponentInstance.getComponent(getApplication());
+        return ShopComponentInstance.getComponent(getApplication(), this);
     }
 }

@@ -80,7 +80,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return ShopPageFragment.createInstance()
     }
 
-    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application)
+    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application, this)
 
     override fun onBackPressed() {
         super.onBackPressed()

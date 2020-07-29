@@ -183,7 +183,7 @@ public class ShopProductListResultActivity extends BaseSimpleActivity
     @Override
     public ShopComponent getComponent() {
         if (component == null) {
-            component = ShopComponentInstance.getComponent(getApplication());
+            component = ShopComponentInstance.getComponent(getApplication(), this);
         }
         return component;
     }

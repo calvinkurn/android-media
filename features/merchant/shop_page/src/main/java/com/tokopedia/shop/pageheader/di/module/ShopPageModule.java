@@ -2,11 +2,11 @@ package com.tokopedia.shop.pageheader.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
+import com.tokopedia.shop.common.di.ShopPageContext;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
@@ -24,41 +24,40 @@ import dagger.Provides;
 @ShopPageScope
 @Module(includes = ShopViewModelModule.class)
 public class ShopPageModule {
-
     @ShopPageScope
     @Provides
-    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context) {
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ShopPageContext Context context) {
         return new DeleteShopInfoCacheUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase(@ApplicationContext Context context) {
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase(@ShopPageContext Context context) {
         return new DeleteShopProductAceUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase(@ApplicationContext Context context) {
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase(@ShopPageContext Context context) {
         return new DeleteShopProductTomeUseCase(context);
     }
 
     @ShopPageScope
     @Provides
-    public DeleteShopProductUseCase provideDeleteShopProductUseCase(@ApplicationContext Context context) {
+    public DeleteShopProductUseCase provideDeleteShopProductUseCase(@ShopPageContext Context context) {
         return new DeleteShopProductUseCase(provideDeleteShopProductAceUseCase(context), provideDeleteShopProductTomeUseCase(context));
     }
 
     @ShopPageScope
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSessionInterface(@ShopPageContext Context context) {
         return new UserSession(context);
     }
 
     @ShopPageScope
     @Provides
     @Named(ShopPageConstant.MODERATE_STATUS_QUERY)
-    public String moderateStatusQuery(@ApplicationContext Context context){
+    public String moderateStatusQuery(@ShopPageContext Context context){
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.shop_moderate_request_status
@@ -68,7 +67,7 @@ public class ShopPageModule {
     @ShopPageScope
     @Provides
     @Named(ShopPageConstant.MODERATE_REQUEST_QUERY)
-    public String requestQuery(@ApplicationContext Context context){
+    public String requestQuery(@ShopPageContext Context context){
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.mutation_moderate_shop
@@ -77,7 +76,7 @@ public class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    public StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository){
+    public StickyLoginUseCase provideStickyLoginUseCase(@ShopPageContext Context context, GraphqlRepository graphqlRepository){
         return new StickyLoginUseCase(context.getResources(), graphqlRepository);
     }
 }

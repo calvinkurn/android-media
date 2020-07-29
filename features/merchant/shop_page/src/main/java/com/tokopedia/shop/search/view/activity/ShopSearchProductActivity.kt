@@ -100,7 +100,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     )
 
     override fun getComponent(): ShopComponent = component
-            ?: ShopComponentInstance.getComponent(application)
+            ?: ShopComponentInstance.getComponent(application, this)
 
     override fun getLayoutRes() = R.layout.activity_shop_search_product
 

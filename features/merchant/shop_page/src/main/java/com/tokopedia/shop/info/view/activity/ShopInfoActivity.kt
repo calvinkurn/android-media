@@ -34,7 +34,7 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getLayoutRes() = R.layout.activity_shop_info
 
-    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application)
+    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application, this)
 
     override fun getNewFragment(): Fragment? = createShopInfoFragment()
 

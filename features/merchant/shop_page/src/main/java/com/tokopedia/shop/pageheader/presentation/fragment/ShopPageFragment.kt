@@ -164,7 +164,7 @@ class ShopPageFragment :
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
-                .shopComponent(ShopComponentInstance.getComponent(application)).build()
+                .shopComponent(ShopComponentInstance.getComponent(application, this)).build()
     }
 
     override fun getScreenName() = ""

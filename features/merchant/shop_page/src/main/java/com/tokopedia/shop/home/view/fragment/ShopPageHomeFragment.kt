@@ -471,7 +471,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             DaggerShopPageHomeComponent
                     .builder()
                     .shopPageHomeModule(ShopPageHomeModule())
-                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .shopComponent(ShopComponentInstance.getComponent(application, this))
                     .build()
                     .inject(this@ShopPageHomeFragment)
             }
