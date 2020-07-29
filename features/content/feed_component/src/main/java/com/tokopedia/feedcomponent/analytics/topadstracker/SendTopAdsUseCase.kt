@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class SendTopAdsUseCase @Inject constructor(private val topAdsUrlHitter: TopAdsUrlHitter) {
 
-    private var className = SendTopAdsUseCase::javaClass.name
+    private var className = SendTopAdsUseCase::class.java.name
 
     fun hitImpressions(url: String, productId: String, productName: String, imageUrl: String) {
         topAdsUrlHitter.hitImpressionUrl(className, url, productId, productName, imageUrl)
