@@ -536,7 +536,7 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     /**
      * View Multiple Device Violation Pop Up
      */
-    fun viewDialogViolation(channelId: String, titleChannel: String) {
+    fun viewDialogViolation(channelId: String, titleChannel: String = "") {
         viewGeneralEvent(
                 "device violation popup message",
                 "- $channelId - $titleChannel"

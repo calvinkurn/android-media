@@ -339,7 +339,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             this.channelType = config.channelType
             if (channelType == ChannelType.Active) {
                 showDialogWhenActiveOnOtherDevices()
-                analytic.viewDialogViolation(config.channelId, viewModel.title)
+                analytic.viewDialogViolation(config.channelId)
             } else {
                 if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
                 else requestPermission()
