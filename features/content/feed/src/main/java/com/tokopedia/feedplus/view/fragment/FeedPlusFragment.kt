@@ -1023,11 +1023,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         trackShopClickImpression(positionInFeed, adapterPosition, shop)
     }
 
+    override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
+        feedViewModel.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
+    }
+
     private fun trackShopClickImpression(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
             val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                trackUrlEvent(dataList[adapterPosition].shopClickUrl)
+                feedViewModel.doTopAdsTracker(dataList[adapterPosition].redirect, shop.id, shop.name, dataList[adapterPosition].shopClickUrl, true)
             }
         }
     }
