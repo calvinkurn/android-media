@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="play_placeholder_shadow">#1E31353B</color>
+    <color name="play_chat_background">#6631353B</color>
+    <color name="play_background_overlay_N700_62">#9E31353B</color>
 </resources>

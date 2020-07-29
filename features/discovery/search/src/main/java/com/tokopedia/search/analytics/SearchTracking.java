@@ -559,12 +559,12 @@ public class SearchTracking {
                 String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId));
     }
 
-    public static void trackEventClickSearchBar() {
+    public static void trackEventClickSearchBar(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,
-                "");
+                keyword);
     }
 
     public static void trackEventImpressionBannedProductsEmptySearch(String keyword) {

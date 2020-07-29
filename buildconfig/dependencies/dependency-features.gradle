@@ -38,6 +38,7 @@ ext {
             createpost                      : ":features:content:createpost",
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
+            playBroadcaster                 : ":features:content:play_broadcaster",
 
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
@@ -63,9 +64,6 @@ ext {
 
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            eventHome                       : ":features:entertainment:event_home",
-            eventSearch                     : ":features:entertainment:event_search",
-            eventPDP                        : ":features:entertainment:event_pdp",
             digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
@@ -73,8 +71,6 @@ ext {
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
-            flashsaleManagement             : ":features:discovery:flashsale_management",
-            flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
@@ -118,7 +114,6 @@ ext {
 
             goldMerchant                    : ":features:merchant:gold_merchant",
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
-            goldMerchantResource            : ":features:merchant:gold_merchant_resource",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
@@ -174,6 +169,7 @@ ext {
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
+            promoUiCommon                   : ":features:promo:promo_ui_common",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",

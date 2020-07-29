@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.widget
 
+import android.content.ComponentName
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
@@ -58,6 +59,9 @@ class AutoAdsWidgetView : CardView {
     lateinit var factory: AutoAdsWidgetViewModelFactory
     @Inject
     lateinit var userSession: UserSessionInterface
+    val SELLER_PACKAGENAME = "com.tokopedia.sellerapp"
+    val CLASSNAME_SELLER_TOPADS = "com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity"
+
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -195,18 +199,22 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun openAutoAdsRouteActivityLink() {
-        when {
-            AppUtil.isSellerInstalled(context) -> {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS)
-            }
-            TokopediaUrl.getInstance().TYPE == Env.LIVE -> {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO))
-            }
-            else -> {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO_STAGING))
+        if (AppUtil.isSellerInstalled(context)) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+            intent.component = ComponentName(SELLER_PACKAGENAME, CLASSNAME_SELLER_TOPADS)
+            (context as FragmentActivity).startActivity(intent)
+        } else {
+            when (TokopediaUrl.getInstance().TYPE) {
+                Env.LIVE -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO))
+                }
+                else -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO_STAGING))
+                }
             }
         }
     }
+
 
     fun setActiveListener(activeListener: ActiveListener) {
         this.activeListener = activeListener

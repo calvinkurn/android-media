@@ -2,6 +2,7 @@ package com.tokopedia.home.account.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
 import com.tokopedia.home.account.data.pojo.UserProfileCompletion;
 import com.tokopedia.navigation_common.model.DebitInstantModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
@@ -72,6 +73,8 @@ public class AccountModel {
     private KycStatusPojo kycStatusPojo = new KycStatusPojo();
 
     private SaldoModel saldoModel = new SaldoModel();
+
+    private ShortcutResponse shortcutResponse = new ShortcutResponse();
 
     @SerializedName("isAffiliate")
     private boolean isAffiliate = false;
@@ -204,6 +207,14 @@ public class AccountModel {
 
     public void setSaldoModel(SaldoModel saldoModel) {
         this.saldoModel = saldoModel;
+    }
+
+    public ShortcutResponse getShortcutResponse() {
+        return shortcutResponse;
+    }
+
+    public void setShortcutResponse(ShortcutResponse shortcutResponse) {
+        this.shortcutResponse = shortcutResponse;
     }
 
     public DebitInstantModel getDebitInstant() {

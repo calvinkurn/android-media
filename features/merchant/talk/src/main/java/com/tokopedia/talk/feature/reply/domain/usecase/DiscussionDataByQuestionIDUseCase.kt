@@ -30,6 +30,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                       maskedContent
                       userName
                       userID
+                      userThumbnail
                       createTime
                       createTimeFormatted
                       state {

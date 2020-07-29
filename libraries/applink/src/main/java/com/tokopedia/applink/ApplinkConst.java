@@ -43,6 +43,7 @@ public interface ApplinkConst {
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
+    String ATC_EXTERNAL = "tokopedia://cart?product_id={product_id}";
     String CHECKOUT = "tokopedia://checkout";
     String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
     String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -181,6 +182,7 @@ public interface ApplinkConst {
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
     String TOKOPOINTS = "tokopedia://tokopoints";
+    String TOKOPEDIA_REWARD = "tokopedia://rewards";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
@@ -314,6 +316,7 @@ public interface ApplinkConst {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
         String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
+        String GIFT_TAP_TAP = "tokopedia://gamification_gift_60s";
     }
 
     interface Digital {
@@ -327,26 +330,18 @@ public interface ApplinkConst {
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
         String HOMEPAGE2 = "tokopedia://tokopoints/";
-        String CATALOG_LISTING = "tokopedia://tokopoints/tukar-point";
-        String CATALOG_LISTING2 = "tokopedia://tokopoints/tukar-point/";
-        String CATALOG_LISTING3 = "tokopedia://tokopoints/tukar-point//";
-        String CATALOG_LISTING4 = "tokopedia://tokopoints/tukar-point/{slug_category}/{slug_sub_category}";
-        String CATALOG_LISTING5 = "tokopedia://tokopoints/tukar-point/{slug_category}/{slug_sub_category}/";
-        String CATALOG_LISTING6 = "tokopedia://tokopoints/tukar-point/{slug_category}";
-        String CATALOG_LISTING7 = "tokopedia://tokopoints/tukar-point/{slug_category}/";
-        String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
-        String COUPON_LISTING2 = "tokopedia://tokopoints/kupon-saya/";
-        String COUPON_LISTING4 = "tokopedia://tokopoints/kupon-saya/{slug}/";
-        String COUPON_LISTING3 = "tokopedia://tokopoints/kupon-saya/{slug}";
-
-        //New applinks
-        String CATALOG_DETAIL3 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}";
-        String CATALOG_DETAIL4 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}/";
-
-        String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
-        String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
-
+        String HOMEPAGE_REWARD1 = "tokopedia://rewards";
+        String HOMEPAGE_REWARD2 = "tokopedia://rewards/";
+        String COUPON_DETAIL = "kupon-saya/detail";
+        String COUPON_DETAIL_VALUE = "kupon-detail";
+        String CATALOG_DETAIL = "tukar-point/detail";
+        String CATALOG_DETAIL_VALUE = "tukar-detail";
+        String CATALOG_DETAIL_NEW = "kupon/detail";
+        String CATALOG_LIST_NEW = "kupon";
+        String CATALOG_LIST_VALUE = "tukar-point";
+        String HISTORY = "tokopedia://tokopoints/history";
     }
+
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
 
@@ -373,7 +368,6 @@ public interface ApplinkConst {
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
-        String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
     }
 
@@ -438,7 +432,6 @@ public interface ApplinkConst {
     }
 
     interface AttachVoucher {
-        String PARAM_SHOP_ID = "shop_id";
         String PARAM_VOUCHER_PREVIEW = "voucher_preview";
     }
 
@@ -521,4 +514,18 @@ public interface ApplinkConst {
         String MOBILE =  "/mobile";
         String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
     }
+
+    interface RewardFallback {
+
+        interface RemoteConfig {
+            String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
+        }
+        interface RewardWebview{
+            String REWARD_WEBVIEW = "https://m.tokopedia.com/tokopoints";
+        }
+        interface Reward{
+            String REWARDS= "rewards";
+        }
+    }
+
 }

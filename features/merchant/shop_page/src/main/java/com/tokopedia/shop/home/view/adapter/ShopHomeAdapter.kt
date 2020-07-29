@@ -1,5 +1,7 @@
 package com.tokopedia.shop.home.view.adapter
 
+import android.os.Bundle
+import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -8,8 +10,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
@@ -32,6 +36,7 @@ class ShopHomeAdapter(
 
     companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
+
     }
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
@@ -46,6 +51,20 @@ class ShopHomeAdapter(
         get() = visitables.indexOfFirst {
             it.javaClass == ShopProductSortFilterUiModel::class.java
         }.takeIf { it != -1 } ?: 0
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if(holder is ShopHomePlayCarouselViewHolder) {
+            holder.onResume()
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        if(holder is ShopHomePlayCarouselViewHolder) {
+            holder.onPause()
+        }
+        super.onViewDetachedFromWindow(holder)
+    }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
@@ -66,9 +85,21 @@ class ShopHomeAdapter(
         productListViewModel.addAll(productList)
         visitables.addAll(productList)
         if (initialData)
-            notifyDataSetChanged()
+            notifyChangedDataSet()
         else
             notifyInsertedItemRange(lastIndex, productList.size)
+    }
+
+    fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
+        visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
+            if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
+            } else {
+                visitables[index] = playCarouselUiModel
+                notifyItemChanged(index)
+            }
+        }
     }
 
     fun setEtalaseTitleData() {
@@ -81,8 +112,9 @@ class ShopHomeAdapter(
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
+        visitables.clear()
         visitables.addAll(data)
-        notifyDataSetChanged()
+        notifyChangedDataSet()
     }
 
     override fun hideLoading() {
@@ -216,7 +248,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, position)) {
                 notifyItemChanged(position)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -226,7 +258,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, position)) {
                 notifyItemRemoved(position)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -236,7 +268,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeRemoved(startPosition, totalItem)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -246,7 +278,7 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, startPosition)) {
                 notifyItemRangeInserted(startPosition, totalItem)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
         }
     }
@@ -256,13 +288,47 @@ class ShopHomeAdapter(
             if (isAllowedNotify(it, position)) {
                 notifyItemInserted(position)
             } else {
-                notifyDataSetChanged()
+                notifyChangedDataSet()
             }
+        }
+    }
+
+    private fun notifyChangedDataSet(){
+        Handler().post {
+            notifyDataSetChanged()
         }
     }
 
     private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
         return !isComputingLayout && position >= 0
+    }
+
+    fun pausePlayCarousel(){
+        val indexPlay = getPositionPlayCarousel()
+        if(indexPlay == -1) return
+        notifyItemChanged(indexPlay, Bundle().apply {
+            putBoolean(ShopHomePlayCarouselViewHolder.ON_PAUSE, true)
+        })
+    }
+
+    fun resumePlayCarousel(){
+        val indexPlay = getPositionPlayCarousel()
+        if(indexPlay == -1) return
+        notifyItemChanged(indexPlay, Bundle().apply {
+            putBoolean(ShopHomePlayCarouselViewHolder.ON_RESUME, true)
+        })
+    }
+
+    fun onDestroy(){
+        val indexPlay = getPositionPlayCarousel()
+        if(indexPlay == -1) return
+        notifyItemChanged(indexPlay, Bundle().apply {
+            putBoolean(ShopHomePlayCarouselViewHolder.ON_DESTROY, true)
+        })
+    }
+
+    private fun getPositionPlayCarousel(): Int{
+        return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
     }
 
 }

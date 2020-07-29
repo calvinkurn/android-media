@@ -36,12 +36,14 @@
     <string name="path_tokopoints_coupon_details">/kupon-detail</string>
     <string name="path_tokopoints_catalog_details">/tukar-detail</string>
     <string name="path_tokopoints_catalog_listing">/tukar-point</string>
+    <string name="path_tokopoints_introduction">/introduction</string>
     <string name="title_tokopoints">TokoPoints</string>
 
     <!--gamification-->
     <string name="path_gamification">/gamification</string>
     <string name="path_gamification2">/gamification2</string>
     <string name="path_daily_gift">/gamification_gift_daily</string>
+    <string name="path_gift_60s">/gamification_gift_60s</string>
     <string name="path_smc_referral">/smc-referral</string>
     <string name="internet_title_gamification">Gamification</string>
 

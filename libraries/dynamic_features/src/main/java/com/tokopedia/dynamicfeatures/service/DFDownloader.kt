@@ -1,21 +1,15 @@
 package com.tokopedia.dynamicfeatures.service
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.os.PersistableBundle
-import androidx.annotation.RequiresApi
+import androidx.work.ExistingWorkPolicy
+import androidx.work.ListenableWorker
+import androidx.work.WorkManager
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
+import com.tokopedia.dynamicfeatures.service.DFDownloadWorker.Companion.DF_DL_WORKER_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 
 /**
  * Main Logic for DF Service
@@ -26,127 +20,45 @@ object DFDownloader {
     const val KEY_SHARED_PREF_MODULE = "module_list"
     const val DELIMITER = "#"
     const val DELIMITER_2 = ":"
-    const val JOB_ID = 953
 
-    var isServiceRunning = false
-
-    @SuppressLint("NewApi")
-    fun startSchedule(context: Context, moduleList: List<String> = emptyList(), isImmediate: Boolean = false) {
+    fun startSchedule(context: Context, moduleList: List<String> = emptyList(),
+                      isImmediate: Boolean = false, isAppendingExisting: Boolean) {
         val moduleListToDownload = DFInstaller.getFilteredModuleList(context, moduleList)
         // no changes in module list, so no need to update the queue
         if (moduleListToDownload.isNotEmpty()) {
             DFQueue.combineListAndPut(context, moduleListToDownload)
         }
-        if (isServiceRunning) {
-            return
-        }
-        val isAboveM = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-        if (isAboveM) {
-            setScheduleJob(context, isImmediate)
+        val policy = if (isAppendingExisting) {
+            ExistingWorkPolicy.APPEND
         } else {
-            setAlarm(context, isAlarmOn = true, isImmediate = isImmediate)
+            ExistingWorkPolicy.KEEP
         }
+        DFDownloadWorker.scheduleOneTimeWorker(context, isImmediate, policy)
     }
 
     @SuppressLint("NewApi")
     fun stopService(context: Context) {
         try {
-            val isAboveM = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-            if (isAboveM) {
-                cancelJob(context)
-                context.stopService(Intent(context, DFDownloadJobService::class.java))
-            } else {
-                setAlarm(context, isAlarmOn = false, isImmediate = false)
-                context.stopService(Intent(context, DFDownloadService::class.java))
-            }
+            WorkManager.getInstance(context).cancelUniqueWork(DF_DL_WORKER_NAME)
         } catch (ignored: Exception) {
         }
-        isServiceRunning = false
     }
 
-    private fun setAlarm(context: Context, isAlarmOn: Boolean, isImmediate: Boolean) {
-        if (isImmediate && isAlarmOn) {
-            context.startService(Intent(context, DFDownloadService::class.java))
-            return
-        }
-        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, DFBroadcastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0,
-            intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        if (isAlarmOn) {
-            val delay = getDefaultDelayFromConfigInMillis(context)
-            alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), delay, pendingIntent)
-        } else {
-            alarm.cancel(pendingIntent)
-        }
-    }
-
-    fun cancelAlarm(context: Context) {
-        setAlarm(context, isAlarmOn = false, isImmediate = false)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setScheduleJob(context: Context, isImmediate: Boolean) {
-        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
-            ?: return
-        val bundle = PersistableBundle()
-        val delay = if (isImmediate) {
-            TimeUnit.SECONDS.toMillis(1)
-        } else {
-            getDefaultDelayFromConfigInMillis(context)
-        }
-        // blind fix for com.android.server.job.controllers.JobStatus.getUid()' on a null object reference
-        try {
-            jobScheduler.schedule(
-                JobInfo.Builder(JOB_ID,
-                    ComponentName(context, DFDownloadJobService::class.java))
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setMinimumLatency(delay / 4)
-                    .setOverrideDeadline(delay)
-                    .setExtras(bundle)
-                    .build())
-        } catch (e: Exception) {
-            // noop
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun cancelJob(context: Context) {
-        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
-            ?: return
-        try {
-            jobScheduler.cancel(JOB_ID)
-        } catch (e: Exception) {
-            // noop
-        }
-    }
-
-    private fun setServiceFlagFalse() {
-        isServiceRunning = false
-    }
-
-    private fun getDefaultDelayFromConfigInMillis(context: Context) =
-        TimeUnit.MINUTES.toMillis(DFRemoteConfig.getConfig(context).downloadInBackgroundRetryTime)
-
-    suspend fun startJob(applicationContext: Context): Boolean {
-        if (isServiceRunning) {
-            return true
-        }
-        isServiceRunning = true
+    suspend fun startJob(applicationContext: Context): ListenableWorker.Result {
         return withContext(Dispatchers.Default) {
-            var startService = false
+            var needRetry = false
             var isImmediate = false
-            var successResult: Boolean
+            var successResult: ListenableWorker.Result
             try {
                 // only download the first module in the list (that is not installed too)
                 val moduleToDownloadPair = DFQueue.getDFModuleList(applicationContext).asSequence()
-                    .filter { !DFInstaller.isInstalled(applicationContext, it.first) }
-                    .take(1)
-                    .firstOrNull()
+                        .filter { !DFInstaller.isInstalled(applicationContext, it.first) }
+                        .take(1)
+                        .firstOrNull()
                 val moduleToDownload = moduleToDownloadPair?.first ?: ""
                 if (moduleToDownload.isEmpty()) {
                     DFQueue.clear(applicationContext)
-                    successResult = true
+                    successResult = ListenableWorker.Result.success()
                 } else {
                     val (result, immediate) = DFInstaller.startInstallInBackground(applicationContext, moduleToDownload, onSuccessInstall = {
                         DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
@@ -161,7 +73,7 @@ object DFDownloader {
                             successfulListAfterInstall.add(moduleToDownload)
                         } else {
                             failedListAfterInstall.add(Pair(moduleToDownload, (moduleToDownloadPair?.second
-                                ?: 0) + 1))
+                                    ?: 0) + 1))
                         }
 
                         if (DFRemoteConfig.getConfig(applicationContext).downloadInBackgroundAllowRetry) {
@@ -180,31 +92,35 @@ object DFDownloader {
                         // if previous download is success, will schedule to run immediately
                         // the chance of successful download is bigger.
                         if (remainingList.isNotEmpty()) {
-                            startService = true
+                            needRetry = true
                             isImmediate = immediate
                         }
-                        successResult = true
                     } else {
                         if (remainingList.isEmpty()) {
-                            successResult = true
+                            successResult = ListenableWorker.Result.success()
                         } else {
                             //to sort the DF, so the most failed will be downloaded later.
                             val remainingListSorted = DFQueue.getDFModuleListSorted(applicationContext)
                             if (remainingListSorted[0].first != remainingList[0].first) {
                                 DFQueue.putDFModuleList(applicationContext, remainingListSorted)
                             }
-                            startService = true
+                            needRetry = true
                             isImmediate = immediate
-                            successResult = false
                         }
                     }
                 }
             } catch (e: Exception) {
-                successResult = false
+                successResult = ListenableWorker.Result.retry()
             } finally {
-                setServiceFlagFalse()
-                if (startService) {
-                    startSchedule(applicationContext, isImmediate = isImmediate)
+                if (needRetry) {
+                    if (isImmediate) {
+                        startSchedule(applicationContext, isImmediate = isImmediate, isAppendingExisting = true)
+                        successResult = ListenableWorker.Result.success()
+                    } else {
+                        successResult = ListenableWorker.Result.retry()
+                    }
+                } else {
+                    successResult = ListenableWorker.Result.success()
                 }
             }
             return@withContext successResult

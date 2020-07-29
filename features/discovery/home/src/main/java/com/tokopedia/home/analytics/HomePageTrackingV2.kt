@@ -101,6 +101,8 @@ object HomePageTrackingV2 : BaseTracking() {
 
     object LegoBanner{
         private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
+        private const val LEGO_BANNER_3_IMAGE_NAME = "lego banner 3 image"
+        private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
 
         fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
@@ -128,6 +130,38 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
                             creative = grid.attribution,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.channelHeader.name),
+                            position = (index + 1).toString()
+                    )
+                },
+                channelId = channel.id
+        )
+
+        fun getLegoBannerThreeImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
+                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION.format(LEGO_BANNER_3_IMAGE_NAME),
+                eventLabel = Label.NONE,
+                promotions = channel.channelGrids.mapIndexed { index, grid ->
+                    Promotion(
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                            creative = grid.attribution,
+                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_3_IMAGE_NAME, channel.channelHeader.name),
+                            position = (index + 1).toString()
+                    )
+                },
+                channelId = channel.id
+        )
+
+        fun getLegoBannerSixImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
+                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION.format(LEGO_BANNER_6_IMAGE_NAME),
+                eventLabel = Label.NONE,
+                promotions = channel.channelGrids.mapIndexed { index, grid ->
+                    Promotion(
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                            creative = grid.attribution,
+                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_6_IMAGE_NAME, channel.channelHeader.name),
                             position = (index + 1).toString()
                     )
                 },
@@ -546,7 +580,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventLabel = Label.NONE,
                 promotions = listOf(
                         Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.banner.attribution, channel.categoryPersona),
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.persoType, channel.categoryID),
                                 creative = channel.banner.attribution,
                                 name = PROMOTION_BANNER_NAME.format("1", channel.header.name),
                                 position = position.toString()
@@ -567,7 +601,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 shopId = channel.brandId,
                 promotions = listOf(
                         Promotion(
-                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.banner.attribution, channel.categoryPersona),
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.persoType, channel.categoryID),
                                 creative = channel.banner.attribution,
                                 name = PROMOTION_BANNER_NAME.format("1", channel.header.name),
                                 position = position.toString()
@@ -589,82 +623,6 @@ object HomePageTrackingV2 : BaseTracking() {
 
         fun sendMixLeftBannerClick(channel: DynamicHomeChannel.Channels, position: Int){
                 getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position))
-        }
-    }
-
-    object PopularKeyword {
-        private const val CLICK_POPULAR_KEYWORDS = "click on popular keyword banner"
-        private const val CLICK_POPULAR_KEYWORDS_RELOAD = "click view all on popular keyword banner"
-        private const val IMPRESSION_POPULAR_KEYWORDS = "impression on popular keyword banner"
-        private const val POPULAR_KEYWORDS_NAME = "popular keyword banner"
-        fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionView(
-                event = Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = IMPRESSION_POPULAR_KEYWORDS,
-                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
-                promotions = channel.grids.map {
-                    Promotion(
-                            id = channel.id,
-                            creative = it.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
-                    )
-
-                })
-
-        fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelView(
-                event = Event.PROMO_VIEW_IRIS,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = IMPRESSION_POPULAR_KEYWORDS,
-                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
-                channelId = channel.id,
-                promotions = channel.grids.map {
-                    Promotion(
-                            id = channel.id,
-                            creative = it.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
-                    )
-
-                })
-
-        fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelClick(
-                event = Event.PROMO_CLICK,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = CLICK_POPULAR_KEYWORDS,
-                eventLabel = channel.header.name,
-                channelId = channel.id,
-                categoryId = channel.categoryPersona,
-                affinity = channel.persona,
-                attribution = channel.galaxyAttribution,
-                shopId = channel.brandId,
-                campaignCode = channel.campaignCode,
-                promotions = channel.grids.map {
-                    Promotion(
-                            id = channel.id,
-                            creative = it.attribution,
-                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
-                            position = position.toString()
-                    )
-
-                })
-
-        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword))
-        }
-
-        fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
-            return DataLayer.mapOf(
-                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
-                    Category.KEY, Category.HOMEPAGE,
-                    Action.KEY, CLICK_POPULAR_KEYWORDS_RELOAD,
-                    Label.KEY, channel.header.name,
-                    ChannelId.KEY, channel.id
-            ) as HashMap<String, Any>
-        }
-
-        fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels) {
-            getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel))
         }
     }
 
@@ -745,4 +703,5 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getSprintSaleSeeAllClick(channel))
         }
     }
+
 }
