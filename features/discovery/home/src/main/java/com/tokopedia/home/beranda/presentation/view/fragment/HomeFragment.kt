@@ -1617,6 +1617,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun resetAutoPlay(isVisibleToUser: Boolean){
         shouldPausePlay = !isVisibleToUser
         if(shouldPausePlay && view != null && adapter != null) adapter?.onPause()
+        else adapter?.onResume()
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {
