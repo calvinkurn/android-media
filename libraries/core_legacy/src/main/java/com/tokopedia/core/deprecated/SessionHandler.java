@@ -17,7 +17,6 @@ public abstract class SessionHandler {
         this.context = context;
     }
 
-    public abstract String getGTMLoginID();
     public abstract String getLoginID();
 
     public String getAdsId(){
@@ -30,24 +29,6 @@ public abstract class SessionHandler {
         }
     }
 
-    public String getAndroidId(){
-        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ANDROID_ID);
-        String androidId = localCacheHandler.getString(TkpdCache.Key.KEY_ANDROID_ID);
-        if (androidId != null && !"".equalsIgnoreCase(androidId.trim())) {
-            return androidId;
-        } else {
-            String android_id = AuthUtil.md5(Settings.Secure.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID));
-            if (!TextUtils.isEmpty(android_id)) {
-                localCacheHandler.putString(TkpdCache.Key.KEY_ANDROID_ID, android_id);
-                localCacheHandler.applyEditor();
-            }
-            return android_id;
-        }
-    }
-
     public abstract String getRefreshToken();
-
-    public abstract boolean isMsisdnVerified();
 
 }

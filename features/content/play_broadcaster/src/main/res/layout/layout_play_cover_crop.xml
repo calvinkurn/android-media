@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0">
+
+    <LinearLayout
+        android:id="@+id/ll_image_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="@dimen/play_dp_18"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/v_divider"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_image"
+        android:layout_width="@dimen/play_unify_loading_size"
+        android:layout_height="@dimen/play_unify_loading_size"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/ll_image_container"
+        app:layout_constraintEnd_toEndOf="@id/ll_image_container"
+        app:layout_constraintStart_toStartOf="@id/ll_crop_action"
+        app:layout_constraintTop_toTopOf="@id/ll_image_container"
+        />
+
+    <com.tokopedia.play.broadcaster.view.widget.PlayRectCropImageOverlay
+        android:id="@+id/iv_crop_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="@+id/ll_image_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ll_image_container" />
+
+    <View
+        android:id="@+id/v_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/play_bg_shadow"
+        app:layout_constraintBottom_toTopOf="@+id/ll_crop_action"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_crop_action"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_crop_change"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            android:text="@string/play_change"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_crop_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            android:text="@string/play_next"
+            app:unifyButtonSize="medium"
+            />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

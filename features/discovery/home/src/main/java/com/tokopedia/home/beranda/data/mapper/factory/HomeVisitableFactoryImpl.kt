@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.domain.model.Spotlight
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
@@ -242,6 +243,7 @@ class HomeVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
                     createTopAdsBannerModel(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel) }
             }
         }
 
@@ -251,6 +253,13 @@ class HomeVisitableFactoryImpl(
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = PlayCardDataModel(channel, null)
+            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
+        }
+    }
+
+    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) {
+            val playBanner = mappingPlayCarouselChannel(channel, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
         }
     }
@@ -479,6 +488,16 @@ class HomeVisitableFactoryImpl(
             viewModel.isTrackingCombined = false
         }
         visitableList.add(viewModel)
+    }
+
+    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
+                                           trackingData: MutableMap<String, Any>,
+                                           isCache: Boolean): Visitable<*> {
+        val playCardViewModel = PlayCarouselCardDataModel(channel)
+        if (!isCache) {
+            playCardViewModel.setTrackingData(trackingData)
+        }
+        return playCardViewModel
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
