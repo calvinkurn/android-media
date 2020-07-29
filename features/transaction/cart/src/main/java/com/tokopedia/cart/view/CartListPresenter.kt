@@ -418,9 +418,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     }
                     it
                 } else {
-                    if (!cartItemParentIdMap.containsKey(parentId)) {
-                        val itemPrice = itemQty * (it.pricePlan
-                                ?: 0.toDouble())
+                    val parentIdPriceIndex = parentId + it.pricePlan.toString()
+                    if (!cartItemParentIdMap.containsKey(parentIdPriceIndex)) {
+                        val itemPrice = itemQty * it.pricePlan
                         if (it.isCashBack) {
                             val cashbackPercentageString = it.productCashBack?.replace("%", "")
                             val cashbackPercentage = cashbackPercentageString?.toDouble()
@@ -431,25 +431,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         totalPrice += itemPrice
                         it.wholesalePriceFormatted = null
                         cartItemHolderData.cartItemData?.let {
-                            cartItemParentIdMap[parentId] = it
+                            cartItemParentIdMap[parentIdPriceIndex] = it
                         }
-                        it
-                    } else {
-                        val calculatedHolderData = cartItemParentIdMap[parentId]
-                        if (calculatedHolderData?.originData?.pricePlan != it.pricePlan) {
-                            val itemPrice = itemQty * it.pricePlan
-                            if (it.isCashBack) {
-                                val cashbackPercentageString = it.productCashBack?.replace("%", "")
-                                val cashbackPercentage = cashbackPercentageString?.toDouble()
-                                        ?: 0.toDouble()
-                                val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
-                                totalCashback += itemCashback
-                            }
-                            totalPrice += itemPrice
-                            it.wholesalePriceFormatted = null
-                        }
-                        it
                     }
+                    it
                 }
             }
         }

@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp.viewEngine
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -10,7 +9,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
@@ -123,7 +121,6 @@ internal open class BannerView(activity: Activity) {
 
         imgBanner.setOnClickListener {
             trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
-            RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
         }
     }
 
@@ -141,8 +138,7 @@ internal open class BannerView(activity: Activity) {
             elementType: ElementType
     ) {
         listener?.let {
-            val uri = Uri.parse(appLink)
-            it.onCMInAppLinkClick(uri, data, elementType)
+            it.onCMInAppLinkClick(appLink, data, elementType)
             it.onCMinAppDismiss(data)
             it.onCMinAppInteraction(data)
         }
