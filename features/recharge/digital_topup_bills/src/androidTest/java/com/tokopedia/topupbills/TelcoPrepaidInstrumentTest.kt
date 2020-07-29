@@ -25,6 +25,7 @@ import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -123,7 +124,7 @@ class TelcoPrepaidInstrumentTest {
                 AllOf.allOf(withId(R.id.recycler_view), isDescendantOfA(withId(R.id.layout_widget)),
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0,
-                TelcoViewAction.clickChildViewWithId(R.id.btn_copy_promo)))
+                CommonActions.clickChildViewWithId(R.id.btn_copy_promo)))
     }
 
     fun interaction_menu() {
@@ -199,14 +200,14 @@ class TelcoPrepaidInstrumentTest {
 
         //click tab roaming
         Thread.sleep(1000)
-        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(2))
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Roaming"))).perform(click())
 
         //click tab paket data, click lihat detail and close bottom sheet
         Thread.sleep(3000)
-        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(1))
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Paket Data"))).perform(click())
         onView(withId(R.id.buy_widget)).check(matches(IsNot.not(isDisplayed())))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(1,
-                TelcoViewAction.clickChildViewWithId(R.id.telco_see_more_btn)))
+                CommonActions.clickChildViewWithId(R.id.telco_see_more_btn)))
         Thread.sleep(1000)
         onView(withId(R.id.button_select_item)).check(matches(isDisplayed()))
         onView(withId(R.id.bottom_sheet_close)).perform(click())
@@ -220,8 +221,8 @@ class TelcoPrepaidInstrumentTest {
     fun interaction_product_filter() {
         //click tab paket data
         Thread.sleep(1000)
-        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(0))
-        onView(withId(R.id.tab_layout)).perform(TelcoViewAction.selectTabLayoutPosition(1))
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Pulsa"))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Paket Data"))).perform(click())
         onView(AllOf.allOf(isDisplayed(), withId(R.id.sort_filter))).check(matches(isDisplayed()))
 
         //click Feature filter and choose 1 subfilter
