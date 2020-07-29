@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:measureAllChildren="false">
-
             <ProgressBar
                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,11 +110,11 @@
                                     android:layout_width="match_parent"
                                     android:layout_below="@id/img_egg"
                                     android:layout_marginTop="@dimen/dp_9"
-                                    android:layout_marginLeft="@dimen/dp_10"
-                                    android:layout_marginStart="@dimen/dp_10"
+                                    android:layout_marginLeft="@dimen/dp_16"
+                                    android:layout_marginStart="@dimen/dp_16"
                                     android:background="@drawable/bg_tierinfo"
-                                    android:layout_marginRight="@dimen/tp_margin_normal"
-                                    android:layout_marginEnd="@dimen/tp_margin_normal"
+                                    android:layout_marginRight="@dimen/tp_margin_medium"
+                                    android:layout_marginEnd="@dimen/tp_margin_medium"
                                     android:layout_height="match_parent">
 
                                     <TextView
