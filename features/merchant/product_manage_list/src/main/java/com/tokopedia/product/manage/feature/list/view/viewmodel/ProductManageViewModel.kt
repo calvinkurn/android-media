@@ -36,6 +36,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
@@ -216,7 +217,8 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
+                val extraInfo = listOf(ExtraInfo.TOPADS)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
                 productListResponse?.data

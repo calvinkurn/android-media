@@ -26,5 +26,7 @@ data class Product(
     @SerializedName("sku")
     val sku: String?,
     @SerializedName("pictures")
-    val pictures: List<Picture>?
+    val pictures: List<Picture>?,
+    @SerializedName("topads")
+    val topAds: List<ProductTopAds>?
 )
