@@ -25,6 +25,8 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.rules.TestDispatcherProvider
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -56,6 +58,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     override val getRecommendationTabUseCase = mockk<dagger.Lazy<GetRecommendationTabUseCase>>(relaxed = true)
     override val getHomeTokopointsDataUseCase = mockk<dagger.Lazy<GetHomeTokopointsDataUseCase>>(relaxed = true)
     override val getCoroutinePendingCashbackUseCase = mockk<dagger.Lazy<GetCoroutinePendingCashbackUseCase>> (relaxed = true)
+    override val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
+    override val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
     override val getPlayLiveDynamicUseCase = mockk<dagger.Lazy<GetPlayLiveDynamicUseCase>> (relaxed = true)
     override val getCoroutineWalletBalanceUseCase = mockk<dagger.Lazy<GetCoroutineWalletBalanceUseCase>> (relaxed = true)
     override val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
@@ -348,6 +352,8 @@ class PlayBannerUITest : BaseWidgetUiTest(){
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
             getRecommendationTabUseCase = getRecommendationTabUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
