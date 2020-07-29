@@ -218,7 +218,8 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
         if (getCurrentActivity() != null) {
-            RouteManager.route(currentActivity.get(), appLink);
+            Activity activity = currentActivity.get();
+            activity.startActivity(RouteManager.getIntent(activity, appLink));
         }
 
         switch (elementType.getViewType()) {
