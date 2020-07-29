@@ -32,6 +32,7 @@
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
 /features/content/play/                                 @tokopedia/android-miniondave-dev
 /features/content/play_common/                          @tokopedia/android-miniondave-dev
+/features/content/play_broadcaster/                     @tokopedia/android-miniondave-dev
 /features/content/interest_pick_common                  @tokopedia/android-miniondarth-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
