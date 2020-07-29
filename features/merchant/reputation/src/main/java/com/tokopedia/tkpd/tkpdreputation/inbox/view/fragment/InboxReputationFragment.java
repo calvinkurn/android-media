@@ -264,10 +264,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         searchView.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.VISIBLE);
-        if (GlobalConfig.isSellerApp()) {
-            adapter.setList(inboxReputationViewModel.getList(), ovoDataModel, null);
-        } else {
+        if (!GlobalConfig.isSellerApp() && getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
             adapter.setList(inboxReputationViewModel.getList(), ovoDataModel, sellerMigrationReviewModel);
+        } else {
+            adapter.setList(inboxReputationViewModel.getList(), ovoDataModel, null);
         }
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
