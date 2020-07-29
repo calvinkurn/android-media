@@ -1603,6 +1603,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
         restartBanner(isVisibleToUser)
     }
@@ -1611,6 +1612,11 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isVisibleToUser && view != null && adapter != null) {
             adapter?.notifyDataSetChanged()
         }
+    }
+
+    private fun resetAutoPlay(isVisibleToUser: Boolean){
+        shouldPausePlay = !isVisibleToUser
+        if(shouldPausePlay) adapter?.onPause()
     }
 
     private fun trackScreen(isVisibleToUser: Boolean) {
