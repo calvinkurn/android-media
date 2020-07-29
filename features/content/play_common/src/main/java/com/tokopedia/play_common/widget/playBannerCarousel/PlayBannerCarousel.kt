@@ -219,7 +219,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         }
     }
 
-    private fun showRefreshShimmer(){
+    fun showRefreshShimmer(){
         if(shimmeringView.parent == null) containerShimmering.addView(shimmeringView)
         channelTitle.hide()
         channelSubtitle.hide()
@@ -228,7 +228,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         containerPlayBanner.hide()
     }
 
-    private fun removeRefreshShimmer(){
+    fun removeRefreshShimmer(){
         containerShimmering.removeView(shimmeringView)
         channelTitle.show()
         channelSubtitle.show()

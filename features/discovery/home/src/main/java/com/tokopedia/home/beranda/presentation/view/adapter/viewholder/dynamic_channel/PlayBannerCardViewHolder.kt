@@ -32,18 +32,26 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
-        element?.playBannerCarouselDataModel?.let {
-            if(it.channelList.isNotEmpty()){
-                playBannerCarouselView?.setItem(it)
+        if(element?.playBannerCarouselDataModel?.channelList?.isNotEmpty() == true){
+            playBannerCarouselView?.showRefreshShimmer()
+        } else {
+            element?.playBannerCarouselDataModel?.let {
+                if (it.channelList.isNotEmpty()) {
+                    playBannerCarouselView?.setItem(it)
+                }
             }
         }
     }
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        element?.playBannerCarouselDataModel?.let {
-            if(it.channelList.isNotEmpty()){
-                playBannerCarouselView?.setItem(it)
+        if(element?.playBannerCarouselDataModel?.channelList?.isNotEmpty() == true){
+            playBannerCarouselView?.showRefreshShimmer()
+        } else {
+            element?.playBannerCarouselDataModel?.let {
+                if(it.channelList.isNotEmpty()){
+                    playBannerCarouselView?.setItem(it)
+                }
             }
         }
     }
