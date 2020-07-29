@@ -477,6 +477,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         if (rCode == BuyerConsts.REASON_CODE_LAINNYA) {
             tf_choose_sub_reason?.gone()
             tf_choose_sub_reason_editable?.visible()
+            tf_choose_sub_reason_editable?.setCounter(160)
             tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tf_choose_sub_reason_editable?.textFieldInput?.setSingleLine(false)
             tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -492,6 +493,16 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
                 override fun afterTextChanged(s: Editable) {
                     //After user is done entering the text
+                    if (s.length < 15) {
+                        tf_choose_sub_reason_editable?.setError(true)
+                        tf_choose_sub_reason_editable?.setMessage(getString(R.string.min_char_reason_lainnya))
+                    } else if (s.length > 160) {
+                        tf_choose_sub_reason_editable?.setError(true)
+                        tf_choose_sub_reason_editable?.setMessage(getString(R.string.max_char_reason_lainnya))
+                    } else {
+                        tf_choose_sub_reason_editable?.setError(false)
+                        tf_choose_sub_reason_editable?.setMessage("")
+                    }
                 }
             })
         } else {

@@ -262,7 +262,7 @@
 
     <!--end layout wait to cancel-->
 
-    <!--start layout wait to cancel-->
+    <!--start layout available to cancel-->
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_choose_reason"
@@ -330,6 +330,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"/>
 
-    <!--end layout wait to cancel-->
+    <!--end layout available to cancel-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

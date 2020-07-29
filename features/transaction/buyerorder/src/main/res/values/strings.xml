@@ -470,4 +470,6 @@ Anda di sini.</string>
     </string>
 
     <string name="mengerti_button">Mengerti</string>
+    <string name="min_char_reason_lainnya">Min. 15 karakter</string>
+    <string name="max_char_reason_lainnya">Max. 160 karakter</string>
 </resources>
