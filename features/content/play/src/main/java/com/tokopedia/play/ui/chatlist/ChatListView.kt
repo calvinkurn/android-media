@@ -13,7 +13,7 @@ import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.chatlist.adapter.ChatAdapter
 import com.tokopedia.play.ui.chatlist.itemdecoration.ChatListItemDecoration
 import com.tokopedia.play.view.custom.ChatScrollDownView
-import com.tokopedia.play.view.uimodel.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import timber.log.Timber
 
 /**

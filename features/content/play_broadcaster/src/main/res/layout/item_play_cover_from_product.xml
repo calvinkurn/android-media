@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play.broadcaster.view.custom.RoundedImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/iv_thumbnail"
+    android:layout_width="@dimen/play_cover_from_selection_size"
+    android:layout_height="@dimen/play_cover_from_selection_size"
+    app:cornerRadius="@dimen/spacing_lvl3"
+    tools:src="@drawable/bg_play_title" />
