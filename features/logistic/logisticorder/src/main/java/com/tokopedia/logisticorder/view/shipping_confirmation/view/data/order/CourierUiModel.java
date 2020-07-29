@@ -9,7 +9,7 @@ import java.util.List;
  * Created by kris on 1/4/18. Tokopedia
  */
 
-public class CourierViewModel implements Parcelable {
+public class CourierUiModel implements Parcelable {
 
     private String courierId;
 
@@ -21,10 +21,10 @@ public class CourierViewModel implements Parcelable {
 
     private List<CourierServiceModel> courierServiceList;
 
-    public CourierViewModel() {
+    public CourierUiModel() {
     }
 
-    protected CourierViewModel(Parcel in) {
+    protected CourierUiModel(Parcel in) {
         courierId = in.readString();
         courierImageUrl = in.readString();
         courierName = in.readString();
@@ -32,15 +32,15 @@ public class CourierViewModel implements Parcelable {
         courierServiceList = in.createTypedArrayList(CourierServiceModel.CREATOR);
     }
 
-    public static final Creator<CourierViewModel> CREATOR = new Creator<CourierViewModel>() {
+    public static final Creator<CourierUiModel> CREATOR = new Creator<CourierUiModel>() {
         @Override
-        public CourierViewModel createFromParcel(Parcel in) {
-            return new CourierViewModel(in);
+        public CourierUiModel createFromParcel(Parcel in) {
+            return new CourierUiModel(in);
         }
 
         @Override
-        public CourierViewModel[] newArray(int size) {
-            return new CourierViewModel[size];
+        public CourierUiModel[] newArray(int size) {
+            return new CourierUiModel[size];
         }
     };
 

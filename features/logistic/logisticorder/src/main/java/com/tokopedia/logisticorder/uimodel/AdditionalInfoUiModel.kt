@@ -1,4 +1,4 @@
-package com.tokopedia.logisticorder.viewmodel
+package com.tokopedia.logisticorder.uimodel
 
 /**
  * Created by fwidjaja on 2019-10-17.
