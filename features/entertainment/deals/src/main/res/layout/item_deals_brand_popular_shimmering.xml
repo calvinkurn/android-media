@@ -39,7 +39,7 @@
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/deals_dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintWidth_percent="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
