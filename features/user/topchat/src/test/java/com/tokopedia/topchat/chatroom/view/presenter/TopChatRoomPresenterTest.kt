@@ -2,7 +2,9 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -23,8 +25,11 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.impl.annotations.SpyK
 import okhttp3.Interceptor
 import okhttp3.WebSocket
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,9 +54,6 @@ class TopChatRoomPresenterTest {
 
     @RelaxedMockK
     private lateinit var getChatUseCase: GetChatUseCase
-
-    @RelaxedMockK
-    private lateinit var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper
 
     @RelaxedMockK
     private lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
@@ -113,6 +115,9 @@ class TopChatRoomPresenterTest {
     @RelaxedMockK
     private lateinit var view: TopChatContract.View
 
+    @SpyK
+    private var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
+
     private lateinit var presenter: TopChatRoomPresenter
 
     private lateinit var listInterceptor: ArrayList<Interceptor>
@@ -122,9 +127,9 @@ class TopChatRoomPresenterTest {
     private lateinit var wsResponseReplyText: WebSocketInfo
 
     object Dummy {
-        const val exMessageId = "1234051"
+        const val exMessageId = "190378584"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
-        val wsResponseReply = FileUtil.readFileContent("/ws_response_reply_text.json.json")
+        val wsResponseReply = FileUtil.readFileContent("/ws_response_reply_text.json")
     }
 
     @Before
@@ -223,5 +228,33 @@ class TopChatRoomPresenterTest {
         verify(exactly = 1) { view.showErrorWebSocket(true) }
     }
 
+    @Test
+    fun `onMessage ws event reply when not in the middle of the page`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns Observable.just(wsResponseReplyText)
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        val wsChatPojo = mockkParseResponse(wsResponseReplyText)
+        val wsChatVisitable = mockkWsMapper(wsChatPojo)
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+
+        // Then
+        assertThat(presenter.newUnreadMessage, equalTo(0))
+        verify(exactly = 1) { view.hideUnreadMessage() }
+        verify(exactly = 1) { view.onReceiveMessageEvent(wsChatVisitable) }
+    }
+
+    private fun mockkParseResponse(wsInfo: WebSocketInfo): ChatSocketPojo {
+        val wsChatPojo = topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response)
+        every { topChatRoomWebSocketMessageMapper.parseResponse(wsInfo.response) } returns wsChatPojo
+        return wsChatPojo
+    }
+
+    private fun mockkWsMapper(wsChatPojo: ChatSocketPojo): Visitable<*> {
+        val wsChatVisitable = topChatRoomWebSocketMessageMapper.map(wsChatPojo)
+        every { topChatRoomWebSocketMessageMapper.map(wsChatPojo) } returns wsChatVisitable
+        return wsChatVisitable
+    }
 
 }

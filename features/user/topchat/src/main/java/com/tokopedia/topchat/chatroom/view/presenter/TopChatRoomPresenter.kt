@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -181,10 +180,10 @@ class TopChatRoomPresenter @Inject constructor(
         mSubscription.unsubscribe()
     }
 
-    override fun mappingEvent(response: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = Gson().fromJson(response.jsonObject, ChatSocketPojo::class.java)
+    override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
+        val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(webSocketResponse)
         if (pojo.msgId.toString() != messageId) return
-        when (response.code) {
+        when (webSocketResponse.code) {
             EVENT_TOPCHAT_TYPING -> {
                 if (!isInTheMiddleOfThePage()) {
                     view?.onReceiveStartTypingEvent()
