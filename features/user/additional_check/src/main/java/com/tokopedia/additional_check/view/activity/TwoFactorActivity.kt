@@ -9,6 +9,7 @@ import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_DOUBLE_TAP
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import kotlin.system.exitProcess
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -42,7 +43,7 @@ class TwoFactorActivity: BaseSimpleActivity() {
 
     private fun doubleTapExit() {
         if (doubleTapExit) {
-            finish()
+            finishAffinity()
         } else {
             doubleTapExit = true
             val exitMessage = "Tekan sekali lagi untuk keluar"
