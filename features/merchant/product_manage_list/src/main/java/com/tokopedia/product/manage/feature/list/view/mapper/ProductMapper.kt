@@ -38,7 +38,6 @@ object ProductMapper {
                 ),
                 status = mapProductStatus(it),
                 stock = it.stock,
-                stockReserved = it.stockReserved,
                 isVariant = it.isVariant,
                 isFeatured = it.featured > 0,
                 url = it.url,
