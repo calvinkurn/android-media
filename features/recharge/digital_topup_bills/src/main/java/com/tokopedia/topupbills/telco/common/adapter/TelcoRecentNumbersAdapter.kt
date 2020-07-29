@@ -35,8 +35,8 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
     inner class RecentNumbersItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val iconOperator: ImageView = itemView.findViewById(R.id.topupbills_recent_icon_operator)
-        private val textClientNumber: TextView = itemView.findViewById(R.id.topupbills_recent_client_number)
+        private val iconOperator: ImageView = itemView.findViewById(R.id.telco_recent_icon_operator)
+        private val textClientNumber: TextView = itemView.findViewById(R.id.telco_recent_client_number)
 
         private lateinit var topupBillsRecommendation: TopupBillsRecommendation
 
