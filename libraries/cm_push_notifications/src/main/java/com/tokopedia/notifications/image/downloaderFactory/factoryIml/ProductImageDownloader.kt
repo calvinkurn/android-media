@@ -31,12 +31,12 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
             )
             val freeOngkirIcon = downloadAndStore(
                     context,
-                    productInfo.freeDeliveryIcon,
+                    productInfo.freeOngkirIcon,
                     ImageSizeAndTimeout.FREE_ONGKIR
             )
 
             productImage?.let { productInfo.productImage = it }
-            freeOngkirIcon?.let { productInfo.freeDeliveryIcon = it }
+            freeOngkirIcon?.let { productInfo.freeOngkirIcon = it }
         }
         verifyAndUpdate()
         return baseNotificationModel

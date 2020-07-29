@@ -55,10 +55,10 @@ data class ProductInfo(
         @Expose
         var element_id: String? = "",
 
-        @SerializedName(CMConstant.PayloadKeys.BEBAS_ONGKIR)
-        @ColumnInfo(name = CMConstant.PayloadKeys.BEBAS_ONGKIR)
+        @SerializedName(CMConstant.PayloadKeys.FREE_DELIVERY)
+        @ColumnInfo(name = CMConstant.PayloadKeys.FREE_DELIVERY)
         @Expose
-        var bebasOngkir: Boolean? = false,
+        var freeOngkirIcon: String? = "",
 
         @SerializedName(CMConstant.PayloadKeys.STOCK_AVAILABLE)
         @ColumnInfo(name = CMConstant.PayloadKeys.STOCK_AVAILABLE)
@@ -68,6 +68,10 @@ data class ProductInfo(
         @SerializedName(CMConstant.PayloadKeys.REVIEW_SCORE)
         @ColumnInfo(name = CMConstant.PayloadKeys.REVIEW_SCORE)
         @Expose
-        var reviewScore: String? = ""
+        var reviewScore: String? = "",
+
+        @SerializedName(CMConstant.PayloadKeys.ACTION_BUTTON)
+        @ColumnInfo(name = CMConstant.PayloadKeys.ACTION_BUTTON)
+        var actionButton: ArrayList<ActionButton> = ArrayList()
 
 ) : Parcelable
