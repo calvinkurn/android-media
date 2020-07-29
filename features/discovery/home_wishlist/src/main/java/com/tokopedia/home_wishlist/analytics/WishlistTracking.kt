@@ -62,7 +62,7 @@ object WishlistTracking {
 
     private const val EVENT_PRODUCT_VIEW = "productView"
     private const val PROMO_VIEW = "promoView"
-    private const val PROMO_CLICK = "promoView"
+    private const val PROMO_CLICK = "promoClick"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
     private const val EVENT_CLICK_ADD_TO_CART = "addToCart"
@@ -97,7 +97,7 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_BUY = "click - beli on wishlist"
     private const val VALUE_SCREEN_NAME = "/wishlist"
     private const val VALUE_BUSINESS_UNIT = "home & browse"
-    private const val VALUE_CURRENT_SITE = "tokopedia marketplace"
+    private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
     private fun getTracker(): ContextAnalytics {
@@ -404,7 +404,7 @@ object WishlistTracking {
                     )
                 )
         )
-        getTracker().sendGeneralEvent(map as HashMap<String, Any>)
+        getTracker().sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
     fun clickTopAdsBanner(item: BannerTopAdsDataModel, userId: String, position: Int){
@@ -418,7 +418,7 @@ object WishlistTracking {
                 CURRENT_SITE, VALUE_CURRENT_SITE,
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                    PROMO_VIEW, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
                         ECOMMERCE_PROMOTIONS, DataLayer.listOf(
                             convertBannerTopAdsToDataTrackingObject(
                                     item = item,
@@ -428,7 +428,7 @@ object WishlistTracking {
                     )
                 )
         )
-        getTracker().sendGeneralEvent(map as HashMap<String, Any>)
+        getTracker().sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
 
