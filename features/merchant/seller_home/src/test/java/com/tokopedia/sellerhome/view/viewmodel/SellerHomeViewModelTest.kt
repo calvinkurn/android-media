@@ -8,7 +8,7 @@ import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
 import com.tokopedia.sellerhome.view.model.TickerUiModel
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -80,7 +80,7 @@ class SellerHomeViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: SellerHomeViewModel
-    private lateinit var dynamicParameter: WidgetDataParameterModel
+    private lateinit var dynamicParameter: DynamicParameterModel
 
     @Before
     fun setup() {
@@ -94,8 +94,8 @@ class SellerHomeViewModelTest {
         dynamicParameter = getDynamicParameter()
     }
 
-    private fun getDynamicParameter(): WidgetDataParameterModel {
-        return WidgetDataParameterModel(
+    private fun getDynamicParameter(): DynamicParameterModel {
+        return DynamicParameterModel(
                 startDate = "15-07-20202",
                 endDate = "21-07-20202",
                 pageSource = "seller-home"

@@ -7,7 +7,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -39,7 +39,7 @@ class GetBarChartDataUseCase(
 
         fun getRequestParams(
                 dataKey: List<String>,
-                dynamicParameter: WidgetDataParameterModel
+                dynamicParameter: DynamicParameterModel
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
                 DataKeyModel(
