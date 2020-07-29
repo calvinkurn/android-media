@@ -10,8 +10,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Add correct image for campaign stock redirection -->
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_campaign_stock_redirection"
         android:layout_width="match_parent"

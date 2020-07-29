@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedEventInfoUiModel
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockRedirectionUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.StockTickerInfoUiModel
 import kotlinx.android.synthetic.main.fragment_campaign_stock_tab.*
 
@@ -71,17 +72,21 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {
-        val reservedStockList = mutableListOf<Visitable<CampaignStockTypeFactory>>(
-                StockTickerInfoUiModel(true)
-        ).apply {
-            addAll(reservedEventInfoList.map {
-                it.apply { this.isVariant = isVariant }
-            })
-        }
-        if (reservedStockList.isNullOrEmpty()) {
-            rv_campaign_stock?.gone()
+        if (GlobalConfig.isSellerApp()) {
+            val reservedStockList = mutableListOf<Visitable<CampaignStockTypeFactory>>(
+                    StockTickerInfoUiModel(true)
+            ).apply {
+                addAll(reservedEventInfoList.map {
+                    it.apply { this.isVariant = isVariant }
+                })
+            }
+            if (reservedStockList.isNullOrEmpty()) {
+                renderList(listOf())
+            } else {
+                renderList(reservedStockList)
+            }
         } else {
-            renderList(reservedStockList)
+            renderList(listOf(ReservedStockRedirectionUiModel))
         }
     }
 

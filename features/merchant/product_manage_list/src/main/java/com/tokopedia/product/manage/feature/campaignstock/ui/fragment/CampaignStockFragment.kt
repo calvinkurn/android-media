@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.ProductManageInstance
@@ -75,8 +76,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 isVariant?.run {
                     if (tab.position == 0) {
+                        toggleSaveButton(true)
                         ProductManageTracking.eventClickAllocationMainStock(this)
                     } else {
+                        toggleSaveButton(false)
                         ProductManageTracking.eventClickAllocationOnStockCampaign(this)
                     }
                 }
@@ -302,6 +305,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun changeViewPagerPage(position: Int) {
         vp2_campaign_stock?.currentItem = position
+    }
+
+    private fun toggleSaveButton(isMainStock: Boolean) {
+        divider_campaign_stock?.showWithCondition(isMainStock)
+        btn_campaign_stock_save?.showWithCondition(isMainStock)
     }
 
     private fun cancelActivity(errorMessage: String? = null) {
