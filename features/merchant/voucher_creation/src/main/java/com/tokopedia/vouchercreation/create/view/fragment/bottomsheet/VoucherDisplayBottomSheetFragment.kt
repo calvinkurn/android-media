@@ -15,19 +15,20 @@ import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollLi
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.view.*
 
-class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> VoucherTargetCardType) : BottomSheetUnify(), VoucherBottomView {
+class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         fun createInstance(context: Context?,
-                        getVoucherType: () -> VoucherTargetCardType,
+                           getVoucherType: () -> VoucherTargetCardType,
                            userId: String) : VoucherDisplayBottomSheetFragment {
-            return VoucherDisplayBottomSheetFragment(getVoucherType).apply {
+            return VoucherDisplayBottomSheetFragment().apply {
                 context?.run {
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
                     // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
                     view?.setupItemDecoration()
                     setChild(view)
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                    this@apply.getVoucherType = getVoucherType
                     this@apply.userId = userId
                 }
             }
@@ -46,6 +47,10 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
 
     private val linearLayoutManager by lazy {
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    private var getVoucherType: () -> VoucherTargetCardType = {
+        VoucherTargetCardType.PRIVATE
     }
 
     private var userId: String = ""
