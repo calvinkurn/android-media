@@ -139,11 +139,7 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
             bottomSheetAction.setTextColor(resources.getColorFromResources(requireContext(),
                     com.tokopedia.unifyprinciples.R.color.dark_N75))
         }
-
-        with(childView) {
-            btn_filter.isEnabled = filterChecked
-            bottomSheetAction.isEnabled = filterChecked
-        }
+        bottomSheetAction.isEnabled = filterChecked
     }
 
     interface ActionListener {
