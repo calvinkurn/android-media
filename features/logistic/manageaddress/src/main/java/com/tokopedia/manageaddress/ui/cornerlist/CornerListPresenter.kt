@@ -1,13 +1,13 @@
 package com.tokopedia.manageaddress.ui.cornerlist
 
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.manageaddress.domain.GetCornerList
 import javax.inject.Inject
 
 
 /**
  * Created by fajarnuha on 2019-05-26.
  */
-class CornerListPresenter @Inject constructor(val usecase: GetAddressCornerUseCase) : CornerContract.Presenter {
+class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : CornerContract.Presenter {
 
     private var mView: CornerContract.View? = null
     private var currentQuery: String = ""

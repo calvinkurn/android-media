@@ -1,8 +1,8 @@
 package com.tokopedia.manageaddress.ui.cornerlist
 
 import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.AddressDummyDataProvider
+import com.tokopedia.manageaddress.domain.GetCornerList
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -13,7 +13,7 @@ import rx.Observable
 
 class CornerListPresenterTest {
 
-    private val useCase: GetAddressCornerUseCase = mockk(relaxed = true)
+    private val useCase: GetCornerList = mockk(relaxed = true)
     private val view: CornerContract.View = mockk(relaxed = true)
 
     private val presenter by lazy {
