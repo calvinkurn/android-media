@@ -15,7 +15,7 @@ data class KeroShippingEditorPopUp(
         @SerializedName("status")
         var status: String = "",
         @SerializedName("message_status")
-        var messageStatus: String = "",
+        var messageStatus: List<String> = listOf(),
         @SerializedName ("data")
         var data: Data = Data()
 )

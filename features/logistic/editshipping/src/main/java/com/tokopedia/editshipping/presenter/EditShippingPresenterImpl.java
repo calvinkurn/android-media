@@ -26,6 +26,7 @@ import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddr
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -831,11 +832,12 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
         validateShippingUseCase.execute(requestParams, new Subscriber<ValidateShippingModel>() {
             @Override
             public void onCompleted() {
+                Log.d("ON_COMPLETE", "1");
             }
 
             @Override
             public void onError(Throwable e) {
-
+                 view.showErrorToast(ErrorHandler.getErrorMessage(view.getMainContext(), e));
             }
 
             @Override

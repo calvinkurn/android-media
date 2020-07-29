@@ -4,7 +4,7 @@ data class ValidateShippingModel (
         var status: String = "",
         var config: String = "",
         var serverProcessTime: String = "",
-        var messageStatus: String  = "",
+        var messageStatus: List<String> = listOf(),
         var data: Data = Data()
 )
 

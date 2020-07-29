@@ -5,7 +5,6 @@ import android.util.Log
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
-import com.tokopedia.editshipping.domain.model.ValidateShippingParams
 import com.tokopedia.editshipping.domain.response.ValidateShippingResponse
 import com.tokopedia.editshipping.util.PARAM_VALIDATE_SHIPPING
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -33,10 +32,18 @@ class ValidateShippingUseCase @Inject constructor(@ApplicationContext val contex
        return useCase.createObservable(RequestParams.EMPTY)
                .map {
                    val response = it.getData<ValidateShippingResponse>(ValidateShippingResponse::class.java)
-                   Log.d("RESPONSE_DATA", response.toString())
-                   val result = mapper.call(response)
-                   result
+                   if (response != null) {
+                       if (response.response.status == "OK") {
+                           mapper.call(response)
+                       } else {
+                           throw MessageErrorException(it.getError(ValidateShippingResponse::class.java)[0].message)
+                       }
+                   } else {
+                       throw MessageErrorException(it.getError(ValidateShippingResponse::class.java)[0].message)
+                   }
                }
+               .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
    }
 
     companion object{

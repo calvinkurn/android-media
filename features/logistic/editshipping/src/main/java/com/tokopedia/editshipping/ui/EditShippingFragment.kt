@@ -54,6 +54,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
@@ -502,24 +503,27 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun ValidateShippingPopUp() {
-        val data = ValidateShippingModel()
-        if (editShippingPresenter?.validateBoData?.data?.showPopup == true) {
-            openPopupValidation(data)
-        } else {
-            submitData()
+        val data = editShippingPresenter?.validateBoData
+        if (data != null) {
+            /*showPopup false temporary*/
+            if (!data.data.showPopup) {
+                data?.let { openPopupValidation(it) }
+            } else {
+                submitData()
+            }
         }
     }
 
     private fun openPopupValidation(data: ValidateShippingModel) {
         bottomSheetValidation = BottomSheetUnify()
         val viewBottomSheetValidation = View.inflate(activity, R.layout.popup_validation_bo, null).apply {
-            val boData = editShippingPresenter?.validateBoData
-            ticker_validation_bo.tickerTitle = data.data.tickerTitle
-            boData?.data?.tickerContent?.let { data.data.tickerContent }
 
-            point_one.text = data.data.popupContent[0]
-            point_two.text = data.data.popupContent[1]
-            point_three.text = data.data.popupContent[2]
+            ticker_validation_bo.tickerTitle = HtmlLinkHelper(context, data.data.tickerTitle).spannedString.toString()
+            ticker_validation_bo.setHtmlDescription(data.data.tickerContent)
+
+            point_one.text = HtmlLinkHelper(context, data.data.popupContent[0]).spannedString
+            point_two.text = HtmlLinkHelper(context, data.data.popupContent[1]).spannedString
+            point_three.text = HtmlLinkHelper(context, data.data.popupContent[2]).spannedString
 
             btn_nonaktifkan.setOnClickListener {
                 submitData()
