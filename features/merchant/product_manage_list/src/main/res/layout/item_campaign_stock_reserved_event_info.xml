@@ -32,10 +32,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/product_manage_campaign_stock_event_name_margin"
             android:layout_marginStart="@dimen/product_manage_campaign_stock_event_name_margin"
+            android:layout_marginTop="@dimen/dp_1"
             android:textColor="@color/product_manage_campaign_stock_event_name_color"
             app:typographyType="heading_6"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/label_campaign_stock_event_info"
+            app:layout_constraintTop_toTopOf="@id/label_campaign_stock_event_info"
             app:layout_constraintStart_toEndOf="@id/label_campaign_stock_event_info"
             tools:text="40% | Rp 150.000"/>
 

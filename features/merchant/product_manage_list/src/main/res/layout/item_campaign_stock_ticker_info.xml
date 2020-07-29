@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingLeft="@dimen/product_manage_campaign_stock_ticker_custom_margin"
+    android:paddingStart="@dimen/product_manage_campaign_stock_ticker_custom_margin"
+    android:paddingEnd="@dimen/product_manage_campaign_stock_ticker_custom_margin"
+    android:paddingRight="@dimen/product_manage_campaign_stock_ticker_custom_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/product_manage_campaign_stock_item_padding">
 

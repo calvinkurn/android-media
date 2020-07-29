@@ -73,12 +73,19 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
 
     private fun setupAdapterModels(isVariant: Boolean) {
         if (GlobalConfig.isSellerApp()) {
+            val eventSize = reservedEventInfoList.size
             val reservedStockList = mutableListOf<Visitable<CampaignStockTypeFactory>>(
                     StockTickerInfoUiModel(true)
             ).apply {
-                addAll(reservedEventInfoList.map {
-                    it.apply { this.isVariant = isVariant }
-                })
+                addAll(reservedEventInfoList
+                        .mapIndexed { index, model ->
+                            model.apply {
+                                this.isVariant = isVariant
+                                if (index == eventSize - 1) {
+                                    this.isLastEvent = true
+                                }
+                            }
+                        })
             }
             if (reservedStockList.isNullOrEmpty()) {
                 renderList(listOf())

@@ -58,7 +58,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
         app:layout_constraintStart_toEndOf="@id/tv_campaign_stock_product_total_stock"
         app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_product_total_stock"
         app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_product_total_stock"
