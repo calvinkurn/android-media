@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -358,13 +359,27 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         buyerGetCancellationReasonViewModel.cancelReasonResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    empty_state_cancellation?.gone()
+                    cl_cancellation_content?.visible()
                     cancelReasonResponse = it.data.getCancellationReason
                     renderPage()
                 }
                 is Fail -> {
-                    val toasterFail = Toaster
-                    view?.let { v ->
-                        toasterFail.make(v, getString(R.string.fail_cancellation), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, BuyerConsts.ACTION_OK)
+//                    val toasterFail = Toaster
+//                    view?.let { v ->
+//                        toasterFail.make(v, getString(R.string.fail_cancellation), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, BuyerConsts.ACTION_OK)
+//                    }
+
+                    cl_cancellation_content?.gone()
+                    empty_state_cancellation?.visible()
+                    empty_state_cancellation?.apply {
+                        ContextCompat.getDrawable(context, R.drawable.buyer_cancellation_no_connection)?.let { it1 -> setImageDrawable(it1) }
+                        setTitle(getString(R.string.cancellation_no_connection_title))
+                        setDescription(getString(R.string.cancellation_no_connection_desc))
+                        setPrimaryCTAText(getString(R.string.cancellation_no_connection_btn))
+                        setPrimaryCTAClickListener {
+                            getCancelReasons()
+                        }
                     }
                 }
             }
