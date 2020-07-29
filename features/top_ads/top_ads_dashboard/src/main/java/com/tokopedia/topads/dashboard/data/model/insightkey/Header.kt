@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
 
 data class Header(
     @SerializedName("bid")
-    val bid: BidBase = BidBase(),
+    val bid: BidBase? = BidBase(),
     @SerializedName("btn_action")
-    val btnAction: BtnAction = BtnAction(),
+    val btnAction: BtnAction? = BtnAction(),
     @SerializedName("keyword")
-    val keyword: KeywordBase = KeywordBase(),
+    val keyword: KeywordBase? = KeywordBase(),
     @SerializedName("negative")
-    val negative: NegativeBase= NegativeBase()
+    val negative: NegativeBase?= NegativeBase()
 ):Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(BidBase::class.java.classLoader),
@@ -46,11 +46,11 @@ data class Header(
 
 data class KeywordBase(
         @SerializedName("box")
-        val box: Box = Box(),
+        val box: Box? = Box(),
         @SerializedName("id")
         val id: Int = 0,
         @SerializedName("table")
-        val table: List<Table> = listOf()
+        val table: List<Table>? = listOf()
 ):Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Box::class.java.classLoader),
@@ -81,11 +81,11 @@ data class KeywordBase(
 
 data class NegativeBase(
         @SerializedName("box")
-        val box: Box = Box(),
+        val box: Box? = Box(),
         @SerializedName("id")
         val id: Int = 0,
         @SerializedName("table")
-        val table: List<Table> = listOf()
+        val table: List<Table>? = listOf()
 ):Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Box::class.java.classLoader),
@@ -116,11 +116,11 @@ data class NegativeBase(
 
 data class BidBase(
         @SerializedName("box")
-        val box: Box = Box(),
+        val box: Box? = Box(),
         @SerializedName("id")
         val id: Int = 0,
         @SerializedName("table")
-        val table: List<Table> = listOf()
+        val table: List<Table>? = listOf()
 ):Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Box::class.java.classLoader),

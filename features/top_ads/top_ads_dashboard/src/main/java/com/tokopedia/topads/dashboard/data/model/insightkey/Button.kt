@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Button(
     @SerializedName("title")
-    val title: String = "",
+    val title: String? = "",
     @SerializedName("url")
-    val url: String = ""
+    val url: String? = ""
 ):Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),

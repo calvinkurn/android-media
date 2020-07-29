@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
 
 data class Box(
     @SerializedName("button")
-    val button: Button = Button(),
+    val button: Button? = Button(),
     @SerializedName("desc")
-    val desc: String = "",
+    val desc: String? = "",
     @SerializedName("img")
-    val img: String = "",
+    val img: String? = "",
     @SerializedName("title")
-    val title: String = ""
+    val title: String? = ""
 ):Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(Button::class.java.classLoader),

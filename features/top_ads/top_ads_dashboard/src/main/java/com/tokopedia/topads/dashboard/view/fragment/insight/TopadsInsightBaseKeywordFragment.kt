@@ -62,12 +62,16 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
+        loadData()
+        swipe_refresh_layout.setOnRefreshListener {
+            loadData()
+        }
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(context)
     }
 
     private fun onSuccessGetInsightData(response: InsightKeyData) {
+        swipe_refresh_layout.isRefreshing = false
         val data: HashMap<String, KeywordInsightDataMain> = response.data
         keyData = data
         listOfKeys.clear()
@@ -79,6 +83,13 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
     }
 
+    private fun loadData(){
+        swipe_refresh_layout.isEnabled = true
+        adapter.items.clear()
+        adapter.notifyDataSetChanged()
+        topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
+    }
+
     fun searchAction(search: String) {
         val list: MutableList<KeywordInsightDataMain> = mutableListOf()
         listOfKeys.clear()
@@ -88,6 +99,7 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
                 listOfKeys.add(it.key)
             }
         }
+        (parentFragment as TopAdsRecommendationFragment).setCount(list.size)
         if (list.isEmpty()) {
             keyword_list.visibility = View.GONE
             txtSearch.visibility = View.VISIBLE
@@ -95,10 +107,10 @@ class TopadsInsightBaseKeywordFragment : BaseDaggerFragment() {
         } else {
             keyword_list.visibility = View.VISIBLE
             txtSearch.visibility = View.GONE
-            adapter.items.clear()
-            adapter.items.addAll(list)
-            adapter.notifyDataSetChanged()
         }
+        adapter.items.clear()
+        adapter.items.addAll(list)
+        adapter.notifyDataSetChanged()
     }
 
 }

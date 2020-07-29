@@ -90,7 +90,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                 view_pager.currentItem = position
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources, 4, 0, 0)
         rvTabInsight.adapter = topAdsInsightTabAdapter
         view_pager.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
     }

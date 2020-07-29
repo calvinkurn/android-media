@@ -45,8 +45,8 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     lateinit var adapter: TopAdsDashInsightKeyPagerAdapter
     lateinit var data: InsightKeyData
     private var keyList: MutableList<String> = mutableListOf()
-    private var requestFrom :String = REQUEST_FROM_POS
-    private var countToAdd:Int = 1
+    private var requestFrom: String = REQUEST_FROM_POS
+    private var countToAdd: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +120,6 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         loader.visibility = View.GONE
     }
 
-
     override fun onSuccessEditKeywords(it: FinalAdResponse) {
         when (requestFrom) {
             REQUEST_FROM_NEG -> Toaster.make(this.findViewById(android.R.id.content), String.format(getString(R.string.topads_insight_add_negative), countToAdd), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL)
@@ -131,12 +130,12 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onErrorEditKeyword(erorr: List<FinalAdResponse.TopadsManageGroupAds.ErrorsItem>?) {
-       if(erorr?.get(0)?.detail ==  INVALID_KEYWORD_TAG){
-           when(requestFrom){
-               REQUEST_FROM_POS -> Toaster.make(this.findViewById(android.R.id.content), getString(R.string.topads_insight_invalid_key_tag_pos),TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_ERROR)
-               REQUEST_FROM_NEG -> Toaster.make(this.findViewById(android.R.id.content), getString(R.string.topads_insight_invalid_key_tag_neg),  TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_ERROR)
-           }
-       }
+        if (erorr?.get(0)?.detail == INVALID_KEYWORD_TAG) {
+            when (requestFrom) {
+                REQUEST_FROM_POS -> Toaster.make(this.findViewById(android.R.id.content), getString(R.string.topads_insight_invalid_key_tag_pos), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_ERROR)
+                REQUEST_FROM_NEG -> Toaster.make(this.findViewById(android.R.id.content), getString(R.string.topads_insight_invalid_key_tag_neg), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_ERROR)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -152,18 +151,18 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int) {
         currentGroupId = groupId
-        val query = data.header.btnAction.insight
+        val query = data.header.btnAction?.insight ?: ""
         this.countToAdd = countToAdd
-        topAdsInsightPresenter.topAdsCreated(groupId, query, mutationData )
+        topAdsInsightPresenter.topAdsCreated(groupId, query, mutationData)
     }
 
-    override fun onButtonClickedNeg(data: List<MutationData>, groupId: String,  countToAdd: Int) {
+    override fun onButtonClickedNeg(data: List<MutationData>, groupId: String, countToAdd: Int) {
         requestFrom = REQUEST_FROM_NEG
-        onButtonClicked(data, groupId ,countToAdd)
+        onButtonClicked(data, groupId, countToAdd)
     }
 
-    override fun onButtonClickedBid(data: List<MutationData>, groupId: String,  countToAdd: Int) {
+    override fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int) {
         requestFrom = REQUEST_FROM_BID
-        onButtonClicked(data, groupId,countToAdd)
+        onButtonClicked(data, groupId, countToAdd)
     }
 }

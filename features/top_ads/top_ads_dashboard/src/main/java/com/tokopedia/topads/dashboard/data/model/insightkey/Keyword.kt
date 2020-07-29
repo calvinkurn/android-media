@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class Keyword(
-    @SerializedName("id")
-    val id: String = "",
-    @SerializedName("priceBid")
-    val priceBid: Int = 0,
-    @SerializedName("source")
-    val source: String = "",
-    @SerializedName("status")
-    val status: String = "",
-    @SerializedName("tag")
-    val tag: String = "",
-    @SerializedName("type")
-    val type: String = ""
+        @SerializedName("id")
+        val id: String? = "",
+        @SerializedName("priceBid")
+        val priceBid: Int = 0,
+        @SerializedName("source")
+        val source: String? = "",
+        @SerializedName("status")
+        val status: String? = "",
+        @SerializedName("tag")
+        val tag: String? = "",
+        @SerializedName("type")
+        val type: String? = ""
 ): Serializable,Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),

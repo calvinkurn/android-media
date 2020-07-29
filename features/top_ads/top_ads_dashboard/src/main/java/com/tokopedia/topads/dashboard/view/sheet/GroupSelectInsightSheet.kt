@@ -69,6 +69,7 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
         }
         if(listUnify.isNotEmpty()) {
             listGroup?.setData(listUnify)
+            listGroup.visibility = View.VISIBLE
             txtSearch.visibility = View.GONE
         }else{
             listGroup.visibility = View.GONE
@@ -78,7 +79,7 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
 
         listGroup?.run {
             onLoadFinish {
-                this.setOnItemClickListener { parent, view, position, id ->
+                this.setOnItemClickListener { _, _, position, _ ->
                     setSelected(listUnify, position) {
                         selectedGroup?.invoke(position,listOfKeys[position])
                     }
@@ -109,9 +110,11 @@ class GroupSelectInsightSheet(var response: InsightKeyData, private val groupId:
 
 
     private fun ListItemUnify.getShownRadioButton() = run {
-        if (listLeftRadiobtn?.visibility == View.VISIBLE) listLeftRadiobtn
-        else if (listRightRadiobtn?.visibility == View.VISIBLE) listRightRadiobtn
-        else null
+        when {
+            listLeftRadiobtn?.visibility == View.VISIBLE -> listLeftRadiobtn
+            listRightRadiobtn?.visibility == View.VISIBLE -> listRightRadiobtn
+            else -> null
+        }
     }
 
 }

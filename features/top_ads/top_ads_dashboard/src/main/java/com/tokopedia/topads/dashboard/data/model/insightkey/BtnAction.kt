@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 data class BtnAction(
     @SerializedName("insight")
-    val insight: String = ""
+    val insight: String? = ""
 ):Parcelable {
     constructor(parcel: Parcel) : this(parcel.readString()) {
     }

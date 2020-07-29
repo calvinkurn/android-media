@@ -6,13 +6,13 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Table(
-    @SerializedName("id")
-    val id: Int = 0,
-    @SerializedName("title")
-    val title: String = "",
-    @SerializedName("tooltip")
-    val tooltip: String = ""
-):Parcelable {
+        @SerializedName("id")
+        val id: Int = 0,
+        @SerializedName("title")
+        val title: String? = "",
+        @SerializedName("tooltip")
+        val tooltip: String? = ""
+) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString(),
