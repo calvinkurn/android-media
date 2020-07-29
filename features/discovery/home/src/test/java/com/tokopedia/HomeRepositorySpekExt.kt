@@ -23,7 +23,7 @@ fun TestBody.createHomeRepositoryImpl(): HomeRepository {
             homeCachedDataSource = getCachedDataSource,
             homeRemoteDataSource = getRemoteDataSource,
             homeDefaultDataSource = getHomeDefaultDataSource,
-            geolocationRemoteDataSource = Lazy{geolocationRemoteDataSource}
+            geolocationRemoteDataSource = Lazy { geolocationRemoteDataSource }
     )
 }
 
