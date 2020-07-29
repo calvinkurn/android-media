@@ -427,6 +427,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
         mWidgetList.addAll(widgets)
         mWidgetList.add(WhiteSpaceUiModel())
+        adapter.data.clear()
         super.renderList(mWidgetList)
 
         setupTabItems()
