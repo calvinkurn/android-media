@@ -3,19 +3,18 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.getRelativeDate
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.*
-import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.iv_badge
-import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.shop_ava
-import kotlinx.android.synthetic.main.item_dynamic_shop_credibility.view.shop_name
 
 /**
  * Created by Yehezkiel on 15/06/20
@@ -35,7 +34,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                 shop_location_online.text = context.getString(R.string.location_dot_builder, it.location)
                 setupLastActive(element.shopInfo?.shopLastActive.orEmpty())
                 setupBadgeAndImage(it, element.isOs, element.isPm)
-                setupGoApotik(element.shopFeature)
+                setupGoApotik(element.isGoApotik)
                 setupInfoRegion(element)
                 hideShopLoading()
 
@@ -54,9 +53,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupGoApotik(shopFeature: ShopFeatureData) = with(view) {
-        shop_feature.shouldShowWithAction(shopFeature.value) {
-            shop_feature.text = shopFeature.title
+    private fun setupGoApotik(isGoApotik: Boolean) = with(view) {
+        shop_feature.shouldShowWithAction(isGoApotik) {
+            shop_feature.text = context.getString(R.string.label_go_apotik)
         }
     }
 

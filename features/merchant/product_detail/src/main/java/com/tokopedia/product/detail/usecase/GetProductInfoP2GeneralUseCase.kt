@@ -1,168 +1,128 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
-import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.product.WishlistCount
-import com.tokopedia.product.detail.data.model.ProductInfoP2General
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
-import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
-import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
-import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.model.ProductInfoP2GeneralData
+import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
+import com.tokopedia.product.detail.data.model.talk.Talk
+import com.tokopedia.product.detail.data.model.talk.TalkList
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Created by Yehezkiel on 27/07/20
+ */
 class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                         private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2General>() {
-
+                                                         private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2GeneralData>() {
     companion object {
-        fun createParams(shopId: Int, productId: Int, productPrice: Int,
-                         condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                         userId: Int, forceRefresh: Boolean, minOrder: Int, warehouseId: String?): RequestParams =
+        fun createParams(productId: Int, shopId: Int): RequestParams =
                 RequestParams.create().apply {
-                    putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
                     putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putInt(ProductDetailCommonConstant.PARAM_PRICE, productPrice)
-                    putString(ProductDetailCommonConstant.PARAM_CONDITION, condition)
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_TITLE, productTitle)
-                    putInt(ProductDetailCommonConstant.PARAM_CATEGORY_ID, categoryId)
-                    putString(ProductDetailCommonConstant.PARAM_CATALOG_ID, catalogId)
-                    putInt(ProductDetailCommonConstant.PARAM_USER_ID, userId)
-                    putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
-                    putInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, minOrder)
-                    putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
+                    putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
                 }
     }
 
-    var requestParams: RequestParams = RequestParams.EMPTY
+    private var requestParams: RequestParams = RequestParams.EMPTY
+    private var forceRefresh: Boolean = false
 
-    override suspend fun executeOnBackground(): ProductInfoP2General {
-        val productInfoP2 = ProductInfoP2General()
+    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh:Boolean) : ProductInfoP2GeneralData{
+        this.requestParams = requestParams
+        this.forceRefresh = forceRefresh
+        return executeOnBackground()
+    }
 
+    override suspend fun executeOnBackground(): ProductInfoP2GeneralData {
+        val p2GeneralData = ProductInfoP2GeneralData()
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val productId = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, 0)
-        val productPrice = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE, 0)
-        val condition = requestParams.getString(ProductDetailCommonConstant.PARAM_CONDITION, "")
-        val productTitle = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_TITLE, "")
-        val categoryId = requestParams.getInt(ProductDetailCommonConstant.PARAM_CATEGORY_ID, 0)
-        val userId = requestParams.getInt(ProductDetailCommonConstant.PARAM_USER_ID, 0)
-        val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
-        val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
 
-        val shopBadgeParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId))
-        val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
-                ShopBadge.Response::class.java, shopBadgeParams)
+        //region Review
+        val imageReviewParams = generateImageReviewParam(productId)
+        val imageReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_IMAGE_REVIEW],
+                ImageReviewGqlResponse::class.java, imageReviewParams)
 
-        val shopCommitmentParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
-                ProductDetailConstant.PARAM_PRICE to productPrice)
-        val shopCommitmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_COMMITMENT],
-                ShopCommitment.Response::class.java, shopCommitmentParams)
+        val helpfulReviewParams = generateProductIdParam(productId)
+        val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW],
+                Review.Response::class.java, helpfulReviewParams)
+        //endregion
 
-        val wishlistCountParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId)
-        val wishlistCountRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_COUNT],
-                WishlistCount.Response::class.java, wishlistCountParam)
+        //region Discussion/Talk
+        val latestTalkParams = generateProductIdParam(productId)
+        val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
+                TalkList.Response::class.java, latestTalkParams)
 
-        val voucherParams = mapOf(GetMerchantVoucherListUseCase.SHOP_ID to shopId,
-                GetMerchantVoucherListUseCase.NUM_VOUCHER to ProductDetailCommonConstant.DEFAULT_NUM_VOUCHER)
-        val voucherRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_VOUCHER],
-                MerchantVoucherQuery::class.java, voucherParams)
+        val discussionMostHelpfulParams = generateDiscussionMosthelpfulParam(productId.toString(), shopId.toString())
+        val discussionMostHelpfulRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
+                DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
+        //endregion
 
-        val installmentParams = mapOf(ProductDetailConstant.PARAM_PRICE to productPrice, "qty" to 1)
-        val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
-                InstallmentResponse::class.java, installmentParams)
 
-        val productPPParams = mapOf("param" to PPItemDetailRequest(productId = productId, shopId = shopId, userId = userId, categoryId = categoryId,
-                condition = condition.toLowerCase(), productTitle = productTitle, price = productPrice))
-        val productPurchaseProtectionRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_PP],
-                ProductPurchaseProtectionInfo.Response::class.java, productPPParams)
-
-        val shopFeatureParam = mapOf(ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString())
-        val shopFeatureRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_FEATURE],
-                ShopFeatureResponse::class.java, shopFeatureParam)
-
-        val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
-                ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minOrder)
-        val pdpFinancingRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION],
-                PDPInstallmentRecommendationResponse::class.java, pdpFinancingRecommendationParam)
-
-        val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
-                ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minOrder)
-        val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
-                FinancingDataResponse::class.java, pdpFinancingCalculationParam)
-
-        val requests = mutableListOf(wishlistCountRequest, voucherRequest,
-                shopBadgeRequest, shopCommitmentRequest, installmentRequest, productPurchaseProtectionRequest, shopFeatureRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
+        val requests = mutableListOf(imageReviewRequest, helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
-            if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
-                productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
-                        .result.firstOrNull()
-            }
-
-            if (gqlResponse.getError(WishlistCount.Response::class.java)?.isNotEmpty() != true)
-                productInfoP2.wishlistCount = gqlResponse.getData<WishlistCount.Response>(WishlistCount.Response::class.java)
-                        .wishlistCount
-
-            if (gqlResponse.getError(MerchantVoucherQuery::class.java)?.isNotEmpty() != true) {
-                productInfoP2.vouchers = ((gqlResponse.getData<MerchantVoucherQuery>(MerchantVoucherQuery::class.java))
-                        .result?.vouchers?.toList()
-                        ?: listOf()).map { MerchantVoucherViewModel(it) }
-            }
-
-            if (gqlResponse.getError(ShopCommitment.Response::class.java)?.isNotEmpty() != true) {
-                val resp = gqlResponse.getData<ShopCommitment.Response>(ShopCommitment.Response::class.java).result
-                if (resp.error.message.isBlank()) {
-                    productInfoP2.shopCommitment = resp.shopCommitment
+            //region Review
+            if (gqlResponse.getError(Review.Response::class.java)?.isNotEmpty() != true) {
+                gqlResponse.doActionIfNotNull<Review.Response> {
+                    p2GeneralData.helpfulReviews = it.productMostHelpfulReviewQuery.list
                 }
             }
 
-            if (gqlResponse.getError(InstallmentResponse::class.java)?.isNotEmpty() != true) {
-                val resp = gqlResponse.getData<InstallmentResponse>(InstallmentResponse::class.java).result
-                productInfoP2.minInstallment = resp.installmentMinimum
+            if (gqlResponse.getError(ImageReviewGqlResponse::class.java)?.isNotEmpty() != true) {
+                gqlResponse.doActionIfNotNull<ImageReviewGqlResponse> {
+                    p2GeneralData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(it)
+                }
+            }
+            //endregion
+
+            //region Discussion/Talk
+            if (gqlResponse.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
+                gqlResponse.doActionIfNotNull<TalkList.Response> {
+                    p2GeneralData.latestTalk = it.result.data.talks.firstOrNull() ?: Talk()
+                }
             }
 
-//            if (gqlResponse.getError(ProductPurchaseProtectionInfo.Response::class.java)?.isNotEmpty() != true) {
-//                val data = gqlResponse.getData<ProductPurchaseProtectionInfo.Response>(ProductPurchaseProtectionInfo.Response::class.java).response
-//                if (!data.ppError.isError) {
-//                    productInfoP2.productPurchaseProtectionInfo = data
-//                }
-//            }
-
-            if (gqlResponse.getError(ShopFeatureResponse::class.java)?.isNotEmpty() != true) {
-                val shopFeatureResponse =
-                        gqlResponse.getData<ShopFeatureResponse>(ShopFeatureResponse::class.java)
-                productInfoP2.shopFeature = shopFeatureResponse.shopFeature.data
+            if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {
+                gqlResponse.doActionIfNotNull<DiscussionMostHelpfulResponseWrapper> {
+                    p2GeneralData.discussionMostHelpful = it.discussionMostHelpful
+                }
+            } else {
+                p2GeneralData.discussionMostHelpful = DiscussionMostHelpful()
             }
+            //endregion
 
-            if (gqlResponse.getError(PDPInstallmentRecommendationResponse::class.java)?.isNotEmpty() != true) {
-                val installmentRecommendationData: PDPInstallmentRecommendationResponse =
-                        gqlResponse.getData(PDPInstallmentRecommendationResponse::class.java)
-                productInfoP2.productFinancingRecommendationData = installmentRecommendationData
-            }
-
-            if (gqlResponse.getError(FinancingDataResponse::class.java)?.isNotEmpty() != true) {
-                val financingCalculationData: FinancingDataResponse = gqlResponse.getData(FinancingDataResponse::class.java)
-                productInfoP2.productFinancingCalculationData = financingCalculationData
-            }
-
-        } catch (t: Throwable) {
-            Timber.d(t)
+        } catch (e: Throwable) {
+            Timber.d(e)
         }
-
-        return productInfoP2
+        return p2GeneralData
     }
+
+    private fun generateImageReviewParam(productId: Int): Map<String, Any> {
+        return mapOf(
+                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
+                ProductDetailCommonConstant.PARAM_PAGE to 1,
+                ProductDetailCommonConstant.PARAM_TOTAL to ProductDetailCommonConstant.DEFAULT_NUM_IMAGE_REVIEW)
+    }
+
+    private fun generateProductIdParam(productId: Int): Map<String, Any> {
+        return mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId)
+    }
+
+    private fun generateDiscussionMosthelpfulParam(productId: String, shopId: String): Map<String, Any> {
+        return mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
+                ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
+    }
+
+
 }

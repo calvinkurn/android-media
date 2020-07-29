@@ -53,20 +53,6 @@ data class ComponentData(
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
         //endregion
-        //region Upcoming/Notify me
-        @SerializedName("campaignID")
-        val campaignId: String = "",
-        @SerializedName("campaignType")
-        val campaignType: String = "",
-        @SerializedName("campaignTypeName")
-        val campaignTypeName: String = "",
-        @SerializedName("endDate")
-        val endDate: String = "",
-        @SerializedName("startDate")
-        val startDate: String = "",
-        @SerializedName("notifyMe")
-        val notifyMe: Boolean = false,
-        //endregion
         //region Variant data
         @SerializedName("parentID")
         val parentId: String = "",

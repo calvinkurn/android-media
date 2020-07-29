@@ -2,19 +2,20 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQueryResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
+import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopscore.ProductShopRatingQuery
 import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopChatSpeedQuery
 import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopPackSpeedQuery
-import com.tokopedia.variant_common.model.WarehouseInfo
 
 /**
  * Created by Yehezkiel on 20/07/20

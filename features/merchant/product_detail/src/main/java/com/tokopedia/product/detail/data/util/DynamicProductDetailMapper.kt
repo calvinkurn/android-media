@@ -108,24 +108,11 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.PRODUCT_CONTENT
         }?.componentData?.firstOrNull()
 
-        val upcomingData = data.components.find {
-            it.type == ProductDetailConstant.NOTIFY_ME
-        }?.componentData?.firstOrNull() ?: ComponentData()
-
         val mediaData = data.components.find {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newDataWithUpcoming = contentData?.copy(
-                campaignId = upcomingData.campaignId,
-                campaignType = upcomingData.campaignType,
-                campaignTypeName = upcomingData.campaignTypeName,
-                endDate = upcomingData.endDate,
-                startDate = upcomingData.startDate,
-                notifyMe = upcomingData.notifyMe
-        ) ?: ComponentData()
-
-        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media, videos = mediaData.videos)
+        val newDataWithMedia = contentData?.copy(media = mediaData.media, videos = mediaData.videos) ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia)

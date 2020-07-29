@@ -29,7 +29,7 @@ data class ProductUpcomingData (
 
         @SerializedName("notifyMe")
         @Expose
-        val notifyMe: Boolean? = false,
+        var notifyMe: Boolean? = false,
 
         @SerializedName("productID")
         @Expose

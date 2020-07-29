@@ -3,8 +3,6 @@ package com.tokopedia.product.detail.data.model.datamodel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 class ProductShopInfoDataModel(
         //From P1
@@ -22,7 +20,8 @@ class ProductShopInfoDataModel(
         var shopLastActive: String = "",
 
         //From P2 General
-        var shopBadge: ShopBadge? = null,
+        var shopBadge: String? = "",
+        var isGoAPotik:Boolean = false,
         var shopFeature: ShopFeatureData? = null,
 
         //Static

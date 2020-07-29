@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
@@ -29,7 +28,7 @@ class ProductShopCredibilityDataModel(
         var shopSpeed: Int = 0,
         var shopChatSpeed: Int = 0,
         var shopRating: Float = 0F,
-        var shopFeature: ShopFeatureData = ShopFeatureData()
+        var isGoApotik:Boolean = false
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 

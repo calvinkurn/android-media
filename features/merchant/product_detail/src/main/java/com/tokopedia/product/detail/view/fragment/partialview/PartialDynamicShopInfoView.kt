@@ -9,9 +9,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import kotlinx.android.synthetic.main.item_dynamic_pdp_shop_info.view.*
 
 class PartialDynamicShopInfoView(val view: View, private val listener: DynamicProductDetailListener) {
@@ -93,14 +91,14 @@ class PartialDynamicShopInfoView(val view: View, private val listener: DynamicPr
         }
     }
 
-    fun renderShopBadge(shopBadge: ShopBadge) {
-        ImageHandler.LoadImage(view.l_medal, shopBadge.badge)
+    fun renderShopBadge(shopBadge: String) {
+        ImageHandler.LoadImage(view.l_medal, shopBadge)
     }
 
-    fun renderShopFeature(shopFeatureData: ShopFeatureData) {
+    fun renderShopFeature(isGoApotik: Boolean) {
         with(view) {
-            shop_feature.shouldShowWithAction(shopFeatureData.value) {
-                shop_feature.text = shopFeatureData.title
+            shop_feature.shouldShowWithAction(isGoApotik) {
+                shop_feature.text = context.getString(R.string.label_go_apotik)
             }
         }
     }

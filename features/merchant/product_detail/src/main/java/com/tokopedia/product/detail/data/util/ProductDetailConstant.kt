@@ -130,9 +130,6 @@ object ProductDetailConstant {
     const val PRODUCT_CONTENT = "product_content"
     const val PRODUCT_CONTENT_TITLE_TOP = "product_content_title_top"
     const val MEDIA = "product_media"
-    const val LAYOUT_HEAD_N_SHOULDERS = "head n shoulders"
-    const val LAYOUT_DEFAULT = "Default Layout"
-    const val LAYOUT_TAIL_N_SHOULDERS = "tail n shoulders"
     const val BY_ME = "byme"
 
 

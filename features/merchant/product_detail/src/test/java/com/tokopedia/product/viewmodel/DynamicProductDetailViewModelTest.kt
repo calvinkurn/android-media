@@ -125,7 +125,7 @@ class DynamicProductDetailViewModelTest {
     lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2General2UseCase: GetProductInfoP2General2UseCase
+    lateinit var getProductInfoP2General2UseCase: GetProductInfoP2GeneralUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()

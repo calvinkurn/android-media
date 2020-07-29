@@ -45,14 +45,8 @@ class ProductShopInfoViewHolder(private val view: View, private val listener: Dy
             showLoading()
         }
 
-        element.shopBadge?.let {
-            shopInfoView.renderShopBadge(it)
-        }
-
-        element.shopFeature?.let {
-            shopInfoView.renderShopFeature(it)
-        }
-
+        shopInfoView.renderShopBadge(element.shopBadge ?: "")
+        shopInfoView.renderShopFeature(element.isGoAPotik)
     }
 
     override fun bind(element: ProductShopInfoDataModel?, payloads: MutableList<Any>) {

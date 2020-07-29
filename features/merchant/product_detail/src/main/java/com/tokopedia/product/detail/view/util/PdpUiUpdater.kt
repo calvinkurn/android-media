@@ -1,18 +1,20 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
-import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2GeneralData
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
+import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
+import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
+import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -132,15 +134,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
             }
 
-            notifyMeMap?.run {
-                campaignID = it.data.campaignId
-                campaignType = it.data.campaignType
-                campaignTypeName = it.data.campaignTypeName
-                endDate = it.data.endDate
-                startDate = it.data.startDate
-                notifyMe = it.data.notifyMe
-            }
-
             miniShopInfo?.run {
                 shopName = it.basic.shopName
                 isOS = it.data.isOS
@@ -210,13 +203,13 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeInResponse) {
+    fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeIn) {
         productTradeinMap?.run {
             basicContentMap?.shouldShowTradein = true
             snapShotMap?.shouldShowTradein = true
 
-            data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
-                context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+            data.first().subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
+                context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true))
                         ?: ""
             } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
                 tradeinResponse.widgetString
@@ -305,7 +298,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             shopCredibility?.run {
-                shopFeature = it.shopFeature
+                isGoApotik = it.isGoApotik
             }
 
             orderPriorityMap?.run {
@@ -337,10 +330,25 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             productMerchantVoucherMap?.run {
                 voucherData = ArrayList(it.vouchers)
             }
+
+            updateDataTradein(context, it.validateTradeIn)
+            updateNotifyMeUpcoming(productId, it.upcomingCampaigns)
         }
     }
 
-    fun updateDataP2GeneralNew(data: ProductInfoP2GeneralData?) {
+    fun updateNotifyMeUpcoming(productId:String, upcomingData: Map<String, ProductUpcomingData>?) {
+        notifyMeMap?.run {
+            val selectedUpcoming = upcomingData?.get(productId)
+            campaignID = selectedUpcoming?.campaignId ?: ""
+            campaignType =selectedUpcoming?.campaignType ?: ""
+            campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
+            endDate = selectedUpcoming?.endDate ?: ""
+            startDate = selectedUpcoming?.startDate ?: ""
+            notifyMe = selectedUpcoming?.notifyMe ?: false
+        }
+    }
+
+    fun updateDataP2General(data: ProductInfoP2GeneralData?) {
         data?.let {
             productReviewMap?.run {
                 listOfReviews = it.helpfulReviews
