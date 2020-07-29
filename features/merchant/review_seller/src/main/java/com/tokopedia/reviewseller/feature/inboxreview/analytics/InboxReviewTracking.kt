@@ -52,7 +52,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_NOT_REPLIED_REVIEW,
-                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId $QUICK_FILTER:$quickFilter",
+                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId; $QUICK_FILTER:$quickFilter;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId,
                 PRODUCT_ID, productId
@@ -64,7 +64,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_REPLIED_REVIEW,
-                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId $QUICK_FILTER:$quickFilter",
+                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId; $QUICK_FILTER:$quickFilter;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId,
                 PRODUCT_ID, productId
@@ -76,7 +76,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_REVIEW_ATTACHMENT,
-                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId $QUICK_FILTER:$quickFilter",
+                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId; $QUICK_FILTER:$quickFilter;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId,
                 PRODUCT_ID, productId
@@ -88,7 +88,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_IN_FULL_REVIEW,
-                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId $QUICK_FILTER:$quickFilter",
+                EVENT_LABEL, "$FEEDBACK_ID:$feedbackId; $QUICK_FILTER:$quickFilter;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId,
                 PRODUCT_ID, productId
@@ -100,7 +100,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_QUICK_FILTER,
-                EVENT_LABEL, "$QUICK_FILTER:$quickFilter $IS_ACTIVE:$isActive",
+                EVENT_LABEL, "$QUICK_FILTER:$quickFilter; $IS_ACTIVE:$isActive;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId))
     }
@@ -110,7 +110,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_QUICK_FILTER,
-                EVENT_LABEL, "$QUICK_FILTER:$quickFilter; $IS_ACTIVE:$isActive",
+                EVENT_LABEL, "$QUICK_FILTER:$quickFilter; $IS_ACTIVE:$isActive;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId
         ))
@@ -132,7 +132,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_STAR_RATING_ON_FILTER_BOTTOM_SHEET,
-                EVENT_LABEL, "$STAR_SELECTED:$starSelected;$IS_ACTIVE:$isActive",
+                EVENT_LABEL, "$STAR_SELECTED:$starSelected;$IS_ACTIVE:$isActive;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId
         ))
@@ -143,7 +143,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_SELECT_ON_FILTER_RATING_BOTTOM_SHEET,
-                EVENT_LABEL, "$STAR_SELECTED:$starSelected",
+                EVENT_LABEL, "$STAR_SELECTED:$starSelected;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId
         ))
@@ -154,7 +154,7 @@ object InboxReviewTracking {
                 EVENT, CLICK_REVIEW,
                 EVENT_CATEGORY, INBOX_REVIEW,
                 EVENT_ACTION, CLICK_RESET_ON_FILTER_RATING_BOTTOM_SHEET,
-                EVENT_LABEL, "$STAR_SELECTED:$starSelected",
+                EVENT_LABEL, "$STAR_SELECTED:$starSelected;",
                 SCREEN_NAME, REVIEW_INBOX,
                 SHOP_ID, shopId
         ))
