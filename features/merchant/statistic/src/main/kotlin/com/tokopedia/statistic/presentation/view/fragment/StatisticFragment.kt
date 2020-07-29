@@ -28,7 +28,6 @@ import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.model.DateRangeItem
 import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
-import com.tokopedia.statistic.presentation.view.itemdecoration.StatisticItemDecoration
 import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
@@ -296,7 +295,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         with(recyclerView) {
             layoutManager = mLayoutManager
-            addItemDecoration(StatisticItemDecoration())
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     isUserScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
