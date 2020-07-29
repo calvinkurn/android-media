@@ -423,8 +423,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         recyclerView.visible()
         view?.globalErrorStc?.gone()
 
-        super.clearAllData()
-        super.renderList(widgets)
+        val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
+        mWidgetList.addAll(widgets)
+        mWidgetList.add(WhiteSpaceUiModel())
+        super.renderList(mWidgetList)
+
         setupTabItems()
 
         if (isFirstLoad) {
