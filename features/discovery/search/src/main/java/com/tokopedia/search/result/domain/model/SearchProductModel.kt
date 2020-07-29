@@ -192,6 +192,10 @@ data class SearchProductModel(
             @Expose
             val priceString: String = "",
 
+            @SerializedName("wishlist")
+            @Expose
+            val isWishlisted: Boolean = false,
+
             @SerializedName("shop")
             @Expose
             val shop: OtherRelatedProductShop = OtherRelatedProductShop(),

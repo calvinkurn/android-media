@@ -176,7 +176,7 @@ public class ProductViewModelMapper {
                 otherRelatedProduct.getShop().getCity(),
                 convertOtherRelatedProductBadgeToBadgesItemList(otherRelatedProduct.getBadgeList()),
                 convertOtherRelatedProductFreeOngkirToFreeOngkirViewModel(otherRelatedProduct.getFreeOngkir()),
-                false,
+                otherRelatedProduct.isWishlisted(),
                 position,
                 alternativeKeyword
         );

@@ -150,6 +150,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         priceString shouldBe otherRelatedProduct.priceString
         position shouldBe expectedPosition
         alternativeKeyword shouldBe expectedAlternativeKeyword
+        isWishlisted shouldBe otherRelatedProduct.isWishlisted
         shopLocation shouldBe otherRelatedProduct.shop.city
 
         badgeItemViewModelList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->

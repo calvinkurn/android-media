@@ -107,6 +107,7 @@ class SearchProductFirstPageGqlUseCase(
                                     url
                                     applink
                                     priceStr
+                                    wishlist
                                     shop {
                                         city
                                     }
