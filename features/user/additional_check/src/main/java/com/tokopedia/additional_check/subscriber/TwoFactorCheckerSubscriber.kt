@@ -9,10 +9,12 @@ import com.tokopedia.additional_check.di.AdditionalCheckModules
 import com.tokopedia.additional_check.di.AdditionalCheckUseCaseModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA
 import com.tokopedia.additional_check.view.BottomSheetCheckViewModel
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
 /**
@@ -24,6 +26,8 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     @Inject
     lateinit var viewModel: BottomSheetCheckViewModel
+
+    var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     private val exceptionPage = listOf(
             "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
@@ -39,11 +43,16 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
                 .build()
                 .inject(this)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
         doChecking(activity)
     }
 
+    private fun getTwoFactorRemoteConfig(): Boolean? {
+        return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
+    }
+
     private fun doChecking(activity: Activity){
-        if(!exceptionPage.contains(activity.javaClass.simpleName.toString())) {
+        if(!exceptionPage.contains(activity.javaClass.simpleName.toString()) && getTwoFactorRemoteConfig() == true) {
             viewModel.check(onSuccess = {
                 handleResponse(activity, twoFactorResult = it)
             }, onError = {

@@ -158,14 +158,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
         }
-        if(getTwoFactorRemoteConfig()) {
-            registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-        }
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+
     }
 
-    private Boolean getTwoFactorRemoteConfig() {
-        return remoteConfig.getBoolean(REMOTE_CONFIG_2FA, false);
-    }
 
     private void createAndCallPreSeq(){
         PersistentCacheManager.init(ConsumerMainApplication.this);
