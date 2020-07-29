@@ -4,9 +4,9 @@ import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.AddressDummyDataProvider
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +24,6 @@ class AddressListPresenterTest  {
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
         presenter.attachView(view)
     }
 
@@ -163,5 +162,9 @@ class AddressListPresenterTest  {
     @Test
     fun `Detach View`() {
         presenter.detachView()
+
+        verify {
+           useCase.unsubscribe()
+        }
     }
 }

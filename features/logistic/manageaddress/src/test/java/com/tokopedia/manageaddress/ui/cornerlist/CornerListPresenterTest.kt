@@ -3,9 +3,9 @@ package com.tokopedia.manageaddress.ui.cornerlist
 import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.AddressDummyDataProvider
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
@@ -22,7 +22,6 @@ class CornerListPresenterTest {
 
     @Before
     fun setup() {
-        MockKAnnotations.init(this)
         presenter.attachView(view)
     }
 
@@ -121,7 +120,9 @@ class CornerListPresenterTest {
     fun `Detach View`() {
         presenter.detachView()
 
-        useCase.unsubscribe()
+        verify {
+            useCase.unsubscribe()
+        }
     }
 
 }

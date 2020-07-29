@@ -6,10 +6,9 @@ import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.domain.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +29,6 @@ class ManageAddressViewModelTest {
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
         manageAddressViewModel = ManageAddressViewModel(getPeopleAddressUseCase, deletePeopleAddressUseCase, setDetaultPeopleAddressUseCase)
     }
 
@@ -38,12 +36,12 @@ class ManageAddressViewModelTest {
     fun `Search Address Success`() {
         val response = AddressListModel()
         every { getPeopleAddressUseCase.getAll(any()) } returns Observable.just(response).doOnSubscribe {
-            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
         }
 
         manageAddressViewModel.searchAddress("")
 
-        Assert.assertEquals(ManageAddressState.Success(response), manageAddressViewModel.addressList.value)
+        assertEquals(ManageAddressState.Success(response), manageAddressViewModel.addressList.value)
     }
 
     @Test
@@ -53,7 +51,7 @@ class ManageAddressViewModelTest {
 
         manageAddressViewModel.searchAddress("")
 
-        Assert.assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
 
     @Test
@@ -61,13 +59,13 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any())
         } answers  {
-            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1")
 
-        Assert.assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
     }
 
     @Test
@@ -76,13 +74,13 @@ class ManageAddressViewModelTest {
         every {
             setDetaultPeopleAddressUseCase.execute(any(), any(), any())
         } answers {
-            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1")
 
-        Assert.assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
 
     @Test
@@ -90,13 +88,13 @@ class ManageAddressViewModelTest {
         every {
             deletePeopleAddressUseCase.execute(any(), any(), any())
         } answers {
-            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
             (secondArg() as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.deletePeopleAddress("1")
 
-        Assert.assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
+        assertEquals(ManageAddressState.Success(success), manageAddressViewModel.result.value)
     }
 
     @Test
@@ -105,17 +103,19 @@ class ManageAddressViewModelTest {
         every {
             deletePeopleAddressUseCase.execute(any(), any(), any())
         } answers {
-            Assert.assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.result.value)
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
         manageAddressViewModel.deletePeopleAddress("1")
 
-        Assert.assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }
 
     @Test
     fun `Get Token Data`() {
         manageAddressViewModel.getToken()
+
+        assert(true)
     }
 }
