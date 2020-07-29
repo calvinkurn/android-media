@@ -83,11 +83,11 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
 
     private fun initView() {
         with(childView) {
-            filter_recycler_view.setHasFixedSize(true)
-            filter_recycler_view.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            filter_recycler_view.adapter = adapter
+            telco_filter_rv.setHasFixedSize(true)
+            telco_filter_rv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            telco_filter_rv.adapter = adapter
 
-            btn_filter.setOnClickListener {
+            telco_filter_btn.setOnClickListener {
                 saveFilter()
             }
         }

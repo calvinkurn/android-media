@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/input_number_layout_result"
+    android:id="@+id/telco_input_number_result_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/layout_lvl1"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/phone_number_result"
+            android:id="@+id/telco_phone_number_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -27,7 +27,7 @@
             tools:text="08123223232" />
 
         <ImageView
-            android:id="@+id/img_operator_result"
+            android:id="@+id/telco_img_operator_result"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_25"
             tools:ignore="contentDescription" />

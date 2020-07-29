@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shimmering_product_list"
+    android:id="@+id/telco_shimmering_product_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -18,12 +18,12 @@
         app:width_weight="0.6"
         app:corners="4" />
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
 </LinearLayout>

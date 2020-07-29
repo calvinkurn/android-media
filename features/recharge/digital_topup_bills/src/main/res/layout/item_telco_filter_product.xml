@@ -11,7 +11,7 @@
     android:layout_marginBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/filter_tag"
+        android:id="@+id/telco_filter_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_5"
@@ -19,7 +19,7 @@
         tools:text="Param 1" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/checkbox"
+        android:id="@+id/telco_filter_checkbox"
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"
         android:layout_gravity="center_vertical"

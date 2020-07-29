@@ -33,8 +33,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     private val digitalTrackTelcoPrev = mutableListOf<DigitalTrackProductTelco>()
 
     init {
-        val view = View.inflate(context, R.layout.view_digital_product_list, this)
-        recyclerView = view.findViewById(R.id.product_recycler_view)
+        val view = View.inflate(context, R.layout.view_telco_product_list, this)
+        recyclerView = view.findViewById(R.id.telco_product_rv)
     }
 
     fun setListener(listener: ActionListener) {
@@ -155,7 +155,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 if (itemProduct.id == productId) {
                     listener.onClickProduct(itemProduct, i, label)
 
-                    recyclerView.scrollToPosition(i)
+                    scrollToPosition(i)
                     break
                 }
             }

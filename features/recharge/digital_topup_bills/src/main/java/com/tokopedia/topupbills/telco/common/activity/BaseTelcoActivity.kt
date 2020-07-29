@@ -48,7 +48,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     override fun getToolbarResourceID(): Int {
-        return R.id.toolbar_telco
+        return R.id.telco_toolbar
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +64,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     private fun setAnimationAppBarLayout() {
-        appBarLayout = findViewById(R.id.app_bar_layout_telco)
+        appBarLayout = findViewById(R.id.telco_app_bar_layout)
 
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1

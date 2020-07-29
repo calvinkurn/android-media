@@ -16,7 +16,7 @@ class TelcoFilterViewHolder(itemView: View?, checkableInteractionListener: Check
 
     init {
         itemView?.let {
-            checkbox = itemView.findViewById(R.id.checkbox)
+            checkbox = itemView.findViewById(R.id.telco_filter_checkbox)
         }
     }
 
@@ -27,7 +27,7 @@ class TelcoFilterViewHolder(itemView: View?, checkableInteractionListener: Check
     override fun bind(element: FilterTagDataCollection) {
         super.bind(element)
         with(itemView) {
-            filter_tag.text = element.value
+            telco_filter_tag.text = element.value
         }
         itemView.setOnClickListener(this)
     }

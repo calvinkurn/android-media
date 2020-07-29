@@ -35,9 +35,9 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
 
     private fun initView(view: View?) {
         view?.run {
-            details = view.findViewById(R.id.details)
-            productPrice = view.findViewById(R.id.product_price)
-            selectItemBtn = view.findViewById(R.id.button_select_item)
+            details = view.findViewById(R.id.telco_details)
+            productPrice = view.findViewById(R.id.telco_product_price)
+            selectItemBtn = view.findViewById(R.id.telco_button_select_item)
 
             arguments?.let {
                 setTitle(it.getString(TITLE))

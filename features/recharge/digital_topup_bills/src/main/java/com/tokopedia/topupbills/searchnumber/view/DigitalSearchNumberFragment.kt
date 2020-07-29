@@ -42,14 +42,14 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_search_number_telco, container, false)
-        searchInputNumber = view.findViewById(R.id.siv_search_number)
-        favNumberRecyclerView = view.findViewById(R.id.rvNumberList)
+        searchInputNumber = view.findViewById(R.id.telco_search_number_input_view)
+        favNumberRecyclerView = view.findViewById(R.id.telco_search_number_rv)
         return view
     }
 
     override fun initView() {
         super.initView()
-        btnContactPicker.setOnClickListener {
+        telco_search_number_contact_picker.setOnClickListener {
             inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
         }
@@ -98,7 +98,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                     activity?.let {
                         val contactURI = data.data
                         val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        searchInputNumber.searchText = contact.contactNumber
+                        telco_search_number_input_view.searchText = contact.contactNumber
                     }
                 }
             }

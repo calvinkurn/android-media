@@ -7,12 +7,12 @@
     android:orientation="vertical">
     
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-        android:id="@+id/filter_recycler_view"
+        android:id="@+id/telco_filter_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_filter"
+        android:id="@+id/telco_filter_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"

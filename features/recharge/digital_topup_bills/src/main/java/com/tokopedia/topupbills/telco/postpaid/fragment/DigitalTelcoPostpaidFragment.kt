@@ -96,14 +96,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_postpaid, container, false)
-        mainContainer = view.findViewById(R.id.main_container)
-        pageContainer = view.findViewById(R.id.page_container)
+        mainContainer = view.findViewById(R.id.telco_main_container)
+        pageContainer = view.findViewById(R.id.telco_page_container)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
-        buyWidget = view.findViewById(R.id.buy_widget)
-        tickerView = view.findViewById(R.id.ticker_view)
-        loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
-        viewPager = view.findViewById(R.id.view_pager)
-        tabLayout = view.findViewById(R.id.tab_layout)
+        buyWidget = view.findViewById(R.id.telco_buy_widget)
+        tickerView = view.findViewById(R.id.telco_ticker_view)
+        loadingShimmering = view.findViewById(R.id.telco_loading_shimmering)
+        viewPager = view.findViewById(R.id.telco_view_pager)
+        tabLayout = view.findViewById(R.id.telco_tab_layout)
         separator = view.findViewById(R.id.separator)
         return view
     }
@@ -242,7 +242,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return buy_widget
+        return telco_buy_widget
     }
 
     private fun renderClientNumber() {
