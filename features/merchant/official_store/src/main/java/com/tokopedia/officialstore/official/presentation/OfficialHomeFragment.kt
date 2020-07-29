@@ -716,7 +716,7 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         it,
-                        channelData.campaignCode //campaignID
+                        channelData.campaignCode 
                 )
             }
 
