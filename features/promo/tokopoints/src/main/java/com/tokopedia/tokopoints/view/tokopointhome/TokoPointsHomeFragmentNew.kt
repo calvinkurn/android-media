@@ -373,7 +373,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         if (content.sectionTitle.isNotEmpty()) {
             tvSectionTitleCategory.show()
-            categorySeeAll.show()
             tvSectionTitleCategory.text = content.sectionTitle
         }
         if (content.sectionSubTitle.isNotEmpty()) {
@@ -381,8 +380,21 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             tvSectionSubtitleCateory.text = content.sectionSubTitle
         }
         dynamicLinksContainer.visibility = View.VISIBLE
-        categorySeeAll.setOnClickListener {
-            RouteManager.route(context, "tokopedia://tokopoints/tukar-point")
+
+        content.cta?.let {
+            if (it.text.isNotEmpty()) {
+                categorySeeAll.text = it.text
+                categorySeeAll.show()
+            }
+            if (it.appLink.isNotEmpty()) {
+                categorySeeAll.setOnClickListener { _ ->
+                    RouteManager.route(context, it.appLink)
+                }
+            } else if (it.appLink.isEmpty() && it.url.isNotEmpty()) {
+                categorySeeAll.setOnClickListener { _ ->
+                    openWebView(it.url)
+                }
+            }
         }
         val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         mRvDynamicLinks?.layoutManager = manager
@@ -462,7 +474,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokopoint)?.setOnClickListener {
                 dataList[0]?.cta?.let {
                     hideNotification(0)
-                    dynamicAction?.setLayoutClickListener(it.appLink, it.text) }
+                    dynamicAction?.setLayoutClickListener(it.appLink, it.text)
+                }
             }
             if (dataList.size > 1) {
                 dynamicAction?.setCenterLayoutVisibility(View.VISIBLE)
@@ -474,7 +487,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_coupon)?.setOnClickListener {
                     dataList[1]?.cta?.let {
                         hideNotification(1)
-                        dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text) }
+                        dynamicAction?.setCenterLayoutClickListener(it.appLink, it.text)
+                    }
                 }
                 dynamicAction?.setVisibilityDividerOne(View.VISIBLE)
             }
@@ -488,7 +502,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 dynamicAction?.findViewById<LinearLayout>(R.id.holder_tokomember)?.setOnClickListener {
                     dataList[2]?.cta?.let {
                         hideNotification(2)
-                        dynamicAction?.setRightLayoutClickListener(it.appLink, it.text) }
+                        dynamicAction?.setRightLayoutClickListener(it.appLink, it.text)
+                    }
                 }
                 dynamicAction?.setVisibilityDividerTwo(View.VISIBLE)
             }
