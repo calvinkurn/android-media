@@ -88,7 +88,6 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-import static com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA;
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 /**
