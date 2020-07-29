@@ -129,7 +129,7 @@ class TopChatRoomPresenterTest {
     object Dummy {
         const val exMessageId = "190378584"
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
-        val wsResponseReply = FileUtil.readFileContent("/ws_response_reply_text.json")
+        val wsResponseReply = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
     }
 
     @Before
@@ -198,7 +198,7 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { view.showErrorWebSocket(false) }
-        verify(exactly = 1) { RxWebSocket.send(readParam, listInterceptor) }
+        verifyReadMessageSentToWs()
     }
 
 
@@ -243,6 +243,7 @@ class TopChatRoomPresenterTest {
         assertThat(presenter.newUnreadMessage, equalTo(0))
         verify(exactly = 1) { view.hideUnreadMessage() }
         verify(exactly = 1) { view.onReceiveMessageEvent(wsChatVisitable) }
+        verifyReadMessageSentToWs()
     }
 
     private fun mockkParseResponse(wsInfo: WebSocketInfo): ChatSocketPojo {
@@ -255,6 +256,10 @@ class TopChatRoomPresenterTest {
         val wsChatVisitable = topChatRoomWebSocketMessageMapper.map(wsChatPojo)
         every { topChatRoomWebSocketMessageMapper.map(wsChatPojo) } returns wsChatVisitable
         return wsChatVisitable
+    }
+
+    private fun verifyReadMessageSentToWs() {
+        verify(exactly = 1) { RxWebSocket.send(readParam, listInterceptor) }
     }
 
 }
