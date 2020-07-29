@@ -199,8 +199,8 @@ public class CMInAppManager implements CmInAppListener {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                if (currentActivity != null && currentActivity.get() != null)
-                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
+                if (application != null)
+                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
             }
         } catch (Exception e) {
         }
