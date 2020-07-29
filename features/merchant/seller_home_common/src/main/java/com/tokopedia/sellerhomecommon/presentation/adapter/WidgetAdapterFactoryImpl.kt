@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
-import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
 
@@ -37,6 +36,8 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(barChartWidget: BarChartWidgetUiModel): Int = BarChartViewHolder.RES_LAYOUT
 
+    override fun type(footerLayout: WhiteSpaceUiModel): Int = WhiteSpaceViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -49,6 +50,7 @@ class WidgetAdapterFactoryImpl(
             TableViewHolder.RES_LAYOUT -> TableViewHolder(parent, listener)
             PieChartViewHolder.RES_LAYOUT -> PieChartViewHolder(parent, listener)
             BarChartViewHolder.RES_LAYOUT -> BarChartViewHolder(parent, listener)
+            WhiteSpaceViewHolder.RES_LAYOUT -> WhiteSpaceViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
