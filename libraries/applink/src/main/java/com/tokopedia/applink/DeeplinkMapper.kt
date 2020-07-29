@@ -75,7 +75,6 @@ object DeeplinkMapper {
 
     val TOKOPOINTS = "tokopoints"
     val LOCK = Any()
-    var mShowTokopointNative=false
 
     /**
      * Get registered deeplink navigation in manifest
@@ -202,20 +201,6 @@ object DeeplinkMapper {
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
 
-        //Fallback strategy for new Rewards Page
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-        firebaseRemoteConfig.let {
-            mShowTokopointNative = it.getBoolean(ApplinkConst.RewardFallback.RemoteConfig.APP_SHOW_TOKOPOINT_NATIVE, false)
-        }
-        if (mShowTokopointNative) {
-            if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
-                return ApplinkConstInternalPromo.TOKOPOINTS_HOME
-            }
-        } else {
-            if (uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS){
-               return deeplink.replaceFirst("rewards","tokopoints")
-            }
-        }
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital

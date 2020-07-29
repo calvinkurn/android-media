@@ -9,7 +9,8 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
 data class FooterButtonUiModel(
         val ctaText: String,
         val appLink: String,
-        val canLoad: Boolean = false
+        val canLoad: Boolean = false,
+        var isLoading: Boolean = false
 ) : VoucherDetailUiModel {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int {

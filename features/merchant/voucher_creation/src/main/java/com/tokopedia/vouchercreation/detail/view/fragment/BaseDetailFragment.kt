@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.detail.view.fragment
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -93,14 +94,15 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
 
     override fun showDescriptionBottomSheet(title: String, content: String) {
         if (!isAdded) return
-        DescriptionBottomSheet(context ?: return)
-                .show(title, content, childFragmentManager)
+        DescriptionBottomSheet.createInstance(context ?: return, title)
+                .show(content, childFragmentManager)
     }
 
     private fun setupActionBar() = view?.run {
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(toolbarMvcVoucherDetail)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 

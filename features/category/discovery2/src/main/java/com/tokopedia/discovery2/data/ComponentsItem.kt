@@ -49,7 +49,8 @@ data class ComponentsItem(
         var couponDetailClicked: Boolean = false,
         var couponAppliedClicked: Boolean = false,
         var position: Int = 0,
-        var couponViewImpression: Boolean = false) {
+        var couponViewImpression: Boolean = false,
+        var design: String = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 
