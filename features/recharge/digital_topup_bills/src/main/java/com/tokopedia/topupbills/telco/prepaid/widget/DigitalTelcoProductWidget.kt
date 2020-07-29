@@ -34,7 +34,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     init {
         val view = View.inflate(context, R.layout.view_digital_product_list, this)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.product_recycler_view)
     }
 
     fun setListener(listener: ActionListener) {
@@ -155,14 +155,15 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 if (itemProduct.id == productId) {
                     listener.onClickProduct(itemProduct, i, label)
 
-                    recyclerView.getChildAt(i)?.let {
-                        val yPosition = it.y
-                        listener.onScrollToPositionItem(yPosition.toInt())
-                    }
+                    recyclerView.scrollToPosition(i)
                     break
                 }
             }
         }
+    }
+
+    fun scrollToPosition(position: Int) {
+        recyclerView.scrollToPosition(position)
     }
 
     interface ActionListener {

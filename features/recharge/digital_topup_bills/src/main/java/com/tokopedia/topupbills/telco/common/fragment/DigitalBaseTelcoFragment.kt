@@ -64,8 +64,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         getComponent(DigitalTelcoComponent::class.java).inject(this)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun subscribeUi() {
         viewModel.selectedRecentNumber.observe(this, Observer {
             onClickItemRecentNumber(it)
         })
@@ -82,6 +81,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        subscribeUi()
         val checkoutView = getCheckoutView()
         checkoutView?.run {
             listener = object : TopupBillsCheckoutWidget.ActionListener {

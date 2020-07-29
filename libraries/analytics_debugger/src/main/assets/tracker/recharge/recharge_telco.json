@@ -130,6 +130,27 @@
       "businessUnit": "top up and tagihan"
     },
     {
+      "event": "view_item_list",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression product cluster",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": "{{.*}}",
+      "businessUnit": "top up and tagihan",
+      "item_list": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
       "event": "select_content",
       "eventCategory": "digital - homepage",
       "eventAction": "click product cluster",
@@ -167,6 +188,76 @@
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
           "quantity": "{{.*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression promo digital",
+      "eventLabel": "{{.*}}",
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "category": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click promo digital",
+      "eventLabel": "{{.* - .*}}",
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{.*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "category": "{{.*}}",
+          "creative_url": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression recent icon",
+      "eventLabel": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click recent icon",
+      "eventLabel": "{{.* - .*}}",
+      "item_list": "{{.* - .* - .* - .*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
         }
       ]
