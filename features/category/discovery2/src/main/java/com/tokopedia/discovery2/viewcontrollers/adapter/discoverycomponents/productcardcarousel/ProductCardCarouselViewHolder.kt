@@ -33,7 +33,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
         addShimmer()
         addDefaultItemDecorator()
-
     }
 
     private fun addDefaultItemDecorator() {

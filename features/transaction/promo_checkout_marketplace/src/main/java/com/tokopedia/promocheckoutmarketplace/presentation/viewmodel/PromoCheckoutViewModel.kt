@@ -213,19 +213,18 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     private fun resetGetPromoRequestData(promoCode: String, promoRequest: PromoRequest) {
+        // Clear all pre selected promo on load data
+        promoRequest.attemptedCodes.clear()
+        promoRequest.codes.clear()
+        promoRequest.orders.forEach {
+            it.codes.clear()
+        }
+
+        // Set param manual input
         if (promoCode.isNotBlank()) {
-            // Set param manual input
-            promoRequest.attemptedCodes.clear()
             promoRequest.attemptedCodes.add(promoCode)
             promoRequest.skipApply = 0
         } else {
-            // Clear all pre selected promo on load data
-            promoRequest.attemptedCodes.clear()
-            promoRequest.codes.clear()
-            promoRequest.orders.forEach {
-                it.codes.clear()
-            }
-
             promoRequest.skipApply = 1
         }
     }
