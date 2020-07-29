@@ -8,6 +8,8 @@ interface PlaySocketInfoListener {
 
     fun onActive() { }
 
+    fun onReceive(data: PlaySocketType)
+
     fun onReconnect() { }
 
     fun onClose() { }

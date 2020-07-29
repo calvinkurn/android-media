@@ -10,11 +10,6 @@ data class AddProductTagChannelResponse(
         @SerializedName("broadcasterSetActiveProductTags")
         val productId: GetProductId
 ) {
-    data class AddProductTagChannelData(
-
-            @SerializedName("data")
-            val data: AddProductTagChannelResponse
-    )
     data class GetProductId(
             @SerializedName("productIDs")
             val productIds: List<String>
