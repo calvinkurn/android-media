@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.ui.fragment
+package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -7,7 +7,7 @@ import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
 import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewModel
 import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
-import com.tokopedia.review.feature.createreputation.usecase.GetProductReputationForm
+import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals

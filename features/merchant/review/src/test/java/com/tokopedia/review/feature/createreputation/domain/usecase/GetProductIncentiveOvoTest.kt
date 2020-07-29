@@ -1,11 +1,11 @@
-package com.tokopedia.review.feature.createreputation.usecase
+package com.tokopedia.review.feature.createreputation.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -17,12 +17,8 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
-/**
- * Created By @ilhamsuaib on 2020-01-03
- */
-
 @ExperimentalCoroutinesApi
-class GetProductReputationFormTest {
+class GetProductIncentiveOvoTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -30,14 +26,12 @@ class GetProductReputationFormTest {
     @RelaxedMockK
     lateinit var graphqlRepository: GraphqlRepository
 
-    private val getProductReputationForm by lazy {
-        GetProductReputationForm(graphqlRepository)
+    private val getProductIncentiveOvo by lazy {
+        GetProductIncentiveOvo(graphqlRepository)
     }
 
-    private val reputationId = 302801940
-    private val productId = 408083893
     private val gson = Gson()
-    private val successResponse = "json/get_product_reputation_form_success_response.json"
+    private val successResponse = "json/get_product_incentive_ovo.json"
 
     @Before
     fun beforeTest() {
@@ -45,24 +39,21 @@ class GetProductReputationFormTest {
     }
 
     @Test
-    fun `should success when get product reputation form`() = runBlocking {
-        val requestParams = GetProductReputationForm.createRequestParam(reputationId, productId)
-
+    fun `should success when get product incentive ovo`() = runBlocking {
         val json = this.javaClass.classLoader?.getResourceAsStream(successResponse)?.readBytes()?.toString(Charsets.UTF_8)
-        val response = gson.fromJson(json, ProductRevGetForm::class.java)
+        val response = gson.fromJson(json, ProductRevIncentiveOvoDomain::class.java)
 
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = ProductRevGetForm::class.java
+        val objectType = ProductRevIncentiveOvoDomain::class.java
         result[objectType] = response
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
-
 
         coEvery {
             graphqlRepository.getReseponse(any(), any())
         } returns gqlResponseSuccess
 
-        getProductReputationForm.getReputationForm(requestParams)
+        getProductIncentiveOvo.getIncentiveOvo()
 
         coVerify {
             graphqlRepository.getReseponse(any(), any())

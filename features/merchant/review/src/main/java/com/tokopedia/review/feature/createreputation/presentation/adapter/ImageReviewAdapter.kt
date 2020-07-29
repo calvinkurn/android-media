@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.ui.adapter
+package com.tokopedia.review.feature.createreputation.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,10 +7,10 @@ import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewModel
 import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
-import com.tokopedia.review.feature.createreputation.ui.listener.ImageClickListener
-import com.tokopedia.review.feature.createreputation.ui.viewholder.BaseImageReviewViewHolder
-import com.tokopedia.review.feature.createreputation.ui.viewholder.DefaultImageReviewViewHolder
-import com.tokopedia.review.feature.createreputation.ui.viewholder.ImageReviewViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.BaseImageReviewViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.DefaultImageReviewViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.ImageReviewViewHolder
 
 class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 

@@ -54,7 +54,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity"
+            android:name="com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity"
             android:label="@string/title_activity_reputation_review"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"

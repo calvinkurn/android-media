@@ -1,12 +1,12 @@
-package com.tokopedia.review.feature.createreputation.ui.fragment
+package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.coroutine.TestCoroutineDispatchers
-import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
-import com.tokopedia.review.feature.createreputation.usecase.GetProductReputationForm
-import com.tokopedia.review.feature.createreputation.usecase.ProductrevSubmitReviewUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
+import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before

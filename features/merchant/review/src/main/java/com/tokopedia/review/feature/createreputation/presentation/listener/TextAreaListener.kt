@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.ui.listener
+package com.tokopedia.review.feature.createreputation.presentation.listener
 
 interface TextAreaListener {
     fun onExpandButtonClicked(text: String)

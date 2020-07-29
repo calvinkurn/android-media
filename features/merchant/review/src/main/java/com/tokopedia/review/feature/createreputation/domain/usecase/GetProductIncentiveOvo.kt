@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.usecase
+package com.tokopedia.review.feature.createreputation.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType

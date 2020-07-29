@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.ui.viewholder
+package com.tokopedia.review.feature.createreputation.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

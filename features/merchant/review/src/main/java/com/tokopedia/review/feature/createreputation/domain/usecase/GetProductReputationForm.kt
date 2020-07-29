@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.usecase
+package com.tokopedia.review.feature.createreputation.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetProductReputationForm @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 

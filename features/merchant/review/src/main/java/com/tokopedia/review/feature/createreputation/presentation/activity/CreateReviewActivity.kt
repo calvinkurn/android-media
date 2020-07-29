@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.ui.activity
+package com.tokopedia.review.feature.createreputation.presentation.activity
 
 import android.app.Activity
 import android.app.NotificationManager
@@ -15,7 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.createreputation.ui.fragment.CreateReviewFragment
+import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {

@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.ui.fragment
+package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import android.animation.Animator
 import android.app.Activity
@@ -43,11 +43,11 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
-import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
-import com.tokopedia.review.feature.createreputation.ui.adapter.ImageReviewAdapter
-import com.tokopedia.review.feature.createreputation.ui.listener.ImageClickListener
-import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListener
-import com.tokopedia.review.feature.createreputation.ui.widget.CreateReviewTextAreaBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
+import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
+import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
+import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -381,7 +381,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 reviewMessage.isEmpty(),
                 createReviewViewModel.getSelectedImagesUrl().size.toString(10),
                 createReviewAnonymousCheckbox.isChecked,
-                false
+                isEditMode
         )
         createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
                 createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
@@ -680,7 +680,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewAnonymousCheckbox.isChecked = !createReviewAnonymousCheckbox.isChecked
             }
             if (createReviewAnonymousCheckbox.isChecked) {
-                ReviewTracking.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
+                ReviewTracking.reviewOnAnonymousClickTracker(orderId, productId.toString(10), isEditMode)
             }
         }
     }

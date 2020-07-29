@@ -1,11 +1,11 @@
-package com.tokopedia.review.feature.createreputation.ui.widget
+package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.createreputation.ui.listener.TextAreaListener
+import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_create_review_text_area.view.*
 
