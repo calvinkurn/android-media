@@ -34,6 +34,7 @@ class ProductViewHolder(
         showProductImage(product)
         showStockHintImage(product)
         showProductCheckBox(product)
+        showProductTopAdsIcon(product)
 
         setOnClickListeners(product)
     }
@@ -124,6 +125,10 @@ class ProductViewHolder(
     private fun showProductCheckBox(product: ProductViewModel) {
         itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+    }
+
+    private fun showProductTopAdsIcon(product: ProductViewModel) {
+        itemView.imageTopAds.showWithCondition(product.isTopAds)
     }
 
     private fun toggleCheckBox() {
