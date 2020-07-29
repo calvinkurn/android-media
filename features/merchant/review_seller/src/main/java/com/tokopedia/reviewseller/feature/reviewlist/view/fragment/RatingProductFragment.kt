@@ -191,7 +191,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         super.onResume()
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
-            isClickTrackingAlreadySent = true
         }
     }
 
