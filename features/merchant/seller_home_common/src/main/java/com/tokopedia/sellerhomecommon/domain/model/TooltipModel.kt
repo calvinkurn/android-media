@@ -15,6 +15,9 @@ data class TooltipModel(
         @SerializedName("content")
         val content: String?,
         @Expose
+        @SerializedName("show")
+        val shouldShow: Boolean = true,
+        @Expose
         @SerializedName("list")
         val list: List<TooltipListItemModel>?
 )

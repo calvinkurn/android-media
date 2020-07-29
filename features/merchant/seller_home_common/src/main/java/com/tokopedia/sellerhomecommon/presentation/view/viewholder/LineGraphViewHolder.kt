@@ -85,7 +85,8 @@ class LineGraphViewHolder(
 
     private fun setupTooltip(element: LineGraphWidgetUiModel) = with(itemView) {
         val tooltip = element.tooltip
-        if (!tooltip?.content.isNullOrBlank() || !tooltip?.list.isNullOrEmpty()) {
+        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        if (shouldShowTooltip) {
             btnLineGraphInformation.visible()
             tvLineGraphTitle.setOnClickListener {
                 listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
