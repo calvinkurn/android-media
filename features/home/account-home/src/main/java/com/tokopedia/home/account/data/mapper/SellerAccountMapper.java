@@ -230,7 +230,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 "",
                 PENJUAL,
                 context.getString(R.string.title_menu_other_features),
-                false));
+                true));
 
         ParcelableViewModel menuItem = getRekeningPremiumAccountMenu(accountModel);
         if(menuItem != null)
