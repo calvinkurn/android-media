@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -71,6 +72,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private boolean goToReputationHistory;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
+    private boolean isAppLinkProccessed = false;
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxReputationActivity.class);
@@ -87,6 +89,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         setupStatusBar();
         clearCacheIfFromNotification();
         initView();
+        openBuyerReview();
     }
 
     private void initView() {
@@ -157,6 +160,28 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         }
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
+    }
+
+    private void openBuyerReview() {
+        if (!isAppLinkProccessed && getIntent() != null && getIntent().getData() != null) {
+            String featureName = getIntent().getData().getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
+            if (featureName != null && !featureName.isEmpty()) {
+                isAppLinkProccessed = true;
+                int buyerReviewFragmentPosition = findBuyerReviewFragmentPosition();
+                if (buyerReviewFragmentPosition != -1) {
+                    viewPager.setCurrentItem(buyerReviewFragmentPosition);
+                }
+            }
+        }
+    }
+
+    private int findBuyerReviewFragmentPosition() {
+        for (int i = 0; i < sectionAdapter.getCount(); i++) {
+            Fragment fragment = ((SectionsPagerAdapter) sectionAdapter).getItem(i);
+            if (fragment instanceof InboxReputationFragment && ((InboxReputationFragment) fragment).getTab() == TAB_BUYER_REVIEW)
+                return i;
+        }
+        return -1;
     }
 
     public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {

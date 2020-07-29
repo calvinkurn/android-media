@@ -173,6 +173,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
                 is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
             }
+            productManageAddEditMenuBottomSheet.dismiss()
+            productManageBottomSheet?.dismiss()
         }
     }
 

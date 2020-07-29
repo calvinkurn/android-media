@@ -52,7 +52,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataView
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.SellerMigrationReviewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
-import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -88,7 +87,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private boolean isFromWhitespace;
     private InboxReputationOvoIncentiveViewModel ovoDataModel;
     private SellerMigrationReviewModel sellerMigrationReviewModel = new SellerMigrationReviewModel();
-    private Ticker sellerMigrationTicker;
 
     @Inject
     InboxReputationPresenter presenter;
@@ -161,7 +159,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
-        sellerMigrationTicker = parentView.findViewById(R.id.review_seller_migration_ticker);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
         searchView.setFocusChangeListener(this);

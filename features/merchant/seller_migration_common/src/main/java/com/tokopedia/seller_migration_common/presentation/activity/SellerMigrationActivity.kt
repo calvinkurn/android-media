@@ -1,6 +1,7 @@
 package com.tokopedia.seller_migration_common.presentation.activity
 
 import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -46,6 +47,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
                 RouteManager.getIntent(this, parameterizedFirstAppLink)?.apply {
                     putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA,
                             this@SellerMigrationActivity.intent.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA).orEmpty())
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(this)
                     finish()
                 }

@@ -7,7 +7,7 @@ object SellerFeatureProductStaticDataProvider : StaticDataProvider {
         return listOf(
                 SellerFeatureUiModel.SetVariantFeatureUiModel(),
                 SellerFeatureUiModel.MultiEditFeatureUiModel(),
-                SellerFeatureUiModel.ImportInstagramFeatureUiModel(),
+                SellerFeatureUiModel.StockReminderFeatureUiModel(),
                 SellerFeatureUiModel.FeaturedProductFeatureUiModel(),
                 SellerFeatureUiModel.SetCashbackFeatureUiModel()
         )

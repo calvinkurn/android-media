@@ -63,7 +63,7 @@
     <string name="seller_migration_fragment_product_tab_set_variant_title">ATUR VARIANT</string>
     <string name="seller_migration_fragment_product_tab_set_variant_description">Kelola varian warna dan ukuran produk dengan mudah.</string>
     <string name="seller_migration_fragment_product_tab_multi_edit_title">EDIT SEKALIGUS</string>
-    <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produk secara bersamaan.</string>
+    <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produk dalam waktu bersamaan.</string>
     <string name="seller_migration_fragment_product_tab_instagram_import_title">INSTOPED</string>
     <string name="seller_migration_fragment_product_tab_instagram_import_description">Upload produk langsung dari akun Instagram tokomu.</string>
     <string name="seller_migration_fragment_product_tab_featured_product_title">PRODUK UNGGULAN</string>
@@ -71,7 +71,7 @@
     <string name="seller_migration_fragment_product_tab_set_cashback_title">ATUR CASHBACK</string>
     <string name="seller_migration_fragment_product_tab_set_cashback_description">Berikan cashback senilai 3% - 5% ke pembeli.</string>
     <string name="seller_migration_fragment_product_tab_stock_reminder_title">PENGINGAT STOK</string>
-    <string name="seller_migration_fragment_product_tab_stock_reminder_description">Hindari stok kosong dengan pengingat.</string>
+    <string name="seller_migration_fragment_product_tab_stock_reminder_description">Hindari stok kosong di tokomu dengan fitur pengingat.</string>
 
     <!--    seller migration chat seller features-->
     <string name="seller_migration_fragment_chat_tab_template_chat_title">TEMPLATE CHAT</string>
@@ -80,14 +80,14 @@
     <string name="seller_migration_fragment_chat_tab_attach_voucher_description">Kirim voucher tokomu ke pembeli via pesan chat.</string>
 
     <!--    seller migration review seller features-->
-    <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE REVIEW</string>
+    <string name="seller_migration_fragment_review_tab_template_review_title">TEMPLATE ULASAN</string>
     <string name="seller_migration_fragment_review_tab_template_review_description">Atur pesan otomatis untuk membalas ulasan dari pembeli.</string>
     <string name="seller_migration_fragment_review_tab_review_statistic_title">STATISTIK ULASAN</string>
     <string name="seller_migration_fragment_review_tab_review_statistic_description">Pantau ulasan untuk melihat tingkat kepuasan pembeli.</string>
 
     <!--    seller migration ads and promo seller features-->
-    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_title">VOUCHER TOKO</string>
-    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_description">Berikan voucher cashback atau gratis ongkir ke pembelimu.</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_title">VOUCHER CASHBACK</string>
+    <string name="seller_migration_fragment_ads_and_promo_tab_shop_voucher_description">Gunakan voucher yang sesuai target pembeli tokomu.</string>
     <string name="seller_migration_fragment_ads_and_promo_tab_topads_title">TOPADS</string>
     <string name="seller_migration_fragment_ads_and_promo_tab_topads_description">Iklankan produkmu untuk jangkau lebih banyak pembeli.</string>
 

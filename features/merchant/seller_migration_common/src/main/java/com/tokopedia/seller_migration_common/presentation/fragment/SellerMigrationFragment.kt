@@ -132,7 +132,8 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS -> {
                 2
             }
-            SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SellerMigrationFeatureName.FEATURE_TOPADS -> {
+            SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SellerMigrationFeatureName.FEATURE_TOPADS,
+            SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> {
                 3
             }
             SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT -> {
@@ -146,7 +147,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     private fun initImage() {
-        ivSellerMigration.urlSrc = SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK
+        ivSellerMigration.urlSrc = SellerMigrationConstants.SELLER_MIGRATION_FRAGMENT_BANNER_LINK
     }
 
     private fun addTabFragments() {

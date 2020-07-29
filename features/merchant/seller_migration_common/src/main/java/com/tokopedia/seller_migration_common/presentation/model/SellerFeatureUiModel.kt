@@ -16,35 +16,21 @@ sealed class SellerFeatureUiModel(
         var data: Any? = null
 ) : Visitable<SellerFeatureAdapterTypeFactory> {
 
+    // product features
     class FeaturedProductFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_featured_product,
             titleId = R.string.seller_migration_fragment_product_tab_featured_product_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_featured_product_description)
-
-    class AttachVoucherFeatureUiModel : SellerFeatureUiModel(
-            imageId = R.drawable.ic_seller_migration_attach_voucher,
-            titleId = R.string.seller_migration_fragment_chat_tab_attach_voucher_title,
-            descriptionId = R.string.seller_migration_fragment_chat_tab_attach_voucher_description)
 
     class ImportInstagramFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_import_instagram,
             titleId = R.string.seller_migration_fragment_product_tab_instagram_import_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_instagram_import_description)
 
-    class MarketInsightFeatureUiModel : SellerFeatureUiModel(
-            imageId = R.drawable.ic_seller_migration_insight,
-            titleId = R.string.seller_migration_fragment_statistic_tab_market_insight_title,
-            descriptionId = R.string.seller_migration_fragment_statistic_tab_market_insight_description)
-
     class MultiEditFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_multi_edit,
             titleId = R.string.seller_migration_fragment_product_tab_multi_edit_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_multi_edit_description)
-
-    class ReviewStatisticsFeatureUiModel : SellerFeatureUiModel(
-            imageId = R.drawable.ic_seller_migration_review_statistic,
-            titleId = R.string.seller_migration_fragment_review_tab_review_statistic_title,
-            descriptionId = R.string.seller_migration_fragment_review_tab_review_statistic_description)
 
     class SetCashbackFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_voucher,
@@ -55,6 +41,21 @@ sealed class SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_set_variant,
             titleId = R.string.seller_migration_fragment_product_tab_set_variant_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_set_variant_description)
+
+    class AttachVoucherFeatureUiModel : SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_attach_voucher,
+            titleId = R.string.seller_migration_fragment_chat_tab_attach_voucher_title,
+            descriptionId = R.string.seller_migration_fragment_chat_tab_attach_voucher_description)
+
+    class MarketInsightFeatureUiModel : SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_insight,
+            titleId = R.string.seller_migration_fragment_statistic_tab_market_insight_title,
+            descriptionId = R.string.seller_migration_fragment_statistic_tab_market_insight_description)
+
+    class ReviewStatisticsFeatureUiModel : SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_review_statistic,
+            titleId = R.string.seller_migration_fragment_review_tab_review_statistic_title,
+            descriptionId = R.string.seller_migration_fragment_review_tab_review_statistic_description)
 
     class ShopInsightFeatureUiModel : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_insight,
@@ -104,6 +105,11 @@ sealed class SellerFeatureUiModel(
             titleId = R.string.seller_migration_fragment_product_tab_featured_product_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_featured_product_description,
             data = data)
+
+    class StockReminderFeatureUiModel : SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_stock_reminder,
+            titleId = R.string.seller_migration_fragment_product_tab_stock_reminder_title,
+            descriptionId = R.string.seller_migration_fragment_product_tab_stock_reminder_description)
 
     class StockReminderFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_stock_reminder,

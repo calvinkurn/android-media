@@ -15,14 +15,12 @@ open class SellerFeatureViewHolder(view: View?) : AbstractViewHolder<SellerFeatu
 
     override fun bind(element: SellerFeatureUiModel) {
         with(itemView) {
-            if (element.data == null) {
-                itemSellerFeatureContainer.setPadding(
-                        getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
-                        getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
-                        getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
-                        getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2)
-                )
-            }
+            itemSellerFeatureContainer.setPadding(
+                    getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
+                    getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
+                    getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2),
+                    getDimens(com.tokopedia.unifycomponents.R.dimen.layout_lvl2)
+            )
             ivSellerFeature.setImage(element.imageId, 0f)
             tvSellerFeatureTitle.text = getString(element.titleId)
             tvSellerFeatureDescription.text = getString(element.descriptionId)

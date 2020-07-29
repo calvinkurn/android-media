@@ -16,6 +16,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
@@ -183,7 +185,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsDashboardActivity::class.java.name)
             startActivity(intent)
         } else {
-            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
+            goToSellerMigrationPage()
         }
     }
 
@@ -193,5 +195,12 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
             app_bar_layout.setExpanded(true)
         }
+    }
+
+    private fun goToSellerMigrationPage() {
+        val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, SellerMigrationFeatureName.FEATURE_TOPADS))
+        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
+        intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
+        startActivity(intent)
     }
 }
