@@ -47,7 +47,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     lateinit var dealsLocationUtils: DealsLocationUtils
 
     @Inject
-    lateinit var dealsAnalytics : DealsAnalytics
+    lateinit var dealsAnalytics: DealsAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -93,6 +93,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setUpScrollView() {
+
         appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -searchBarDealsBaseSearch.height) {
                 //collapse
@@ -112,6 +113,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         observeLocation()
 
         currentLoc = dealsLocationUtils.getLocation()
+        txtDealsBaseLocationHint.setOnClickListener { onClickLocation() }
         txtDealsBaseLocationTitle.setOnClickListener { onClickLocation() }
     }
 
@@ -170,7 +172,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     private fun setupOrderListMenu() {
         imgDealsOrderListMenu.setOnClickListener {
             dealsAnalytics.clickOrderListDeals()
-            RouteManager.route(this, ApplinkConst.DEALS_ORDER) }
+            RouteManager.route(this, ApplinkConst.DEALS_ORDER)
+        }
     }
 
     private fun setupSearchBar() {

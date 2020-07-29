@@ -31,7 +31,7 @@ class InterestingCollectionViewHolder(itemView: View, dealsSearchListener: Deals
             val categoryList = element.categories
             for (i in categoryList.indices) {
                 if(categoryList[i].isCard == 1 && categoryList[i].isHidden == 0 && categoryList[i].url != TOPDEALS &&
-                        i < DealsSearchMapper.MAX_NUM_CURATED) {
+                        curatedList.size < DealsSearchMapper.MAX_NUM_CURATED) {
                     curatedList.add(categoryList[i])
                 }
             }

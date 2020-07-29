@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/deals_dp_12"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/deals_dp_12"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"

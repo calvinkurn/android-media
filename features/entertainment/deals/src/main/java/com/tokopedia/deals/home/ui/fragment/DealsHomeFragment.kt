@@ -98,6 +98,12 @@ class DealsHomeFragment : DealsBaseFragment(),
         super.onViewCreated(view, savedInstanceState)
         (activity as DealsBaseActivity).searchBarActionListener = this
         analytics.eventSeeHomePage()
+        setUpRecyclerView()
+    }
+
+    private fun setUpRecyclerView() {
+        getRecyclerView(requireView()).setPadding(0,0,0, resources.getDimensionPixelSize(R.dimen.deals_dp_20))
+        getRecyclerView(requireView()).clipToPadding = false
     }
 
     override fun getScreenName(): String = ""

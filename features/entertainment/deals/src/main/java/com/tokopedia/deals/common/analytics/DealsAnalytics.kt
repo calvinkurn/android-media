@@ -853,7 +853,7 @@ class DealsAnalytics @Inject constructor(
                         DealsAnalyticsConstants.Impressions.name, item.displayName,
                         DealsAnalyticsConstants.Impressions.id, item.brandId,
                         DealsAnalyticsConstants.Impressions.brand, item.brand.title,
-                        DealsAnalyticsConstants.Impressions.category, item.category.first().title,
+                        DealsAnalyticsConstants.Impressions.category, item.category.firstOrNull()?.title ?: "",
                         DealsAnalyticsConstants.Impressions.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
                         DealsAnalyticsConstants.Impressions.price, item.salesPrice,
                         DealsAnalyticsConstants.Impressions.position, (pageSize * page) + index + 1
