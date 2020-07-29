@@ -6,15 +6,11 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.variant_common.model.VariantMultiOriginResponse
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -56,11 +52,6 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
-            if (gqlResponse.getError(VariantMultiOriginResponse::class.java)?.isNotEmpty() != true) {
-                p2Shop.variantMultiOrigin = gqlResponse.getData<VariantMultiOriginResponse>(VariantMultiOriginResponse::class.java).result.data.firstOrNull()
-                        ?: VariantMultiOriginWarehouse()
-            }
-
             if (gqlResponse.getError(ShopInfo.Response::class.java)?.isNotEmpty() != true) {
                 val result = gqlResponse.getData<ShopInfo.Response>(ShopInfo.Response::class.java)
                 if (result.result.data.isNotEmpty())
@@ -71,10 +62,6 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
                 p2Shop.cartRedirectionResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
             }
 
-            if (gqlResponse.getError(StickyLoginTickerPojo.TickerResponse::class.java)?.isNotEmpty() != true) {
-                val tickerData = gqlResponse.getData<StickyLoginTickerPojo.TickerResponse>(StickyLoginTickerPojo.TickerResponse::class.java)
-                p2Shop.tickerInfo = DynamicProductDetailMapper.getTickerInfoData(tickerData)
-            }
         } catch (t: Throwable) {
             Timber.d(t)
         }

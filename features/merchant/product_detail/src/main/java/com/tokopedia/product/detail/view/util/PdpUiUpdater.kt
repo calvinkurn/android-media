@@ -249,9 +249,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             shopCredibility?.run {
                 shopInfo = it.shopInfo
-                shopSpeed = it.shopSpeed
-                shopChatSpeed = it.shopChatSpeed.toIntOrZero()
-                shopRating = it.shopRating
             }
 
             tickerInfoMap?.run {
@@ -299,6 +296,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
             shopCredibility?.run {
                 isGoApotik = it.isGoApotik
+                shopSpeed = it.shopSpeed
+                shopChatSpeed = it.shopChatSpeed.toIntOrZero()
+                shopRating = it.shopRating
             }
 
             orderPriorityMap?.run {

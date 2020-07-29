@@ -279,6 +279,7 @@ query GetPdpGetData($productID: String, $pdpSession: String) {
        notifyMe
        ribbonCopy
        upcomingType
+       productID
      }
     shopTopChatSpeed {
       messageResponseTime
