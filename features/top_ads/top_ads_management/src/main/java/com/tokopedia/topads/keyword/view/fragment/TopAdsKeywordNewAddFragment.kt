@@ -293,10 +293,10 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         super.onViewStateRestored(savedInstanceState)
         localKeywordAdapter.clear()
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_LOCAL_WORDS)) {
-            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS))
+            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS) ?: emptyList())
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_ERROR_WORDS)) {
-            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS)
+            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS) ?: emptyList()
         }
     }
 

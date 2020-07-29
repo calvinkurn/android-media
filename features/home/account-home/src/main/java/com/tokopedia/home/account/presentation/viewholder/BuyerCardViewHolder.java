@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
 import androidx.annotation.LayoutRes;
+
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -33,20 +34,33 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
                 .avatar(element.getImageUrl())
                 .username(element.getName())
                 .progress(element.getProgress())
+                .tokopointTitle(element.getTokopointTitle())
                 .tokopoint(element.getTokopoint())
+                .tokopointImageUrl(element.getTokopointImageUrl())
+                .tokopointApplink(element.getTokopointAppplink())
+                .couponsTitle(element.getCouponTitle())
                 .coupons(element.getCoupons())
+                .couponImageUrl(element.getCouponImageUrl())
+                .couponApplink(element.getCouponApplink())
                 .isAffliate(element.isAffiliate())
+                .tokomemberTitle(element.getTokomemberTitle())
                 .tokomember(element.getTokomember())
+                .tokomemberImageUrl(element.getTokomemberImageUrl())
+                .tokomemberApplink(element.getTokomemberApplink())
+                .tokopointSize(element.getTokopointSize())
+                .tokomemberSize(element.getTokomemberSize())
+                .couponSize(element.getCouponSize())
+                .memberStatus(element.getMemberStatus())
                 .eggImageUrl(element.getEggImageUrl())
                 .build();
 
         buyerCardView.renderData(buyerCard);
 
-        buyerCardView.setOnClickProfile(v -> listener.onProfileClicked(element));
-        buyerCardView.setOnClickProfileCompletion(v -> listener.onProfileCompletionClicked(element));
-        buyerCardView.setOnClickTokoPoint(v -> listener.onBuyerTokopointClicked(element));
-        buyerCardView.setOnClickTokoMember(v -> listener.onTokomemberClicked());
-        buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element));
+        buyerCardView.setOnClickProfileCompletion(v -> listener.onProfileClicked(element));
+        buyerCardView.setOnClickMemberDetail(v -> listener.onClickMemberDetail());
+        buyerCardView.setOnClickTokoPoint(v -> listener.onBuyerTokopointClicked(element.getTokopointAppplink(), element.getTokopointTitle()));
+        buyerCardView.setOnClickTokoMember(v -> listener.onTokomemberClicked(element.getTokomemberApplink(), element.getTokomemberTitle()));
+        buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element.getCouponApplink(), element.getCouponTitle()));
         buyerCardView.setOnClickByMe(v -> listener.onByMeClicked());
     }
 }
