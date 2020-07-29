@@ -830,14 +830,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             var metadata = pref.preference.payment.metadata
             val selectedTerm = _orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
-                val parse = JsonParser().parse(metadata)
-                val expressCheckoutParams = parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
-                if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
-                    // unexpected null installment term param
+                try {
+                    val parse = JsonParser().parse(metadata)
+                    val expressCheckoutParams = parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                    if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
+                        throw Exception()
+                    }
+                    expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
+                    metadata = parse.toString()
+                } catch (e: Exception) {
                     return null
                 }
-                expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
-                metadata = parse.toString()
             }
             val profile = UpdateCartOccProfileRequest(
                     pref.preference.profileId.toString(),
@@ -1368,14 +1371,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 for (detail in summary.details) {
                     if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
                         shippingDiscount += detail.amount
-                    } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
+                    }
+                    if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
                         productDiscount += detail.amount
                     }
                 }
-            } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                for (detail in summary.details) {
-                    cashbacks.add(detail.description to detail.amountStr)
-                }
+            }
+            if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
+                cashbacks.addAll(summary.details.map { it.description to it.amountStr })
             }
         }
         return Triple(productDiscount, shippingDiscount, cashbacks)
@@ -1428,7 +1431,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
             if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
                 // unexpected null installment term param
-                throw MessageErrorException(DEFAULT_LOCAL_ERROR_MESSAGE)
+                throw Exception()
             }
             expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
             param = param.copy(profile = param.profile.copy(metadata = metadata.toString()))

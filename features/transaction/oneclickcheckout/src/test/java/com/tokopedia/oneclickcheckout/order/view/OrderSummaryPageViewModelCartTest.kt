@@ -265,6 +265,28 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Cart Invalid State`() {
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        orderSummaryPageViewModel.updateCart()
+
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Update Cart Invalid Profile Id`() {
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(), isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        orderSummaryPageViewModel.updateCart()
+
+        verify(inverse = true) { updateCartOccUseCase.execute(any(), any(), any()) }
+    }
+
+    @Test
     fun `Update Preference Success Should Trigger Refresh`() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -316,6 +338,95 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         }
 
         orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Installment Success`() {
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {"installment_term": "1"}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        assertEquals(term2.copy(isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+        assertEquals(listOf(term1.copy(isSelected = false), term2.copy(isSelected = true)), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+    }
+
+    @Test
+    fun `Choose Installment Failed`() {
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {"installment_term": "1"}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+        val responseMessage = "message"
+        val response = MessageErrorException(responseMessage)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Installment Error`() {
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {"installment_term": "1"}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+        val response = Throwable()
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+        }
+
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Installment Using Invalid Metadata`() {
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+
+        orderSummaryPageViewModel.chooseInstallment(term2)
 
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }

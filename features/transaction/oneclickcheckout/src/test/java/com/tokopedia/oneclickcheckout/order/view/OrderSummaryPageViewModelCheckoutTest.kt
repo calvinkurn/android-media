@@ -48,6 +48,96 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Checkout Success With Transaction Id`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val transactionId = "123"
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl", form = "transaction_id=$transactionId&success=1"))))))
+        }
+
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), transactionId, any()) }
+    }
+
+    @Test
+    fun `Checkout Success With Transaction Id As Last Query`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        val transactionId = "123"
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl", form = "transaction_id=$transactionId"))))))
+        }
+
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), transactionId, any()) }
+    }
+
+    @Test
+    fun `Checkout Success With Invalid Transaction Id`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        every { checkoutOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl", form = "transaction_id="))))))
+        }
+
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), "", any()) }
+    }
+
+    @Test
+    fun `Checkout Success Using Insurance`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true)
+        every { updateCartOccUseCase.execute(any(), any(), any()) } answers {
+            (secondArg() as ((UpdateCartOccGqlResponse) -> Unit)).invoke(UpdateCartOccGqlResponse(UpdateCartOccResponse(data = UpdateCartDataOcc())))
+        }
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        every { checkoutOccUseCase.execute(match { it.carts.data.first().shopProducts.first().finsurance == 1 }, any(), any()) } answers {
+            (secondArg() as ((CheckoutOccGqlResponse) -> Unit)).invoke(CheckoutOccGqlResponse(CheckoutOccResponse(status = STATUS_OK, data = Data(success = 1, paymentParameter = PaymentParameter(redirectParam = RedirectParam(url = "testurl"))))))
+        }
+
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any()) }
+    }
+
+    @Test
     fun `Checkout Success Using Promos`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
@@ -93,6 +183,40 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout On Invalid Preference State`() {
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout On Invalid Profile Id`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(), isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout On Invalid Credit Card State`() {
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = ButtonBayarState.NORMAL)
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {}
+            }
+        """.trimIndent()))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(selectedTerm = OrderPaymentInstallmentTerm()))
 
         orderSummaryPageViewModel.finalUpdate({
             //do nothing
