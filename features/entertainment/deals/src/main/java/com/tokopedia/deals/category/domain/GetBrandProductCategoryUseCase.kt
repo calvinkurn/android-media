@@ -20,7 +20,7 @@ class GetBrandProductCategoryUseCase @Inject constructor(
         val gqlRequest = GraphqlRequest(DealsGqlQueries.getCategoryBrandProduct(),
                 SearchData::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.CACHE_FIRST).build())
 
         val errors = gqlResponse.getError(SearchData::class.java)
         if (!errors.isNullOrEmpty()) {
