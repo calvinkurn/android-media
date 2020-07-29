@@ -25,8 +25,6 @@ class ValidateShippingUseCase @Inject constructor(@ApplicationContext val contex
 
        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_shippingeditor_popup)
        val graphqlRequest = GraphqlRequest(query, ValidateShippingResponse::class.java, params)
-//       Log.d("PARAM_Final", getParams(validateShippingParams).toString())
-       Log.d("PARAM_Final_2", params.toString())
        useCase.clearRequest()
        useCase.addRequest(graphqlRequest)
        return useCase.createObservable(RequestParams.EMPTY)
@@ -49,8 +47,6 @@ class ValidateShippingUseCase @Inject constructor(@ApplicationContext val contex
     companion object{
         const val SHOP_ID = "shop_id"
         const val SHIPMENT_IDS = "shipment_ids"
-
-        private const val PARAM = "inputShippingEditorMobilePopup"
 
     }
 

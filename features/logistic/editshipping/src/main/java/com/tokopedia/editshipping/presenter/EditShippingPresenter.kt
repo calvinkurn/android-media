@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.presenter
 
 import android.os.Bundle
-import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.model.editshipping.EditShippingCouriers
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping
@@ -44,8 +43,6 @@ interface EditShippingPresenter {
     val provinceCityDistrictList: List<ProvinceCitiesDistrict?>?
 
     val shopInformation: ShopShipping?
-
-    val validateBoData: ValidateShippingModel?
 
     val shopModel: EditShippingCouriers?
 

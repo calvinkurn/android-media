@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
@@ -192,8 +191,14 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         }
     }
 
-    override fun setValidateBoData(data: ValidateShippingModel?) {
-        data?.let { openPopupValidation(it) }
+    override fun validateShowPopup(data: ValidateShippingModel?) {
+        if (data != null) {
+            if (data.data.showPopup) {
+                data?.let { openPopupValidation(it) }
+            } else {
+                submitData()
+            }
+        }
     }
 
     override val districtAndCity: String?
@@ -388,10 +393,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             return true
         } else if (item.itemId == R.id.action_send) {
             if (fragmentHeader != null) {
-                Log.d("STRING_SHOPID", editShippingPresenter?.getShopId().toString());
-                Log.d("STRING_SHIPPINGID", editShippingPresenter?.getCompiledShippingId().toString());
                 editShippingPresenter?.getShopId()?.let { editShippingPresenter?.validateBo(it, editShippingPresenter?.getCompiledShippingId().toString()) }
-                ValidateShippingPopUp()
             } else showErrorToast(getString(R.string.dialog_on_process))
         }
         return super.onOptionsItemSelected(item)
@@ -496,22 +498,9 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     }
 
     private fun getDistrictRecommendationIntent(activity: Activity, token: Token?): Intent? {
-        //ToDo::
         val  intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
         intent.putExtra(ARGUMENT_DATA_TOKEN, token)
         return intent
-    }
-
-    private fun ValidateShippingPopUp() {
-        val data = editShippingPresenter?.validateBoData
-        if (data != null) {
-            /*showPopup false temporary*/
-            if (!data.data.showPopup) {
-                data?.let { openPopupValidation(it) }
-            } else {
-                submitData()
-            }
-        }
     }
 
     private fun openPopupValidation(data: ValidateShippingModel) {
@@ -520,6 +509,15 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
             ticker_validation_bo.tickerTitle = HtmlLinkHelper(context, data.data.tickerTitle).spannedString.toString()
             ticker_validation_bo.setHtmlDescription(data.data.tickerContent)
+            ticker_validation_bo.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    goToChargeBoWebview()
+                }
+
+                override fun onDismiss() {
+                    //no-op
+                }
+            })
 
             point_one.text = HtmlLinkHelper(context, data.data.popupContent[0]).spannedString
             point_two.text = HtmlLinkHelper(context, data.data.popupContent[1]).spannedString
@@ -527,6 +525,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
             btn_nonaktifkan.setOnClickListener {
                 submitData()
+                bottomSheetValidation?.dismiss()
             }
             btn_aktifkan.setOnClickListener {
                bottomSheetValidation?.dismiss()

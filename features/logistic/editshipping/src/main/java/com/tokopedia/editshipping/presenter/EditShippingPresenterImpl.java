@@ -32,7 +32,6 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -832,7 +831,7 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
         validateShippingUseCase.execute(requestParams, new Subscriber<ValidateShippingModel>() {
             @Override
             public void onCompleted() {
-                Log.d("ON_COMPLETE", "1");
+                //no-op
             }
 
             @Override
@@ -842,15 +841,9 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
 
             @Override
             public void onNext(ValidateShippingModel validateShippingModel) {
-                setValidateBoData(validateShippingModel);
+                view.validateShowPopup(validateShippingModel);
             }
         });
-    }
-
-    @Nullable
-    @Override
-    public ValidateShippingModel getValidateBoData() {
-        return validateBoData;
     }
 
     @Override
@@ -883,16 +876,9 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
                     }
                 }
             }
-            Log.d("JSON_COMPILE_FINAl", jsonCompiled.toString().replace("\"",  "\\\""));
-            String compiledShipmentId = jsonCompiled.toString().replace("\"",  "\\\"");
             return jsonCompiled.toString();
         } catch (JSONException e) {
             return "";
         }
     }
-
-    private void setValidateBoData(ValidateShippingModel model) {
-        this.validateBoData = model;
-    }
-
 }

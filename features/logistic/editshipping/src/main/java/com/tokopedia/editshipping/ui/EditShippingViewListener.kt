@@ -22,7 +22,7 @@ interface EditShippingViewListener {
 
     fun setShopLocationData(shopData: ShopShipping?)
 
-    fun setValidateBoData(data: ValidateShippingModel?)
+    fun validateShowPopup(data: ValidateShippingModel?)
 
     val districtAndCity: String?
 
