@@ -10,7 +10,7 @@ import com.tokopedia.additional_check.di.AdditionalCheckUseCaseModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA
-import com.tokopedia.additional_check.view.BottomSheetCheckViewModel
+import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     @Inject
-    lateinit var viewModel: BottomSheetCheckViewModel
+    lateinit var viewModel: TwoFactorViewModel
 
     var remoteConfig: FirebaseRemoteConfigImpl? = null
 

@@ -14,11 +14,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
-class BottomSheetCheckViewModel @Inject constructor (@Named(SessionModule.SESSION_MODULE)
+class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODULE)
                                                      private val userSession: UserSessionInterface,
-                                                     private val additionalCheckPreference: AdditionalCheckPreference,
-                                                     private val additionalCheckUseCase: AdditionalCheckUseCase,
-                                                     dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                              private val additionalCheckPreference: AdditionalCheckPreference,
+                                              private val additionalCheckUseCase: AdditionalCheckUseCase,
+                                              dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
 
     private val mutableGetDataResponse = MutableLiveData<Result<GetObjectPojo>>()
 
