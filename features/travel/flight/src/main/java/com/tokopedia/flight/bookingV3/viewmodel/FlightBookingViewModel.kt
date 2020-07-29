@@ -601,7 +601,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             //update UI promoData
             flightPromoViewEntity.promoData.description = voucher.message
-            _flightPromoResult.value = flightPromoViewEntity
+            _flightPromoResult.postValue(flightPromoViewEntity)
 
             return promoEligibility
         } catch (e: Exception) {
