@@ -3,24 +3,18 @@ package com.tokopedia.updateinactivephone.usecase
 import android.content.Context
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
-import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
-
-import java.io.File
-import java.util.HashMap
-
-import okhttp3.MediaType
-import okhttp3.RequestBody
-
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.ID
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IMAGE_UPLOAD_URL
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.PARAM_FILE_TO_UPLOAD
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.RESOLUTION
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.SERVER_ID
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.TOKEN
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USERID
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
+import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
+import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
 import com.tokopedia.updateinactivephone.di.UpdateInActiveQualifier
 import com.tokopedia.usecase.RequestParams
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import java.io.File
+import java.util.*
 
 class UploadImageUseCase(
         @UpdateInActiveQualifier private val context: Context,
@@ -28,22 +22,16 @@ class UploadImageUseCase(
 ) {
 
     suspend fun uploadImage(requestParams: RequestParams): UploadImageModel {
-        val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment"
+        val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/kyc/upload"
         return uploadImageRepository.uploadImage(uploadUrl,
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
         )
     }
 
-    private fun generateRequestBody(requestParams: RequestParams): Map<String, String> {
-        val requestBodyMap = HashMap<String, String>()
-        requestBodyMap[USERID] = requestParams.getString(USERID, "")
-        requestBodyMap[ID] = requestParams.getString(USERID, "")
-        requestBodyMap[SERVER_ID] = requestParams.getString(SERVER_ID, "49")
-        requestBodyMap[TOKEN] = requestParams.getString(TOKEN, "")
-        requestBodyMap[RESOLUTION] = requestParams.getString(RESOLUTION, "215")
-
-        return requestBodyMap
+    private fun generateRequestBody(requestParams: RequestParams): RequestBody{
+        return RequestBody.create(MediaType.parse("text/plain"),
+                requestParams.getString(USERID, ""))
     }
 
     private fun getUploadImageFile(requestParams: RequestParams): RequestBody {

@@ -28,17 +28,17 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
                 itemView.tv_total_payment.setTextAppearance(R.style.button_payment)
             } else {
                 itemView.tv_total_payment.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.0f)
-                itemView.tv_total_payment.height = itemView.resources.getDimensionPixelOffset(R.dimen.dp_40)
+                itemView.tv_total_payment.height = itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_40)
                 val params: LinearLayout.LayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                params.setMargins(itemView.resources.getDimensionPixelOffset(R.dimen.dp_3),
-                        itemView.resources.getDimensionPixelOffset(R.dimen.dp_8),
-                        itemView.resources.getDimensionPixelOffset(R.dimen.dp_16),
-                        itemView.resources.getDimensionPixelOffset(R.dimen.dp_8)
+                params.setMargins(itemView.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_3),
+                        itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8),
+                        itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16),
+                        itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8)
                 )
                 itemView.tv_total_payment.layoutParams = params
             }
-            itemView.tv_total_payment.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_8), 0,
-                    itemView.resources.getDimensionPixelOffset(R.dimen.dp_8), 0)
+            itemView.tv_total_payment.setPadding(itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8), 0,
+                    itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_8), 0)
         } else {
             itemView.tv_select_cod.visibility = View.GONE
         }

@@ -19,7 +19,7 @@ interface BuyerAccount {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getBuyerData(query: String, saldoQuery: String)
+        fun getBuyerData(query: String, saldoQuery: String, rewardQuery: String)
         fun getFirstRecomData()
         fun getRecomData(page: Int)
         fun addWishlist(model: RecommendationItem,  callback: (Boolean, Throwable?) -> Unit)

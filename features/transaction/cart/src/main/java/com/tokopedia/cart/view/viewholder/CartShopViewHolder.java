@@ -137,7 +137,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         String shopName = cartShopHolderData.getShopGroupAvailableData().getShopName();
         tvShopName.setText(shopName);
-        tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
+        tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(
+                cartShopHolderData.getShopGroupAvailableData().getShopId(),
+                cartShopHolderData.getShopGroupAvailableData().getShopName())
+        );
 
         if (cartShopHolderData.getShopGroupAvailableData().isOfficialStore() || cartShopHolderData.getShopGroupAvailableData().isGoldMerchant()) {
             if (!cartShopHolderData.getShopGroupAvailableData().getShopBadge().isEmpty()) {

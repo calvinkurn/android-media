@@ -13,7 +13,10 @@ import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import com.tokopedia.unifyprinciples.Typography
 
-class PowerMerchantItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PowerMerchantItemViewHolder(
+    itemView: View,
+    private val listener: PmViewHolderListener?
+) : RecyclerView.ViewHolder(itemView) {
 
     private val context by lazy { itemView.context }
     
@@ -38,9 +41,12 @@ class PowerMerchantItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
         textDescription.text = if (clickableText != null) {
             val clickableUrl = item.clickableUrl
-            val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
+            val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500)
             createSpannableString(description, clickableText, clickableTextColor, true, boldTextList) {
-                clickableUrl?.let { url -> goToWebViewPage(url) }
+                clickableUrl?.let { url ->
+                    goToWebViewPage(url)
+                    onItemClicked(item)
+                }
             }
         } else {
             description
@@ -49,7 +55,15 @@ class PowerMerchantItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         textDescription.movementMethod = LinkMovementMethod.getInstance()
     }
 
+    private fun onItemClicked(item: PowerMerchantItemView) {
+        listener?.onItemClicked(item.title)
+    }
+
     private fun goToWebViewPage(url: String) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+    }
+
+    interface PmViewHolderListener {
+        fun onItemClicked(title: Int)
     }
 }

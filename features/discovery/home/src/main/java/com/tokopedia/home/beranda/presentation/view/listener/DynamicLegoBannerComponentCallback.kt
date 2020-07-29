@@ -5,28 +5,29 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.track.TrackApp
+import java.util.HashMap
 
-class DynamicLegoBannerComponentCallback(val context: Context?): DynamicLegoBannerListener {
+class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): DynamicLegoBannerListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-        LegoBannerTracking.sendLegoBannerSixClickViewAll(channelModel.channelHeader.name, channelModel.id)
+        LegoBannerTracking.sendLegoBannerSixClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)
     }
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-        LegoBannerTracking.sendLegoBannerFourClickViewAll(channelModel.channelHeader.name, channelModel.id)
+        LegoBannerTracking.sendLegoBannerFourClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-        LegoBannerTracking.sendLegoBannerThreeClickViewAll(channelModel.channelHeader.name, channelModel.id)
+        LegoBannerTracking.sendLegoBannerThreeClickViewAll(channelModel, channelModel.id, homeCategoryListener.userId)
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)
@@ -66,14 +67,26 @@ class DynamicLegoBannerComponentCallback(val context: Context?): DynamicLegoBann
     }
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        homeCategoryListener.putEEToIris(
+                HomePageTrackingV2.LegoBanner.getLegoBannerSixImageImpression(
+                        channelModel, parentPosition, true
+                ) as HashMap<String, Any>
+        )
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        homeCategoryListener.putEEToIris(
+                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                        channelModel, parentPosition, true
+                ) as HashMap<String, Any>
+        )
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        homeCategoryListener.putEEToIris(
+                HomePageTrackingV2.LegoBanner.getLegoBannerThreeImageImpression(
+                        channelModel, parentPosition, true
+                ) as HashMap<String, Any>
+        )
     }
 }

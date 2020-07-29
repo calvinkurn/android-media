@@ -43,7 +43,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
         showRegistrationCheckList()
         showVerificationCheckList(kycVerified)
         showShopScoreCheckList(shopScoreEligible)
-        showDescription(kycVerified, shopScoreEligible)
+        showDescription(kycVerified, shopScoreEligible, shopScore)
         showLayout()
     }
 
@@ -51,15 +51,15 @@ class PowerMerchantRegistrationView : ConstraintLayout {
         this.tracker = tracker
     }
 
-    private fun showDescription(kycVerified: Boolean, shopScoreEligible: Boolean) {
+    private fun showDescription(kycVerified: Boolean, shopScoreEligible: Boolean, shopScore: Int) {
         val description = when {
             kycVerified && shopScoreEligible -> {
                 val text = context.getString(R.string.power_merchant_full_eligibility_description)
                 val clickableText = context.getString(R.string.power_merchant_register_text)
-                val clickableTextColor = ContextCompat.getColor(context, R.color.light_N700)
+                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700)
 
                 createSpannableString(text, clickableText, clickableTextColor, true) {
-                    goToTermsAndConditionPage()
+                    goToTermsAndConditionPage(shopScore)
                 }
             }
             shopScoreEligible -> {
@@ -68,7 +68,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
             else -> {
                 val text = context.getString(R.string.power_merchant_shop_score_description)
                 val clickableText = context.getString(R.string.power_merchant_see_tips)
-                val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
+                val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500)
 
                 createSpannableString(text, clickableText, clickableTextColor) { goToLearMorePage() }
             }
@@ -101,8 +101,8 @@ class PowerMerchantRegistrationView : ConstraintLayout {
         textShopScore.setCompoundDrawablesWithIntrinsicBounds(checkListIcon, 0, 0, 0)
     }
 
-    private fun goToTermsAndConditionPage() {
-        val intent = PowerMerchantTermsActivity.createIntent(context)
+    private fun goToTermsAndConditionPage(shopScore: Int) {
+        val intent = PowerMerchantTermsActivity.createIntent(context, shopScore)
         context.startActivity(intent)
     }
 

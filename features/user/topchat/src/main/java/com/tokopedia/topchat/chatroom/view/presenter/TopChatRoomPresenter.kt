@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -100,7 +101,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var uploadImageUseCase: TopchatUploadImageUseCase,
         private var orderProgressUseCase: OrderProgressUseCase,
         private val groupStickerUseCase: ChatListGroupStickerUseCase,
-        private val chatAttachmentUseCase: ChatAttachmentUseCase
+        private val chatAttachmentUseCase: ChatAttachmentUseCase,
+        private val sharedPref: SharedPreferences
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -497,7 +499,7 @@ class TopChatRoomPresenter @Inject constructor(
             opponentId: String,
             startTime: String
     ) {
-        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime)
+        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime, attachmentsPreview)
         val stringContract = CommonUtil.toJson(stickerContract)
         RxWebSocket.send(stringContract, listInterceptor)
     }
@@ -645,7 +647,11 @@ class TopChatRoomPresenter @Inject constructor(
         attachmentsPreview.clear()
     }
 
-    override fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+    override fun getAtcPageIntent(
+            context: Context?,
+            element: ProductAttachmentViewModel,
+            sourcePage: String
+    ): Intent {
         val quantity = element.minOrder
         val atcOnly = ATC_ONLY
         val needRefresh = true
@@ -663,11 +669,16 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
             putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
-    override fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+    override fun getBuyPageIntent(
+            context: Context?,
+            element: ProductAttachmentViewModel,
+            sourcePage: String
+    ): Intent {
         val quantity = element.minOrder
         val atcAndBuyAction = ATC_AND_BUY
         val needRefresh = true
@@ -688,6 +699,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_DIMENSION40, element.getAtcDimension40(sourcePage))
             putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
@@ -785,6 +797,14 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    override fun isStickerTooltipAlreadyShow(): Boolean {
+        return sharedPref.getBoolean(STICKER_TOOLTIP_ONBOARDING, false)
+    }
+
+    override fun toolTipOnBoardingShown() {
+        sharedPref.edit().putBoolean(STICKER_TOOLTIP_ONBOARDING, true).apply()
+    }
+
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)
@@ -818,4 +838,8 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
+
+    companion object {
+        const val STICKER_TOOLTIP_ONBOARDING = "sticker_tooltip_onboarding"
+    }
 }

@@ -26,5 +26,5 @@ data class Meta (
         @SerializedName("overlayImageApplink") @Expose val overlayImageApplink : String = "",
         @SerializedName("overlayImageWeblink") @Expose val overlayImageWeblink : String = "",
         @SerializedName("gradient") @Expose val gradient : List<String> = listOf(),
-        @SerializedName("serverTimeOffset") @Expose val serverTimeOffset : Long = 0L
+        @SerializedName("maxAutoplayCell") @Expose val maxAutoplayCell : Int = 0
 )

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
-    <string name="checkout_module_title_send_to_multiple_address">Kirim ke Banyak Alamat</string>
+    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
+    <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
     <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
     <string name="brand_tokopedia_corner">Tokopedia Corner</string>
     <string name="tooltip_corner_info">Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus</string>
     <string name="button_mengerti">Mengerti</string>
-    <string name="checkout_module_title_shipping_dest_multiple_address">Alamat Pengiriman</string>
     <string name="hint_search_corner">Cari kampus mu</string>
     <string name="cart_error_message">Ada %1d barang yang tidak dapat dibeli</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
@@ -57,7 +57,6 @@
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
     <string name="label_action_snackbar_close">Tutup</string>
     <string name="otdg_gtm_label">Jaminan Pengiriman Tepat Waktu</string>
-    <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
@@ -80,9 +79,6 @@
     <string name="information_icon">Information Icon</string>
     <string name="label_payment_total">Total Tagihan</string>
     <string name="label_pay_cod">Bayar di Tempat</string>
-    <string name="label_courier">Kurir Pengiriman</string>
-    <string name="label_button_choose_courier">Pilih Kurir</string>
-    <string name="label_change_courier">Ubah Kurir</string>
     <string name="label_shipping">Pengiriman</string>
     <string name="label_button_choose_courier_blackbox">Pilih Pengiriman</string>
     <string name="label_button_change_shipping">Ubah Pengiriman</string>

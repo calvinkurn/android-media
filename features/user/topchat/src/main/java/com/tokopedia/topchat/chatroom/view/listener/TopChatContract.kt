@@ -133,13 +133,21 @@ interface TopChatContract {
 
         fun initInvoicePreview(savedInstanceState: Bundle?)
 
-        fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+        fun getAtcPageIntent(
+                context: Context?,
+                element: ProductAttachmentViewModel,
+                sourcePage: String
+        ): Intent
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
         fun onClickBannedProduct(liteUrl: String)
 
-        fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+        fun getBuyPageIntent(
+                context: Context?,
+                element: ProductAttachmentViewModel,
+                sourcePage: String
+        ): Intent
 
         fun initVoucherPreview(extras: Bundle?)
 
@@ -164,5 +172,9 @@ interface TopChatContract {
         fun getStickerGroupList(chatRoom: ChatroomViewModel)
 
         fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel)
+
+        fun isStickerTooltipAlreadyShow(): Boolean
+
+        fun toolTipOnBoardingShown()
     }
 }

@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationReviewBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
@@ -42,12 +43,15 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.In
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationOvoIncentiveViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.user.session.UserSession;
+
 import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -79,7 +83,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private String scoreFilter;
     private View filterButton;
     private boolean isFromWhitespace;
-    private Ticker ovoTicker;
+    private InboxReputationOvoIncentiveViewModel ovoDataModel;
     private Ticker sellerMigrationTicker;
 
     @Inject
@@ -90,6 +94,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Inject
     ReputationTracking reputationTracking;
+
+    @Inject
+    UserSession userSession;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -150,7 +157,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
-        ovoTicker = parentView.findViewById(R.id.ovoPointsTicker);
         sellerMigrationTicker = parentView.findViewById(R.id.review_seller_migration_ticker);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
@@ -193,6 +199,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             sellerMigrationTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    SellerMigrationTracking.INSTANCE.eventOnClickReviewTicker(userSession.getUserId());
                     openSellerMigrationBottomSheet();
                 }
 
@@ -202,6 +209,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 }
             });
             sellerMigrationTicker.setVisibility(View.VISIBLE);
+        } else {
+            sellerMigrationTicker.setVisibility(View.GONE);
         }
     }
 
@@ -256,7 +265,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         else {
             presenter.getFirstTimeInboxReputation(getTab());
         }
-        ViewCompat.setNestedScrollingEnabled(mainList, false);
     }
 
     public int getTab() {
@@ -284,38 +292,24 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         searchView.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.VISIBLE);
-        sellerMigrationTicker.setVisibility(View.VISIBLE);
-        adapter.setList(inboxReputationViewModel.getList());
+        adapter.setList(inboxReputationViewModel.getList(), ovoDataModel);
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
 
     @Override
     public void onErrorGetProductRevIncentiveOvo(Throwable throwable) {
-        ovoTicker.setVisibility(View.GONE);
+        // No Op
     }
 
     @Override
     public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
-        String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
-        String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle();
-        ovoTicker.setVisibility(View.VISIBLE);
-        ovoTicker.setTickerTitle(title);
-        ovoTicker.setHtmlDescription(subtitle);
-        ovoTicker.setDescriptionClickEvent(new TickerCallback() {
-            @Override
-            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.WAITING_REVIEWED);
-                if(getFragmentManager() != null) {
-                    bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
-                }
-                reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
-            }
+        if(getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            return;
+        }
 
-            @Override
-            public void onDismiss() {
-                reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
-            }
-        });
+        String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
+        ovoDataModel = new InboxReputationOvoIncentiveViewModel(productRevIncentiveOvoDomain);
+        adapter.insertOvoIncentiveDataModel(ovoDataModel);
         // hit tracking while first time success get gql incentive ovo
         if(getTab() == FIRST_TAB_INBOX_REPUTATION) {
             reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
@@ -353,7 +347,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessRefresh(InboxReputationViewModel inboxReputationViewModel) {
         adapter.removeEmpty();
-        adapter.setList(inboxReputationViewModel.getList());
+        adapter.setList(inboxReputationViewModel.getList(), ovoDataModel);
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
 
@@ -408,6 +402,20 @@ public class InboxReputationFragment extends BaseDaggerFragment
         isFromWhitespace = source;
     }
 
+    @Override
+    public void onClickOvoIncentiveTickerDescription(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
+        BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.WAITING_REVIEWED);
+        if(getFragmentManager() != null) {
+            bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
+        }
+        reputationTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTitle(), ReputationTrackingConstant.WAITING_REVIEWED);
+    }
+
+    @Override
+    public void onDismissOvoIncentiveTicker(String title) {
+        reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
+    }
+
     private void savePassModelToDB(InboxReputationDetailPassModel inboxReputationDetailPassModel) {
         if (persistentCacheManager != null) {
             persistentCacheManager.put(
@@ -450,7 +458,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         adapter.removeEmpty();
-        adapter.setList(inboxReputationViewModel.getList());
+        adapter.setList(inboxReputationViewModel.getList(), ovoDataModel);
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
         if(!getQuery().isEmpty())
             reputationTracking.onSuccessFilteredReputationTracker(getQuery(), getTab());

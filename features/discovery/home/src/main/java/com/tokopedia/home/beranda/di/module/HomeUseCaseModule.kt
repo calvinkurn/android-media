@@ -11,7 +11,6 @@ import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -27,13 +26,14 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
-import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
+import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -168,6 +168,9 @@ class HomeUseCaseModule {
             "    help_applink\n" +
             "    tnc_applink\n" +
             "    show_announcement\n" +
+            "    is_show_topup\n" +
+            "    topup_applink\n" +
+            "    topup_limit\n" +
             "  }\n" +
             "}"
 
@@ -309,18 +312,11 @@ class HomeUseCaseModule {
             @ApplicationContext context: Context,
             graphqlRepository: GraphqlRepository,
             homeRecommendationMapper: HomeRecommendationMapper
-    ): GetHomeRecommendationUseCase{
+    ): GetHomeRecommendationUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
         useCase.setGraphqlQuery(query)
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
-    }
-
-    @Provides
-    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
-                                 graphqlUseCase: GraphqlUseCase?,
-                                 feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
-        return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
     }
 
     @Provides
@@ -437,21 +433,26 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
-        return InjectCouponTimeBasedUseCase(graphqlUseCase)
-    }
-
-    @Provides
-    @HomeScope
     fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayGetWidgetEntity>(graphqlRepository)
-        return GetPlayWidgetUseCase(useCase)
+        return GetPlayWidgetUseCase(graphqlRepository)
     }
 
     @Provides
     @HomeScope
     fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelReminder>(graphqlRepository)
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
         return PlayToggleChannelReminderUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
+        return InjectCouponTimeBasedUseCase(graphqlUseCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }

@@ -52,7 +52,7 @@ dependencies {
     implementation project(rootProject.ext.features.youtubeCommon)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api

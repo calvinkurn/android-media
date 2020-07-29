@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -26,6 +27,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
+
+    lateinit var thanksPageData: ThanksPageData
 
     fun getHeader(): HeaderUnify = thank_header
 
@@ -64,6 +67,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
+        this.thanksPageData = thanksPageData
         postEventOnThankPageDataLoaded(thanksPageData)
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
@@ -133,7 +137,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        thankYouPageAnalytics.get().sendBackPressedEvent()
+        if(::thanksPageData.isInitialized)
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()
@@ -145,16 +150,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                is DeferredPaymentFragment -> {
-                    it.onBackPressed()
-                }
-                is ProcessingPaymentFragment -> {
-                    it.onBackPressed()
-                }
                 else -> {
-                    gotoHomePage()
-                    finish()
-                    true
+                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
+                        override fun onCompleted() {
+                            gotoHomePage()
+                        }
+                    })
                 }
             }
 

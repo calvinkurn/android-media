@@ -43,7 +43,7 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
             mTracker = new CodAnalytics();
-            mTitle = getActivity().getString(R.string.label_cod);
+            mTitle = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.label_cod);
             if (getArguments() != null) {
                 mMessage = getArguments().getString(ARGUMENT_MESSAGE_HTML);
             }
@@ -53,12 +53,12 @@ public class CodBottomSheetFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.widget_bottomsheet, container, false);
+        return inflater.inflate(com.tokopedia.design.R.layout.widget_bottomsheet, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        FrameLayout container = view.findViewById(R.id.bottomsheet_container);
+        FrameLayout container = view.findViewById(com.tokopedia.design.R.id.bottomsheet_container);
         View.inflate(getContext(), R.layout.bottom_sheet_cod_notification, container);
 
         TextView textViewTitle = view.findViewById(com.tokopedia.design.R.id.tv_title);

@@ -114,8 +114,8 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
             recyclerView.adapter = adapter
             recyclerView.addOnScrollListener(configureParallax())
         }
-        recyclerView.setDelayDuration(playBannerCarouselDataModel.durationDelayStartVideo, playBannerCarouselDataModel.durationPlayWithData, playBannerCarouselDataModel.durationPlayWithWifi)
-        recyclerView.setAutoPlay(true, playBannerCarouselDataModel.isAutoPlayAmount)
+        recyclerView.setDelayDuration(playBannerCarouselDataModel.durationDelayStartVideo, playBannerCarouselDataModel.durationPlayWithData)
+        recyclerView.setAutoPlay(playBannerCarouselDataModel.isAutoPlay, playBannerCarouselDataModel.isAutoPlayAmount)
         recyclerView.setMedia(list)
         configureHeader(playBannerCarouselDataModel)
         configureBackground(playBannerCarouselDataModel)
@@ -137,7 +137,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     private fun configureSubtitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
+        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotEmpty())
         channelSubtitle.text = playBannerCarouselDataModel.subtitle
         channelSubtitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
@@ -149,6 +149,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         if(playBannerCarouselDataModel.isAutoRefresh){
+            stopTimer()
             timer = object : CountDownTimer(playBannerCarouselDataModel.isAutoRefreshTimer.toLong() * 1000, 1000) {
                 override fun onFinish() {
                     playBannerCarouselDataModel?.let {

@@ -23,6 +23,7 @@ public class RulesUtil {
             String FREQUENCY = "freq";
             String CANCELLABLE = "d";
             String IS_TEST = "isTest";
+            String PERST_ON = "perstOn";
             String SCREEN_NAME = "s";
             String UI = "ui";
         }

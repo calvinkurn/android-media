@@ -9,6 +9,8 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
 import kotlinx.android.synthetic.main.item_shop_home_play_carousel.view.*
@@ -37,18 +39,26 @@ class ShopHomePlayCarouselViewHolder(
     override fun bind(element: ShopHomePlayCarouselUiModel?) {
         playCarouselCardDataModel = element
         itemView.play_banner_carousel.visibility = if(element == null) View.GONE else View.VISIBLE
-        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
     }
 
     override fun bind(element: ShopHomePlayCarouselUiModel?, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
-            if(payloads.contains(ON_DESTROY)){
-                itemView.play_banner_carousel?.onDestroy()
-            } else if(payloads.contains(ON_RESUME)){
-                itemView.play_banner_carousel?.onResume()
-            } else if(payloads.contains(ON_PAUSE)){
-                itemView.play_banner_carousel?.onPause()
+            when {
+                payloads.contains(ON_DESTROY) -> {
+                    itemView.play_banner_carousel?.onDestroy()
+                }
+                payloads.contains(ON_RESUME) -> {
+                    itemView.play_banner_carousel?.onResume()
+                }
+                payloads.contains(ON_PAUSE) -> {
+                    itemView.play_banner_carousel?.onPause()
+                }
+                payloads.contains(ShopPageHomeFragment.UPDATE_REMIND_ME_PLAY) -> {
+                    element?.playBannerCarouselDataModel?.let{
+                        itemView.play_banner_carousel?.setItem(it)
+                    }
+                }
             }
         }
     }
@@ -93,6 +103,14 @@ class ShopHomePlayCarouselViewHolder(
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
         playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
+    }
+
+    fun onResume(){
+        itemView.play_banner_carousel?.onResume()
+    }
+
+    fun onPause(){
+        itemView.play_banner_carousel?.onPause()
     }
 
     fun onDestroy(){

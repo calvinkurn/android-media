@@ -189,7 +189,8 @@ class PlayBottomSheetViewModelTest {
     @Test
     fun `when logged in, should be allowed to open product detail`() {
         val eventProductDetail = InteractionEvent.OpenProductDetail(
-                product = modelBuilder.buildProductLineUiModel()
+                product = modelBuilder.buildProductLineUiModel(),
+                position = 0
         )
 
         coEvery { userSession.isLoggedIn } returns true
@@ -205,7 +206,8 @@ class PlayBottomSheetViewModelTest {
     @Test
     fun `when not logged in, should be allowed to open product detail`() {
         val eventProductDetail = InteractionEvent.OpenProductDetail(
-                product = modelBuilder.buildProductLineUiModel()
+                product = modelBuilder.buildProductLineUiModel(),
+                position = 0
         )
 
         coEvery { userSession.isLoggedIn } returns false

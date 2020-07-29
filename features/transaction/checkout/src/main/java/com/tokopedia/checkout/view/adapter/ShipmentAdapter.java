@@ -58,6 +58,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -283,16 +284,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @SuppressLint("PrivateResource")
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
-                .customView(R.layout.show_case_checkout)
+                .customView(com.tokopedia.logisticcart.R.layout.show_case_checkout)
                 .prevStringRes(R.string.show_case_prev)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.dp_12)
-                .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .textSizeRes(R.dimen.sp_12)
+                .titleTextColorRes(com.tokopedia.abstraction.R.color.white)
+                .spacingRes(com.tokopedia.abstraction.R.dimen.dp_12)
+                .arrowWidth(com.tokopedia.abstraction.R.dimen.dp_16)
+                .textColorRes(com.tokopedia.abstraction.R.color.grey_400)
+                .shadowColorRes(R.color.checkout_module_shadow)
+                .backgroundContentColorRes(com.tokopedia.abstraction.R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.checkout_module_selector_circle_green)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .finishStringRes(R.string.show_case_finish)
                 .useCircleIndicator(true)
                 .clickable(true)
@@ -410,7 +411,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
-                String priceTotalFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat((long) priceTotal, false);
+                String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) priceTotal, false));
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-");
@@ -439,7 +440,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
             }
             shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
+            shipmentSellerCashbackModel.setSellerCashback(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false)));
             shipmentDataList.add(shipmentSellerCashbackModel);
         }
     }
@@ -785,8 +786,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void checkAppliedCourierPromo(int position, CourierItemData oldCourierItemData,
                                           CourierItemData newCourierItemData, ShipmentCartItemModel shipmentCartItemModel) {
         // Do this section if toggle year end promo is on
-        boolean isToogleYearEndPromoOn = shipmentAdapterActionListener.isToogleYearEndPromoOn();
-        if (isToogleYearEndPromoOn && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+        if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             // Check if promo applied on current selected courier
             if (shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied() &&
                     TextUtils.isEmpty(newCourierItemData.getPromoCode())) {
@@ -880,6 +880,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updateShipmentCostModel() {
+        if (shipmentCostModel == null) return;
         double totalWeight = 0;
         double totalPrice = 0;
         double additionalFee = 0;

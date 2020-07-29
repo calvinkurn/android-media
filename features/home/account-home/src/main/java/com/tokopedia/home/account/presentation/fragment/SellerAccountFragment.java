@@ -26,12 +26,17 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
+import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking;
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationVoucherTokoBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -45,7 +50,6 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.getSellerMigrationDate;
@@ -66,6 +70,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private SellerAccountAdapter adapter;
     private PerformanceMonitoring fpmSeller;
     private Ticker migrationTicker;
+    private SellerMigrationVoucherTokoBottomSheet sellerMigrationVoucherTokoBottomSheet;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -251,6 +256,16 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public void onMenuListClicked(MenuListViewModel item) {
+        if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_voucher_toko))) {
+            sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+            showSellerMigrationVoucherTokoBottomSheet();
+        } else {
+            super.onMenuListClicked(item);
+        }
+    }
+
+    @Override
     public void onProductRecommendationClicked(@NotNull RecommendationItem product, int adapterPosition, String widgetTitle) {
 
     }
@@ -271,10 +286,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void setupSellerMigrationTicker() {
-        if(isSellerMigrationEnabled(this.getContext())) {
+        if (isSellerMigrationEnabled(this.getContext())) {
             migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title));
             String remoteConfigDate = getSellerMigrationDate(this.getContext());
-            if(remoteConfigDate.isEmpty()) {
+            if (remoteConfigDate.isEmpty()) {
                 migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
             } else {
                 migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
@@ -282,6 +297,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             migrationTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    SellerMigrationTracking.INSTANCE.eventOnClickAccountTicker(userSession.getUserId());
                     openSellerMigrationBottomSheet();
                 }
 
@@ -296,9 +312,18 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void openSellerMigrationBottomSheet() {
-        if(getContext() != null) {
+        if (getContext() != null) {
             BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext());
-            sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
+            sellerMigrationBottomSheet.show(getChildFragmentManager(), SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET);
+        }
+    }
+
+    private void showSellerMigrationVoucherTokoBottomSheet() {
+        if (getContext() != null) {
+            if (sellerMigrationVoucherTokoBottomSheet == null) {
+                sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.Companion.createNewInstance(getContext());
+            }
+            sellerMigrationVoucherTokoBottomSheet.show(getChildFragmentManager(), SellerMigrationConstants.TAG_SELLER_MIGRATION_BOTTOM_SHEET);
         }
     }
 }

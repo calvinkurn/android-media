@@ -21,7 +21,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.contactus.createticket.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;

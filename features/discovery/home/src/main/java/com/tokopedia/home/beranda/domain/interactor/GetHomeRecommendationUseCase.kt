@@ -26,7 +26,8 @@ class GetHomeRecommendationUseCase @Inject constructor(
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         val tabName = params.getString(PARAM_TAB_NAME, "")
-        return homeRecommendationMapper.mapToHomeRecommendationDataModel(graphqlUseCase.executeOnBackground(), tabName)
+        val pageNumber = params.getInt(PARAM_PAGE, 0)
+        return homeRecommendationMapper.mapToHomeRecommendationDataModel(graphqlUseCase.executeOnBackground(), tabName, pageNumber)
     }
 
     fun setParams(tabName: String, recomId: Int, count: Int, page: Int) {

@@ -8,7 +8,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 
 class OfficialProductRecommendationViewHolder(
@@ -30,7 +30,7 @@ class OfficialProductRecommendationViewHolder(
                             discountPercentage = element.productItem.discountPercentage.toString(),
                             reviewCount = element.productItem.countReview,
                             ratingCount = element.productItem.rating,
-                            shopLocation = element.productItem.location,
+                            shopLocation = element.productItem.shopName,
                             isWishlistVisible = true,
                             isWishlisted = element.productItem.isWishlist,
                             shopBadgeList = element.productItem.badgesUrl.map {
@@ -55,7 +55,15 @@ class OfficialProductRecommendationViewHolder(
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
-                        ImpresionTask(className).execute(element.productItem.trackerImageUrl)
+                        context?.run {
+                            TopAdsUrlHitter(className).hitImpressionUrl(
+                                    this,
+                                    element.productItem.trackerImageUrl,
+                                    element.productItem.productId.toString(),
+                                    element.productItem.name,
+                                    element.productItem.imageUrl
+                            )
+                        }
                     }
                     element.listener.onProductImpression(element.productItem)
                 }
@@ -63,7 +71,17 @@ class OfficialProductRecommendationViewHolder(
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) ImpresionTask(className).execute(element.productItem.clickUrl)
+                if (element.productItem.isTopAds) {
+                    context?.run {
+                        TopAdsUrlHitter(className).hitClickUrl(
+                                this,
+                                element.productItem.clickUrl,
+                                element.productItem.productId.toString(),
+                                element.productItem.name,
+                                element.productItem.imageUrl
+                        )
+                    }
+                }
             }
 
             setThreeDotsOnClickListener {

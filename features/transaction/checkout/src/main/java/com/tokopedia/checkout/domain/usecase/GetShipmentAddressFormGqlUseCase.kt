@@ -5,7 +5,7 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
@@ -21,6 +21,7 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
 
     companion object {
         const val SHIPMENT_ADDRESS_FORM_QUERY = "SHIPMENT_ADDRESS_FORM_QUERY"
+        const val SHIPMENT_ADDRESS_FORM_PARAMS = "params"
 
         const val PARAM_KEY_LANG = "lang"
         const val PARAM_KEY_IS_ONE_CLICK_SHIPMENT = "is_ocs"
@@ -32,7 +33,7 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
     }
 
     override fun createObservable(requestParam: RequestParams): Observable<CartShipmentAddressFormData> {
-        val params = mapOf("params" to requestParam.parameters)
+        val params = mapOf(SHIPMENT_ADDRESS_FORM_PARAMS to requestParam.parameters)
         val graphqlRequest = GraphqlRequest(queryString, ShipmentAddressFormGqlResponse::class.java, params)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
@@ -46,11 +47,11 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
                             if (gqlResponse.shipmentAddressFormResponse.errorMessages.isNotEmpty()) {
                                 throw CartResponseErrorException(gqlResponse.shipmentAddressFormResponse.errorMessages.joinToString())
                             } else {
-                                throw ResponseErrorException()
+                                throw CartResponseErrorException(CART_ERROR_GLOBAL)
                             }
                         }
                     } else {
-                        throw ResponseErrorException()
+                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
                     }
                 }
                 .subscribeOn(schedulers.io)

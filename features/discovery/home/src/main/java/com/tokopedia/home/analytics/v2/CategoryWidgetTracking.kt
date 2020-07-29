@@ -2,6 +2,7 @@ package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
 
 object CategoryWidgetTracking : BaseTracking() {
@@ -66,14 +67,22 @@ object CategoryWidgetTracking : BaseTracking() {
             )
     )
 
-    fun sendCategoryWidgetSeeAllClick(userId: String) {
+    fun sendCategoryWidgetSeeAllClick(channelModel: DynamicHomeChannel.Channels, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         Event.KEY, Event.CLICK_HOMEPAGE,
                         Category.KEY, Category.HOMEPAGE,
                         Action.KEY, CustomAction.CLICK_VIEW_ALL_CATEGORY_WIDGET,
                         Label.KEY, Label.NONE,
-                        UserId.KEY, userId)
+                        Label.ATTRIBUTION_LABEL, channelModel.banner.attribution,
+                        Label.AFFINITY_LABEL, channelModel.persona,
+                        Label.CATEGORY_LABEL, channelModel.categoryID,
+                        Label.SHOP_LABEL, channelModel.brandId,
+                        Label.CAMPAIGN_CODE, channelModel.campaignCode,
+                        Screen.KEY, Screen.DEFAULT,
+                        CurrentSite.KEY, CurrentSite.DEFAULT,
+                        UserId.KEY, userId,
+                        BusinessUnit.KEY, BusinessUnit.DEFAULT)
         )
     }
 }
