@@ -51,7 +51,7 @@ class RechargeHomepageBannerViewHolder(itemView: View,
 
             circular_view_pager.setPageChangeListener(object : CircularPageChangeListener {
                 override fun onPageScrolled(position: Int) {
-                    onPromoScrolled(position)
+
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -71,12 +71,6 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         if (::slidesList.isInitialized && slidesList.size > position) {
             listener.onRechargeSectionItemClicked(slidesList[position])
         }
-    }
-
-    private fun onPromoScrolled(position: Int) {
-//        if (::slidesList.isInitialized) {
-//            listener.onRechargeBannerImpression(slidesList[position])
-//        }
     }
 
     private fun onPromoAllClick(section: RechargeHomepageSections.Section) {
