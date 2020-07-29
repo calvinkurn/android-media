@@ -846,7 +846,7 @@ class OfficialStoreTracking(context: Context) {
     // No 32
     fun eventImpressionMixLeftImageBanner(channel: Channel, categoryName: String, bannerPosition: Int) {
         val eventDataLayer = Bundle()
-        eventDataLayer.putString(EVENT, PROMO_VIEW)
+        eventDataLayer.putString(EVENT, "view_item")
         eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
         eventDataLayer.putString(EVENT_ACTION, "$IMPRESSION banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
         eventDataLayer.putString(EVENT_LABEL, channel.id)
