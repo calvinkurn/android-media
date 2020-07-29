@@ -488,8 +488,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             itemSortFilterList[positionAnswered].type = if (answeredSelected) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
             itemSortFilterList[positionUnAnswered].type = ChipsUnify.TYPE_NORMAL
 
-            val quickFilter = itemSortFilterList[positionUnAnswered].title.toString()
-            val isActive = itemSortFilterList[positionUnAnswered].type == ChipsUnify.TYPE_SELECTED
+            val quickFilter = itemSortFilterList[positionAnswered].title.toString()
+            val isActive = itemSortFilterList[positionAnswered].type == ChipsUnify.TYPE_SELECTED
             InboxReviewTracking.eventClickHasBeenRepliedFilter(quickFilter, isActive.toString(), inboxReviewViewModel.userSession.shopId.orEmpty())
         }
 
