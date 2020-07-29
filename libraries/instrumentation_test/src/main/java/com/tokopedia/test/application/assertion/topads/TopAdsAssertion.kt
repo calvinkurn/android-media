@@ -51,7 +51,7 @@ class TopAdsAssertion(val context: Context,
         val allCount = listTopAdsDbFirst.size
 
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
-        verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
+        //verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
 
         logTestMessage("Waiting for topads backend verificator ready... (>5mins)")
 
