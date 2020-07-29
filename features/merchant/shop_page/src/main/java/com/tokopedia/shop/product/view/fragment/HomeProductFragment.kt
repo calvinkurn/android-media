@@ -12,13 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -37,13 +37,11 @@ class HomeProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var shopInfo: ShopInfo? = null
-
     private var isLogin: Boolean = false
     private var isBind: Boolean = false
     private var urlNeedTobBeProceed: String? = null
     lateinit var layoutLoading: View
-
+    private var shopId: String = ""
 
     private var shopProductPromoViewModel: ShopProductPromoViewModel = ShopProductPromoViewModel()
 
@@ -51,7 +49,17 @@ class HomeProductFragment : BaseDaggerFragment() {
         private const val MIN_SHOW_WEB_VIEW_PROGRESS = 80
         private const val REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101
         private const val SHOP_STATIC_URL = "shop-static"
-        fun createInstance() = HomeProductFragment()
+        private const val SHOP_ID = "SHOP_ID"
+        private const val SHOP_TOP_CONTENT_URL = "SHOP_TOP_CONTENT_URL"
+        fun createInstance(shopId: String, topContentWebViewUrl: String) : Fragment {
+
+            return HomeProductFragment().apply {
+                val bundle = Bundle()
+                bundle.putString(SHOP_ID, shopId)
+                bundle.putString(SHOP_TOP_CONTENT_URL, topContentWebViewUrl)
+                arguments = bundle
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -72,9 +80,10 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shopId = arguments?.getString(SHOP_ID, "") ?: ""
         findViews()
         layoutLoading = view.findViewById(R.id.layout_loading)
-        shopProductPromoViewModel = getHomeData(getOfficialWebViewUrl(shopInfo))
+        shopProductPromoViewModel = getHomeData(getOfficialWebViewUrl())
         if (isBind && isLogin == shopProductPromoViewModel.isLogin) {
             return
         }
@@ -98,11 +107,7 @@ class HomeProductFragment : BaseDaggerFragment() {
         webView?.clearCache(true)
     }
 
-    fun setShopInfo(shopInfo: ShopInfo) {
-        this.shopInfo = shopInfo
-    }
-
-    fun getHomeData(contentUrl: String): ShopProductPromoViewModel {
+    private fun getHomeData(contentUrl: String): ShopProductPromoViewModel {
         if (contentUrl.isNotBlank()) {
             val url = if (userSession.isLoggedIn) {
                 ShopProductOfficialStoreUtils.getLogInUrl(contentUrl, userSession.deviceId, userSession.userId)
@@ -113,11 +118,8 @@ class HomeProductFragment : BaseDaggerFragment() {
         return ShopProductPromoViewModel()
     }
 
-    private fun getOfficialWebViewUrl(shopInfo: ShopInfo?): String {
-        if (shopInfo == null) {
-            return ""
-        }
-        var officialWebViewUrl = shopInfo.topContent.topUrl
+    private fun getOfficialWebViewUrl(): String {
+        var officialWebViewUrl = arguments?.getString(SHOP_TOP_CONTENT_URL, "") ?: ""
         officialWebViewUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) officialWebViewUrl else ""
         officialWebViewUrl = if (TextApiUtils.isTextEmpty(officialWebViewUrl)) "" else officialWebViewUrl
         return officialWebViewUrl
@@ -147,7 +149,7 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo?.shopCore?.shopID,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopId,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)
@@ -206,7 +208,7 @@ class HomeProductFragment : BaseDaggerFragment() {
             uri.also {
                 if (url.contains(SHOP_STATIC_URL)) {
                     view.loadUrl(url)
-                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme.startsWith(ShopProductOfficialStoreUtils.HTTP)) {
+                } else if (uri.scheme == ShopProductOfficialStoreUtils.TOKOPEDIA_HOST || it.scheme?.startsWith(ShopProductOfficialStoreUtils.HTTP) == true) {
                     promoClicked(url)
                 }
             }

@@ -47,12 +47,13 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 isRead = false,
                 isDummy = false,
                 isSender = !pojo.isOpposite,
-                sticker = stickerAttributes.stickerProfile
+                sticker = stickerAttributes.stickerProfile,
+                source = pojo.source
         )
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(jsonAttributes,
+        val pojo = GsonBuilder().create().fromJson(jsonAttributes,
                 TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
@@ -86,7 +87,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 !item.isOpposite,
                 voucherModel,
                 "",
-                item.blastId.toString()
+                item.blastId.toString(),
+                item.source,
+                voucher.isPublic
         )
     }
 
@@ -105,7 +108,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 replyTime = payload.message.timeStampUnixNano,
                 isSender = !payload.isOpposite,
                 message = payload.message.censoredReply,
-                startTime = payload.startTime
+                startTime = payload.startTime,
+                source = payload.source
         )
     }
 }

@@ -70,6 +70,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
@@ -88,6 +89,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
@@ -103,16 +105,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener, DeferredViewHolderAttachment {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment, CommonViewHolderListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
+
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
+
     @Inject
     lateinit var analytics: TopChatAnalytics
+
     @Inject
     lateinit var settingAnalytics: ChatSettingsAnalytics
+
     @Inject
     lateinit var session: UserSessionInterface
 
@@ -120,9 +126,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
+    private lateinit var toolTip: ToolTipStickerPopupWindow
     private var indexFromInbox = -1
     private var isMoveItemInboxToTop = false
     private var remoteConfig: RemoteConfig? = null
+    private var sourcePage: String = ""
 
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
@@ -142,6 +150,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initFireBase()
+        initTooltipPopup()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
@@ -159,18 +173,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         chatMenu?.setStickerListener(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initFireBase()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPresenter(savedInstanceState)
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
         setupAlertDialog()
+        setupAnalytic()
         loadInitialData()
+    }
+
+    private fun initTooltipPopup() {
+        toolTip = ToolTipStickerPopupWindow(context, presenter)
+    }
+
+    private fun setupAnalytic() {
+        analytics.setSourcePage(sourcePage)
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -239,6 +257,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage = getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
         indexFromInbox = getParamInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, arguments, savedInstanceState)
     }
 
@@ -281,7 +300,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
         updateViewData(chatRoom)
-        checkCanAttachVoucher(chatRoom)
+        checkCanAttachVoucher()
         presenter.updateMinReplyTime(chatRoom)
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
@@ -295,12 +314,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         loadChatRoomSettings(chatRoom)
         presenter.getStickerGroupList(chatRoom)
         presenter.loadAttachmentData(messageId.toInt(), chatRoom)
+        showStickerOnBoardingTooltip()
 
         fpm.stopTrace()
     }
 
-    private fun checkCanAttachVoucher(room: ChatroomViewModel) {
-        if (room.isSeller()) {
+    private fun showStickerOnBoardingTooltip() {
+        if (!presenter.isStickerTooltipAlreadyShow()) {
+            toolTip.showAtTop(getViewState().chatStickerMenuButton)
+        }
+    }
+
+    private fun checkCanAttachVoucher() {
+        if (amISeller) {
             chatMenu?.addVoucherAttachmentMenu()
         }
     }
@@ -468,7 +494,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         return TopChatTypeFactoryImpl(
                 this, this, this, this,
                 this, this, this, this,
-                this
+                this, this
         )
     }
 
@@ -753,13 +779,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val buyPageIntent = presenter.getBuyPageIntent(context, element)
+        val buyPageIntent = presenter.getBuyPageIntent(context, element, sourcePage)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val atcPageIntent = presenter.getAtcPageIntent(context, element)
+        val atcPageIntent = presenter.getAtcPageIntent(context, element, sourcePage)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
@@ -986,9 +1012,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     private fun pickVoucherToUpload() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER).apply {
-            putExtra(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId.toString())
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_VOUCHER)
         startActivityForResult(intent, REQUEST_ATTACH_VOUCHER)
     }
 
@@ -1112,6 +1136,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onStickerOpened() {
         getViewState().onStickerOpened()
+        toolTip.dismissOnBoarding()
     }
 
     override fun onStickerClosed() {
@@ -1124,5 +1149,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getLoadedChatAttachments(): ArrayMap<String, Attachment> {
         return presenter.attachments
+    }
+
+    override fun isSeller(): Boolean {
+        return amISeller
     }
 }

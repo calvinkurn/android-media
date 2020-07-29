@@ -38,7 +38,10 @@ data class InitialStateItem(
         val shortcutImage: String = "",
 
         @SerializedName("id")
-        val itemId: String = ""
+        val itemId: String = "",
+
+        @SerializedName("type")
+        val type: String = ""
 ) {
         fun getObjectDataLayerForRecentView(position: Int): Any {
                 return DataLayer.mapOf(

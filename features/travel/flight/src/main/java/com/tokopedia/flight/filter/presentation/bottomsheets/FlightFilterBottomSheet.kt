@@ -24,11 +24,11 @@ import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortVie
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
-import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_flight_filter.*
 import kotlinx.android.synthetic.main.fragment_flight_filter.view.*
@@ -60,7 +60,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             if (arguments?.containsKey(ARG_FILTER_MODEL) == true) {
                 flightFilterViewModel.init(
                         arguments?.getInt(ARG_SORT) ?: SORT_DEFAULT_VALUE,
-                        arguments?.getParcelable(ARG_FILTER_MODEL) as FlightFilterModel)
+                        arguments?.getParcelable(ARG_FILTER_MODEL) ?: FlightFilterModel())
             }
         }
 

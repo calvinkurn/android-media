@@ -20,6 +20,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
@@ -122,7 +123,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     private boolean isStaggeredGridFullSpan(int viewType) {
-        return viewType != SmallGridProductItemViewHolder.LAYOUT && viewType != RecommendationItemViewHolder.LAYOUT;
+        return viewType != SmallGridProductItemViewHolder.LAYOUT && viewType != RecommendationItemViewHolder.LAYOUT & viewType != SmallGridInspirationCardViewHolder.LAYOUT;
     }
 
     @Override
@@ -288,6 +289,10 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                 notifyItemChanged(i);
             }
         }
+    }
+
+    public List<Visitable> getItemList() {
+        return list;
     }
 
     public interface OnItemChangeView {

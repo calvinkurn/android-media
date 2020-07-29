@@ -23,12 +23,13 @@ open class SendableViewModel
  * sending messages
  * @see AttachmentType for attachment types.
  */
-(messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
- attachmentType: String, replyTime: String,
- startTime: String, var isRead: Boolean, var isDummy: Boolean, val isSender: Boolean,
- message: String) : BaseChatViewModel(messageId, fromUid, from, fromRole, attachmentId,
-        attachmentType, replyTime, message) {
-
+(
+        messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
+        attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
+        var isDummy: Boolean, val isSender: Boolean, message: String, source: String
+) : BaseChatViewModel(
+        messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
+) {
 
     var startTime: String protected set
     var isShowRole = true

@@ -21,6 +21,7 @@ import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
 import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDialog
 import com.tokopedia.user.session.UserSession
+import dagger.Lazy
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
@@ -33,10 +34,10 @@ import javax.inject.Inject
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
 
     @Inject
-    lateinit var presenter: DialogManagerPresenter
+    lateinit var presenter: Lazy<DialogManagerPresenter>
 
     @Inject
-    lateinit var claimGratificationUseCase: ClaimPopGratificationUseCase
+    lateinit var claimGratificationUseCase: Lazy<ClaimPopGratificationUseCase>
 
     private var job: Job? = null
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
@@ -197,7 +198,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             scope?.launch(Dispatchers.IO + ceh) {
                 supervisorScope {
                     val childJob = launch {
-                        val response = presenter.getGratificationAndShowDialog(gratificationData)
+                        val response = presenter.get().getGratificationAndShowDialog(gratificationData)
                         val canShowDialog = response.popGratification?.isShow
                         var isAutoClaim = response.popGratification?.isAutoClaim
 
@@ -206,14 +207,14 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
                                 //NEW FLOW
 
-                                if (presenter.userSession.isLoggedIn) {
+                                if (presenter.get().userSession.isLoggedIn) {
                                     var claimPopGratificationResponse: ClaimPopGratificationResponse? = null
                                     var couponDetail: GetCouponDetailResponse? = null
                                     try {
                                         val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
-                                        claimPopGratificationResponse = presenter.claimGratification(claimPayload)
+                                        claimPopGratificationResponse = presenter.get().claimGratification(claimPayload)
                                         val popBenefits = response.popGratification?.popGratificationBenefits
-                                        couponDetail = presenter.composeApi(popBenefits)
+                                        couponDetail = presenter.get().composeApi(popBenefits)
 
                                     } catch (ex: Exception) {
                                     }
@@ -225,14 +226,14 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                     }
 
                                 } else {
-                                    val couponDetail = presenter.composeApi(response.popGratification.popGratificationBenefits)
+                                    val couponDetail = presenter.get().composeApi(response.popGratification.popGratificationBenefits)
                                     withContext(Dispatchers.Main) {
                                         showNonLoggedIn(weakActivity, response, couponDetail, gratificationData)
                                     }
                                 }
                             } else {
                                 //OLD FLOW
-                                val couponDetail = presenter.composeApi(response.popGratification.popGratificationBenefits)
+                                val couponDetail = presenter.get().composeApi(response.popGratification.popGratificationBenefits)
                                 withContext(Dispatchers.Main) {
                                     if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
                                         showOld(weakActivity, response, couponDetail, gratificationData, intent)
@@ -302,7 +303,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                 claimApi = weakOldClaimCouponApi?.get()!!
             } else {
                 if (scope != null) {
-                    claimApi = ClaimCouponApi(scope!!, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase)
+                    claimApi = ClaimCouponApi(scope!!, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase.get())
                     weakOldClaimCouponApi?.clear()
                     weakOldClaimCouponApi = WeakReference(claimApi)
                 }

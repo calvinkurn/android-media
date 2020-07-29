@@ -346,7 +346,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         when (actionActivate) {
             ACTION_DELETE -> {
                 view.let {
-                    Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                    Toaster.make(it!!, getString(R.string.topads_without_product_del_toaster), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                         deleteCancel = true
                     })
                 }

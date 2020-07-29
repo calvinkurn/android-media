@@ -4,12 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,9 +14,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.gm.common.constant.GMCommonConstantKt;
 import com.tokopedia.shop.score.R;
 import com.tokopedia.shop.score.di.ShopScoreDetailDependencyInjector;
 import com.tokopedia.shop.score.view.model.ShopScoreDetailItemViewModel;
@@ -105,7 +107,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
         TextView textView = parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
         textView.setText(getString(R.string.description_shop_score_gold_badge_state,
-                getString(GMConstant.getGMBadgeTitleResource(getActivity()))));
+                GMCommonConstantKt.GM_BADGE_TITLE));
 
         presenter.attachView(this);
         presenter.getShopScoreDetail();
@@ -163,14 +165,14 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         switch (shopScoreDetailStateEnum) {
             case GOLD_MERCHANT_QUALIFIED_BADGE:
             case GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                icon = GMConstant.getGMDrawable(getContext());
+                icon = MethodChecker.getDrawable(getContext(), com.tokopedia.gm.common.R.drawable.ic_power_merchant);
                 break;
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                icon = GMConstant.getGMRegularBadgeDrawable(getContext());
+                icon = MethodChecker.getDrawable(getContext(), com.tokopedia.gm.common.R.drawable.ic_pm_badge_shop_regular);
                 break;
             default:
-                icon = GMConstant.getGMRegularBadgeDrawable(getContext());
+                icon = MethodChecker.getDrawable(getContext(), com.tokopedia.gm.common.R.drawable.ic_pm_badge_shop_regular);
                 break;
         }
         setShopScoreGoldBadgeState(icon);

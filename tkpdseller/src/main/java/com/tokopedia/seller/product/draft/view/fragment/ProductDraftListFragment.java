@@ -30,6 +30,7 @@ import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
@@ -217,8 +218,11 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 .build()
                 .toString();
         Intent intent = RouteManager.getIntent(getContext(), uri);
+
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
-        startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
+        if (intent != null) {
+            startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
+        }
     }
 
     @Override

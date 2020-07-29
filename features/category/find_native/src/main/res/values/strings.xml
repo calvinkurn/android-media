@@ -10,5 +10,6 @@
     <string name="result_count_template_text">%s Produk</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="title_find_native">Find</string>
 
 </resources>

@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.Stats;
 import com.tokopedia.seller.R;
 

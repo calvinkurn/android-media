@@ -1,12 +1,14 @@
 package com.tokopedia.checkout.view.viewholder;
 
-import androidx.recyclerview.widget.RecyclerView;
+import android.annotation.SuppressLint;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
@@ -23,7 +25,6 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
 
     private CheckBox cbDonation;
     private TextView tvDonationTitle;
-    private ImageView imgDonationInfo;
     private LinearLayout llContainer;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -35,10 +36,10 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
 
         cbDonation = itemView.findViewById(R.id.cb_donation);
         tvDonationTitle = itemView.findViewById(R.id.tv_donation_title);
-        imgDonationInfo = itemView.findViewById(R.id.img_donation_info);
         llContainer = itemView.findViewById(R.id.ll_container);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void bindViewHolder(ShipmentDonationModel shipmentDonationModel) {
         llContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,13 +49,20 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
         });
         cbDonation.setChecked(shipmentDonationModel.isChecked());
         tvDonationTitle.setText(shipmentDonationModel.getDonation().getTitle());
-        imgDonationInfo.setOnClickListener(new View.OnClickListener() {
+        tvDonationTitle.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showBottomSheet(shipmentDonationModel);
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int[] textLocation = new int[2];
+                    tvDonationTitle.getLocationOnScreen(textLocation);
+                    if (event.getRawX() >= textLocation[0] + tvDonationTitle.getWidth() - tvDonationTitle.getTotalPaddingRight()){
+                        showBottomSheet(shipmentDonationModel);
+                        return true;
+                    }
+                }
+                return true;
             }
         });
-
         cbDonation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -64,11 +72,11 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void showBottomSheet(ShipmentDonationModel shipmentDonationModel) {
-        Tooltip tooltip = new Tooltip(imgDonationInfo.getContext());
+        Tooltip tooltip = new Tooltip(llContainer.getContext());
         tooltip.setTitle(shipmentDonationModel.getDonation().getTitle());
         tooltip.setDesc(shipmentDonationModel.getDonation().getDescription());
-        tooltip.setTextButton(imgDonationInfo.getContext().getString(R.string.label_button_bottomsheet_close));
-        tooltip.setIcon(R.drawable.ic_donation);
+        tooltip.setTextButton(llContainer.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
+        tooltip.setIcon(R.drawable.checkout_module_ic_donation);
         tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

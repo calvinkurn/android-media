@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -43,6 +45,29 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
             Glide.with(context)
                     .load(url)
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .listener(object : RequestListener<Drawable>{
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            loaderImageView?.visibility = View.GONE
+                            stopTraceOnResourceReady(dataSource, performanceMonitoring)
+                            return false
+                        }
+                    })
+                    .into(it)
+        }
+    }
+
+    fun loadImageRounded(url: String, radius: Int, fpmItemLabel: String = ""){
+        loaderImageView?.visibility = View.VISIBLE
+        imageView?.let {
+            val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
+            Glide.with(context)
+                    .load(url)
+                    .transform(CenterCrop(), RoundedCorners(radius))
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .listener(object : RequestListener<Drawable>{
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

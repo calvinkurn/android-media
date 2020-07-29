@@ -179,6 +179,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
+    @JvmField
+    val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
+
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"

@@ -1,13 +1,11 @@
 package com.tokopedia.checkout.view;
 
+import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -30,12 +28,13 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
+import com.tokopedia.checkout.utils.FingerprintUtil;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -49,6 +48,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
@@ -82,6 +82,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequestGqlDataMapper;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.EgoldData;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.ProductDataCheckoutRequest;
@@ -115,6 +116,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -138,12 +140,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         implements ShipmentContract.Presenter {
 
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
-    private final CheckoutUseCase checkoutUseCase;
+    private final CheckoutGqlUseCase checkoutGqlUseCase;
     private final CompositeSubscription compositeSubscription;
     private final GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase;
     private final EditAddressUseCase editAddressUseCase;
-    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
-    private final SaveShipmentStateUseCase saveShipmentStateUseCase;
+    private final ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase;
+    private final SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase;
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
@@ -176,7 +178,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
-    private boolean isIneligbilePromoDialogEnabled;
+    private boolean isIneligiblePromoDialogEnabled;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -191,11 +193,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
-                             CheckoutUseCase checkoutUseCase,
+                             CheckoutGqlUseCase checkoutGqlUseCase,
                              GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase,
                              EditAddressUseCase editAddressUseCase,
-                             ChangeShippingAddressUseCase changeShippingAddressUseCase,
-                             SaveShipmentStateUseCase saveShipmentStateUseCase,
+                             ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase,
+                             SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase,
                              GetRatesUseCase ratesUseCase,
                              GetRatesApiUseCase ratesApiUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
@@ -213,11 +215,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ReleaseBookingUseCase releaseBookingUseCase,
                              ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
         this.compositeSubscription = compositeSubscription;
-        this.checkoutUseCase = checkoutUseCase;
+        this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
         this.editAddressUseCase = editAddressUseCase;
-        this.changeShippingAddressUseCase = changeShippingAddressUseCase;
-        this.saveShipmentStateUseCase = saveShipmentStateUseCase;
+        this.changeShippingAddressGqlUseCase = changeShippingAddressGqlUseCase;
+        this.saveShipmentStateGqlUseCase = saveShipmentStateGqlUseCase;
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
@@ -485,8 +487,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public boolean isIneligbilePromoDialogEnabled() {
-        return isIneligbilePromoDialogEnabled;
+    public boolean isIneligiblePromoDialogEnabled() {
+        return isIneligiblePromoDialogEnabled;
     }
 
 
@@ -543,7 +545,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showInitialLoading();
         }
 
-        Map<String, Object> params = generateParamShipmentAddressForm(
+        Map<String, Object> params = generateShipmentAddressFormParams(
                 isOneClickShipment, isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId
         );
 
@@ -557,12 +559,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NotNull
-    private Map<String, Object> generateParamShipmentAddressForm(boolean isOneClickShipment,
-                                                                 boolean isTradeIn,
-                                                                 boolean isSkipUpdateOnboardingState,
-                                                                 @Nullable String cornerId,
-                                                                 @Nullable String deviceId,
-                                                                 @Nullable String leasingId) {
+    private Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
+                                                                  boolean isTradeIn,
+                                                                  boolean isSkipUpdateOnboardingState,
+                                                                  @Nullable String cornerId,
+                                                                  @Nullable String deviceId,
+                                                                  @Nullable String leasingId) {
         Map<String, Object> params = new HashMap<>();
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
@@ -651,7 +653,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
-        isIneligbilePromoDialogEnabled = cartShipmentAddressFormData.isIneligbilePromoDialogEnabled();
+        isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
     }
 
     @Override
@@ -718,36 +720,63 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout(boolean hasInsurance,
-                                boolean isOneClickShipment, boolean isTradeIn, boolean isTradeInDropOff,
-                                String deviceId, String cornerId, String leasingId) {
+                                boolean isOneClickShipment,
+                                boolean isTradeIn,
+                                boolean isTradeInDropOff,
+                                String deviceId,
+                                String cornerId,
+                                String leasingId) {
+        getView().showLoading();
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
         if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
-            getView().showLoading();
+            Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
             RequestParams requestParams = RequestParams.create();
-            if (isTradeIn) {
-                Map<String, String> params = new HashMap<>();
-                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(true));
-                params.put(CheckoutUseCase.PARAM_IS_TRADE_IN_DROP_OFF, String.valueOf(isTradeInDropOff));
-                params.put(CheckoutUseCase.PARAM_DEVICE_ID, deviceId);
-                requestParams.putObject(CheckoutUseCase.PARAM_TRADE_IN_DATA, params);
-            }
-            requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-            requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
+            requestParams.putAll(params);
             compositeSubscription.add(
-                    checkoutUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
+                    checkoutGqlUseCase.createObservable(requestParams)
                             .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
             );
         } else {
             getView().hideLoading();
             getView().showToastError(getView().getActivityContext().getString(R.string.message_error_checkout_empty));
         }
+    }
+
+    @NotNull
+    private Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
+                                                       boolean isTradeIn,
+                                                       boolean isTradeInDropOff,
+                                                       String deviceId,
+                                                       CheckoutRequest checkoutRequest) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestGqlDataMapper.INSTANCE.map(checkoutRequest));
+        params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
+        if (isTradeIn) {
+            params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
+            params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
+            params.put(CheckoutGqlUseCase.PARAM_DEV_ID, deviceId);
+        }
+        params.put(CheckoutGqlUseCase.PARAM_OPTIONAL, 0);
+        params.put(CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE, true);
+        params.put(CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE_NEW, true);
+        params.put(CheckoutGqlUseCase.PARAM_IS_EXPRESS, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintUtil.getEnableFingerprintPayment(getView().getActivityContext())) {
+            PublicKey publicKey = FingerPrintDialog.generatePublicKey(getView().getActivityContext());
+            if (publicKey != null) {
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY, FingerPrintDialog.getPublicKey(publicKey));
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(true));
+            } else {
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
+            }
+        } else {
+            params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
+        }
+        return params;
     }
 
     private void removeErrorShopProduct() {
@@ -953,7 +982,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (checkoutData.getErrorMessage() != null && !checkoutData.getErrorMessage().isEmpty()) {
                         getView().renderCheckoutCartError(checkoutData.getErrorMessage());
                     } else {
-                        getView().renderCheckoutCartError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                        getView().renderCheckoutCartError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
                     }
                     processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
                 }
@@ -1189,7 +1218,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                    int isDonation,
                                                    String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
-            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
+            getView().showToastError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short));
             return null;
         }
 
@@ -1332,46 +1361,49 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
         shipmentCartItemModels.add(shipmentCartItemModel);
 
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
-        param.put(SaveShipmentStateUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+        Map<String, Object> param = new HashMap<>();
+        List<ShipmentStateRequestData> saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
+        List<ShipmentStateRequestData> tmpSaveShipmentDataArray = new ArrayList<>();
+        for (ShipmentStateRequestData requestData : saveShipmentDataArray) {
+            if (requestData.getShopProductDataList() != null && !requestData.getShopProductDataList().isEmpty()) {
+                tmpSaveShipmentDataArray.add(requestData);
+            }
+        }
+
+        if (tmpSaveShipmentDataArray.isEmpty()) return;
+
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, tmpSaveShipmentDataArray);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
+        requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
 
-        compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new SaveShipmentStateSubscriber(getView())));
+        compositeSubscription.add(saveShipmentStateGqlUseCase.createObservable(requestParams)
+                .subscribe(new SaveShipmentStateSubscriber()));
     }
 
     @Override
     public void processSaveShipmentState() {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList);
-        param.put(SaveShipmentStateUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+        Map<String, Object> param = new HashMap<>();
+        List<ShipmentStateRequestData> saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList);
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
+        requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
 
         getView().showLoading();
-        compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new SaveShipmentStateSubscriber(getView())));
+        compositeSubscription.add(saveShipmentStateGqlUseCase.createObservable(requestParams)
+                .subscribe(new SaveShipmentStateSubscriber()));
     }
 
-    private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
+    private List<ShipmentStateRequestData> getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
         SaveShipmentStateRequest saveShipmentStateRequest;
         if (recipientAddressModel != null) {
             saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels);
         } else {
             saveShipmentStateRequest = generateSaveShipmentStateRequestMultipleAddress(shipmentCartItemModels);
         }
-        String saveShipmentDataString = new Gson().toJson(saveShipmentStateRequest.getRequestDataList());
-        return new JsonParser().parse(saveShipmentDataString).getAsJsonArray();
+
+        return saveShipmentStateRequest.getRequestDataList();
     }
 
     private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress(List<ShipmentCartItemModel> shipmentCartItemModels) {
@@ -1414,9 +1446,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .build();
     }
 
-    private void setSaveShipmentStateData(ShipmentCartItemModel
-                                                  shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
-        // todo: refactor to converter class
+    private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel,
+                                          List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+        if (shipmentCartItemModel == null) return;
         CourierItemData courierData = null;
         if (getView().isTradeInByDropOff()) {
             courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
@@ -1526,7 +1558,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
                                             if (TextUtils.isEmpty(messageError)) {
-                                                messageError = getView().getActivityContext().getString(R.string.default_request_error_unknown);
+                                                messageError = getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
                                             }
                                             getView().navigateToSetPinpoint(messageError, locationPass);
                                         }
@@ -1682,7 +1714,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
                     dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
                     dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
-                    dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+                    dataChangeAddressRequest.setCartIdStr(String.valueOf(cartItemModel.getCartId()));
                     if (isTradeInDropOff) {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
                                 newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
@@ -1698,21 +1730,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
 
-        String changeAddressRequestJsonString = new Gson().toJson(dataChangeAddressRequests);
+        Map<String, Object> params = new HashMap<>();
+        params.put(ChangeShippingAddressGqlUseCase.PARAM_CARTS, dataChangeAddressRequests);
+        params.put(ChangeShippingAddressGqlUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
 
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("carts", changeAddressRequestJsonString);
         RequestParams requestParam = RequestParams.create();
-
-        Map<String, String> authParam = AuthHelper.generateParamsNetwork(
-                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
-
-        requestParam.putAllString(authParam);
-        requestParam.putBoolean(ChangeShippingAddressUseCase.PARAM_ONE_CLICK_SHIPMENT,
-                isOneClickShipment);
+        requestParam.putObject(ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_PARAMS, params);
 
         compositeSubscription.add(
-                changeShippingAddressUseCase.createObservable(requestParam)
+                changeShippingAddressGqlUseCase.createObservable(requestParam)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())

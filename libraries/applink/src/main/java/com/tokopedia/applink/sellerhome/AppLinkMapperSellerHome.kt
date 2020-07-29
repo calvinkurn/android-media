@@ -1,6 +1,8 @@
 package com.tokopedia.applink.sellerhome
 
 import android.net.Uri
+import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -22,7 +24,7 @@ object AppLinkMapperSellerHome {
     fun getSomNewOrderAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, param)
@@ -37,7 +39,7 @@ object AppLinkMapperSellerHome {
     fun getSomReadyToShipAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             if (searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, param)
@@ -52,7 +54,7 @@ object AppLinkMapperSellerHome {
     fun getSomShippedAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED, param)
@@ -67,7 +69,7 @@ object AppLinkMapperSellerHome {
     fun getSomDoneAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE, param)
@@ -82,7 +84,7 @@ object AppLinkMapperSellerHome {
     fun getSomCancelledAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
-        return if (GlobalConfig.isSellerApp()) {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             if(searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED, param)
@@ -94,11 +96,21 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    fun getTopChatAppLink(): String {
-        return if (GlobalConfig.isSellerApp()) {
+    fun getTopChatAppLink(deepLink: String): String {
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             ApplinkConstInternalSellerapp.SELLER_HOME_CHAT
         } else {
             ApplinkConstInternalGlobal.TOPCHAT
         }
+    }
+
+    fun shouldRedirectToSellerApp(deepLink: String): Boolean {
+        val uri = Uri.parse(deepLink)
+        return uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+    }
+
+    fun getSellerHomeAppLink(deepLink: String): String {
+        val query = Uri.parse(deepLink).query
+        return DeeplinkMapper.createAppendDeeplinkWithQuery(ApplinkConstInternalSellerapp.SELLER_HOME, query)
     }
 }

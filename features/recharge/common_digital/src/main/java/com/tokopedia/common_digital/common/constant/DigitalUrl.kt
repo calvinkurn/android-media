@@ -8,12 +8,10 @@ import com.tokopedia.url.TokopediaUrl
 object DigitalUrl {
 
     @JvmField
-    var DIGITAL_API_DOMAIN = TokopediaUrl.getInstance().PULSA_API
+    val DIGITAL_API_DOMAIN = TokopediaUrl.getInstance().PULSA_API
 
     val VERSION = "v1.4/"
 
-    var BASE_URL:String? = ""
-        get() = DIGITAL_API_DOMAIN + VERSION
-
+    val BASE_URL = DIGITAL_API_DOMAIN + VERSION
 
 }

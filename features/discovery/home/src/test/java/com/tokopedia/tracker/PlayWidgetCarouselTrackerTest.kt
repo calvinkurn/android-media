@@ -1,7 +1,7 @@
 package com.tokopedia.tracker
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.PlayWidgetCarouselTracking
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert
@@ -46,7 +46,7 @@ class PlayWidgetCarouselTrackerTest {
             )
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickBanner(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getClickBanner(
                 channelId = channelId,
                 position = position,
                 userId = userId,
@@ -92,7 +92,7 @@ class PlayWidgetCarouselTrackerTest {
             )
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getImpressionBanner(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getImpressionBanner(
                 channelId = channelId,
                 position = position,
                 userId = userId,
@@ -136,7 +136,7 @@ class PlayWidgetCarouselTrackerTest {
             )
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickLeftBanner(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getClickLeftBanner(
                 channelId = channelId,
                 position = position,
                 userId = userId,
@@ -180,7 +180,7 @@ class PlayWidgetCarouselTrackerTest {
             )
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getImpressionLeftBanner(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getImpressionLeftBanner(
                 channelId = channelId,
                 position = position,
                 userId = userId,
@@ -202,7 +202,7 @@ class PlayWidgetCarouselTrackerTest {
             "userId", userId
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getClickSeeAll(
                 creativeName, userId
         )))
     }
@@ -220,7 +220,7 @@ class PlayWidgetCarouselTrackerTest {
             "userId", userId
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getClickAddRemind(
                 channelId, notifierId, userId
         )))
     }
@@ -238,7 +238,7 @@ class PlayWidgetCarouselTrackerTest {
             "userId", userId
         )
 
-        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), PlayWidgetCarouselTracking.getClickAddRemind(
                 channelId, notifierId, userId
         )))
     }

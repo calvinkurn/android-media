@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="textColorDeny">#7031353b</color>
+    <color name="dividerColor">#e5e7e9</color>
+    <color name="clr_ff8000">#ff8000</color>
+    <color name="clr_03AC0E">#03AC0E</color>
+    <color name="greenColor">#03ac0e</color>
+    <color name="clr_9fa6b0">#9fa6b0</color>
+    <color name="clr_7031353b">#7031353b</color>
+    <color name="activeBannerDot">#f80</color>
+    <color name="inActiveBannerDot">#c9c9c9</color>
+    <color name="clr_f531353b">#f531353b</color>
+    <color name="clr_61000000">#61000000</color>
+    <color name="clr_ff5722">#ff5722</color>
+    <color name="clr_ea212d">#ea212d</color>
+    <color name="clr_ffeaef">#ffeaef</color>
+    <color name="voucher_text_color_disable">#abadb1</color>
+    <color name="clr_fd412b">#fd412b</color>
+    <color name="clr_ae31353b">#ae31353b</color>
+    <color name="clr_5c000000">#5c000000</color>
+    <color name="clr_4FD15A">#4FD15A</color>
+    <color name="clr_00AA5B">#00AA5B</color>
+    <color name="clr_1e31353b">#1e31353b</color>
+    <color name="clr_ef144a">#ef144a</color>
+    <color name="clr_f231353b">#F231353b</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="charcoal_grey_88">#e131353b</color>
+    <color name="charcoal_grey_40">#6631353b</color>
+    <color name="icon_product_card_background_color">#f3f4f5</color>
+    <color name="discountTextColor">#ef144a</color>
+
+    <color name="product_card_shop_name_text_color">#f531353b</color>
+    <color name="product_card_product_name_text_color">#f531353b</color>
+    <color name="product_card_slashed_price_text_color">#7031353b</color>
+    <color name="product_card_price_text_color">#f531353b</color>
+    <color name="product_card_location_text_color">#ae31353b</color>
+    <color name="product_card_review_count_text_color">#7031353b</color>
+
+    <color name="product_card_button_buy_background_color">#fa591d</color>
+    <color name="product_card_dark_red">#d6001c</color>
+    <color name="timer_sale_blue_gradient_start_colour">#32afff</color>
+    <color name="timer_sale_blue_gradient_end_colour">#84c6c9</color>
+    <color name="timer_sale_red_gradient_end_colour">#fa591d</color>
+    <color name="timer_sale_red_gradient_start_colour">#ef144a</color>
+    <color name="timer_sale_grey_gradient_start_colour">#6C727C</color>
+    <color name="timer_sale_grey_gradient_end_colour">#b5bbc5</color>
+    <color name="discovery2_topads_gray_color">#61000000</color>
+    <color name="discovery2_topads_product_light_red">#fa591d</color>
+    <color name="discovery2_dark_gray">#666666</color>
+    <color name="discovery2_dark_gray_2">#555555</color>
+
+</resources>

@@ -372,7 +372,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
                         context,
                         Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId))
                                 .buildUpon()
-                                .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId)
                                 .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, shopId)
                                 .appendQueryParameter(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_PDP)
                                 .build().toString()

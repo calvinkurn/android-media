@@ -75,7 +75,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
     }
 
     override fun getComponent(): ProductManageListComponent {
-        return ProductManageListInstance.getComponent(application)
+        return ProductManageListInstance.getComponent(this)
     }
 
     private fun goToSellerAppDashboard() {

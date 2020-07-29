@@ -40,7 +40,7 @@ class ProductVariantPriceViewHolder(
 
     private fun setupClearIcon() {
         itemView.textFieldPrice.apply {
-            setFirstIcon(R.drawable.ic_system_action_close_normal_24)
+            setFirstIcon(com.tokopedia.unifyprinciples.R.drawable.ic_system_action_close_normal_24)
             getFirstIcon().setOnClickListener {
                 textFieldInput.text.clear()
             }

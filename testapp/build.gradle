@@ -44,8 +44,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 299700000;
-        defaultVersionName = "3.70";
+        defaultVersionCode = 299800000;
+        defaultVersionName = "3.80";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -170,6 +170,21 @@ dependencies {
         exclude module: 'recyclerview-v7'
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.iris)
+
+    //you can delete below line if you use old login, then Build -> Switch to TestApp again
+    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
+    //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation project(rootProject.ext.features.logintestapp)
+
+    //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
+    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
+    //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation project(rootProject.ext.features.developerOptions)
 
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){

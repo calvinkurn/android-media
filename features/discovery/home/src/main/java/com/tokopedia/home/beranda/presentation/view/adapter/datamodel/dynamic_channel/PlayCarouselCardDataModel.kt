@@ -11,8 +11,12 @@ data class PlayCarouselCardDataModel(
         val channel: DynamicHomeChannel.Channels? = null,
         val playBannerCarouselDataModel: PlayBannerCarouselDataModel = PlayBannerCarouselDataModel()
 ): HomeVisitable, ImpressHolder() {
+    companion object{
+        const val UPDATE_REMIND = "update_remind"
+        private const val PLAY_V2_ID = "play_carousel"
+    }
     override fun visitableId(): String {
-        return channel?.type ?: ""
+        return PLAY_V2_ID
     }
 
     override fun equalsWith(b: Any?): Boolean {
@@ -62,7 +66,12 @@ data class PlayCarouselCardDataModel(
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle()
+        if(b is PlayCarouselCardDataModel){
+            if(b.playBannerCarouselDataModel.channelList != playBannerCarouselDataModel.channelList){
+                return Bundle().apply { putBoolean(UPDATE_REMIND, true) }
+            }
+        }
+        return null
     }
 
 }

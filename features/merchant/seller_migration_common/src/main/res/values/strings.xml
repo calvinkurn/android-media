@@ -43,4 +43,6 @@
     <string name="seller_migration_account_home_bottom_sheet_subtitle">Kenapa Tokopedia Seller bisa memudahkan kamu berjualan?</string>
     <string name="seller_migration_account_home_bottom_sheet_footer">&lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
 
+    <string name="seller_migration_voucher_toko_title">Buat Voucher Toko Cashback di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_voucher_toko_content">Gunakan Voucher Toko Cashback untuk meningkatkan &lt;b&gt;lebih banyak pelanggan&lt;/b&gt;, dengan tetap mempertahankan citra brand toko dan harga barang.</string>
 </resources>

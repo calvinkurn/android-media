@@ -13,11 +13,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
+import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper;
-import com.tokopedia.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
-import com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -75,10 +75,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
         shippingIndex = itemView.findViewById(R.id.shipping_index);
         deleteButton = itemView.findViewById(R.id.delete_button);
-        addressTitle = itemView.findViewById(R.id.tv_address_name);
-        addressReceiverName = itemView.findViewById(R.id.tv_recipient_name);
-        address = itemView.findViewById(R.id.tv_recipient_address);
-        addressStatus = itemView.findViewById(R.id.tv_address_status);
+        addressTitle = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_name);
+        addressReceiverName = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_name);
+        address = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_address);
+        addressStatus = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_address_status);
         borderLine = itemView.findViewById(R.id.border_line);
         tvChangeRecipientAddress = itemView.findViewById(R.id.tv_change_recipient_address);
         etNotesForSeller = itemView.findViewById(R.id.et_notes_for_seller);
@@ -88,7 +88,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
         tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
-        phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
+        phoneNumber = itemView.findViewById(com.tokopedia.logisticdata.R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
 
         etNotesForSeller.setOnTouchListener(new View.OnTouchListener() {
@@ -185,7 +185,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
         if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
-            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(com.tokopedia.purchase_platform.common.R.string.note_counter_format),
                     editable.length(), data.getMaxRemark());
             tvNoteCharCounter.setText(noteCounter);
             data.setProductNotes(editable.toString());
@@ -263,23 +263,23 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                 qty >= cartItemHolderData.getMaxQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(false);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled));
         } else if (qty <= cartItemHolderData.getMinQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout));
         } else if (qty >= cartItemHolderData.getMaxQuantity()) {
             btnQtyPlus.setEnabled(false);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout));
         }
     }
 
@@ -345,7 +345,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             etNotesForSeller.setSelection(etNotesForSeller.length());
         }
 
-        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(com.tokopedia.purchase_platform.common.R.string.note_counter_format),
                 itemData.getProductNotes().length(), itemData.getMaxRemark());
         tvNoteCharCounter.setText(noteCounter);
 

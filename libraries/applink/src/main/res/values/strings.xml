@@ -11,11 +11,16 @@
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
 
+    <!--Developer Options-->
+    <string name="host_setting" translatable="false">setting</string>
+    <string name="path_dev_opt" translatable="false">/dev-opts</string>
+
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
     <!--Merchant Seller-->
     <string name="merchant_seller">Penjualan</string>
+    <string name="favorite_shop">Toko Favorit</string>
 
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
@@ -35,6 +40,8 @@
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
     <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
+    <string name="recom_home_recommendation">Pilihan Tokopedia</string>
+    <string name="title_recent_view">Terakhir Dilihat</string>
 
     <string name="title_module_attachinvoice">Lampirkan Invoice</string>
     <string name="title_module_attachvoucher">Lampirkan Voucher</string>
@@ -49,6 +56,16 @@
 
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+    <string name="title_otp">Verifikasi</string>
+
+    <!--Transaction-->
+    <string name="title_one_click_checkout">Beli Langsung</string>
+    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
+    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
+    <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+
+    <!--Official Store -->
+    <string name="title_brandlist">Brand List</string>
 
     <!-- Voucher Creation -->
     <string name="title_voucher_creation">Voucher Creation</string>
@@ -62,4 +79,6 @@
     <!-- Seller Search -->
     <string name="title_global_search_seller">Seller Search</string>
 
+    <!-- ATC Variant -->
+    <string name="title_normal_checkout">Detail Produk</string>
 </resources>

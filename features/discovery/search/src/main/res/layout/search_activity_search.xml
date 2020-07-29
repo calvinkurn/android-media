@@ -168,11 +168,12 @@
                 android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
             <View
+                android:id="@+id/search_top_bar_shadow"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:background="@drawable/top_bar_shadow" />
 
-            <androidx.viewpager.widget.ViewPager
+            <com.tokopedia.search.result.presentation.widget.NonSwipeableViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -244,7 +245,7 @@
                 style="@style/TextView.Small.BlackPrimary"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
-                android:text="@string/filter" />
+                android:text="@string/search_filter" />
 
         </LinearLayout>
 

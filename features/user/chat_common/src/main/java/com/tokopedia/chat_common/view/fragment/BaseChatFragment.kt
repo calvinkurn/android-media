@@ -52,6 +52,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
+    protected var amISeller = false
     protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
     abstract fun onCreateViewState(view: View): BaseChatViewState
@@ -101,9 +102,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return when {
             savedInstanceState != null
                     && savedInstanceState.getString(paramName, "").isNotEmpty()
-            -> savedInstanceState.getString(paramName)
+            -> savedInstanceState.getString(paramName, "")
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
-            -> arguments.getString(paramName)
+            -> arguments.getString(paramName, "")
             else -> ""
         }
     }
@@ -236,6 +237,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.opponentName = it.headerModel.name
         this.opponentRole = it.headerModel.role
         this.shopId = it.headerModel.shopId
+        this.amISeller = it.isSeller()
     }
 
     override fun onDestroy() {

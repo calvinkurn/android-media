@@ -1037,25 +1037,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        if (data.isFavorit) {
-            onShopItemClicked(positionInFeed, adapterPosition, data.shop)
-        } else {
-            feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+        feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
-            if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-                val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
+            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
 
-                for (tracking in trackingList) {
-                    if (TextUtils.equals(tracking.authorName, data.shop.name)) {
-                        trackRecommendationFollowClick(
-                                tracking,
-                                FeedAnalytics.Element.FOLLOW
-                        )
-                        break
+            for (tracking in trackingList) {
+                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
+                    if(data.isFavorit) {
+                        trackRecommendationFollowClick(tracking, FeedAnalytics.Element.UNFOLLOW)
+                    } else {
+                        trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
+                        trackRecommendationFollowClick(tracking, FeedAnalytics.Element.FOLLOW)
                     }
+
+                    break
                 }
             }
-            trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
         }
     }
 
@@ -1350,13 +1348,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onVideoPlayerClicked(positionInFeed: Int,
                                       contentPosition: Int,
-                                      postId: String) {
+                                      postId: String,
+                                      redirectUrl: String) {
         if (activity != null) {
-            RouteManager.route(
-                    requireContext(),
-                    ApplinkConstInternalContent.VIDEO_DETAIL,
-                    postId
-            )
+            onGoToLink(redirectUrl)
         }
 
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {

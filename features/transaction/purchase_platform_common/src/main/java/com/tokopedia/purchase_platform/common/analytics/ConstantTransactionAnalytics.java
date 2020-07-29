@@ -212,6 +212,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
         String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
         String CLICK_DONATION = "click donation";
+        String VIEW_AUTO_CHECK_ON_DONATION = "view autocheck on donation";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -396,6 +397,10 @@ public interface ConstantTransactionAnalytics {
         String CLICK_RESET_PROMO = "click reset promo";
         String CLICK_BELI_TANPA_PROMO = "click beli tanpa promo";
         String VIEW_PROMO_MESSAGE = "view promo message";
+        String SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen";
+        String DISMISS_LAST_SEEN = "dismiss Last Seen";
+        String CLICK_INPUT_FIELD = "click input field";
+        String SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up";
 
         //OCC
         String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
@@ -423,6 +428,8 @@ public interface ConstantTransactionAnalytics {
         String EDIT_SELLER_NOTES = "product - click tulis catatan";
         String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
         String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
+        String CLICK_UBAH_WHEN_DURATION_ERROR = "click ubah when duration error";
+        String CLICK_SELECTED_DURATION_OPTION = "click selected duration option";
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
@@ -435,7 +442,7 @@ public interface ConstantTransactionAnalytics {
         String CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP = "courier - click selected courier option";
         String CLICK_RINGKASAN_BELANJA_OSP = "click arrow on ringkasan belanja";
         String CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP = "preference - click gear logo from ganti pilihan";
-        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP  = "preference -  click gunakan pilihan ini from ganti pilihan";
+        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP = "preference -  click gunakan pilihan ini from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
         String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
         String CLICK_YUK_COBA_LAGI_IN_ONBOARDING_TICKER = "click yuk coba lagi in onboarding ticker";
@@ -520,6 +527,7 @@ public interface ConstantTransactionAnalytics {
 
     interface ExtraKey {
         String USER_ID = "userId";
+        String PROMO_CODE = "promoCode";
     }
 
     interface ScreenName {

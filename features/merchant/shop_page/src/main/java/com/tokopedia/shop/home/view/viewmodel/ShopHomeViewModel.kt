@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -14,6 +15,7 @@ import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_AUTHOR_TYPE
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_WIDGET_TYPE
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -31,12 +33,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.async
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -50,16 +54,21 @@ class ShopHomeViewModel @Inject constructor(
         private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-    val productListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
-        get() = _productListData
-    private val _productListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+    val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _initialProductListData
+    private val _initialProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+
+    val newProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _newProductListData
+    private val _newProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -69,8 +78,15 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
 
-    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
-    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
+    val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
+
+    val updatePlayWidgetData: LiveData<ShopHomePlayCarouselUiModel> get() = _updatePlayWidgetData
+    private val _updatePlayWidgetData = MutableLiveData<ShopHomePlayCarouselUiModel>()
+
+    val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
+        get() = _videoYoutube
+    private val _videoYoutube = MutableLiveData<Pair<String, Result<YoutubeVideoDetailModel>>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -79,7 +95,10 @@ class ShopHomeViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    fun getShopPageHomeData(shopId: String) {
+    fun getShopPageHomeData(
+            shopId: String,
+            sortId: Int
+    ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
                     dispatcherProvider.io(),
@@ -93,7 +112,7 @@ class ShopHomeViewModel @Inject constructor(
             )
             val productList = asyncCatchError(
                     dispatcherProvider.io(),
-                    block = { getProductList(shopId, 1) },
+                    block = { getProductListData(shopId, sortId, 1) },
                     onError = { null }
             )
 
@@ -109,50 +128,55 @@ class ShopHomeViewModel @Inject constructor(
                     _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
                 }
                 productList.await()?.let { productListData ->
-                    _productListData.postValue(Success(productListData))
+                    _initialProductListData.postValue(Success(productListData))
                 }
             }
         }) {
+            it.printStackTrace()
         }
     }
 
-    fun getNextProductList(
+    fun getNewProductList(
             shopId: String,
+            sortId: Int,
             page: Int
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io()) {
-                getProductList(shopId, page)
+                getProductListData(shopId,sortId, page)
             }
-            _productListData.postValue(Success(listProductData))
+            _newProductListData.postValue(Success(listProductData))
         }) {
-            _productListData.postValue(Fail(it))
+            _newProductListData.postValue(Fail(it))
         }
     }
 
     fun onRefreshPlayBanner(shopId: String){
-        val result = _shopHomeLayoutData.value
+         val result = _shopHomeLayoutData.value
         if(result is Success){
             launchCatchError(dispatcherProvider.io(), block = {
-                getPlayWidgetCarousel(shopId, result.data)?.let {result ->
-                    _shopHomeLayoutData.postValue(Success(result))
+                result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->
+                    getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+                    val playWidgetEntity = getPlayWidgetUseCase.executeOnBackground()
+                    _updatePlayWidgetData.postValue((uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playWidgetEntity))
                 }
             }){
+                it.printStackTrace()
             }
         }
     }
 
-    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
-        launchCatchError(block = {
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean, position: Int){
+        launchCatchError(dispatcherProvider.io(), block = {
             playToggleChannelReminderUseCase.setParams(channelId, isSet)
             val reminder = playToggleChannelReminderUseCase.executeOnBackground()
-            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
-                _reminderPlayLiveData.postValue(Success(isSet))
+            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+                _reminderPlayLiveData.postValue(Pair(position, Success(isSet)))
             } else {
-                _reminderPlayLiveData.postValue(Fail(Throwable(reminder.header.message)))
+                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable())))
             }
         }){
-            _reminderPlayLiveData.postValue(Fail(it))
+            _reminderPlayLiveData.postValue(Pair(position, Fail(it)))
         }
     }
 
@@ -198,48 +222,6 @@ class ShopHomeViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun removeWishList(
-            productId: String,
-            onSuccessRemoveWishList: () -> Unit,
-            onErrorRemoveWishList: (errorMessage: String?) -> Unit
-    ) {
-        removeWishlistUseCase.createObservable(productId, userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessAddWishlist(productId: String?) {}
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                onErrorRemoveWishList.invoke(errorMessage)
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                onSuccessRemoveWishList.invoke()
-            }
-
-        })
-    }
-
-    fun addWishList(
-            productId: String,
-            onSuccessAddWishList: () -> Unit,
-            onErrorAddWishList: (errorMessage: String?) -> Unit
-    ) {
-        addWishListUseCase.createObservable(productId, userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                onErrorAddWishList.invoke(errorMessage)
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                onSuccessAddWishList.invoke()
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-
-        })
-    }
-
     fun getWishlistStatus(shopHomeCarousellProductUiModel: List<ShopHomeCarousellProductUiModel>) {
         launchCatchError(block = {
             val listResultCheckWishlist = shopHomeCarousellProductUiModel.map {
@@ -256,6 +238,23 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun updatePlayWidgetData(channelId: String, totalView: String){
+        val result = _shopHomeLayoutData.value
+        if(result is Success){
+            launchCatchError(block = {
+                result.data.listWidget.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
+                    val newList = (uiModel as ShopHomePlayCarouselUiModel).playBannerCarouselDataModel.channelList.toMutableList()
+                    val indexOf = newList.indexOfFirst { it is PlayBannerCarouselItemDataModel && it.channelId == channelId }
+                    if(indexOf != -1){
+                        newList[index] = (newList[index] as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                        _updatePlayWidgetData.postValue(uiModel.copy(playBannerCarouselDataModel = uiModel.playBannerCarouselDataModel.copy(channelList = newList)))
+                    }
+                }
+            }){
+            }
+        }
+    }
+
     private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {
         getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
         return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
@@ -264,8 +263,9 @@ class ShopHomeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getProductList(
+    private suspend fun getProductListData(
             shopId: String,
+            sortId: Int,
             page: Int
     ): Pair<Boolean, List<ShopHomeProductViewModel>> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
@@ -273,6 +273,7 @@ class ShopHomeViewModel @Inject constructor(
                 ShopProductFilterInput().apply {
                     etalaseMenu = ALL_SHOWCASE_ID
                     this.page = page
+                    sort = sortId
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -286,6 +287,22 @@ class ShopHomeViewModel @Inject constructor(
                     )
                 }
         )
+    }
+
+    fun getVideoYoutube(videoUrl: String, widgetId: String) {
+        launchCatchError(block = {
+            getYoutubeVideoUseCase.setVideoUrl(videoUrl)
+            val result = withContext(Dispatchers.IO) {
+                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+            }
+            _videoYoutube.value = Pair(widgetId, Success(result))
+        }, onError = {
+            _videoYoutube.value = Pair(widgetId, Fail(it))
+        })
+    }
+
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {

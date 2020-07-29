@@ -14,32 +14,32 @@ object PlayWidgetMapper {
         ))
 
         list.addAll(
-                playWidget.data.map {
-                    if(it.isBanner()){
-                        PlayBannerCarouselBannerDataModel(applink = it.appLink, imageUrl = it.backgroundURL)
+                playWidget.data.map {playWidgetItem ->
+                    if(playWidgetItem.isBanner()){
+                        PlayBannerCarouselBannerDataModel(applink = playWidgetItem.appLink, imageUrl = playWidgetItem.backgroundURL)
                     } else {
                         PlayBannerCarouselItemDataModel(
-                                channelTitle = it.title,
-                                applink = it.appLink,
-                                channelCreator = it.partner.name,
-                                countView = it.stats.view.formatted,
-                                isLive = it.video.isLive,
-                                isShowTotalView = it.video.isShowTotalView,
-                                isPromo = it.config.hasPromo,
-                                widgetType = when(it.widgetType){
-                                    "VOD" -> PlayBannerWidgetType.VOD
-                                    "UPCOMING" -> PlayBannerWidgetType.UPCOMING
+                                channelTitle = playWidgetItem.title,
+                                applink = playWidgetItem.appLink,
+                                channelCreator = playWidgetItem.partner.name,
+                                countView = playWidgetItem.stats.view.formatted,
+                                isLive = playWidgetItem.video.isLive,
+                                isShowTotalView = playWidgetItem.video.isShowTotalView,
+                                isPromo = playWidgetItem.config.hasPromo,
+                                widgetType = when(playWidgetItem.widgetType){
+                                    "WATCH_AGAIN" -> PlayBannerWidgetType.VOD
+                                    "COMING_SOON" -> PlayBannerWidgetType.UPCOMING
                                     "LIVE" -> PlayBannerWidgetType.LIVE
                                     else -> PlayBannerWidgetType.NONE
                                 },
                                 serverTime = 0,
-                                startTime = it.startTime,
-                                videoUrl = it.video.streamSource,
-                                coverUrl = it.video.coverUrl,
-                                channelId = it.id,
-                                videoId = it.video.id,
-                                videoType = it.video.type,
-                                remindMe = it.config.isReminderSet
+                                startTime = playWidgetItem.startTime,
+                                videoUrl = playWidgetItem.video.streamSource,
+                                coverUrl = playWidgetItem.video.coverUrl,
+                                channelId = playWidgetItem.id,
+                                videoId = playWidgetItem.video.id,
+                                videoType = playWidgetItem.video.type,
+                                remindMe = playWidgetItem.config.isReminderSet
                         )
                     }
                 }
@@ -53,9 +53,9 @@ object PlayWidgetMapper {
                 isAutoRefreshTimer = playWidget.meta.autoRefreshTimer,
                 seeMoreApplink = playWidget.meta.buttonApplink,
                 imageUrl = playWidget.meta.overlayImage,
-                serverTimeOffset = playWidget.meta.serverTimeOffset,
                 channelList = list,
-                gradients = playWidget.meta.gradient
+                gradients = playWidget.meta.gradient,
+                durationPlayWithData = playWidget.meta.maxAutoplayCell
         )
     }
 }
