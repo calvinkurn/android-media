@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -78,6 +79,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
 
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
 
         fun newInstance(channelId: String?): PlayFragment {
             return PlayFragment().apply {
@@ -261,6 +263,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+            if (!channelId.isNullOrEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
         })
     }
 
@@ -513,7 +516,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
