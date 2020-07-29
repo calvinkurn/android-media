@@ -26,7 +26,7 @@ const val KEY_USER_ID = "user_id"
 const val KEY_SESSION_ID = "session_id"
 const val KEY_SESSION_IRIS = "sessionIris"
 const val KEY_TIMESTAMP_LAST_ACTIVITY = "timestamp_last_activity"
-const val KEY_INITIAL_VISIT = "initial_visit"
+const val KEY_INITIAL_VISIT = "init_visit"
 
 const val MAX_ROW = "MAX_ROW"
 
