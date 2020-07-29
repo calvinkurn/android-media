@@ -11,7 +11,7 @@ class TelcoProductTitleViewHolder(itemView: View) : AbstractViewHolder<TelcoCata
 
     override fun bind(element: TelcoCatalogDataCollection) {
         with(itemView) {
-            title_product.text = element.name
+            telco_prepaid_title_product.text = element.name
         }
     }
 

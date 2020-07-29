@@ -96,13 +96,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_product, container, false)
         telcoTelcoProductView = view.findViewById(R.id.telco_product_view)
-        emptyStateProductView = view.findViewById(R.id.telco_empty_state_layout)
-        titleEmptyState = view.findViewById(R.id.title_empty_product)
-        descEmptyState = view.findViewById(R.id.desc_empty_product)
-        shimmeringGridLayout = view.findViewById(R.id.shimmering_product_grid)
-        shimmeringListLayout = view.findViewById(R.id.shimmering_product_list)
-        sortFilter = view.findViewById(R.id.sort_filter)
-        titleFilterResult = view.findViewById(R.id.title_filter_result)
+        emptyStateProductView = view.findViewById(R.id.topupbills_empty_state_layout)
+        titleEmptyState = view.findViewById(R.id.topupbills_title_empty_product)
+        descEmptyState = view.findViewById(R.id.topupbills_desc_empty_product)
+        shimmeringGridLayout = view.findViewById(R.id.telco_shimmering_product_grid)
+        shimmeringListLayout = view.findViewById(R.id.telco_shimmering_product_list)
+        sortFilter = view.findViewById(R.id.telco_sort_filter)
+        titleFilterResult = view.findViewById(R.id.telco_title_filter_result)
         return view
     }
 

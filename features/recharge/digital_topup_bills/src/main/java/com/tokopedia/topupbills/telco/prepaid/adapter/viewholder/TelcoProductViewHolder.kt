@@ -22,7 +22,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
 
     override fun bind(element: TelcoProduct) {
         with(itemView) {
-            title_product.text = element.attributes.desc
+            telco_prepaid_title_product.text = element.attributes.desc
 
             renderDescProduct(element)
             renderSeeMoreBtn(element)
@@ -63,10 +63,10 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderTextColor(status: Int) {
         with(itemView) {
             if (isProductOutOfStock(status)) {
-                title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+                telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
                 telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
             } else {
-                title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
+                telco_prepaid_title_product.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
                 telco_product_price.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, R.color.digital_orange_price))
             }
         }
@@ -90,11 +90,11 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderCornerLabel(element: TelcoProduct) {
         with(itemView) {
             if (element.attributes.productLabels.isEmpty()) {
-                label_product.visibility = View.GONE
+                telco_label_product.visibility = View.GONE
             } else {
-                label_product.text = element.attributes.productLabels[0]
-                label_product.setLabelType(Label.GENERAL_DARK_ORANGE)
-                label_product.visibility = View.VISIBLE
+                telco_label_product.text = element.attributes.productLabels[0]
+                telco_label_product.setLabelType(Label.GENERAL_DARK_ORANGE)
+                telco_label_product.visibility = View.VISIBLE
             }
         }
     }
@@ -104,7 +104,7 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
             if (::adapter.isInitialized) {
                 isSelected = adapterPosition == adapter.selectedPosition && !isProductOutOfStock(element.attributes.status)
 
-                layout_product.setOnClickListener {
+                telco_layout_product.setOnClickListener {
                     listener.onClickItemProduct(element, adapterPosition)
                 }
             }
@@ -114,11 +114,11 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderOutOfStockProduct(status: Int) {
         with(itemView) {
             if (isProductOutOfStock(status)) {
-                label_product.text = itemView.context.getString(R.string.telco_label_out_of_stock)
-                label_product.visibility = View.VISIBLE
-                label_product.setLabelType(Label.GENERAL_DARK_GREY)
-                layout_product.setBackgroundResource(0)
-                layout_product.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
+                telco_label_product.text = itemView.context.getString(R.string.telco_label_out_of_stock)
+                telco_label_product.visibility = View.VISIBLE
+                telco_label_product.setLabelType(Label.GENERAL_DARK_GREY)
+                telco_layout_product.setBackgroundResource(0)
+                telco_layout_product.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
             }
         }
     }

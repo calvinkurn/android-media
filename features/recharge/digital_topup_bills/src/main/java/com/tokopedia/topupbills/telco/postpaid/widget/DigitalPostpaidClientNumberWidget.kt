@@ -40,9 +40,9 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun initV() {
-        btnEnquiry = view.findViewById(R.id.button_next_enquiry)
-        titleEnquiryResult = view.findViewById(R.id.title_enquiry_result)
-        enquiryResult = view.findViewById(R.id.enquiry_result)
+        btnEnquiry = view.findViewById(R.id.telco_enquiry_btn)
+        titleEnquiryResult = view.findViewById(R.id.telco_title_enquiry_result)
+        enquiryResult = view.findViewById(R.id.telco_enquiry_result)
 
         btnEnquiry.setOnClickListener {
             if (btnEnquiry.isEnabled) {

@@ -104,10 +104,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             if (isProductExist(it)) {
                 sharedModelPrepaid.setVisibilityTotalPrice(true)
-                buy_widget.setTotalPrice(it.attributes.price)
+                telco_buy_widget.setTotalPrice(it.attributes.price)
                 it.attributes.productPromo?.run {
                     if (this.newPrice.isNotEmpty()) {
-                        buy_widget.setTotalPrice(this.newPrice)
+                        telco_buy_widget.setTotalPrice(this.newPrice)
                     }
                 }
                 prepareProductForCheckout(it)
@@ -142,15 +142,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
-        pageContainer = view.findViewById(R.id.page_container)
-        mainContainer = view.findViewById(R.id.main_container)
-        appBarLayout = view.findViewById(R.id.appbar_input_number_telco)
+        pageContainer = view.findViewById(R.id.telco_page_container)
+        mainContainer = view.findViewById(R.id.telco_main_container)
+        appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
-        viewPager = view.findViewById(R.id.view_pager)
-        tabLayout = view.findViewById(R.id.tab_layout)
-        buyWidget = view.findViewById(R.id.buy_widget)
-        tickerView = view.findViewById(R.id.ticker_view)
-        loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
+        viewPager = view.findViewById(R.id.telco_view_pager)
+        tabLayout = view.findViewById(R.id.telco_tab_layout)
+        buyWidget = view.findViewById(R.id.telco_buy_widget)
+        tickerView = view.findViewById(R.id.telco_ticker_view)
+        loadingShimmering = view.findViewById(R.id.telco_loading_shimmering)
         separator = view.findViewById(R.id.separator)
         return view
     }
@@ -322,7 +322,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return buy_widget
+        return telco_buy_widget
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {

@@ -14,7 +14,7 @@
         <include layout="@layout/view_digital_input_number" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/button_next_enquiry"
+            android:id="@+id/telco_enquiry_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/digital_btn_check_bill"
@@ -26,7 +26,7 @@
             android:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title_enquiry_result"
+            android:id="@+id/telco_title_enquiry_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -38,7 +38,7 @@
             android:textColor="@color/Neutral_N700_96"/>
 
         <LinearLayout
-            android:id="@+id/enquiry_result"
+            android:id="@+id/telco_enquiry_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>

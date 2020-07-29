@@ -40,17 +40,17 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     init {
         view = View.inflate(context, getLayout(), this)
-        hintInputNumber = view.findViewById(R.id.hint_input_number)
-        imgOperator = view.findViewById(R.id.img_operator)
-        btnClear = view.findViewById(R.id.btn_clear_input_number)
-        autoCompleteInputNumber = view.findViewById(R.id.ac_input_number)
-        btnContactPicker = view.findViewById(R.id.btn_contact_picker)
-        errorInputNumber = view.findViewById(R.id.error_input_number)
-        layoutInputNumber = view.findViewById(R.id.input_number_layout)
+        hintInputNumber = view.findViewById(R.id.telco_hint_input_number)
+        imgOperator = view.findViewById(R.id.telco_img_operator)
+        btnClear = view.findViewById(R.id.telco_clear_input_number_btn)
+        autoCompleteInputNumber = view.findViewById(R.id.telco_ac_input_number)
+        btnContactPicker = view.findViewById(R.id.telco_contact_picker_btn)
+        errorInputNumber = view.findViewById(R.id.telco_error_input_number)
+        layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
 
-        layoutResult = view.findViewById(R.id.input_number_layout_result)
-        imgOperatorResult = view.findViewById(R.id.img_operator_result)
-        inputNumberResult = view.findViewById(R.id.phone_number_result)
+        layoutResult = view.findViewById(R.id.telco_input_number_result_layout)
+        imgOperatorResult = view.findViewById(R.id.telco_img_operator_result)
+        inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
 
         autoCompleteInputNumber.clearFocus()
         btnContactPicker.setOnClickListener { listener.onNavigateToContact() }

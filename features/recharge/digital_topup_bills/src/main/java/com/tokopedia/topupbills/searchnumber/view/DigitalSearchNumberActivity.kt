@@ -34,7 +34,7 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasCompone
     }
 
     override fun getToolbarResourceID(): Int {
-        return R.id.toolbar_search_telco
+        return R.id.telco_toolbar_search
     }
 
     override fun getParentViewResourceID(): Int {
