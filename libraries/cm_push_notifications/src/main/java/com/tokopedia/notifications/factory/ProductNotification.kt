@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr as spanStr
+import com.tokopedia.notifications.common.CarouselUtilities.loadImageFromStorage as loadFileImage
 
 internal class ProductNotification(
         applicationContext: Context,
@@ -37,7 +38,7 @@ internal class ProductNotification(
         }
 
         val currentProductInfo = baseNotificationModel.productInfoList[baseNotificationModel.carouselIndex]
-        val productImage: Bitmap? = CarouselUtilities.loadImageFromStorage(currentProductInfo.productImage)
+        val productImage: Bitmap? = loadFileImage(currentProductInfo.productImage)
 
         val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
         setCollapseViewData(collapsedView)
@@ -127,12 +128,20 @@ internal class ProductNotification(
     }
 
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
-        val actionButton = baseNotificationModel.actionButton[baseNotificationModel.carouselIndex]
-        remoteView.setViewVisibility(R.id.img_campaign, if (product.bebasOngkir == true) View.VISIBLE else View.GONE)
-        remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
-        remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
+        val actionButton = product.actionButton[baseNotificationModel.carouselIndex]
+
+        if (product.freeOngkirIcon.isNullOrEmpty()) {
+            remoteView.setViewVisibility(R.id.img_campaign, View.GONE)
+        } else {
+            remoteView.setViewVisibility(R.id.img_campaign, View.VISIBLE)
+            loadFileImage(product.freeOngkirIcon)?.let {
+                remoteView.setImageViewBitmap(R.id.img_campaign, it)
+            }
+        }
 
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
+        remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
+        remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
     }
 
     private fun getButtonPendingIntent(actionButton: ActionButton): PendingIntent {
