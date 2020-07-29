@@ -80,7 +80,10 @@ class AddEditProductVariantFragment :
         VariantValueAdapter.OnRemoveButtonClickListener,
         CustomVariantUnitValueForm.OnCustomVariantUnitAddListener,
         VariantDataValuePicker.OnAddCustomVariantUnitValueListener,
-        VariantUnitPicker.OnVariantUnitPickListener, VariantDataValuePicker.OnVariantUnitPickerClickListener, VariantPhotoAdapter.OnItemClickListener, VariantDataValuePicker.OnVariantUnitValuePickListener {
+        VariantUnitPicker.OnVariantUnitPickListener,
+        VariantDataValuePicker.OnVariantUnitPickerClickListener,
+        VariantPhotoAdapter.OnItemClickListener,
+        VariantDataValuePicker.OnVariantUnitValuePickListener {
 
     companion object {
         private const val TAG_VARIANT_UNIT_PICKER = "VARIANT_UNIT_PICKER"
@@ -468,7 +471,7 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.dialog?.hide()
         val variantData = viewModel.getVariantData(layoutPosition)
         val hasSelectedValues = selectedVariantUnitValues.isNotEmpty()
-        showVariantUnitPicker(selectedVariantUnit, variantData, layoutPosition, hasSelectedValues)
+        showVariantUnitPicker(variantData, layoutPosition, selectedVariantUnit, hasSelectedValues)
         // track selecting variant unit event
         viewModel.isEditMode.value?.let { isEditMode ->
             val variantTypeName = variantData.name
@@ -626,9 +629,9 @@ class AddEditProductVariantFragment :
         variantDataValuePicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_VALUE_PICKER)
     }
 
-    private fun showVariantUnitPicker(selectedVariantUnit: Unit,
-                                      variantData: VariantDetail,
+    private fun showVariantUnitPicker(variantData: VariantDetail,
                                       layoutPosition: Int,
+                                      selectedVariantUnit: Unit,
                                       hasSelectedValues: Boolean = false) {
         variantUnitPicker = BottomSheetUnify()
         variantUnitPicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
@@ -640,6 +643,10 @@ class AddEditProductVariantFragment :
         variantUnitPickerLayout.setOnVariantUnitPickListener(this)
         variantUnitPickerLayout.setupVariantUnitPicker(variantData.units)
         variantUnitPickerLayout.setHasSelectedValues(hasSelectedValues)
+        variantUnitPicker?.setCloseClickListener {
+            variantUnitPicker?.dismiss()
+            variantDataValuePicker?.dialog?.show()
+        }
         variantUnitPicker?.setChild(variantUnitPickerLayout)
         variantUnitPicker?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_PICKER)
     }

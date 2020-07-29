@@ -413,25 +413,30 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceDialog() }
         } else {
             productPriceEditIcon?.hide()
-            productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        }
 
-                override fun afterTextChanged(p0: Editable?) {}
+        productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
 
-                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                    // clean any kind of number formatting here
-                    val productPriceInput = charSequence?.toString()?.replace(".", "")
-                    productPriceInput?.let {
-                        // do the validation first
-                        viewModel.validateProductPriceInput(it)
-                        productPriceField?.textFieldInput?.let { editText ->
-                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
-                        }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                // clean any kind of number formatting here
+                val productPriceInput = charSequence?.toString()?.replace(".", "")
+                productPriceInput?.let {
+                    // do the validation first
+                    viewModel.validateProductPriceInput(it)
+                    productPriceField?.textFieldInput?.let { editText ->
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                    }
+                    // product wholesale input validation
+                    viewModel.isWholeSalePriceActivated.value?.run {
+                        if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
                     }
                 }
-            })
-        }
+            }
+        })
 
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
