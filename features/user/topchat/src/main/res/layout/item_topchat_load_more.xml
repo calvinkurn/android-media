@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_more_chat"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

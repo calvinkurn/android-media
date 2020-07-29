@@ -17,7 +17,7 @@ import java.util.*
  */
 @SuppressLint("NewApi")
 class JankyFrameActivityLifecycleCallbacks private constructor() : Application.ActivityLifecycleCallbacks {
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle) {}
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
     override fun onActivityStarted(activity: Activity) {}
     override fun onActivityResumed(activity: Activity) {
         startFrameMetrics(activity)
@@ -28,7 +28,7 @@ class JankyFrameActivityLifecycleCallbacks private constructor() : Application.A
     }
 
     override fun onActivityStopped(activity: Activity) {}
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {}
     override fun onActivityDestroyed(activity: Activity) {}
     private var warningLevelMs = 0f
     private var errorLevelMs = 0f
