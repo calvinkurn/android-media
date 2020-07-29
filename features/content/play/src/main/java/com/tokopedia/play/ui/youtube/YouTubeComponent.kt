@@ -101,8 +101,11 @@ open class YouTubeComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        currentPosition = uiView.getCurrentPosition()
-        shouldPlayOnReady = uiView.isPlaying() ?: true
+        try {
+            currentPosition = uiView.getCurrentPosition()
+            shouldPlayOnReady = uiView.isPlaying() ?: true
+        } catch (e: Throwable) { /*Not Used*/ }
+
         uiView.release()
     }
 
