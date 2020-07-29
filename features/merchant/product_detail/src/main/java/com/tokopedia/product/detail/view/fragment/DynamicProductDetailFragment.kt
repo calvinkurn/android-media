@@ -665,7 +665,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                openFtInstallmentBottomSheet(viewModel.installmentData ?: FinancingDataResponse())
+                openFtInstallmentBottomSheet(viewModel.p2Data.value?.productFinancingCalculationData ?: FtInstallmentCalculationDataResponse())
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 if (!GlobalConfig.isSellerApp()) {
@@ -1090,6 +1090,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeData() {
         observeP1()
+        observeP2Data()
         observeP2Login()
         observeP2Shop()
         observeP3()
@@ -1278,6 +1279,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 (activity as? ProductDetailActivity)?.stopMonitoringFull()
             }
             (activity as? ProductDetailActivity)?.stopMonitoringP2()
+        }
+    }
+
+    private fun observeP2Data() {
+        viewLifecycleOwner.observe(viewModel.p2Data) {
+            trackProductView(viewModel.tradeInParams.isEligible == 1)
+            onSuccessGetDataP2(it)
+            (activity as? ProductDetailActivity)?.stopMonitoringP2General()
         }
     }
 
@@ -1532,9 +1541,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
-        viewModel.installmentData = it.productFinancingCalculationData
-
+    private fun onSuccessGetDataP2(it: ProductInfoP2UiData) {
         if (it.vouchers.isNullOrEmpty()) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMerchantVoucherMap)
         } else {
@@ -1553,7 +1560,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.orderPriorityMap)
         }
 
-        if (it.productPurchaseProtectionInfo.ppItemDetailPage?.isProtectionAvailable == false) {
+        if (!it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
             dynamicAdapter.removeComponentSection(pdpUiUpdater?.productProtectionMap)
         }
 
@@ -1562,14 +1569,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         it.productFinancingRecommendationData.let { financingData ->
-            if (financingData.response.data.partnerCode.isNotBlank()) {
+            if (financingData.data.partnerCode.isNotBlank()) {
                 pdpUiUpdater?.updateDataInstallment(context, financingData, viewModel.getDynamicProductInfoP1?.data?.isOS == true)
             } else {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productInstallmentInfoMap)
             }
         }
 
-        pdpUiUpdater?.updateDataP2General(it)
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
                 content.row == "bottom"
@@ -1653,7 +1659,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun getStockWording(): String {
         val variantStockWording = viewModel.getDynamicProductInfoP1?.data?.stock?.stockWording ?: ""
-        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() ?: false
+        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
+                ?: false
 
         return if (isPartialySelected) "" else variantStockWording
     }
@@ -2075,14 +2082,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         delegateTradeInTracking = true
     }
 
-    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
+    private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1
 
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(FinancingDataResponse::class.java.simpleName, installmentData, TimeUnit.HOURS.toMillis(1))
+            cacheManager.put(FtInstallmentCalculationDataResponse::class.java.simpleName, installmentData, TimeUnit.HOURS.toMillis(1))
             val bundleData = Bundle()
 
             bundleData.putString(FtPDPInstallmentBottomSheet.KEY_PDP_FINANCING_DATA, cacheManager.id!!)

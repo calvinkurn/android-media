@@ -73,8 +73,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getPdpLayoutUseCase: GetPdpLayoutUseCase,
                                                              private val getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase,
                                                              private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
-                                                             private val getProductInfoP2General2UseCase: GetProductInfoP2General2UseCase,
                                                              private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
+                                                             private val getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase,
                                                              private val getProductInfoP3UseCase: GetProductInfoP3UseCase,
                                                              private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
                                                              private val removeWishlistUseCase: RemoveWishListUseCase,
@@ -161,7 +161,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var cartTypeData: CartRedirection? = null
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
-    var installmentData: FinancingDataResponse? = null
     var tradeInParams: TradeInParams = TradeInParams()
     var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
@@ -405,6 +404,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.getProductId())
             } else null
+
+            val p2Data: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
 
             val p2GeneralData: Deferred<ProductInfoP2GeneralData> = getProductInfoP2GeneralDataAsync(it.basic.getProductId(), it.basic.getShopId())
 
@@ -696,6 +697,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return async {
             getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
             getProductInfoP2LoginUseCase.executeOnBackground()
+        }
+    }
+
+    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
+        return async {
+            getProductInfoP2DataUseCase.executeOnBackground(GetProductInfoP2DataUseCase.createParams(productId, pdpSession), forceRefresh)
         }
     }
 

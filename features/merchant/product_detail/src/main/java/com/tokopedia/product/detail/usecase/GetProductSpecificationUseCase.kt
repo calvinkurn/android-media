@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -40,7 +41,7 @@ class GetProductSpecificationUseCase @Inject constructor(private val rawQueries:
                 .build()
 
         val gqlResponse = graphqlRepository.getReseponse(listOf(productCatalogRequest), cacheStrategy)
-        val error = gqlResponse.getError(ProductSpecificationResponse::class.java)
+        val error: List<GraphqlError>? = gqlResponse.getError(ProductSpecificationResponse::class.java)
         val data = gqlResponse.getData<ProductSpecificationResponse>(ProductSpecificationResponse::class.java)
 
         if (error != null && error.isNotEmpty()) {

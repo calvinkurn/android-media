@@ -16,6 +16,6 @@ data class ProductInfoP2ShopData(
         var variantMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse(),
         var tickerInfo: List<StickyLoginTickerPojo.TickerDetail> = ArrayList(),
         var shopSpeed: Int = 0,
-        var shopChatSpeed: Int = 0,
+        var shopChatSpeed: String = "",
         var shopRating: Float = 0F
 )

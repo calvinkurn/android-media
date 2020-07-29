@@ -1,9 +1,12 @@
 package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
@@ -15,7 +18,7 @@ import javax.inject.Inject
  * Created by Yehezkiel on 20/07/20
  */
 class GetProductInfoP2DataUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                      private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2Data>() {
+                                                      private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2UiData>() {
     companion object {
         fun createParams(productId: String, pdpSession: String): RequestParams =
                 RequestParams.create().apply {
@@ -27,30 +30,53 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val rawQueries: Ma
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
 
-    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean) {
+    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean) : ProductInfoP2UiData{
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
-        executeOnBackground()
+        return executeOnBackground()
     }
 
-    override suspend fun executeOnBackground(): ProductInfoP2Data {
-        var p2Data = ProductInfoP2Data()
+    override suspend fun executeOnBackground(): ProductInfoP2UiData {
+        var p2UiData = ProductInfoP2UiData()
         val p2DataRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_P2_DATA],
-                ProductInfoP2Data::class.java, requestParams.parameters)
+                ProductInfoP2Data.Response::class.java, requestParams.parameters)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), CacheStrategyUtil.getCacheStrategy(forceRefresh))
-            val successData = gqlResponse.getData<ProductInfoP2Data>(ProductInfoP2Data::class.java)
-            val errorData = gqlResponse.getError(ProductInfoP2Data::class.java)
+            val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
+            val errorData : List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 
-            if (successData == null || successData.error.isError || errorData.isNotEmpty()) {
+            if (successData == null || errorData?.isNotEmpty() == true) {
                 throw RuntimeException()
             }
 
-            p2Data = successData
+            p2UiData = mapIntoUiData(successData.response)
         } catch (t: Throwable) {
             Timber.d(t)
         }
-        return p2Data
+        return p2UiData
+    }
+
+    private fun mapIntoUiData(responseData: ProductInfoP2Data) : ProductInfoP2UiData{
+        val p2UiData = ProductInfoP2UiData()
+        responseData.run {
+            p2UiData.shopSpeed = shopSpeed.hour
+            p2UiData.shopChatSpeed = shopChatSpeed.messageResponseTime
+            p2UiData.shopRating = shopRating.ratingScore
+            p2UiData.productView = productView
+            p2UiData.wishlistCount = wishlistCount
+            p2UiData.isGoApotik = shopFeature.isGoApotik
+            p2UiData.shopBadge = shopBadge.badge
+            p2UiData.shopCommitment = shopCommitment
+            p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
+            p2UiData.validateTradeIn = validateTradeIn
+            p2UiData.cartRedirection = cartRedirection
+            p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
+            p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
+            p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) } ?: listOf()
+            p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
+            p2UiData.productFinancingCalculationData = productFinancingCalculationData
+        }
+        return p2UiData
     }
 }

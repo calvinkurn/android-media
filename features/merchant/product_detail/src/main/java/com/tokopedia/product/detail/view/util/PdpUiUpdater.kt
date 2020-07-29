@@ -225,13 +225,13 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataInstallment(context: Context?, financingData: PDPInstallmentRecommendationResponse, isOs: Boolean) {
+    fun updateDataInstallment(context: Context?, financingData: PDPInstallmentRecommendationData, isOs: Boolean) {
         productInstallmentInfoMap?.run {
             data.first().subtitle = String.format(context?.getString(R.string.new_installment_template)
                     ?: "",
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            (if (isOs) financingData.response.data.osMonthlyPrice
-                            else financingData.response.data.monthlyPrice).roundToLong(), false))
+                            (if (isOs) financingData.data.osMonthlyPrice
+                            else financingData.data.monthlyPrice).roundToLong(), false))
         }
     }
 
@@ -250,7 +250,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             shopCredibility?.run {
                 shopInfo = it.shopInfo
                 shopSpeed = it.shopSpeed
-                shopChatSpeed = it.shopChatSpeed
+                shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                 shopRating = it.shopRating
             }
 
@@ -290,10 +290,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2General(dataP2General: ProductInfoP2General?) {
-        dataP2General?.let {
+    fun updateDataP2(context:Context?, p2Data: ProductInfoP2UiData, productId: String){
+        p2Data.let {
             shopInfoMap?.run {
-                shopFeature = it.shopFeature
+                isGoAPotik = it.isGoApotik
                 shopBadge = it.shopBadge
             }
 
@@ -315,15 +315,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             socialProofMap?.run {
-                wishlistCount = it.wishlistCount.count
+                wishlistCount = it.wishlistCount.toIntOrZero()
             }
 
             productSocialProofPvDataModel?.run {
-                wishlistCount = it.wishlistCount.count
+                wishlistCount = it.wishlistCount.toIntOrZero()
             }
 
             miniSocialProofMap?.run {
-                wishlistCount = it.wishlistCount.count
+                wishlistCount = it.wishlistCount.toIntOrZero()
                 shouldRenderSocialProof = true
             }
 

@@ -10,10 +10,10 @@ data class P2Error (
         @SerializedName("error")
         @Expose
         var isError: Boolean = false,
-        @SerializedName("error")
+        @SerializedName("code")
         @Expose
         var errorCode: String = "",
-        @SerializedName("error")
+        @SerializedName("errorMsg")
         @Expose
         var errorMessage: String = ""
 )

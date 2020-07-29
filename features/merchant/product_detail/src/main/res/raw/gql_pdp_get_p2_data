@@ -1,5 +1,5 @@
-{
-  pdpGetData(productID: "15389731", pdpSession: "{\"ioc\":false,\"shop_id\":6550394,\"shop_domain\":\"thngs\",\"category_id\":36,\"parent_id\":0,\"campaign\":{\"id\":0,\"type\":0,\"status\":false},\"price\":1000,\"product_ids_variant\":null,\"wh_id\":0,\"minimum_order\":1,\"product_name\":\"slashprice-02\",\"stock\":1000,\"is_preorder\":true}") {
+query GetPdpGetData($productID: String, $pdpSession: String) {
+  pdpGetData(productID: $productID, pdpSession: $pdpSession) {
     error {
       Code
       Message
@@ -18,16 +18,6 @@
         code
         errorMsg
       }
-    }
-    upcomingCampaign {
-      campaignID
-      campaignType
-      campaignTypeName
-      startDate
-      endDate
-      notifyMe
-      ribbonCopy
-      upcomingType
     }
     productView
     wishlistCount
@@ -90,7 +80,6 @@
       shopAssets {
         avatar
         cover
-
       }
       shopCore {
         description
@@ -128,42 +117,48 @@
         totalTx
         totalShowcase
       }
+      bbInfo {
+        title
+        titleEN
+        desc
+        descEN
+      }
       shopType
     }
     merchantVoucher {
-      merchantVoucherData {
-        voucherID
-        voucherName
-        type {
-          type
-          identifier
+        merchantVoucherData {
+          voucher_id
+          voucher_name
+          voucher_type {
+            voucher_type
+            identifier
+          }
+          voucher_code
+          amount {
+            amount
+            amount_type
+          }
+          minimum_spend
+          owner {
+            owner_id
+            identifier
+          }
+          valid_thru
+          tnc
+          banner {
+            desktop_url
+            mobile_url
+          }
+          status {
+            status
+            identifier
+          }
+          in_use_expiry
+          restricted_for_liquid_product
         }
-        voucherCode
-        voucherAmount {
-          amount
-          type
-          amountFormatted
-        }
-        minimumSpend
-        voucherOwner {
-          ownerID
-          identifier
-        }
-        validThru
-        tnc
-        voucherBanner {
-          desktopURL
-          mobileURL
-        }
-        voucherStatus {
-          status
-          identifier
-        }
-        inUseExpiry
-      }
-      errorMessageTitle
-      errorMessage
-    }
+         error_message_title
+         error_message
+       }
     nearestWarehouse {
       warehouse_info {
         warehouse_id
@@ -285,32 +280,6 @@
        ribbonCopy
        upcomingType
      }
-    reviewImage{
-      list {
-        imageID
-        reviewID
-        imageSibling
-      }
-      detailReviewImage{
-        images {
-          imageAttachmentID
-          description
-          uriThumbnail
-          uriLarge
-          reviewID
-        }
-        reviews {
-          reviewID
-          message
-          ratingDescription
-          rating
-          updateTime
-          timeFormat {
-            dateTimeFmt1
-          }
-        }
-      }
-    }
     shopTopChatSpeed {
       messageResponseTime
     }
@@ -318,6 +287,7 @@
       ratingScore
     }
     shopPackSpeed {
+      hour
       speedFmt
     }
     shopFeature{

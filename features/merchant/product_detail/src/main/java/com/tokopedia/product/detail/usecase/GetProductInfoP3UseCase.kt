@@ -50,19 +50,23 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
 
         val p3Request = mutableListOf<GraphqlRequest>()
 
+        //region RatesEstimate
         if (isUserSessionActive && shopDomain != null) {
             val estimationParams = generateRateEstimateParam(weight, shopDomain, origin)
             val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                     RatesEstimationModel.Response::class.java, estimationParams)
             p3Request.add(estimationRequest)
         }
+        //endregion
 
+        //region COD
         if (needRequestCod && isUserSessionActive) {
             val userCodParams = generateUserCodParam()
             val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
                     UserCodStatus.Response::class.java, userCodParams)
             p3Request.add(userCodRequest)
         }
+        //endregion
 
         //region Ticker
         val tickerParams = generateTickerParam()

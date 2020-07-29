@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.description.DescriptionData
@@ -223,7 +222,7 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
 }
 
 inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit){
-    val data = this.getData<T>(T::class.java)
+    val data : T? = this.getData<T>(T::class.java)
     data?.let {
         listener.invoke(it)
     }

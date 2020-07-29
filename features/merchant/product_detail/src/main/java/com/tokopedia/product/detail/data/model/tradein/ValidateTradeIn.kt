@@ -13,7 +13,7 @@ data class ValidateTradeIn(
         @SerializedName("isDiagnosed")
         @Expose
         var isDiagnosed: Boolean = false,
-        @SerializedName("wishlistCount")
+        @SerializedName("useKyc")
         @Expose
         var useKyc: Boolean = false,
         @SerializedName("usedPrice")

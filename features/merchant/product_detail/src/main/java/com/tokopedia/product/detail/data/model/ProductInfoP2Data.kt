@@ -21,9 +21,9 @@ import com.tokopedia.shop.common.graphql.data.shopspeed.ProductShopPackSpeedQuer
  * Created by Yehezkiel on 20/07/20
  */
 data class ProductInfoP2Data(
-        @SerializedName("error")
-        @Expose
-        var error: P2Error = P2Error(),
+//        @SerializedName("error")
+//        @Expose
+//        var error: P2Error = P2Error(),
 
         @SerializedName("productView")
         @Expose
@@ -59,7 +59,7 @@ data class ProductInfoP2Data(
 
         @SerializedName("reputationShop")
         @Expose
-        var shopBadge: ShopBadge = ShopBadge(),
+        var shopBadge: ProductShopBadge = ProductShopBadge(),
 
         @SerializedName("validateTradeIn")
         @Expose
@@ -69,13 +69,17 @@ data class ProductInfoP2Data(
         @Expose
         var cartRedirection: CartRedirection = CartRedirection(),
 
-        @SerializedName("cartRedirection")
+        @SerializedName("nearestWarehouse")
         @Expose
-        var nearestWarehouseInfo: List<WarehouseInfo> = listOf(),
+        var nearestWarehouseInfo: List<NearestWarehouseResponse> = listOf(),
 
         @SerializedName("upcomingCampaigns")
         @Expose
         var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
+
+        @SerializedName("merchantVoucher")
+        @Expose
+        var merchantVoucher: MerchantVoucherQueryResult = MerchantVoucherQueryResult(),
 
         @SerializedName("installmentRecommendation")
         @Expose
@@ -84,8 +88,10 @@ data class ProductInfoP2Data(
         @SerializedName("installmentCalculation")
         @Expose
         var productFinancingCalculationData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse()
-
-
-        //TODO image review shop info
-
-)
+) {
+    data class Response(
+            @SerializedName("pdpGetData")
+            @Expose
+            var response: ProductInfoP2Data = ProductInfoP2Data()
+    )
+}
