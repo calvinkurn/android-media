@@ -16,12 +16,9 @@ import com.tokopedia.review.feature.createreputation.usecase.ProductrevSubmitRev
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
@@ -101,9 +98,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         imageData.remove(image)
     }
 
-    fun initImageData(): MutableList<BaseImageReviewViewModel> {
+    fun clearImageData() {
         imageData.clear()
-        return imageData
     }
 
     fun getSelectedImagesUrl(): ArrayList<String> {

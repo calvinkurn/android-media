@@ -1,12 +1,11 @@
-package com.tokopedia.tkpd.tkpdreputation.createreputation.usecase
+package com.tokopedia.review.feature.createreputation.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.review.feature.createreputation.Query
-import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvo
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +27,7 @@ class GetProductIncentiveOvoTest {
     lateinit var graphqlRepository: GraphqlRepository
 
     private val getProductIncentiveOvo by lazy {
-        GetProductIncentiveOvo(graphqlRepository, Query.GET_PRODUCT_INCENTIVE_OVO)
+        GetProductIncentiveOvo(graphqlRepository)
     }
 
     private val gson = Gson()
@@ -42,11 +41,11 @@ class GetProductIncentiveOvoTest {
     @Test
     fun `should success when get product incentive ovo`() = runBlocking {
         val json = this.javaClass.classLoader?.getResourceAsStream(successResponse)?.readBytes()?.toString(Charsets.UTF_8)
-        val response = gson.fromJson(json, ProductRevIncentiveOvo::class.java)
+        val response = gson.fromJson(json, ProductRevIncentiveOvoDomain::class.java)
 
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = ProductRevIncentiveOvo::class.java
+        val objectType = ProductRevIncentiveOvoDomain::class.java
         result[objectType] = response
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 

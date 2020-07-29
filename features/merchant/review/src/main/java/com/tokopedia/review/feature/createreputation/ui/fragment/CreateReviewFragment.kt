@@ -336,7 +336,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    createReviewViewModel.initImageData()
+                    createReviewViewModel.clearImageData()
 
                     ReviewTracking.reviewOnImageUploadTracker(
                             orderId,

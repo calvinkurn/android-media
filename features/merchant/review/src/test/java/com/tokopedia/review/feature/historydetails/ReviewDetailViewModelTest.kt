@@ -7,12 +7,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 
 class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when setFeedbackId should set feedbackId to expected value and getReviewDetail`() {
-        val feedbackId = 213703678
+        val feedbackId = anyInt()
         val expectedNetworkResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedNetworkResponse)
@@ -26,7 +27,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when setFeedbackId but getReviewDetailFail should set feedbackId to expected value and set expected failure`() {
-        val feedbackId = 213703678
+        val feedbackId = anyInt()
         val expectedNetworkResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
@@ -40,7 +41,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when retry() should execute usecase again`() {
-        val feedbackId = 213703678
+        val feedbackId = anyInt()
 
         viewModel.setFeedbackId(feedbackId)
         verifyProductrevGetReviewDetailUseCaseCalled()
