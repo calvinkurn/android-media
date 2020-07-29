@@ -109,7 +109,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                             if (shopItem.getShopCoverUrl().contains(PATH_VIEW) && !isFirstResource) {
                                 new TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
                                         className,
-                                        shopItem.getShopClickUrl(),
+                                        shopItem.getShopCoverUrl(),
                                         shopItem.getShopId(),
                                         shopItem.getShopName(),
                                         shopItem.getShopImageUrl());
