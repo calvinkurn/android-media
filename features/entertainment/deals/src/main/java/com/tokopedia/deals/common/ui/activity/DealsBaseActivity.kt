@@ -108,7 +108,11 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setupLocation() {
-        setUpPermissionChecker()
+        if (isHomePage()) {
+            setUpPermissionChecker()
+        } else {
+            baseViewModel.setCurrentLocation(dealsLocationUtils.getLocation())
+        }
         observeLocation()
 
         currentLoc = dealsLocationUtils.getLocation()
