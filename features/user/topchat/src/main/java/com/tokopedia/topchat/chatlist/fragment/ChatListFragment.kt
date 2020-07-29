@@ -400,6 +400,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
+        showGetListError(throwable)
         fpmStopTrace()
     }
 

@@ -133,6 +133,11 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         super.onDestroy()
         stopLiveDataObserver()
         flushAllViewModel()
+        searchToolTip.dismiss()
+    }
+
+    private fun initToolTip() {
+        searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 
     private fun initToolTip() {
