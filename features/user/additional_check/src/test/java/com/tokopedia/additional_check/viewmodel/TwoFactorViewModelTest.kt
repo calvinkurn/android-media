@@ -1,14 +1,11 @@
 package com.tokopedia.additional_check.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.additional_check.data.GetObjectPojo
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.domain.usecase.AdditionalCheckUseCase
-import com.tokopedia.additional_check.view.BottomSheetCheckViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -17,9 +14,6 @@ import org.junit.Rule
 import org.junit.Test
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 /**
@@ -38,14 +32,14 @@ class TwoFactorViewModelTest {
     val mockThrowable = mockk<Throwable>(relaxed = true)
 
     val dispatcher = TestCoroutineDispatcher()
-    lateinit var viewModel: BottomSheetCheckViewModel
+    lateinit var viewModel: TwoFactorViewModel
 
     val onSuccess: (TwoFactorResult) -> Unit = mockk(relaxed = true)
     val onError: (Throwable) -> Unit = mockk(relaxed = true)
 
     @Before
     fun setUp() {
-        viewModel = BottomSheetCheckViewModel(
+        viewModel = TwoFactorViewModel(
                 userSession,
                 pref,
                 useCase,
