@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.presenter;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -870,7 +869,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                             shippingPackage.put(courierList.get(i).services.get(j).id, "1");
                         }
                         jsonCompiled.put(courierList.get(i).id, shippingPackage);
-                        Log.d("JSON_COMPILE_2", shippingPackage.toString());
                     }
                 }
             }
