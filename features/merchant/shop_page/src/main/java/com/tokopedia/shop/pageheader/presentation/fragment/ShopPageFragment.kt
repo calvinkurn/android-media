@@ -37,6 +37,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
@@ -124,6 +125,7 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
+    var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
     private var shopId = ""
     var shopRef: String = ""
     var shopDomain: String? = null
@@ -191,7 +193,7 @@ class ShopPageFragment :
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(R.id.message_retry)
         errorButton = view.findViewById(R.id.button_retry)
-        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
+        shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -312,6 +314,7 @@ class ShopPageFragment :
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            shopPageTrackingSGCPlay = ShopPageTrackingSGCPlayWidget(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID).orEmpty()
                 shopRef = getStringExtra(SHOP_REF).orEmpty()
