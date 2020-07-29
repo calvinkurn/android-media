@@ -765,7 +765,7 @@ class OfficialHomeFragment :
                 viewModel.currentSlug,
                 channel,
                 grid,
-                (position + 1).toString(),
+                position.toString(),
                 viewModel.isLoggedIn()
         )
     }
@@ -785,7 +785,7 @@ class OfficialHomeFragment :
                 viewModel.currentSlug,
                 channel,
                 grid,
-                (position + 1).toString(),
+                position.toString(),
                 viewModel.isLoggedIn()
         )
         RouteManager.route(context, applink)
