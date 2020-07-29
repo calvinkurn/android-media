@@ -140,10 +140,6 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
         searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
     }
 
-    private fun initToolTip() {
-        searchToolTip = ToolTipSearchPopupWindow(context, chatNotifCounterViewModel)
-    }
-
     private fun initChatCounterObserver() {
         chatNotifCounterViewModel.chatNotifCounter.observe(this,
                 Observer { result ->

@@ -168,12 +168,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         initTooltipPopup()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initFireBase()
-        initTooltipPopup()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
@@ -291,14 +285,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     private fun hideTopLoading() {
         hideLoading()
-    }
-
-    private fun initTooltipPopup() {
-        toolTip = ToolTipStickerPopupWindow(context, presenter)
-    }
-
-    private fun setupAnalytic() {
-        analytics.setSourcePage(sourcePage)
     }
 
     private fun initTooltipPopup() {
