@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +24,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -579,14 +579,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSellerMigrationReviewClicked() {
-        String sellerMigrationPageAppLink = Uri.parse(ApplinkConst.SELLER_MIGRATION)
-                .buildUpon()
-                .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS)
-                .build()
-                .toString();
-        Intent intent = RouteManager.getIntent(getContext(), sellerMigrationPageAppLink);
-        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, ApplinkConst.REPUTATION);
-        intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, getScreenName());
-        startActivity(intent);
+        Context context = getContext();
+        if (context != null) {
+            Intent intent = SellerMigrationActivity.Companion.createIntent(context, SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS, getScreenName(), ApplinkConst.REPUTATION, "");
+            startActivity(intent);
+        }
     }
 }

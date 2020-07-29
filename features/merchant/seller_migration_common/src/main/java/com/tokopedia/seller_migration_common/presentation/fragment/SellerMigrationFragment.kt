@@ -29,7 +29,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         const val KEY_PARAM_FEATURE_NAME: String = "feature_name"
         const val SCREEN_NAME = "/migration-page"
 
-        fun createInstance(featureName: String): SellerMigrationFragment {
+        fun createInstance(@SellerMigrationFeatureName featureName: String): SellerMigrationFragment {
             return SellerMigrationFragment().apply {
                 arguments = Bundle().also {
                     it.putString(KEY_PARAM_FEATURE_NAME, featureName)

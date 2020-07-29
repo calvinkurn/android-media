@@ -27,7 +27,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -106,6 +105,7 @@ import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.DividerUnify
@@ -1117,12 +1117,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, ApplinkConst.PRODUCT_MANAGE, secondAppLink)
     }
 
-    private fun goToSellerMigrationPage(featureName: String, firstAppLink: String, secondAppLink: String = "") {
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, firstAppLink: String, secondAppLink: String = "") {
         context?.run {
-            val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName))
-            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink)
-            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink)
-            intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
+            val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, firstAppLink, secondAppLink)
             startActivity(intent)
         }
     }

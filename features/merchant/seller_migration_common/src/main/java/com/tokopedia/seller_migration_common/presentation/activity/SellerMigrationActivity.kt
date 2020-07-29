@@ -1,13 +1,16 @@
 package com.tokopedia.seller_migration_common.presentation.activity
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants.EVENT_CATEGORY_MIGRATION_PAGE
@@ -22,6 +25,17 @@ import com.tokopedia.user.session.UserSession
 
 
 class SellerMigrationActivity : BaseSimpleActivity() {
+
+    companion object {
+        fun createIntent(context: Context, @SellerMigrationFeatureName featureName: String, screenName: String, firstAppLink: String, secondAppLink: String = ""): Intent {
+            return RouteManager.getIntent(context, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName)).apply {
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink)
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink)
+                putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+            }
+        }
+    }
 
     private var featureName: String = ""
 

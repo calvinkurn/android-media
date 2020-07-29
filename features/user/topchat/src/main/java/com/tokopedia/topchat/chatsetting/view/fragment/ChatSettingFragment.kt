@@ -11,8 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.chatsetting.analytic.ChatSettingAnalytic
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
@@ -101,9 +101,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun goToSellerMigrationPage() {
         context?.run {
-            val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT))
-            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, ApplinkConst.CHAT_TEMPLATE)
-            intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, SCREEN_NAME)
+            val intent = SellerMigrationActivity.createIntent(this, SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SCREEN_NAME, ApplinkConst.CHAT_TEMPLATE)
             startActivity(intent)
         }
     }
