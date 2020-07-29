@@ -21,7 +21,7 @@ fun createProduct(
     url: String? = "productUrl",
     sku: String? = "sku",
     pictures: List<Picture>? = emptyList(),
-    topAds: List<ProductTopAds>? = emptyList()
+    topAds: ProductTopAds? = null
 ): Product {
     return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds)
 }
@@ -40,7 +40,9 @@ fun createProductViewModel(
     isVariant: Boolean? = false,
     multiSelectActive: Boolean = false,
     isChecked: Boolean = false,
-    hasStockReserved: Boolean = false
+    hasStockReserved: Boolean = false,
+    isTopAds: Boolean = false,
+    isAutoAds: Boolean = false
 ): ProductViewModel {
     return ProductViewModel(
         id,
@@ -56,6 +58,8 @@ fun createProductViewModel(
         isVariant,
         multiSelectActive,
         isChecked,
-        hasStockReserved
+        hasStockReserved,
+        isTopAds,
+        isAutoAds
     )
 }
