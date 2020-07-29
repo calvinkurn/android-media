@@ -48,7 +48,7 @@ class ManageAddressViewModel @Inject constructor(
         return mapper.mapAddress(responses)
     }
 
-    fun getToken(): Token {
+    fun getToken(): Token? {
         return token
     }
 
