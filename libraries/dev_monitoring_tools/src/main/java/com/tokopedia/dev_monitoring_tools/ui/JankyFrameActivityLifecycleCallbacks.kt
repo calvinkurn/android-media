@@ -28,7 +28,7 @@ class JankyFrameActivityLifecycleCallbacks private constructor() : Application.A
     }
 
     override fun onActivityStopped(activity: Activity) {}
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {}
     override fun onActivityDestroyed(activity: Activity) {}
     private var warningLevelMs = 0f
     private var errorLevelMs = 0f
