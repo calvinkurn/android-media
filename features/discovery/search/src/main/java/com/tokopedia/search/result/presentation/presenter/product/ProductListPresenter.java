@@ -40,11 +40,13 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselViewMod
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
+import com.tokopedia.search.utils.QuickFilterDefaultKt;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilterItem;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -101,6 +103,7 @@ final class ProductListPresenter
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
+    private static final int QUICK_FILTER_MINIMUM_SIZE = 2;
 
     private UseCase<SearchProductModel> searchProductFirstPageUseCase;
     private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
@@ -757,6 +760,7 @@ final class ProductListPresenter
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getView().hideBottomNavigation();
         } else {
+            processDefaultQuickFilter(searchProductModel, productViewModel);
             getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
             getViewToShowQuickFilter(searchProductModel);
             setBottomNavigationView();
@@ -926,6 +930,27 @@ final class ProductListPresenter
                     }
                 }
         );
+    }
+
+    private void processDefaultQuickFilter(SearchProductModel searchProductModel, ProductViewModel productViewModel) {
+        DataValue quickFilter = searchProductModel.getQuickFilterModel();
+
+        if (quickFilter.getFilter().size() < QUICK_FILTER_MINIMUM_SIZE) {
+            quickFilter = QuickFilterDefaultKt.createDefaultQuickFilter();
+            searchProductModel.setQuickFilterModel(quickFilter);
+
+            QuickFilterViewModel quickFilterViewModel = productViewModel.getQuickFilterModel();
+
+            if (quickFilterViewModel == null) quickFilterViewModel = new QuickFilterViewModel();
+            quickFilterViewModel.setQuickFilterList(quickFilter.getFilter());
+
+            List<Option> quickFilterOptionList = CollectionsKt.flatten(CollectionsKt.map(quickFilter.getFilter(), Filter::getOptions));
+            quickFilterViewModel.setQuickFilterOptions(quickFilterOptionList);
+
+            quickFilterViewModel.setFormattedResultCount(searchProductModel.getSearchProduct().getHeader().getTotalDataText());
+
+            productViewModel.setQuickFilterModel(quickFilterViewModel);
+        }
     }
 
     private void getViewToShowProductList(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
@@ -1126,7 +1151,7 @@ final class ProductListPresenter
     }
 
     private void getViewToShowQuickFilter(SearchProductModel searchProductModel) {
-        if (searchProductModel.getQuickFilterModel() != null && isBottomSheetFilterRevampEnabled()) {
+        if (isBottomSheetFilterRevampEnabled()) {
             processQuickFilter(searchProductModel.getQuickFilterModel());
         }
     }

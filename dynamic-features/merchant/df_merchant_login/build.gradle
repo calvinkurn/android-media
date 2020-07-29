@@ -51,5 +51,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.favorite)
     implementation project(rootProject.ext.features.report)
+    implementation project(rootProject.ext.features.recentview)
 
 }

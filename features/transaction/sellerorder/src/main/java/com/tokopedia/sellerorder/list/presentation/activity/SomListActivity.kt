@@ -28,7 +28,7 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getNewFragment(): SomListFragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
-            bundle = intent.extras
+            bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(TAB_ACTIVE, "")
         }

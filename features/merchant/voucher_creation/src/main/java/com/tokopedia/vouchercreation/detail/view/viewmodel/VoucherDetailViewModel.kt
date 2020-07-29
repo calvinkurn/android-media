@@ -15,6 +15,7 @@ import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUse
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -30,10 +31,13 @@ class VoucherDetailViewModel @Inject constructor(
         addSource(mVoucherIdLiveData) { voucherId ->
             launchCatchError(
                     block = {
-                        voucherDetailUseCase.params = VoucherDetailUseCase.createRequestParam(voucherId)
-                        value = Success(withContext(Dispatchers.IO) {
-                            voucherDetailUseCase.executeOnBackground()
-                        })
+                        withContext(Dispatchers.IO) {
+                            voucherDetailUseCase.params = VoucherDetailUseCase.createRequestParam(voucherId)
+                            val voucherDetail = async { Success(voucherDetailUseCase.executeOnBackground()) }
+                            val shopBasicData = async { Success(shopBasicDataUseCase.executeOnBackground()) }
+                            postValue(voucherDetail.await())
+                            _shopBasicLiveData.postValue(shopBasicData.await())
+                        }
                     },
                     onError = {
                         value = Fail(it)
@@ -70,25 +74,11 @@ class VoucherDetailViewModel @Inject constructor(
 
     fun getVoucherDetail(voucherId: Int) {
         mVoucherIdLiveData.value = voucherId
-        getBasicData()
     }
 
     fun cancelVoucher(voucherId: Int,
                       @CancelVoucherUseCase.CancelStatus cancelStatus: String) {
         mCancelledVoucherIdLiveData.value = Pair(voucherId, cancelStatus)
-    }
-
-    private fun getBasicData() {
-        launchCatchError(
-                block = {
-                    _shopBasicLiveData.value = Success(withContext(Dispatchers.IO) {
-                        shopBasicDataUseCase.executeOnBackground()
-                    })
-                },
-                onError = {
-                    _shopBasicLiveData.value = Fail(it)
-                }
-        )
     }
 
 }
