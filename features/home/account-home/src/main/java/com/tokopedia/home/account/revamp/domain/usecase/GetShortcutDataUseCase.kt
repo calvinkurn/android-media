@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -25,7 +26,12 @@ class GetShortcutDataUseCase @Inject constructor(
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            return gqlResponse.getData(ShortcutResponse::class.java)
+            var data: ShortcutResponse = gqlResponse.getData(ShortcutResponse::class.java)
+            if(data == null) {
+                data = ShortcutResponse()
+                AccountHomeErrorHandler.logDataNull("GetShortcutDataUseCase", Throwable("ShortcutResponse"))
+            }
+            return data
         }
     }
 
