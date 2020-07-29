@@ -18,4 +18,5 @@ object ReviewTrackingConstant {
     const val KEY_SCREEN_NAME = "screenName"
     const val KEY_USER_ID = "userId"
     const val ACTION_CLICK = "click"
+    const val CLICK_SMILEY = "$ACTION_CLICK - smiley"
 }

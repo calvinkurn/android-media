@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
@@ -26,8 +27,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     companion object {
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
-        const val PARAM_UTM_SOURCE = "utm_source"
-        const val DEFAULT_UTM_SOURCE = ""
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
@@ -36,7 +35,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         val bundle = intent.extras
         val uri = intent.data
         var rating = DEFAULT_PRODUCT_RATING
-        var utmSource = DEFAULT_UTM_SOURCE
         var isEditMode = false
         var feedbackId = 0
 
@@ -45,7 +43,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
             rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
-            utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: DEFAULT_UTM_SOURCE
             isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean() ?: false
             feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID)?.toIntOrZero() ?: 0
         } else {
@@ -56,7 +53,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                 productId,
                 reputationId,
                 bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: rating,
-                utmSource,
                 isEditMode,
                 feedbackId
         )
@@ -83,7 +79,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     override fun onBackPressed() {
         createReviewFragment?.let {
-            ReviewTracking.reviewOnCloseTracker(it.getOrderId, productId)
+            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
             if(it.getIsEditMode) {
                 it.showCancelDialog()
             } else {

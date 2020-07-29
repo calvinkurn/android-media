@@ -14,12 +14,8 @@
     <ScrollView
         android:id="@+id/createReviewScrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:paddingBottom="@dimen/layout_lvl2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/layout_lvl2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/review_container"
@@ -232,7 +228,7 @@
                 app:layout_constraintTop_toBottomOf="@id/createReviewTextAreaTitle"/>
 
             <com.tokopedia.unifycomponents.DividerUnify
-                android:id="@+id/create_review_divider"
+                android:id="@+id/createReviewDivider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/dp_16"
@@ -243,7 +239,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/create_review_divider"/>
+                app:layout_constraintTop_toBottomOf="@id/createReviewDivider"/>
 
             <LinearLayout
                 android:id="@+id/container_anonymous"
@@ -275,7 +271,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:text="@string/txt_btn_submit_review"
                 app:unifyButtonSize="large"

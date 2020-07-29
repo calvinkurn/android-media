@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.presentation.fragment
+package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,7 +42,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
-    val getReputationDataForm = reputationDataForm
+    val getReputationDataForm: LiveData<Result<ProductRevGetForm>>
+            get() = reputationDataForm
 
     private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
     val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>> = _incentiveOvo

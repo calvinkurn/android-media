@@ -49,7 +49,9 @@ import com.tokopedia.review.feature.createreputation.presentation.listener.Image
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.model.Reputation
+import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -62,7 +64,7 @@ import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class CreateReviewFragment : BaseDaggerFragment(),
-        ImageClickListener, TextAreaListener, OnBackPressedListener, ReviewScoreClickListener {
+        ImageClickListener, TextAreaListener, ReviewScoreClickListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -70,8 +72,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val REPUTATION_ID = "REPUTATION_ID"
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
-        const val REVIEW_ORDER_ID = "REVIEW_ORDER_ID"
-        const val UTM_SOURCE = "UTM_SOURCE"
 
         private const val LOTTIE_ANIM_1 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_1.json"
         private const val LOTTIE_ANIM_2 = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_2.json"
@@ -85,12 +85,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
-                putString(UTM_SOURCE, utmSource)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
                 putInt(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
             }
@@ -106,24 +105,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
     private var isLowDevice = false
 
-    private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
     private var reputationId: Int = 0
     private var productId: Int = 0
-    private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
-    private var productRevIncentiveOvo: ProductRevIncentiveOvoDomain = ProductRevIncentiveOvoDomain()
     private var shopId: String = ""
-    private var orderId: String = ""
-    private var utmSource: String = ""
     private var isEditMode: Boolean = false
     private var feedbackId: Int = 0
 
-    val getOrderId
-    get() = orderId
-
     val getIsEditMode
-    get() = isEditMode
+        get() = isEditMode
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -149,10 +140,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         arguments?.let {
             productId = it.getString(PRODUCT_ID_REVIEW, "").toIntOrNull() ?: 0
-            orderId = it.getString(REVIEW_ORDER_ID) ?: ""
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reputationId = it.getString(REPUTATION_ID, "").toIntOrNull() ?: 0
-            utmSource = it.getString(UTM_SOURCE, "")
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getInt(ReviewConstants.PARAM_FEEDBACK_ID, 0)
         }
@@ -212,8 +201,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         animatedReviewPicker.resetStars()
         animatedReviewPicker.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
-                ReviewTracking.reviewOnRatingChangedTracker(
-                        orderId,
+                CreateReviewTracking.reviewOnRatingChangedTracker(
+                        getOrderId(),
                         productId.toString(10),
                         (position).toString(10),
                         true,
@@ -253,7 +242,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         createReviewAnonymousCheckbox.setOnClickListener {
             if (createReviewAnonymousCheckbox.isChecked) {
-                ReviewTracking.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), false)
             }
             clearFocusAndHideSoftInput(view)
         }
@@ -310,24 +299,39 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onExpandButtonClicked(text: String) {
+        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
+            with(it.data.productrevGetForm) {
+                CreateReviewTracking.onExpandTextBoxClicked(orderID, productId.toString())
+            }
+        }
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
         fragmentManager?.let { textAreaBottomSheet?.show(it,"") }
     }
 
     override fun onCollapseButtonClicked(text: String) {
+        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
+            with(it.data.productrevGetForm) {
+                CreateReviewTracking.onCollapseTextBoxClicked(orderID, productId.toString())
+            }
+        }
         textAreaBottomSheet?.dismiss()
         createReviewExpandableTextArea.setText(text)
     }
 
     override fun onHasFocus() {
-        createReviewScrollView.smoothScrollTo(0, createReviewExpandableTextArea.bottom)
-    }
-
-    override fun onBackPressed() {
-
+        createReviewScrollView.post {
+            Runnable {
+                createReviewScrollView.scrollTo(0, createReviewExpandableTextArea.bottom)
+            }
+        }
     }
 
     override fun onReviewScoreClicked(score: Int) {
+        (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
+            with(it.data.productrevGetForm) {
+                CreateReviewTracking.eventClickSmiley(orderID, productId.toString())
+            }
+        }
         createReviewScore.onScoreSelected(score)
     }
 
@@ -338,8 +342,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     createReviewViewModel.clearImageData()
 
-                    ReviewTracking.reviewOnImageUploadTracker(
-                            orderId,
+                    CreateReviewTracking.reviewOnImageUploadTracker(
+                            getOrderId(),
                             productId.toString(10),
                             true,
                             selectedImage.size.toString(10),
@@ -374,8 +378,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun submitReview() {
         val reviewMessage = createReviewExpandableTextArea.getText()
-        ReviewTracking.reviewOnSubmitTracker(
-                orderId,
+        CreateReviewTracking.reviewOnSubmitTracker(
+                getOrderId(),
                 productId.toString(10),
                 reviewClickAt.toString(10),
                 reviewMessage.isEmpty(),
@@ -388,7 +392,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
-        productRevGetForm = data
         with(data.productrevGetForm) {
             if (!validToReview) {
                 activity?.let {
@@ -401,17 +404,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
             hideShimmering()
             showLayout()
 
-            ReviewTracking.reviewOnViewTracker(orderID, productId.toString())
+            CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
 
             shopId = shopData.shopID.toString()
-            orderId = orderID
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
             setReputation(reputation, shopData.shopName)
         }
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
-        productRevIncentiveOvo = data
         data.productrevIncentiveOvo?.let {
             it.ticker.let {
                 ovoPointsTicker.apply {
@@ -680,7 +681,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewAnonymousCheckbox.isChecked = !createReviewAnonymousCheckbox.isChecked
             }
             if (createReviewAnonymousCheckbox.isChecked) {
-                ReviewTracking.reviewOnAnonymousClickTracker(orderId, productId.toString(10), isEditMode)
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode)
             }
         }
     }
@@ -697,6 +698,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    fun getOrderId(): String {
+        return (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.data?.productrevGetForm?.orderID ?: ""
     }
 
     fun showCancelDialog() {

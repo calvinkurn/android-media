@@ -11,5 +11,4 @@ object ReviewDetailTrackingConstants {
     const val CLICK_EDIT_BUTTON_ACTION = "${ReviewTrackingConstant.ACTION_CLICK} - edit review"
     const val CLICK_PRODUCT_CARD_ACTION = "${ReviewTrackingConstant.ACTION_CLICK} - product card"
     const val CLICK_REVIEW_IMAGE_GALLERY = "${ReviewTrackingConstant.ACTION_CLICK} - review image gallery"
-    const val CLICK_SMILEY = "${ReviewTrackingConstant.ACTION_CLICK} - smiley"
 }

@@ -58,7 +58,7 @@ object ReviewDetailTracking {
     fun eventClickSmiley(productId: Int, feedbackId: Int, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
-                        ReviewDetailTrackingConstants.CLICK_SMILEY,
+                        ReviewTrackingConstant.CLICK_SMILEY,
                         userId,
                         String.format(ReviewDetailTrackingConstants.PRODUCT_ID_FEEDBACK_ID_EVENT_LABEL, productId, feedbackId)
                 )

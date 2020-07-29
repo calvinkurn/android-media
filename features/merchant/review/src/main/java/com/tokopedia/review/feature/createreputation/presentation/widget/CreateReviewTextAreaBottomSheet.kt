@@ -1,7 +1,10 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
@@ -39,8 +42,27 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewCreateTextAreaBottomSheet.apply {
+            setOnFocusChangeListener { _, hasFocus ->
+                activity?.run {
+                    if (hasFocus) {
+                        showKeyboard()
+                    } else {
+                        hideKeyboard()
+                    }
+                }
+            }
             setText(this@CreateReviewTextAreaBottomSheet.text)
             requestFocus()
         }
+    }
+
+    private fun View.showKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    private fun Context.hideKeyboard() {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 }
