@@ -51,7 +51,7 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
         }
     }
 
-    override fun getPageTAG(): String = TAG
+    override fun getPageTAG(): String = TAG ?: "DealsCategoryActivity"
 
     override fun findCategoryPosition(categoryId: String): Int? {
         if (categoryId.isEmpty()) return 0
@@ -68,7 +68,7 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
         const val PARAM_CATEGORY_ID = "category_id"
         const val IS_LANDMARK_PAGE = "is_landmark_page"
 
-        const val TAG = "DealsCategoryActivity"
+        val TAG = DealsCategoryActivity::class.simpleName
         fun getCallingIntent(context: Context, categoryId: String? = null,
                              isLandmarkPage: Boolean = false): Intent = Intent(context, DealsCategoryActivity::class.java).apply {
             putExtra(EXTRA_CATEGORY_ID, categoryId)
