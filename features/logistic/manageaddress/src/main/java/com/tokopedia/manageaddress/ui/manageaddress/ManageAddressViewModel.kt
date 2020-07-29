@@ -52,7 +52,7 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun getToken(): Token {
+    fun getToken(): Token? {
         return token
     }
 
