@@ -122,7 +122,8 @@ public interface CMConstant {
         String NOTIFCENTER_NOTIFICATION_ID = "nc_notif_id";
         String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
 
-        String BEBAS_ONGKIR = "bebasOngkir";
+        String NOTIFICATION_PRODUCT_TYPE = "notificationProductType";
+        String FREE_DELIVERY = "bebasOngkir";
         String STOCK_AVAILABLE = "stockAvailable";
         String REVIEW_SCORE = "reviewScore";
     }
