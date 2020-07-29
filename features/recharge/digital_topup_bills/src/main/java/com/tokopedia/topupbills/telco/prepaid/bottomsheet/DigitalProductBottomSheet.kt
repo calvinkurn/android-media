@@ -40,7 +40,7 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
             selectItemBtn = view.findViewById(R.id.telco_button_select_item)
 
             arguments?.let {
-                setTitle(it.getString(TITLE))
+                setTitle(it.getString(TITLE, ""))
                 details.text = it.getString(DETAILS)
                 productPrice.text = it.getString(PRICE)
 

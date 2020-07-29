@@ -529,4 +529,5 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getSprintSaleSeeAllClick(channel))
         }
     }
+
 }

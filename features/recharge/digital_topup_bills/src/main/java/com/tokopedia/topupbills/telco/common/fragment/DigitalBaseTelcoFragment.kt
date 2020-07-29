@@ -166,8 +166,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
                     activity?.let {
                         val contactURI = data.data
-                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        setInputNumberFromContact(contact.contactNumber)
+                        val contact = contactURI?.covertContactUriToContactData(it.contentResolver)
+                        setInputNumberFromContact(contact?.contactNumber ?: "")
                     }
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {

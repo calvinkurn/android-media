@@ -69,7 +69,7 @@ public interface ApplinkConst {
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String REACT_DISCOVERY_PAGE = "tokopedia://reactDiscovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
-    String HOME_EXPLORE = "tokopedia://jump/{section}";
+    String HOME_EXPLORE = "tokopedia://jump";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
@@ -86,6 +86,7 @@ public interface ApplinkConst {
     String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String LOGIN = "tokopedia://login";
+    String OTP = "tokopedia://otp";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
     String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
@@ -222,9 +223,7 @@ public interface ApplinkConst {
     String SALDO = "tokopedia://saldo";
     String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
     String SALDO_INTRO = "tokopedia://saldo-intro";
-    String INSTANT_LOAN = "tokopedia://loan";
-    String INSTANT_LOAN_TAB = "tokopedia://loan/category/instan";
-    String PINJAMAN_ONLINE_TAB = "tokopedia://loan/category/pinjamanonline";
+
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String HAS_PASSWORD = "tokopedia://settings/haspassword";

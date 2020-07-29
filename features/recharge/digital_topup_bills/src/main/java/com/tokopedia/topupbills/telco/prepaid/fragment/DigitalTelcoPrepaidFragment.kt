@@ -295,7 +295,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {

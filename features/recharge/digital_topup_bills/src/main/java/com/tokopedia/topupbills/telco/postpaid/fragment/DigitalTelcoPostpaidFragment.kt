@@ -220,7 +220,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         var clientNumber = ""
         if (savedInstanceState == null) {
             arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                     menuId = digitalTelcoExtraParam.menuId.toInt()
@@ -230,7 +230,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 }
             }
         } else {
-            clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER)
+            clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER, "")
         }
         postpaidClientNumberWidget.setInputNumber(clientNumber)
     }
