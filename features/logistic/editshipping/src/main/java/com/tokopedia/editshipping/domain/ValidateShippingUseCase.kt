@@ -1,7 +1,6 @@
 package com.tokopedia.editshipping.domain
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
@@ -16,9 +15,8 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import javax.inject.Inject
 
-class ValidateShippingUseCase @Inject constructor(@ApplicationContext val context: Context, val useCase: GraphqlUseCase, val mapper: ValidateShippingMapper) : UseCase<ValidateShippingModel>() {
+class ValidateShippingUseCase (val context: Context, val useCase: GraphqlUseCase, val mapper: ValidateShippingMapper) : UseCase<ValidateShippingModel>() {
 
    override fun createObservable(requestParams: RequestParams): Observable<ValidateShippingModel> {
        val params = mapOf(PARAM_VALIDATE_SHIPPING to requestParams.parameters)

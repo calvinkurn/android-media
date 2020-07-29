@@ -28,7 +28,7 @@ import com.tokopedia.editshipping.R;
  * Created by Kris on 5/12/2016.
  TOKOPEDIA
  */
-public class EditShippingWebViewDialog extends androidx.fragment.app.DialogFragment {
+public class EditShippingWebViewDialog extends DialogFragment {
 
     private class AdditionalOptionsWebViewClient extends WebViewClient{
         @Override

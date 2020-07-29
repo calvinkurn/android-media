@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.analytics.EditShippingAnalytics;
 import com.tokopedia.editshipping.data.interactor.EditShippingInteractorImpl;
@@ -55,7 +54,7 @@ import timber.log.Timber;
  * Created by Kris on 2/23/2016.
  * Presenter for EditShipping
  */
-public class EditShippingPresenterImpl extends BaseDaggerPresenter implements EditShippingPresenter {
+public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private EditShippingViewListener view;
 
@@ -434,7 +433,6 @@ public class EditShippingPresenterImpl extends BaseDaggerPresenter implements Ed
                     public void onSuccess(String statusMessage) {
                         view.finishLoading();
                         view.refreshData(statusMessage);
-//                        view.dismissFragment(statusMessage);
                     }
 
                     @Override
