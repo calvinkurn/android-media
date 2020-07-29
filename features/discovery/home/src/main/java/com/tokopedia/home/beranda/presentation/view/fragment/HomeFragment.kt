@@ -123,6 +123,7 @@ import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -1508,6 +1509,15 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
         getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+    }
+
+    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING || playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
+            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+        } else {
+            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
+        }
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
