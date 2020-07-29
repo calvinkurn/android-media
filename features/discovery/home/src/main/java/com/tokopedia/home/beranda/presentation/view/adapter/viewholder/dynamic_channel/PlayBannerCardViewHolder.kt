@@ -35,9 +35,10 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
-        if(element?.playBannerCarouselDataModel?.channelList?.isNotEmpty() == true){
+        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
             playBannerCarouselView?.showRefreshShimmer()
         } else {
+            playBannerCarouselView?.removeRefreshShimmer()
             element?.playBannerCarouselDataModel?.let {
                 if (it.channelList.isNotEmpty()) {
                     playBannerCarouselView?.setItem(it)
@@ -48,9 +49,10 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        if(element?.playBannerCarouselDataModel?.channelList?.isNotEmpty() == true){
+        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
             playBannerCarouselView?.showRefreshShimmer()
         } else {
+            playBannerCarouselView?.removeRefreshShimmer()
             element?.playBannerCarouselDataModel?.let {
                 if(it.channelList.isNotEmpty()){
                     playBannerCarouselView?.setItem(it)
