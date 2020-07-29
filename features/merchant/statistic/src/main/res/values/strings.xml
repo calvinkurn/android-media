@@ -18,4 +18,5 @@
     <string name="stc_per_day">Per Hari</string>
     <string name="stc_per_week">Per Minggu</string>
     <string name="stc_per_month">Per Bulan</string>
+    <string name="stc_month">Bulan</string>
 </resources>

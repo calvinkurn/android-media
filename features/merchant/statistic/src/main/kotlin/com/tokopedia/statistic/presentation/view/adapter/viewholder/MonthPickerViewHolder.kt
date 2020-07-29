@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.presentation.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
@@ -18,7 +22,8 @@ import java.util.*
 
 class MonthPickerViewHolder(
         itemView: View?,
-        private val fm: FragmentManager
+        private val fm: FragmentManager,
+        private val onSelected: (DateFilterItem) -> Unit
 ) : AbstractViewHolder<DateFilterItem.MonthPickerItem>(itemView) {
 
     companion object {
@@ -31,24 +36,51 @@ class MonthPickerViewHolder(
             tvStcPerMonthLabel.text = element.label
             radStcPerMonth.isChecked = element.isSelected
 
-            setOnClickListener {
+            showSelectedMonth(element)
+            showCustomForm(element.isSelected)
+
+            edtStcPerMonth.setOnClickListener {
                 showMonthPicker(element)
+            }
+
+            setOnClickListener {
+                element.isSelected = true
+                radStcPerMonth.isChecked = true
+                showCustomForm(true)
             }
         }
     }
 
+    private fun showCustomForm(isShown: Boolean) = with(itemView) {
+        if (isShown) {
+            edtStcPerMonth.visible()
+        } else {
+            edtStcPerMonth.gone()
+        }
+
+        val lineMarginTop = if (isShown) {
+            context.resources.getDimension(R.dimen.layout_lvl3)
+        } else {
+            context.resources.getDimension(R.dimen.layout_lvl2)
+        }
+        verLineStcCustom.setMargin(0, lineMarginTop.toInt(), 0, 0)
+    }
+
     private fun showMonthPicker(element: DateFilterItem.MonthPickerItem) {
         val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            val minMonth = get(Calendar.MONTH).minus(2)
+            val minMonth = get(Calendar.MONTH).minus(3)
             set(Calendar.MONTH, minMonth)
         }
         val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
         val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context))
+
+        var selectedMonth = element.startDate
         val listener = object : OnDateChangedListener {
             override fun onDateChanged(date: Long) {
-
+                selectedMonth = Date(date)
             }
         }
+
         val dateTimePicker = DateTimePickerUnify(
                 itemView.context,
                 minDate,
@@ -57,7 +89,27 @@ class MonthPickerViewHolder(
                 listener,
                 DateTimePickerUnify.TYPE_DATEPICKER
         )
-        dateTimePicker.showDay = false
-        dateTimePicker.show(fm, element.label)
+        with(dateTimePicker) {
+            setTitle(element.label)
+            showDay = false
+
+            datePickerButton.setOnClickListener {
+                selectedMonth?.let { selectedMonth ->
+                    element.startDate = selectedMonth
+                    element.endDate = selectedMonth
+                }
+                showSelectedMonth(element)
+                onSelected(element)
+                dismiss()
+            }
+
+            show(fm, element.label)
+        }
+    }
+
+    private fun showSelectedMonth(element: DateFilterItem.MonthPickerItem) {
+        itemView.edtStcPerMonth.label = itemView.context.getString(R.string.stc_month)
+        val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, "MMMM yyyy")
+        itemView.edtStcPerMonth.valueStr = selectedMonthFmt
     }
 }

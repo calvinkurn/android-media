@@ -60,21 +60,13 @@ class DateFilterPickViewHolder(
                 onClick(element)
             }
 
-            if (element.type == DateFilterItem.TYPE_PER_MONTH) {
-                setupMontPicker()
-            } else {
-                setupDatePicker()
-            }
+            setupDatePicker()
 
             if (element.startDate != null && element.endDate != null) {
                 datePicker.selectedDates = listOf(element.startDate!!, element.endDate!!)
                 setSelectedDate(element.startDate, element.endDate)
             }
         }
-    }
-
-    private fun setupMontPicker() {
-        //should implement month picker here, but the component not ready yet from unify
     }
 
     private fun setupDatePicker() = with(itemView) {

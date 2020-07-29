@@ -376,7 +376,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSetDateFilterEvent(item.label)
         val startDate = item.startDate ?: return
         val endDate = item.endDate ?: return
-        mViewModel.setDateRange(startDate, endDate)
+        val isMonthly = item is DateFilterItem.MonthPickerItem
+        mViewModel.setDateRange(startDate, endDate, isMonthly)
         adapter.data.forEach {
             it.isLoaded = false
             it.data = null

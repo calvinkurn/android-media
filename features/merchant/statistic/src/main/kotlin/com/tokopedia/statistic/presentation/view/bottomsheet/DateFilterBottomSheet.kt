@@ -58,12 +58,6 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
-        val child: View = inflater.inflate(R.layout.bottomsheet_stc_select_date_range, container, false)
-        setTitle(child.context.getString(R.string.stc_change_date_range))
-        setChild(child)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
@@ -82,11 +76,6 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         val selectedItem = items.firstOrNull { it.isSelected } ?: return
         applyChangesCallback?.invoke(selectedItem)
         dismissAllowingStateLoss()
-    }
-
-    private fun getFilterPerMonth(): DateFilterItem.MonthPickerItem {
-        val perMonthLabel = context?.getString(R.string.stc_per_month) ?: "Per Bulan"
-        return DateFilterItem.MonthPickerItem(perMonthLabel, Date())
     }
 
     fun setFragmentManager(fm: FragmentManager): DateFilterBottomSheet {
@@ -113,6 +102,17 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
         mAdapter?.clearAllElements()
         mAdapter?.addElement(items)
+    }
+
+    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
+        val child: View = inflater.inflate(R.layout.bottomsheet_stc_select_date_range, container, false)
+        setTitle(child.context.getString(R.string.stc_change_date_range))
+        setChild(child)
+    }
+
+    private fun getFilterPerMonth(): DateFilterItem.MonthPickerItem {
+        val perMonthLabel = context?.getString(R.string.stc_per_month) ?: "Per Bulan"
+        return DateFilterItem.MonthPickerItem(perMonthLabel, Date())
     }
 
     private fun getDateFilterPerDay(): DateFilterItem.Pick {

@@ -2,8 +2,8 @@ package com.tokopedia.statistic.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactory
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
+import com.tokopedia.statistic.presentation.view.adapter.factory.DateFilterAdapterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -61,6 +61,10 @@ sealed class DateFilterItem(
                 return "Per Minggu ($dateRangeStr)"
             }
             TYPE_PER_MONTH -> {
+                startDate?.let {
+                    val monthFmt = DateTimeUtil.format(it.time, "MMMM yyyy")
+                    return "Per Bulan ($monthFmt)"
+                }
                 return "Per Bulan"
             }
         }
@@ -110,8 +114,10 @@ sealed class DateFilterItem(
 
     data class MonthPickerItem(
             override val label: String,
-            val selectedMonth: Date
-    ): DateFilterItem(type = TYPE_PER_MONTH) {
+            override var startDate: Date? = null,
+            override var endDate: Date? = null,
+            override var isSelected: Boolean = false
+    ) : DateFilterItem(type = TYPE_PER_MONTH) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {
             return typeFactory.type(this)

@@ -32,7 +32,7 @@ class DateFilterAdapterFactoryImpl(
             DateFilterClickViewHolder.RES_LAYOUT -> DateFilterClickViewHolder(parent, listener::onItemDateRangeClick)
             DateFilterApplyViewHolder.RES_LAYOUT -> DateFilterApplyViewHolder(parent, listener::onApplyDateFilter)
             DateFilterPickViewHolder.RES_LAYOUT -> DateFilterPickViewHolder(parent, fm, listener::onItemDateRangeClick)
-            MonthPickerViewHolder.RES_LAYOUT -> MonthPickerViewHolder(parent, fm)
+            MonthPickerViewHolder.RES_LAYOUT -> MonthPickerViewHolder(parent, fm, listener::onItemDateRangeClick)
             DateFilterDividerViewHolder.RES_LAYOUT -> DateFilterDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
