@@ -459,6 +459,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
                 val wholesalePriceEmpty = wholeSaleInputFormsAdapter?.itemCount == 0
                 if (wholesalePriceEmpty) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+                validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
+            } else {
+                viewModel.isAddingValidationWholeSale = false
+                viewModel.isAddingWholeSale = false
+                viewModel.isTheLastOfWholeSale.value = false
+                viewModel.wholeSaleErrorCounter.value = 0
             }
         }
 
