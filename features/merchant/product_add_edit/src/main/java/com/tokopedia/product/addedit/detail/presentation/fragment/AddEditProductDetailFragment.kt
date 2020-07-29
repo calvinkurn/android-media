@@ -321,8 +321,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
             wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
-            validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
-            viewModel.isAddingWholeSale = true
+            validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
         }
 
         // add edit product stock views
@@ -796,7 +795,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1) {
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1, isAddingWholeSale : Boolean = false) {
         itemCount?.let {
             var wholeSaleErrorCounter = 0
             for (index in 0 until it) {
@@ -833,6 +832,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 isPriceError?.let { isError -> if (isError) wholeSaleErrorCounter++ }
             }
             viewModel.wholeSaleErrorCounter.value = wholeSaleErrorCounter
+            viewModel.isAddingWholeSale = isAddingWholeSale
             viewModel.isAddingValidationWholeSale = wholeSaleErrorCounter > 0
         }
     }

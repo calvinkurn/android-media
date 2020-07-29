@@ -102,15 +102,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(isWholeSalePriceActivated) {
             this.value = isInputValid()
         }
-        addSource(wholeSaleErrorCounter) {
-            this.value = isInputValid()
-            // to avoid using default value of wholeSaleErrorCounter
-            // so we must check manual validation if we are in adding whole sale
-            if (isAddingWholeSale) {
-                this.value = !(isAddingValidationWholeSale)
-                isAddingWholeSale = false
-            }
-        }
         addSource(mIsProductStockInputError) {
             this.value = isInputValid()
         }
@@ -124,6 +115,14 @@ class AddEditProductDetailViewModel @Inject constructor(
             this.value = isInputValid()
         }
         addSource(isTheLastOfWholeSale) {
+            this.value = isInputValid()
+            // to avoid using default value of wholeSaleErrorCounter
+            // so we must check manual validation if we are in adding whole sale
+            if (isAddingWholeSale) {
+                this.value = !(isAddingValidationWholeSale)
+            }
+        }
+        addSource(wholeSaleErrorCounter) {
             this.value = isInputValid()
         }
     }
