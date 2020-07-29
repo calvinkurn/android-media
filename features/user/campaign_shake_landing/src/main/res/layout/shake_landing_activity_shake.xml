@@ -142,7 +142,7 @@
         android:layout_height="@dimen/shake_landing_dp_38"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/shake_landing_dp_10"
-        android:background="@drawable/bg_rect_rounded_white_shadow"
+        android:background="@drawable/shake_landing_bg_rect_rounded_white_shadow"
         android:gravity="center"
         android:padding="@dimen/shake_landing_dp_5">
 
@@ -207,7 +207,7 @@
         android:layout_height="@dimen/shake_landing_dp_38"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/shake_landing_dp_10"
-        android:background="@drawable/bg_rect_rounded_white_shadow"
+        android:background="@drawable/shake_landing_bg_rect_rounded_white_shadow"
         android:gravity="center"
         android:visibility="gone">
 
