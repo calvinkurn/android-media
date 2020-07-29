@@ -96,9 +96,11 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
             if (resultCode == Activity.RESULT_OK) {
                 if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
                     activity?.let {
-                        val contactURI = data.data
-                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
-                        telco_search_number_input_view.searchText = contact.contactNumber ?: ""
+                        telco_search_number_input_view.searchText = ""
+                        data.data?.run {
+                            val contact = this.covertContactUriToContactData(it.contentResolver)
+                            telco_search_number_input_view.searchText = contact.contactNumber
+                        }
                     }
                 }
             }

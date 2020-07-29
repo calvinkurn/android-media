@@ -110,9 +110,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let { it ->
-            titleProduct = it.getString(TITLE_PAGE)
+            titleProduct = it.getString(TITLE_PAGE) ?: ""
             productType = it.getInt(PRODUCT_TYPE)
-            selectedOperatorName = it.getString(OPERATOR_NAME)
+            selectedOperatorName = it.getString(OPERATOR_NAME) ?: ""
             categoryId = it.getInt(CATEGORY_ID)
 
             sharedModelPrepaid.productList.observe(this, Observer {
@@ -285,7 +285,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         emptyStateProductView.hide()
         telcoTelcoProductView.hide()
         arguments?.let {
-            titleProduct = it.getString(TITLE_PAGE)
+            titleProduct = it.getString(TITLE_PAGE) ?: ""
             if (titleProduct == TelcoComponentName.PRODUCT_PULSA) {
                 shimmeringGridLayout.show()
             } else {

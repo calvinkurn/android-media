@@ -13,7 +13,6 @@ import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoFilterAdapterTypeFactory
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_telco_filter.view.*
-import java.lang.StringBuilder
 
 class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
         BaseCheckableViewHolder.CheckableInteractionListener,
@@ -43,9 +42,11 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
 
                 val checkPositionList = HashSet<Int>()
                 listener.getFilterSelected().map { tagSelected ->
-                    for (i in 0 until dataCollection.size) {
-                        if (dataCollection[i].key == tagSelected) {
-                            checkPositionList.add(i)
+                    dataCollection?.let { collections ->
+                        for (i in 0 until collections.size) {
+                            if (collections[i].key == tagSelected) {
+                                checkPositionList.add(i)
+                            }
                         }
                     }
                 }
@@ -65,7 +66,7 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
         isDragable = true
         isHideable = true
         arguments?.let {
-            setTitle(it.getString(TITLE))
+            setTitle(it.getString(TITLE) ?: "")
         }
         setAction(getString(R.string.telco_reset_filter)) {
             if (adapter.totalChecked > 0) resetFilter()
@@ -98,7 +99,7 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
         val checkedFilterValues = StringBuilder()
         for ((index, checkedData) in adapter.checkedDataList.withIndex()) {
             checkedFilterList.add(checkedData.key)
-            checkedFilterValues.append("${checkedData.value.toLowerCase()}")
+            checkedFilterValues.append(checkedData.value.toLowerCase())
             if (index < adapter.checkedDataList.size - 1) {
                 checkedFilterValues.append(" - ")
             }
