@@ -60,7 +60,7 @@
     <string name="action_change_price">Ya, Ganti</string>
     <string name="action_cancel">Batal</string>
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
-    <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100.</string>
+    <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
     <!-- add edit product price bottomsheet   -->
@@ -91,8 +91,8 @@
     <string name="add_product_stock_header">Stok</string>
     <string name="label_available_stock">Stok tersedia</string>
     <string name="label_minimum_order">Minimum pemesanan</string>
-    <string name="error_empty_product_stock">Stok produk tidak boleh kosong</string>
-    <string name="error_minimum_stock_quantity_is_one">Stok tidak boleh 0</string>
+    <string name="error_empty_product_stock">Stok tidak boleh kosong</string>
+    <string name="error_minimum_stock_quantity_is_one">Stok minimal 1</string>
     <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>

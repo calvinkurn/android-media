@@ -94,6 +94,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
                         // reset the listener
                         it.addTextChangedListener(this)
                     }
+                } else if (isRendered && !isPriceFieldEdited) {
+                    // handle the price input if field is cleared
+                    val validatedInputModel = onPriceInputTextChangedListener.onPriceInputTextChanged(charSequence.toString(), visitablePosition)
+                    priceField?.setError(validatedInputModel.isPriceError)
+                    priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
                 }
             }
         })
