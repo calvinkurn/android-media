@@ -19,7 +19,6 @@ import rx.Subscriber;
 public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     private final GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase;
 
-    public static final int UNSELECTED = -2;
     private GetCategoryLiteTreeSubscriber subscriber;
 
     public CategoryPickerPresenterImpl(GetCategoryLiteTreeUseCase getCategoryLiteTreeUseCase) {
@@ -81,7 +80,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
             this.categoriesResponse = categoriesResponse;
             List<CategoryModel> categoriesModel = CategoryPickerMapper.INSTANCE.mapCategoryResponseIntoCategoryModels(categoriesResponse);
             List<CategoryViewModel> categoriesViewModel = CategoryViewMapper.INSTANCE.mapCategoryModelsToCategoryViewModels(categoriesModel);
-            getView().renderCategory(categoriesViewModel, UNSELECTED);
+            getView().renderCategory(categoriesViewModel, GetCategoryLiteTreeUseCase.Companion.getUnselectedCategoryId());
         }
     }
 }
