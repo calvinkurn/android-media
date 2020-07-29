@@ -28,29 +28,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="@string/sellerapp_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
                     android:path="@string/path_topads_autoads_create"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.StartAutoAdsActivity"
-            android:label="@string/autoads_topads"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.DailyBudgetActivity"
-            android:label="@string/autoads_pengaturan_iklan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".view.activity.AutoAdsActivatedActivity"
             android:label="@string/autoads_iklan_otomatis"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.InsufficientBalanceActivity"
-            android:label="@string/tambah_kredit_topads"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
@@ -59,10 +44,36 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.SettingBudgetAdsActivity"
+            android:name=".view.activity.EditBudgetAutoAdsActivity"
             android:label="@string/autoads_pengaturan_iklan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_edit_autoads"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.AutoAdsOnboardingActivity"
+            android:label="@string/auto_ads_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+                android:scheme="@string/internal_scheme"
+                android:host="@string/host_topads"
+                android:path="@string/path_autoads_onboarding"/>
+        </intent-filter></activity>
         <activity
             android:name=".view.activity.ConfirmationDialogActivity" />
     </application>

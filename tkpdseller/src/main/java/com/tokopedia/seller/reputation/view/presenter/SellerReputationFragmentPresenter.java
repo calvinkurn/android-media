@@ -10,7 +10,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
@@ -24,6 +23,7 @@ import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.util.ShopNetworkController;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,9 +35,8 @@ import java.util.List;
 public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<SellerReputationView> {
     public static final String REPUTATION_DATE = "dd-MM-yyyy";
     private SellerReputationRequest sellerReputationRequest;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSession;
     private NetworkStatus networkStatus;
-    private int networkCallCount = 0;
     private GCMHandler gcmHandler;
     private ReviewReputationUseCase reviewReputationUseCase;
     private DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener;
@@ -90,12 +89,8 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         );
     }
 
-    public boolean isFirstTime() {
-        return (isHitNetwork() && networkCallCount <= 0);
-    }
-
-    public void setSessionHandler(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
+    public void setUserSession(UserSessionInterface userSession) {
+        this.userSession = userSession;
     }
 
     public void setGcmHandler(GCMHandler gcmHandler) {
@@ -116,23 +111,23 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
 
     private TKPDMapParam<String, String> fillParam() {
         return AuthUtil.generateParamsNetwork(
-                sessionHandler.getLoginID(), gcmHandler.getRegistrationId(),
+                userSession.getUserId(), gcmHandler.getRegistrationId(),
                 sellerReputationRequest.getParamSummaryReputation());
     }
 
     private ShopNetworkController.ShopInfoParam fillParamShopInfo() {
-        shopInfoParam.shopId = sessionHandler.getShopID();
+        shopInfoParam.shopId = userSession.getShopId();
         return shopInfoParam;
     }
 
     private RequestParams fillParamShopInfo2() {
-        return ShopNetworkController.RequestParamFactory.generateRequestParam(sessionHandler.getLoginID(),
+        return ShopNetworkController.RequestParamFactory.generateRequestParam(userSession.getUserId(),
                 gcmHandler.getRegistrationId(), fillParamShopInfo());
     }
 
     private RequestParams fillParamReview() {
         TKPDMapParam<String, String> mapParam = fillParam();
-        String shopID = sessionHandler.getShopID();
+        String shopID = userSession.getShopId();
 
         return ReviewReputationUseCase.RequestParamFactory.generateRequestParam(shopID, mapParam);
     }
@@ -258,34 +253,6 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         return GoldMerchantDateUtils.getDateFormatForInput(
                 date, REPUTATION_DATE
         );
-    }
-
-    public void firstTimeNetworkCall() {
-        if (isHitNetwork()) {
-            reviewReputationUseCase.execute(sessionHandler.getShopID(), fillParam(),
-                    new DefaultErrorSubscriber<SellerReputationDomain>(errorNetworkListener) {
-                        @Override
-                        public void onCompleted() {
-                            resetHitNetwork();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            super.onError(e);
-                        }
-
-                        @Override
-                        public void onNext(SellerReputationDomain sellerReputationDomain) {
-                            super.onNext(sellerReputationDomain);
-                            if (isViewAttached()) {
-                                getView().dismissSnackbar();
-                                getView().setLoadMoreFlag(
-                                        sellerReputationDomain.getLinks().getNext() == null);
-                                getView().loadMore(convertTo(sellerReputationDomain.getList()));
-                            }
-                        }
-                    });
-        }
     }
 
     public void loadMoreNetworkCall() {

@@ -3,12 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layoutEmpty"
+        layout="@layout/empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/progressSomFilter"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_centerInParent="true" />
 
     <ScrollView
+        android:id="@+id/layoutSuccess"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_60"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -212,7 +228,7 @@
                 android:layout_margin="@dimen/dp_16"
                 android:textColor="@color/g_500"/>
 
-            <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
+            <com.tokopedia.sellerorder.common.widget.CustomMultipleFilterView
                 android:id="@+id/quick_filter_order_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -256,7 +272,7 @@
                 android:layout_margin="@dimen/dp_16"
                 android:textColor="@color/g_500"/>
 
-            <com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView
+            <com.tokopedia.sellerorder.common.widget.CustomMultipleFilterView
                 android:id="@+id/quick_filter_order_courier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -275,7 +291,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_25"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_terapkan"

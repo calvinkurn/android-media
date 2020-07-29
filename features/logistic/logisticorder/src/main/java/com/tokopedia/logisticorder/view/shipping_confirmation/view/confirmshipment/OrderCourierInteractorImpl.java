@@ -3,7 +3,7 @@ package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipm
 
 import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
 import com.tokopedia.logisticorder.view.shipping_confirmation.network.mapper.OrderDetailMapper;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
 
 import java.util.Map;
 

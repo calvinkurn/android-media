@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.attachinvoice.di.AttachInvoiceModule
 import com.tokopedia.chatbot.attachinvoice.di.DaggerAttachInvoiceComponent
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
 import com.tokopedia.chatbot.attachinvoice.view.adapter.AttachInvoiceListAdapter
@@ -87,7 +88,9 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
             val appComponent = ((activity as Activity).application as BaseMainApplication)
                     .baseAppComponent
             val daggerAttachInvoiceComponent = DaggerAttachInvoiceComponent.builder()
-                    .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
+                    .baseAppComponent(appComponent)
+                    .attachInvoiceModule(context?.let { AttachInvoiceModule(it) })
+                    .build() as DaggerAttachInvoiceComponent
             daggerAttachInvoiceComponent.inject(this)
             presenter.attachView(this)
             presenter.attachActivityContract(activity)

@@ -21,7 +21,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     packagingOptions {
@@ -50,9 +50,10 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.multiDex
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {

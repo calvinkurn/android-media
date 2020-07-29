@@ -9,6 +9,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewFlipper
@@ -19,25 +21,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig.Companion.instance
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
-class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.View, View.OnClickListener, AdapterCallback {
+class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
     private var mContainer: ViewFlipper? = null
     private var serverErrorView: ServerErrorView? = null
     private var mRecyclerViewCatalog: RecyclerView? = null
@@ -62,6 +73,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var showFirstTimeLoader = true
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         fetchRemoteConfig()
@@ -83,6 +101,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         view.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
         view.findViewById<View>(R.id.text_empty_action).setOnClickListener(this)
         mSwipeToRefresh!!.setOnRefreshListener { getCatalog(currentCategoryId, currentSubCategoryId, false) }
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initObserver()
     }
 
@@ -94,20 +114,26 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it)}
+        it?.let {
+            stopNetworkRequestPerformanceMonitoring()
+            startRenderPerformanceMonitoring()
+            refreshCatalog(it)
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
+        }
     })
 
     private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
-                is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
-                is ValidationError<*,*> -> {
-                    if (it.data is ValidateMessageDialog){
-                     showValidationMessageDialog(it.data.item,it.data.title,it.data.desc,it.data.messageCode)
+            when (it) {
+                is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+                is ValidationError<*, *> -> {
+                    if (it.data is ValidateMessageDialog) {
+                        showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                     }
                 }
             }
@@ -149,6 +175,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onEmptyCatalog() {
         mContainer!!.displayedChild = CONTAINER_EMPTY
+        view?.findViewById<TextView>(R.id.text_title_error2)?.text = getString(R.string.tp_catalog_empty_title)
+        view?.findViewById<TextView>(R.id.text_label_error2)?.text = getString(R.string.tp_catalog_empty_description)
+        val btnCOntinue = view?.findViewById<TextView>(R.id.button_continue)
+        btnCOntinue?.text = getString(R.string.tp_catalog_empty_button)
+        btnCOntinue?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+        view?.findViewById<Button>(R.id.text_empty_action)?.hide()
     }
 
     override fun openWebView(url: String) {
@@ -311,7 +345,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
@@ -409,7 +444,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         val view = LayoutInflater.from(context)
                 .inflate(R.layout.layout_tp_network_error_large, null, false)
         val img = view.findViewById<ImageView>(R.id.img_error)
-        img.setImageResource(R.drawable.ic_tp_error_redeem_full)
         val titleText = view.findViewById<TextView>(R.id.text_title_error)
         if (title == null || title.isEmpty()) {
             titleText.setText(R.string.tp_label_too_many_access)
@@ -455,6 +489,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                     activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)))
         }
         mRecyclerViewCatalog!!.adapter = mAdapter
+        //   setOnRecyclerViewLayoutReady()
         mAdapter!!.startDataLoading()
     }
 
@@ -472,7 +507,10 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
         hideLoader()
         if (itemCount == -1) {
-            showError()
+            try {
+                showError()
+            } catch (exception: Exception) {
+            }
         } else {
             if (mTimer == null) {
                 startUpdateCatalogStatusTimer()
@@ -484,13 +522,17 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {}
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
-            showError()
+            try {
+                showError()
+            } catch (exception: Exception) {
+            }
         }
     }
 
     fun getCatalog(categoryId: Int, subCategoryId: Int, showLoader: Boolean) {
         populateCatalog(categoryId, subCategoryId, viewModel.pointRange, showLoader)
     }
+
     companion object {
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
@@ -505,5 +547,46 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS,
+                CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS,
+                CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGLISTITEM_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

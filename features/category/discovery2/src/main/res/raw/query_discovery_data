@@ -1,0 +1,18 @@
+query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: String!) {
+  discoveryPageInfo(identifier: $identifier, version: $version, device: $device) {
+    data {
+      title
+      components
+     page_info {
+            Tags
+            Id
+            Identifier
+            Name
+            Path
+            Type
+            share_config
+          }
+      additional_info
+    }
+  }
+}

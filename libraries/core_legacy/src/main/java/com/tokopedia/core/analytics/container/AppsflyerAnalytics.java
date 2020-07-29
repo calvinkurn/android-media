@@ -22,6 +22,8 @@ import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -44,7 +46,6 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
     private static boolean isAppsflyerCallbackHandled = false;
     private static final String KEY_INSTALL_SOURCE = "install_source";
-    public static final String GCM_PROJECT_NUMBER = "692092518182";
 
     private static String deferredDeeplinkPath = "";
 
@@ -61,8 +62,8 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext())
                 .legacySessionHandler();
-
-        final String userID = sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000";
+        UserSessionInterface userSession = new UserSession(context);
+        final String userID = userSession.isLoggedIn() ? sessionHandler.getLoginID() : "00000";
 
 
         Timber.d("Appsflyer login userid " + userID);
@@ -74,14 +75,14 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    String isFirstLaunch = null;
+                    boolean isFirstLaunch = false;
                     String deeplink = null;
                     if (conversionData.containsKey("is_first_launch"))
-                        isFirstLaunch = (String) conversionData.get("is_first_launch");
+                        isFirstLaunch = (boolean) conversionData.get("is_first_launch");
                     if (conversionData.containsKey("af_dp"))
                         deeplink = (String) conversionData.get("af_dp");
 
-                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
+                    if (isFirstLaunch && !TextUtils.isEmpty(deeplink)) {
                         setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {

@@ -39,8 +39,8 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
+    public void setArguments(Bundle bundle) {
+        super.setArguments(bundle);
         selectedGroupId = bundle.getLong(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, selectedGroupId);
         currentGroupId = bundle.getLong(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID, currentGroupId);
         currentGroupName = bundle.getString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME, currentGroupName);
@@ -94,5 +94,15 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
             intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Long.parseLong(getSelectedRadioValue()));
         }
         return intent;
+    }
+
+    @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getContext().getString(R.string.label_top_ads_groups);
     }
 }

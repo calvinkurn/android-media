@@ -3,10 +3,11 @@
     android:versionCode="1"
     android:versionName="1.0.0"
     package="com.tokopedia.home">
-
     <application
         android:label="Home Test"
-        tools:replace="android:label">
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="false">
 
         <activity
             android:name=".test.activity.HomeActivityTest"
@@ -14,5 +15,8 @@
 
         <activity
             android:name=".environment.InstrumentationHomeTestActivity"/>
+
+        <activity android:name=".environment.BlankTestActivity"/>
+
     </application>
 </manifest>

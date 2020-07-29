@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -176,8 +176,11 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
-                    setCatalogChosen(productCatalog)
+                    val productCatalogTemp: ProductCatalog? = data.getParcelableExtra(EXTRA_CATALOG)
+                    productCatalogTemp?.let {
+                        productCatalog = productCatalogTemp
+                        setCatalogChosen(productCatalog)
+                    }
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
                     val newCategoryId = data.getLongExtra(ProductExtraConstant.CATEGORY_RESULT_ID, -1).toInt()

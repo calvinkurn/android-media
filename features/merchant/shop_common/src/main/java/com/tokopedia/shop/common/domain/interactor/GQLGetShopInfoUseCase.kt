@@ -47,7 +47,16 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val SHOP_INFO_SOURCE = "gql-shopinfo-widget"
         const val SHOP_PRODUCT_LIST_RESULT_SOURCE = "gql-productlist-shoppage"
         const val TOP_ADS_SOURCE = "gql-topads"
-
+        const val FIELD_CORE = "core"
+        const val FIELD_ASSETS = "assets"
+        const val FIELD_LAST_ACTIVE = "last_active"
+        const val FIELD_LOCATION = "location"
+        const val FIELD_ALLOW_MANAGE = "allow_manage"
+        const val FIELD_IS_OWNER = "is_owner"
+        const val FIELD_STATUS = "status"
+        const val FIELD_IS_OPEN = "is_open"
+        const val FIELD_CLOSED_INFO = "closed_info"
+        const val FIELD_CREATE_INFO = "create_info"
 
 
 

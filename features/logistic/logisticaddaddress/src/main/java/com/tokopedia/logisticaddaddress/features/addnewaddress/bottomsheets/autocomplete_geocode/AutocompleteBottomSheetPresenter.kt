@@ -5,7 +5,7 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import timber.log.Timber

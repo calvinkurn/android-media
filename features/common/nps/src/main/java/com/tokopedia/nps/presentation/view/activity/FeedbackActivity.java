@@ -3,21 +3,22 @@ package com.tokopedia.nps.presentation.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.di.DaggerFeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackComponent;
 import com.tokopedia.nps.presentation.di.FeedbackModule;
 import com.tokopedia.nps.presentation.presenter.FeedbackPresenter;
 import com.tokopedia.nps.presentation.view.FeedbackView;
+import com.tokopedia.unifycomponents.Toaster;
 
 import javax.inject.Inject;
 
@@ -77,9 +78,8 @@ public class FeedbackActivity extends BaseSimpleActivity implements FeedbackView
 
             presenter.post(String.valueOf(Math.round(rating)), category, description);
         } else {
-            ToasterError.make(findViewById(android.R.id.content),
-                    getString(R.string.fb_warning),
-                    BaseToaster.LENGTH_SHORT).show();
+            Toaster.INSTANCE.make(findViewById(android.R.id.content), getString(R.string.fb_warning),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v->{});
         }
     }
 
@@ -108,9 +108,8 @@ public class FeedbackActivity extends BaseSimpleActivity implements FeedbackView
 
     @Override
     public void showError(String message) {
-        ToasterError.make(findViewById(android.R.id.content),
-                message,
-                BaseToaster.LENGTH_SHORT).show();
+        Toaster.INSTANCE.make(findViewById(android.R.id.content), message,
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v->{});
     }
 
     @Override

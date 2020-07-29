@@ -1,23 +1,23 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsNewProductListAdapter;
@@ -68,6 +68,9 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        if (getContext() instanceof StepperListener) {
+            this.stepperListener = (StepperListener) getContext();
+        }
     }
 
     @Override
@@ -211,15 +214,6 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
         stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
-
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
-        }
     }
 
     @Override

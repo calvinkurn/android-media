@@ -1,5 +1,7 @@
 package com.tokopedia.shop.setting.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
@@ -23,6 +25,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -30,7 +34,9 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageSetting
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.setting.di.component.ShopPageSettingComponent
 import com.tokopedia.shop.setting.view.adapter.ShopPageSettingAdapter
 import com.tokopedia.shop.setting.view.model.*
@@ -51,9 +57,17 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         const val SHOP_DOMAIN = "domain"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
+
+        const val BUNDLE = "bundle"
+        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
+        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
+        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
+        const val BUNDLE_SHOP_ID = "shopId"
+
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
+        private const val REQUEST_CODE_ETALASE = 208
 
         fun createInstance(): Fragment {
             return ShopPageSettingFragment()
@@ -84,6 +98,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private var shopDomain: String? = null
     private var isShareFunctionReady = false
     private var shopInfo: ShopInfo? = null
+    private var shopRef: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -238,19 +253,28 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     private fun clickShareButton() {
-        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {
+        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {shopInfo ->
             shopPageSettingTracking?.clickShareButton(customDimensionShopPage)
             var shopShareMsg: String = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
             shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
                 FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
-                        SHOP_LOCATION_PLACEHOLDER, it.location)
+                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(shopInfo.shopCore.name).toString(),
+                        SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
             } else {
                 getString(R.string.shop_label_share_formatted,
-                        MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
+                        MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location)
             }
-            (activity?.application as ShopModuleRouter).goToShareShop(activity,
-                    shopId, it.shopCore.url, shopShareMsg)
+            activity?.let {
+                val shareData = LinkerData.Builder.getLinkerBuilder()
+                        .setType(LinkerData.SHOP_TYPE)
+                        .setName(getString(R.string.message_share_shop))
+                        .setTextContent(shopShareMsg)
+                        .setCustMsg(shopShareMsg)
+                        .setUri(shopInfo.shopCore.url)
+                        .setId(shopId)
+                        .build()
+                DefaultShare(it, shareData).show()
+            }
         }
     }
 
@@ -291,7 +315,38 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
         shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+        context?.let {
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, "")
+            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(BUNDLE_SHOP_ID, shopInfo!!.shopCore.shopID)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra(BUNDLE, bundle)
+            startActivityForResult(intent, REQUEST_CODE_ETALASE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_ETALASE -> if (resultCode == Activity.RESULT_OK && data != null) {
+                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
+                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
+                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+                val intent = ShopProductListActivity.createIntent(
+                        activity,
+                        shopId,
+                        "",
+                        etalaseId,
+                        "",
+                        "",
+                        shopRef
+                )
+                intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                startActivity(intent)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     // Pusat bantuan

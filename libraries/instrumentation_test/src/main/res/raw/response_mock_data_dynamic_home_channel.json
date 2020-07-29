@@ -2015,6 +2015,88 @@
                             "image_url": "",
                             "attribution": ""
                         }
+                    },
+                    {
+                        "id": 3247,
+                        "group_id": 56,
+                        "galaxy_attribution": "",
+                        "persona": "",
+                        "brand_id": "",
+                        "category_persona": "",
+                        "name": "salam todo",
+                        "layout": "salam_todo",
+                        "type": "inspiration",
+                        "showPromoBadge": false,
+                        "categoryID": "{}",
+                        "perso_type": 8,
+                        "campaignCode": "",
+                        "has_close_button": false,
+                        "header": {
+                            "id": 1034,
+                            "name": "salam todo",
+                            "subtitle": "",
+                            "url": "",
+                            "applink": "",
+                            "serverTime": 0,
+                            "expiredTime": "",
+                            "backColor": "",
+                            "backImage": "",
+                            "textColor": "#000000"
+                        },
+                        "grids": [
+                            {
+                                "id": 22512,
+                                "back_color": "",
+                                "name": "",
+                                "url": "https://m.tokopedia.com/p/fashion-wanita",
+                                "applink": "tokopedia://category/1758?categoryName=fashion-wanita",
+                                "price": "",
+                                "slashedPrice": "",
+                                "discount": "",
+                                "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2019/3/1/5479567/5479567_aac86faf-3037-4859-b5c5-4ec223b60ec2.jpg",
+                                "label": "",
+                                "soldPercentage": 0,
+                                "attribution": "test",
+                                "productClickUrl": "",
+                                "impression": "",
+                                "cashback": "",
+                                "isTopads": false,
+                                "freeOngkir": {
+                                    "isActive": false,
+                                    "imageUrl": ""
+                                },
+                                "productViewCountFormatted": "",
+                                "isOutOfStock": false,
+                                "warehouseID": 0,
+                                "minOrder": 0,
+                                "shop": {
+                                    "shopID": 0
+                                },
+                                "labelGroup": [],
+                                "has_buy_button": false
+                            }
+                        ],
+                        "banner": {
+                            "id": 0,
+                            "title": "",
+                            "description": "",
+                            "url": "",
+                            "back_color": "",
+                            "cta": {
+                                "type": "",
+                                "mode": "",
+                                "text": "",
+                                "coupon_code": ""
+                            },
+                            "applink": "",
+                            "text_color": "",
+                            "image_url": "",
+                            "attribution": "",
+                            "gradient_color": [
+                                "#FFFFFF",
+                                "#000000"
+                            ]
+                        }
                     }
                 ]
             },

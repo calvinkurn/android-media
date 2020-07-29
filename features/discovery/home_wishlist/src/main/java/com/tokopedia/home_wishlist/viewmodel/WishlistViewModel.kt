@@ -277,6 +277,10 @@ open class WishlistViewModel @Inject constructor(
                 addToCartRequestParams.shopId = it.shop.id.toInt()
                 addToCartRequestParams.quantity = it.minimumOrder
                 addToCartRequestParams.notes = ""
+                addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
+                addToCartRequestParams.productName = it.name
+                addToCartRequestParams.category = it.categoryBreadcrumb
+                addToCartRequestParams.price = it.price
 
                 val requestParams = RequestParams.create()
                 requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
@@ -760,10 +764,6 @@ open class WishlistViewModel @Inject constructor(
             bulkSelectCountActionData.value = Event(listVisitableMarked.size)
             wishlistData.value = wishlistDataTemp.copy()
         }
-    }
-
-    fun sendTopAds(url: String){
-        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     private fun addWishlistForRecommendationItem(productId: String,

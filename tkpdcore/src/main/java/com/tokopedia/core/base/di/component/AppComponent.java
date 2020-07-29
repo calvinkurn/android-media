@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -21,19 +20,15 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -55,9 +50,6 @@ public interface AppComponent {
 
     void inject(TActivity baseActivity);
 
-    @TopAdsQualifier
-    Retrofit topAdsRetrofit();
-
     @ApplicationContext
     Context context();
 
@@ -72,12 +64,6 @@ public interface AppComponent {
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();
-
-    @MojitoGetWishlistQualifier
-    Retrofit mojitoGetWishlistRetrofit();
-
-    @MojitoWishlistActionQualifier
-    Retrofit mojitoWishlistActionRetrofit();
 
     @HadesQualifier
     Retrofit hadesRetrofit();
@@ -116,11 +102,7 @@ public interface AppComponent {
 
     ChuckerInterceptor ChuckerInterceptor();
 
-    SessionHandler sessionHandler();
-
     GCMHandler gcmHandler();
-
-    ImageHandler imageHandler();
 
     BearerInterceptor bearerInterceptor();
 

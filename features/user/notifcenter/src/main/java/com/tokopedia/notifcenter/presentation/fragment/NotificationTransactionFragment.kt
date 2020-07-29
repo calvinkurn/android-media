@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
@@ -22,7 +21,6 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
-import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -35,13 +33,15 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.No
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.viewModelProvider
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
 class NotificationTransactionFragment : BaseNotificationFragment(), TransactionMenuListener {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: NotificationTransactionViewModel
 
@@ -71,9 +71,16 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         onListLastScroll(view)
         initObservable()
 
-        btnFilter?.setButton1OnClickListener {
-            viewModel.markAllReadNotification()
-            analytics().trackMarkAllAsRead(markAllReadCounter.toString())
+        //setup floatingButtonUnify
+        val markReadStr = context?.getString(R.string.mark_all_as_read) ?: "Tandai semua dibaca"
+        bottomFilterView()?.let {
+            val markReadItem = arrayListOf(
+                    FloatingButtonItem(markReadStr, false) {
+                        viewModel.markAllReadNotification()
+                        analytics().trackMarkAllAsRead(markAllReadCounter.toString())
+                    }
+            )
+            it.addItem(markReadItem)
         }
 
         swipeRefresh?.setOnRefreshListener {
@@ -121,7 +128,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
                 _adapter.addElement(EmptyDataStateProvider.emptyData(
                         EmptySource.Transaction
                 ))
-            }  else {
+            } else {
                 onSuccessInitiateData(it)
             }
         })
@@ -233,14 +240,14 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     override fun isHasNotification(): Boolean {
-        return viewModel.hasNotification.value?: false
+        return viewModel.hasNotification.value ?: false
     }
 
     override fun sendTrackingData(parent: String, child: String) {
         analytics().sendTrackTransactionTab(parent, child)
     }
 
-    override fun bottomFilterView(): BottomActionView? = view?.findViewById(R.id.btnFilter)
+    override fun bottomFilterView(): FloatingButtonUnify? = view?.findViewById(R.id.btnFilter)
     override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {}
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
@@ -264,6 +271,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         return NotificationTransactionAdapter(
                 adapterTypeFactory as NotificationTransactionFactoryImpl
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cleared()
     }
 
     companion object {

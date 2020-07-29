@@ -31,7 +31,7 @@ class NotificationSellerActivity : BaseSimpleActivity() {
 
     private fun setThemeWhiteIfSellerApp() {
         if (GlobalConfig.isSellerApp()) {
-            setTheme(R.style.Theme_White)
+            setTheme(com.tokopedia.design.R.style.Theme_White)
         }
     }
 

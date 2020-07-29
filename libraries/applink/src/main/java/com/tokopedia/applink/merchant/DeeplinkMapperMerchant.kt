@@ -61,7 +61,7 @@ object DeeplinkMapperMerchant {
             val segments = Uri.parse(deeplink).pathSegments
             val shopId = segments[0]
             return if(segments.size == SHOP_REVIEW_SEGMENT_SIZE) {
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW_APPLINK, shopId)
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
             } else {
                 UriUtil.buildUri(deeplink.replace(ApplinkConst.SHOP, ApplinkConstInternalMarketplace.SHOP_PAGE), shopId)
             }
@@ -186,7 +186,11 @@ object DeeplinkMapperMerchant {
     fun getSellerInfoDetailApplink(uri: Uri?): String {
         return uri?.let {
             val url = uri.getQueryParameter(PARAM_URL)
-            return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
+            if (url.isNullOrEmpty()) {
+                return ApplinkConst.SELLER_INFO
+            } else {
+                return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
+            }
         } ?: ""
     }
 

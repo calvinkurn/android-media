@@ -4,10 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +13,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
@@ -252,7 +254,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
         promoDetailPresenter.cachePromoCodeData(promoCode, getResources());
-        this.promoDetailAnalytics.userClickCopyIcon(promoName);
+        this.promoDetailAnalytics.userClickCopyIcon(promoCode);
         String message = getString(R.string.voucher_code_copy_to_clipboard);
 
         if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
@@ -294,10 +296,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWebViewLinkClicked(String url) {
-        if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
-            LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
-            loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), url);
-        }
+        RouteManager.route(getActivity(), url);
     }
 
 
@@ -327,7 +326,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                     if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(), appLink)) {
                         RouteManager.route(getActivity(), appLink);
                     } else {
-                        loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+                        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, redirectUrl);
                     }
                 }
             }

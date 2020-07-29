@@ -51,4 +51,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.profileCompletion)
 
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.saldodetails)
+
 }

@@ -13,7 +13,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
-import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.IMAGE_SOURCE_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadException
@@ -184,13 +184,13 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 result.uploadId
             }
             is UploadResult.Error -> {
-                val message = "Error upload image %s because %s".format(filePath, result.reason.name)
+                val message = "Error upload image %s because %s".format(filePath, result.message)
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
 
-                notificationManager?.onFailedUpload(result.reason.name)
+                notificationManager?.onFailedUpload(result.message)
                 ""
             }
         }

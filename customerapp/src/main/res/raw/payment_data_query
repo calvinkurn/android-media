@@ -84,5 +84,6 @@ query payment($paymentID: Int!) {
         voucher_code
         voucher_id
     }
+    payment_features
   }
 }

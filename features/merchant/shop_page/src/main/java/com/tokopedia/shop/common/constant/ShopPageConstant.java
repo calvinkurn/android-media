@@ -29,13 +29,13 @@ public class ShopPageConstant {
     public static final String GO_TO_MEMBERSHIP_DETAIL = "membership detail";
     public static final String GO_TO_MEMBERSHIP_REGISTER = "membership register";
     public static final String EMPTY_PRODUCT_SEARCH_IMAGE_URL =
-            "https://ecs7.tokopedia.net/img/android/others/product_search_not_found.png";
+            "https://ecs7.tokopedia.net/android/others/illustration_product_empty.png";
 
     public static final String KEY_MEMBERSHIP_DATA_MODEL = "KEY_MEMBERSHIP_DATA_MODEL_POSITION";
     public static final String KEY_MERCHANT_VOUCHER_DATA_MODEL = "KEY_MERCHANT_VOUCHER_DATA_MODEL_POSITION";
     public static final String KEY_FEATURED_PRODUCT_DATA_MODEL = "KEY_FEATURED_PRODUCT_DATA_MODEL_POSITION";
     public static final String KEY_ETALASE_HIGHLIGHT_DATA_MODEL = "KEY_ETALASE_HIGHLIGHT_DATA_MODEL_POSITION";
-    public static final String KEY_ETALASE_DATA_MODEL = "KEY_ETALASE_DATA_MODEL";
+    public static final String KEY_SORT_FILTER_DATA_MODEL = "KEY_ETALASE_DATA_MODEL";
     public static final String KEY_ETALASE_TITLE_DATA_MODEL = "KEY_ETALASE_TITLE_DATA_MODEL_POSITION";
     public static final String KEY_SHOP_PRODUCT_FIRST_DATA_MODEL = "KEY_SHOP_PRODUCT_FIRST_DATA_MODEL";
     public static final String KEY_SHOP_PRODUCT_ADD_DATA_MODEL = "KEY_SHOP_PRODUCT_ADD_DATA_MODEL";

@@ -13,13 +13,7 @@ data class EditVariantResult(
     val sizeCharts: List<Picture>
 ) {
 
-    fun countVariantStock(): Int {
-        var stock = 0
-        variants.forEach {
-            stock =+ it.stock
-        }
-        return stock
-    }
+    fun countVariantStock(): Int = variants.sumBy { it.stock }
 
     fun getVariantStatus(): ProductStatus {
         val activeVariant = variants.find { it.isActive() }
@@ -29,5 +23,9 @@ data class EditVariantResult(
         } else {
             ProductStatus.INACTIVE
         }
+    }
+
+    fun isAllStockEmpty(): Boolean {
+        return variants.all { it.isEmpty() }
     }
 }

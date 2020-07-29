@@ -7,7 +7,9 @@
     <string name="brandlist_brand_label">Brand</string>
     <string name="title_brand_not_found">Oops, Brand tidak ditemukan</string>
     <string name="subtitle_brand_not_found">Coba kata kunci lain atau cek rekomendasi  brand dibawah.</string>
+    <string name="subtitle_all_brand_not_found">Coba cari brand favoritmu yang lain</string>
     <string name="button_brand_not_found">Ganti kata kunci</string>
+    <string name="button_all_brand_not_found">Cari Brand Lain</string>
 
     <item type="id" name="position" />
     <item type="id" name="brand" />

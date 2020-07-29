@@ -61,7 +61,21 @@
             android:name=".inbox.view.activity.InboxReputationReportActivity"
             android:label="@string/title_report"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_review_report"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".createreputation.ui.activity.CreateReviewActivity"

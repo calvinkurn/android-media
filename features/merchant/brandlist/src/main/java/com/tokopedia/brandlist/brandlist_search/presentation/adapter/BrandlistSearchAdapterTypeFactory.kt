@@ -10,31 +10,36 @@ import com.tokopedia.brandlist.brandlist_search.presentation.fragment.BrandlistS
 
 
 class BrandlistSearchAdapterTypeFactory(
-        private val brandlistSearchFragment: BrandlistSearchFragment
+        private val brandlistSearchFragment: BrandlistSearchFragment,
+        private val searchListener: BrandlistSearchRecommendationNotFoundViewHolder.Listener
 ) : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
 
-    override fun type(brandlistSearchResultViewModel: BrandlistSearchResultViewModel): Int {
+    override fun type(brandlistSearchResultUiModel: BrandlistSearchResultUiModel): Int {
         return BrandlistSearchResultViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchRecommendationViewModel: BrandlistSearchRecommendationViewModel): Int {
+    override fun type(brandlistSearchRecommendationUiModel: BrandlistSearchRecommendationUiModel): Int {
         return BrandlistSearchRecommendationViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchNotFoundViewModel: BrandlistSearchNotFoundViewModel): Int {
+    override fun type(brandlistSearchNotFoundUiModel: BrandlistSearchNotFoundUiModel): Int {
         return BrandlistSearchNotFoundViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchHeaderViewModel: BrandlistSearchHeaderViewModel): Int {
+    override fun type(brandlistSearchHeaderUiModel: BrandlistSearchHeaderUiModel): Int {
         return BrandlistSearchHeaderViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int {
+    override fun type(brandlistSearchShimmeringUiModel: BrandlistSearchShimmeringUiModel): Int {
         return BrandlistSearchShimmeringViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchAllBrandHeaderViewModel: BrandlistSearchAllBrandLabelViewModel): Int {
-        return BrandlistSearchAllBrandLabelViewHolder.LAYOUT
+    override fun type(brandlistSearchAllBrandGroupHeaderUiModel: BrandlistSearchAllBrandGroupHeaderUiModel): Int {
+        return BrandlistSearchGroupHeaderViewHolder.LAYOUT
+    }
+
+    override fun type(brandlistSearchRecommendationNotFoundUiModel: BrandlistSearchRecommendationNotFoundUiModel): Int {
+        return BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -44,7 +49,8 @@ class BrandlistSearchAdapterTypeFactory(
             BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent, brandlistSearchFragment)
             BrandlistSearchHeaderViewHolder.LAYOUT -> BrandlistSearchHeaderViewHolder(parent)
             BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
-            BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> BrandlistSearchAllBrandLabelViewHolder(parent)
+            BrandlistSearchGroupHeaderViewHolder.LAYOUT -> BrandlistSearchGroupHeaderViewHolder(parent)
+            BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT -> BrandlistSearchRecommendationNotFoundViewHolder(parent, searchListener)
             else -> super.createViewHolder(parent, type)
         }
     }

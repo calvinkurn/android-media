@@ -4,55 +4,53 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
-import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAdapterFactory
+import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCContract
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
-import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
 import javax.inject.Inject
 
-class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCard, AuthenticateCCAdapterFactory>(),
-        AuthenticateCCContract.View {
+class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCard,
+        AuthenticateCCAdapterFactory>(), AuthenticateCCContract.View {
 
     @Inject
     lateinit var authenticateCCPresenter: AuthenticateCCPresenter
 
-    val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val progressDialog: ProgressDialog by lazy { ProgressDialog(context) }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_authenticate_credit_card, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_authenticate_credit_card, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonUse.setOnClickListener{
-            authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(), resources, true)
+        buttonUse.setOnClickListener {
+            authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(),
+                    true, null)
         }
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
-            ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
+            ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 ->
+                dividerItemDecoration.setDrawable(it1)
+            }
             getRecyclerView(view).addItemDecoration(dividerItemDecoration)
         }
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
@@ -75,31 +73,37 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun getScreenName(): String {
-       return ""
+        return ""
     }
 
     override fun initInjector() {
-        DaggerAuthenticateCreditCardComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .authenticateCreditCardModule(AuthenticateCreditCardModule())
-                .build()
-                .inject(this)
+        getComponent(AuthenticateCreditCardComponent::class.java).inject(this)
         authenticateCCPresenter.attachView(this)
     }
 
     override fun onErrorUpdateWhiteList(e: Throwable) {
-        showSnackbarError(ErrorHandler.getErrorMessage(activity, e))
+        context?.let {
+            showSnackbarError(ErrorHandler.getErrorMessage(context, e))
+        }
     }
 
     private fun showSnackbarError(errorMessage: String?) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, errorMessage)
+        errorMessage?.let {
+            view?.let {
+                Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        }
     }
 
     override fun onResultUpdateWhiteList(checkWhiteListStatus: CheckWhiteListStatus?) {
-        if(checkWhiteListStatus?.statusCode == 200){
+        if (checkWhiteListStatus?.statusCode == 200) {
             activity?.setResult(Activity.RESULT_OK)
-            NetworkErrorHelper.showGreenSnackbar(activity, checkWhiteListStatus.message)
-        }else{
+            checkWhiteListStatus.message?.let { message ->
+                view?.let {
+                    Toaster.make(it, message, Toaster.LENGTH_SHORT)
+                }
+            }
+        } else {
             showSnackbarError(checkWhiteListStatus?.message)
         }
     }
@@ -110,9 +114,9 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     private fun updateVisibilityButtonUse() {
-        if(adapter?.data?.size?:0 > 0){
+        if (adapter?.data?.size ?: 0 > 0) {
             buttonUse.visibility = View.VISIBLE
-        }else{
+        } else {
             buttonUse.visibility = View.GONE
         }
     }
@@ -145,8 +149,14 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_OTP_PAYMENT){
-            authenticateCCPresenter.updateWhiteList(AuthenticateCCPresenter.SINGLE_AUTH_VALUE, resources)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_OTP_PAYMENT) {
+            data?.let {
+                if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID)) {
+                    val uuid = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
+                    authenticateCCPresenter.updateWhiteList(AuthenticateCCPresenter.SINGLE_AUTH_VALUE,
+                            false, uuid)
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -161,15 +171,15 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun loadData(page: Int) {
-        authenticateCCPresenter.checkWhiteList(resources)
+        authenticateCCPresenter.checkWhiteList()
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
-        val REQUEST_CODE_OTP_PAYMENT = 1273
-        val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
-        val MODE_SMS = "sms"
+        const val REQUEST_CODE_OTP_PAYMENT = 1273
+        const val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
+        const val MODE_SMS = "sms"
         fun createInstance(): AuthenticateCreditCardFragment {
             return AuthenticateCreditCardFragment()
         }

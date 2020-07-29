@@ -15,6 +15,13 @@
         android:background="@color/white"
         app:elevation="0dp">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/review_seller_migration_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:tickerType="announcement" />
+
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/search"
             android:layout_width="match_parent"
@@ -35,12 +42,12 @@
         android:layout_below="@id/search"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/review_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scrollbars="vertical"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scrollbars="vertical"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

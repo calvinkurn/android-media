@@ -78,7 +78,7 @@
             app:layout_constraintStart_toEndOf="@+id/image_shop"
             app:layout_constraintTop_toBottomOf="@+id/text_shop_verification_status"/>
 
-        <com.tokopedia.design.widget.WarningTickerView
+        <com.tokopedia.home.account.presentation.view.WarningTickerView
             android:id="@+id/verification_warning_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

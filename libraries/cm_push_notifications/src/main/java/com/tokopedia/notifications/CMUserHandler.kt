@@ -17,6 +17,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.data.model.TokenResponse
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
@@ -79,19 +81,12 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         }
 
     private val userId: String
-        get() = (mContext as CMRouter).userId
-
-    private val userIdAsInt: Int
         get() {
-            val userIdStr = userId
-            var userIdInt = 0
-            if (!TextUtils.isEmpty(userIdStr)) {
-                try {
-                    userIdInt = Integer.parseInt(userIdStr.trim { it <= ' ' })
-                } catch (e: NumberFormatException) {
-                }
+            val userSession: UserSessionInterface = UserSession(mContext)
+            userSession.userId?.let {
+                return it
             }
-            return userIdInt
+            return ""
         }
 
     fun updateToken(token: String, remoteDelaySeconds: Long, userAction: Boolean) {
@@ -133,13 +128,14 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""
-                requestParams[USER_ID] = userIdAsInt
                 requestParams[SOURCE] = SOURCE_ANDROID
                 requestParams[FCM_TOKEN] = token
                 requestParams[APP_ID] = CMNotificationUtils.getUniqueAppId(mContext)
                 requestParams[SDK_VERSION] = CMNotificationUtils.sdkVersion.toString()
                 requestParams[APP_VERSION] = appVersionName
-                requestParams[USER_STATE] = CMNotificationUtils.getUserStatus(mContext, userId)
+                val userIdAndStatus = CMNotificationUtils.getUserIdAndStatus(mContext, userId)
+                requestParams[USER_STATE] = userIdAndStatus.first
+                requestParams[USER_ID] = userIdAndStatus.second
                 requestParams[REQUEST_TIMESTAMP] = CMNotificationUtils.currentLocalTimeStamp.toString() + ""
                 requestParams[APP_NAME] = CMNotificationUtils.getApplicationName(mContext)
 

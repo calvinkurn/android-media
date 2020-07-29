@@ -3,15 +3,16 @@ package com.tokopedia.flight.cancellation.data.cloud;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.cancellation.data.cache.FlightCancellationReasonDataCacheSource;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationAttachmentUploadEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.network.data.model.response.DataResponse;
 
@@ -21,6 +22,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -87,6 +90,16 @@ public class FlightCancellationCloudDataSource {
                 .flatMap(new Func1<Response<DataResponse<CancellationRequestEntity>>, Observable<CancellationRequestEntity>>() {
                     @Override
                     public Observable<CancellationRequestEntity> call(Response<DataResponse<CancellationRequestEntity>> dataResponseResponse) {
+                        return Observable.just(dataResponseResponse.body().getData());
+                    }
+                });
+    }
+
+    public Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params, MultipartBody.Part file) {
+        return flightApi.uploadCancellationAttachment(params, file)
+                .flatMap(new Func1<Response<DataResponse<CancellationAttachmentUploadEntity>>, Observable<CancellationAttachmentUploadEntity>>() {
+                    @Override
+                    public Observable<CancellationAttachmentUploadEntity> call(Response<DataResponse<CancellationAttachmentUploadEntity>> dataResponseResponse) {
                         return Observable.just(dataResponseResponse.body().getData());
                     }
                 });

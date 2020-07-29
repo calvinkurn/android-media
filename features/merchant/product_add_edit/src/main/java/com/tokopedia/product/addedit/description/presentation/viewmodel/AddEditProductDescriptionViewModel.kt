@@ -8,6 +8,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_YOUTUBE_PREFIX
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -97,12 +101,17 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private fun getIdYoutubeUrl(videoUrl: String): String? {
         return try {
             // add https:// prefix to videoUrl
-            val webVideoUrl =
-                    if (videoUrl.startsWith(WEB_PREFIX_HTTP) ||
-                            videoUrl.startsWith(WEB_PREFIX_HTTPS)) videoUrl else WEB_YOUTUBE_PREFIX + videoUrl
+            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                videoUrl
+            } else {
+                WEB_YOUTUBE_PREFIX + videoUrl
+            }
+            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
+
             val uri = Uri.parse(webVideoUrl)
             when (uri.host) {
                 "youtu.be" -> uri.lastPathSegment
+                "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
                 else -> throw MessageErrorException("")
             }
@@ -148,12 +157,5 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
         }
         return ""
-    }
-
-    companion object {
-        const val KEY_YOUTUBE_VIDEO_ID = "v"
-        const val WEB_PREFIX_HTTP = "http://"
-        const val WEB_PREFIX_HTTPS = "https://"
-        const val WEB_YOUTUBE_PREFIX = "https://"
     }
 }

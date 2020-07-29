@@ -110,7 +110,7 @@ class ShopHomeViewModelTest {
 
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
 
-        viewModel.getNextProductList(mockShopId, 2)
+        viewModel.getNewProductList(mockShopId, 2)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
@@ -126,7 +126,7 @@ class ShopHomeViewModelTest {
 
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
 
-        viewModel.getNextProductList(mockShopId, anyInt())
+        viewModel.getNewProductList(mockShopId, anyInt())
 
         coVerify {
             getShopProductUseCase.executeOnBackground()

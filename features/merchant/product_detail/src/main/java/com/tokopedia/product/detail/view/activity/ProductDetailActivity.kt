@@ -10,6 +10,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -21,7 +24,6 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -79,11 +81,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     //Performance Monitoring
-    var performanceMonitoringP1: PerformanceMonitoring? = null
-    var performanceMonitoringP2: PerformanceMonitoring? = null
-    var performanceMonitoringP2General: PerformanceMonitoring? = null
-    var performanceMonitoringP2Login: PerformanceMonitoring? = null
-    var performanceMonitoringFull: PerformanceMonitoring? = null
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    private var performanceMonitoringP1: PerformanceMonitoring? = null
+    private var performanceMonitoringP2: PerformanceMonitoring? = null
+    private var performanceMonitoringP2General: PerformanceMonitoring? = null
+    private var performanceMonitoringP2Login: PerformanceMonitoring? = null
+    private var performanceMonitoringFull: PerformanceMonitoring? = null
 
     object DeeplinkIntents {
         @DeepLink(ApplinkConst.PRODUCT_INFO)
@@ -107,25 +111,42 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
     }
 
-    fun stopMonitoringP1(){
+    fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()
     }
 
-    fun stopMonitoringP2(){
+    fun stopMonitoringP2() {
         performanceMonitoringP2?.stopTrace()
     }
 
-    fun stopMonitoringP2General(){
+    fun stopMonitoringP2General() {
         performanceMonitoringP2General?.stopTrace()
     }
 
-    fun stopMonitoringP2Login(){
+    fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
     }
 
-    fun stopMonitoringFull(){
+    fun stopMonitoringFull() {
         performanceMonitoringFull?.stopTrace()
     }
+
+    fun startMonitoringPltNetworkRequest(){
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startMonitoringPltRenderPage() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    fun stopMonitoringPltRenderPage() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 
     fun goToHomePageClicked() {
         if (isTaskRoot) {
@@ -141,9 +162,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                        productKey, isFromDeeplink,
-                        isFromAffiliate, trackerAttribution,
-                        trackerListName, affiliateString, deeplinkUrl)
+            productKey, isFromDeeplink,
+            isFromAffiliate, trackerAttribution,
+            trackerListName, affiliateString, deeplinkUrl)
 
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
@@ -212,10 +233,19 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
             isFromDeeplink = true
         }
-
+        initPLTMonitoring()
         initPerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
+    }
+
+    private fun initPLTMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
+                ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
+                ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS)
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ProductDetailConstant.PDP_RESULT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     private fun initPerformanceMonitoring() {

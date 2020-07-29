@@ -4,7 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 
-import com.tokopedia.notifications.database.RoomDB;
+import com.tokopedia.notifications.database.RoomNotificationDB;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.StorageProvider;
 
 public class RepositoryManager {
@@ -14,7 +14,7 @@ public class RepositoryManager {
     private Application application;
 
     RepositoryManager(Application application) {
-        RoomDB db = RoomDB.getDatabase(application);
+        RoomNotificationDB db = RoomNotificationDB.getDatabase(application);
         this.storageProvider = new StorageProvider(db.inAppDataDao(), db.elapsedTimeDao());
         this.application = application;
     }
