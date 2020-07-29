@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 23/06/20
  */
 
-object DateRangeFormatUtil {
+object DateFilterFormatUtil {
 
     private const val PATTERN_DAY = "dd"
     private const val PATTERN_MONTH_MM = "MM"
