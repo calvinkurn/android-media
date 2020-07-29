@@ -28,7 +28,10 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.*
@@ -414,26 +417,32 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceDialog() }
         } else {
             productPriceEditIcon?.hide()
-            productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        }
 
-                override fun afterTextChanged(p0: Editable?) {}
+        productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
 
-                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                    // clean any kind of number formatting here
-                    val productPriceInput = charSequence?.toString()?.replace(".", "")
-                    productPriceInput?.let {
-                        // do the validation first
-                        viewModel.validateProductPriceInput(it)
-                        productPriceField?.textFieldInput?.let { editText ->
-                            InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
-                                    charSequence.length, count,this)
-                        }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                // clean any kind of number formatting here
+                val productPriceInput = charSequence?.toString()?.replace(".", "")
+
+                productPriceInput?.let {
+                    // do the validation first
+                    viewModel.validateProductPriceInput(it)
+                    productPriceField?.textFieldInput?.let { editText ->
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                charSequence.length, count, this)
+                    }
+                    // product wholesale input validation
+                    viewModel.isWholeSalePriceActivated.value?.run {
+                        if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
                     }
                 }
-            })
-        }
+            }
+        })
 
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
@@ -662,11 +671,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         //countTouchPhoto can increment 1 every time we come or back to this page
         //if we back from ActivityOnResult countTouchPhoto still increment,
         //to avoid that we have to make sure the value of countTouchPhoto must be 1
-        if(countTouchPhoto > 2) {
+        if (countTouchPhoto > 2) {
             countTouchPhoto = 1
         }
         // tracker only hit when there are two images of product
-        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+        if (productPhotoAdapter?.itemCount ?: 0 > 1) {
             // to avoid double hit tracker when dragging or touching image product, we have to put if here
             if (countTouchPhoto == 2) {
                 if (viewModel.isEditing && !viewModel.isAdding) {
@@ -1278,7 +1287,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun onCategoryRecommendationSelected(categoryId: String, categoryName: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
-        if(viewModel.isAdding) {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductCategoryRecom(shopId)
         }
     }
