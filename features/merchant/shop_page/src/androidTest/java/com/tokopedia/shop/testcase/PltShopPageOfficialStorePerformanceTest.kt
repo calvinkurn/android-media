@@ -2,6 +2,9 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -11,6 +14,7 @@ import org.junit.Test
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.graphql.data.db.DbMetadata
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.test.R
 import com.tokopedia.shop.util.Util
@@ -20,7 +24,7 @@ import java.util.HashMap
 
 class PltShopPageOfficialStorePerformanceTest {
 
-    companion object{
+    companion object {
         private const val SAMPLE_SHOP_ID = "3418893"
     }
 
@@ -45,7 +49,6 @@ class PltShopPageOfficialStorePerformanceTest {
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
-            activityRule.activity.deleteDatabase("tokopedia_graphql")
         }
     }
 
@@ -90,7 +93,23 @@ class PltShopPageOfficialStorePerformanceTest {
                     TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
-        activityRule.activity.deleteDatabase("tokopedia_graphql")
+
+        val db: SQLiteOpenHelper = object : SQLiteOpenHelper(InstrumentationRegistry.getInstrumentation().context, DbMetadata.NAME, null, DbMetadata.VERSION) {
+            override fun onCreate(p0: SQLiteDatabase?) {
+                // noop
+            }
+
+            override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
+                //noop
+            }
+        }
+
+        //delete all data in all tables in gql database
+        try {
+            val dbWrite1 = db.writableDatabase
+            dbWrite1.execSQL("DELETE FROM tokopedia_graphql")
+            dbWrite1.close()
+        } catch (e: Exception) { }
         activityRule.activity.finishAndRemoveTask()
     }
 
