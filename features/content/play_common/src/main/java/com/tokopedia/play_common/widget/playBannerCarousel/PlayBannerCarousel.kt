@@ -238,5 +238,6 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
     companion object{
         private val LAYOUT = R.layout.layout_play_banner_carousel
+        private val TRANSITION_NAME = "root_play"
     }
 }

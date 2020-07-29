@@ -10,10 +10,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.PlayBannerCarousel
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.*
 import kotlinx.android.synthetic.main.play_banner_carousel.view.*
 
 class PlayBannerCardViewHolder(
@@ -66,7 +63,11 @@ class PlayBannerCardViewHolder(
                         position = playCarouselCardDataModel?.channel?.brandId ?: "1"
                 )
         )
-        RouteManager.route(itemView.context, dataModel.applink)
+        if(dataModel.widgetType != PlayBannerWidgetType.UPCOMING || dataModel.widgetType != PlayBannerWidgetType.NONE) {
+            playBannerCarouselView?.let { listener.onOpenPlayActivity(it, dataModel.channelId) }
+        } else {
+            RouteManager.route(itemView.context, dataModel.applink)
+        }
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
