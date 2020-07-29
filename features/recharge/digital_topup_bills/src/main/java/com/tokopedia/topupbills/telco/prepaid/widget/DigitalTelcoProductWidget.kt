@@ -33,7 +33,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     private val digitalTrackTelcoPrev = mutableListOf<DigitalTrackProductTelco>()
 
     init {
-        val view = View.inflate(context, R.layout.view_digital_product_list, this)
+        val view = View.inflate(context, R.layout.view_telco_product_list, this)
         recyclerView = view.findViewById(R.id.telco_product_rv)
     }
 

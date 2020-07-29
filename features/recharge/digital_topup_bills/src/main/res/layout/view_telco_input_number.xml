@@ -123,5 +123,5 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/view_digital_input_number_prepaid"/>
+    <include layout="@layout/view_telco_input_number_prepaid"/>
 </merge>

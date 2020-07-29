@@ -93,7 +93,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     open fun getLayout(): Int {
-        return R.layout.view_digital_input_number
+        return R.layout.view_telco_input_number
     }
 
     fun setListener(listener: ActionListener) {

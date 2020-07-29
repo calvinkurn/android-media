@@ -18,12 +18,12 @@
         app:width_weight="0.6"
         app:corners="4" />
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
-    <include layout="@layout/item_shimmering_product_list"/>
+    <include layout="@layout/item_telco_shimmering_product_list"/>
 
 </LinearLayout>

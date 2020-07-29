@@ -42,13 +42,13 @@
         android:layout_below="@+id/telco_title_filter_result" />
 
     <include
-        layout="@layout/layout_shimmering_product_grid"
+        layout="@layout/layout_telco_shimmering_product_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/telco_sort_filter" />
 
     <include
-        layout="@layout/layout_shimmering_product_list"
+        layout="@layout/layout_telco_shimmering_product_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/telco_sort_filter" />

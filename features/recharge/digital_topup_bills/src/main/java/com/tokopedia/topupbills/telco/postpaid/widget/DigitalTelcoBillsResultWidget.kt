@@ -20,7 +20,7 @@ class DigitalTelcoBillsResultWidget @JvmOverloads constructor(@NotNull context: 
     private val value: TextView
 
     init {
-        val view = View.inflate(context, R.layout.item_digital_bills_result, this)
+        val view = View.inflate(context, R.layout.item_telco_bills_result, this)
         label = view.findViewById(R.id.telco_postpaid_label)
         value = view.findViewById(R.id.telco_postpaid_value)
     }

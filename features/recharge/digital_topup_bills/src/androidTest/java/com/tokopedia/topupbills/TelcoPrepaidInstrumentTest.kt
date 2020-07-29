@@ -153,7 +153,7 @@ class TelcoPrepaidInstrumentTest {
         onView(withId(R.id.telco_search_number_contact_picker)).perform(click())
         onView(withId(R.id.edit_text_search)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_text_search)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
-        val viewInteraction = onView(withId(R.id.topupbills_search_number_rv)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
         onView(withId(R.id.telco_ac_input_number)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
     }
@@ -165,7 +165,7 @@ class TelcoPrepaidInstrumentTest {
         onView(withId(R.id.edit_text_search)).check(matches(withText("")))
         onView(withId(R.id.edit_text_search)).perform(typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
         onView(withId(R.id.edit_text_search)).check(matches(withText(VALID_PHONE_NUMBER)))
-        val viewInteraction = onView(withId(R.id.topupbills_search_number_rv)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
     }

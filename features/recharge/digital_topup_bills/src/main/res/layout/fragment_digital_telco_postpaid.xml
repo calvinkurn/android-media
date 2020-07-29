@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants">
 
-    <include layout="@layout/layout_shimmering_product_telco" />
+    <include layout="@layout/layout_telco_shimmering_product_telco" />
 
     <com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
         android:id="@+id/telco_main_container"
