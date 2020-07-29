@@ -753,7 +753,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     validateUsePromoRevampUiModel = response
                                     if (!onApplyBbo(shipping, logisticPromoUiModel, response)) {
                                         updatePromoState(response.promoUiModel)
-                                        globalEvent.value = OccGlobalEvent.Error(null, FAIL_APPLY_BBO_ERROR_MESSAGE)
+                                        globalEvent.value = OccGlobalEvent.Error(errorMessage = FAIL_APPLY_BBO_ERROR_MESSAGE)
                                     }
                                 }
 
@@ -772,7 +772,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 val shippingRecommendationData = shipping.shippingRecommendationData
                 if (shippingRecommendationData != null) {
                     var logisticPromoShipping: ShippingCourierUiModel? = null
-                    val shouldEnableServicePicker = _orderShipment.isServicePickerEnable || !_orderShipment.serviceErrorMessage.isNullOrEmpty()
+                    val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty()
                     for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                         if (shippingDurationViewModel.isSelected) {
                             for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
