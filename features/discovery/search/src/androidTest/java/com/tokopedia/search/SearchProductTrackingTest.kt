@@ -21,9 +21,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.Status
-import com.tokopedia.analyticsdebugger.validator.core.Validator
-import com.tokopedia.analyticsdebugger.validator.core.assertAnalyticWithValidator
+import com.tokopedia.analyticsdebugger.validator.core.*
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_LOCAL_CACHE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.FreeOngkir.FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN
@@ -35,6 +33,7 @@ import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -79,9 +78,8 @@ internal class SearchProductTrackingTest {
     fun testTracking() {
         performUserJourney()
 
-        assertAnalyticWithValidator(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME) {
-            it.assertStatus()
-        }
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+                hasAllSuccess())
     }
 
     private fun performUserJourney() {
@@ -103,15 +101,6 @@ internal class SearchProductTrackingTest {
 
     private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
         return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
-    }
-
-    private fun Validator.assertStatus() {
-        val eventAction = data["eventAction"]
-
-        if (status != Status.SUCCESS)
-            throw AssertionError("\"$eventAction\" event status = $status.")
-        else
-            Log.d(TAG, "\"$eventAction\" event success. Total hits: ${matches.size}.")
     }
 
     @After

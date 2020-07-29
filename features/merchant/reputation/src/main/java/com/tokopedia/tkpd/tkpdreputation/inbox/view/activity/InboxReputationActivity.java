@@ -101,10 +101,12 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
-            reviewSellerFragment = applicationContext.getReviewSellerFragment();
-            Bundle reviewSellerBundle = new Bundle();
-            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
-            reviewSellerFragment.setArguments(reviewSellerBundle);
+            if(GlobalConfig.isSellerApp()) {
+                reviewSellerFragment = applicationContext.getReviewSellerFragment();
+                Bundle reviewSellerBundle = new Bundle();
+                reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
+                reviewSellerFragment.setArguments(reviewSellerBundle);
+            }
         }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {

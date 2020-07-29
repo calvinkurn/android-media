@@ -128,6 +128,8 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
+    public static final String MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW = "android_customer_enable_new_deals_revamp_flow";
+
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
 
     //feed section
@@ -209,6 +211,9 @@ public class RemoteConfigKey {
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
+
+    public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
+    public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 

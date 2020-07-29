@@ -5,18 +5,18 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
-        <ImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/img_error2"
-            android:layout_width="202dp"
-            android:layout_height="117dp"
-            android:layout_centerHorizontal="true"
+            android:layout_width="280dp"
+            android:layout_height="210dp"
             android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:background="@drawable/ic_tp_empty_pages" />
+            app:remoteFileName="coupon_emptylistimage.png" />
 
         <TextView
             android:id="@+id/text_title_error2"
@@ -31,7 +31,8 @@
             android:gravity="center_horizontal"
             android:text="@string/tp_label_prepare_catalog"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/tp_text_size_regular" />
+            android:textSize="@dimen/tp_text_size_medium"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_label_error2"
@@ -64,22 +65,22 @@
             android:padding="@dimen/tp_padding_medium"
             android:text="@string/tp_label_exchange_point"
             android:textColor="@color/white"
-            android:textSize="@dimen/tp_text_size_xsmall"
-            android:textStyle="normal"
-            android:visibility="gone" />
+            android:textSize="@dimen/tp_text_size_small"
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/text_empty_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/button_continue"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/tp_margin_medium"
             android:background="@null"
             android:gravity="center"
-            android:layout_centerHorizontal="true"
             android:text="@string/tp_label_help_with_storepoints"
             android:textAllCaps="false"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/tp_textcolor_dynamic_action"
             android:textSize="@dimen/tp_text_size_small" />
 
     </RelativeLayout>
