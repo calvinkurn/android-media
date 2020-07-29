@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="setting_notif_dp_0_5">0.5dp</dimen>
     <dimen name="setting_notif_dp_6">6dp</dimen>
     <dimen name="setting_notif_dp_7">7dp</dimen>
     <dimen name="setting_notif_dp_10">10dp</dimen>

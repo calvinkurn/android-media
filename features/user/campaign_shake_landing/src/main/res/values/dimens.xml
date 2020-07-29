@@ -16,6 +16,7 @@
     <dimen name="shake_landing_dp_80">80dp</dimen>
     <dimen name="shake_landing_dp_159">159dp</dimen>
     <dimen name="shake_landing_dp_160">160dp</dimen>
+    <dimen name="shake_landing_dp_180">180dp</dimen>
     <dimen name="shake_landing_dp_288">288dp</dimen>
 
     <dimen name="shake_landing_sp_13">13sp</dimen>

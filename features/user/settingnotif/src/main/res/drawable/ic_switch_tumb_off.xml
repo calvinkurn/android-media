@@ -4,7 +4,7 @@
         <shape android:shape="oval">
             <solid android:color="@color/Neutral_N0" />
             <stroke android:color="@color/settingnotif_white_two_ic"
-                android:width="0.5dp"/>
+                android:width="@dimen/setting_notif_dp_0_5"/>
             <size android:height="@dimen/setting_notif_dp_6"
                 android:width="@dimen/setting_notif_dp_6"/>
         </shape>

@@ -3,18 +3,18 @@
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/shake_grey_500" />
-            <corners android:radius="180dp" />
+            <corners android:radius="@dimen/shake_landing_dp_180" />
         </shape>
     </item>
 
     <item
-        android:bottom="1dp">
+        android:bottom="@dimen/shake_landing_dp_1">
         <shape android:shape="rectangle">
             <stroke
-                android:width="1dp"
+                android:width="@dimen/shake_landing_dp_1"
                 android:color="@color/shake_grey_400" />
             <solid android:color="@android:color/white" />
-            <corners android:radius="180dp" />
+            <corners android:radius="@dimen/shake_landing_dp_180" />
         </shape>
     </item>
 </layer-list>
