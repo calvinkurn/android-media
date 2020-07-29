@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -74,12 +75,14 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             override fun onTabUnselected(p0: TabLayout.Tab) {}
 
             override fun onTabSelected(tab: TabLayout.Tab) {
+                val isMainStockTab = tab.position == 0
+                if (!GlobalConfig.isSellerApp()) {
+                    toggleSaveButton(isMainStockTab)
+                }
                 isVariant?.run {
-                    if (tab.position == 0) {
-                        toggleSaveButton(true)
+                    if (isMainStockTab) {
                         ProductManageTracking.eventClickAllocationMainStock(this)
                     } else {
-                        toggleSaveButton(false)
                         ProductManageTracking.eventClickAllocationOnStockCampaign(this)
                     }
                 }
