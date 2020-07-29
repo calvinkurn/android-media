@@ -72,10 +72,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_free_ongkir.hide()
     }
 
-    fun setupSgcContent(shopInfo: ShopInfo, isMyShop: Boolean, broadcasterConfig: Broadcaster.Config?){
-        setupSgcPlayWidget(shopInfo, isMyShop, broadcasterConfig)
-    }
-
     private fun setupTextContentSgcWidget(){
         if(view.shop_page_sgc_title.text.isBlank()) {
             val text = context.getString(R.string.shop_page_play_widget_title)

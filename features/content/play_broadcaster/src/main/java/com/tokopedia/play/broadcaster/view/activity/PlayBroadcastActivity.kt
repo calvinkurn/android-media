@@ -285,8 +285,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
-        viewModel.setChannelId(channelId)
-        this.channelType = ChannelType.getByValue(channelType)
+        channelId?.let {viewModel.setChannelId(it)}
+        channelType?.let {
+            this.channelType = ChannelType.getByValue(it)
+        }
     }
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {

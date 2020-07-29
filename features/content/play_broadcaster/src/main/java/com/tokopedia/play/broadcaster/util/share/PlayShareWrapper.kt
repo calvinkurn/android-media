@@ -21,9 +21,9 @@ import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
 object PlayShareWrapper {
 
     fun copyToClipboard(context: Context, shareContents: String, onUrlCopied: () -> Unit) {
-        val clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        var clipboard: ClipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("play-broadcaster", shareContents)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
         onUrlCopied()
     }
 
