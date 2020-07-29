@@ -18,8 +18,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -58,19 +56,12 @@ import static com.tokopedia.gm.common.constant.GMCommonConstantKt.POWER_MERCHANT
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_KUPON_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKOPOINTS;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CREATIVE_TOKO_MEMBER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_KUPON_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOKOMEMBER;
-import static com.tokopedia.home.account.AccountConstants.Analytics.POSITION_TOKOPOINT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.home.account.data.util.StaticBuyerModelGeneratorKt.RESCENTER_BUYER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
@@ -135,13 +126,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
             RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER);
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)) {
             goToTrainOrderListIntent();
-        } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)) {
-            Intent launchIntent = getContext().getPackageManager()
-                    .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-            if (launchIntent != null) {
-                getContext().startActivity(launchIntent);
-                RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP);
-            }
         } else if (applink.equals(RESCENTER_BUYER) || applink.equals(SettingConstant.RESCENTER_SELLER)) {
             return true;
         }
