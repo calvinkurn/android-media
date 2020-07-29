@@ -28,5 +28,14 @@ data class Product(
     @SerializedName("pictures")
     val pictures: List<Picture>?,
     @SerializedName("topads")
-    val topAds: List<ProductTopAds>?
-)
+    val topAds: ProductTopAds?
+) {
+
+    fun isTopAds(): Boolean {
+        return topAds != null && topAds.isApplied()
+    }
+
+    fun isAutoAds(): Boolean {
+        return topAds != null && topAds.isAutoAds()
+    }
+}

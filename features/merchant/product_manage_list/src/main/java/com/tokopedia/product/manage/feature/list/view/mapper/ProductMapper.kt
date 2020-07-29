@@ -44,7 +44,9 @@ object ProductMapper {
                 cashBack = it.cashback,
                 multiSelectActive = multiSelectActive,
                 isChecked = false,
-                hasStockReserved = it.hasStockReserved
+                hasStockReserved = it.hasStockReserved,
+                isTopAds = it.isTopAds(),
+                isAutoAds = it.isAutoAds()
             )
         } ?: emptyList()
     }
