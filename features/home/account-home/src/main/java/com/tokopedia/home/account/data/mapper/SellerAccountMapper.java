@@ -187,7 +187,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         items.add(createLabelledMenuList(
                 context.getString(R.string.title_menu_product_feature),
-                context.getString(R.string.seller_migration_label_seller_app_only),
+                context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only),
                 Label.Companion.getGENERAL_LIGHT_GREEN(),
                 context.getString(R.string.label_menu_product_feature),
                 ApplinkConst.PRODUCT_MANAGE,
@@ -224,7 +224,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         items.add(createLabelledMenuList(
                 context.getString(R.string.title_menu_voucher_toko),
-                context.getString(R.string.seller_migration_label_seller_app_only),
+                context.getString(com.tokopedia.seller_migration_common.R.string.seller_migration_label_seller_app_only),
                 Label.Companion.getGENERAL_LIGHT_GREEN(),
                 context.getString(R.string.description_menu_voucher_toko),
                 "",
