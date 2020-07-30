@@ -23,7 +23,7 @@ class PromoCheckoutDetailDigitalActivity : BaseSimpleActivity(), HasComponent<Pr
         return PromoCheckoutDetailDigitalFragment.createInstance(
                 intent?.extras?.getString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE) ?: "",
                 intent?.extras?.getBoolean(BasePromoCheckoutDetailFragment.EXTRA_IS_USE, false) ?: false,
-                intent?.extras?.getParcelable(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL) as PromoDigitalModel,
+                intent?.extras?.getParcelable(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel(),
                 intent?.extras?.getInt(BasePromoCheckoutDetailFragment.PAGE_TRACKING, 1) ?: 1
         )
     }

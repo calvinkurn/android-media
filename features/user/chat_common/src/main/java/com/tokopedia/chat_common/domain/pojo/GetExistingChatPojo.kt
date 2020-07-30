@@ -18,6 +18,9 @@ data class ChatReplies(
         @SerializedName("minReplyTime")
         val minReplyTime: String = "0",
         @Expose
+        @SerializedName("maxReplyTime")
+        val maxReplyTime: String = "0",
+        @Expose
         @SerializedName("contacts")
         val contacts: List<Contact> = ArrayList(),
         @Expose
@@ -26,6 +29,9 @@ data class ChatReplies(
         @Expose
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
+        @Expose
+        @SerializedName("hasNextAfter")
+        val hasNextAfter: Boolean = false,
         @Expose
         @SerializedName("attachmentIDs")
         val attachmentIds: String = "",
@@ -148,7 +154,10 @@ data class Reply(
         val isRead: Boolean = true,
         @Expose
         @SerializedName("blastId")
-        val blastId: Int = 0
+        val blastId: Int = 0,
+        @Expose
+        @SerializedName("source")
+        val source: String = ""
 ) {
     fun isMultipleProductAttachment(nextItem: Reply?): Boolean {
         return isProductAttachment() && nextItem != null && nextItem.isProductAttachment()

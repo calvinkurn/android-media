@@ -28,7 +28,6 @@ import timber.log.Timber;
  * TimberWrapper.init(application);
  */
 public class TimberWrapper {
-    private static final String APP_TYPE = "customerApp";
     private static final int PRIORITY_LENGTH = 2;
 
     private static final String[] LOGENTRIES_TOKEN = new String[]{
@@ -70,10 +69,16 @@ public class TimberWrapper {
         if (isDebug) {
             plantNewTree(new TimberDebugTree());
         } else {
+            plantTimberReleaseTree(context, remoteConfig);
+        }
+    }
+
+    private static void plantTimberReleaseTree(Context context, @NonNull RemoteConfig remoteConfig) {
+        try {
             String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
+                if (dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
                     UserSession userSession = new UserSession(context);
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
@@ -85,6 +90,8 @@ public class TimberWrapper {
                     plantNewTree(timberReportingTree);
                 }
             }
+        } catch (Throwable throwable) {
+            // do nothing
         }
     }
 
@@ -107,6 +114,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }

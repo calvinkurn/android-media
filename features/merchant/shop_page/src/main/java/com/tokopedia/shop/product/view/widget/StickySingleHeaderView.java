@@ -98,10 +98,9 @@ public class StickySingleHeaderView extends FrameLayout
                                 ("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.");
                     StickySingleHeaderView.this.adapter = (OnStickySingleHeaderAdapter) adapter;
                     StickySingleHeaderView.this.adapter.setListener(StickySingleHeaderView.this);
-                    stickyPosition = StickySingleHeaderView.this.adapter.getStickyHeaderPosition();
                     staggeredGridLayoutManager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
                 }
-
+                stickyPosition = StickySingleHeaderView.this.adapter.getStickyHeaderPosition();
             }
 
             @Override

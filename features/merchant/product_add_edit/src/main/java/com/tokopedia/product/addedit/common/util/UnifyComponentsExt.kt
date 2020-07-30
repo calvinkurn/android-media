@@ -5,12 +5,15 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
 fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
+
+fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
 fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
 
@@ -39,8 +42,10 @@ fun TextFieldUnify?.setModeToNumberInput() {
                             .format(parsedLong)
                             .toString()
                             .replace(",", ".")
+                    val lengthDiff = formattedText.length - charSequence.length
+                    val cursorPosition = start + count + lengthDiff
                     textFieldInput.setText(formattedText)
-                    textFieldInput.setSelection(formattedText.length)
+                    textFieldInput.setSelection(cursorPosition.coerceIn(0, formattedText.length))
                     textFieldInput.addTextChangedListener(this)
                 }
             }
@@ -48,8 +53,9 @@ fun TextFieldUnify?.setModeToNumberInput() {
     })
 }
 
-fun TextFieldUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.textFieldInput?.run {
+fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.textAreaInput?.run {
     val cursorPosition = selectionEnd.orZero()
     setText(text)
     setSelection(cursorPosition.coerceAtMost(text.length))
 }
+

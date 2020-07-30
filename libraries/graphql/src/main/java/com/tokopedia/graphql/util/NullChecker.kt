@@ -1,8 +1,6 @@
 package com.tokopedia.graphql.util
 
-import android.util.Log
 import com.google.gson.GsonBuilder
-import com.tokopedia.config.GlobalConfig
 import timber.log.Timber
 
 /**
@@ -29,7 +27,7 @@ private const val NULL_PATTERN = """\n\s*"\S+":\s*null"""
 @JvmOverloads
 fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boolean {
     val whenNull = { errorMessage: String ->
-        printDebug(errorMessage)
+        Timber.d(errorMessage)
         actionWhenNull(errorMessage)
     }
 
@@ -60,8 +58,8 @@ fun isContainNull(`object`: Any?, actionWhenNull: (String) -> Unit = { }): Boole
  * Will throw ContainNullException if the given object has null value,
  */
 @JvmOverloads
-fun throwIfNull(`object`: Any?, clazz: Class<*>?, rawMessage: String? = null, actionWhenNull: (String) -> Unit = { }) {
-    logIfNull(`object`,clazz,rawMessage) {
+fun throwIfNull(`object`: Any?, clazz: Class<*>?, request: String, actionWhenNull: (String) -> Unit = { }) {
+    logIfNull(`object`, clazz, request) {
         actionWhenNull.invoke(it)
         throw ContainNullException(it)
     }
@@ -71,14 +69,9 @@ fun throwIfNull(`object`: Any?, clazz: Class<*>?, rawMessage: String? = null, ac
  * Will log message Null if the given object has null value,
  */
 @JvmOverloads
-fun logIfNull(`object`: Any?, clazz: Class<*>?, rawMessage: String? = null, actionWhenNull: (String) -> Unit = { }) {
+fun logIfNull(`object`: Any?, clazz: Class<*>?, request: String, actionWhenNull: (String) -> Unit = { }) {
     isContainNull(`object`) { errorMessage ->
-        val message = String.format("Null Found %s in %s | %s |",
-                errorMessage,
-                clazz?.canonicalName ?: "",
-                rawMessage ?: ""
-        )
-        Timber.e("P1#NULL_CHECKER#%s", message)
+        LoggingUtils.logGqlNullChecker(errorMessage, clazz?.canonicalName ?: "", request)
         actionWhenNull(errorMessage)
     }
 }
@@ -89,11 +82,3 @@ fun throwExceptionWhenNull(`object`: Any?, actionWhenNull: (String) -> Unit = { 
         throw ContainNullException()
     }
 }
-
-private fun printDebug(errorMessage: String) {
-    if (GlobalConfig.isAllowDebuggingTools()) {
-        Log.e("NullChecker", errorMessage)
-    }
-}
-
-

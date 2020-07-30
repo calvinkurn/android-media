@@ -1,0 +1,8 @@
+mutation resetPin($validate_token: String!){
+    reset_pin(input:{validate_token: $validate_token}) {
+        success
+        errors {
+            message
+        }
+    }
+}

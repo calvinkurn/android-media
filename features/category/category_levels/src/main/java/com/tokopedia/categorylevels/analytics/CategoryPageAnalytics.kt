@@ -53,6 +53,8 @@ class CategoryPageAnalytics {
 
     companion object {
         val catAnalyticsInstance: CategoryPageAnalytics by lazy { CategoryPageAnalytics() }
+        private const val LVL2 = 2
+        private const val LVL3 = 3
     }
 
 
@@ -450,20 +452,32 @@ class CategoryPageAnalytics {
         }
     }
 
-    fun createOpenScreenEventMap(parentId: String?,
-                                 parentName: String?,
-                                 categoryId: String,
-                                 categoryName: String): Map<String, String>? {
+    fun createOpenScreenEventMap(id: String?,
+                                 parent: String?,
+                                 rootId: String?,
+                                 url: String?): Map<String, String>? {
         val map = HashMap<String, String>()
-        map[KEY_CATEGORY] = KEY_CATEGORY
-        map[KEY_CATEGORY_ID] = categoryId
-        map[KEY_PRODUCT_GROUP_NAME] = ""
-        map[KEY_PRODUCT_GROUP_ID] = ""
-        map[KEY_SUBCATEGORY] = parentName ?: categoryName
-        map[KEY_SUBCATEGORY_ID] = parentId ?: categoryId
-        if (parentId != null) {
-            map[KEY_PRODUCT_GROUP_NAME] = categoryName
-            map[KEY_PRODUCT_GROUP_ID] = categoryId
+        val substring = url?.split("/p/")
+        if(substring?.isNullOrEmpty() == false) {
+            val levels = substring[1].split("/")
+            map[KEY_CATEGORY] = levels[0]
+            map[KEY_CATEGORY_ID] = rootId ?: ""
+            map[KEY_SUBCATEGORY] = ""
+            map[KEY_SUBCATEGORY_ID] = ""
+            map[KEY_PRODUCT_GROUP_NAME] = ""
+            map[KEY_PRODUCT_GROUP_ID] = ""
+            when (levels.size) {
+                LVL2 -> {
+                    map[KEY_SUBCATEGORY] = levels[1]
+                    map[KEY_SUBCATEGORY_ID] = id ?: ""
+                }
+                LVL3 -> {
+                    map[KEY_SUBCATEGORY] = levels[1]
+                    map[KEY_SUBCATEGORY_ID] = parent ?: ""
+                    map[KEY_PRODUCT_GROUP_NAME] = levels[2]
+                    map[KEY_PRODUCT_GROUP_ID] = id ?: ""
+                }
+            }
         }
         return map
     }

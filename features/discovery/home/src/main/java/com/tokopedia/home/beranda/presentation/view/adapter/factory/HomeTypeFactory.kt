@@ -30,10 +30,6 @@ interface HomeTypeFactory {
 
     fun type(headerDataModel: HeaderDataModel): Int
 
-    fun type(topAdsDataModel: TopAdsDataModel): Int
-
-    fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int
-
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
     fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
@@ -48,11 +44,13 @@ interface HomeTypeFactory {
 
     fun type(playCard: PlayCardDataModel): Int
 
+    fun type(playCard: PlayCarouselCardDataModel): Int
+
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
     fun type(homeRetryModel: HomeRetryModel): Int
 
     fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int
 
-    fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int
+    fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int
 }

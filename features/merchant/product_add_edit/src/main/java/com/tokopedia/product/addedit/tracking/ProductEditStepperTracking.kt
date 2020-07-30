@@ -64,6 +64,10 @@ object ProductEditStepperTracking {
         sendEditProductClick(shopId, "click finish on stepper page")
     }
 
+    fun trackDragPhoto(shopId: String) {
+        sendEditProductClick(shopId, "click drag product image")
+    }
+
     fun trackFinishService(shopId: String, isSuccess: Boolean) {
         sendEditProductClick(shopId, "click finish", if (isSuccess) {
             "success"

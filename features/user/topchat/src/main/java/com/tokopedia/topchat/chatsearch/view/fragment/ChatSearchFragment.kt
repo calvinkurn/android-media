@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ContactLoadMoreViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatViewHolder
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatReplyViewHolder
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ import javax.inject.Inject
  */
 class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
         ChatSearchActivity.Listener, LifecycleOwner, EmptySearchChatViewHolder.Listener,
-        ContactLoadMoreViewHolder.Listener {
+        ContactLoadMoreViewHolder.Listener, ItemSearchChatReplyViewHolder.Listener {
 
     @Inject
     lateinit var analytic: ChatSearchAnalytic
@@ -62,7 +63,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         listener?.showSearchBar()
         updateTouchListener(view)
-        if (savedInstanceState == null && !alreadyLoaded) {
+        if (!alreadyLoaded) {
             super.onViewCreated(view, savedInstanceState)
             showRecentSearch()
             setupRecyclerView()
@@ -156,7 +157,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     private fun observeSearchResult() {
-        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+        viewModel.searchResults.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             renderList(it, viewModel.hasNext)
         })
@@ -171,7 +172,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
-        return ChatSearchTypeFactoryImpl(this, this)
+        return ChatSearchTypeFactoryImpl(this, this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {}
@@ -180,6 +181,10 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun initInjector() {
         getComponent(ChatSearchComponent::class.java).inject(this)
+    }
+
+    override fun getSearchKeyWord(): String {
+        return viewModel.query
     }
 
     companion object {

@@ -12,14 +12,14 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
+    private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.products_rv)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
+    private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -32,6 +32,13 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
         addShimmer()
+        addDefaultItemDecorator()
+    }
+
+    private fun addDefaultItemDecorator() {
+        if (mProductCarouselRecyclerView.itemDecorationCount > 0)
+            mProductCarouselRecyclerView.removeItemDecorationAt(0)
+        mProductCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
     }
 
 
@@ -40,7 +47,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         lifecycleOwner?.let {
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
-                sendProductCardImpressionEvent(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(it, Observer { sync ->
                 if (sync) {
@@ -48,10 +54,6 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 }
             })
         }
-    }
-
-    private fun sendProductCardImpressionEvent(item: ArrayList<ComponentsItem>?) {
-        item?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventImpressionProductCard(it, mProductCarouselComponentViewModel.isUserLoggedIn()) }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {

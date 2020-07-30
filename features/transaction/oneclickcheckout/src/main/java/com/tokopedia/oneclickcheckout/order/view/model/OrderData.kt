@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
-import com.tokopedia.oneclickcheckout.order.data.OccMainOnboarding
-import com.tokopedia.oneclickcheckout.order.data.ProfileResponse
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
+import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
 
 data class OrderData(
         var onboarding: OccMainOnboarding = OccMainOnboarding(),

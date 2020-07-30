@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingTop="@dimen/notif_dp_16"
+    android:paddingEnd="@dimen/notif_dp_16"
+    android:paddingStart="@dimen/notif_dp_16"
+    android:paddingBottom="@dimen/notif_dp_16">
 
     <TextView
         android:id="@+id/txtHeaderTitle"
@@ -16,7 +16,7 @@
         android:textStyle="bold"
         tools:text="Pembayaran"
         android:textColor="@color/chorcoal_black"
-        android:textSize="@dimen/sp_16"/>
+        android:textSize="@dimen/notif_sp_16"/>
 
     <TextView
         android:id="@+id/btnLoadMore"

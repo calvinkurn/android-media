@@ -11,6 +11,8 @@ import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewM
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationCardOptionAdapter
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
+import com.tokopedia.search.utils.ChipSpacingItemDecoration
+import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_small_grid_inspiration_card_layout.view.*
 
@@ -37,9 +39,15 @@ class SmallGridInspirationCardViewHolder(
     }
 
     private fun bindContent(element: InspirationCardViewModel) {
+        val spacingItemDecoration = ChipSpacingItemDecoration(
+                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+        )
+
         itemView.smallGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.options)
+            it.addItemDecorationIfNotExists(spacingItemDecoration)
         }
     }
 

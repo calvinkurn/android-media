@@ -18,7 +18,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -30,7 +29,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -114,19 +112,17 @@ public abstract class MainApplication extends MainRouterApplication{
                 return executeInBackground();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context);
     }
 
     @NotNull
     private Boolean executeInBackground(){
         locationUtils = new LocationUtils(MainApplication.this);
         locationUtils.initLocationBackground();
-        TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
         }
-        init();
         return true;
     }
 
@@ -147,12 +143,6 @@ public abstract class MainApplication extends MainRouterApplication{
         super.onTerminate();
         if(locationUtils != null) {
             locationUtils.deInitLocationBackground();
-        }
-    }
-
-    private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         }
     }
 

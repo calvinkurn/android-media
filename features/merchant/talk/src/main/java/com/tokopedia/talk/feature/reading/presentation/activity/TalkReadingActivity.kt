@@ -70,7 +70,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
         pageLoadTimePerformanceMonitoring?.let {
             it.stopMonitoring()
         }
-        pageLoadTimePerformanceMonitoring = null;
+        pageLoadTimePerformanceMonitoring = null
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -105,7 +105,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.let {
-            it.stopPreparePagePerformanceMonitoring()
+            it.stopRenderPerformanceMonitoring()
         }
     }
 

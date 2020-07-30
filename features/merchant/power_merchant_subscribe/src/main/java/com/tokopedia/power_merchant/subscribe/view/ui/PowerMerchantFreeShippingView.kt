@@ -5,18 +5,17 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import kotlinx.android.synthetic.main.layout_power_merchant_free_shipping.view.*
 import kotlinx.android.synthetic.main.layout_power_merchant_free_shipping_inactive.view.*
 
 class PowerMerchantFreeShippingView: FrameLayout {
 
+    var tracker: PowerMerchantTracking? = null
     var onClickListener: (() -> Unit)? = null
 
     constructor (context: Context): super(context)
@@ -51,7 +50,6 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
         transitionLayout.setOnClickListener {
             onClickListener?.invoke()
-            openFreeShippingPage()
         }
 
         transitionLayout.show()
@@ -71,7 +69,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
         setInactiveTitleText(isEligible)
         setInactiveDescriptionText(isEligible)
         setCTABtnText(isEligible)
-        setCTABtnClickListener()
+        setCTABtnClickListener(isEligible)
 
         inActiveLayout.show()
         activeLayout.hide()
@@ -120,23 +118,23 @@ class PowerMerchantFreeShippingView: FrameLayout {
         }
     }
 
-    private fun setCTABtnClickListener() {
+    private fun setCTABtnClickListener(eligible: Boolean) {
         btnCTA.setOnClickListener {
+            if(!eligible) {
+                trackLearMoreFreeShipping()
+            }
             onClickListener?.invoke()
-            openFreeShippingPage()
         }
+    }
+
+    private fun trackLearMoreFreeShipping() {
+        tracker?.eventLearMoreFreeShipping()
     }
 
     private fun setActiveLayoutClickListener() {
         activeLayout.setOnClickListener {
             onClickListener?.invoke()
-            openFreeShippingPage()
         }
-    }
-
-    private fun openFreeShippingPage() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-            URL_FREE_SHIPPING_INTERIM_PAGE)
     }
 
     private fun showHideContainer(transitionPeriod: Boolean) {

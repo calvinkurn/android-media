@@ -55,51 +55,39 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
     }
 
     private fun showOfficialStore(isGoldMerchant: Boolean, isOfficialStore: Boolean, shopname: String) = with(view) {
-        val imageIc: ImageSpan
-        val drawableSize = context.resources.getDimension(R.dimen.dp_15).toInt()
-
         if (isGoldMerchant && !isOfficialStore) {
             txt_mini_shop_desc.hide()
-
-            val drawablePm = MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
-            /* https://stackoverflow.com/questions/36714640/how-setbounds-of-drawable-works-in-android */
-            drawablePm?.setBounds(0, 0, drawableSize, drawableSize)
-            imageIc = ImageSpan(drawablePm, ImageSpan.ALIGN_BOTTOM)
-            renderTxtIcon(shopname, imageIc)
+            shop_badge.show()
+            shop_badge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_power_merchant))
         } else if (isOfficialStore) {
             txt_mini_shop_desc.show()
-
-            val drawableOs = MethodChecker.getDrawable(context, R.drawable.ic_pdp_new_official_store)
-            drawableOs?.setBounds(0, 0, drawableSize, drawableSize)
-            imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
-            renderTxtIcon(shopname, imageIc)
+            shop_badge.show()
+            shop_badge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_pdp_new_official_store))
+        } else if (!isGoldMerchant && !isOfficialStore) {
+            shop_badge.hide()
+            txt_mini_shop_desc.hide()
         }
+
+        renderShopTitle(shopname)
     }
 
-    private fun renderTxtIcon(labelIc: String, imageIc: ImageSpan) = with(view.txt_mini_shop_title) {
-        val blackString = context.getString(R.string.label_dijual) + "  "
-        val startSpan = blackString.length
-        val spanText = android.text.SpannableString(blackString + "  " +
-                labelIc)
+    private fun renderShopTitle(shopname: String) = with(view) {
         val boldTypeface = com.tokopedia.unifyprinciples.getTypeface(context, "RobotoBold.ttf")
-
-        spanText.setSpan(imageIc, startSpan, startSpan + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(StyleSpan(Typeface.BOLD), startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(CustomTypeSpan(boldTypeface), startSpan, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
-        visible()
+        txt_mini_shop_title.typeface = boldTypeface
+        txt_mini_shop_title.text = MethodChecker.fromHtml(shopname)
+        txt_mini_shop_title.show()
     }
 
     private fun showLoading() = with(view) {
         mini_shop_shimmering?.show()
         txt_mini_shop_desc?.hide()
-        txt_mini_shop_title?.hide()
+        shop_name_container?.hide()
     }
 
     private fun hideLoading() = with(view) {
         mini_shop_shimmering?.hide()
+        shop_name_container?.show()
         txt_mini_shop_desc?.show()
-        txt_mini_shop_title?.show()
     }
 
     private fun getComponentTrackData(element: ProductMiniShopInfoDataModel?) = ComponentTrackDataModel(element?.type

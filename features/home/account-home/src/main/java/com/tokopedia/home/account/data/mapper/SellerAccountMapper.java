@@ -3,12 +3,15 @@ package com.tokopedia.home.account.data.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.PremiumAccountCopyWriting;
 import com.tokopedia.home.account.data.model.PremiumAccountResponse;
@@ -39,7 +42,6 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import rx.functions.Func1;
@@ -50,8 +52,11 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
  * @author by alvinatin on 10/08/18.
+ *
+ *
+ * please use SellerAccountMapper.kt instead
  */
-
+@Deprecated
 public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewModel> {
 
     private Context context;
@@ -68,7 +73,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
         ShopInfoLocation shopInfoLocation = graphqlResponse.getData(ShopInfoLocation.class);
         SaldoModel saldoModel = graphqlResponse.getData(SaldoModel.class);
-        accountModel.setSaldoModel(saldoModel);
+        if(saldoModel != null && accountModel != null) {
+            accountModel.setSaldoModel(saldoModel);
+        }
         DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
         DataDeposit dataDeposit = null;
         if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()) {
@@ -131,8 +138,10 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
-        if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
-            items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+        if(accountModel.getSaldoModel() != null) {
+            if (accountModel.getSaldoModel().getSaldo().getDepositLong() != 0) {
+                items.add(getSaldoInfo(accountModel.getSaldoModel().getSaldo()));
+            }
         }
 
         if (showPinjamanModalOnTop) {
@@ -404,7 +413,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 && accountModel.getNotifications().getResolution() != null) {
             menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
         }
-        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setApplink(SettingConstant.RESCENTER_SELLER);
         menuList.setTitleTrack(PENJUAL);
         menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
 

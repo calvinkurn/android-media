@@ -1,6 +1,9 @@
 package com.tokopedia.seller_migration_common.constants
 
 object SellerMigrationConstants {
+    const val TAG_SELLER_MIGRATION_BOTTOM_SHEET = "seller_migration_bottom_sheet"
+    const val KEY_SHOULD_DISMISS_AFTER_RESTORE = "dismiss_after_restore"
+
     const val ACCOUNT_SELLER_MIGRATION_IMAGE_LINK = "https://ecs7.tokopedia.net/other/seller_migration_account.png"
     const val SELLER_MIGRATION_CHAT_FIRST_IMAGE = "https://ecs7.tokopedia.net/other/seller_migration_chat_quick_send.png"
     const val SELLER_MIGRATION_CHAT_SECOND_IMAGE = "https://ecs7.tokopedia.net/other/seller_migration_chat_page.png"

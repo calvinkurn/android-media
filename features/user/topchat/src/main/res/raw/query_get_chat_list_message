@@ -1,6 +1,6 @@
-query get_existing_message_id($page: Int!, $perPage: Int!, $filter: String!, $tab: String!) {
+query get_existing_message_id($page: Int!, $filter: String!, $tab: String!) {
   status
-  chatListMessage(filter: $filter, page: $page, tab: $tab, perPage: $perPage) {
+  chatListMessage(page: $page, filter: $filter, tab: $tab) {
     list{
           msgID
           messageKey
@@ -21,6 +21,7 @@ query get_existing_message_id($page: Int!, $perPage: Int!, $filter: String!, $ta
             unreadsreply
             fraudStatus
             pinStatus
+            isReplyByTopbot
           }
         }
     hasNext

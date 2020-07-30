@@ -65,8 +65,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.couroutinesTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.libraries.iris)
 
 
 }

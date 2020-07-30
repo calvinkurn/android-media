@@ -26,6 +26,10 @@ import rx.Subscriber
 /**
  * @author okasurya on 7/17/18.
  */
+
+@Deprecated(
+        message = "please use BuyerAccountViewModel.kt instead",
+        replaceWith = ReplaceWith("BuyerAccountViewModel"))
 class BuyerAccountPresenter(
         private val getBuyerAccountUseCase: GetBuyerAccountUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
@@ -104,13 +108,14 @@ class BuyerAccountPresenter(
         return recomendationList
     }
 
-    override fun getBuyerData(query: String, saldoQuery: String) {
+    override fun getBuyerData(query: String, saldoQuery: String ,rewardQuery: String) {
         view?.showLoading()
 
         val requestParams = RequestParams.create()
 
         requestParams.putString(AccountConstants.QUERY, query)
         requestParams.putString(AccountConstants.SALDO_QUERY, saldoQuery)
+        requestParams.putString(AccountConstants.REWARD_SHORTCUT_QUERY,rewardQuery)
         requestParams.putObject(AccountConstants.VARIABLES, HashMap<Any, Any>())
 
         getBuyerAccountUseCase.execute(requestParams, GetBuyerAccountSubscriber(view))
@@ -130,8 +135,8 @@ class BuyerAccountPresenter(
         val AKUN_PAGE = "account"
     }
 
-    override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit){
-        if(model.isTopAds){
+    override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit) {
+        if (model.isTopAds) {
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
             topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
@@ -149,7 +154,7 @@ class BuyerAccountPresenter(
                 }
             })
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     callback.invoke(false, Throwable(errorMessage))
                 }
@@ -169,8 +174,8 @@ class BuyerAccountPresenter(
         }
     }
 
-    override fun removeWishlist(model: RecommendationItem, wishlistCallback: (Boolean, Throwable?) -> Unit){
-        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+    override fun removeWishlist(model: RecommendationItem, wishlistCallback: (Boolean, Throwable?) -> Unit) {
+        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
             }

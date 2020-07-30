@@ -10,6 +10,7 @@ import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
+import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
 import dagger.Binds
@@ -62,4 +63,10 @@ abstract class ProfileCompletionViewModelsModule {
     @IntoMap
     @ViewModelKey(AddChangePinViewModel::class)
     internal abstract fun addChangePinViewModel(viewModel: AddChangePinViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChangePinViewModel::class)
+    internal abstract fun changePinViewModel(viewModel: ChangePinViewModel): ViewModel
+
 }
