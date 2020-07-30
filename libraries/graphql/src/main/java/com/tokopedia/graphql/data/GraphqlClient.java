@@ -43,7 +43,7 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 public class GraphqlClient {
-    public static Retrofit sRetrofit = null;
+    private static Retrofit sRetrofit = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
 
@@ -162,7 +162,7 @@ public class GraphqlClient {
         }
     }
 
-    private static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit() {
         if (sRetrofit == null) {
             throw new RuntimeException("Please call init() before using graphql library");
         }

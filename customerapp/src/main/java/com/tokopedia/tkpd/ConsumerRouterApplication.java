@@ -213,12 +213,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void warmUpGQLClient(){
         if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
-            GQLPing gqlPing = GraphqlClient.sRetrofit.create(GQLPing.class);
+            GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
             Call<String> gqlPingCall = gqlPing.pingGQL();
             gqlPingCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                    Timber.d("Success" + response.body().toString());
+                    if(response.body() != null) {
+                        Timber.d("Success%s", response.body());
+                    }
                 }
 
                 @Override
