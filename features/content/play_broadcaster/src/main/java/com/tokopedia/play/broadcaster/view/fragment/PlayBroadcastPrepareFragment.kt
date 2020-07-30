@@ -158,6 +158,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
                 openTermsConditionPage()
             }
 
+            analytic.viewTnC()
             tvTermsCondition.visible()
         } else {
             tvTermsCondition.gone()
