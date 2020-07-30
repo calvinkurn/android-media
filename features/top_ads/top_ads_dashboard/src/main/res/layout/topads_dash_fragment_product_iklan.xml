@@ -101,10 +101,10 @@
                             android:layout_marginRight="@dimen/dp_8"
                             android:layout_marginBottom="@dimen/dp_12"
                             android:visibility="gone"
-                            app:layout_constraintBottom_toTopOf="@id/graph_layout"
+                            app:layout_constraintBottom_toTopOf="@+id/graph_layout"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/hari_ini" />
+                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
 
                         <com.tokopedia.unifycomponents.CardUnify
                             android:id="@+id/graph_layout"

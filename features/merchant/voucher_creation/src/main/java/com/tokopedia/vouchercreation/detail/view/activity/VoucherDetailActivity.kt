@@ -44,6 +44,7 @@ class VoucherDetailActivity : BaseActivity(), MvcPerformanceMonitoringListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_detail)
 
+        window.decorView.setBackgroundColor(Color.WHITE)
         showFragment()
         setWhiteStatusBar()
     }

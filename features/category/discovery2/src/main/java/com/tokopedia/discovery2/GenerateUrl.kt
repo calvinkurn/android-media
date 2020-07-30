@@ -6,7 +6,7 @@ class GenerateUrl {
         private const val BASE_URL = "https://ace.tokopedia.com"
         private const val PAGE_URL = "$BASE_URL/discopage/discovery/api/page/"
         private const val CLAIM_COUPON_URL = "$BASE_URL/discopage/discovery/api/component/"
-        private const val CLAIM_COUPON = "tokopedia://tokopoints/kupon-saya/detail/"
+        private const val CLAIM_COUPON = "tokopedia://tokopoints/tukar-point/detail/"
 
         private const val COMPONENT_URL = "$BASE_URL/discopage/discovery/api/component/"
 
