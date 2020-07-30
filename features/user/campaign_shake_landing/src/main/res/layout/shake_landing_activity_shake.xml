@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/shake_landing_dp_20"
-            android:background="@drawable/white_button_rounded"
+            android:background="@drawable/shake_landing_white_button_rounded"
             android:orientation="vertical"
             android:padding="@dimen/shake_landing_dp_10">
 
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/shake_landing_dp_30"
-            android:background="@drawable/white_button_rounded"
+            android:background="@drawable/shake_landing_white_button_rounded"
             android:orientation="vertical"
             android:padding="@dimen/shake_landing_dp_15">
 
