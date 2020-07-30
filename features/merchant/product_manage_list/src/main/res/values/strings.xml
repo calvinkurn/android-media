@@ -141,7 +141,8 @@
     <string name="product_manage_stock_reminder_menu">Pengingat Stok</string>
     <string name="product_manage_set_featured_menu">Jadikan Produk Unggulan</string>
     <string name="product_manage_remove_featured_menu">Hapus dari Produk Unggulan</string>
-    <string name="product_manage_set_promo_ads_menu">TopAds</string>
+    <string name="product_manage_set_promo_ads_menu">Iklankan Produk</string>
+    <string name="product_manage_see_promo_ads_menu">Lihat Detail Iklan</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>

@@ -41,6 +41,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -58,6 +59,7 @@ import javax.inject.Inject
 class ProductManageViewModel @Inject constructor(
     private val editPriceUseCase: EditPriceUseCase,
     private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
     private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
@@ -109,6 +111,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _editVariantStockResult
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
+    val onClickPromoTopAds: LiveData<TopAdsPage>
+        get() = _onClickPromoTopAds
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -126,6 +130,7 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
+    private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -135,15 +140,19 @@ class ProductManageViewModel @Inject constructor(
     fun getGoldMerchantStatus() {
         launchCatchError(block = {
             val status = withContext(dispatchers.io) {
-                val shopId: List<Int> = listOf(userSessionInterface.shopId.toIntOrZero())
-                gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
+                val shopId: Int = userSessionInterface.shopId.toIntOrZero()
+                val requestParams = GetShopInfoTopAdsUseCase.createRequestParams(shopId)
+                gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
 
                 val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
+                val topAdsInfo = getShopInfoTopAdsUseCase.execute(requestParams)
+
                 val shopDomain = shopInfo.shopCore.domain
                 val isGoldMerchant  = shopInfo.goldOS.isGold == 1
                 val isOfficialStore= shopInfo.goldOS.isOfficial == 1
+                val topAds = TopAdsInfo(topAdsInfo.isTopAds(), topAdsInfo.isAutoAds())
 
-                ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
+                ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore, topAds)
             }
             _shopInfoResult.value = Success(status)
         }) {
@@ -480,6 +489,19 @@ class ProductManageViewModel @Inject constructor(
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
+    }
+
+    fun onPromoTopAdsClicked() {
+        (_shopInfoResult.value as? Success<ShopInfoResult>)?.data?.let { shopInfo ->
+            val shopHasTopAds = shopInfo.topAds.isTopAds
+            val shopHasAutoAds = shopInfo.topAds.isAutoAds
+
+            _onClickPromoTopAds.value = when {
+                shopHasAutoAds -> TopAdsPage.AutoAds
+                shopHasTopAds -> TopAdsPage.ManualAds
+                else -> TopAdsPage.OnBoarding
+            }
+        }
     }
 
     fun detachView() {

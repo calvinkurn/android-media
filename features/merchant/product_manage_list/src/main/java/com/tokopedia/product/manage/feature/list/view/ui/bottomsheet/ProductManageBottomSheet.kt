@@ -16,7 +16,6 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage.view.*
 
@@ -81,16 +80,17 @@ class ProductManageBottomSheet(
             }
             add(Delete(product))
             if (GlobalConfig.isSellerApp()) {
-                if (product.status != ProductStatus.EMPTY) {
-                    add(SetTopAds(product))
+                when {
+                    product.isTopAds() -> add(SeeTopAds(product))
+                    !product.isEmpty() -> add(SetTopAds(product))
                 }
+
                 add(SetCashBack(product))
-                if (product.isFeatured == true && isPowerMerchantOrOfficialStore) {
+
+                if(product.isFeatured == true && isPowerMerchantOrOfficialStore) {
                     add(RemoveFeaturedProduct(product))
-                } else {
-                    if (product.isActive()) {
-                        add(SetFeaturedProduct(product))
-                    }
+                } else if(product.isActive()) {
+                    add(SetFeaturedProduct(product))
                 }
             }
         }
