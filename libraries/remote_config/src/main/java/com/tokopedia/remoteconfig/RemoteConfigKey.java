@@ -201,6 +201,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
+    public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
+
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 
