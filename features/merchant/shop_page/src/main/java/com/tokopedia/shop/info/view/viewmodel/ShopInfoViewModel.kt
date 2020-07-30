@@ -1,15 +1,7 @@
 package com.tokopedia.shop.info.view.viewmodel
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.model.ShopInfoData
@@ -40,31 +32,6 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteViewModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
-    val shopImageSave: LiveData<String> get() = _shopImageSave
-
-    private val _shopImageSave = MutableLiveData<String>()
-
-    fun saveShopImageToPhoneStorage(context: Context?, shopInfoData: ShopInfoData) {
-        launchCatchError(Dispatchers.IO, {
-            ImageHandler.loadImageWithTarget(context, shopInfoData.shopSnippetUrl, object : CustomTarget<Bitmap>(){
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageUtils.writeImageToTkpdPath(
-                            ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
-                            resource,
-                            true
-                    )
-                    if(savedFile != null) {
-                        _shopImageSave.value = savedFile.absolutePath
-                    }
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // no op
-                }
-            })
-        }, onError = {
-            it.printStackTrace()
-        })
-    }
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {

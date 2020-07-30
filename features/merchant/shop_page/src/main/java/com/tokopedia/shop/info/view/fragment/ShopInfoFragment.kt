@@ -1,11 +1,10 @@
 package com.tokopedia.shop.info.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,12 +15,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -36,9 +33,6 @@ import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
-import com.tokopedia.shop.info.view.adapter.viewholder.ShopShareBottomSheetViewHolder
-import com.tokopedia.shop.info.view.model.SocialMediaShareModel
-import com.tokopedia.shop.info.view.ui.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
@@ -52,11 +46,9 @@ import kotlinx.android.synthetic.main.partial_shop_info_delivery.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
 import kotlinx.android.synthetic.main.partial_shop_info_note.*
 import kotlinx.android.synthetic.main.partial_shop_info_statistics.*
-import java.io.File
 import javax.inject.Inject
 
-class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
-        ShopNoteViewHolder.OnNoteClicked, ShopShareBottomSheetViewHolder.ShopShareListener {
+class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
         fun createInstance(
@@ -81,9 +73,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private var shopPageTracking: ShopPageTrackingShopPageInfo? = null
     private var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>? = null
     private var shopInfo: ShopInfoData? = null
-    private var shopShareBottomSheet: ShopShareBottomSheet? = null
-    private var shopPageImageFilePath: String = ""
-    private val permissionChecker = PermissionCheckerHelper()
     private val isOfficial: Boolean
 
         get() = shopInfo?.isOfficial == 1
@@ -103,7 +92,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
-        setHasOptionsMenu(true)
         initViewModel()
         initObservers()
         initView()
@@ -122,20 +110,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             it.flush()
         }
         super.onDestroy()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_shop_info, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_share -> {
-                onClickShareShop()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onEmptyButtonClicked() {
@@ -171,42 +145,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                 .inject(this)
     }
 
-    override fun onShopShareClicked(socialMedia: SocialMediaShareModel) {
-        val shopImageFileUri = MethodChecker.getUri(context, File(shopPageImageFilePath))
-        when(socialMedia) {
-            is SocialMediaShareModel.CopyLink -> {
-                shopInfo?.let {
-                    ClipboardHandler().copyToClipboard((activity as Activity), it.url)
-                    Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
-                }
-            }
-            is SocialMediaShareModel.Instagram, is SocialMediaShareModel.Facebook -> {
-                startActivity(socialMedia.appIntent?.apply {
-                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
-                })
-            }
-            is SocialMediaShareModel.Whatsapp -> {
-                startActivity(socialMedia.appIntent?.apply {
-                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
-                    type = ShopShareBottomSheet.MimeType.TEXT.type
-                    putExtra(Intent.EXTRA_TEXT, shopInfo?.url)
-                })
-            }
-            is SocialMediaShareModel.Others -> {
-                startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-                    type = ShopShareBottomSheet.MimeType.IMAGE.type
-                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
-                }, getString(R.string.shop_page_share_to_social_media_text)))
-            }
-            else -> {
-                startActivity(socialMedia.appIntent?.apply {
-                    putExtra(Intent.EXTRA_TEXT, shopInfo?.url)
-                })
-            }
-        }
-        shopShareBottomSheet?.dismiss()
-    }
-
     private fun initViewModel() {
         shopViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(ShopInfoViewModel::class.java)
@@ -215,7 +153,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private fun initObservers() {
         observeShopNotes()
         observeShopInfo()
-        observeSaveShopImage()
     }
 
     private fun observeShopNotes() {
@@ -239,22 +176,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         }
     }
 
-    private fun observeSaveShopImage() {
-        shopViewModel?.shopImageSave?.let { shopImage ->
-            observe(shopImage) {
-                shopPageImageFilePath = it
-                if(shopPageImageFilePath.isNotEmpty()) {
-                    shopShareBottomSheet?.show()
-                }
-            }
-        }
-    }
-
     private fun initView() {
         getShopId()?.let { shopId ->
             setupShopNotesList()
             setStatisticsVisibility()
-            setupBottomSheet()
 
             if (shopInfo == null) {
                 getShopInfo(shopId)
@@ -270,49 +195,12 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopViewModel?.getShopInfo(shopId)
     }
 
-    private fun saveShopImage(shopInfo: ShopInfoData) {
-        shopViewModel?.saveShopImageToPhoneStorage(context, shopInfo)
-    }
-
-    private fun getWriteReadStoragePermission(shopInfo: ShopInfoData) = activity?.let {
-        permissionChecker.checkPermissions(it, arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
-        ), object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                permissionChecker.onPermissionDenied(it, permissionText)
-            }
-
-            override fun onNeverAskAgain(permissionText: String) {
-                permissionChecker.onNeverAskAgain(it, permissionText)
-            }
-
-            override fun onPermissionGranted() {
-                saveShopImage(shopInfo)
-            }
-        })
-    }
-
-    private fun removeTemporaryShopImage(uri: String) {
-        if(uri.isNotEmpty()) {
-            File(uri).apply {
-                if(exists()) {
-                    delete()
-                }
-            }
-        }
-    }
-
     private fun showShopInfo() {
         shopInfo?.let {
             setToolbarTitle(it.name)
             displayShopDescription(it)
             displayShopLogistic(it)
         }
-    }
-
-    private fun setupBottomSheet() {
-        shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this)
     }
 
     private fun setupShopNotesList() {
@@ -421,49 +309,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             }
         })
     }
-
-    private fun onClickShareShop() {
-        removeTemporaryShopImage(shopPageImageFilePath)
-        shopInfo?.let {
-            trackClickShareButton(it)
-            getWriteReadStoragePermission(it)
-        }
-    }
-
-//    private fun goToShareShop(shopInfo: ShopInfoData) {
-//        activity?.let {
-//            val shopShareMsg = getShopShareMessage(shopInfo)
-//            val shareData = LinkerData.Builder.getLinkerBuilder()
-//                    .setType(LinkerData.SHOP_TYPE)
-//                    .setName(getString(R.string.message_share_shop))
-//                    .setTextContent(shopShareMsg)
-//                    .setCustMsg(shopShareMsg)
-//                    .setUri(shopInfo.url)
-//                    .setId(shopInfo.shopId)
-//                    .build()
-//            DefaultShare(activity, shareData).show()
-//        }
-//    }
-
-    private fun trackClickShareButton(it: ShopInfoData) {
-        val dimension = CustomDimensionShopPage.create(it.shopId, it.isOfficial == 1, it.isGold == 1)
-        shopPageTracking?.clickShareButton(dimension)
-    }
-
-//    private fun getShopShareMessage(shopInfo: ShopInfoData): String {
-//        var shopShareMsg = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
-//        val shopName = MethodChecker.fromHtml(shopInfo.name).toString()
-//
-//        shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
-//            FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-//                    ShopPageFragment.SHOP_NAME_PLACEHOLDER, shopName,
-//                    ShopPageFragment.SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
-//        } else {
-//            getString(R.string.shop_label_share_formatted, shopName, shopInfo.location)
-//        }
-//
-//        return shopShareMsg
-//    }
 
     private fun setToolbarTitle(title: String) {
         val toolbar = (activity as? AppCompatActivity)?.supportActionBar
