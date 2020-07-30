@@ -2,11 +2,14 @@ package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -29,9 +32,23 @@ class GetSelfEtalaseListUseCase @Inject constructor(
         )
 
     override suspend fun executeOnBackground(): List<ShopEtalaseModel> {
-        return getShopEtalaseByShopUseCase.getData(params).filter {
-            it.id.toInt() == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type, it.id) == EtalaseType.User
+        try {
+            return getShopEtalaseByShopUseCase.getData(params).filter {
+                it.id.toInt() == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type, it.id) == EtalaseType.User
+            }
+        } catch (e: Throwable) {
+            throw if (e.hasCauseType(listOf(UnknownHostException::class.java, SocketTimeoutException::class.java))) DefaultNetworkThrowable()
+            else e
         }
+    }
+
+    private fun Throwable.hasCauseType(errorClassList: List<Class<out Throwable>>): Boolean {
+        var cause: Throwable? = this
+        while (cause?.cause != null) {
+            cause = cause.cause
+            if (cause!!::class.java in errorClassList) return true
+        }
+        return false
     }
 
     companion object {

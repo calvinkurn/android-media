@@ -44,8 +44,10 @@ class WholeSaleInputViewHolder(itemView: View,
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                val wholeSaleQuantityInput = charSequence?.toString()
-                wholeSaleQuantityInput?.let { textChangedListener.onWholeSaleQuantityItemTextChanged(adapterPosition, it) }
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    val wholeSaleQuantityInput = charSequence?.toString()
+                    wholeSaleQuantityInput?.let { textChangedListener.onWholeSaleQuantityItemTextChanged(adapterPosition, it) }
+                }
             }
         })
 
@@ -59,25 +61,29 @@ class WholeSaleInputViewHolder(itemView: View,
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // clean any kind of number formatting here
-                val wholeSalePriceInput = charSequence?.toString()?.replace(".", "")
-                wholeSalePriceInput?.let {
-                    // do the validation first
-                    textChangedListener.onWholeSalePriceItemTextChanged(adapterPosition, it)
-                    if (it.isNotEmpty()) {
-                        // format the number
-                        wholeSalePriceField?.textFieldInput?.removeTextChangedListener(this)
-                        val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toBigInteger()).toString().replace(",", ".")
-                        wholeSalePriceField?.textFieldInput?.setText(formattedText)
-                        wholeSalePriceField?.textFieldInput?.setSelection(formattedText.length)
-                        wholeSalePriceField?.textFieldInput?.addTextChangedListener(this)
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    // clean any kind of number formatting here
+                    val wholeSalePriceInput = charSequence?.toString()?.replace(".", "")
+                    wholeSalePriceInput?.let {
+                        // do the validation first
+                        textChangedListener.onWholeSalePriceItemTextChanged(adapterPosition, it)
+                        if (it.isNotEmpty()) {
+                            // format the number
+                            wholeSalePriceField?.textFieldInput?.removeTextChangedListener(this)
+                            val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toBigInteger()).toString().replace(",", ".")
+                            wholeSalePriceField?.textFieldInput?.setText(formattedText)
+                            wholeSalePriceField?.textFieldInput?.setSelection(formattedText.length)
+                            wholeSalePriceField?.textFieldInput?.addTextChangedListener(this)
+                        }
                     }
                 }
             }
         })
 
         deleteButton?.setOnClickListener {
-            clickListener.onDeleteButtonClicked(adapterPosition)
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                clickListener.onDeleteButtonClicked(adapterPosition)
+            }
         }
     }
 

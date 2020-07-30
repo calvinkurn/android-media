@@ -61,7 +61,6 @@ class ShopHomeViewModel @Inject constructor(
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
-    private var shopId: String = ""
 
     val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
         get() = _initialProductListData
