@@ -30,10 +30,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -317,6 +315,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             }
         }
         textAreaBottomSheet?.dismiss()
+    }
+
+    override fun onDismissBottomSheet(text: String) {
         createReviewExpandableTextArea.setText(text)
     }
 
@@ -664,7 +665,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun initCreateReviewTextArea() {
-        createReviewExpandableTextArea.setListener(this)
+        createReviewExpandableTextArea.apply {
+            setListener(this@CreateReviewFragment)
+            addOnImpressionListener(ImpressHolder()) {
+                (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.let {
+                    with(it.data.productrevGetForm) {
+                        CreateReviewTracking.reviewOnScoreVisible(orderID, productId.toString())
+                    }
+                }
+            }
+        }
     }
 
     private fun initEmptyPhoto() {

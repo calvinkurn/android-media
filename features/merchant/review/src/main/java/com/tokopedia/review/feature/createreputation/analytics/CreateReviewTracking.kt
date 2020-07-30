@@ -68,6 +68,15 @@ object CreateReviewTracking {
         ))
     }
 
+    fun reviewOnScoreVisible(orderId: String, productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                CreateReviewTrackingConstants.VIEW_SMILEY,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
+        ))
+    }
+
     fun reviewOnViewTracker(orderId: String, productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(createEventMap(
                 "viewReviewIris",

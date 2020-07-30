@@ -36,6 +36,9 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
             setAction(ContextCompat.getDrawable(it, R.drawable.ic_collapse)) {
                 textAreaListener?.onCollapseButtonClicked(reviewCreateTextAreaBottomSheet.text.toString())
             }
+            setOnDismissListener {
+                textAreaListener?.onDismissBottomSheet(reviewCreateTextAreaBottomSheet.text.toString())
+            }
         }
     }
 

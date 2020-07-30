@@ -56,8 +56,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val submitReviewResult: LiveData<Boolean>
         get() = _submitReviewResult
 
-    fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
-                     reviewText: String, isAnonymous: Boolean) {
+    fun submitReview(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int,
+                     reviewText: String = "", isAnonymous: Boolean = false) {
         if (imageData.isEmpty()) {
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
         } else {
