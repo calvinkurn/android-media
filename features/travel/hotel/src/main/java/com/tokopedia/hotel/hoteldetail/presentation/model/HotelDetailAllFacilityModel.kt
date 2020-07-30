@@ -1,44 +1,21 @@
 package com.tokopedia.hotel.hoteldetail.presentation.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by furqan on 08/05/19
  */
+@Parcelize
 class HotelDetailAllFacilityModel(
         var facilityListData: List<FacilityData> = listOf(),
         var policyData: HotelDetailPolicyModel = HotelDetailPolicyModel(),
         var importantInfo: String = "",
         var description: String = "") : Parcelable {
 
-    constructor(parcel: Parcel) : this(
-            parcel.createTypedArrayList(FacilityData),
-            parcel.readParcelable(HotelDetailPolicyModel::class.java.classLoader),
-            parcel.readString(),
-            parcel.readString())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeTypedList(facilityListData)
-        parcel.writeParcelable(policyData, flags)
-        parcel.writeString(importantInfo)
-        parcel.writeString(description)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<HotelDetailAllFacilityModel> {
-        override fun createFromParcel(parcel: Parcel): HotelDetailAllFacilityModel {
-            return HotelDetailAllFacilityModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<HotelDetailAllFacilityModel?> {
-            return arrayOfNulls(size)
-        }
+    companion object {
 
         fun transform(propertyDetailData: PropertyDetailData): HotelDetailAllFacilityModel {
             val detailAllFacilityModel = HotelDetailAllFacilityModel()

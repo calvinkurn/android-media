@@ -65,7 +65,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    api (rootProject.ext.serviceDependencies.crashlytics) {
+    api (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }
@@ -79,3 +79,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

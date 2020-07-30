@@ -1,9 +1,9 @@
 package com.tokopedia.catalog.model
 
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class ProductCatalogResponse(
     @SerializedName("ProductCatalogQuery")
@@ -80,6 +80,7 @@ data class ProductCatalogResponse(
                     val title: String
                 )
 
+                @Parcelize
                 data class CatalogImage(
                     @SerializedName("image_url")
                     val imageUrl: String,
@@ -87,32 +88,7 @@ data class ProductCatalogResponse(
                     val imageUrl700: String?,
                     @SerializedName("is_primary")
                     val isPrimary: Boolean
-                ) : Parcelable {
-                    constructor(parcel: Parcel) : this(
-                            parcel.readString(),
-                            parcel.readString(),
-                            parcel.readByte() != 0.toByte())
-
-                    override fun writeToParcel(parcel: Parcel, flags: Int) {
-                        parcel.writeString(imageUrl)
-                        parcel.writeString(imageUrl700)
-                        parcel.writeByte(if (isPrimary) 1 else 0)
-                    }
-
-                    override fun describeContents(): Int {
-                        return 0
-                    }
-
-                    companion object CREATOR : Parcelable.Creator<CatalogImage> {
-                        override fun createFromParcel(parcel: Parcel): CatalogImage {
-                            return CatalogImage(parcel)
-                        }
-
-                        override fun newArray(size: Int): Array<CatalogImage?> {
-                            return arrayOfNulls(size)
-                        }
-                    }
-                }
+                ) : Parcelable
 
                 data class MarketPrice(
                     @SerializedName("date")
@@ -143,62 +119,22 @@ data class ProductCatalogResponse(
                     val videoUrl: String
                 )
 
+                @Parcelize
                 data class Specification(
                     @SerializedName("name")
                     val name: String,
                     @SerializedName("row")
                     val row: ArrayList<Row>
                 ) : Parcelable {
-                    constructor(parcel: Parcel) : this(
-                            parcel.readString(),
-                            parcel.createTypedArrayList(Row))
 
+                    @Parcelize
                     data class Row(
                         @SerializedName("key")
                         val key: String,
                         @SerializedName("value")
                         val value: ArrayList<String>
-                    ) : Parcelable {
-                        constructor(parcel: Parcel) : this(
-                                parcel.readString(),
-                                parcel.createStringArrayList())
+                    ) : Parcelable
 
-                        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                            parcel.writeString(key)
-                        }
-
-                        override fun describeContents(): Int {
-                            return 0
-                        }
-
-                        companion object CREATOR : Parcelable.Creator<Row> {
-                            override fun createFromParcel(parcel: Parcel): Row {
-                                return Row(parcel)
-                            }
-
-                            override fun newArray(size: Int): Array<Row?> {
-                                return arrayOfNulls(size)
-                            }
-                        }
-                    }
-
-                    override fun writeToParcel(parcel: Parcel, flags: Int) {
-                        parcel.writeString(name)
-                    }
-
-                    override fun describeContents(): Int {
-                        return 0
-                    }
-
-                    companion object CREATOR : Parcelable.Creator<Specification> {
-                        override fun createFromParcel(parcel: Parcel): Specification {
-                            return Specification(parcel)
-                        }
-
-                        override fun newArray(size: Int): Array<Specification?> {
-                            return arrayOfNulls(size)
-                        }
-                    }
                 }
             }
         }

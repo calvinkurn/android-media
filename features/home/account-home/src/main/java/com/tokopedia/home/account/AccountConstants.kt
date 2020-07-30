@@ -13,6 +13,7 @@ object AccountConstants {
     const val RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon"
     const val TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp"
     const val SALDO_QUERY = "saldo_query"
+    const val REWARD_SHORTCUT_QUERY= "reward_shortcut_query"
     const val SHOP_LOCATION_QUERY = "query_shop_location"
     const val ACCOUNT_TAB = "ACCOUNT_TAB"
     const val ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER"
@@ -142,7 +143,8 @@ object AccountConstants {
         const val EVENT_CATEGORY_AKUN_PEMBELI = "akun saya pembeli"
         const val EVENT_ACTION_CLICK_AVATAR = "click - profile avatar"
         const val EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION = "account promotion impression"
-        const val EVENT_ACTION_ACCOUNT_PROMOTION_CLICK = "click on account promotion"
+        const val EVENT_ACTION_ACCOUNT_PROMOTION_CLICK = "click reward section"
+        const val EVENT_ACTION_ACCOUNT_PROMOTION_REWARD_CLICK = "click entry point to reward page"
         const val FIELD_ID = "id"
         const val FIELD_NAME = "name"
         const val FIELD_CREATIVE = "creative"
@@ -195,5 +197,14 @@ object AccountConstants {
             const val ERROR_CODE_BUYER_ACCOUNT = "ACB001"
             const val ERROR_CODE_SELLER_ACCOUNT = "ACS001"
         }
+    }
+
+    object Query {
+        const val NEW_QUERY_BUYER_ACCOUNT_HOME = "new_query_buyer_account_home"
+        const val QUERY_SELLER_ACCOUNT_HOME = "query_seller_account_home"
+        const val QUERY_TOP_ADS = "gql_get_deposit"
+        const val NEW_QUERY_SALDO_BALANCE = "new_query_saldo_balance"
+        const val QUERY_SHOP_LOCATION = "query_shop_location"
+        const val QUERY_USER_REWARDSHORCUT = "query_user_rewardshortcut"
     }
 }

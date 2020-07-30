@@ -11,8 +11,4 @@ public class ErrorMessageException extends RuntimeException {
         super(errorMessage);
     }
 
-    public ErrorMessageException(String errorMessage, int errorCode) {
-        super(errorMessage + " " + CoreNetworkApplication.getAppContext().getString(R.string.code_error)
-                + " " + errorCode);
-    }
 }

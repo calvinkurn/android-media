@@ -34,7 +34,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
-import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -70,7 +69,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy {
         DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType,
-                pageIdentifier = discoveryViewModel.pageIdentifier)
+                pageIdentifier = discoveryViewModel.pageIdentifier, campaignCode = discoveryViewModel.campaignCode)
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: ProgressBar
@@ -127,7 +126,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             activity?.onBackPressed()
         }
         globalError = view.findViewById(R.id.global_error)
-        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
@@ -160,16 +158,20 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
-        recyclerView.setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
-        recyclerView.apply {
-            discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
-                setAdapter(it)
-            }
-        }
+        setAdapter()
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
         discoveryViewModel.getDiscoveryData()
         setUpObserver()
+    }
+
+    fun setAdapter() {
+        recyclerView.apply {
+            setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+            discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
+                setAdapter(it)
+            }
+        }
     }
 
     fun reSync() {
@@ -181,6 +183,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             when (it) {
                 is Success -> {
                     it.data.let { listComponent ->
+                        if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                     }
                     mProgressBar.hide()
@@ -238,6 +241,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
         ivSearch.setOnClickListener {
+            getDiscoveryAnalytics().trackSearchClick()
             if (data?.searchApplink?.isNotEmpty() == true) {
                 RouteManager.route(context, data.searchApplink)
             } else {

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,7 +52,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
     override fun initInjector() {
             activity?.let {
@@ -185,6 +186,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                 openFreeShippingPage()
                 trackFreeShippingClick(freeShipping)
             }
+            tracker = powerMerchantTracking
             show(freeShipping)
         }
     }
@@ -243,10 +245,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         )
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
-                cancelMembership()
+                onClickCancelMembership()
                 bottomSheetCancel?.dismiss()
             }
         })
+    }
+
+    private fun onClickCancelMembership() {
+        trackClickCancelMembershipPopUp()
+        cancelMembership()
     }
 
     private fun redirectToPMCancellationQuestionnairePage() {
@@ -296,10 +303,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             if(showFreeShipping) {
                 openFreeShippingPage()
                 trackSuccessBottomSheetClickLearnMore(freeShipping)
+            } else {
+                trackClickStartSuccessBottomSheet()
             }
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun trackClickStartSuccessBottomSheet() {
+        powerMerchantTracking.eventClickStartSuccessBottomSheet()
     }
 
     private fun openFreeShippingPage() {
@@ -342,10 +355,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
-        membershipLayout.show(powerMerchantStatus) {
-            onClickRegister()
+        val shopScore = powerMerchantStatus.shopScore.data.value
+
+        membershipLayout.show(powerMerchantStatus, powerMerchantTracking) {
+            onClickRegister(shopScore)
         }
-        featureLayout.show(powerMerchantStatus)
+        featureLayout.show(powerMerchantStatus, powerMerchantTracking)
         freeShippingLayout.show()
         registrationLayout.hide()
         benefitLayout.hide()
@@ -353,7 +368,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showRegistrationView(powerMerchantStatus: PowerMerchantStatus) {
         registrationLayout.show(powerMerchantStatus, powerMerchantTracking)
-        featureLayout.show(powerMerchantStatus)
+        featureLayout.show(powerMerchantStatus, powerMerchantTracking)
         benefitLayout.show(powerMerchantTracking)
         freeShippingLayout.hide()
         membershipLayout.hide()
@@ -361,19 +376,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showCTAButton(powerMerchantStatus: PowerMerchantStatus) {
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
+        val shopScore = powerMerchantStatus.shopScore.data.value
 
         when {
-            shopStatus.isPowerMerchantInactive() -> showRegisterBtn()
+            shopStatus.isPowerMerchantInactive() -> showRegisterBtn(shopScore)
             shopStatus.isPowerMerchantRegistered() -> showCancelMembershipBtn()
             else -> btnCallToAction.hide()
         }
     }
 
-    private fun showRegisterBtn() {
+    private fun showRegisterBtn(shopScore: Int) {
         btnRegister.text = getString(R.string.power_merchant_register_now)
 
         btnCallToAction.setOnClickListener {
-            onClickRegister()
+            trackClickRegister()
+            onClickRegister(shopScore)
         }
 
         btnRegister.show()
@@ -381,12 +398,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         textCancelMembership.hide()
     }
 
+    private fun trackClickRegister() {
+        powerMerchantTracking.eventClickUpgradeShop()
+    }
+
     private fun showCancelMembershipBtn() {
         val cancelMembershipTxt = getString(R.string.power_merchant_cancel_membership)
         textCancelMembership.text = MethodChecker.fromHtml(cancelMembershipTxt)
 
         btnCallToAction.setOnClickListener {
-            powerMerchantTracking.eventCancelMembershipPm()
+            trackClickCancelMembership()
             showBottomSheetCancel()
         }
 
@@ -395,14 +416,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         textCancelMembership.show()
     }
 
-    private fun onClickRegister() {
-        powerMerchantTracking.eventUpgradeShopPm()
-        goToTermsAndConditionPage()
+    private fun trackClickCancelMembership() {
+        powerMerchantTracking.eventClickCancelMembership()
     }
 
-    private fun goToTermsAndConditionPage() {
+    private fun trackClickCancelMembershipPopUp() {
+        powerMerchantTracking.eventClickCancelMembershipPopUp()
+    }
+
+    private fun onClickRegister(shopScore: Int) {
+        goToTermsAndConditionPage(shopScore)
+    }
+
+    private fun goToTermsAndConditionPage(shopScore: Int) {
         context?.let {
-            val intent = PowerMerchantTermsActivity.createIntent(it)
+            val intent = PowerMerchantTermsActivity.createIntent(it, shopScore)
             startActivityForResult(intent, ACTIVATE_INTENT_CODE)
         }
     }

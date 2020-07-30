@@ -3,23 +3,16 @@ package com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.confirmshipping.data.model.*
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import com.tokopedia.sellerorder.confirmshipping.domain.SomChangeCourierUseCase
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetConfirmShippingResultUseCase
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetCourierListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -43,20 +36,26 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: SomDispatcherP
         get() = _changeCourierResult
 
     fun confirmShipping(queryString: String) {
-        launch {
+        launchCatchError(block = {
             _confirmShippingResult.postValue(somGetConfirmShippingResultUseCase.execute(queryString))
-        }
+        }, onError = {
+            _confirmShippingResult.postValue(Fail(it))
+        })
     }
 
     fun getCourierList(rawQuery: String) {
-        launch {
+        launchCatchError(block = {
             _courierListResult.postValue(somGetCourierListUseCase.execute(rawQuery))
-        }
+        }, onError = {
+            _courierListResult.postValue(Fail(it))
+        })
     }
 
     fun changeCourier(queryString: String) {
-        launch {
+        launchCatchError(block = {
             _changeCourierResult.postValue(somChangeCourierUseCase.execute(queryString))
-        }
+        }, onError = {
+            _changeCourierResult.postValue(Fail(it))
+        })
     }
 }

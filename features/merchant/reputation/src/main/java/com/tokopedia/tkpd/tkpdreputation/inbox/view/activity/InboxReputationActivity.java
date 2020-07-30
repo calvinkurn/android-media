@@ -25,6 +25,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.reviewseller.feature.inboxreview.presentation.fragment.InboxReviewFragment;
+import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -56,6 +58,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
+    private Fragment inboxReviewFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
@@ -101,10 +104,13 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
-            reviewSellerFragment = applicationContext.getReviewSellerFragment();
+        }
+        if(GlobalConfig.isSellerApp()) {
+            reviewSellerFragment = RatingProductFragment.Companion.createInstance();
             Bundle reviewSellerBundle = new Bundle();
             reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory);
             reviewSellerFragment.setArguments(reviewSellerBundle);
+            inboxReviewFragment = InboxReviewFragment.Companion.createInstance();
         }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
@@ -115,7 +121,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                     canFireTracking = true;
                     return;
                 }
-                reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                if(!GlobalConfig.isSellerApp()) {
+                    reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                }
                 if(tickerTitle != null) {
                     reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
                 }
@@ -132,6 +140,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         if(GlobalConfig.isSellerApp()) {
             if(reviewSellerFragment != null) {
                 indicator.addNewTab(getString(R.string.title_rating_product));
+            }
+            if(inboxReviewFragment != null) {
+                indicator.addNewTab(getString(R.string.title_review_inbox));
             }
         }
 
@@ -197,6 +208,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
+            fragmentList.add(inboxReviewFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {

@@ -126,9 +126,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::setVoucherPeriod,
                             ::getBannerVoucherUiModel,
                             ::getBannerBaseUiModel,
-                            ::onSuccessGetSquareBitmap,
+                            ::onSuccessGetBannerBitmap,
                             ::getVoucherReviewUiModel,
-                            isCreateNew))
+                            isCreateNew,
+                            isEditVoucher))
             put(VoucherCreationStepInfo.STEP_FOUR,
                     ReviewVoucherFragment.createInstance(
                             ::getVoucherReviewUiModel,
@@ -138,6 +139,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::getBannerBitmap,
                             ::getVoucherId,
                             ::getPromoCodePrefix,
+                            ::getBannerBaseUiModel,
+                            ::getBannerVoucherUiModel,
                             this@CreateMerchantVoucherStepsActivity.isEditVoucher))
         }
     }
@@ -205,7 +208,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_CANCELLED,
                             userId = userSession.userId
                     )
-                    setResult(Activity.RESULT_OK)
+                    setResult(Activity.RESULT_CANCELED)
                     finish()
                 })
     }
@@ -264,6 +267,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onBackPressed() {
         if (isEditVoucher) {
+            setResult(Activity.RESULT_CANCELED)
             finish()
         } else {
             when(currentStepPosition) {
@@ -355,6 +359,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             isUserInputEnabled = false
             adapter = viewPagerAdapter
             registerOnPageChangeCallback(viewPagerOnPageChangeCallback)
+            offscreenPageLimit = fragmentStepsHashMap.size - 1
         }
     }
 
@@ -399,10 +404,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
                     voucherReviewUiModel.promoCode = voucherReviewUiModel.promoCode.replace(promoCodePrefix, "")
                     if (isDuplicateVoucher) {
-                        createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
+                        viewModel.setStepPosition(VoucherCreationStep.REVIEW)
                     } else if (isEditVoucher) {
                         intent?.getIntExtra(EDIT_STEP, VoucherCreationStep.REVIEW)?.let { step ->
-                            createMerchantVoucherViewPager?.currentItem = step
+                            viewModel.setStepPosition(step)
                         }
                     }
                     createMerchantVoucherViewPager?.setOnLayoutListenerReady()
@@ -471,8 +476,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             setVoucherName(targetType, name, promoCode)
 
             if (isEdit && startTime.isNotEmpty() && finishTime.isNotEmpty()) {
-                val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DATE_FORMAT)
-                val endDate = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.DATE_FORMAT)
+                val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DASH_DATE_FORMAT)
+                val endDate = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.DASH_DATE_FORMAT)
                 val startHour = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.HOUR_FORMAT)
                 val endHour = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.HOUR_FORMAT)
                 setVoucherPeriod(startDate, endDate, startHour, endHour)
@@ -505,7 +510,11 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun onNextStep() {
-        viewModel.setNextStep()
+        if (isEditVoucher) {
+            viewModel.setStepPosition(VoucherCreationStep.REVIEW)
+        } else {
+            viewModel.setNextStep()
+        }
     }
 
     private fun setVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
@@ -515,7 +524,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             this.voucherName = voucherName
             this.promoCode = promoCode
         }
-        viewModel.setNextStep()
+        onNextStep()
     }
 
     private fun setVoucherBenefit(imageType: VoucherImageType, minPurchase: Int, quota: Int) {
@@ -548,7 +557,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         voucherReviewUiModel.shopAvatarUrl = shopAvatarUrl
     }
 
-    private fun onSuccessGetSquareBitmap(bitmap: Bitmap) {
+    private fun onSuccessGetBannerBitmap(bitmap: Bitmap) {
         bannerBitmap = bitmap
     }
 

@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -182,7 +182,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startPriceActivity() {
         activity?.run {
-            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, officialStore,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, currentProductAddViewModel?.productStock?.stockCount, officialStore,
                     currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()
                             ?: false, isGoldMerchant), REQUEST_CODE_GET_PRICE)
         }
@@ -379,7 +379,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         userSessionInterface.email,
                         error
                 )
-                Crashlytics.logException(Exception(errorMessage))
+                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
             }
         } catch (ex: IllegalStateException) {
             ex.printStackTrace()

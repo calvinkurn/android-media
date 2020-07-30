@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
@@ -103,9 +103,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val REQUEST_FROM_PDP = 394
 
-        fun newInstance(productId: String = "", source: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
             this.productId = productId
-            this.queryParam = source
+            this.queryParam = queryParam
             this.ref = ref
             this.internalRef = internalRef
         }
@@ -137,7 +137,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onViewCreated(view, savedInstanceState)
         displayProductInfo()
         activity?.run{
-            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
+            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
         }
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(

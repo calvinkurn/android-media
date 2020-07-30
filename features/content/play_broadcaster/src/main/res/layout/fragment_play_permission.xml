@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/play_bg_dark_transparent"
+    tools:visibility="visible">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_permit_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:textColor="@color/Neutral_N0"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_system_close_default"
+        app:tint="@color/Neutral_N0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl6"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:gravity="center"
+        android:text="@string/play_permit_title"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintBottom_toTopOf="@+id/tv_permit_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_permit_desc"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl6"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:gravity="center"
+        android:text="@string/play_permit_description"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintBottom_toTopOf="@+id/view_center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2" />
+
+    <View
+        android:id="@+id/view_center"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl6"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl6"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:background="@drawable/bg_play_light_gray_border_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_center">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_permit_camera"
+            android:layout_width="@dimen/play_permit_icon_width"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/play_permit_spacing"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_play_action_camera_white" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_permit_allow_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:text="@string/play_permit_allow_camera"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_permit_camera"
+            app:layout_constraintStart_toEndOf="@+id/iv_permit_camera"
+            app:layout_constraintTop_toTopOf="@+id/iv_permit_camera" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_permit_check_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
+            android:text="@string/play_permit_active"
+            android:textColor="@color/dark_G500"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_permit_allow_camera" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/play_permit_divider_height"
+            android:background="@color/play_permit_stroke"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_permit_microphone"
+            android:layout_width="@dimen/play_permit_icon_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/play_permit_spacing"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:srcCompat="@drawable/ic_play_audio_white" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_permit_allow_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:text="@string/play_permit_allow_mic"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_permit_microphone"
+            app:layout_constraintStart_toEndOf="@+id/iv_permit_microphone"
+            app:layout_constraintTop_toTopOf="@+id/iv_permit_microphone" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_permit_check_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
+            android:text="@string/play_permit_active"
+            android:textColor="@color/dark_G500"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/text_permit_allow_mic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_permit_allow_mic" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

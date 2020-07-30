@@ -50,8 +50,8 @@
     <string name="gami_no_internet_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="gami_coba_lagi_refresh">Coba Lagi Refresh</string>
     <string name="gami_ke_pengaturan">Ke Pengaturan</string>
-    <string name="gami_gift_share">Wah, %s sudah membuka Tap Tap Kotak hari ini! Ayo ikutan buka Kotak Kejutan setiap hari &amp; dapatkan berbagai hadiah menarik! \nhttps://tokopedia.link/omlRG290A7</string>
-    <string name="gami_gift_60_share">%s sudah bermain Tap Tap Kotak dan mendapatkan berbagai hadiah menarik selama 60 detik! Yuk, ikutan juga! \nhttps://tokopedia.link/AxwsHyXZA7</string>
+    <string name="gami_gift_share">Wah, %s sudah membuka Tap Tap Kotak hari ini! Ayo ikutan buka Tap Tap Kotak setiap hari &amp; dapatkan berbagai hadiah menarik! \nhttps://tokopedia.link/omlRG290A7</string>
+    <string name="gami_gift_60_share">%s sudah bermain Tap Tap Kotak dan mendapatkan berbagai hadiah menarik selama 30 detik! Yuk, ikutan juga! \nhttps://tokopedia.link/AxwsHyXZA7</string>
     <string name="gami_gift_default_error_msg">Oops, terjadi kendala. Coba beberapa saat lagi, ya !</string>
     <string name="gami_min_transaction">Min. transaksi</string>
     <string name="gami_beli_ketupat">Beli ketupat, beli pepaya</string>
