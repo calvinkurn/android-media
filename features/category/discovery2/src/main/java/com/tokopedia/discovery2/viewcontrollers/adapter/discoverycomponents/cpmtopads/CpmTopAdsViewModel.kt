@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CpmTopAdsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -47,8 +46,6 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
                     cpmData.postValue(Success(components.cpmData as CpmModel))
                 }
             }
-
-
         }, onError = {
             it.printStackTrace()
         })
@@ -75,7 +72,6 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
     }
-
 }
 
 

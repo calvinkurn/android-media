@@ -8,8 +8,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chip
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopadsProductItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopadsShopItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
@@ -38,7 +36,5 @@ interface DiscoveryComponent {
     fun inject(productCardItemViewModel: ProductCardItemViewModel)
     fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)
-    fun inject(cpmTopadsShopItemViewModel: CpmTopadsShopItemViewModel)
-    fun inject(cpmTopadsProductItemViewModel: CpmTopadsProductItemViewModel)
     fun inject(quickCouponViewModel: QuickCouponViewModel)
 }

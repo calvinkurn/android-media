@@ -628,7 +628,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     }
 
     fun trackClickTopAdsShop(componentDataItem: ComponentsItem, cpmData: CpmData) {
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CPM_SHOP_CLICK, eventLabel = "${cpmData.id}_${cpmData.cpm.cpmShop.id}")
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CPM_SHOP_CLICK, eventLabel = "${cpmData.id}-${cpmData.cpm.cpmShop.id}")
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to "${cpmData.id}_${cpmData.cpm.cpmShop.id}",
@@ -668,6 +668,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 KEY_IMPRESSIONS to list)
         val map = createGeneralEvent(eventName = EVENT_PRODUCT_VIEW,
                 eventAction = CPM_PRODUCT_LIST_IMPRESSION, eventLabel = EMPTY_STRING)
+        map[KEY_CAMPAIGN_CODE] = campaignCode
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
@@ -676,11 +677,13 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         val login = if (userLoggedIn) LOGIN else NON_LOGIN
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
+        var productID = ""
         val cpmProductList = cpmData.cpm.cpmShop.products
         productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${componentPosition + 1} - $login - ${componentDataItem.name} - ${cpmData.id}"
 
         if (cpmProductList.isNotEmpty() && cpmProductList.size > productPosition) {
             val productData = cpmData.cpm.cpmShop.products[productPosition]
+            productID = productData.id
             productMap[KEY_NAME] = productData.name
             productMap[KEY_ID] = productData.id
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(productData.priceFormat
@@ -701,7 +704,8 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                         PRODUCTS to list
                 )
         )
-        val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = productCardImpressionLabel)
+        val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = "${cpmData.id}-${cpmData.cpm.cpmShop.id}-$productID")
+        map[KEY_CAMPAIGN_CODE] = campaignCode
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
         productCardItemList = EMPTY_STRING

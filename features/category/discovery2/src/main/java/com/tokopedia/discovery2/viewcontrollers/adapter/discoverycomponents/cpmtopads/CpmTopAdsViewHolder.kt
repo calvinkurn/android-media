@@ -45,7 +45,6 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
                     adsBannerView.displayAds(item.data)
                 }
             }
-
         })
     }
 
@@ -57,7 +56,7 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
         if (cpmData != null) {
             if (position == 0) {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsShop(componentDataItem, cpmData)
-            } else if(cpmProductPosition >= 0) {
+            } else if (cpmProductPosition >= 0) {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(componentDataItem, cpmData, componentPosition, cpmProductPosition, cpmTopAdsViewModel.isUserLoggedIn())
             }
         }
