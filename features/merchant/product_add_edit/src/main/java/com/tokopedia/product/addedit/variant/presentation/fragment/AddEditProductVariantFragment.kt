@@ -612,7 +612,6 @@ class AddEditProductVariantFragment :
                                            unConfirmedSelection: List<UnitValue> = listOf()) {
         variantDataValuePicker = BottomSheetUnify()
         variantDataValuePicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
-        variantDataValuePicker?.showCloseIcon = false
         variantDataValuePicker?.clearContentPadding = true
         variantDataValuePicker?.showKnob = true
         variantDataValuePicker?.clearContentPadding = true
@@ -632,7 +631,6 @@ class AddEditProductVariantFragment :
                                       hasSelectedValues: Boolean = false) {
         variantUnitPicker = BottomSheetUnify()
         variantUnitPicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
-        variantUnitPicker?.showCloseIcon = true
         variantUnitPicker?.clearContentPadding = true
         val variantUnitPickerLayout = VariantUnitPicker(context)
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)

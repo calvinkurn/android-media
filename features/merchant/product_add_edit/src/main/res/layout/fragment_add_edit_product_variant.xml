@@ -26,7 +26,8 @@
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl1" />
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/body_3" />
 
             <include
                 android:id="@+id/variantValueLevel1Layout"
