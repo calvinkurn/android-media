@@ -6,7 +6,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
-import android.text.format.Time
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -39,8 +38,8 @@ object ProductDetailUtil {
         }
     }
 
-    fun randomGenerator(random: Random) : String {
-        return (System.currentTimeMillis() + random.nextInt()).toString()
+    fun randomGenerator(): String {
+        return System.currentTimeMillis().toString()
     }
 }
 

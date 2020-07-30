@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
 import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
-import java.util.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -128,7 +127,7 @@ object VariantMapper {
             val newMedia = Media(type = "image", uRL300 = newData.picture?.original
                     ?: "", uRLOriginal = newData.picture?.original
                     ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = ProductDetailUtil.randomGenerator(Random())
+                id = ProductDetailUtil.randomGenerator()
             }
 
             copyOfOldMedia?.add(0, newMedia)
