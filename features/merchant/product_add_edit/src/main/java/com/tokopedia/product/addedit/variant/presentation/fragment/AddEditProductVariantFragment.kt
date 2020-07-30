@@ -616,8 +616,6 @@ class AddEditProductVariantFragment :
         variantDataValuePicker = BottomSheetUnify()
         variantDataValuePicker?.setTitle(getString(R.string.label_variant_choose) + " " + variantData.name)
         variantDataValuePicker?.clearContentPadding = true
-        variantDataValuePicker?.showKnob = true
-        variantDataValuePicker?.clearContentPadding = true
         // set the bottom sheet to full screen
         variantDataValuePicker?.setShowListener {
             variantDataValuePicker?.bottomSheet?.state = BottomSheetBehavior.STATE_EXPANDED
