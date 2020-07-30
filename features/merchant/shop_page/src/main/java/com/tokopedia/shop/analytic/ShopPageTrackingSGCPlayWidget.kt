@@ -1,7 +1,6 @@
 package com.tokopedia.shop.analytic
 
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
@@ -19,8 +18,7 @@ class ShopPageTrackingSGCPlayWidget(
         sendDataLayerEvent(eventMap)
     }
 
-    fun onClickSGCContent(shopId: String,
-                           customDimensionShopPage: CustomDimensionShopPage){
+    fun onClickSGCContent(shopId: String){
         val eventMap = HashMap<String, Any>()
         eventMap[EVENT] = CLICK_SHOP_PAGE
         eventMap[EVENT_CATEGORY] = SHOP_PAGE_SELLER
