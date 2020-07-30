@@ -129,6 +129,7 @@ object VariantMapper {
             }
 
             copyOfOldMedia?.add(0, newMedia)
+
             copyOfOldMedia ?: mutableListOf()
         } else {
             oldData.data.media

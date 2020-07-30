@@ -316,7 +316,7 @@ open class HomeViewModel @Inject constructor(
             if(newPlayCarouselDataModel.channelList.isEmpty()){
                 _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
                     logChannelUpdate("delete play banner data: ${newPlayCarouselDataModel.title}")
-                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
                 }
             } else {
                 val newList = mutableListOf<Visitable<*>>()
@@ -334,8 +334,7 @@ open class HomeViewModel @Inject constructor(
             if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
                 val newList = mutableListOf<Visitable<*>>()
                 newList.addAll(_homeLiveData.value?.list ?: listOf())
-                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel, playIndex))
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, playCarouselCardDataModel))
             }
         }
     }
@@ -926,7 +925,14 @@ open class HomeViewModel @Inject constructor(
     private fun initChannel(){
         logChannelUpdate("init channel")
         jobChannel?.cancelChildren()
-        jobChannel = launch(homeDispatcher.get().ui()) {
+        launch (homeDispatcher.get().ui()){
+            updateChannel(channel)
+        }
+    }
+    private suspend fun reinitChannel(){
+        logChannelUpdate("reinit channel")
+        jobChannel?.cancelChildren()
+        withContext (homeDispatcher.get().ui()){
             updateChannel(channel)
         }
     }
@@ -1440,6 +1446,7 @@ open class HomeViewModel @Inject constructor(
             channel.send(updateWidget)
         }catch (e: ClosedSendChannelException){
             logChannelUpdate("Update Widget Error... (send = ${channel.isClosedForSend} | widget = $updateWidget)")
+            logChannelUpdate("init channel")
             initChannel()
             updateWidget(updateWidget)
         }
