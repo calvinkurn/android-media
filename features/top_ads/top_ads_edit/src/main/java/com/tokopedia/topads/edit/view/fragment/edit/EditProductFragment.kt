@@ -215,13 +215,15 @@ class EditProductFragment : BaseDaggerFragment() {
 
     private fun filterAddedProducts() {
         /// for the products which are added and removed
-        addedProducts.forEachIndexed { index, added ->
+        val iterator = addedProducts.iterator()
+        while (iterator.hasNext()){
             deletedProducts.forEach { deleted ->
-                if (added.itemID == deleted.itemID) {
-                    addedProducts.removeAt(index)
+                if (iterator.next().itemID == deleted.itemID) {
+                    iterator.remove()
                 }
             }
         }
+
         //remove the delete items which are not originally in the group
         var indi: MutableList<Int> = mutableListOf()
         deletedProducts.forEachIndexed { index, deleted ->

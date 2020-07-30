@@ -8,7 +8,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem;
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse;
@@ -18,10 +17,10 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +39,12 @@ import static com.tokopedia.home.account.AccountConstants.VccStatus.REJECTED;
 
 /**
  * @author by alvinatin on 10/08/18.
+ *
+ * Please use BuyerAccountMapper.kt instead
  */
 
-public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
+@Deprecated
+public class BuyerAccountMapper implements Func1<AccountDataModel, BuyerViewModel> {
     private static final String OVO = "OVO";
     private static final String OVO_PAY_LATER = "OVO PayLater";
     private static final String LABEL_ELIGIBLE = "Aktifkan";
@@ -62,86 +64,85 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     }
 
     @Override
-    public BuyerViewModel call(AccountModel accountModel) {
-        return getBuyerModel(context, accountModel);
+    public BuyerViewModel call(AccountDataModel accountDataModel) {
+        return getBuyerModel(context, accountDataModel);
     }
 
-    private BuyerViewModel getBuyerModel(Context context, AccountModel accountModel) {
+    private BuyerViewModel getBuyerModel(Context context, AccountDataModel accountDataModel) {
         BuyerViewModel model = new BuyerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        if (accountModel.getProfile() != null) {
-            items.add(getBuyerProfileMenu(accountModel));
+        if (accountDataModel.getProfile() != null) {
+            items.add(getBuyerProfileMenu(accountDataModel));
         }
 
         String cdnUrl = remoteConfig
                 .getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-        if (accountModel.getWallet() != null) {
-            tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
-            tokopediaPayViewModel.setWalletType(accountModel.getWallet().getWalletType());
-            if (accountModel.getWallet().getWalletType().equals(OVO)) {
+        if (accountDataModel.getWallet() != null) {
+            tokopediaPayViewModel.setLinked(accountDataModel.getWallet().isLinked());
+            tokopediaPayViewModel.setWalletType(accountDataModel.getWallet().getWalletType());
+            if (accountDataModel.getWallet().getWalletType().equals(OVO)) {
                 tokopediaPayViewModel.setIconUrlLeft(cdnUrl + AccountHomeUrl.ImageUrl.OVO_IMG);
-                if (!accountModel.getWallet().isLinked()) {
-                    if (accountModel.getWallet().getAmountPendingCashback() > 0) {
-                        tokopediaPayViewModel.setLabelLeft("(+" + accountModel.getWallet().getPendingCashback() + ")");
+                if (!accountDataModel.getWallet().isLinked()) {
+                    if (accountDataModel.getWallet().getAmountPendingCashback() > 0) {
+                        tokopediaPayViewModel.setLabelLeft("(+" + accountDataModel.getWallet().getPendingCashback() + ")");
                     } else {
-                        tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                        tokopediaPayViewModel.setLabelLeft(accountDataModel.getWallet().getText());
                     }
 
-                    if (accountModel.getWallet().getAction() != null) {
-                        tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
-                        tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+                    if (accountDataModel.getWallet().getAction() != null) {
+                        tokopediaPayViewModel.setAmountLeft(accountDataModel.getWallet().getAction().getText());
+                        tokopediaPayViewModel.setApplinkLeft(accountDataModel.getWallet().getAction().getApplink());
                     }
                 } else {
-                    tokopediaPayViewModel.setLabelLeft("Points " + accountModel.getWallet().getPointBalance());
-                    tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getCashBalance());
-                    tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+                    tokopediaPayViewModel.setLabelLeft("Points " + accountDataModel.getWallet().getPointBalance());
+                    tokopediaPayViewModel.setAmountLeft(accountDataModel.getWallet().getCashBalance());
+                    tokopediaPayViewModel.setApplinkLeft(accountDataModel.getWallet().getApplink());
                 }
             } else {
                 tokopediaPayViewModel.setIconUrlLeft(cdnUrl + AccountHomeUrl.ImageUrl.TOKOCASH_IMG);
-                if (!accountModel.getWallet().isLinked()) {
-                    tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-                    if (accountModel.getWallet().getAction() != null) {
-                        tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
-                        tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+                if (!accountDataModel.getWallet().isLinked()) {
+                    tokopediaPayViewModel.setLabelLeft(accountDataModel.getWallet().getText());
+                    if (accountDataModel.getWallet().getAction() != null) {
+                        tokopediaPayViewModel.setAmountLeft(accountDataModel.getWallet().getAction().getText());
+                        tokopediaPayViewModel.setApplinkLeft(accountDataModel.getWallet().getAction().getApplink());
                     }
                 } else {
-                    tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-                    tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
-                    tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+                    tokopediaPayViewModel.setLabelLeft(accountDataModel.getWallet().getText());
+                    tokopediaPayViewModel.setAmountLeft(accountDataModel.getWallet().getBalance());
+                    tokopediaPayViewModel.setApplinkLeft(accountDataModel.getWallet().getApplink());
                 }
             }
         }
 
-        if ((accountModel.getSaldoModel() != null &&
-                accountModel.getSaldoModel().getSaldo() != null) ||
-                (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
-                        accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
+        if ((accountDataModel.getSaldo() != null) ||
+                (accountDataModel.getVccUserStatus() != null && accountDataModel.getVccUserStatus().getStatus() != null &&
+                        accountDataModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
 
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
-            if(accountModel.getSaldoModel() != null && accountModel.getSaldoModel().getSaldo() != null) {
-                tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                        (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
-            }
+
+            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                    (accountDataModel.getSaldo().getDepositLong(), true));
+
             tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);
 
         }
 
-        if (accountModel.getVccUserStatus() != null &&
-                accountModel.getVccUserStatus().getTitle() != null &&
-                accountModel.getVccUserStatus().getTitle().equalsIgnoreCase(OVO_PAY_LATER)) {
-            VccUserStatus vccUserStatus = accountModel.getVccUserStatus();
+        if (accountDataModel.getVccUserStatus() != null &&
+                accountDataModel.getVccUserStatus().getTitle() != null &&
+                accountDataModel.getVccUserStatus().getTitle().equalsIgnoreCase(OVO_PAY_LATER)) {
+            VccUserStatus vccUserStatus = accountDataModel.getVccUserStatus();
             TokopediaPayBSModel tokopediaPayBSModel = new TokopediaPayBSModel();
 
             tokopediaPayViewModel.setIconUrlCentre(vccUserStatus.getIcon());
             tokopediaPayViewModel.setApplinkCentre(vccUserStatus.getRedirectionUrl());
 
-            tokopediaPayViewModel.setAmountCentre(accountModel.getVccUserStatus().getBody());
+            tokopediaPayViewModel.setAmountCentre(accountDataModel.getVccUserStatus().getBody());
 
             switch (vccUserStatus.getStatus()) {
                 case ELIGIBLE:
@@ -190,17 +191,17 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         } else {
             tokopediaPayViewModel.setBsDataCentre(null);
         }
-        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel, remoteConfig));
+        items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountDataModel, remoteConfig));
         model.setItems(items);
 
         return model;
     }
 
-    private BuyerCardViewModel getBuyerProfileMenu(AccountModel accountModel) {
+    private BuyerCardViewModel getBuyerProfileMenu(AccountDataModel accountDataModel) {
         BuyerCardViewModel buyerCardViewModel = new BuyerCardViewModel();
-        buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
-        buyerCardViewModel.setName(accountModel.getProfile().getFullName());
-        ShortcutResponse shortcutResponse = accountModel.getShortcutResponse();
+        buyerCardViewModel.setUserId(accountDataModel.getProfile().getUserId());
+        buyerCardViewModel.setName(accountDataModel.getProfile().getFullName());
+        ShortcutResponse shortcutResponse = accountDataModel.getShortcutResponse();
         if (shortcutResponse!=null) {
             ShortcutGroupListItem shortcutListItem = null;
             ArrayList<ShortcutListItem> shortcutListItems = new ArrayList<>();
@@ -237,17 +238,17 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 }
             }
         }
-            buyerCardViewModel.setEggImageUrl(accountModel.getTokopoints().getStatus().getTier().getImageUrl());
-            buyerCardViewModel.setMemberStatus(accountModel.getTokopoints().getStatus().getTier().getNameDesc());
-            buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
-            buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
+            buyerCardViewModel.setEggImageUrl(accountDataModel.getTokopoints().getStatus().getTier().getImageUrl());
+            buyerCardViewModel.setMemberStatus(accountDataModel.getTokopoints().getStatus().getTier().getNameDesc());
+            buyerCardViewModel.setImageUrl(accountDataModel.getProfile().getProfilePicture());
+            buyerCardViewModel.setProgress(accountDataModel.getUserProfileCompletion().getCompletionScore());
 
-            buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
-            if (accountModel.getProfile().getCompletion() != null) {
-                buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
+            buyerCardViewModel.setImageUrl(accountDataModel.getProfile().getProfilePicture());
+            if (accountDataModel.getProfile().getCompletion() != null) {
+                buyerCardViewModel.setProgress(accountDataModel.getUserProfileCompletion().getCompletionScore());
             }
-            buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
-        userSession.setHasPassword(accountModel.getUserProfileCompletion().isCreatedPassword());
+            buyerCardViewModel.setAffiliate(accountDataModel.isAffiliate());
+        userSession.setHasPassword(accountDataModel.getUserProfileCompletion().isCreatedPassword());
         return buyerCardViewModel;
     }
 }

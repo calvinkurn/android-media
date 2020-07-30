@@ -314,7 +314,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
         mainParentStatusBarListener?.requestStatusBarLight()
-            
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

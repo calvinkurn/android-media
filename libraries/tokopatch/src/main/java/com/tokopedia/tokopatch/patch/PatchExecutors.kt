@@ -75,11 +75,7 @@ class PatchExecutors(
     ): Boolean {
         val classLoader: ClassLoader
         try {
-            val dexOutputDir: File = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                context.codeCacheDir
-            } else {
-                getPatchCacheDirPath(context, patch.version + patch.md5)
-            }
+            val dexOutputDir: File = getPatchCacheDirPath(context, patch.md5)
             classLoader = DexClassLoader(
                     patch.tempPath, dexOutputDir.absolutePath,
                     null, PatchExecutors::class.java.classLoader
@@ -204,18 +200,7 @@ class PatchExecutors(
                     )
                 }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                cleanUp(
-                        File(
-                                String.format(
-                                        "%s/oat",
-                                        context.cacheDir.absolutePath
-                                )
-                        )
-                )
-            } else {
-                cleanUp(dexOutputDir)
-            }
+            cleanUp(dexOutputDir)
             callBack.logMessage(context, "patch finished result ${!error}")
             return !error
         } catch (throwable: Throwable) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -25,9 +26,9 @@ class PlaySearchSuggestionsViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    val observableSuggestionList: LiveData<List<SearchSuggestionUiModel>>
+    val observableSuggestionList: LiveData<NetworkResult<List<SearchSuggestionUiModel>>>
         get() = _observableSuggestionList
-    private val _observableSuggestionList = MutableLiveData<List<SearchSuggestionUiModel>>()
+    private val _observableSuggestionList = MutableLiveData<NetworkResult<List<SearchSuggestionUiModel>>>()
 
     private val searchChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
@@ -46,8 +47,12 @@ class PlaySearchSuggestionsViewModel @Inject constructor(
 
     private suspend fun initSearchChannel() = withContext(dispatcher.main) {
         searchChannel.asFlow().debounce(500).collect {
-            val searchSuggestions = getSearchSuggestions(it)
-            _observableSuggestionList.value = searchSuggestions
+            _observableSuggestionList.value = try {
+                val searchSuggestions = getSearchSuggestions(it)
+                NetworkResult.Success(searchSuggestions)
+            } catch (e: Throwable) {
+                NetworkResult.Fail(e, onRetry = { searchChannel.offer(it) })
+            }
         }
     }
 
