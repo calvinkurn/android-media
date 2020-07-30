@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.database.DatabaseProvider
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
@@ -26,6 +27,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -56,18 +58,31 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         @Volatile
         private var INSTANCE: PlayVideoManager? = null
 
+        private var playProcessLifecycleObserver: PlayProcessLifecycleObserver? = null
+
         @JvmStatic
         fun getInstance(context: Context): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
-                PlayVideoManager(context.applicationContext).also {
+                val player = PlayVideoManager(context.applicationContext).also {
                     INSTANCE = it
                 }
+
+                if (playProcessLifecycleObserver == null)
+                    playProcessLifecycleObserver = PlayProcessLifecycleObserver(context.applicationContext)
+
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.addObserver(it) }
+
+                player
             }
         }
 
         @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
+                playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
+                        .lifecycle.removeObserver(it) }
+
                 INSTANCE!!.videoPlayer.removeListener(INSTANCE!!.playerEventListener)
                 INSTANCE = null
             }
@@ -78,6 +93,12 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         get() = job + Dispatchers.Main
 
     private val job = SupervisorJob()
+
+    /**
+     * VideoPlayer shared state
+     */
+    private var isMuted: Boolean = false
+    private var isRepeated: Boolean = false
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
     private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
@@ -271,19 +292,29 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun getCurrentPosition(): Long = videoPlayer.currentPosition
 
     fun isVideoMuted(): Boolean {
-        return videoPlayer.volume == VIDEO_MIN_SOUND
+        return isMuted
     }
 
-    fun mute(shouldMute: Boolean) {
+    fun mute(shouldMute: Boolean) = synchronized(this) {
+        mute(videoPlayer, shouldMute)
+    }
+
+    private fun mute(videoPlayer: SimpleExoPlayer, shouldMute: Boolean) = synchronized(this) {
+        isMuted = shouldMute
         videoPlayer.volume = if (shouldMute) VIDEO_MIN_SOUND else VIDEO_MAX_SOUND
     }
 
-    fun setRepeatMode(shouldRepeat: Boolean) {
+    fun setRepeatMode(shouldRepeat: Boolean) = synchronized(this) {
+        setRepeatMode(videoPlayer, shouldRepeat)
+    }
+
+    private fun setRepeatMode(videoPlayer: SimpleExoPlayer, shouldRepeat: Boolean) = synchronized(this) {
+        isRepeated = shouldRepeat
         videoPlayer.repeatMode = if(shouldRepeat) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
     }
 
     fun isVideoRepeat(): Boolean {
-        return videoPlayer.repeatMode != Player.REPEAT_MODE_OFF
+        return isRepeated
     }
 
     fun isVideoLive(): Boolean = videoPlayer.isCurrentWindowLive
@@ -325,7 +356,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         val videoPlayer = SimpleExoPlayer.Builder(applicationContext)
                 .setLoadControl(videoLoadControl)
                 .build()
-                .apply { addListener(playerEventListener) }
+                .apply {
+                    addListener(playerEventListener)
+                }
+                .also {
+                    mute(it, isMuted)
+                    setRepeatMode(it, isRepeated)
+                }
 
         return PlayPlayerModel(videoPlayer, videoLoadControl, initCache(playerModel))
     }

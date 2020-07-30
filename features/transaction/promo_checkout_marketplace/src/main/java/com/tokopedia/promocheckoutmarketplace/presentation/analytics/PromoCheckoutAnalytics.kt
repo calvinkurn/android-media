@@ -18,7 +18,8 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
     private fun sendEventByPage(page: Int,
                                 event: String,
                                 eventAction: String,
-                                eventLabel: String) {
+                                eventLabel: String,
+                                additionalData: Map<String, Any> = emptyMap()) {
         var eventCategoryPage: String? = null
         var eventNamePage: String? = null
         when (page) {
@@ -46,12 +47,15 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
 
         if (eventNamePage != null && eventCategoryPage != null) {
-            sendEventCategoryActionLabel(
+            val gtmData = getGtmData(
                     eventNamePage,
                     eventCategoryPage,
                     eventAction,
                     eventLabel
             )
+            gtmData.putAll(additionalData)
+
+            sendGeneralEvent(gtmData)
         }
     }
 
@@ -128,24 +132,16 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     fun eventClickPilihPromoRecommendation(page: Int, promoCodes: List<String>) {
-        val data = hashMapOf<String, Any>()
-        if (page == PAGE_CART) {
-            data["event"] = EventName.CLICK_ATC
-            data["eventCategory"] = EventCategory.CART
-        } else if (page == PAGE_CHECKOUT) {
-            data["event"] = EventName.CLICK_COURIER
-            data["eventCategory"] = EventCategory.COURIER_SELECTION
-        } else if (page == PAGE_OCC) {
-            data["event"] = EventName.CLICK_CHECKOUT_EXPRESS
-            data["eventCategory"] = EventCategory.ORDER_SUMMARY
-        }
-        data["eventAction"] = EventAction.CLICK_PILIH_PROMO_RECOMMENDATION
-        data["eventLabel"] = ""
-        data["promoCode"] = promoCodes.joinToString(", ")
+        val additionalData = HashMap<String, Any>()
+        additionalData[ExtraKey.PROMO_CODE] = promoCodes.joinToString(", ")
 
-        if (data.containsKey("event") && data.containsKey("eventCategory")) {
-            sendGeneralEvent(data)
-        }
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_PILIH_PROMO_RECOMMENDATION,
+                "",
+                additionalData
+        )
     }
 
     fun eventClickSelectKupon(page: Int, promoCode: String, triggerClashing: Boolean) {
@@ -275,24 +271,16 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     fun eventClickPakaiPromoSuccess(page: Int, status: String, promoCodes: List<String>) {
-        val data = hashMapOf<String, Any>()
-        if (page == PAGE_CART) {
-            data["event"] = EventName.CLICK_ATC
-            data["eventCategory"] = EventCategory.CART
-        } else if (page == PAGE_CHECKOUT) {
-            data["event"] = EventName.CLICK_COURIER
-            data["eventCategory"] = EventCategory.COURIER_SELECTION
-        } else if (page == PAGE_OCC) {
-            data["event"] = EventName.CLICK_CHECKOUT_EXPRESS
-            data["eventCategory"] = EventCategory.ORDER_SUMMARY
-        }
-        data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
-        data["eventLabel"] = "success - $status"
-        data["promoCode"] = promoCodes.joinToString(", ")
+        val additionalData = HashMap<String, Any>()
+        additionalData[ExtraKey.PROMO_CODE] = promoCodes.joinToString(", ")
 
-        if (data.containsKey("event") && data.containsKey("eventCategory")) {
-            sendGeneralEvent(data)
-        }
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_PAKAI_PROMO,
+                "success - $status",
+                additionalData
+        )
     }
 
     fun eventClickResetPromo(page: Int) {
@@ -337,6 +325,32 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                 EVENT_NAME_CLICK,
                 EventAction.DISMISS_LAST_SEEN,
                 ""
+        )
+    }
+
+    fun eventClickInputField(page: Int, userId: String) {
+        val additionalData = HashMap<String, Any>()
+        additionalData.put(ExtraKey.USER_ID, userId)
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_INPUT_FIELD,
+                "",
+                additionalData
+        )
+    }
+
+    fun eventShowLastSeenPopUp(page: Int, userId: String) {
+        val additionalData = HashMap<String, Any>()
+        additionalData.put(ExtraKey.USER_ID, userId)
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_VIEW,
+                EventAction.SHOW_LAST_SEEN_POP_UP,
+                "",
+                additionalData
         )
     }
 

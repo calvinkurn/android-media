@@ -504,7 +504,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.let {
             if (savedInstanceState.containsKey(WITHDRAWAL_REQUEST_DATA)) {
-                withdrawalRequest = savedInstanceState.getParcelable(WITHDRAWAL_REQUEST_DATA)
+                withdrawalRequest = savedInstanceState.getParcelable(WITHDRAWAL_REQUEST_DATA) ?: WithdrawalRequest()
             }
         }
     }
