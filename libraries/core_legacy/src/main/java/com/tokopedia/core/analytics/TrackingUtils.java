@@ -25,7 +25,7 @@ import java.util.Map;
  */
 
 @Deprecated
-public class TrackingUtils {
+public class TrackingUtils{
     public static void eventCampaign(Context context, Campaign campaign) {
         if (!isValidCampaign(campaign.getCampaign())) return;
 
@@ -45,7 +45,7 @@ public class TrackingUtils {
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
 
-    public static String extractFirstSegment(Context context, String inputString, String separator) {
+    public static String extractFirstSegment(Context context,String inputString, String separator) {
         String firstSegment = "";
         if (!TextUtils.isEmpty(inputString)) {
             String token[] = inputString.split(separator);
@@ -73,26 +73,14 @@ public class TrackingUtils {
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
     }
 
-    public static void sendMoEngageReferralShareEvent(Context context, String channel) {
+    public static void sendMoEngageReferralShareEvent(Context context,String channel) {
         Map<String, Object> value = DataLayer.mapOf(
                 AppEventTracking.MOENGAGE.CHANNEL, channel
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
     }
 
-    public static void fragmentBasedAFEvent(Context context, String tag) {
-        Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(AppScreen.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT)
-                || tag.equals(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
-        } else if (tag.equals(AppScreen.IDENTIFIER_CATEGORY_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
-        }
-
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
-    }
-
-    public static void eventError(Context context, String className, String errorMessage) {
+    public static void eventError(Context context,String className, String errorMessage) {
         TrackApp.getInstance().getGTM()
                 .eventError(className, errorMessage);
     }
@@ -100,7 +88,7 @@ public class TrackingUtils {
     /**
      * SessionHandler.getGTMLoginID(MainApplication.getAppContext())
      */
-    public static void eventOnline(Context context, String uid) {
+    public static void eventOnline(Context context,String uid) {
         TrackApp.getInstance().getGTM()
                 .eventOnline(uid);
     }

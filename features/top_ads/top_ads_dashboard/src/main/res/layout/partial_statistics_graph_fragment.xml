@@ -1,35 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
     app:cardPreventCornerOverlap="false">
 
-    <RelativeLayout
+    <com.db.williamchart.view.LineChartView
+        android:id="@+id/content_graph"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_15">
+        android:layout_height="@dimen/line_chart_height" />
 
-        <TextView
-            android:id="@+id/content_title_graph"
-            style="@style/TextView.Small.BlackDisabled"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            tools:text="@string/label_top_ads_impression"/>
-
-        <com.db.williamchart.view.LineChartView
-            android:id="@+id/content_graph"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_chart_height"
-            android:layout_below="@+id/content_title_graph"/>
-
-
-    </RelativeLayout>
 </androidx.cardview.widget.CardView>

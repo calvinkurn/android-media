@@ -3,7 +3,8 @@ package com.tokopedia.product.manage.feature.quickedit.stock.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import javax.inject.Inject
 
@@ -20,10 +21,10 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
     fun updateStock(stock: Int) {
         when {
             isStockTooLow(stock) -> {
-                _stock.value = ProductManageQuickEditStockFragment.MINIMUM_STOCK
+                _stock.value = MINIMUM_STOCK
             }
             isStockTooHigh(stock) -> {
-                _stock.value = ProductManageQuickEditStockFragment.MAXIMUM_STOCK
+                _stock.value = MAXIMUM_STOCK
             }
             else -> _stock.value = stock
         }
@@ -34,14 +35,14 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun isStockTooLow(stock: Int): Boolean {
-        if(stock <= ProductManageQuickEditStockFragment.MINIMUM_STOCK) {
+        if(stock <= MINIMUM_STOCK) {
             return true
         }
         return false
     }
 
     private fun isStockTooHigh(stock: Int): Boolean {
-        if(stock > ProductManageQuickEditStockFragment.MAXIMUM_STOCK) {
+        if(stock > MAXIMUM_STOCK) {
             return true
         }
         return false
