@@ -101,16 +101,6 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
                     } else {
                         val nextPage = totalItem >= DEFAULT_MIN_ITEMS
                         renderList(mapBrandListToBaseItemView(it.data.brands, showTitle()), nextPage)
-
-                        if (isAnalyticsInitialized) {
-                            if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
-                                analytics.eventViewSearchResultBrandPage((activity as DealsBrandActivity).getSearchKeyword(),
-                                        getCurrentLocation().name, it.data.brands, tabName)
-                            } else {
-                                analytics.eventViewPopularBrandBrandPage(it.data.brands, tabName)
-                            }
-                        }
-
                         cacheData(nextPage)
                     }
                 }
@@ -239,7 +229,12 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
-        analytics.eventScrollToBrandPopular(brand, position)
+        if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
+            analytics.eventViewSearchResultBrandPage((activity as DealsBrandActivity).getSearchKeyword(),
+                    getCurrentLocation().name, listOf(brand), tabName)
+        } else {
+            analytics.eventViewPopularBrandBrandPage(listOf(brand), tabName)
+        }
     }
 
     override fun onClickSearchBar() {

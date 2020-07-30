@@ -203,6 +203,8 @@ class DealsAnalytics @Inject constructor(
         data.add(DataLayer.mapOf(
                 DealsAnalyticsConstants.Item.name, item.title,
                 DealsAnalyticsConstants.Item.id, item.id,
+                DealsAnalyticsConstants.Item.price, 0,
+                DealsAnalyticsConstants.Item.brand, item.title,
                 DealsAnalyticsConstants.Item.category, DealsAnalyticsConstants.NONE,
                 DealsAnalyticsConstants.Item.variant, DealsAnalyticsConstants.NONE,
                 DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.SEARCH_RESULT_LIST,
@@ -274,7 +276,7 @@ class DealsAnalytics @Inject constructor(
     fun eventViewSearchResultBrandPage(keyword: String, location: String, items: List<DealsBrandsDataView.Brand>, categoryName: String) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
-                DealsAnalyticsConstants.Event.PROMO_VIEW,
+                DealsAnalyticsConstants.Event.PRODUCT_VIEW,
                 DealsAnalyticsConstants.Action.VIEW_SEARCH_RESULT_BRAND_PAGE,
                 String.format(DealsAnalyticsConstants.Label.VIEW_SEARCH_RESULT, keyword, location)
         )
@@ -314,7 +316,7 @@ class DealsAnalytics @Inject constructor(
     fun eventClickSearchResultBrandBrandPage(item: DealsBrandsDataView.Brand, categoryName: String) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
-                DealsAnalyticsConstants.Event.PROMO_CLICK,
+                DealsAnalyticsConstants.Event.PRODUCT_CLICK,
                 DealsAnalyticsConstants.Action.SEARCH_RESULT_BRAND_CLICK,
                 String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, item.title, item.position + 1)
         )
@@ -335,6 +337,8 @@ class DealsAnalytics @Inject constructor(
                 DealsAnalyticsConstants.Item.category, categoryName,
                 DealsAnalyticsConstants.Item.variant, DealsAnalyticsConstants.NONE,
                 DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
+                DealsAnalyticsConstants.Item.price, 0,
+                DealsAnalyticsConstants.Item.brand, item.title,
                 DealsAnalyticsConstants.Item.position, item.position + 1))
         return data
     }
@@ -352,7 +356,7 @@ class DealsAnalytics @Inject constructor(
     fun eventViewPopularBrandBrandPage(items: List<DealsBrandsDataView.Brand>, categoryName: String) {
         val map = getTrackingMapWithHeader() as MutableMap<String, Any>
         map.addGeneralEvent(
-                DealsAnalyticsConstants.Event.PROMO_VIEW,
+                DealsAnalyticsConstants.Event.PRODUCT_VIEW,
                 DealsAnalyticsConstants.Action.BRAND_POPULAR_IMPRESSION_BRAND_PAGE,
                 "-"
         )
