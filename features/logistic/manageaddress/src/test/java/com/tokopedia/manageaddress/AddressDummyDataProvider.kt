@@ -7,7 +7,7 @@ import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
 
 object AddressDummyDataProvider {
 
-    fun getCornerList(): AddressListModel {
+    fun getAddressList(): AddressListModel {
         val mapper = AddressCornerMapper()
         val response: GetPeopleAddressResponse = Gson().fromJson(cornerListResponse, GetPeopleAddressResponse::class.java)
         return mapper.call(response)

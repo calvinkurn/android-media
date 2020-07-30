@@ -23,11 +23,11 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:text="@string/deals_category_empty_title"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintBottom_toTopOf="@id/txt_category_empty_description"
+        app:layout_constraintBottom_toTopOf="@+id/txt_category_empty_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/img_category_empty"
-        app:layout_constraintTop_toTopOf="@id/img_category_empty"
+        app:layout_constraintStart_toEndOf="@+id/img_category_empty"
+        app:layout_constraintTop_toTopOf="@+id/img_category_empty"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
@@ -42,11 +42,11 @@
         android:text="@string/deals_category_empty_description"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/img_category_empty"
+        app:layout_constraintBottom_toBottomOf="@+id/img_category_empty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/img_category_empty"
-        app:layout_constraintTop_toBottomOf="@id/txt_category_empty_title"
+        app:layout_constraintStart_toEndOf="@+id/img_category_empty"
+        app:layout_constraintTop_toBottomOf="@+id/txt_category_empty_title"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -56,7 +56,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/deals_category_empty_reset_filter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_category_empty"
+        app:layout_constraintTop_toBottomOf="@+id/img_category_empty"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />

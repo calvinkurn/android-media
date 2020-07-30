@@ -213,6 +213,8 @@ include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
 include "features:user:seamless_login"
+include "features:user:additional_check"
+
 include "features:user:stickylogin"
 include "features:user:topchat"
 include "features:user:orderhistory"
