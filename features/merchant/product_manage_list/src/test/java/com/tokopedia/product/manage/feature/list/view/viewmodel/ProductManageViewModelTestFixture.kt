@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProduct
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -31,6 +32,8 @@ abstract class ProductManageViewModelTestFixture {
     lateinit var editPriceUseCase: EditPriceUseCase
     @RelaxedMockK
     lateinit var gqlGetShopInfoUseCase: GQLGetShopInfoUseCase
+    @RelaxedMockK
+    lateinit var geetShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
     @RelaxedMockK
@@ -57,19 +60,20 @@ abstract class ProductManageViewModelTestFixture {
         MockKAnnotations.init(this)
 
         viewModel = ProductManageViewModel(
-                editPriceUseCase,
-                gqlGetShopInfoUseCase,
-                userSessionInterface,
-                topAdsGetShopDepositGraphQLUseCase,
-                popupManagerAddProductUseCase,
-                getProductListUseCase,
-                setFeaturedProductUseCase,
-                editStockUseCase,
-                deleteProductUseCase,
-                multiEditProductUseCase,
-                getProductListMetaUseCase,
-                editProductVariantUseCase,
-                TestCoroutineDispatchers
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            geetShopInfoTopAdsUseCase,
+            userSessionInterface,
+            topAdsGetShopDepositGraphQLUseCase,
+            popupManagerAddProductUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            editProductVariantUseCase,
+            TestCoroutineDispatchers
         )
     }
 }

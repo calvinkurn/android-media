@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.Edit
 import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.list.view.model.TopAdsInfo
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
@@ -30,6 +31,9 @@ import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStock
 import com.tokopedia.product.manage.verification.verifyErrorEquals
 import com.tokopedia.product.manage.verification.verifySuccessEquals
 import com.tokopedia.product.manage.verification.verifyValueEquals
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsCategory.AUTO_ADS
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.*
@@ -296,8 +300,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
             viewModel.getProductList(shopId)
 
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
             val productViewModelList = listOf(createProductViewModel(
-                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice))
+                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo))
             val expectedProductList = Success(productViewModelList)
 
             viewModel.productListResult
@@ -369,13 +374,19 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val shopDomain = "http://www.tokopedia.com/#1"
             val shopCore = ShopCore(domain = shopDomain)
             val goldOS = ShopInfo.GoldOS(isGold = 1, isOfficial = 1)
+            val topAdsInfo = TopAdsInfo(isTopAds = true , isAutoAds = true)
+
             val shopInfoResponse = ShopInfo(shopCore = shopCore, goldOS = goldOS)
+            val shopInfoTopAdsData = ShopInfoTopAds(Data(AUTO_ADS, "auto ads"))
+            val shopInfoTopAdsResponse = ShopInfoTopAdsResponse(shopInfoTopAdsData)
 
             onGetShopInfo_thenReturn(shopInfoResponse)
+            onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse)
 
             viewModel.getGoldMerchantStatus()
 
-            val expectedResult = Success(ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore))
+            val data = ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore, topAdsInfo)
+            val expectedResult = Success(data)
 
             viewModel.shopInfoResult
                 .verifySuccessEquals(expectedResult)
@@ -755,6 +766,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun onGetShopInfo_thenReturn(shopInfoResponse: ShopInfo) {
         coEvery { gqlGetShopInfoUseCase.executeOnBackground() } returns shopInfoResponse
+    }
+
+    private fun onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse: ShopInfoTopAdsResponse) {
+        coEvery { geetShopInfoTopAdsUseCase.execute(any()) } returns shopInfoTopAdsResponse
     }
 
     private fun onGetShopInfo_thenError(error: Throwable) {
