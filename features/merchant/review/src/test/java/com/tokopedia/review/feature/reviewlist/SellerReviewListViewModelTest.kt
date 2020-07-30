@@ -1,4 +1,4 @@
-package com.tokopedia.review.reviewlist
+package com.tokopedia.review.feature.reviewlist
 
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse

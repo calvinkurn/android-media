@@ -104,7 +104,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
-            reviewSellerFragment = applicationContext.getReviewSellerFragment();
+            reviewSellerFragment = RatingProductFragment.Companion.createInstance();
         }
         if(GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();

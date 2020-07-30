@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="toolbar_font_size">7sp</dimen>
-    <dimen name="chips_font_size">7sp</dimen>
-    <dimen name="chips_padding_size">3dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_11">11dp</dimen>

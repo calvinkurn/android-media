@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.review.R
-import com.tokopedia.review.common.di.ReviewComponentBuilder
+import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.reviewreply.di.component.DaggerReviewReplyComponent
 import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponent
 import com.tokopedia.review.feature.reviewreply.di.module.ReviewReplyModule
@@ -22,7 +22,7 @@ class SellerReviewReplyActivity : BaseSimpleActivity(), HasComponent<ReviewReply
     override fun getComponent(): ReviewReplyComponent {
         return DaggerReviewReplyComponent
                 .builder()
-                .reviewComponent(ReviewComponentBuilder.getComponent(application))
+                .reviewComponent(ReviewInstance.getComponent(application))
                 .reviewReplyModule(ReviewReplyModule())
                 .build()
     }

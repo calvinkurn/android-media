@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.review.feature.reviewlist.view.activity.SellerReviewListActivity"
+            android:name=".feature.reviewlist.view.activity.SellerReviewListActivity"
             android:label="@string/review_text"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -24,13 +24,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity"
+            android:name=".feature.reviewdetail.view.activity.SellerReviewDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name="com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity"
+            android:name=".feature.reviewreply.view.activity.SellerReviewReplyActivity"
             android:label="@string/title_review_reply"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

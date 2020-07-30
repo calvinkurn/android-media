@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.review.R
-import com.tokopedia.review.common.di.ReviewComponentBuilder
+import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.reviewdetail.di.component.DaggerReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule
@@ -24,7 +24,7 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
     override fun getComponent(): ReviewProductDetailComponent {
         return DaggerReviewProductDetailComponent
                 .builder()
-                .reviewComponent(ReviewComponentBuilder.getComponent(application))
+                .reviewComponent(ReviewInstance.getComponent(application))
                 .reviewProductDetailModule(ReviewProductDetailModule())
                 .build()
     }

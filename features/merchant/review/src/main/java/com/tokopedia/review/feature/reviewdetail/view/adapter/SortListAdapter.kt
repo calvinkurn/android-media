@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.review_item_chips.view.*
+import kotlinx.android.synthetic.main.item_chips.view.*
 
 class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
@@ -36,7 +36,7 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.review_item_chips, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chips, parent, false)
         return SortListViewHolder(view, topicSortFilterListener)
     }
 

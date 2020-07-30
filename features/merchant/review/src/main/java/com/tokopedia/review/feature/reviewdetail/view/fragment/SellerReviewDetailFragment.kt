@@ -38,7 +38,7 @@ import com.tokopedia.review.feature.reviewdetail.view.viewmodel.ProductReviewDet
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
-import com.tokopedia.review.common.presentation.uimodel.ReviewProductUiModel
+import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -48,7 +48,6 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
@@ -165,7 +164,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun loadData(page: Int) {}
 
     override fun loadInitialData() {
-        clearAllData()
+        isLoadingInitialData = true
+        reviewSellerDetailAdapter.clearAllElements()
         rvRatingDetail?.show()
         globalError_reviewDetail?.hide()
         showLoading()
@@ -325,7 +325,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     coachMarkShow()
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData(it.throwable)
+                    onErrorGetReviewDetailData()
                 }
             }
         })
@@ -337,7 +337,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData(it.throwable)
+                    onErrorGetReviewDetailData()
                 }
             }
         })
@@ -354,11 +354,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetReviewDetailData(throwable: Throwable) {
+    private fun onErrorGetReviewDetailData() {
         swipeToRefreshReviewDetail?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
-            globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
+            globalError_reviewDetail?.setType(GlobalError.SERVER_ERROR)
             reviewSellerDetailAdapter.removeReviewNotFound()
             rvRatingDetail?.hide()
             globalError_reviewDetail?.show()
@@ -427,11 +427,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     productID.toString(),
                     filterListItemUnify[position].listTitleText)
 
-            if (position == positionFilterPeriod) return
             setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
             positionFilterPeriod = position
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
+            endlessRecyclerViewScrollListener?.resetState()
             bottomSheetPeriodDetail?.dismiss()
             loadInitialData()
         } catch (e: Exception) {
@@ -467,7 +467,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onOptionFeedbackClicked(view: View, title: String, data: FeedbackUiModel,
                                          optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
         this.variantName = data.variantName.orEmpty()
-        val feedbackReplyUiModel = ReviewProductUiModel(productID, productImageUrl, productName, variantName)
+        val feedbackReplyUiModel = ProductReplyUiModel(productID, productImageUrl, productName, variantName)
 
         cacheManager = context?.let {
             SaveInstanceCacheManager(it, true).apply {
@@ -564,7 +564,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 updatedState.toString())
         val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
         reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
-        viewModelProductReviewDetail?.setFilterTopicDataText(getTopicsFilterFromAdapter?.sortFilterItemList)
+        getTopicsFilterFromAdapter?.sortFilterItemList?.let { viewModelProductReviewDetail?.setFilterTopicDataText(it) }
+        endlessRecyclerViewScrollListener?.resetState()
     }
 
     override fun onParentTopicFilterClicked() {
@@ -573,8 +574,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 productID.toString())
 
         val bottomSheet = PopularTopicsBottomSheet(activity, tracking, userSession, productID, ::onTopicsClicked)
-        viewModelProductReviewDetail?.filterTopicData?.let { bottomSheet.setTopicListData(it) }
-        viewModelProductReviewDetail?.sortTopicData?.let { bottomSheet.setSortListData(it) }
+        viewModelProductReviewDetail?.getFilterTopicData()?.let { bottomSheet.setTopicListData(it) }
+        viewModelProductReviewDetail?.getSortTopicData()?.let { bottomSheet.setSortListData(it) }
         bottomSheet.showDialog()
     }
 
@@ -590,6 +591,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         if (getSelectedCheckbox?.ratingIsChecked != ratingAndState.second && getSelectedCheckbox != null) {
             reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second, getRatingFilterFromAdapter)
             viewModelProductReviewDetail?.setFilterRatingDataText(getRatingFilterFromAdapter.ratingBarList)
+            endlessRecyclerViewScrollListener?.resetState()
             reviewSellerDetailAdapter.removeReviewNotFound()
             reviewSellerDetailAdapter.showLoading()
         }
@@ -600,14 +602,18 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val sortBy = sort.firstOrNull { it.isSelected }?.title.orEmpty()
         val sortValue = ReviewConstants.mapSortReviewDetail().getKeyByValue(sortBy)
 
-        viewModelProductReviewDetail?.sortAndFilter?.first?.mapIndexed { index, data ->
-            isDifferent = topic[index].isSelected == data.isSelected
+        viewModelProductReviewDetail?.getSortAndFilter()?.first?.mapIndexed { index, data ->
+            if (topic.isNotEmpty()) {
+                isDifferent = topic.getOrNull(index)?.isSelected == data.isSelected
+            }
         }
 
-        if (viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return
+        if (viewModelProductReviewDetail?.getSortAndFilter()?.second == sortBy && isDifferent) return
 
         reviewSellerDetailAdapter.updateTopicFromBottomSheet(topic)
         viewModelProductReviewDetail?.setSortAndFilterTopicData(topic to sortValue)
+        viewModelProductReviewDetail?.updateSortAndFilterTopicData(topic to sortValue)
+        endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
         reviewSellerDetailAdapter.showLoading()
     }

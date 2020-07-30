@@ -1,4 +1,4 @@
-package com.tokopedia.review.reviewreply
+package com.tokopedia.review.feature.reviewreply
 
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
@@ -93,6 +93,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             viewModel.getTemplateListReply(anyInt())
             val expectedResult = Fail(error)
             viewModel.reviewTemplate.verifyErrorEquals(expectedResult)
+
         }
     }
 

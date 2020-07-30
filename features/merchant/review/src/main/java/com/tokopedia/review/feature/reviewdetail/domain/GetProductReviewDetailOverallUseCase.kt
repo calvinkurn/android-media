@@ -18,7 +18,7 @@ class GetProductReviewDetailOverallUseCase @Inject constructor(
         private const val FILTER_BY = "filterBy"
 
         @JvmStatic
-        fun createParams(productID: Int, filterBy: String): Map<String, Any> = mapOf(PRODUCT_ID to productID,FILTER_BY to filterBy)
+        fun createParams(productID: Int, filterBy: String): Map<String, Any> = mapOf(PRODUCT_ID to productID, FILTER_BY to filterBy)
     }
 
     var params = mapOf<String, Any>()

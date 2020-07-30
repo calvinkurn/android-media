@@ -15,6 +15,18 @@ buildscript {
 }
 
 android {
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'inboxreview',
+                    pathSources + 'reviewdetail',
+                    pathSources + 'reviewlist',
+                    pathSources + 'reviewreply',
+            ]
+        }
+    }
     androidExtensions {
         experimental = true
     }

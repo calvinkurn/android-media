@@ -48,10 +48,4 @@ class ReviewModule {
         return CoroutineDispatcherProviderImpl
     }
 
-    @ReviewScope
-    @Provides
-    fun provideProductReviewTracking(): ProductReviewTracking {
-        return ProductReviewTracking()
-    }
-
 }

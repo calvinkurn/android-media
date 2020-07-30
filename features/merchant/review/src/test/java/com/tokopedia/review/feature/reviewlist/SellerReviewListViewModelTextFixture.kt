@@ -1,4 +1,4 @@
-package com.tokopedia.review.reviewlist
+package com.tokopedia.review.feature.reviewlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData

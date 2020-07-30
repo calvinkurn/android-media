@@ -5,8 +5,5 @@
     <color name="clr_ad31353b">#AD31353B</color>
 
     <color name="typography_black">#F531353B</color>
-    <color name="progress_bar_green">#42B549</color>
-    <color name="progress_bar_empty">#E5E7E9</color>
     <color name="clr_review_not_found">#7031353B</color>
-    <color name="clr_read_more">#00ad0e</color>
 </resources>

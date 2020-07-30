@@ -39,13 +39,20 @@ object SellerReviewProductListMapper {
 
     fun getPastDateCalculate(filterDateString: String): String {
         val cal = Calendar.getInstance(Locale("in","id"))
-        val pastDateInterval = when (filterDateString) {
-            LAST_WEEK_KEY -> 7
-            LAST_MONTH_KEY -> 30
-            LAST_YEAR_KEY -> 365
-            else -> 7
+        when(filterDateString) {
+            LAST_YEAR_KEY -> {
+                cal.add(Calendar.YEAR, -1)
+            }
+            LAST_MONTH_KEY -> {
+                cal.add(Calendar.MONTH, -1)
+            }
+            LAST_WEEK_KEY -> {
+                cal.add(Calendar.DATE, -7)
+            }
+            else -> {
+                cal.add(Calendar.DATE, -7)
+            }
         }
-        cal.add(Calendar.DATE, - pastDateInterval)
 
         val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         dateFormat.timeZone = cal.timeZone
