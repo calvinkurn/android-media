@@ -1,4 +1,4 @@
-package com.tokopedia.logisticorder.viewmodel;
+package com.tokopedia.logisticorder.uimodel;
 
 import java.util.List;
 
