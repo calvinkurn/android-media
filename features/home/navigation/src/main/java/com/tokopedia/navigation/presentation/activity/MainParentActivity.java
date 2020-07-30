@@ -48,6 +48,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -661,11 +662,15 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            Fragment cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
+            Fragment cartFragment = getCartFragment();
             fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         }
         return fragmentList;
+    }
+
+    private Fragment getCartFragment() {
+        return CartFragment.newInstance(null, CartFragment.class.getSimpleName());
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

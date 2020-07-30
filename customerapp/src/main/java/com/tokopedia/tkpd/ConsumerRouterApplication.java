@@ -16,7 +16,6 @@ import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
@@ -35,7 +34,6 @@ import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
@@ -69,7 +67,6 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -93,7 +90,6 @@ import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.promogamification.common.GamificationRouter;
-import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -570,19 +566,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void setCartCount(Context context, int count) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
-        localCacheHandler.applyEditor();
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
-    }
-
-    @Override
     public void goToApplinkActivity(Context context, String applink) {
         if (context != null) {
             if (context instanceof Activity) {
@@ -656,11 +639,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getFeedPlusFragment(Bundle bundle) {
         return FeedPlusContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public Fragment getCartFragment(Bundle bundle) {
-        return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
     }
 
     @Override
