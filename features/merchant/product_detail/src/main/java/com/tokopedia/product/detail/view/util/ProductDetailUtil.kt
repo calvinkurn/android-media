@@ -39,7 +39,7 @@ object ProductDetailUtil {
     }
 
     fun randomGenerator(): String {
-        return System.currentTimeMillis().toString()
+        return System.nanoTime().toString()
     }
 }
 
