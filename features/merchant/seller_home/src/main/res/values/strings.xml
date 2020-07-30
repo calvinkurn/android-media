@@ -22,6 +22,7 @@
 
     <!--toolbar menu-->
     <string name="sah_notification">Notifikasi</string>
+    <string name="sah_search">Search</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
 
@@ -73,6 +74,7 @@
     <string name="setting_menu_password">Kata Sandi</string>
     <string name="setting_menu_app_setting">Pengaturan aplikasi</string>
     <string name="setting_menu_chat_and_notification">Chat &amp; Notifikasi</string>
+    <string name="setting_notification_troubleshooter">Push Notification Troubleshooter</string>
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
@@ -97,10 +99,37 @@
     <string name="sh_coachmark_desc_on_going_promo">Lebih mudah memantau perkembangan status promosi aktif dan selesai di tokomu di sini.</string>
     <string name="sh_coachmark_title_promo_creation">Pilihan promosi</string>
     <string name="sh_coachmark_desc_promo_creation">Temukan beragam pilihan promosi yang sesuai kebutuhan tokomu.</string>
+    <string name="centralized_promo_broadcast_chat_extra_free_quota">%1$d kuota gratis</string>
+    <string name="centralized_promo_promo_creation_topads_title">TopAds</string>
+    <string name="centralized_promo_promo_creation_topads_description">Iklankan produkmu untuk menjangkau lebih banyak pembeli</string>
+    <string name="centralized_promo_promo_creation_broadcast_chat_title">Broadcast Chat</string>
+    <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_title">Voucher Toko</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_description">Gunakan voucher toko yang sesuai target pembeli tokomu</string>
+
+    <!-- First merchant voucher -->
+    <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>
+    <string name="centralized_promo_bottomsheet_detail">Berbagai keuntungan:</string>
+    <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>
+    <string name="centralized_promo_bottomsheet_increase_sell">Tarik lebih banyak pelanggan</string>
+    <string name="centralized_promo_bottomsheet_increase_sell_desc">Dengan tetap mempertahankan citra brand toko dan harga barang.</string>
+    <string name="centralized_promo_bottomsheet_time">Kelola waktu aktif voucher</string>
+    <string name="centralized_promo_bottomsheet_time_desc">Cukup atur anggaran dan periode promosi sesuai strategi penjualanmu.</string>
+    <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
+    <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
+    <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
 
     <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
     <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
     <string name="seller_home_logout_button">Keluar</string>
     <string name="seller_home_cancel">Batal</string>
     <string name="seller_home_loading">Loading...</string>
+    <string name="sah_free_ongkir_title">Tokomu Bebas Ongkir</string>
+    <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
+    <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
+
+    <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
+    <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
+    <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
 </resources>

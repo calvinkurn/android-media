@@ -45,6 +45,9 @@ import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
+import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -63,15 +66,12 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.timber.TimberWrapper;
-import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -152,6 +152,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+        }
     }
 
     private void createAndCallPreSeq(){
@@ -164,7 +167,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 return executePreCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(preWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ1_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context);
     }
 
     private void createAndCallPostSeq(){
@@ -176,7 +179,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 return executePostCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(postWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
     }
 
     private void createAndCallFontLoad(){
@@ -188,7 +191,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 return loadFontsInBg();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(fontWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ5_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context);
     }
 
     @NotNull

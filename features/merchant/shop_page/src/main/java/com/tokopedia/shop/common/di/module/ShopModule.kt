@@ -2,7 +2,6 @@ package com.tokopedia.shop.common.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,7 +10,6 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopApi
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.di.scope.ShopScope
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

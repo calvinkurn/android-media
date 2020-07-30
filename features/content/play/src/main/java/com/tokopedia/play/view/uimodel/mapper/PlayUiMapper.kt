@@ -6,14 +6,12 @@ import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by mzennis on 2020-03-06.
  */
 object PlayUiMapper {
-
-    private const val MAX_PRODUCTS = 5
-    private const val MAX_VOUCHERS = 5
 
     fun createCompleteInfoModel(
             channel: Channel,
@@ -137,7 +135,7 @@ object PlayUiMapper {
     }
 
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
-        return products.take(MAX_PRODUCTS).map { product ->
+        return products.map { product ->
             mapItemProduct(product)
         }
     }
@@ -166,7 +164,7 @@ object PlayUiMapper {
     )
 
     fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
-        return vouchers.take(MAX_VOUCHERS).map {
+        return vouchers.map {
             MerchantVoucherUiModel(
                     title = it.title,
                     description = it.subtitle,

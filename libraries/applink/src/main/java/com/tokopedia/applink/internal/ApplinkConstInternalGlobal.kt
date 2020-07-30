@@ -260,11 +260,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
-    // ValidatorActivity
-    // tokopedia-android-internal://global/otp-validator
-    @JvmField
-    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
-
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -305,18 +300,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
 
-    // InstantLoanActivity
-    // tokopedia-android-internal://global/loan
-    @JvmField
-    val GLOBAL_INTERNAL_INSTANT_LOAN = "$INTERNAL_GLOBAL/instant-loan"
-
-    // InstantLoanActivity with specific tab
-    // tokopedia-android-internal://global/loan/category/{tab_name}
-    @JvmField
-    val GLOBAL_INTERNAL_INSTANT_LOAN_TAB = "$INTERNAL_GLOBAL/loan/category/instan/"
-
-    @JvmField
-    val GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB = "$INTERNAL_GLOBAL/loan/category/pinjamanonline/"
 
     @JvmField
     val GLOBAL_INTERNAL_DIGITAL_DEAL = "$INTERNAL_GLOBAL/deals"
@@ -440,10 +423,17 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
+    @JvmField
+    val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
+
+    // AccountSettingActivity
+    // tokopedia-android-internal://global/account-setting
+    @JvmField
+    val ACCOUNT_SETTING = "$INTERNAL_GLOBAL/account-setting"
 
     // GeneralSettingActivity
     // tokopedia-android-internal://global/general-setting
@@ -477,6 +467,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
+    val GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
     //ManageNotificationActivity
     @JvmField
@@ -486,4 +477,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     @JvmField
     val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

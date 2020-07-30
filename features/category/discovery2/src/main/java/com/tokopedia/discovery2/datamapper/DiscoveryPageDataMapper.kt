@@ -11,7 +11,7 @@ val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
-    val discoveryPageData = DiscoveryPageData(pageInfo)
+    val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo)
     discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentList(discoveryResponse.components.filter {
         pageInfo.identifier?.let { identifier ->
@@ -37,6 +37,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo) {
 
     private fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        component.position = position
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,

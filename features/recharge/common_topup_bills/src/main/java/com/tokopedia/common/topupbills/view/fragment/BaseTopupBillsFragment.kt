@@ -215,6 +215,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     data?.let {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
+                            // Stop check voucher job to prevent previous promo override
+                            topupBillsViewModel.stopCheckVoucher()
                             val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
                             setupPromoTicker(promoData)
                         }
@@ -278,10 +280,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
                 intent.putExtra(EXTRA_IS_USE, true)
                 intent.putExtra(EXTRA_COUPON_CODE, promoCode)
-                intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
                 requestCode = REQUEST_CODE_PROMO_DETAIL
             } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                 intent.putExtra(EXTRA_PROMO_CODE, promoCode)
                 intent.putExtra(EXTRA_COUPON_ACTIVE, true)
                 intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
