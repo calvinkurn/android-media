@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="@dimen/dp_16"
+    android:id="@+id/fingerprint_onboarding_parent_view">
+
+    <ImageView
+        android:id="@+id/img_view_two_factor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        app:srcCompat="@drawable/image_phone_two_factor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_two_factor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:text="@string/add_phone_heading"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/img_view_two_factor"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:layout_editor_absoluteX="40dp"
+        android:gravity="center_horizontal" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/body_two_factor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center_horizontal"
+        android:text="@string/add_phone_body"
+        app:layout_constraintTop_toBottomOf="@+id/title_two_factor"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
+        tools:layout_editor_absoluteX="64dp" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_two_factor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl5"
+        android:text="@string/add_phone_button_title"
+        app:layout_constraintEnd_toEndOf="@+id/body_two_factor"
+        app:layout_constraintStart_toStartOf="@+id/body_two_factor"
+        app:layout_constraintTop_toBottomOf="@+id/body_two_factor" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/fingerprint_onboarding_loader"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

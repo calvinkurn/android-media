@@ -9,8 +9,11 @@ interface PlaySocketType {
 }
 
 enum class PlaySocketEnum(var value: String) {
-    ConcurrentUser("CONCURRENT_USER"),
+    TotalView("TOTAL_VIEW"),
+    TotalLike("TOTAL_LIKE"),
     Metric("BULK_EVENT_NOTIF"),
     LiveStats("REPORT_CHANNEL"),
-    LiveDuration("LIVE_DURATION")
+    LiveDuration("LIVE_DURATION"),
+    ProductTag("PRODUCT_TAG"),
+    Chat("MESG")
 }

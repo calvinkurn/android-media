@@ -20,13 +20,13 @@ const val HEADER_ANDROID = "android-"
 const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"
 
-const val SHARED_PREFERENCES = "com.tokopedia.iris.SHARED_PREFERENCES"
+const val SHARED_PREFERENCES = "iris.shared_pref"
 const val DOMAIN_HASH = "android-tokopedia"
 const val KEY_USER_ID = "user_id"
 const val KEY_SESSION_ID = "session_id"
 const val KEY_SESSION_IRIS = "sessionIris"
 const val KEY_TIMESTAMP_LAST_ACTIVITY = "timestamp_last_activity"
-const val KEY_INITIAL_VISIT = "initial_visit"
+const val KEY_INITIAL_VISIT = "init_visit"
 
 const val MAX_ROW = "MAX_ROW"
 
