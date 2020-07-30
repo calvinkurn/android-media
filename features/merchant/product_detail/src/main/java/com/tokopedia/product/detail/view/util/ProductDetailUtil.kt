@@ -38,8 +38,12 @@ object ProductDetailUtil {
         }
     }
 
-    fun randomGenerator(): String {
-        return System.nanoTime().toString()
+    fun randomGenerator(randomNumber: Int): String {
+        return try {
+            (randomNumber + System.nanoTime()).toString()
+        } catch (e: Throwable) {
+            System.nanoTime().toString()
+        }
     }
 }
 
