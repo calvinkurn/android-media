@@ -2,9 +2,9 @@ package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.util.*
 import kotlin.collections.ArrayList
 

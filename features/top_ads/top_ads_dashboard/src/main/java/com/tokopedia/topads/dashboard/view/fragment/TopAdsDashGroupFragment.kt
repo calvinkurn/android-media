@@ -289,11 +289,13 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             coroutineScope.launch {
                 delay(TOASTER_DURATION)
-                if (!deleteCancel)
-                    topAdsDashboardPresenter.setGroupAction(::onSuccessAction, actionActivate, getAdIds(), resources)
-                deleteCancel = false
-                startSelectMode(false)
-                SingleDelGroupId = ""
+                if(activity != null && isAdded) {
+                    if (!deleteCancel)
+                        topAdsDashboardPresenter.setGroupAction(::onSuccessAction, actionActivate, getAdIds(), resources)
+                    deleteCancel = false
+                    startSelectMode(false)
+                    SingleDelGroupId = ""
+                }
             }
         } else {
             topAdsDashboardPresenter.setGroupAction(::onSuccessAction, actionActivate, getAdIds(), resources)

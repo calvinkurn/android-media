@@ -1,103 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ll_meta"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingLeft="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingRight="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/play_dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/ll_meta"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingLeft="@dimen/layout_lvl2"
-            android:paddingTop="@dimen/spacing_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2"
-            android:paddingRight="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/play_dp_12"
-            app:layout_constraintTop_toTopOf="parent">
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="loose" />
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/ticker_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:tickerShapeType="loose"
-                tools:visibility="visible" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="@dimen/play_summary_cover_width"
+            android:layout_height="@dimen/play_summary_cover_height"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_cover"
-                android:layout_width="@dimen/play_summary_cover_width"
-                android:layout_height="@dimen/play_summary_cover_height"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:background="@drawable/bg_play_dark_gray_rounded_corner" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/play_dp_12"
-                android:gravity="center"
-                android:textColor="@color/Neutral_N0"
-                app:typographyType="heading_5"
-                tools:text="Sneakers Hypebeast with Cashback 10%" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:background="@drawable/bg_play_dark_gray_rounded_corner"
-                android:drawablePadding="@dimen/spacing_lvl2"
-                android:paddingStart="@dimen/play_dp_6"
-                android:paddingLeft="@dimen/play_dp_6"
-                android:paddingTop="@dimen/spacing_lvl1"
-                android:paddingEnd="@dimen/play_dp_6"
-                android:paddingRight="@dimen/play_dp_6"
-                android:paddingBottom="@dimen/spacing_lvl1"
-                android:textColor="@color/Neutral_N0"
-                app:drawableLeftCompat="@drawable/ic_play_duration_white"
-                app:typographyType="body_3"
-                tools:text="28:42" />
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/overflow"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
-            android:background="@color/Neutral_N700_68"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fl_info" />
-
-        <FrameLayout
-            android:id="@+id/fl_info"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N700_68"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/play_dp_12"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/spacing_lvl3"
-            app:layout_constraintTop_toBottomOf="@+id/ll_meta">
+            android:layout_marginTop="@dimen/play_summary_margin"
+            android:gravity="center"
+            android:textColor="@color/Neutral_N0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover"
+            app:typographyType="heading_5"
+            tools:text="Sneakers Hypebeast with Cashback 10%" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_info"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </FrameLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:background="@drawable/bg_play_dark_gray_rounded_corner"
+            android:drawablePadding="@dimen/spacing_lvl2"
+            android:paddingStart="@dimen/play_dp_6"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingEnd="@dimen/play_dp_6"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N0"
+            app:drawableLeftCompat="@drawable/ic_play_duration_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:typographyType="body_3"
+            tools:text="28:42" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <View
+        android:id="@+id/overflow"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_meta" />
+
+    <FrameLayout
+        android:id="@+id/fl_info"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:background="@color/Neutral_N700_68"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/play_dp_12"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overflow">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_summary"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:loader_type="circular_white"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/layout_summary_error"
+            layout="@layout/layout_play_summary_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
