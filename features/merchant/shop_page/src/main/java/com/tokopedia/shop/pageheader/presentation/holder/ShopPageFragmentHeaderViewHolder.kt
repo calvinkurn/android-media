@@ -1,7 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
-import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
@@ -87,9 +86,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.play_seller_widget_container.visibility = if(isMyShop && broadcasterConfig?.streamAllowed == true) View.VISIBLE else View.GONE
         if(isMyShop){
             setupTextContentSgcWidget()
-            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopInfo.shopCore.shopID)
             view.container_lottie?.setOnClickListener {
-                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopInfo.shopCore.shopID, customDimensionShopPage = CustomDimensionShopPage.create(shopInfo))
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopInfo.shopCore.shopID)
                 RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
             }
         }
