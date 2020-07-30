@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/deals_dp_12"
         android:layout_marginLeft="@dimen/deals_dp_12"
-        app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
+        app:layout_constraintLeft_toRightOf="@+id/imgDealsBaseBackIcon"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -52,8 +52,8 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintStart_toEndOf="@id/contentDealsBaseLocationHint"
+        app:layout_constraintLeft_toRightOf="@+id/contentDealsBaseLocationHint"
+        app:layout_constraintStart_toEndOf="@+id/contentDealsBaseLocationHint"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -63,10 +63,10 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/imgDealsOrderListMenu"
-        app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
-        app:layout_constraintStart_toStartOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintTop_toBottomOf="@id/contentDealsBaseLocationHint"
+        app:layout_constraintEnd_toStartOf="@+id/imgDealsOrderListMenu"
+        app:layout_constraintLeft_toRightOf="@+id/imgDealsBaseBackIcon"
+        app:layout_constraintStart_toStartOf="@+id/contentDealsBaseLocationHint"
+        app:layout_constraintTop_toBottomOf="@+id/contentDealsBaseLocationHint"
         app:typographyType="heading_4"
         tools:text="Jakarta Barat" />
 
@@ -80,9 +80,9 @@
         android:textColor="@color/Neutral_N700_96"
         android:visibility="gone"
         app:corners="8"
-        app:layout_constraintLeft_toRightOf="@id/imgDealsBaseBackIcon"
-        app:layout_constraintStart_toStartOf="@id/contentDealsBaseLocationHint"
-        app:layout_constraintTop_toBottomOf="@id/contentDealsBaseLocationHint" />
+        app:layout_constraintLeft_toRightOf="@+id/imgDealsBaseBackIcon"
+        app:layout_constraintStart_toStartOf="@+id/contentDealsBaseLocationHint"
+        app:layout_constraintTop_toBottomOf="@+id/contentDealsBaseLocationHint" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgDealsOrderListMenu"
@@ -91,7 +91,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imgDealsSearchIcon"
+        app:layout_constraintEnd_toStartOf="@+id/imgDealsSearchIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginEnd="@dimen/layout_lvl0"
         app:layout_goneMarginRight="@dimen/layout_lvl0"
