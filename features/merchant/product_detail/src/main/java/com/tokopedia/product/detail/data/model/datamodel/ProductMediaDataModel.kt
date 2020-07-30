@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductMediaDataModel(
+        val id:String = "",
         val type: String = "",
         val name: String = "",
         var listOfMedia: List<MediaDataModel> = listOf(),
