@@ -95,11 +95,9 @@ public interface CommonConstant {
     }
 
     interface WebLink {
-        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
-        String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
-        String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
-        String INFO_EXPIRED_POINTS = WEB_DOMAIN_MOBILE + "tokopoints/info/#expired-points";
-        String DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/detail/";
+        String MEMBERSHIP = WEB_DOMAIN_MOBILE + "rewards/membership";
+        String INFO = WEB_DOMAIN_MOBILE + "rewards/intro";
+        String DETAIL = WEB_DOMAIN_MOBILE + "rewards/kupon/detail";
     }
 
     interface SectionLayoutType {

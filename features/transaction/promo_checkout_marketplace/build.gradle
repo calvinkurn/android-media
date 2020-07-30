@@ -16,6 +16,12 @@ buildscript {
     }
 }
 
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.graphql)
@@ -32,6 +38,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -39,6 +46,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
@@ -55,3 +63,5 @@ project.ext {
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

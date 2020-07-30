@@ -16,6 +16,7 @@ object ReviewSellerConstant {
     const val LAST_MONTH_VALUE = "30 Hari Terakhir"
     const val LAST_YEAR_VALUE = "1 Tahun Terakhir"
     const val ALL_VALUE = "Semua"
+    const val ALL_RATING = "all"
 
     const val MOST_REVIEW_KEY = "review_count desc"
     const val HIGHEST_RATING_KEY = "rating_avg desc"
@@ -31,6 +32,17 @@ object ReviewSellerConstant {
     const val MOST_REVIEW_VALUE = "Ulasan Terbanyak"
     const val HIGHEST_RATING_VALUE = "Rating Tertinggi"
     const val LOWEST_RATING_VALUE = "Rating Terendah"
+
+    const val ANSWERED_KEY = "Sudah dibalas"
+    const val ANSWERED_VALUE = "answered"
+
+    const val UNANSWERED_KEY = "Belum dibalas"
+    const val UNANSWERED_VALUE = "unanswered"
+
+    const val ALL_RATINGS = "Semua Rating"
+
+    const val prefixStatus = "status="
+    const val prefixRating = "rating="
 
     fun mapSortReviewProduct(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
@@ -65,10 +77,11 @@ object ReviewSellerConstant {
         return map
     }
 
-    const val DEFAULT_PER_PAGE = 10
+    const val DEFAULT_PER_PAGE = 15
     const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
+    const val HAS_TICKER_INBOX_REVIEW = "hasTickerInboxReview"
 }
 
 

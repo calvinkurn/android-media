@@ -139,13 +139,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
-        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
+        stopCheckVoucher()
         checkVoucherJob = CoroutineScope(coroutineContext).launch {
             delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
             digitalCheckVoucherUseCase.execute(
                     digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
             )
         }
+    }
+
+    fun stopCheckVoucher() {
+        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
     }
 
     private fun getCheckVoucherSubscriber(): Subscriber<GraphqlResponse> {

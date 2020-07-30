@@ -38,26 +38,26 @@ public class ProductDigitalMapper {
         if (entity != null && entity.getRechargeCategoryDetail() != null) {
             RechargeCategoryDetail categoryDetail = entity.getRechargeCategoryDetail();
 
-            categoryData.setTitleText(categoryDetail.getTitle());
-            categoryData.setCategoryId(categoryDetail.getId());
-            categoryData.setDefaultOperatorId(categoryDetail.getDefaultOperatorId());
-            categoryData.setIcon(categoryDetail.getIcon());
-            categoryData.setIconUrl(categoryDetail.getIconUrl());
-            categoryData.setName(categoryDetail.getName());
-            categoryData.setInstantCheckout(categoryDetail.getInstantCheckout());
-            categoryData.setNew(categoryDetail.getIsNew());
-            categoryData.setSlug(categoryDetail.getSlug());
-            categoryData.setOperatorStyle(categoryDetail.getOperatorStyle());
-            categoryData.setOperatorLabel(categoryDetail.getOperatorLabel());
+            categoryData.titleText = categoryDetail.getTitle();
+            categoryData.categoryId = categoryDetail.getId();
+            categoryData.defaultOperatorId = categoryDetail.getDefaultOperatorId();
+            categoryData.icon = categoryDetail.getIcon();
+            categoryData.iconUrl = categoryDetail.getIconUrl();
+            categoryData.name = categoryDetail.getName();
+            categoryData.isInstantCheckout = (categoryDetail.getInstantCheckout());
+            categoryData.isNew = (categoryDetail.getIsNew());
+            categoryData.slug = categoryDetail.getSlug();
+            categoryData.operatorStyle = categoryDetail.getOperatorStyle();
+            categoryData.operatorLabel = categoryDetail.getOperatorLabel();
             if (categoryDetail.getAdditionalFeature() != null) {
-                categoryData.setAdditionalFeature(transformAdditionalFeature(categoryDetail.getAdditionalFeature()));
+                categoryData.additionalFeature = transformAdditionalFeature(categoryDetail.getAdditionalFeature());
             }
 
-            categoryData.setClientNumberList(transformClientNumberList(categoryDetail));
-            categoryData.setOperatorList(transformOperators(categoryDetail));
-            categoryData.setBannerDataListIncluded(transformBanners(categoryDetail.getBanners()));
-            categoryData.setOtherBannerDataListIncluded(transformBanners(categoryDetail.getOtherBanners()));
-            categoryData.setGuideDataList(transformGuides(categoryDetail.getGuides()));
+            categoryData.clientNumberList = transformClientNumberList(categoryDetail);
+            categoryData.operatorList = transformOperators(categoryDetail);
+            categoryData.bannerDataListIncluded = transformBanners(categoryDetail.getBanners());
+            categoryData.otherBannerDataListIncluded = transformBanners(categoryDetail.getOtherBanners());
+            categoryData.guideDataList = transformGuides(categoryDetail.getGuides());
         }
 
         return new ProductDigitalData.Builder()
@@ -66,9 +66,9 @@ public class ProductDigitalMapper {
                         .recentClientNumberList(getOrderList(entity.getRechargeFavoritNumberResponseEntity()))
                         .build())
                 .categoryData(categoryData)
-                .bannerDataList(categoryData.getBannerDataListIncluded())
-                .otherBannerDataList(categoryData.getOtherBannerDataListIncluded())
-                .guideDataList(categoryData.getGuideDataList())
+                .bannerDataList((List<BannerData>) categoryData.bannerDataListIncluded)
+                .otherBannerDataList((List<BannerData>) categoryData.otherBannerDataListIncluded)
+                .guideDataList((List<GuideData>) categoryData.guideDataList)
                 .build();
     }
 

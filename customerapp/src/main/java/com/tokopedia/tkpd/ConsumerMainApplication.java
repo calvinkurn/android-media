@@ -30,6 +30,7 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -46,6 +47,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
+import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -143,12 +145,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 openShakeDetectCampaignPage(isLongShake);
             }
         }));
+
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
+        }
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+
     }
+
 
     private void createAndCallPreSeq() {
         PersistentCacheManager.init(ConsumerMainApplication.this);
