@@ -29,7 +29,8 @@ constructor(
         val attachmentType: String,
         var replyTime: String?,
         var message: String,
-        var source: String
+        var source: String,
+        val replyId: String = ""
 ) {
 
     companion object {

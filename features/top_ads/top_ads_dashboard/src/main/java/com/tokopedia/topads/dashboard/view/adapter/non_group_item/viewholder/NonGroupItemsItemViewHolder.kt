@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
@@ -63,7 +64,7 @@ class NonGroupItemsItemViewHolder(val view: View,
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
 
-            if (statsData.isNotEmpty() && adapterPosition < statsData.size) {
+            if (statsData.isNotEmpty() && adapterPosition < statsData.size  && adapterPosition != RecyclerView.NO_POSITION) {
                 view.tampil_count.text = statsData[adapterPosition].statTotalImpression
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
@@ -98,10 +99,12 @@ class NonGroupItemsItemViewHolder(val view: View,
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
             sheet.onDeleteClick = {
-                actionDelete(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionDelete(adapterPosition)
             }
             sheet.changeStatus = {
-                actionStatusChange(adapterPosition, it)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionStatusChange(adapterPosition, it)
             }
         }
 

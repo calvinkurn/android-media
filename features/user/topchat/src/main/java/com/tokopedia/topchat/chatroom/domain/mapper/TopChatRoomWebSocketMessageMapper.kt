@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.domain.mapper
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -15,6 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.websocket.WebSocketResponse
 import javax.inject.Inject
 
 /**
@@ -111,5 +113,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 startTime = payload.startTime,
                 source = payload.source
         )
+    }
+
+    fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
+        return Gson().fromJson(response?.jsonObject, ChatSocketPojo::class.java)
     }
 }
