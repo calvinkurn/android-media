@@ -5,18 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/topDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl0"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewManageAtOnce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/label_manage_at_once"
         android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/heading_5"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/topDivider" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewManageAtOnceDesc"
@@ -27,7 +34,7 @@
         android:layout_marginBottom="@dimen/dp_10"
         android:text="@string/label_manage_at_once_desc"
         android:textColor="@color/light_N700_68"
-        android:textSize="@dimen/body_3"
+        app:typographyType="body_3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewManageAtOnce" />
 
@@ -71,7 +78,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:text="@string/label_optional"
         android:textColor="@color/light_N700_68"
-        android:textSize="@dimen/body_3"
+        app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="@id/textViewAddSku"
         app:layout_constraintLeft_toRightOf="@id/textViewAddSku" />
 

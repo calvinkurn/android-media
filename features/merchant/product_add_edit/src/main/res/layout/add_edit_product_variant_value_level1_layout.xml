@@ -35,8 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/body_2"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/layout_lvl1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typographyVariantValueLevel1Title" />
@@ -46,7 +47,7 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/body_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewVariantValueLevel1" />
 
