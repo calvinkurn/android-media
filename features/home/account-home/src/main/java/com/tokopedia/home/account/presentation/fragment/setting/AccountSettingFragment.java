@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -294,7 +294,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     @Override
     public void logUnknownError(Throwable e) {
         try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(e);
+            if (!BuildConfig.DEBUG) FirebaseCrashlytics.getInstance().recordException(e);
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }

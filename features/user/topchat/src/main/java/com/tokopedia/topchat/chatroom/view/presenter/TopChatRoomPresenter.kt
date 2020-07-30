@@ -205,8 +205,10 @@ class TopChatRoomPresenter @Inject constructor(
                     newUnreadMessage = 0
                     view?.hideUnreadMessage()
                 } else {
-                    newUnreadMessage++
-                    view?.showUnreadMessage(newUnreadMessage)
+                    if (pojo.isOpposite) {
+                        newUnreadMessage++
+                        view?.showUnreadMessage(newUnreadMessage)
+                    }
                 }
             }
         }
