@@ -48,10 +48,8 @@ class InboxFilterAdapter(private val dataSet: List<String>,
             filterText?.text = valueItem
             if (adapterPosition == selected) {
                 tvDayTime?.show()
-                filterText?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.green_nob))
             } else {
                 tvDayTime?.hide()
-                filterText?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_70))
             }
             locationDateItem?.setOnClickListener { onClickFilterItem() }
         }
