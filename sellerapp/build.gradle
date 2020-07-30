@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-if (project.hasProperty("auto-patch")) {
-    apply plugin: 'auto-patch-plugin'
-}
-apply plugin: 'robust'
+//if (project.hasProperty("auto-patch")) {
+//    apply plugin: 'auto-patch-plugin'
+//}
+//apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -241,7 +241,6 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.saldodetails)
@@ -289,6 +288,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)
+
+    implementation project(rootProject.ext.features.playBroadcaster)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components

@@ -11,6 +11,8 @@ import javax.inject.Inject
 class GetCategoryLiteTreeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<CategoriesResponse>() {
 
     companion object {
+        @JvmStatic
+        val unselectedCategoryId = -2
         private const val PARAM_FILTER = "filter"
 
         private val query by lazy {

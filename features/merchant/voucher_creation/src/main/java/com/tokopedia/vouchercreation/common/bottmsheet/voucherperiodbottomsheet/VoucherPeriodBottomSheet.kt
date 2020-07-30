@@ -39,15 +39,17 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 29/04/20
  */
 
-class VoucherPeriodBottomSheet(
-        parent: ViewGroup,
-        private val voucher: VoucherUiModel) : BottomSheetUnify() {
+class VoucherPeriodBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(parent: ViewGroup,
-                           voucher: VoucherUiModel): VoucherPeriodBottomSheet =
-                VoucherPeriodBottomSheet(parent, voucher)
+        fun createInstance(voucher: VoucherUiModel): VoucherPeriodBottomSheet =
+                VoucherPeriodBottomSheet().apply {
+                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                    arguments = Bundle().apply {
+                        putParcelable(VOUCHER, voucher)
+                    }
+                }
 
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
         private const val DATE_OF_WEEK_FORMAT = "EEE, dd MMM yyyy"
@@ -56,6 +58,8 @@ class VoucherPeriodBottomSheet(
         private const val END_DATE_TIME_PICKER_TAG = "endDateChangeTimePicker"
 
         private const val MINUTE_INTERVAL = 30
+
+        private const val VOUCHER = "voucher"
     }
 
     @Inject
@@ -73,6 +77,10 @@ class VoucherPeriodBottomSheet(
         LocaleUtils.getIDLocale()
     }
 
+    private val voucher by lazy {
+        arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
+    }
+
     private var onSuccessListener: () -> Unit = {}
     private var onFailListener: (String) -> Unit = {}
 
@@ -82,18 +90,14 @@ class VoucherPeriodBottomSheet(
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
 
-    init {
-        val child = LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_mvc_voucher_edit_period, parent, false)
-
-        setTitle(parent.context.getString(R.string.mvc_edit_shown_period))
-        setChild(child)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet(container)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,68 +116,80 @@ class VoucherPeriodBottomSheet(
                 .inject(this)
     }
 
+    private fun initBottomSheet(container: ViewGroup?) {
+        context?.run {
+            val child = LayoutInflater.from(this)
+                    .inflate(R.layout.bottomsheet_mvc_voucher_edit_period, container, false)
+
+            setTitle(getString(R.string.mvc_edit_shown_period))
+            setChild(child)
+        }
+    }
+
     private fun setupView(view: View) = with(view) {
-        setImageVoucher(voucher.isPublic, voucher.type)
+        voucher?.let { voucher ->
+            setImageVoucher(voucher.isPublic, voucher.type)
 
-        tvMvcVoucherName.text = voucher.name
-        tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_discount_formatted).toBlankOrString(), voucher.typeFormatted, voucher.discountAmtFormatted)
+            tvMvcVoucherName.text = voucher.name
+            tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_discount_formatted).toBlankOrString(), voucher.typeFormatted, voucher.discountAmtFormatted)
 
-        resetDate()
-
-        edtMvcStartDate?.run {
-            startCalendar?.run {
-                setDateText(this)
-            }
-            textFieldInput.run {
-                setOnClickListener {
-                    getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
-                }
-                isFocusable = false
-                isClickable = true
-                keyListener = null
-            }
-        }
-        edtMvcEndDate?.run {
-            endCalendar?.run {
-                setDateText(this)
-            }
-            textFieldInput.run {
-                setOnClickListener {
-                    getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
-                }
-                isFocusable = false
-                isClickable = true
-                keyListener = null
-            }
-        }
-        startCalendar?.let { calendar ->
-            val initialTime = calendar.time?.toFormattedString(DATE_OF_WEEK_FORMAT, locale).toBlankOrString()
-            startDateString = initialTime
-            viewModel.setStartDateCalendar(calendar)
-        }
-        endCalendar?.let { calendar ->
-            val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
-            endDateString = initialTime
-            viewModel.setEndDateCalendar(calendar)
-        }
-
-        btnMvcSavePeriod?.run {
-            setOnClickListener {
-                isLoading = true
-                viewModel.validateVoucherPeriod(voucher)
-            }
-        }
-
-        setAction(context?.getString(R.string.mvc_retry).toBlankOrString()) {
             resetDate()
+
             edtMvcStartDate?.run {
                 startCalendar?.run {
                     setDateText(this)
+                }
+                textFieldInput.run {
+                    setOnClickListener {
+                        getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+                    }
+                    isFocusable = false
+                    isClickable = true
+                    keyListener = null
                 }
             }
             edtMvcEndDate?.run {
                 endCalendar?.run {
                     setDateText(this)
+                }
+                textFieldInput.run {
+                    setOnClickListener {
+                        getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+                    }
+                    isFocusable = false
+                    isClickable = true
+                    keyListener = null
+                }
+            }
+            startCalendar?.let { calendar ->
+                val initialTime = calendar.time?.toFormattedString(DATE_OF_WEEK_FORMAT, locale).toBlankOrString()
+                startDateString = initialTime
+                viewModel.setStartDateCalendar(calendar)
+            }
+            endCalendar?.let { calendar ->
+                val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
+                endDateString = initialTime
+                viewModel.setEndDateCalendar(calendar)
+            }
+
+            btnMvcSavePeriod?.run {
+                setOnClickListener {
+                    isLoading = true
+                    viewModel.validateVoucherPeriod(voucher)
+                }
+            }
+
+            setAction(context?.getString(R.string.mvc_retry).toBlankOrString()) {
+                resetDate()
+                edtMvcStartDate?.run {
+                    startCalendar?.run {
+                        setDateText(this)
+                    }
+                }
+                edtMvcEndDate?.run {
+                    endCalendar?.run {
+                        setDateText(this)
+                    }
                 }
             }
         }
@@ -193,6 +209,7 @@ class VoucherPeriodBottomSheet(
             observe(viewModel.startDateCalendarLiveData) { startDate ->
                 (startDate as? GregorianCalendar)?.run {
                     edtMvcStartDate?.setDateText(this)
+                    endDateString = time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 }
             }
             observe(viewModel.endDateCalendarLiveData) { endDate ->
@@ -216,8 +233,10 @@ class VoucherPeriodBottomSheet(
     }
 
     private fun resetDate() {
-        startCalendar = getGregorianDate(voucher.startTime)
-        endCalendar = getGregorianDate(voucher.finishTime)
+        voucher?.let {
+            startCalendar = getGregorianDate(it.startTime)
+            endCalendar = getGregorianDate(it.finishTime)
+        }
     }
 
     private fun getGregorianDate(date: String): GregorianCalendar {
@@ -259,7 +278,7 @@ class VoucherPeriodBottomSheet(
                     endCalendar?.let { currentDate ->
                         DateTimeUtils.getMaxEndDate(startCalendar)?.let { maxDate ->
                             val title = getString(R.string.mvc_end_date_title)
-                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), startDateString).parseAsHtml()
+                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), endDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()
                             DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                                 setTitle(title)
