@@ -113,12 +113,12 @@ public class TrackingUtils{
         boolean isValid = false;
 
         if(maps != null){
-            String gclid = maps.get(AppEventTracking.GTM.UTM_GCLID) != null ? maps.get(AppEventTracking.GTM.UTM_GCLID).toString() : null;
+            String gclid = maps.get(AppEventTracking.GTM.UTM_GCLID) != null ? maps.get(AppEventTracking.GTM.UTM_GCLID).toString() : "";
             if(maps.containsKey(AppEventTracking.GTM.UTM_GCLID) && !TextUtils.isEmpty(gclid)){
                 isValid = true;
             }else{
-                String utmSource = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_SOURCE).toString() : null;
-                String utmMedium = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_MEDIUM).toString() : null;
+                String utmSource = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_SOURCE).toString() : "";
+                String utmMedium = maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ? maps.get(AppEventTracking.GTM.UTM_MEDIUM).toString() : "";
 
                 isValid = !TextUtils.isEmpty(utmSource) && !TextUtils.isEmpty(utmMedium);
             }
