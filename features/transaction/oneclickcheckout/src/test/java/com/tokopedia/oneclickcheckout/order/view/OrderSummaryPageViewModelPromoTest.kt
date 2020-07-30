@@ -7,10 +7,7 @@ import com.tokopedia.oneclickcheckout.order.data.checkout.*
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartDataOcc
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccResponse
-import com.tokopedia.oneclickcheckout.order.view.model.ButtonBayarState
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
@@ -18,6 +15,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import io.mockk.Runs
@@ -39,6 +38,61 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         val promoRequest = orderSummaryPageViewModel.generatePromoRequest()
 
         assertEquals(1, promoRequest.orders.first().isInsurancePrice)
+    }
+
+    @Test
+    fun `Generate Promo Request With Insurance Checked And No Data`() {
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true)
+
+        val promoRequest = orderSummaryPageViewModel.generatePromoRequest()
+
+        assertEquals(0, promoRequest.orders.first().isInsurancePrice)
+    }
+
+    @Test
+    fun `Generate Validate Use Promo Request With Last Apply And Bbo`() {
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val promoCode = "123"
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(codes = listOf(promoCode),
+                voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode))))
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
+
+        val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
+
+        assertEquals(promoCode, promoRequest.codes.first())
+        assertEquals(listOf(promoCode, helper.logisticPromo.promoCode), promoRequest.orders.first()!!.codes)
+    }
+
+    @Test
+    fun `Generate Validate Use Promo Request With Invalid Last Apply And No Bbo`() {
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val promoCode = "123"
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode, uniqueId = promoCode))))
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(logisticPromoViewModel = null, logisticPromoTickerMessage = null)
+
+        val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
+
+        assertEquals(true, promoRequest.codes.isEmpty())
+        assertEquals(true, promoRequest.orders.first()!!.codes.isEmpty())
+    }
+
+    @Test
+    fun `Generate Validate Use Promo Request With Multiple Last Apply`() {
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val promoCode = "123"
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(
+                voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode), LastApplyVoucherOrdersItemUiModel(code = promoCode))))
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+
+        val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
+
+        assertEquals(true, promoRequest.codes.isEmpty())
+        assertEquals(listOf(promoCode), promoRequest.orders.first()!!.codes)
     }
 
     @Test
@@ -102,7 +156,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Cart Promo Invalid State`() {
+    fun `Update Cart Promo Invalid Preference State`() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment

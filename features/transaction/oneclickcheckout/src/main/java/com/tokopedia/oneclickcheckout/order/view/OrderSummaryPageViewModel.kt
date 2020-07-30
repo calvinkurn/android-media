@@ -1001,7 +1001,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (finalPromo != null) {
             val list: ArrayList<com.tokopedia.oneclickcheckout.order.data.checkout.PromoRequest> = ArrayList()
             for (voucherOrder in finalPromo.promoUiModel.voucherOrderUiModels) {
-                if (voucherOrder?.messageUiModel?.state != "red" && orderCart.cartString == voucherOrder?.uniqueId &&
+                if (orderCart.cartString == voucherOrder?.uniqueId && voucherOrder.messageUiModel.state != "red" &&
                         voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
                     list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
                 }
@@ -1024,7 +1024,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun checkIneligiblePromo(): Boolean {
         var notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
-        val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = validateUsePromoRevampUiModel
+        val validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
         if (validateUsePromoRevampUiModel != null) {
             notEligiblePromoHolderdataList = addIneligibleGlobalPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
             notEligiblePromoHolderdataList = addIneligibleVoucherPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
@@ -1297,9 +1297,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         )
     }
 
+    private fun shouldButtonStateEnable(orderShipment: OrderShipment): Boolean {
+        return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError)
+    }
+
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = ButtonBayarState.NORMAL)
-        orderTotal.value = orderTotal.value.copy(buttonState = if (_orderShipment.isValid() && _orderShipment.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+        orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
         calculateTotal()
     }
 
@@ -1324,7 +1328,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
 
         var currentState = orderTotal.value.buttonState
-        if (currentState == ButtonBayarState.NORMAL && (!shipping.isValid() || !shipping.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
+        if (currentState == ButtonBayarState.NORMAL && (!shouldButtonStateEnable(shipping))) {
             currentState = ButtonBayarState.DISABLE
         }
         if (payment.minimumAmount > subtotal) {

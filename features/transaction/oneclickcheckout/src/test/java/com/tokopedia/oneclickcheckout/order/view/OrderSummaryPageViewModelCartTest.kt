@@ -22,11 +22,13 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
 
+@ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
@@ -75,7 +77,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Get Occ Cart Success Twice`() {
+    fun `Get Occ Cart Success Twice Should Trigger Analytics Once`() {
         val response = OrderData()
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
@@ -111,16 +113,12 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         every { getOccCartUseCase.execute(any(), any(), any()) } answers { (firstArg() as ((OrderData) -> Unit)).invoke(response) }
-        every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
         orderSummaryPageViewModel.getOccCart(true, "")
 
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
-        verify(exactly = 1) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(any())
-        }
         verify(exactly = 1) { ratesUseCase.execute(any()) }
     }
 
@@ -173,6 +171,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
         assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
         assertEquals(1, orderSummaryPageViewModel.getCurrentProfileId())
+        verify(exactly = 1) { ratesUseCase.execute(any()) }
+        verify(exactly = 1) { validateUsePromoRevampUseCase.createObservable(any()) }
     }
 
     @Test
@@ -265,7 +265,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Cart Invalid State`() {
+    fun `Update Cart Invalid Preference State`() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
@@ -329,7 +329,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Preference On Invalid State`() {
+    fun `Update Preference On Invalid Preference State`() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         val response = Throwable()
