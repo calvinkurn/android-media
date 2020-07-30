@@ -27,6 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -175,6 +176,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
+    private var shouldGoToSetCashback: Boolean = false
+
     companion object {
         fun createInstance(productId: String, draftId: String, isDuplicate: Boolean): Fragment {
             return AddEditProductPreviewFragment().apply {
@@ -191,6 +194,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
+        shouldGoToSetCashback = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty() == SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK
         arguments?.run {
             val draftId = getString(EXTRA_DRAFT_ID).orEmpty()
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
@@ -442,9 +446,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             sellerFeatureCarousel?.apply {
                 setListener(object: SellerFeatureCarousel.SellerFeatureClickListener {
                     override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
-                        when (item) {
-                            is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
-                            is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
+                        if (!isDrafting()) {
+                            when (item) {
+                                is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
+                                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
+                            }
                         }
                     }
                 })
@@ -754,6 +760,18 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
+                    if (shouldGoToSetCashback) {
+                        val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
+                        if (appLinkToOpen.isNotBlank()) {
+                            shouldGoToSetCashback = false
+                            context?.run {
+                                activity?.intent?.extras?.clear()
+                                RouteManager.getIntent(this, appLinkToOpen).apply {
+                                    startActivityForResult(this, SET_CASHBACK_REQUEST_CODE)
+                                }
+                            }
+                        }
+                    }
                 }
                 is Fail -> {
                     context?.let {
@@ -1095,7 +1113,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     .buildUpon()
                     .build()
                     .toString()
-            val secondAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId()))
+            val secondApplink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, viewModel.getProductId())
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                    .build()
+                    .toString()
+            val thirdAppLink = Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId()))
                     .buildUpon()
                     .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_NAME, productInputModel.detailInputModel.productName)
                     .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
@@ -1103,7 +1127,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
                     .build()
                     .toString()
-            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, firstAppLink, secondAppLink)
+            goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK, arrayListOf(firstAppLink, secondApplink, thirdAppLink))
         }
     }
 
@@ -1114,13 +1138,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
                 .build()
                 .toString()
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, ApplinkConst.PRODUCT_MANAGE, secondAppLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
     }
 
-    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, firstAppLink: String, secondAppLink: String = "") {
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
         context?.run {
-            val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, firstAppLink, secondAppLink)
+            val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, appLinks)
             startActivity(intent)
+            activity?.finish()
         }
     }
 }

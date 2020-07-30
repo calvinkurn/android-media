@@ -30,6 +30,7 @@ annotation class SellerMigrationFeatureName {
         const val FEATURE_STOCK_REMINDER = "stock_reminder"
         const val FEATURE_SHOP_CASHBACK_VOUCHER = "shop_cashback_voucher"
         const val FEATURE_SET_VARIANT = "set_variant"
+        const val FEATURE_EDIT_PRODUCT_CASHBACK = "edit_product_cashback"
         const val FEATURE_INSTAGRAM_IMPORT = "instagram_import"
         const val FEATURE_ADS = "ads"
         const val FEATURE_ADS_DETAIL = "ads_detail"

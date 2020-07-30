@@ -325,17 +325,22 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void goToSellerAppProductManage() {
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, ApplinkConst.PRODUCT_MANAGE, "");
+        ArrayList<String> appLinks = new ArrayList<>();
+        appLinks.add(ApplinkConst.PRODUCT_MANAGE);
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, appLinks);
     }
 
     private void goToVoucherToko() {
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO, "");
+        ArrayList<String> appLinks = new ArrayList<>();
+        appLinks.add(ApplinkConstInternalSellerapp.SELLER_HOME);
+        appLinks.add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO);
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, appLinks);
     }
 
-    private void goToSellerMigrationPage(@SellerMigrationFeatureName String featureName, String firstAppLink, String secondAppLink) {
+    private void goToSellerMigrationPage(@SellerMigrationFeatureName String featureName, ArrayList<String> appLinks) {
         Context context = getContext();
         if (context != null) {
-            Intent intent = SellerMigrationActivity.Companion.createIntent(context, featureName, getScreenName(), firstAppLink, secondAppLink);
+            Intent intent = SellerMigrationActivity.Companion.createIntent(context, featureName, getScreenName(), appLinks);
             startActivity(intent);
         }
     }

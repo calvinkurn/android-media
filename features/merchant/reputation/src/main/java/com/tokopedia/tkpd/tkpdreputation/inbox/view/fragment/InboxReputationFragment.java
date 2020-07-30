@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
@@ -54,6 +55,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxR
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.user.session.UserSession;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -581,7 +583,14 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onSellerMigrationReviewClicked() {
         Context context = getContext();
         if (context != null) {
-            Intent intent = SellerMigrationActivity.Companion.createIntent(context, SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS, getScreenName(), ApplinkConst.REPUTATION, "");
+            ArrayList<String> appLinks = new ArrayList<>();
+            appLinks.add(ApplinkConstInternalSellerapp.SELLER_HOME);
+            appLinks.add(ApplinkConst.REPUTATION);
+            Intent intent = SellerMigrationActivity.Companion.createIntent(
+                    context,
+                    SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,
+                    getScreenName(),
+                    appLinks);
             startActivity(intent);
         }
     }

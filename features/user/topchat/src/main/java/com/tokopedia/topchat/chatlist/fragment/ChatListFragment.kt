@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
@@ -68,7 +69,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -95,6 +95,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var chatTabListContract: ChatListContract.TabFragment? = null
     private var mUserSeen = false
     private var mViewCreated = false
+    private var shouldMoveToChatSettings: Boolean = false
 
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
@@ -120,9 +121,25 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        shouldMoveToChatSettings = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (shouldMoveToChatSettings) {
+            val appLinks = ArrayList(activity?.intent?.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+            if (appLinks.isNotEmpty()) {
+                shouldMoveToChatSettings = false
+                activity?.intent?.extras?.clear()
+                ChatSettingActivity.getIntent(context, true).apply {
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+                    startActivity(this)
+                }
+            }
+        }
     }
 
     private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
@@ -143,14 +160,8 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
                 true
             }
             R.id.menu_chat_setting -> {
-                if (GlobalConfig.isSellerApp()) {
-                    context?.let {
-                        RouteManager.route(it, ApplinkConstInternalGlobal.MANAGE_NOTIFICATION)
-                    }
-                } else {
-                    val intent = ChatSettingActivity.getIntent(context, isTabSeller())
-                    startActivity(intent)
-                }
+                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
+                startActivity(intent)
                 true
             }
             R.id.menu_chat_search -> {

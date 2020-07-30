@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatsetting.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
@@ -22,10 +23,10 @@ class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
         if (element == null) return
         with(itemView) {
             tvTitle?.text = element.alias
-            labelSellerMigration.showWithCondition(isSellerTabTemplateChat(element.alias))
+            labelSellerMigration.showWithCondition(!GlobalConfig.isSellerApp() && isSellerTabTemplateChat(element.alias))
 
             setOnClickListener {
-                if (isSellerTabTemplateChat(element.alias)) {
+                if (!GlobalConfig.isSellerApp() && isSellerTabTemplateChat(element.alias)) {
                     listener.goToSellerMigrationPage()
                 } else {
                     listener.eventClickChatSetting(element)

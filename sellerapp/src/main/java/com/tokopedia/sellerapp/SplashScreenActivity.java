@@ -24,6 +24,8 @@ import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
+
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
@@ -67,9 +69,9 @@ public class SplashScreenActivity extends SplashScreen {
                 }
                 Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (intent != null) {
-                    String secondAppLink = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA);
-                    if (secondAppLink != null && !secondAppLink.isEmpty()) {
-                        intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink);
+                    ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                    if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
+                        intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingAppLinks);
                     }
                     startActivity(intent);
                     return true;

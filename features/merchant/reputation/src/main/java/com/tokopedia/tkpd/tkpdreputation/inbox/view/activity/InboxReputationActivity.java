@@ -164,7 +164,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
 
     private void openBuyerReview() {
         if (!isAppLinkProccessed && getIntent() != null && getIntent().getData() != null) {
-            String featureName = getIntent().getData().getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
+            String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
             if (featureName != null && !featureName.isEmpty()) {
                 isAppLinkProccessed = true;
                 int buyerReviewFragmentPosition = findBuyerReviewFragmentPosition();

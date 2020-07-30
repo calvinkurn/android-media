@@ -27,10 +27,9 @@ import com.tokopedia.user.session.UserSession
 class SellerMigrationActivity : BaseSimpleActivity() {
 
     companion object {
-        fun createIntent(context: Context, @SellerMigrationFeatureName featureName: String, screenName: String, firstAppLink: String, secondAppLink: String = ""): Intent {
+        fun createIntent(context: Context, @SellerMigrationFeatureName featureName: String, screenName: String, appLinks: ArrayList<String>): Intent {
             return RouteManager.getIntent(context, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName)).apply {
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink)
-                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink)
+                putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
                 putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
                 putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
             }
@@ -42,7 +41,7 @@ class SellerMigrationActivity : BaseSimpleActivity() {
     override fun getScreenName(): String = "/migration-page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        featureName = intent.data?.getQueryParameter(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME).orEmpty()
+        featureName = intent.extras?.getString(SellerMigrationFragment.KEY_PARAM_FEATURE_NAME).orEmpty()
         super.onCreate(savedInstanceState)
         processAppLink()
     }
@@ -51,19 +50,24 @@ class SellerMigrationActivity : BaseSimpleActivity() {
         val openedPage = if (isSellerAppInstalled()) {
             val uri = intent.data
             if (uri != null) {
-                val parameterizedFirstAppLink = Uri.parse(this.intent.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA).orEmpty())
-                        .buildUpon()
-                        .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
-                        .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
-                        .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
-                        .build()
-                        .toString()
-                RouteManager.getIntent(this, parameterizedFirstAppLink)?.apply {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA,
-                            this@SellerMigrationActivity.intent.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA).orEmpty())
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(this)
-                    finish()
+                val appLinks = ArrayList<String>(intent.extras?.getStringArrayList(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+                if (appLinks.isNotEmpty()) {
+                    val firstAppLink = appLinks.firstOrNull().orEmpty()
+                    val parameterizedFirstAppLink = Uri.parse(firstAppLink)
+                            .buildUpon()
+                            .appendQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, "true")
+                            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_IS_AUTO_LOGIN, "true")
+                            .appendQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                            .build()
+                            .toString()
+                    appLinks.removeAt(0)
+                    RouteManager.getIntent(this, parameterizedFirstAppLink)?.apply {
+                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName)
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(this)
+                        finish()
+                    }
                 }
             }
             EVENT_LABEL_TO_SELLER_APP

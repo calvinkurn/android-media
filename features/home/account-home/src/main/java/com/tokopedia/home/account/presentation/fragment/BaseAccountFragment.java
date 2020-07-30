@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -27,6 +30,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
+import com.tokopedia.home.account.presentation.bottomsheet.BottomSheetAddProduct;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -42,6 +46,9 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity;
+import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
@@ -49,6 +56,7 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
@@ -68,7 +76,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 /**
  * @author okasurya on 7/26/18.
  */
-public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
+public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener, BottomSheetAddProduct.AddEditMenuClickListener, SellerFeatureCarousel.SellerFeatureClickListener {
 
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
@@ -77,6 +85,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final String OVO = "OVO";
     private static final String TOKOPEDIA_TITLE = "Tokopedia";
     private boolean mShowTokopointNative = false;
+    private BottomSheetAddProduct addProductBottomSheet = null;
 
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
@@ -266,7 +275,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void onAddProductClicked() {
         sendTracking(PENJUAL, getString(R.string.title_menu_product), getString(R.string
                 .label_button_add_product));
-        openApplink(ApplinkConst.PRODUCT_ADD);
+        if (addProductBottomSheet == null) {
+            addProductBottomSheet = new BottomSheetAddProduct(getView(), this, this, getChildFragmentManager());
+        }
+        addProductBottomSheet.show();
     }
 
     @Override
@@ -554,5 +566,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public RemoteConfig getRemoteConfig() {
         return remoteConfig;
+    }
+
+    @Override
+    public void onAddProductWithNoVariantClicked() {
+        Context context = getContext();
+        if (context != null) {
+            RouteManager.route(context, ApplinkConst.PRODUCT_ADD);
+        }
+    }
+
+    @Override
+    public void onSellerFeatureClicked(@NotNull SellerFeatureUiModel item) {
+        if (item instanceof SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel) {
+            ArrayList<String> appLinks = new ArrayList();
+            appLinks.add(ApplinkConst.PRODUCT_MANAGE);
+            appLinks.add(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+            Intent intent = SellerMigrationActivity.Companion.createIntent(getContext(), SellerMigrationFeatureName.FEATURE_SET_VARIANT, getScreenName(), appLinks);
+            startActivity(intent);
+            addProductBottomSheet.dismiss();
+        }
     }
 }

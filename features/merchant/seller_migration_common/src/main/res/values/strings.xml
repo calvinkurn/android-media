@@ -59,6 +59,9 @@
     <string name="seller_migration_fragment_tab_promo_and_ads">Iklan &amp; Promosi</string>
     <string name="seller_migration_fragment_tab_statistic">Statistik</string>
 
+    <string name="seller_migration_product_manage_set_variant_title">PRODUK VARIAN</string>
+    <string name="seller_migration_product_manage_set_variant_description">Tambah produk dengan varian warna dan ukuran dengan mudah.</string>
+
     <!--    seller migration product seller features-->
     <string name="seller_migration_fragment_product_tab_set_variant_title">ATUR VARIAN</string>
     <string name="seller_migration_fragment_product_tab_set_variant_description">Kelola varian warna dan ukuran produk dengan mudah.</string>
@@ -104,5 +107,5 @@
 
     <!--    product manage list-->
     <string name="seller_migration_add_product_in_mainapp_title">Tambah produk</string>
-    <string name="seller_migration_add_product_in_mainapp_desc">Tambah produk tanpa varian dan promosi</string>
+    <string name="seller_migration_add_product_in_mainapp_desc">Pilih produk tanpa varian warna dan ukuran.</string>
 </resources>

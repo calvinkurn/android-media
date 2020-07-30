@@ -123,6 +123,12 @@ sealed class SellerFeatureUiModel(
             descriptionId = R.string.seller_migration_fragment_product_tab_set_variant_description,
             data = data)
 
+    class ProductManageSetVariantFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
+            imageId = R.drawable.ic_seller_migration_set_variant,
+            titleId = R.string.seller_migration_product_manage_set_variant_title,
+            descriptionId = R.string.seller_migration_product_manage_set_variant_description,
+            data = data)
+
     class ImportInstagramFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
             imageId = R.drawable.ic_seller_migration_import_instagram,
             titleId = R.string.seller_migration_fragment_product_tab_instagram_import_title,

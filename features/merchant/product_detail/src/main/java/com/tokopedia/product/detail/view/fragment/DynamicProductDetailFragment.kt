@@ -240,6 +240,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var tradeinDialog: ProductAccessRequestDialogFragment? = null
+    private var shouldMoveToTopAds: Boolean = false
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -289,6 +290,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
         }
         super.onCreate(savedInstanceState)
+        shouldMoveToTopAds = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull() == ApplinkConst.SellerApp.TOPADS_CREATE_ADS
         arguments?.let {
             productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
             warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
@@ -319,6 +321,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onPause()
         if (::trackingQueue.isInitialized) {
             trackingQueue.sendAll()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (shouldMoveToTopAds) {
+            val appLinkToOpen = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()
+            if (appLinkToOpen.isNotBlank()) {
+                shouldMoveToTopAds = false
+                activity?.intent?.extras?.clear()
+                context?.run { RouteManager.route(this, appLinkToOpen) }
+            }
         }
     }
 
@@ -2304,7 +2318,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             } else {
                 val appLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, appLink)
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS_DETAIL, arrayListOf(
+                        ApplinkConst.PRODUCT_MANAGE,
+                        appLink
+                ))
             }
         }
 
@@ -2323,19 +2340,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         actionButtonView.promoTopAdsClick = {
-            var applink = ""
-            viewModel.shopInfo?.let { shopInfo ->
-                applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, viewModel.getDynamicProductInfoP1?.basic?.productID
-                                ?: "")
-                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
-                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
-            }
+            val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val secondAppLink = ApplinkConst.SellerApp.TOPADS_CREATE_ADS
             if (GlobalConfig.isSellerApp()) {
-                context?.let { RouteManager.route(it, applink) }
+                context?.let { RouteManager.route(it, secondAppLink) }
             } else {
-                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, applink)
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_ADS, arrayListOf(
+                        ApplinkConst.PRODUCT_MANAGE,
+                        firstAppLink,
+                        secondAppLink
+                ))
             }
         }
 
@@ -3025,11 +3039,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         startActivity(intent)
     }
 
-    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, firstAppLink: String, secondAppLink: String = "") {
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
         context?.run {
             val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName))
-            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_FIRST_APPLINK_EXTRA, firstAppLink)
-            intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA, secondAppLink)
+            intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
             intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
             startActivity(intent)
         }

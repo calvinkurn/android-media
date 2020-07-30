@@ -172,7 +172,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback(item.data as ProductViewModel)
                 is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(item.data as ProductViewModel)
                 is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(item.data as ProductViewModel)
-                is SellerFeatureUiModel.SetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
+                is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
             }
             productManageAddEditMenuBottomSheet.dismiss()
             productManageBottomSheet?.dismiss()
@@ -189,7 +189,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         activity?.intent?.data?.run {
             shouldEnableMultiEdit = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ENABLE_MULTI_EDIT, false)
             shouldAddAsFeatured = this.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_ADD_AS_FEATURED, false)
-            shouldOpenAppLink = activity?.intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA) ?: false
+            shouldOpenAppLink = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty().isNotEmpty()
         }
         setHasOptionsMenu(true)
     }
@@ -365,6 +365,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onAddProductWithNoVariantClicked() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
+        productManageAddEditMenuBottomSheet.dismiss()
     }
 
     private fun goToSellerAppProductManageMultiEdit() {
@@ -374,11 +375,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .build()
                 .toString()
 
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_MULTI_EDIT, appLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_MULTI_EDIT, arrayListOf(appLink))
     }
 
     private fun goToSellerAppTopAds(product: ProductViewModel) {
-        val appLink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+        val firstAppLink = ApplinkConst.PRODUCT_MANAGE
+        val secondAppLink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
                 .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
                 .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, product.id)
                 .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
@@ -389,7 +391,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .build()
                 .toString()
 
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_TOPADS, appLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_TOPADS, arrayListOf(firstAppLink, secondAppLink))
     }
 
     private fun goToSellerAppProductManageThenSetCashback(product: ProductViewModel) {
@@ -405,7 +407,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .appendQueryParameter(EXTRA_CASHBACK_SHOP_ID, userSession.shopId)
                 .build()
                 .toString()
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, firstAppLink, secondAppLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_CASHBACK, arrayListOf(firstAppLink, secondAppLink))
     }
 
     private fun goToSellerAppProductManageThenAddAsFeatured(product: ProductViewModel) {
@@ -417,22 +419,22 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .build()
                 .toString()
 
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, firstAppLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT, arrayListOf(firstAppLink))
     }
 
     private fun goToSellerAppSetStockReminder(product: ProductViewModel) {
         val secondAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.STOCK_REMINDER, product.id, product.title, product.stock.toString())
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, ApplinkConst.PRODUCT_MANAGE, secondAppLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_STOCK_REMINDER, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
     }
 
     private fun goToSellerAppAddProduct() {
         val secondAppLink = ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
-        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, ApplinkConst.PRODUCT_MANAGE, secondAppLink)
+        goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SET_VARIANT, arrayListOf(ApplinkConst.PRODUCT_MANAGE, secondAppLink))
     }
 
-    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, firstAppLink: String, secondAppLink: String = "") {
+    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
         context?.run {
-            val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, firstAppLink, secondAppLink)
+            val intent = SellerMigrationActivity.createIntent(this, featureName, screenName, appLinks)
             startActivity(intent)
         }
     }
@@ -1387,6 +1389,37 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (shouldAddAsFeatured) {
+            shouldAddAsFeatured = false
+            val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
+            val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
+            onSetFeaturedProductClicked(isFeatured, productId)
+        }
+        if (shouldOpenAppLink) {
+            shouldOpenAppLink = false
+            val appLinks = ArrayList(activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
+            if (appLinks.isNotEmpty()) {
+                val appLinkToOpen = appLinks.firstOrNull().orEmpty()
+                if (appLinkToOpen.isNotBlank()) {
+                    appLinks.removeAt(0)
+                    val intent = RouteManager.getIntent(context, appLinkToOpen).apply {
+                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
+                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty())
+                    }
+                    when (activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)) {
+                        SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
+                        SellerMigrationFeatureName.FEATURE_STOCK_REMINDER -> startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
+                        SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_EDIT_PRODUCT_CASHBACK -> startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
+                        SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> startActivity(intent)
+                        SellerMigrationFeatureName.FEATURE_TOPADS -> startActivity(intent)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         activity?.let {
@@ -1607,24 +1640,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     showProductList(it.data)
                     enableMultiSelect()
                     renderMultiSelectProduct()
-                    if (shouldAddAsFeatured) {
-                        shouldAddAsFeatured = false
-                        val isFeatured = activity?.intent?.data?.getBooleanQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_IS_PRODUCT_FEATURED, false) ?: false
-                        val productId = activity?.intent?.data?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_SELECTED_PRODUCT_ID).orEmpty()
-                        onSetFeaturedProductClicked(isFeatured, productId)
-                    }
-                    if (shouldOpenAppLink) {
-                        shouldOpenAppLink = false
-                        val appLinkToOpen = activity?.intent?.getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_SELLER_MIGRATION_SECOND_APPLINK_EXTRA).orEmpty()
-                        if (appLinkToOpen.isNotBlank()) {
-                            val intent = RouteManager.getIntent(context, appLinkToOpen)
-                            when (activity?.intent?.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).orEmpty()) {
-                                SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
-                                SellerMigrationFeatureName.FEATURE_STOCK_REMINDER -> startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
-                                SellerMigrationFeatureName.FEATURE_SET_VARIANT -> startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
-                            }
-                        }
-                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)

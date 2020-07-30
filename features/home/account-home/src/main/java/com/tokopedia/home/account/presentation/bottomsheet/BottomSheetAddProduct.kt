@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
+package com.tokopedia.home.account.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.home.account.R
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.manage.R
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_product_manage_add_edit_menu.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_add_product.view.*
 
-class ProductManageAddEditMenuBottomSheet(
+class BottomSheetAddProduct(
         container: View? = null,
         sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener,
         private val listener: AddEditMenuClickListener,
@@ -23,8 +23,8 @@ class ProductManageAddEditMenuBottomSheet(
 
     companion object {
         @LayoutRes
-        private val LAYOUT = R.layout.bottom_sheet_product_manage_add_edit_menu
-        private val TAG: String = ProductManageAddEditMenuBottomSheet::class.java.simpleName
+        private val LAYOUT = R.layout.bottom_sheet_add_product
+        private val TAG: String = BottomSheetAddProduct::class.java.simpleName
     }
 
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
@@ -39,11 +39,9 @@ class ProductManageAddEditMenuBottomSheet(
             sellerFeatureCarousel = itemView.sellerFeatureCarousel
 
             sellerFeatureCarousel?.run {
-                if (!GlobalConfig.isSellerApp()) {
-                    show()
-                    setListener(sellerFeatureCarouselListener)
-                    this.addItemDecoration()
-                }
+                show()
+                setListener(sellerFeatureCarouselListener)
+                this.addItemDecoration()
             }
 
             itemView.containerAddProductWithNoVariant.setOnClickListener { listener.onAddProductWithNoVariantClicked() }
@@ -55,7 +53,7 @@ class ProductManageAddEditMenuBottomSheet(
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.run {
-            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@ProductManageAddEditMenuBottomSheet)?.commit()
+            parentFragment?.childFragmentManager?.beginTransaction()?.remove(this@BottomSheetAddProduct)?.commit()
         }
     }
 
