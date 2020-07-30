@@ -65,9 +65,6 @@ internal class ProductNotification(
         }
         remoteView.setTextViewText(R.id.tv_collapse_title, spanStr(baseNotificationModel.title))
         remoteView.setTextViewText(R.id.tv_collapsed_message, spanStr(baseNotificationModel.message))
-        baseNotificationModel.appLink?.let {
-            remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
-        }
     }
 
     private fun setExpandViewData(remoteView: RemoteViews, currentProductInfo: ProductInfo, bitmap: Bitmap?) {
@@ -92,7 +89,6 @@ internal class ProductNotification(
         }
 
         remoteView.setTextViewText(R.id.tv_currentPrice, spanStr(currentProductInfo.productCurrentPrice))
-        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(currentProductInfo))
 
         when (baseNotificationModel.notificationProductType) {
             NotificationProductType.V2 -> productDetailCard(remoteView, currentProductInfo)
@@ -123,11 +119,20 @@ internal class ProductNotification(
     }
 
     private fun productStockCard(remoteView: RemoteViews, product: ProductInfo) {
-        remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
+        // collapse
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
+
+        // expand
+        remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, spanStr(product.productButtonMessage))
+        remoteView.setTextViewText(R.id.tv_productMessage, spanStr(product.productMessage))
     }
 
     private fun productDetailCard(remoteView: RemoteViews, product: ProductInfo) {
+        // collapse
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, getProductPendingIntent(product))
+
+        // expand
         val actionButton = product.actionButton[baseNotificationModel.carouselIndex]
 
         if (product.freeOngkirIcon.isNullOrEmpty()) {
@@ -140,6 +145,8 @@ internal class ProductNotification(
         }
 
         remoteView.setOnClickPendingIntent(R.id.tv_productButton, getButtonPendingIntent(actionButton))
+        remoteView.setOnClickPendingIntent(R.id.iv_productImage, getProductPendingIntent(product))
+        remoteView.setOnClickPendingIntent(R.id.ll_content, getProductPendingIntent(product))
         remoteView.setTextViewText(R.id.tv_productButton, actionButton.text)
         remoteView.setViewVisibility(R.id.tv_productMessage, View.GONE)
     }
