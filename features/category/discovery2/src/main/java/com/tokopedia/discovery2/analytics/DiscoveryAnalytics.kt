@@ -17,6 +17,7 @@ import kotlin.collections.set
 class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                          val pagePath: String = EMPTY_STRING,
                          val pageIdentifier: String = EMPTY_STRING,
+                         val campaignCode : String = EMPTY_STRING,
                          val sourceIdentifier: String = EMPTY_STRING,
                          val trackingQueue: TrackingQueue) {
 
@@ -92,6 +93,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         map[KEY_AFFINITY_LABEL] = banner.name ?: EMPTY_STRING
         map[KEY_CATEGORY_ID] = banner.category ?: EMPTY_STRING
         map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
+        map[KEY_CAMPAIGN_CODE] = campaignCode
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -214,6 +216,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
+        map[KEY_CAMPAIGN_CODE] = campaignCode
         map[KEY_E_COMMERCE] = eCommerce
         getTracker().sendEnhanceEcommerceEvent(map)
     }
@@ -338,6 +341,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                     )
             )
             val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = productCardImpressionLabel)
+            map[KEY_CAMPAIGN_CODE] = campaignCode
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
