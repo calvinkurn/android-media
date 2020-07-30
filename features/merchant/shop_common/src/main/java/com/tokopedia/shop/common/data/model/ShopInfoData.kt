@@ -15,6 +15,5 @@ data class ShopInfoData(
         val isOfficial: Int,
         val isGold: Int,
         val openSince: String,
-        val shipments: List<ShopShipmentData>,
-        val shopSnippetUrl: String = ""
+        val shipments: List<ShopShipmentData>
 ): Parcelable
