@@ -37,8 +37,8 @@ class PlayStartStreamingButton : ConstraintLayout {
         setupView(view)
     }
 
-    fun setMaxStreamingDuration(duration: Int) {
-        tvStreamingDurationInfo.text = context.getString(R.string.play_max_live_stream_duration, duration)
+    fun setMaxDurationDescription(desc: String) {
+        tvStreamingDurationInfo.text = desc
     }
 
     private fun setupView(view: View) {

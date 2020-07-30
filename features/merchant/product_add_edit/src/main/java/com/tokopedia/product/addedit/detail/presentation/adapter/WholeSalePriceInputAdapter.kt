@@ -82,12 +82,12 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     fun getPreviousQuantity(position: Int): String {
-        return if (position == 0) ""
+        return if (position <= 0) ""
         else wholeSaleInputModelList[position - 1].quantity
     }
 
     fun getPreviousPrice(position: Int): String {
-        return if (position == 0) ""
+        return if (position <= 0) ""
         else wholeSaleInputModelList[position - 1].price
     }
 

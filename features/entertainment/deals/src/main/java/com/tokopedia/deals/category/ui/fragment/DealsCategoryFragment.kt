@@ -269,7 +269,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         setCurrentLocation(location)
         getCurrentLocation()
         dealCategoryViewModel.shimmeringCategory()
-        loadData(1)
+        applyFilter()
 
         if (getCurrentLocation() != location) {
             analytics.eventClickChangeLocationCategoryPage(getCurrentLocation().name, location.name)
