@@ -458,4 +458,8 @@ Anda di sini.</string>
     <string name="toaster_lainnya_empty">Mohon isi kendala yang kamu alami</string>
     <string name="toaster_manual_max">Max 160 karakter</string>
     <string name="toaster_manual_min">Min. 15 karakter</string>
+    <string name="salin_text">Salin</string>
+    <string name="image_desc">Image Description</string>
+    <string name="booking_code">TPR9QTMYE</string>
+
 </resources>
